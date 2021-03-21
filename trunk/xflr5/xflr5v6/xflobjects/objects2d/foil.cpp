@@ -35,22 +35,18 @@
  */
 Foil::Foil()
 {
-    m_PointStyle = 0; //no points to start with
-    m_Stipple = 0;
-    m_Width = 2;
+    m_theStyle.m_PointStyle = Line::NOSYMBOL; //no points to start with
+    m_theStyle.m_Stipple = Line::SOLID;
+    m_theStyle.m_Width = 2;
+    m_theStyle.m_bIsVisible    = true;
 
-    QColor clr;
-    clr.setHsv(QRandomGenerator::global()->bounded(360),
+    m_theStyle.m_Color.setHsv(QRandomGenerator::global()->bounded(360),
                QRandomGenerator::global()->bounded(55)+30,
                QRandomGenerator::global()->bounded(55)+150);
-    m_Color.setRed(  clr.red());
-    m_Color.setGreen(clr.green());
-    m_Color.setBlue( clr.blue());
 
     m_iHighLight = -1;
 
     m_bCenterLine       = false;
-    m_bIsFoilVisible    = true;
 
     m_fCamber     = 0.0;
     m_fXCamber    = 0.0;
@@ -147,12 +143,9 @@ void Foil::copyFoil(const Foil *pSrcFoil, bool bMetaData)
 {
     if(bMetaData)
     {
-        m_FoilName  = pSrcFoil->name();
-        m_Color       = pSrcFoil->m_Color;
-        m_Stipple     = pSrcFoil->foilLineStyle();
-        m_Width       = pSrcFoil->foilLineWidth();
+        m_FoilName    = pSrcFoil->name();
         m_bCenterLine = pSrcFoil->m_bCenterLine;
-        m_PointStyle  = pSrcFoil->foilPointStyle();
+        m_theStyle    = pSrcFoil->theStyle();
     }
 
     memcpy(x, pSrcFoil->x,  sizeof(pSrcFoil->x));
@@ -1476,16 +1469,16 @@ void Foil::setFlap()
 
 void Foil::getColor(int &r, int &g, int &b, int &a)
 {
-    r = m_Color.red();
-    g = m_Color.green();
-    b = m_Color.blue();
-    a = m_Color.alpha();
+    r = m_theStyle.m_Color.red();
+    g = m_theStyle.m_Color.green();
+    b = m_theStyle.m_Color.blue();
+    a = m_theStyle.m_Color.alpha();
 }
 
 
 void Foil::setColor(int r, int g, int b, int a)
 {
-    m_Color = {r,g,b,a};
+    m_theStyle.m_Color = {r,g,b,a};
 }
 
 
@@ -1511,10 +1504,10 @@ void Foil::displayCoords(bool bBaseCoords) const
 
 void Foil::setTheStyle(int stipple, int w, QColor clr, int pointstyle)
 {
-    m_Stipple = stipple;
-    m_Width = w;
-    m_Color = clr;
-    m_PointStyle = pointstyle;
+    m_theStyle.m_Stipple = stipple;
+    m_theStyle.m_Width = w;
+    m_theStyle.m_Color = clr;
+    m_theStyle.m_PointStyle = pointstyle;
 }
 
 
@@ -1523,10 +1516,10 @@ void Foil::setTheStyle(int stipple, int w, QColor clr, int pointstyle)
  */
 void Foil::setEditStyle()
 {
-    setPointStyle(1);
+    setPointStyle(Line::LITTLECIRCLE);
     setVisible(true);
     setColor(160,160,160);
-    setLineStipple(1);
+    setLineStipple(Line::DASH);
     setLineWidth(1);
     setVisible(true);
 }

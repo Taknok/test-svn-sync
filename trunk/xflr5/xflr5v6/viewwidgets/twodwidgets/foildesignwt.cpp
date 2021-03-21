@@ -158,8 +158,8 @@ void FoilDesignWt::paintFoils(QPainter &painter)
         Foil const*pFoil = Objects2d::foilAt(k);
         if (pFoil->isVisible())
         {
-            FoilPen.setStyle(getStyle(pFoil->foilLineStyle()));
-            FoilPen.setWidth(pFoil->foilLineWidth());
+            FoilPen.setStyle(getStyle(pFoil->lineStyle()));
+            FoilPen.setWidth(pFoil->lineWidth());
             FoilPen.setColor(colour(pFoil));
             painter.setPen(FoilPen);
 
@@ -265,8 +265,8 @@ void FoilDesignWt::paintLegend(QPainter &painter)
                 if(strong.length())
                 {
                     LegendPen.setColor(colour(pRefFoil));
-                    LegendPen.setStyle(getStyle(pRefFoil->foilLineStyle()));
-                    LegendPen.setWidth(pRefFoil->foilLineWidth());
+                    LegendPen.setStyle(getStyle(pRefFoil->lineStyle()));
+                    LegendPen.setWidth(pRefFoil->lineWidth());
 
                     painter.setPen(LegendPen);
                     painter.drawLine(Place.x(), Place.y() + ypos*k, Place.x() + LegendSize, Place.y() + ypos*k);
@@ -276,7 +276,7 @@ void FoilDesignWt::paintLegend(QPainter &painter)
                     {
                         painter.drawRect(x1-2, Place.y() + ypos*k-2, 4,4);
                     }*/
-                    drawPoint(painter, pRefFoil->foilPointStyle(), Settings::s_BackgroundColor, QPoint(x1, Place.y() + ypos*k));
+                    drawPoint(painter, pRefFoil->pointStyle(), Settings::s_BackgroundColor, QPoint(x1, Place.y() + ypos*k));
                     painter.setPen(TextPen);
                     painter.drawText(Place.x() + LegendSize + fmw, Place.y() + ypos*k+delta, pRefFoil->name());
                     k++;

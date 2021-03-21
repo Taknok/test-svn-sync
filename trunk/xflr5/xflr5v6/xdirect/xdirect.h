@@ -42,7 +42,8 @@
 #include <xflcore/gui_enums.h>
 #include <xflobjects/objects2d/oppoint.h>
 #include <graph/graph.h>
-#include <graph/linestyle.h>
+#include <xflcore/linestyle.h>
+
 #include <xfoil.h>
 
 class LineBtn;

@@ -136,9 +136,9 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
             {
                 Foil *pFoil = Objects2d::foilAt(index.row()-1);
                 color = colour(pFoil);
-                pointStyle = pFoil->foilPointStyle();
-                lineStyle = pFoil->foilLineStyle();
-                lineWidth = pFoil->foilLineWidth();
+                pointStyle = pFoil->pointStyle();
+                lineStyle = pFoil->lineStyle();
+                lineWidth = pFoil->lineWidth();
             }
             QRect r = option.rect;
             r = m_pAFoil->m_pctrlFoilTable->visualRect(index);;

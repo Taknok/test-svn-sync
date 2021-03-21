@@ -325,15 +325,3 @@ void LinePickerDlg::setupLayout()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-

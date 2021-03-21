@@ -31,7 +31,8 @@
 
 #include "spline5.h"
 #include <xflobjects/objects2d/foil.h>
-#include <graph/linestyle.h>
+#include <xflcore/linestyle.h>
+
 
 /**
 *@class SplineFoil

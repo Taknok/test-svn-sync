@@ -3692,15 +3692,15 @@ void MainFrame::onCurFoilStyle()
     if(!XDirect::curFoil()) return;
 
     LinePickerDlg dlg(this);
-    dlg.initDialog(XDirect::curFoil()->foilPointStyle(), XDirect::curFoil()->foilLineStyle(), XDirect::curFoil()->foilLineWidth(),
+    dlg.initDialog(XDirect::curFoil()->pointStyle(), XDirect::curFoil()->lineStyle(), XDirect::curFoil()->lineWidth(),
                    colour(XDirect::curFoil()), true, true);
 
     if(QDialog::Accepted==dlg.exec())
     {
         XDirect::curFoil()->setColor(dlg.lineColor().red(), dlg.lineColor().green(), dlg.lineColor().blue(), dlg.lineColor().alpha());
-        XDirect::curFoil()->setLineStipple(dlg.lineStipple());
+        XDirect::curFoil()->setLineStipple(dlg.lineStipple2());
         XDirect::curFoil()->setLineWidth(dlg.lineWidth());
-        XDirect::curFoil()->setPointStyle(dlg.pointStyle());
+        XDirect::curFoil()->setPointStyle(dlg.pointStyle2());
 
         if(Settings::isAlignedChildrenStyle())
             Objects2d::setFoilChildrenStyle(XDirect::curFoil());
@@ -6688,21 +6688,23 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
 {
     qint8 b = 0x00;
     QString strange;
-    int ArchiveFormat = 100006;
-    // 100006 : first version of new xfl format
-
+    int ArchiveFormat = 100007;
+    // 100006: first version of new xfl format
+    // 100007: foil new style
     if(bIsStoring)
     {
         ar << ArchiveFormat;
         ar << pFoil->m_FoilName;
         ar << pFoil->m_FoilDescription;
-        ar << pFoil->m_Stipple << pFoil->m_Width;
+
+/*        ar << pFoil->m_Stipple << pFoil->m_Width;
         writeColor(ar, pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
-
-        ar << pFoil->m_bIsFoilVisible;
+        ar << pFoil->m_bIsVisible;
         //        ar << m_bShowFoilPoints;
-
         ar << qint8(pFoil->m_PointStyle);
+        */
+        pFoil->m_theStyle.serializeXfl(ar, bIsStoring);
+
         ar << pFoil->m_bCenterLine << pFoil->m_bLEFlap << pFoil->m_bTEFlap;
         ar << pFoil->m_LEFlapAngle << pFoil->m_LEXHinge << pFoil->m_LEYHinge;
         ar << pFoil->m_TEFlapAngle << pFoil->m_TEXHinge << pFoil->m_TEYHinge;
@@ -6723,15 +6725,19 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         ar >> strange;
         pFoil->setFoilDescription(strange);
 
-        ar >> pFoil->m_Stipple >> pFoil->m_Width;
+        if(ArchiveFormat<100007)
+        {
+            ar >> pFoil->m_theStyle.m_Stipple >> pFoil->m_theStyle.m_Width;
 
-        int r=0,g=0,blue=0,a=0;
-        readColor(ar, r,g,blue,a);
-        pFoil->setColor(r,g,blue,a);
+            int r=0,g=0,blue=0,a=0;
+            readColor(ar, r,g,blue,a);
+            pFoil->setColor(r,g,blue,a);
+            ar >> pFoil->m_theStyle.m_bIsVisible;
+            ar >> b; pFoil->m_theStyle.m_PointStyle = int(b);
+        }
+        else
+            pFoil->theStyle().serializeXfl(ar, bIsStoring);
 
-        ar >> pFoil->m_bIsFoilVisible;
-        //        ar >> m_bShowFoilPoints;
-        ar >> b; pFoil->m_PointStyle = int(b);
         ar >> pFoil->m_bCenterLine >> pFoil->m_bLEFlap >> pFoil->m_bTEFlap;
         ar >> pFoil->m_LEFlapAngle >> pFoil->m_LEXHinge >> pFoil->m_LEYHinge;
         ar >> pFoil->m_TEFlapAngle >> pFoil->m_TEXHinge >> pFoil->m_TEYHinge;

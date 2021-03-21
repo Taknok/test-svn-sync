@@ -25,7 +25,8 @@
 #include <QDialog>
 #include <QCheckBox>
 
-#include <graph/linestyle.h>
+#include <xflcore/linestyle.h>
+
 
 class LineBtn;
 class LineCbBox;
@@ -44,8 +45,13 @@ public:
 
     void keyPressEvent(QKeyEvent *event);
 
-    LineStyle theStyle() const {return LineStyle();}
-    void setTheStyle(LineStyle const &ls);
+    LS2 ls2() const {return m_LineStyle.toLS2();}
+    LineStyle const &theStyle() const {return m_LineStyle;}
+    void setTheStyle(LineStyle const &ls) {m_LineStyle=ls;}
+    void setTheStyle(LS2 const &ls) {m_LineStyle.fromLS2(ls);}
+
+    Line::enumLineStipple lineStipple2()  const {return m_LineStyle.lineStipple2();}
+    Line::enumPointStyle  pointStyle2()   const {return m_LineStyle.pointStyle2();}
 
     int pointStyle()   const {return m_LineStyle.m_PointStyle;}
     int lineStipple()  const {return m_LineStyle.m_Stipple;}

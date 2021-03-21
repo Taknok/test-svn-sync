@@ -1791,11 +1791,11 @@ void gl3dView::paintEditWingMesh(QOpenGLBuffer &vbo)
     vbo.bind();
     m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
     m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VLMColor);
+    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VLMStyle.m_Color);
 
     int nTriangles = vbo.size()/3/3/int(sizeof(float)); // three vertices and three components
 
-    f->glLineWidth(W3dPrefsDlg::s_VLMWidth);
+    f->glLineWidth(W3dPrefsDlg::s_VLMStyle.m_Width);
     int pos = 0;
     for(int p=0; p<nTriangles; p++)
     {
@@ -1870,12 +1870,12 @@ void gl3dView::paintAxes()
 //    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
     m_ShaderProgramLine.bind();
 
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_3DAxisColor);
+    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_3DAxisStyle.m_Color);
     m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
     m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
     m_vboAxis.bind();
     //draw Axis
-    glLineWidth(W3dPrefsDlg::s_3DAxisWidth);
+    glLineWidth(W3dPrefsDlg::s_3DAxisStyle.m_Width);
 
     m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
     m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
@@ -1888,9 +1888,9 @@ void gl3dView::paintAxes()
     m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
     m_ShaderProgramLine.release();
 
-    glRenderText(1.0, 0.015, 0.015, "X", W3dPrefsDlg::s_3DAxisColor);
-    glRenderText(0.015, 1.0, 0.015, "Y", W3dPrefsDlg::s_3DAxisColor);
-    glRenderText(0.015, 0.015, 1.0, "Z", W3dPrefsDlg::s_3DAxisColor);
+    glRenderText(1.0, 0.015, 0.015, "X", W3dPrefsDlg::s_3DAxisStyle.m_Color);
+    glRenderText(0.015, 1.0, 0.015, "Y", W3dPrefsDlg::s_3DAxisStyle.m_Color);
+    glRenderText(0.015, 0.015, 1.0, "Z", W3dPrefsDlg::s_3DAxisStyle.m_Color);
 }
 
 
@@ -2013,13 +2013,13 @@ void gl3dView::paintBody(Body const *pBody)
         m_vboBody.bind();
         m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
         m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 8 * sizeof(GLfloat));
-        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_OutlineColor);
+        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_OutlineStyle.m_Color);
 
         m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
         m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
         m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
 
-        glLineWidth(W3dPrefsDlg::s_OutlineWidth);
+        glLineWidth(W3dPrefsDlg::s_OutlineStyle.m_Width);
 
         if(pBody->isSplineType())
         {
@@ -2066,12 +2066,12 @@ void gl3dView::paintEditBodyMesh(const Body *pBody)
     m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
     m_vboEditBodyMesh.bind();
     m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 3*sizeof(GLfloat));
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VLMColor);
+    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VLMStyle.m_Color);
     //    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, Qt::red);
 
     if(pBody->isFlatPanelType())
     {
-        f->glLineWidth(W3dPrefsDlg::s_VLMWidth);
+        f->glLineWidth(W3dPrefsDlg::s_VLMStyle.m_Width);
 
         //        f->glPolygonOffset(1.0, 1.0);
         f->glDrawArrays(GL_LINES, 0, m_iBodyMeshLines*2);
@@ -2081,7 +2081,7 @@ void gl3dView::paintEditBodyMesh(const Body *pBody)
         int pos=0;
         int NXXXX = W3dPrefsDlg::bodyAxialRes();
         int NHOOOP = W3dPrefsDlg::bodyHoopRes();
-        f->glLineWidth(W3dPrefsDlg::s_VLMWidth);
+        f->glLineWidth(W3dPrefsDlg::s_VLMStyle.m_Width);
 
         pos=0;
         //x-lines
@@ -2266,7 +2266,7 @@ void gl3dView::paintWing(int iWing, Wing const *pWing)
     if(m_bOutline)
     {
         m_ShaderProgramLine.bind();
-        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_OutlineColor);
+        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_OutlineStyle.m_Color);
         m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
         m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
         m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
@@ -2275,9 +2275,9 @@ void gl3dView::paintWing(int iWing, Wing const *pWing)
         m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
         m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 3* sizeof(GLfloat));
 
-        glLineWidth(W3dPrefsDlg::s_OutlineWidth);
+        glLineWidth(W3dPrefsDlg::s_OutlineStyle.m_Width);
         glEnable (GL_LINE_STIPPLE);
-        GLLineStipple(W3dPrefsDlg::s_OutlineStyle);
+        GLLineStipple(W3dPrefsDlg::s_OutlineStyle.m_Stipple);
 
         glDrawArrays(GL_LINES, 0, m_iWingOutlinePoints[iWing]);
         m_vboWingOutline[iWing].release();

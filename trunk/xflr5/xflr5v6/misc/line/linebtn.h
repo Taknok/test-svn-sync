@@ -26,7 +26,8 @@
 
 
 #include <QAbstractButton>
-#include <graph/linestyle.h>
+#include <xflcore/linestyle.h>
+#include <xflcore/ls2.h>
 
 class LineBtn : public QAbstractButton
 {
@@ -37,6 +38,7 @@ public:
 
     void setTheStyle(LineStyle const &ls) {m_LineStyle=ls;}
     void setTheStyle(int const &lineStyle, int const &width, QColor const & color, const int &pointStyle);
+    void setTheStyle(LS2 const &ls) {m_LineStyle.fromLS2(ls);}
     LineStyle theStyle() const {return m_LineStyle;}
 
     void setColor(QColor const & color);

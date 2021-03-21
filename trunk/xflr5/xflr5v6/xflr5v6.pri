@@ -165,6 +165,8 @@ SOURCES += \
 
 
 HEADERS += \
+    $$PWD/xflcore/linestyle.h \
+    $$PWD/xflcore/ls2.h \
     design/afoil.h \
     design/afoiltabledlg.h \
     design/foiltabledelegate.h \
@@ -178,7 +180,6 @@ HEADERS += \
     graph/graph.h \
     graph/graph_globals.h \
     graph/graphdlg.h \
-    graph/linestyle.h \
     gui_objects/spline5.h \
     gui_objects/splinefoil.h \
     miarex/analysis/aerodatadlg.h \

@@ -166,9 +166,7 @@ void Objects2d::insertThisFoil(Foil *pFoil)
         if(pOldFoil->name()==oldFoilName && pOldFoil!=pFoil)
         {
             //copy the old foil's style
-            pFoil->m_Color   = pOldFoil->m_Color;
-            pFoil->m_Stipple = pOldFoil->foilLineStyle();
-            pFoil->m_Width   = pOldFoil->foilLineWidth();
+            pFoil->setTheStyle(pOldFoil->theStyle());
 
             //we overwrite the old foil and delete its children objects
             deleteFoil(pOldFoil);
@@ -753,10 +751,10 @@ void Objects2d::setFoilChildrenStyle(Foil *pFoil)
         OpPoint *pOpPoint = s_oaOpp[j];
         if(pOpPoint->foilName() == pFoil->name())
         {
-            pOpPoint->m_Style = pFoil->m_Stipple;
-            pOpPoint->m_Width = pFoil->m_Width;
+            pOpPoint->m_Style = pFoil->m_theStyle.m_Stipple;
+            pOpPoint->m_Width = pFoil->m_theStyle.m_Width;
             pOpPoint->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
-            pOpPoint->m_PointStyle = pFoil->m_PointStyle;
+            pOpPoint->m_PointStyle = pFoil->m_theStyle.m_PointStyle;
         }
     }
 
@@ -765,10 +763,10 @@ void Objects2d::setFoilChildrenStyle(Foil *pFoil)
         Polar *pPolar = s_oaPolar.at(j);
         if(pPolar->foilName() == pFoil->name())
         {
-            pPolar->m_Style = pFoil->m_Stipple;
-            pPolar->m_Width = pFoil->m_Width;
+            pPolar->m_Style = pFoil->m_theStyle.m_Stipple;
+            pPolar->m_Width = pFoil->m_theStyle.m_Width;
             pPolar->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
-            pPolar->m_PointStyle = pFoil->m_PointStyle;
+            pPolar->m_PointStyle = pFoil->m_theStyle.m_PointStyle;
         }
     }
 }
@@ -808,10 +806,10 @@ Polar *Objects2d::createPolar(Foil *pFoil, Xfl::enumPolarType PolarType, double 
 
     if(Settings::isAlignedChildrenStyle())
     {
-        pNewPolar->m_Style = pFoil->m_Stipple;
-        pNewPolar->m_Width = pFoil->m_Width;
+        pNewPolar->m_Style = pFoil->m_theStyle.m_Stipple;
+        pNewPolar->m_Width = pFoil->m_theStyle.m_Width;
         pNewPolar->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
-        pNewPolar->m_PointStyle = pFoil->m_PointStyle;
+        pNewPolar->m_PointStyle = pFoil->m_theStyle.m_PointStyle;
     }
     else
     {

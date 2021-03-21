@@ -25,7 +25,8 @@
 #include <QDialog>
 #include <QKeyEvent>
 
-#include <graph/linestyle.h>
+#include <xflcore/linestyle.h>
+
 
 class LineBtn;
 class OpPointWidget;
