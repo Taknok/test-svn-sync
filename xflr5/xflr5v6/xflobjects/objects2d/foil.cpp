@@ -1504,10 +1504,10 @@ void Foil::displayCoords(bool bBaseCoords) const
 
 void Foil::setTheStyle(int stipple, int w, QColor clr, int pointstyle)
 {
-    m_theStyle.m_Stipple = stipple;
+    m_theStyle.setStipple(stipple);
     m_theStyle.m_Width = w;
     m_theStyle.m_Color = clr;
-    m_theStyle.m_PointStyle = pointstyle;
+    m_theStyle.setPointStyle(pointstyle);
 }
 
 

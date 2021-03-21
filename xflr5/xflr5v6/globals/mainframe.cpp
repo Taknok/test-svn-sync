@@ -3058,9 +3058,7 @@ QColor MainFrame::getColor(int type)
                 {
                     pOpPoint = Objects2d::oppAt(i);
                     bFound = false;
-                    int r=0,g=0,b=0,a=0;
-                    pOpPoint->getColor(r,g,b,a);
-                    QColor clr(r,g,b,a);
+                    QColor clr = pOpPoint->color();
                     if(clr == s_ColorList.at(j))
                     {
                         bFound = true;
@@ -6733,7 +6731,7 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
             readColor(ar, r,g,blue,a);
             pFoil->setColor(r,g,blue,a);
             ar >> pFoil->m_theStyle.m_bIsVisible;
-            ar >> b; pFoil->m_theStyle.m_PointStyle = int(b);
+            ar >> b; pFoil->m_theStyle.setPointStyle(int(b));
         }
         else
             pFoil->theStyle().serializeXfl(ar, bIsStoring);
@@ -6770,19 +6768,21 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
     double dble=0;
     bool boolean=false;
     int i=0, k=0, n=0;
-    int ArchiveFormat=0;// identifies the format of the file
+    // identifies the format of the file
+    // 1000005: new style format
+    int ArchiveFormat=100005;
 
     if(bIsStoring)
     {
-        ar << 100004; // first format for XFL file
+        ar << ArchiveFormat; // first format for XFL file
 
         ar << pPolar->m_FoilName;
         ar << pPolar->m_PlrName;
 
-        ar << pPolar->m_Style << pPolar->m_Width;
+/*        ar << pPolar->m_Style << pPolar->m_Width;
         writeColor(ar, pPolar->m_red, pPolar->m_green, pPolar->m_blue, pPolar->m_alphaChannel);
-        ar << pPolar->m_bIsVisible << false;
-
+        ar << pPolar->m_bIsVisible << false;*/
+        pPolar->m_theStyle.serializeXfl(ar, bIsStoring);
 
         if      (pPolar->m_PolarType==Xfl::FIXEDSPEEDPOLAR) ar<<1;
         else if(pPolar->m_PolarType==Xfl::FIXEDLIFTPOLAR)   ar<<2;
@@ -6807,7 +6807,8 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
             ar << float(pPolar->m_XCp[i]);
         }
 
-        ar << pPolar->m_PointStyle;
+//        ar << pPolar->m_theStyle.m_PointStyle;
+
         // space allocation for the future storage of more data, without need to change the format
         for (int i=0; i<19; i++) ar << 0;
         for (int i=0; i<50; i++) ar << 0.0;
@@ -6825,10 +6826,19 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         ar >> pPolar->m_FoilName;
         ar >> pPolar->m_PlrName;
 
-        ar >> n; pPolar->setPolarStyle(n);
-        ar >> n; pPolar->setPolarWidth(n);
-        readColor(ar, pPolar->m_red, pPolar->m_green, pPolar->m_blue, pPolar->m_alphaChannel);
-        ar >> pPolar->m_bIsVisible >> boolean;
+        if(ArchiveFormat<100005)
+        {
+            ar >> n; pPolar->setStipple(n);
+            ar >> n; pPolar->setWidth(n);
+            int r,g,b,a;
+            readColor(ar, r,g,b,a);
+            pPolar->setColor(r,g,b,a);
+            ar >> pPolar->m_theStyle.m_bIsVisible >> boolean;
+        }
+        else
+        {
+            pPolar->m_theStyle.serializeXfl(ar, bIsStoring);
+        }
 
         ar >> n;
         if(n==1)      pPolar->m_PolarType=Xfl::FIXEDSPEEDPOLAR;
@@ -6851,7 +6861,8 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
                              double(XTr1), double(XTr2), double(HMom), double(Cpmn), double(Re), double(XCp));
         }
 
-        ar >> pPolar->m_PointStyle;
+        if(ArchiveFormat<100005)
+            ar >> pPolar->m_theStyle.m_PointStyle;
 
         // space allocation
         for (int i=0; i<19; i++) ar >> k;
@@ -6861,12 +6872,7 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
 }
 
 
-/**
- * Loads or saves the data of this OpPoint to a binary file
- * @param ar the QDataStream object from/to which the data should be serialized
- * @param bIsStoring true if saving the data, false if loading
- * @return true if the operation was successful, false otherwise
- */
+/*
 bool MainFrame::serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring, int ArchiveFormat)
 {
     bool boolean=false;
@@ -6874,17 +6880,20 @@ bool MainFrame::serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring,
     float f0=0.f,f1=0.f;
     double dble=0;
 
+    // identifies the archive's format
+    // 200004: new linestyle format
+    int OppArchiveFormat = 200004;
+
+
     if(bIsStoring)
     {
-        ar << 200003;
+        ar << OppArchiveFormat;
         //200003 : first xfl format
         //write variables
         ar << pOpp->foilName();
         ar << pOpp->polarName();
 
-        ar << pOpp->m_Style << pOpp->m_Width;
-        writeColor(ar, pOpp->m_red, pOpp->m_green, pOpp->m_blue, pOpp->m_alphaChannel);
-        ar << pOpp->m_bIsVisible << false;
+        pOpp->theStyle().serializeXfl(ar, bIsStoring);
 
         ar << pOpp->m_Reynolds << pOpp->m_Mach << pOpp->m_Alpha;
         ar << pOpp->n << pOpp->blx.nd1 << pOpp->blx.nd2 << pOpp->blx.nd3;
@@ -6915,9 +6924,19 @@ bool MainFrame::serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring,
         ar >> pOpp->m_FoilName;
         ar >> pOpp->m_PlrName;
 
-        ar >> pOpp->m_Style >> pOpp->m_Width;
-        readColor(ar, pOpp->m_red, pOpp->m_green, pOpp->m_blue, pOpp->m_alphaChannel);
-        ar >> pOpp->m_bIsVisible >> boolean;
+        if(OppArchiveFormat<200004)
+        {
+            int n;
+            ar >> n;
+            pOpp->m_theStyle.setStipple(n);
+            ar >> pOpp->m_theStyle.m_Width;
+            int a,r,g,b;
+            readColor(ar, r,g,b,a);
+            pOpp->setColor(r,g,b,a);
+            ar >> pOpp->m_theStyle.m_bIsVisible >> boolean;
+        }
+        else
+            pOpp->theStyle().serializeXfl(ar, bIsStoring);
 
         ar >> pOpp->m_Reynolds >> pOpp->m_Mach >> pOpp->m_Alpha;
         ar >> pOpp->n >> pOpp->blx.nd1 >> pOpp->blx.nd2 >> pOpp->blx.nd3;
@@ -6966,7 +6985,7 @@ bool MainFrame::serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring,
     }
     return true;
 }
-
+*/
 
 
 /**

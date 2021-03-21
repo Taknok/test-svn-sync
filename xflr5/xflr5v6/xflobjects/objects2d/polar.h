@@ -26,12 +26,13 @@
  */
 
 
-#ifndef POLAR_H
-#define POLAR_H
+#pragma once
+
 
 #include <QVector>
 
 #include <xflcore/core_enums.h>
+#include <xflcore/ls2.h>
 #include <xflobjects/objects2d/oppoint.h>
 
 class Foil;
@@ -87,22 +88,36 @@ public:
     void getPolarProperties(QString &polarProps) const;
     QVector<double> const &getPlrVariable(int iVar) const;
 
-    void getColor(int &r, int &g, int &b, int &a) const;
+
+    LS2 &theStyle() {return m_theStyle;}
+    LS2 const &theStyle() const {return m_theStyle;}
+    void setTheStyle(LS2 const &style) {m_theStyle=style;}
+    void setTheStyle(Line::enumLineStipple stipple, int w, const QColor &clr, Line::enumPointStyle pointstyle);
+    int width() const {return m_theStyle.m_Width;}
+    int pointStyle() const {return m_theStyle.m_PointStyle;}
+    Line::enumPointStyle pointStyle2() const {return m_theStyle.m_PointStyle;}
+
+    void setLineStipple(Line::enumLineStipple s) {m_theStyle.m_Stipple=s;}
+    void setLineWidth(int w)   {m_theStyle.m_Width=w;}
+
+    void setPointStyle(int n) {m_theStyle.setPointStyle(n);}
+    void setPointStyle2(Line::enumPointStyle pts) {m_theStyle.m_PointStyle=pts;}
+
+    QColor const &color() const {return m_theStyle.m_Color;}
+    void setColor(QColor const &clr) {m_theStyle.m_Color=clr;}
     void setColor(int r, int g, int b, int a=255);
-    int red() const {return m_red;}
-    int green() const {return m_green;}
-    int blue() const {return m_blue;}
-    int alphaChannel() const {return m_alphaChannel;}
+    int red() const {return m_theStyle.m_Color.red();}
+    int green() const {return m_theStyle.m_Color.green();}
+    int blue() const {return m_theStyle.m_Color.blue();}
+    int alphaChannel() const {return m_theStyle.m_Color.alpha();}
+    Line::enumLineStipple polarStyle() const     {return m_theStyle.m_Stipple;}
+    int lineWidth() const     {return m_theStyle.m_Width;}
+    bool isVisible() const     {return m_theStyle.m_bIsVisible;}
 
-    int polarStyle() const     {return m_Style;}
-    int polarWidth() const     {return m_Width;}
-    int pointStyle() const     {return m_PointStyle;}
-    bool isVisible() const     {return m_bIsVisible;}
-
-    void setPolarStyle(int s) {m_Style=s;}
-    void setPolarWidth(int w) {m_Width=w;}
-    void setPointStyle(int p) {m_PointStyle=p;}
-    void setVisible(bool bVisible) {m_bIsVisible=bVisible;}
+    void setStipple(int n) {m_theStyle.setStipple(n);} // conversion
+    void setStipple2(Line::enumLineStipple s) {m_theStyle.m_Stipple=s;}
+    void setWidth(int w) {m_theStyle.m_Width=w;}
+    void setVisible(bool bVisible) {m_theStyle.m_bIsVisible=bVisible;}
 
     double aoa()      const {return m_ASpec;}
     double Reynolds() const {return m_Reynolds;}
@@ -159,9 +174,7 @@ public:
     QString m_PlrName;                  /**< the Polar's name, used for references */
     QString m_FoilName;                 /**< the name of the parent Foil to which this Polar object is attached */
 
-    int m_Style, m_Width, m_PointStyle;
-    bool m_bIsVisible;
-    int m_red, m_blue, m_green, m_alphaChannel;
+    LS2 m_theStyle;
 
     //Analysis specification
     Xfl::enumPolarType m_PolarType;          /**< the Polar type */
@@ -179,4 +192,4 @@ public:
 
 
 
-#endif
+

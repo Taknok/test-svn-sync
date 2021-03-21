@@ -645,7 +645,7 @@ void LegendWt::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
                     //is there anything to draw ?
                     LegendPen.setColor(colour(pPolar));
                     LegendPen.setStyle(getStyle(pPolar->polarStyle()));
-                    LegendPen.setWidth(pPolar->polarWidth());
+                    LegendPen.setWidth(pPolar->lineWidth());
                     painter.setPen(LegendPen);
 
                     painter.drawLine(int(place.x() + 1.0*LegendSize), int(place.y() + 1.*legendHeight*ny),

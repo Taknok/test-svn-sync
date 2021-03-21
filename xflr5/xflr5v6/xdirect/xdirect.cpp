@@ -402,7 +402,9 @@ void XDirect::createOppCurves(OpPoint *pOpp)
             pCurve1    = m_CpGraph.addCurve();
 
             //                pCurve1->setPoints(pOpp->pointStyle());
-            pCurve1->setLineStyle(pOpp->oppStyle(), pOpp->oppWidth(), colour(pOpp), pOpp->pointStyle(), pOpp->isVisible());
+            LineStyle ls;
+            ls.fromLS2(pOpp->theStyle());
+            pCurve1->setLineStyle(ls);
             pCurve1->setName(pOpp->opPointName());
 
             fillOppCurve(pOpp, &m_CpGraph, pCurve1);
@@ -413,7 +415,7 @@ void XDirect::createOppCurves(OpPoint *pOpp)
                 pCpi->setPointStyle(pOpPoint->pointStyle());
                 pCpi->setStipple(1);
                 pCpi->setColor(colour(pOpPoint).darker(150));
-                pCpi->setWidth(pOpPoint->oppWidth());
+                pCpi->setWidth(pOpPoint->lineWidth());
                 str= QString("-Re=%1-Alpha=%2_Inviscid").arg(pOpPoint->Reynolds(),8,'f',0).arg(pOpPoint->aoa(),5,'f',2);
                 str = pOpPoint->foilName()+str;
                 pCpi->setName(str);
@@ -457,7 +459,7 @@ void XDirect::createPolarCurves()
                 for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
                 {
                     pCurve[ig] = m_PlrGraph[ig]->addCurve();
-                    pCurve[ig]->setLineStyle(pPolar->polarStyle(), pPolar->polarWidth(), colour(pPolar), pPolar->pointStyle(), pPolar->isVisible());
+                    pCurve[ig]->setLineStyle(pPolar->polarStyle(), pPolar->lineWidth(), colour(pPolar), pPolar->pointStyle(), pPolar->isVisible());
 
                     fillPolarCurve(pCurve[ig], pPolar, m_PlrGraph[ig]->xVariable(), m_PlrGraph[ig]->yVariable());
                     pCurve[ig]->setName(pPolar->polarName());
@@ -1817,10 +1819,10 @@ void XDirect::onDefinePolar()
 
         if(Settings::isAlignedChildrenStyle())
         {
-            m_pCurPolar->m_Style = m_pCurFoil->m_theStyle.m_Stipple;
-            m_pCurPolar->m_Width = m_pCurFoil->m_theStyle.m_Width;
+            m_pCurPolar->m_theStyle.setStipple(m_pCurFoil->m_theStyle.m_Stipple);
+            m_pCurPolar->m_theStyle.m_Width = m_pCurFoil->m_theStyle.m_Width;
             m_pCurPolar->setColor(m_pCurFoil->red(), m_pCurFoil->green(), m_pCurFoil->blue(), m_pCurFoil->alphaChannel());
-            m_pCurPolar->m_PointStyle = m_pCurFoil->m_theStyle.m_PointStyle;
+            m_pCurPolar->m_theStyle.setPointStyle(m_pCurFoil->m_theStyle.m_PointStyle);
         }
         else
         {
@@ -2210,12 +2212,12 @@ void XDirect::onEditCurPolar()
 
     LineStyle style;
     style.m_Stipple = m_pCurPolar->polarStyle();
-    style.m_Width= m_pCurPolar->polarWidth();
+    style.m_Width= m_pCurPolar->lineWidth();
     style.m_Color= colour(m_pCurPolar);
     style.m_bIsVisible= m_pCurPolar->isVisible();
     style.m_PointStyle= m_pCurPolar->pointStyle();
 
-    m_pCurPolar->setPointStyle(1);
+    m_pCurPolar->setPointStyle(Line::LITTLECIRCLE);
 
     m_bResetCurves = true;
     updateView();
@@ -2228,8 +2230,8 @@ void XDirect::onEditCurPolar()
     {
         m_pCurPolar->copyPolar(pMemPolar);
     }
-    m_pCurPolar->setPolarStyle(style.m_Stipple);
-    m_pCurPolar->setPolarWidth(style.m_Width);
+    m_pCurPolar->setStipple(style.m_Stipple);
+    m_pCurPolar->setWidth(style.m_Width);
     m_pCurPolar->setColor(style.m_Color.red(), style.m_Color.green(), style.m_Color.blue());
     m_pCurPolar->setPointStyle(style.m_PointStyle);
     m_pCurPolar->setVisible(style.m_bIsVisible);
@@ -3192,10 +3194,10 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     if(Settings::isAlignedChildrenStyle())
     {
         pFoil = Objects2d::foil(FoilName);
-        pPolar->m_Style = pFoil->m_theStyle.m_Stipple;
-        pPolar->m_Width = pFoil->m_theStyle.m_Width;
+        pPolar->m_theStyle.setStipple(pFoil->m_theStyle.m_Stipple);
+        pPolar->m_theStyle.m_Width = pFoil->m_theStyle.m_Width;
         pPolar->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
-        pPolar->m_PointStyle = pFoil->m_theStyle.m_PointStyle;
+        pPolar->m_theStyle.setPointStyle(pFoil->m_theStyle.m_PointStyle);
     }
     else
     {
@@ -4360,7 +4362,7 @@ void XDirect::setCurveParams()
 
             m_LineStyle.m_Color = colour(m_pCurPolar);
             m_LineStyle.m_Stipple = m_pCurPolar->polarStyle();
-            m_LineStyle.m_Width = m_pCurPolar->polarWidth();
+            m_LineStyle.m_Width = m_pCurPolar->lineWidth();
             m_LineStyle.m_PointStyle = m_pCurPolar->pointStyle();
             fillComboBoxes();
         }
@@ -4376,10 +4378,7 @@ void XDirect::setCurveParams()
         {
             if(m_pCurOpp->isVisible())  m_pctrlShowCurve->setChecked(true);  else  m_pctrlShowCurve->setChecked(false);
 
-            m_LineStyle.m_Color  = colour(m_pCurOpp);
-            m_LineStyle.m_Stipple  = m_pCurOpp->oppStyle();
-            m_LineStyle.m_Width  = m_pCurOpp->oppWidth();
-            m_LineStyle.m_PointStyle = m_pCurOpp->pointStyle();
+            m_LineStyle.fromLS2(m_pCurOpp->theStyle());
             fillComboBoxes();
         }
         else
@@ -4934,8 +4933,8 @@ void XDirect::updateCurveStyle()
     if(m_bPolarView && m_pCurPolar)
     {
         m_pCurPolar->setColor(m_LineStyle.m_Color.red(), m_LineStyle.m_Color.green(), m_LineStyle.m_Color.blue());
-        m_pCurPolar->setPolarStyle(m_LineStyle.m_Stipple);
-        m_pCurPolar->setPolarWidth(m_LineStyle.m_Width);
+        m_pCurPolar->setStipple(m_LineStyle.m_Stipple);
+        m_pCurPolar->setWidth(m_LineStyle.m_Width);
         m_pCurPolar->setPointStyle(m_LineStyle.m_PointStyle);
 
         if(Settings::isAlignedChildrenStyle())
@@ -4947,10 +4946,7 @@ void XDirect::updateCurveStyle()
     }
     else if (!m_bPolarView && m_pCurOpp)
     {
-        m_pCurOpp->setColor(m_LineStyle.m_Color.red(), m_LineStyle.m_Color.green(), m_LineStyle.m_Color.blue(), m_LineStyle.m_Color.alpha());
-        m_pCurOpp->m_Style = m_LineStyle.m_Stipple;
-        m_pCurOpp->m_Width = m_LineStyle.m_Width;
-        m_pCurOpp->m_PointStyle = m_LineStyle.m_PointStyle;
+        m_pCurOpp->setTheStyle(m_LineStyle.toLS2());
         m_bResetCurves = true;
     }
 

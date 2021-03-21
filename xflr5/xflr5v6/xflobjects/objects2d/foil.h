@@ -97,9 +97,10 @@ public:
 
     void setTheStyle(int stipple, int w, QColor clr, int pointstyle);
     void setEditStyle();
-    LineStyle &theStyle() {return m_theStyle;}
-    LineStyle const &theStyle() const {return m_theStyle;}
-    void setTheStyle(LineStyle const &style) {m_theStyle=style;}
+    LS2 &theStyle() {return m_theStyle;}
+    LS2 const &theStyle() const {return m_theStyle;}
+    void setTheStyle(LineStyle const &style) {m_theStyle=style.toLS2();}
+    void setTheStyle(LS2 const &style) {m_theStyle=style;}
     void setTheStyle(Line::enumLineStipple stipple, int w, const QColor &clr, Line::enumPointStyle pointstyle);
     bool isVisible() const {return m_theStyle.m_bIsVisible;}
     int lineWidth() const {return m_theStyle.m_Width;}
@@ -109,7 +110,7 @@ public:
     void setLineStipple(Line::enumLineStipple s) {m_theStyle.m_Stipple=s;}
     void setLineWidth(int w)   {m_theStyle.m_Width=w;}
     void setPointStyle(Line::enumPointStyle pts) {m_theStyle.m_PointStyle=pts;}
-    void setPointStyle(int n) {m_theStyle.m_PointStyle=n;}// conversion function
+    void setPointStyle(int n) {m_theStyle.setPointStyle(n);}// conversion function
 
     QColor const &foilColor() const {return m_theStyle.m_Color;}
     void setColor(QColor const &clr) {m_theStyle.m_Color=clr;}
@@ -165,7 +166,7 @@ public:
     int m_iInt;                          /**< the number of points on the lower surface of the current foil */
     int m_iExt;                          /**< the number of points on the upper surface of the current foil */
 
-    LineStyle m_theStyle;
+    LS2 m_theStyle;
 
     int m_iHighLight;                    /**< the index of the point to highlight in the display */
 
