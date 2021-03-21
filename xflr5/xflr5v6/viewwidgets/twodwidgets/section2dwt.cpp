@@ -48,7 +48,7 @@ Section2dWidget::Section2dWidget(QWidget *parent) : QWidget(parent)
     m_bZoomYOnly     = false;
     m_bTrans         = false;
     m_bDrag          = false;
-    m_bNeutralLine   = true;
+    m_NeutralStyle.m_bIsVisible = true;
     m_bScale         = false;
     m_bShowLegend    = true;
     m_bIsImageLoaded = false;
@@ -78,9 +78,9 @@ Section2dWidget::Section2dWidget(QWidget *parent) : QWidget(parent)
     m_YMinWidth  = 1;
     m_YMinColor  = QColor(70,70,70);
 
-    m_NeutralStyle = 3;
-    m_NeutralWidth = 1;
-    m_NeutralColor = QColor(213,213,255);
+    m_NeutralStyle.m_Stipple = Line::DASHDOT;
+    m_NeutralStyle.m_Width = 1;
+    m_NeutralStyle.m_Color = QColor(213,213,255);
 
     m_fScale    = 1.0;
     m_fRefScale = 1.0;
@@ -605,12 +605,11 @@ void Section2dWidget::paintGrids(QPainter &painter)
         painter.drawRect(ZRect);
     }
 
-
-    if (m_bNeutralLine)
+    if (m_NeutralStyle.m_bIsVisible)
     {
-        QPen NPen(m_NeutralColor);
-        NPen.setStyle(getStyle(m_NeutralStyle));
-        NPen.setWidth(m_NeutralWidth);
+        QPen NPen(m_NeutralStyle.m_Color);
+        NPen.setStyle(getStyle(m_NeutralStyle.m_Stipple));
+        NPen.setWidth(m_NeutralStyle.m_Width);
         painter.setPen(NPen);
 
         painter.drawLine(int(m_ptOffset.x()), rect().bottom(), int(m_ptOffset.x()), rect().top());
@@ -950,10 +949,7 @@ void Section2dWidget::onGridSettings()
     GridSettingsDlg dlg;
 
     dlg.m_bScale       = m_bScale;
-    dlg.m_bNeutralLine = m_bNeutralLine;
     dlg.m_NeutralStyle = m_NeutralStyle;
-    dlg.m_NeutralWidth = m_NeutralWidth;
-    dlg.m_NeutralColor = m_NeutralColor;
 
     dlg.m_bXGrid     = m_bXGrid;
     dlg.m_bXMinGrid  = m_bXMinGrid;
@@ -982,10 +978,7 @@ void Section2dWidget::onGridSettings()
     if(dlg.exec() == QDialog::Accepted)
     {
         m_bScale       = dlg.m_bScale;
-        m_bNeutralLine = dlg.m_bNeutralLine;
         m_NeutralStyle = dlg.m_NeutralStyle;
-        m_NeutralWidth = dlg.m_NeutralWidth;
-        m_NeutralColor = dlg.m_NeutralColor;
 
         m_bXGrid     = dlg.m_bXGrid;
         m_bXMinGrid  = dlg.m_bXMinGrid;

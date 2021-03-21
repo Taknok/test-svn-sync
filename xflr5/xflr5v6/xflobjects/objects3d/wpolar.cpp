@@ -32,18 +32,15 @@
  */
 WPolar::WPolar()
 {
-    m_bIsVisible  = true;
-    m_PointStyle = 0;
-    m_Style  = 0;
-    m_Width  = 1;
+    m_theStyle.m_PointStyle = Line::NOSYMBOL; //no points to start with
+    m_theStyle.m_Stipple = Line::SOLID;
+    m_theStyle.m_Width = 2;
+    m_theStyle.m_bIsVisible    = true;
 
-    QColor clr;
-    clr.setHsv(QRandomGenerator::global()->bounded(360),
+    m_theStyle.m_Color.setHsv(QRandomGenerator::global()->bounded(360),
                QRandomGenerator::global()->bounded(55)+30,
                QRandomGenerator::global()->bounded(55)+150);
-    m_Color.setRed(  clr.red());
-    m_Color.setGreen(clr.green());
-    m_Color.setBlue( clr.blue());
+
 
     m_bVLM1         = true;
     m_bThinSurfaces = true;
@@ -486,7 +483,7 @@ void WPolar::calculatePoint(int iPt)
 void WPolar::duplicateSpec(const WPolar *pWPolar)
 {
     m_PlaneName   = pWPolar->m_PlaneName;
-    m_WPlrName    = pWPolar->m_WPlrName;
+    m_Name    = pWPolar->m_Name;
 
     m_WPolarType  = pWPolar->m_WPolarType;
 
@@ -496,11 +493,7 @@ void WPolar::duplicateSpec(const WPolar *pWPolar)
     if(pWPolar->polarType()==Xfl::BETAPOLAR) m_BetaSpec = 0.0;
     else                                m_BetaSpec = pWPolar->m_BetaSpec;
 
-    m_Style  = pWPolar->curveStyle();
-    m_Width  = pWPolar->curveWidth();
-    m_Color  = pWPolar->curveColor();
-    m_PointStyle = pWPolar->points();
-    m_bIsVisible = pWPolar->isVisible();
+    m_theStyle = pWPolar->theStyle();
 
     // general aerodynamic data - specific to a polar
     m_Viscosity   = pWPolar->m_Viscosity;
@@ -906,9 +899,7 @@ void WPolar::retrieveInertia(Plane *pPlane)
 
 void WPolar::copy(const WPolar *pWPolar)
 {
-    int i;
-    m_bIsVisible = pWPolar->isVisible();
-    m_PointStyle = pWPolar->points();
+    m_theStyle = pWPolar->theStyle();
     m_bTiltedGeom     = pWPolar->m_bTiltedGeom;
     m_bViscous        = pWPolar->m_bViscous;
     m_bVLM1           = pWPolar->m_bVLM1;
@@ -923,7 +914,7 @@ void WPolar::copy(const WPolar *pWPolar)
 
     clearData();
 
-    for(i=0; i<pWPolar->dataSize(); i++)
+    for(int i=0; i<pWPolar->dataSize(); i++)
     {
         m_Alpha.append(     pWPolar->m_Alpha[i]);
         m_Beta.append(      pWPolar->m_Beta[i]);
@@ -1043,11 +1034,11 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
         ar >> m_PolarFormat;
         if (m_PolarFormat <=1000 || m_PolarFormat>1100)
         {
-            m_WPlrName ="";
+            m_Name ="";
             return false;
         }
         readCString(ar, m_PlaneName);
-        readCString(ar, m_WPlrName);
+        readCString(ar, m_Name);
 
         ar>> f;
         m_referenceArea = double(f);
@@ -1061,10 +1052,10 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
         m_referenceSpanLength = double(f);
         if (m_referenceSpanLength<0) return false;
 
-        ar >> m_Style  >> m_Width;
-        if (m_Style<0 || m_Style> 10) return false;
+        ar >> k; m_theStyle.setStipple(k);
+        ar >> m_theStyle.m_Width;
 
-        if (m_Width<0 || m_Width> 10) return false;
+        if (m_theStyle.m_Width<0 || m_theStyle.m_Width> 10) return false;
 
         readCOLORREF(ar, r,g,b);
 
@@ -1141,9 +1132,9 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
         ar >> n;
         if (n!=0 && n!=1) return false;
         else {
-            if(n) m_bIsVisible =true; else m_bIsVisible = false;
+            if(n) m_theStyle.m_bIsVisible =true; else m_theStyle.m_bIsVisible = false;
         }
-        ar >> n; m_PointStyle =n;
+        ar >> n; m_theStyle.setPointStyle(n);
 
         ar >>k;
         if(k==1)      m_WPolarType = Xfl::FIXEDSPEEDPOLAR;
@@ -1406,22 +1397,21 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
     double r0=0, r1=0, r2=0, r3=0, r4=0, r5=0, r6=0, r7=0;
     double i0=0, i1=0, i2=0, i3=0, i4=0, i5=0, i6=0, i7=0;
 
-    m_PolarFormat = 200013;
-    // 200011 : v0.00
-
+    m_PolarFormat = 200014;
+    // 200011: v0.00
+    // 200014: added new LineStyle format
     if(bIsStoring)
     {
         //output the variables to the stream
         ar << m_PolarFormat;
 
         ar << m_PlaneName;
-        ar << m_WPlrName;
+        ar << m_Name;
+
 
         ar << m_referenceArea << m_referenceChordLength << m_referenceSpanLength ;
-        ar << m_Style << m_Width;
 
-        writeQColor(ar, m_Color.red(), m_Color.green(), m_Color.blue(), m_Color.alpha());
-        ar << m_bIsVisible << false;
+        m_theStyle.serializeXfl(ar, bIsStoring);
 
         if     (m_AnalysisMethod==Xfl::LLTMETHOD)    ar<<1;
         else if(m_AnalysisMethod==Xfl::VLMMETHOD)    ar<<2;
@@ -1490,8 +1480,8 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
         }
 
         // space allocation for the future storage of more data, without need to change the format
-        for (int i=0; i<19; i++) ar << 0;
-        ar << m_PointStyle;
+        for (int i=0; i<19; i++) ar << k;
+        ar << k; //m_PointStyle;
         for (int i=0; i<35; i++) ar << 0.0;
         for (int ix=0; ix<MAXEXTRADRAG; ix++) ar << m_ExtraDragArea[ix];
         for (int ix=0; ix<MAXEXTRADRAG; ix++) ar << m_ExtraDragCoef[ix];
@@ -1506,16 +1496,23 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
         if(m_PolarFormat<200000 || m_PolarFormat>205000) return false;
 
         ar >> m_PlaneName;
-        ar >> m_WPlrName;
+        ar >> m_Name;
 
         ar >> m_referenceArea >> m_referenceChordLength >> m_referenceSpanLength;
-        ar >> m_Style >> m_Width;
+        if(m_PolarFormat<200014)
+        {
+            ar >> k;
+            m_theStyle.setStipple(k);
+            ar >> m_theStyle.m_Width;
 
-        int a,r,g,b;
-        readQColor(ar, r, g, b, a);
-        m_Color.setColor(r,g,b,a);
+            int a,r,g,b;
+            readQColor(ar, r, g, b, a);
+            m_theStyle.m_Color = {r,g,b,a};
 
-        ar >> m_bIsVisible >> boolean;
+            ar >> m_theStyle.m_bIsVisible >> boolean;
+        }
+        else
+            m_theStyle.serializeXfl(ar, bIsStoring);
 
         ar >> n;
         if     (n==1) m_AnalysisMethod=Xfl::LLTMETHOD;
@@ -1609,7 +1606,7 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 
     // space allocation
     for (int i=0; i<19; i++) ar >> k;
-    ar >> m_PointStyle;
+    ar >>k; // m_PointStyle;
 
     for (int i=0; i<35; i++) ar >> dble;
     for (int ix=0; ix<MAXEXTRADRAG; ix++) ar>> m_ExtraDragArea[ix];
@@ -1633,9 +1630,6 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 
     return true;
 }
-
-
-
 
 
 

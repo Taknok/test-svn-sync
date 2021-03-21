@@ -28,13 +28,13 @@
 
 
 
-#ifndef FOIL_H
-#define FOIL_H
+#pragma once
 
 #include <QTextStream>
 #include <QColor>
 
 #include <xflobjects/objects3d/vector3d.h>
+#include <xflobjects/xflobject.h>
 #include <xfoil_params.h>
 #include <xflcore/linestyle.h>
 
@@ -52,155 +52,122 @@ The class stores two geometries:
 @todo One of the very early classes in this project. Would need a general revision.
 Also it mixes the construction methods and the GUI; would be better to move the GUI to a derived child class for polymorphism.
 */
-class Foil
+class Foil : public XflObject
 {
 
-public:
-    Foil();
+    public:
+        Foil();
 
-    int isPoint(Vector3d const &Real) const;
+        int isPoint(Vector3d const &Real) const;
 
-    void getLowerY(double x, double &y, double &normx, double &normy) const;
-    void getUpperY(double x, double &y, double &normx, double &normy) const;
+        void getLowerY(double x, double &y, double &normx, double &normy) const;
+        void getUpperY(double x, double &y, double &normx, double &normy) const;
 
-    double deRotate();
-    double baseUpperY(double x) const;
-    double baseLowerY(double x) const;
-    Vector3d midYRel(double sRel) const;
-    Vector3d lowerYRel(double xRel, double &normx, double &normy) const;
-    Vector3d upperYRel(double xRel, double &normx, double &normy) const;
-    double camber(double x) const;
-    double camberSlope(double x) const;
-    double length() const;
-    double area() const;
-    double topSlope(double const &x);
-    double bottomSlope(double const &x);
-    double normalizeGeometry();
-    void compMidLine(bool bParams);
+        double deRotate();
+        double baseUpperY(double x) const;
+        double baseLowerY(double x) const;
+        Vector3d midYRel(double sRel) const;
+        Vector3d lowerYRel(double xRel, double &normx, double &normy) const;
+        Vector3d upperYRel(double xRel, double &normx, double &normy) const;
+        double camber(double x) const;
+        double camberSlope(double x) const;
+        double length() const;
+        double area() const;
+        double topSlope(double const &x);
+        double bottomSlope(double const &x);
+        double normalizeGeometry();
+        void compMidLine(bool bParams);
 
-    bool exportFoil(QTextStream &out);
-    bool initFoil();
+        bool exportFoil(QTextStream &out);
+        bool initFoil();
 
-    void copyFoil(Foil const *pSrcFoil, bool bMetaData=true);
+        void copyFoil(Foil const *pSrcFoil, bool bMetaData=true);
 
-    void setFlap();
-    void setTEFlap();
-    void setLEFlap();
-    void setNaca009();
-    void setLEFlapData(bool bFlap, double xhinge, double yhinge, double angle);
-    void setTEFlapData(bool bFlap, double xhinge, double yhinge, double angle);
+        void setFlap();
+        void setTEFlap();
+        void setLEFlap();
+        void setNaca009();
+        void setLEFlapData(bool bFlap, double xhinge, double yhinge, double angle);
+        void setTEFlapData(bool bFlap, double xhinge, double yhinge, double angle);
 
-    bool intersect(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d const &D, Vector3d *M);
+        bool intersect(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d const &D, Vector3d *M);
 
-    bool bCenterLine() const{return m_bCenterLine;}
-    void showCenterLine(bool bShow) {m_bCenterLine=bShow;}
+        bool bCenterLine() const{return m_bCenterLine;}
+        void showCenterLine(bool bShow) {m_bCenterLine=bShow;}
 
-    void setTheStyle(int stipple, int w, QColor clr, int pointstyle);
-    void setEditStyle();
-    LS2 &theStyle() {return m_theStyle;}
-    LS2 const &theStyle() const {return m_theStyle;}
-    void setTheStyle(LineStyle const &style) {m_theStyle=style.toLS2();}
-    void setTheStyle(LS2 const &style) {m_theStyle=style;}
-    void setTheStyle(Line::enumLineStipple stipple, int w, const QColor &clr, Line::enumPointStyle pointstyle);
-    bool isVisible() const {return m_theStyle.m_bIsVisible;}
-    int lineWidth() const {return m_theStyle.m_Width;}
-    int lineStyle() const {return m_theStyle.m_Stipple;}
-    int pointStyle() const {return m_theStyle.m_PointStyle;}
-    void setVisible(bool bVis) {m_theStyle.m_bIsVisible=bVis;}
-    void setLineStipple(Line::enumLineStipple s) {m_theStyle.m_Stipple=s;}
-    void setLineWidth(int w)   {m_theStyle.m_Width=w;}
-    void setPointStyle(Line::enumPointStyle pts) {m_theStyle.m_PointStyle=pts;}
-    void setPointStyle(int n) {m_theStyle.setPointStyle(n);}// conversion function
+        void setEditStyle();
 
-    QColor const &foilColor() const {return m_theStyle.m_Color;}
-    void setColor(QColor const &clr) {m_theStyle.m_Color=clr;}
-    void getColor(int &r, int &g, int &b, int &a);
-    void setColor(int r, int g, int b, int a=255);
-    int red() const {return m_theStyle.m_Color.red();}
-    int green() const {return m_theStyle.m_Color.green();}
-    int blue() const {return m_theStyle.m_Color.blue();}
-    int alphaChannel() const {return m_theStyle.m_Color.alpha();}
+        QString const &description() const {return m_FoilDescription;}
+        void setDescription(QString const &description) {m_FoilDescription=description;}
 
-    QString const &name() const {return m_FoilName;}
-    void setFoilName(QString const &FoilName) {m_FoilName = FoilName;}
+        double camber() const {return m_fCamber;}
+        double xCamber() const {return m_fXCamber;}
+        double thickness() const {return m_fThickness;}
+        double xThickness() const {return m_fXThickness;}
+        double TEGap() const {return m_TEGap;}
+
+        int iHighLight() const {return m_iHighLight;}
+        void setHighLight(int iH) {m_iHighLight = iH;}
+
+        void displayCoords(bool bBaseCoords=false) const;
 
 
-    QString const &foilDescription() const {return m_FoilDescription;}
-    void setFoilDescription(QString const &description) {m_FoilDescription=description;}
+    public:
+        // Base geometry;
+       int nb;                              /**< the number of points of the base foil */
+       double xb[IBX];                      /**< the array of x-coordinates of the base foil points */
+       double yb[IBX];                      /**< the array of y-coordinates of the base foil points*/
+       int n;                               /**<  the number of points of the current foil */
+       double x[IBX];                       /**< the array of x-coordinates of the current foil points */
+       double y[IBX];                       /**< the array of y-coordinates of the current foil points*/
 
-    double camber() const {return m_fCamber;}
-    double xCamber() const {return m_fXCamber;}
-    double thickness() const {return m_fThickness;}
-    double xThickness() const {return m_fXThickness;}
-    double TEGap() const {return m_TEGap;}
-
-    int iHighLight() const {return m_iHighLight;}
-    void setHighLight(int iH) {m_iHighLight = iH;}
-
-    void displayCoords(bool bBaseCoords=false) const;
-
-
-public:
-    // Base geometry;
-   int nb;                              /**< the number of points of the base foil */
-   double xb[IBX];                      /**< the array of x-coordinates of the base foil points */
-   double yb[IBX];                      /**< the array of y-coordinates of the base foil points*/
-   int n;                               /**<  the number of points of the current foil */
-   double x[IBX];                       /**< the array of x-coordinates of the current foil points */
-   double y[IBX];                       /**< the array of y-coordinates of the current foil points*/
-
-   double nx[IBX];                      /**< the array of x-coordinates of the current foil normal Vector3ds*/
-   double ny[IBX];                      /**< the array of x-coordinates of the current foil normal Vector3ds*/
-   Vector3d m_rpMid[MIDPOINTCOUNT];              /**< the mid camber line points */
+       double nx[IBX];                      /**< the array of x-coordinates of the current foil normal Vector3ds*/
+       double ny[IBX];                      /**< the array of x-coordinates of the current foil normal Vector3ds*/
+       Vector3d m_rpMid[MIDPOINTCOUNT];              /**< the mid camber line points */
 
 
-public:
-    QString m_FoilDescription;             /**< a free description */
+    public:
+        QString m_FoilDescription;             /**< a free description */
 
-    bool m_bCenterLine;                  /**< true if the foil mid camber line is to be displayed */
-//    bool m_bShowFoilPoints;              /**< true if the foil's panels are to be displayed */
+        bool m_bCenterLine;                  /**< true if the foil mid camber line is to be displayed */
+    //    bool m_bShowFoilPoints;              /**< true if the foil's panels are to be displayed */
 
-    int m_iBaseInt;                      /**< the number of points on the lower surface of the base foil */
-    int m_iBaseExt;                      /**< the number of points on the upper surface of the base foil */
+        int m_iBaseInt;                      /**< the number of points on the lower surface of the base foil */
+        int m_iBaseExt;                      /**< the number of points on the upper surface of the base foil */
 
-    int m_iInt;                          /**< the number of points on the lower surface of the current foil */
-    int m_iExt;                          /**< the number of points on the upper surface of the current foil */
+        int m_iInt;                          /**< the number of points on the lower surface of the current foil */
+        int m_iExt;                          /**< the number of points on the upper surface of the current foil */
 
-    LS2 m_theStyle;
-
-    int m_iHighLight;                    /**< the index of the point to highlight in the display */
+        int m_iHighLight;                    /**< the index of the point to highlight in the display */
 
 
-    double m_fCamber;                    /**< the Foil's max camber */
-    double m_fThickness;                 /**< the Foil's max thickness */
-    double m_fXCamber;                   /**< the x-position of the Foil's max camber point */
-    double m_fXThickness;                /**< the x-position of the Foil's max thickness point */
+        double m_fCamber;                    /**< the Foil's max camber */
+        double m_fThickness;                 /**< the Foil's max thickness */
+        double m_fXCamber;                   /**< the x-position of the Foil's max camber point */
+        double m_fXThickness;                /**< the x-position of the Foil's max thickness point */
 
-    double m_TEGap;                        /**< the trailing edge gap */
-    Vector3d m_TE;                        /**< the trailing edge point */
-    Vector3d m_LE;                        /**< the leading edge point */
+        double m_TEGap;                        /**< the trailing edge gap */
+        Vector3d m_TE;                        /**< the trailing edge point */
+        Vector3d m_LE;                        /**< the leading edge point */
 
-    Vector3d m_rpBaseMid[MIDPOINTCOUNT];          /**< the mid camber line points of the base geometry */
-    Vector3d m_BaseExtrados[IQX];           /**< the upper surface points of the base geometry */
-    Vector3d m_BaseIntrados[IQX];          /**< the lower surface points of the base geometry */
+        Vector3d m_rpBaseMid[MIDPOINTCOUNT];          /**< the mid camber line points of the base geometry */
+        Vector3d m_BaseExtrados[IQX];           /**< the upper surface points of the base geometry */
+        Vector3d m_BaseIntrados[IQX];          /**< the lower surface points of the base geometry */
 
-    Vector3d m_rpExtrados[IQX];           /**< the upper surface points */
-    Vector3d m_rpIntrados[IQX];           /**< the lower surface points */
+        Vector3d m_rpExtrados[IQX];           /**< the upper surface points */
+        Vector3d m_rpIntrados[IQX];           /**< the lower surface points */
 
-    QString m_FoilName;                    /**<  the foil's name... */
+    public:
 
-public:
+        bool m_bTEFlap;          /**< true if the foil has a trailing edge flap */
+        double m_TEFlapAngle;    /**< the trailing edge flap angle, in degrees*/
+        double m_TEXHinge;       /**< the x-position of the trailing edge flap, in chord % */
+        double m_TEYHinge;       /**< the y-position of the trailng edge flap, in chord %*/
 
-    bool m_bTEFlap;          /**< true if the foil has a trailing edge flap */
-    double m_TEFlapAngle;    /**< the trailing edge flap angle, in degrees*/
-    double m_TEXHinge;       /**< the x-position of the trailing edge flap, in chord % */
-    double m_TEYHinge;       /**< the y-position of the trailng edge flap, in chord %*/
-
-    bool m_bLEFlap;          /**< true if the foil has a leading edge flap */
-    double m_LEFlapAngle;    /**< the leading edge flap angle, in degrees */
-    double m_LEXHinge;       /**< the x-position of the leading edge flap, in chord % */
-    double m_LEYHinge;       /**< the y-position of the leading edge flap, in chord %*/
+        bool m_bLEFlap;          /**< true if the foil has a leading edge flap */
+        double m_LEFlapAngle;    /**< the leading edge flap angle, in degrees */
+        double m_LEXHinge;       /**< the x-position of the leading edge flap, in chord % */
+        double m_LEYHinge;       /**< the y-position of the leading edge flap, in chord %*/
 
 };
 
-#endif

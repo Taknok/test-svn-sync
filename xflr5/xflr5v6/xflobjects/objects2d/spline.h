@@ -37,7 +37,7 @@
 
 #include <xflobjects/objects2d/vector2d.h>
 #include <xflobjects/objects3d/vector3d.h>
-
+#include <xflobjects/xflobject.h>
 
 /**
 *@class Spline
@@ -47,76 +47,59 @@ The spline is used in direct foil design to represent upper and lower surfaces, 
 
 Based on the code provided by Paul Bourke.
 */
-class Spline
+class Spline : public XflObject
 {
-public:
-    Spline();
+    public:
+        Spline();
 
-    void clearControlPoints() {m_CtrlPt.clear();}
-    int ctrlPointCount() const {return m_CtrlPt.size();}
-    void appendControlPoint(double x, double y);
-    void appendControlPoint(const Vector3d &Pt);
-    bool insertPoint(double const &x, double const &y);
-    bool removePoint(int const &k);
-    int isControlPoint(Vector3d const &Real) const;
-    int isControlPoint(double const &x, double const &y, double const &zx, double const &zy) const;
-    int isControlPoint(Vector3d const &Real, double const &ZoomFactor) const;
+        void clearControlPoints() {m_CtrlPt.clear();}
+        int ctrlPointCount() const {return m_CtrlPt.size();}
+        void appendControlPoint(double x, double y);
+        void appendControlPoint(const Vector3d &Pt);
+        bool insertPoint(double const &x, double const &y);
+        bool removePoint(int const &k);
+        int isControlPoint(Vector3d const &Real) const;
+        int isControlPoint(double const &x, double const &y, double const &zx, double const &zy) const;
+        int isControlPoint(Vector3d const &Real, double const &ZoomFactor) const;
 
-    Vector3d &controlPoint(int i) {return m_CtrlPt[i];}
-    Vector3d const &controlPoint(int i) const {return m_CtrlPt.at(i);}
-    Vector3d const &lastCtrlPoint()     const {return m_CtrlPt.last();}
-    Vector3d const &firstCtrlPoint()    const {return m_CtrlPt.first();}
-    void setCtrlPoint(int n, double x, double y) {m_CtrlPt[n]=Vector3d(x,y,0);}
-    void setCtrlPoint(int n, Vector3d const &pt) {m_CtrlPt[n]=pt;}
-    void setFirstCtrlPoint(Vector3d const&pt) {if(m_CtrlPt.size()>0) m_CtrlPt.first()=pt;}
-    void setLastCtrlPoint(double x, double y) {if(m_CtrlPt.size()>0) m_CtrlPt.back()=Vector3d(x,y,0);}
-    void setLastCtrlPoint(Vector3d const&pt)  {if(m_CtrlPt.size()>0) m_CtrlPt.last()=pt;}
-
-
-    double splineBlend(int const &i, int const &p, double const &t);
-    double getY(double const &x) const;
-
-    void clearPoints() {m_CtrlPt.clear();}
-
-    void copy(Spline *pSpline);
-    void copySymetric(Spline *pSpline);
-    void splineCurve();
-    void splineKnots();
-    
-    void setStyle(int style){m_Style = style;}
-    void setWidth(int width){m_Width = width;}
-    void getColor(int &r, int &g, int &b, int &a);
-    void setColor(int r, int g, int b, int a=255);
-    void setColor(QColor const &clr);
-    int red() const {return m_red;}
-    int green() const {return m_green;}
-    int blue() const {return m_blue;}
-    int alphaChannel() const {return m_alphaChannel;}
-    int style() const {return m_Style;}
-    int width() const {return m_Width;}
-
-    QColor color() const {return QColor(m_red, m_green, m_blue, m_alphaChannel);}
-
-    double xMin() const;
-    double xMax() const;
-    double yMin() const;
-    double yMax() const;
-
-    int m_iHighlight;                /**< the index of the currently highlighted control point, i.e. the point over which the mouse hovers, or -1 of none. */
-    int m_iSelect;                   /**< the index of the currently selected control point, i.e. the point on which the user has last click, or -1 if none. */
-    int m_iRes;                      /**< the number of output points to draw the spline */
-    int m_iDegree;                   /**< the spline's degree */
+        Vector3d &controlPoint(int i) {return m_CtrlPt[i];}
+        Vector3d const &controlPoint(int i) const {return m_CtrlPt.at(i);}
+        Vector3d const &lastCtrlPoint()     const {return m_CtrlPt.last();}
+        Vector3d const &firstCtrlPoint()    const {return m_CtrlPt.first();}
+        void setCtrlPoint(int n, double x, double y) {m_CtrlPt[n]=Vector3d(x,y,0);}
+        void setCtrlPoint(int n, Vector3d const &pt) {m_CtrlPt[n]=pt;}
+        void setFirstCtrlPoint(Vector3d const&pt) {if(m_CtrlPt.size()>0) m_CtrlPt.first()=pt;}
+        void setLastCtrlPoint(double x, double y) {if(m_CtrlPt.size()>0) m_CtrlPt.back()=Vector3d(x,y,0);}
+        void setLastCtrlPoint(Vector3d const&pt)  {if(m_CtrlPt.size()>0) m_CtrlPt.last()=pt;}
 
 
-    QVector<double> m_knot;            /**< the array of the values of the spline's knot */
-    QVector<Vector3d> m_CtrlPt;      /**< the array of the positions of the spline's control points */
-    QVector<Vector2d> m_Output;          /**< the array of output points, size of which is m_iRes */
+        double splineBlend(int const &i, int const &p, double const &t);
+        double getY(double const &x) const;
+
+        void clearPoints() {m_CtrlPt.clear();}
+
+        void copy(Spline *pSpline);
+        void copySymetric(Spline *pSpline);
+        void splineCurve();
+        void splineKnots();
 
 
-    int m_Style, m_Width, m_PointStyle;
-    bool m_bIsVisible;
-    /** @todo use QColor */
-    int m_red, m_blue, m_green, m_alphaChannel;    /**<  the color with which to draw the Foil */
+        double xMin() const;
+        double xMax() const;
+        double yMin() const;
+        double yMax() const;
+
+    public:
+        int m_iHighlight;                /**< the index of the currently highlighted control point, i.e. the point over which the mouse hovers, or -1 of none. */
+        int m_iSelect;                   /**< the index of the currently selected control point, i.e. the point on which the user has last click, or -1 if none. */
+        int m_iRes;                      /**< the number of output points to draw the spline */
+        int m_iDegree;                   /**< the spline's degree */
+
+
+        QVector<double> m_knot;            /**< the array of the values of the spline's knot */
+        QVector<Vector3d> m_CtrlPt;      /**< the array of the positions of the spline's control points */
+        QVector<Vector2d> m_Output;          /**< the array of output points, size of which is m_iRes */
+
 
 };
 

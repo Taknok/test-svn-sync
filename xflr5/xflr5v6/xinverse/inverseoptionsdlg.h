@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef INVERSEOPTIONSDLG_H
-#define INVERSEOPTIONSDLG_H
+#pragma once
 
 #include <QDialog>
 
@@ -33,22 +32,21 @@ class InverseOptionsDlg:public QDialog
     
     friend class XInverse;
 
-public:
-    InverseOptionsDlg(QWidget *pParent);
+    public:
+        InverseOptionsDlg(QWidget *pParent);
 
-private slots:
-    void onRefStyle();
-    void onModStyle();
-    void onSplineStyle();
-    void onReflectedStyle();
+    private slots:
+        void onRefStyle();
+        void onModStyle();
+        void onSplineStyle();
+        void onReflectedStyle();
 
-private:
-    void setupLayout();
-    void initDialog();
+    private:
+        void setupLayout();
+        void initDialog();
 
-    LineBtn *m_pctrlRefFoil, *m_pctrlModFoil, *m_pctrlSpline, *m_pctrlReflected;
+        LineBtn *m_plbRefFoil, *m_plbModFoil, *m_plbSpline, *m_plbReflected;
 
-    XInverse * m_pXInverse;
+        XInverse * m_pXInverse;
 };
 
-#endif // INVERSEOPTIONSDLG_H

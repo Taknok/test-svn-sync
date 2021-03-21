@@ -34,42 +34,42 @@ class WPolar;
 class LegendWt : public QWidget
 {
     Q_OBJECT
-public:
-    LegendWt(QWidget *pParent = nullptr);
-    ~LegendWt();
+    public:
+        LegendWt(QWidget *pParent = nullptr);
+        ~LegendWt();
 
-    void keyPressEvent(QKeyEvent *event) override;
-    void paintEvent(QPaintEvent *event) override;
-    QSize sizeHint() const override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
+        void keyPressEvent(QKeyEvent *event) override;
+        void paintEvent(QPaintEvent *event) override;
+        QSize sizeHint() const override;
+        void mouseMoveEvent(QMouseEvent *event) override;
+        void mousePressEvent(QMouseEvent *event) override;
+        void mouseReleaseEvent(QMouseEvent *event) override;
 
-    void setGraph(Graph*pGraph){m_pGraph = pGraph;}
+        void setGraph(Graph*pGraph){m_pGraph = pGraph;}
 
-public:
-    GraphTileWidget *m_pGraphTileWt;             /**< a void pointer to the instance of the GraphTileWidget object. */
+    public:
+        GraphTileWidget *m_pGraphTileWt;             /**< a void pointer to the instance of the GraphTileWidget object. */
 
-    static MainFrame *s_pMainFrame;   /**< a void pointer to the instance of the MainFrame object. */
-    static Miarex *s_pMiarex;      /**< a void pointer to the instance of the QMiarex object. */
-    static XDirect *s_pXDirect;     /**< a void pointer to the instance of the QXDirect object. */
+        static MainFrame *s_pMainFrame;   /**< a void pointer to the instance of the MainFrame object. */
+        static Miarex *s_pMiarex;      /**< a void pointer to the instance of the QMiarex object. */
+        static XDirect *s_pXDirect;     /**< a void pointer to the instance of the QXDirect object. */
 
-    void setMiarexView(Xfl::enumMiarexViews eMiarexView);
+        void setMiarexView(Xfl::enumMiarexViews eMiarexView);
 
-private:
-    void drawWPolarLegend(QPainter &painter, QPointF place, int bottom);
-    void drawPOppGraphLegend(QPainter &painter, QPointF place, double bottom);
-    void drawStabTimeLegend(QPainter &painter, const Graph *pGraph, QPointF place, int bottom);
-    void drawCpLegend(QPainter &painter, const Graph *pGraph, QPointF place, int bottom);
-    void drawPolarLegend(QPainter &painter, QPointF place, int bottom);
-    bool isFiltered(WPolar *pWPolar);
+    private:
+        void drawWPolarLegend(QPainter &painter, QPointF place, int bottom);
+        void drawPOppGraphLegend(QPainter &painter, QPointF place, double bottom);
+        void drawStabTimeLegend(QPainter &painter, const Graph *pGraph, QPointF place, int bottom);
+        void drawCpLegend(QPainter &painter, const Graph *pGraph, QPointF place, int bottom);
+        void drawPolarLegend(QPainter &painter, QPointF place, int bottom);
+        bool isFiltered(WPolar *pWPolar);
 
-private:
-    Graph const *m_pGraph;
+    private:
+        Graph const *m_pGraph;
 
-    Xfl::enumMiarexViews m_MiarexView;
-    QPointF m_LegendPosition;
-    QPointF m_PointDown;
-    bool m_bTrans;
+        Xfl::enumMiarexViews m_MiarexView;
+        QPointF m_LegendPosition;
+        QPointF m_PointDown;
+        bool m_bTrans;
 };
 

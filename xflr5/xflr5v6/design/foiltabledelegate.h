@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef FOILTABLEDELEGATE_H
-#define FOILTABLEDELEGATE_H
+#pragma once
 
 #include <QItemDelegate>
 #include <QStandardItemModel>
@@ -34,25 +33,25 @@ class FoilTableDelegate : public QItemDelegate
     friend class AFoil;
     friend class ManageFoilsDlg;
 
-public:
-    FoilTableDelegate(QObject *pParent = nullptr);
+    public:
+        FoilTableDelegate(QObject *pParent = nullptr);
 
-    bool editorEvent(QEvent *event, QAbstractItemModel *pModel, const QStyleOptionViewItem &option, const QModelIndex &index);
+        bool editorEvent(QEvent *event, QAbstractItemModel *pModel, const QStyleOptionViewItem &option, const QModelIndex &index) override;
 
-    void setEditorData(QWidget *editor, const QModelIndex &index) const;
-    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
-    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    void drawCheckBox(QPainter *painter, const QRect &r, bool bChecked) const;
+        void setEditorData(QWidget *editor, const QModelIndex &index) const override;
+        void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const override;
+        void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+        void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+        void drawCheckBox(QPainter *painter, const QRect &r, bool bChecked) const;
 
-private:
-    QStandardItemModel *m_pFoilModel;
-    int *m_Precision; ///table of float precisions for each column
-    AFoil *m_pAFoil;
-    void *m_pManageFoils;
+    private:
+        QStandardItemModel *m_pFoilModel;
+        int *m_Precision; ///table of float precisions for each column
+        AFoil *m_pAFoil;
+        void *m_pManageFoils;
 };
 
-#endif // FOILTABLEDELEGATE_H
+
 
 
 

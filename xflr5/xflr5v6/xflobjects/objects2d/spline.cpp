@@ -21,6 +21,7 @@
 *****************************************************************************/
 
 #include <QColor>
+#include <QRandomGenerator>
 
 #include "spline.h"
 
@@ -29,12 +30,14 @@
 */
 Spline::Spline()
 {
-    m_Style = 0;
-    m_Width = 1;
-    m_red   = int((double(rand())/double(RAND_MAX))*200);
-    m_green = int((double(rand())/double(RAND_MAX))*200);
-    m_blue  = int((double(rand())/double(RAND_MAX))*200);
-    m_alphaChannel = 255;
+    m_theStyle.m_PointStyle = Line::NOSYMBOL; //no points to start with
+    m_theStyle.m_Stipple = Line::SOLID;
+    m_theStyle.m_Width = 2;
+    m_theStyle.m_bIsVisible    = true;
+
+    m_theStyle.m_Color.setHsv(QRandomGenerator::global()->bounded(360),
+               QRandomGenerator::global()->bounded(55)+30,
+               QRandomGenerator::global()->bounded(55)+150);
 
     m_iHighlight  = -10;
     m_iSelect     = -10;
@@ -352,32 +355,6 @@ void Spline::splineKnots()
             else m_knot.append(1.0);
         }
     }
-}
-
-
-void Spline::getColor(int &r, int &g, int &b, int &a)
-{
-    r = m_red;
-    g = m_green;
-    b = m_blue;
-    a = m_alphaChannel;
-}
-
-
-void Spline::setColor(int r, int g, int b, int a)
-{
-    m_red = r;
-    m_green = g;
-    m_blue = b;
-    m_alphaChannel = a;
-}
-
-void Spline::setColor(QColor const &clr)
-{
-    m_red = clr.red();
-    m_green = clr.green();
-    m_blue = clr.blue();
-    m_alphaChannel = clr.alpha();
 }
 
 

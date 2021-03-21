@@ -67,7 +67,7 @@ AFoil::AFoil(QWidget *parent)
 {
     setAttribute(Qt::WA_DeleteOnClose);
 
-    m_p2DWidget = nullptr;
+    m_p2dWidget = nullptr;
 
     m_StackPos = 0;
 
@@ -130,7 +130,7 @@ void AFoil::setControls()
     s_pMainFrame->m_pAFoilSetLERadius->setEnabled(XDirect::curFoil());
     s_pMainFrame->m_pAFoilSetTEGap->setEnabled(XDirect::curFoil());
 
-    s_pMainFrame->m_pShowLegend->setChecked(m_p2DWidget->m_bShowLegend);
+    s_pMainFrame->m_pShowLegend->setChecked(m_p2dWidget->m_bShowLegend);
 
     s_pMainFrame->m_pAFoilSplineMenu->setEnabled(!XDirect::curFoil());
     s_pMainFrame->m_pAFoilSplineMenu_AFoilCtxMenu->setEnabled(!XDirect::curFoil());
@@ -323,25 +323,16 @@ void AFoil::keyPressEvent(QKeyEvent *pEvent)
 }
 
 
-
 /**
  * Loads the user's default settings from the application QSettings object.
  * @param pSettings a pointer to the QSettings object
  */
 void AFoil::loadSettings(QSettings &settings)
 {
-    int style=0, width=1;
-    QColor color=Qt::red;
-
     settings.beginGroup("DirectDesign");
     {
-        style  = settings.value("SFStyle", 0).toInt();
-        width  = settings.value("SFWidth", 1).toInt();
-        color  = settings.value("SFColor",QColor(216,183,83)).value<QColor>();
-        m_pSF->setCurveParams(style, width, color);
+        m_pSF->theStyle().loadSettings(settings, "SplineFoil");
 
-
-        m_pSF->setVisible(settings.value("SFVisible").toBool());
         m_pSF->m_bOutPoints  = settings.value("SFOutPoints").toBool();
         m_pSF->m_bCenterLine = settings.value("SFCenterLine").toBool();
 
@@ -351,9 +342,8 @@ void AFoil::loadSettings(QSettings &settings)
         m_pSF->m_Extrados.splineCurve();
         m_pSF->m_Intrados.splineCurve();
 
-        m_p2DWidget->m_bLECircle          = settings.value("LECircle").toBool();
-        m_p2DWidget->m_bShowLegend        = settings.value("Legend").toBool();
-        m_p2DWidget->setNeutralLineColor(settings.value("NeutralLineColor", QColor(125,125,125)).value<QColor>());
+        m_p2dWidget->m_bLECircle          = settings.value("LECircle").toBool();
+        m_p2dWidget->m_bShowLegend        = settings.value("Legend").toBool();
 
         QString str;
         for(int i=0; i<16; i++)
@@ -363,36 +353,32 @@ void AFoil::loadSettings(QSettings &settings)
             if(settings.value(str+"_hidden", false).toBool()) m_pctrlFoilTable->hideColumn(i);
         }
 
+        m_p2dWidget->m_bScale = settings.value("x-scale", false).toBool();
+        m_p2dWidget->m_NeutralStyle.loadSettings(settings, "NeutralLineStyle");
 
-        m_p2DWidget->m_bScale = settings.value("x-scale", false).toBool();
-        m_p2DWidget->m_bNeutralLine = settings.value("NeutralLine", true).toBool();
-        m_p2DWidget->m_NeutralStyle = settings.value("NeutralLineStyle", 3).toInt();
-        m_p2DWidget->m_NeutralWidth = settings.value("NeutralLineWidth", 1).toInt();
-        m_p2DWidget->m_NeutralColor = settings.value("NeutralLineColor", QColor(70,70,70)).value<QColor>();
+        m_p2dWidget->m_bXGrid = settings.value("XGrid", false).toBool();
+        m_p2dWidget->m_XGridStyle = settings.value("XGridStyle", 1).toInt();
+        m_p2dWidget->m_XGridWidth = settings.value("XGridWidth", 1).toInt();
+        m_p2dWidget->m_XGridColor = settings.value("XGridColor", QColor(150,150,150)).value<QColor>();
+        m_p2dWidget->m_XGridUnit  = settings.value("XGridUnit", 0.05).toDouble();
 
-        m_p2DWidget->m_bXGrid = settings.value("XGrid", false).toBool();
-        m_p2DWidget->m_XGridStyle = settings.value("XGridStyle", 1).toInt();
-        m_p2DWidget->m_XGridWidth = settings.value("XGridWidth", 1).toInt();
-        m_p2DWidget->m_XGridColor = settings.value("XGridColor", QColor(150,150,150)).value<QColor>();
-        m_p2DWidget->m_XGridUnit  = settings.value("XGridUnit", 0.05).toDouble();
+        m_p2dWidget->m_bXMinGrid = settings.value("XMinGrid", false).toBool();
+        m_p2dWidget->m_XMinStyle = settings.value("XMinGridStyle", 2).toInt();
+        m_p2dWidget->m_XMinWidth = settings.value("XMinGridWidth", 1).toInt();
+        m_p2dWidget->m_XMinColor = settings.value("XMinGridColor", QColor(70,70,70)).value<QColor>();
+        m_p2dWidget->m_XMinUnit  = settings.value("XMinGridUnit", 0.01).toDouble();
 
-        m_p2DWidget->m_bXMinGrid = settings.value("XMinGrid", false).toBool();
-        m_p2DWidget->m_XMinStyle = settings.value("XMinGridStyle", 2).toInt();
-        m_p2DWidget->m_XMinWidth = settings.value("XMinGridWidth", 1).toInt();
-        m_p2DWidget->m_XMinColor = settings.value("XMinGridColor", QColor(70,70,70)).value<QColor>();
-        m_p2DWidget->m_XMinUnit  = settings.value("XMinGridUnit", 0.01).toDouble();
+        m_p2dWidget->m_bYGrid = settings.value("YGrid", false).toBool();
+        m_p2dWidget->m_YGridStyle = settings.value("YGridStyle", 1).toInt();
+        m_p2dWidget->m_YGridWidth = settings.value("YGridWidth", 1).toInt();
+        m_p2dWidget->m_YGridColor = settings.value("YGridColor", QColor(150,150,150)).value<QColor>();
+        m_p2dWidget->m_YGridUnit  = settings.value("YGridUnit", 0.05).toDouble();
 
-        m_p2DWidget->m_bYGrid = settings.value("YGrid", false).toBool();
-        m_p2DWidget->m_YGridStyle = settings.value("YGridStyle", 1).toInt();
-        m_p2DWidget->m_YGridWidth = settings.value("YGridWidth", 1).toInt();
-        m_p2DWidget->m_YGridColor = settings.value("YGridColor", QColor(150,150,150)).value<QColor>();
-        m_p2DWidget->m_YGridUnit  = settings.value("YGridUnit", 0.05).toDouble();
-
-        m_p2DWidget->m_bYMinGrid = settings.value("YMinGrid", false).toBool();
-        m_p2DWidget->m_YMinStyle = settings.value("YMinGridStyle", 2).toInt();
-        m_p2DWidget->m_YMinWidth = settings.value("YMinGridWidth", 1).toInt();
-        m_p2DWidget->m_YMinColor = settings.value("YMinGridColor", QColor(70,70,70)).value<QColor>();
-        m_p2DWidget->m_YMinUnit  = settings.value("YMinGridUnit", 0.01).toDouble();
+        m_p2dWidget->m_bYMinGrid = settings.value("YMinGrid", false).toBool();
+        m_p2dWidget->m_YMinStyle = settings.value("YMinGridStyle", 2).toInt();
+        m_p2dWidget->m_YMinWidth = settings.value("YMinGridWidth", 1).toInt();
+        m_p2dWidget->m_YMinColor = settings.value("YMinGridColor", QColor(70,70,70)).value<QColor>();
+        m_p2dWidget->m_YMinUnit  = settings.value("YMinGridUnit", 0.01).toDouble();
     }
     settings.endGroup();
 }
@@ -406,10 +392,10 @@ void AFoil::onAFoilDerotateFoil()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setFoilName(XDirect::curFoil()->name());
+    m_pBufferFoil->setName(XDirect::curFoil()->name());
     m_pBufferFoil->setEditStyle();
 
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 
     double angle = m_pBufferFoil->deRotate();
     QString str = QString(tr("Foil has been de-rotated by %1 degrees")).arg(angle,6,'f',3);
@@ -428,7 +414,7 @@ void AFoil::onAFoilDerotateFoil()
 
     m_pBufferFoil->setVisible(false);
 
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -444,7 +430,7 @@ void AFoil::onAFoilNormalizeFoil()
 
     s_pMainFrame->statusBar()->showMessage(str);
 
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -456,10 +442,10 @@ void AFoil::onAFoilCadd()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setFoilName(XDirect::curFoil()->name());
+    m_pBufferFoil->setName(XDirect::curFoil()->name());
     m_pBufferFoil->setEditStyle();
 
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 
     CAddDlg caDlg(s_pMainFrame);
     caDlg.m_pBufferFoil = m_pBufferFoil;
@@ -490,7 +476,7 @@ void AFoil::onAFoilCadd()
 
     }
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 /**
@@ -499,16 +485,16 @@ void AFoil::onAFoilCadd()
 void AFoil::onAFoilLECircle()
 {
     LECircleDlg LECircleDlg(this);
-    LECircleDlg.m_Radius      = m_p2DWidget->m_LERad;
-    LECircleDlg.m_bShowRadius = m_p2DWidget->m_bLECircle;
+    LECircleDlg.m_Radius      = m_p2dWidget->m_LERad;
+    LECircleDlg.m_bShowRadius = m_p2dWidget->m_bLECircle;
     LECircleDlg.InitDialog();
 
     if(LECircleDlg.exec()==QDialog::Accepted)
     {
-        m_p2DWidget->m_LERad = LECircleDlg.m_Radius;
-        m_p2DWidget->m_bLECircle = LECircleDlg.m_bShowRadius;
+        m_p2dWidget->m_LERad = LECircleDlg.m_Radius;
+        m_p2dWidget->m_bLECircle = LECircleDlg.m_bShowRadius;
     }
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -520,10 +506,10 @@ void AFoil::onAFoilPanels()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setFoilName(XDirect::curFoil()->name());
+    m_pBufferFoil->setName(XDirect::curFoil()->name());
     m_pBufferFoil->setEditStyle();
 
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 
     TwoDPanelDlg tdpDlg(s_pMainFrame);
     tdpDlg.m_pBufferFoil = m_pBufferFoil;
@@ -557,7 +543,7 @@ void AFoil::onAFoilPanels()
     }
 
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 /**
@@ -568,10 +554,10 @@ void AFoil::onAFoilFoilCoordinates()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setFoilName(XDirect::curFoil()->name());
+    m_pBufferFoil->setName(XDirect::curFoil()->name());
     m_pBufferFoil->setEditStyle();
 
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 
     FoilCoordDlg fcDlg(s_pMainFrame);
     fcDlg.m_pMemFoil    = XDirect::curFoil();
@@ -599,7 +585,7 @@ void AFoil::onAFoilFoilCoordinates()
         selectFoil(XDirect::curFoil());
     }
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -611,10 +597,10 @@ void AFoil::onAFoilFoilGeom()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setFoilName(XDirect::curFoil()->name());
+    m_pBufferFoil->setName(XDirect::curFoil()->name());
     m_pBufferFoil->setEditStyle();
 
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 
     FoilGeomDlg fgeDlg(s_pMainFrame);
     fgeDlg.m_pMemFoil    = XDirect::curFoil();
@@ -647,7 +633,7 @@ void AFoil::onAFoilFoilGeom()
         //        m_pXFoil->foilName() ="";
     }
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -659,10 +645,10 @@ void AFoil::onAFoilSetTEGap()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setFoilName(XDirect::curFoil()->name());
+    m_pBufferFoil->setName(XDirect::curFoil()->name());
     m_pBufferFoil->setEditStyle();
 
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 
     TEGapDlg teDlg(s_pMainFrame);
     teDlg.m_pBufferFoil = m_pBufferFoil;
@@ -696,7 +682,7 @@ void AFoil::onAFoilSetTEGap()
     }
 
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -708,10 +694,10 @@ void AFoil::onAFoilSetLERadius()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setFoilName(XDirect::curFoil()->name());
+    m_pBufferFoil->setName(XDirect::curFoil()->name());
     m_pBufferFoil->setEditStyle();
 
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 
     LEDlg leDlg(s_pMainFrame);
     leDlg.m_pBufferFoil = m_pBufferFoil;
@@ -745,7 +731,7 @@ void AFoil::onAFoilSetLERadius()
     }
 
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -763,10 +749,10 @@ void AFoil::onAFoilInterpolateFoils()
     if(!XDirect::curFoil()) selectFoil();
     if(!XDirect::curFoil()) return;
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setFoilName(XDirect::curFoil()->name());
+    m_pBufferFoil->setName(XDirect::curFoil()->name());
     m_pBufferFoil->setEditStyle();
 
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 
     InterpolateFoilsDlg ifDlg(s_pMainFrame);
     ifDlg.m_pBufferFoil = m_pBufferFoil;
@@ -781,7 +767,7 @@ void AFoil::onAFoilInterpolateFoils()
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
-        pNewFoil->setFoilName(ifDlg.m_NewFoilName);
+        pNewFoil->setName(ifDlg.m_NewFoilName);
 
         if(addNewFoil(pNewFoil))
         {
@@ -797,7 +783,7 @@ void AFoil::onAFoilInterpolateFoils()
         selectFoil(XDirect::curFoil());
     }
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -807,10 +793,10 @@ void AFoil::onAFoilInterpolateFoils()
 void AFoil::onAFoilNacaFoils()
 {
     m_pBufferFoil->setNaca009();
-    m_pBufferFoil->setFoilName("Naca xxxx");
+    m_pBufferFoil->setName("Naca xxxx");
     m_pBufferFoil->setEditStyle();
 
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 
     NacaFoilDlg nacaDlg(s_pMainFrame);
     nacaDlg.m_pBufferFoil = m_pBufferFoil;
@@ -832,7 +818,7 @@ void AFoil::onAFoilNacaFoils()
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
-        pNewFoil->setFoilName(str);
+        pNewFoil->setName(str);
 
         if(addNewFoil(pNewFoil))
         {
@@ -849,7 +835,7 @@ void AFoil::onAFoilNacaFoils()
 
     setControls();
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -861,10 +847,10 @@ void AFoil::onAFoilSetFlap()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setFoilName(XDirect::curFoil()->name());
+    m_pBufferFoil->setName(XDirect::curFoil()->name());
     m_pBufferFoil->setEditStyle();
 
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 
     FlapDlg flDlg(s_pMainFrame);
     flDlg.m_pMemFoil    = XDirect::curFoil();
@@ -893,7 +879,7 @@ void AFoil::onAFoilSetFlap()
         selectFoil(XDirect::curFoil());
     }
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -915,7 +901,7 @@ void AFoil::onDeleteCurFoil()
 
     fillFoilTable();
     selectFoil(pNextFoil);
-    m_p2DWidget->update();
+    m_p2dWidget->update();
     emit(projectModified());
 }
 
@@ -1047,7 +1033,7 @@ void AFoil::onFoilClicked(const QModelIndex& index)
         {
             m_pSF->m_bCenterLine = !m_pSF->m_bCenterLine;
         }
-        m_p2DWidget->update();
+        m_p2dWidget->update();
     }
     else if(index.row()>0)
     {
@@ -1066,7 +1052,7 @@ void AFoil::onFoilClicked(const QModelIndex& index)
             }
         }
         emit projectModified();
-        m_p2DWidget->update();
+        m_p2dWidget->update();
     }
 
     if(index.column()==14) onFoilStyle();
@@ -1086,18 +1072,20 @@ void AFoil::onFoilStyle()
     if(!XDirect::curFoil())
     {
         LinePickerDlg dlg(this);
-        dlg.initDialog(m_pSF->splineFoilStyle(), m_pSF->splineFoilStyle(), m_pSF->splineFoilWidth(), m_pSF->splineFoilColor(), true, true);
+        dlg.initDialog(m_pSF->theStyle(), true, true);
 
         if(QDialog::Accepted==dlg.exec())
         {
-            m_pSF->setCurveParams(dlg.lineStipple(), dlg.lineWidth(), dlg.lineColor());
-            m_p2DWidget->update();
+            m_pSF->setTheStyle(dlg.theStyle());
+            m_pSF->m_Extrados.setTheStyle(dlg.theStyle());
+            m_pSF->m_Intrados.setTheStyle(dlg.theStyle());
+            m_p2dWidget->update();
         }
     }
     else
     {
         LinePickerDlg dlg(this);
-        dlg.initDialog(XDirect::curFoil()->pointStyle(), XDirect::curFoil()->lineStyle(),
+        dlg.initDialog(XDirect::curFoil()->pointStyle(), XDirect::curFoil()->lineStipple(),
                        XDirect::curFoil()->lineWidth(), colour(XDirect::curFoil()), true, true);
 
         if(QDialog::Accepted==dlg.exec())
@@ -1112,7 +1100,7 @@ void AFoil::onFoilStyle()
             if(Settings::isAlignedChildrenStyle())
                 Objects2d::setFoilChildrenStyle(XDirect::curFoil());
 
-            m_p2DWidget->update();
+            m_p2dWidget->update();
         }
     }
 }
@@ -1131,7 +1119,7 @@ void AFoil::onHideAllFoils()
         pFoil->setVisible(false);
     }
     fillFoilTable();
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -1142,7 +1130,7 @@ void AFoil::onHideCurrentFoil()
 {
     if(!XDirect::curFoil()) return;
     showFoil(XDirect::curFoil(), false);
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 
 }
 
@@ -1167,7 +1155,7 @@ void AFoil::onNewSplines()
     takePicture();
 
     emit projectModified();
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -1196,7 +1184,7 @@ void AFoil::onRenameFoil()
     }
 
     fillFoilTable();
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -1213,7 +1201,7 @@ void AFoil::onShowAllFoils()
         pFoil->setVisible(true);
     }
     fillFoilTable();
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -1224,7 +1212,7 @@ void AFoil::onShowCurrentFoil()
 {
     if(!XDirect::curFoil()) return;
     showFoil(XDirect::curFoil(), true);
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 
 }
 
@@ -1234,8 +1222,8 @@ void AFoil::onShowCurrentFoil()
  */
 void AFoil::onShowLegend()
 {
-    m_p2DWidget->m_bShowLegend = !m_p2DWidget->m_bShowLegend;
-    m_p2DWidget->update();
+    m_p2dWidget->m_bShowLegend = !m_p2dWidget->m_bShowLegend;
+    m_p2dWidget->update();
     setControls();
 }
 
@@ -1261,13 +1249,13 @@ void AFoil::onStoreSplines()
 
     Foil *pNewFoil = new Foil();
     m_pSF->exportToBuffer(pNewFoil);
-    pNewFoil->setFoilName(m_pSF->splineFoilName());
+    pNewFoil->setName(m_pSF->splineFoilName());
     pNewFoil->initFoil();
     addNewFoil(pNewFoil);
     fillFoilTable();
     selectFoil(pNewFoil);
 
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -1300,21 +1288,16 @@ void AFoil::saveSettings(QSettings &settings)
 {
     settings.beginGroup("DirectDesign");
     {
-        settings.setValue("SFStyle", m_pSF->splineFoilStyle());
-        settings.setValue("SFWidth", m_pSF->splineFoilWidth());
-        settings.setValue("SFColor", m_pSF->splineFoilColor());
+        m_pSF->theStyle().saveSettings(settings, "SplineFoil");
 
-        settings.setValue("SFVisible", m_pSF->isVisible());
         settings.setValue("SFOutPoints", m_pSF->m_bOutPoints);
         settings.setValue("SFCenterLine", m_pSF->m_bCenterLine);
 
         settings.setValue("LowerRes", m_pSF->m_Intrados.m_iRes);
         settings.setValue("UpperRes", m_pSF->m_Extrados.m_iRes);
 
-        settings.setValue("LECircle", m_p2DWidget->m_bLECircle);
-        settings.setValue("Legend", m_p2DWidget->m_bShowLegend );
-
-        settings.setValue("NeutralLineColor", m_p2DWidget->neutralLineColor());
+        settings.setValue("LECircle", m_p2dWidget->m_bLECircle);
+        settings.setValue("Legend", m_p2dWidget->m_bShowLegend );
 
         QString str;
         for(int i=0; i<16; i++)
@@ -1328,35 +1311,32 @@ void AFoil::saveSettings(QSettings &settings)
             settings.setValue(str+"_hidden", m_pctrlFoilTable->isColumnHidden(i));
         }
 
-        settings.setValue("x-scale", m_p2DWidget->m_bScale);
-        settings.setValue("NeutralLine", m_p2DWidget->m_bNeutralLine);
-        settings.setValue("NeutralLineStyle", m_p2DWidget->m_NeutralStyle);
-        settings.setValue("NeutralLineWidth", m_p2DWidget->m_NeutralWidth);
-        settings.setValue("NeutralLineColor", m_p2DWidget->m_NeutralColor);
+        settings.setValue("x-scale", m_p2dWidget->m_bScale);
+        m_p2dWidget->m_NeutralStyle.saveSettings(settings, "NeutralLineStyle");
 
-        settings.setValue("XGrid", m_p2DWidget->m_bXGrid);
-        settings.setValue("XGridStyle", m_p2DWidget->m_XGridStyle);
-        settings.setValue("XGridWidth", m_p2DWidget->m_XGridWidth);
-        settings.setValue("XGridColor", m_p2DWidget->m_XGridColor);
-        settings.setValue("XGridUnit", m_p2DWidget->m_XGridUnit);
+        settings.setValue("XGrid", m_p2dWidget->m_bXGrid);
+        settings.setValue("XGridStyle", m_p2dWidget->m_XGridStyle);
+        settings.setValue("XGridWidth", m_p2dWidget->m_XGridWidth);
+        settings.setValue("XGridColor", m_p2dWidget->m_XGridColor);
+        settings.setValue("XGridUnit", m_p2dWidget->m_XGridUnit);
 
-        settings.setValue("YGrid", m_p2DWidget->m_bYGrid);
-        settings.setValue("YGridStyle", m_p2DWidget->m_YGridStyle);
-        settings.setValue("YGridWidth", m_p2DWidget->m_YGridWidth);
-        settings.setValue("YGridColor", m_p2DWidget->m_YGridColor);
-        settings.setValue("YGridUnit", m_p2DWidget->m_YGridUnit);
+        settings.setValue("YGrid", m_p2dWidget->m_bYGrid);
+        settings.setValue("YGridStyle", m_p2dWidget->m_YGridStyle);
+        settings.setValue("YGridWidth", m_p2dWidget->m_YGridWidth);
+        settings.setValue("YGridColor", m_p2dWidget->m_YGridColor);
+        settings.setValue("YGridUnit", m_p2dWidget->m_YGridUnit);
 
-        settings.setValue("XMinGrid", m_p2DWidget->m_bXMinGrid);
-        settings.setValue("XMinGridStyle", m_p2DWidget->m_XMinStyle);
-        settings.setValue("XMinGridWidth", m_p2DWidget->m_XMinWidth);
-        settings.setValue("XMinGridColor", m_p2DWidget->m_XMinColor);
-        settings.setValue("XMinGridUnit", m_p2DWidget->m_XMinUnit);
+        settings.setValue("XMinGrid", m_p2dWidget->m_bXMinGrid);
+        settings.setValue("XMinGridStyle", m_p2dWidget->m_XMinStyle);
+        settings.setValue("XMinGridWidth", m_p2dWidget->m_XMinWidth);
+        settings.setValue("XMinGridColor", m_p2dWidget->m_XMinColor);
+        settings.setValue("XMinGridUnit", m_p2dWidget->m_XMinUnit);
 
-        settings.setValue("YMinGrid", m_p2DWidget->m_bYMinGrid);
-        settings.setValue("YMinGridStyle", m_p2DWidget->m_YMinStyle);
-        settings.setValue("YMinGridWidth", m_p2DWidget->m_YMinWidth);
-        settings.setValue("YMinGridColor", m_p2DWidget->m_YMinColor);
-        settings.setValue("YMinGridUnit", m_p2DWidget->m_YMinUnit);
+        settings.setValue("YMinGrid", m_p2dWidget->m_bYMinGrid);
+        settings.setValue("YMinGridStyle", m_p2dWidget->m_YMinStyle);
+        settings.setValue("YMinGridWidth", m_p2dWidget->m_YMinWidth);
+        settings.setValue("YMinGridColor", m_p2dWidget->m_YMinColor);
+        settings.setValue("YMinGridUnit", m_p2dWidget->m_YMinUnit);
     }
     settings.endGroup();
 }
@@ -1567,7 +1547,7 @@ void AFoil::setPicture()
     m_pSF->m_Extrados.splineCurve();
     m_pSF->updateSplineFoil();
 
-    m_p2DWidget->update();
+    m_p2dWidget->update();
 }
 
 
@@ -1718,7 +1698,7 @@ Foil* AFoil::addNewFoil(Foil *pFoil)
 
     if(renDlg.exec() != QDialog::Rejected)
     {
-        pFoil->setFoilName(renDlg.newName());
+        pFoil->setName(renDlg.newName());
         Objects2d::insertThisFoil(pFoil);
         emit projectModified();
         return pFoil;
@@ -1730,7 +1710,7 @@ Foil* AFoil::addNewFoil(Foil *pFoil)
 void AFoil::initDialog(FoilDesignWt *p2DWidget, XFoil *pXFoil)
 {
     m_pXFoil = pXFoil;
-    m_p2DWidget = p2DWidget;
-    m_p2DWidget->setObjects(m_pBufferFoil, m_pSF);
+    m_p2dWidget = p2DWidget;
+    m_p2dWidget->setObjects(m_pBufferFoil, m_pSF);
 }
 

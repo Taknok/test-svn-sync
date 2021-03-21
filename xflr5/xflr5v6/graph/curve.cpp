@@ -30,12 +30,11 @@
  */
 Curve::Curve()
 {
-    m_curveStyle.m_Color = QColor(255,0,0,127);
-    m_CurveName = "";
-    m_curveStyle.m_bIsVisible = true;
-    m_curveStyle.m_PointStyle = 0;
-    m_curveStyle.m_Width = 1;
-    m_curveStyle.m_Stipple = Qt::SolidLine;
+    m_theStyle.m_Color = QColor(255,0,0,127);
+    m_theStyle.m_bIsVisible = true;
+    m_theStyle.m_PointStyle = Line::NOSYMBOL;
+    m_theStyle.m_Width = 1;
+    m_theStyle.m_Stipple = Line::SOLID;
     m_iSelected = -1;
 }
 
@@ -64,7 +63,7 @@ void Curve::duplicate(Curve *pCurve)
 
     copyData(pCurve);
 
-    m_curveStyle = pCurve->m_curveStyle;
+    m_theStyle = pCurve->m_theStyle;
     m_CurveName  = pCurve->m_CurveName;
 }
 
@@ -224,14 +223,13 @@ double Curve::yMax() const
 }
 
 
-
 void Curve::setLineStyle(int Style, int Width, QColor color, int PointStyle, bool bVisible)
 {
-    m_curveStyle.m_Stipple = Style;
-    m_curveStyle.m_Width = Width;
-    m_curveStyle.m_Color = color;
-    m_curveStyle.m_PointStyle = PointStyle;
-    m_curveStyle.m_bIsVisible = bVisible;
+    m_theStyle.setStipple(Style);
+    m_theStyle.m_Width = Width;
+    m_theStyle.m_Color = color;
+    m_theStyle.setPointStyle(PointStyle);
+    m_theStyle.m_bIsVisible = bVisible;
 }
 
 

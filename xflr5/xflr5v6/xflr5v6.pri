@@ -167,6 +167,7 @@ SOURCES += \
 HEADERS += \
     $$PWD/xflcore/linestyle.h \
     $$PWD/xflcore/ls2.h \
+    $$PWD/xflobjects/xflobject.h \
     design/afoil.h \
     design/afoiltabledlg.h \
     design/foiltabledelegate.h \
@@ -314,7 +315,6 @@ HEADERS += \
     xflcore/trace.h \
     xflcore/xflcore.h \
     xflcore/xflevents.h \
-    xflobjects/objectcolor.h \
     xflobjects/objects2d/blxfoil.h \
     xflobjects/objects2d/foil.h \
     xflobjects/objects2d/oppoint.h \

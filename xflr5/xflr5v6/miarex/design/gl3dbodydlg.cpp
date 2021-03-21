@@ -417,6 +417,7 @@ void GL3dBodyDlg::onTextures()
     updateView();
 }
 
+
 void GL3dBodyDlg::onBodyColor()
 {
     QColorDialog::ColorDialogOptions dialogOptions = QColorDialog::ShowAlphaChannel;
@@ -425,13 +426,12 @@ void GL3dBodyDlg::onBodyColor()
     dialogOptions |= QColorDialog::DontUseNativeDialog;
 #endif
 #endif
-    QColor clr = QColorDialog::getColor(color(m_pBody->bodyColor()),
+    QColor clr = QColorDialog::getColor(m_pBody->bodyColor(),
                                         this, "Color selection", dialogOptions);
-
 
     if(clr.isValid())
     {
-        m_pBody->setBodyColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
+        m_pBody->setBodyColor(clr);
         m_gl3dBodyview.resetGLBody();
 
         m_pctrlBodyColor->setColor(clr);
@@ -996,7 +996,7 @@ void GL3dBodyDlg::accept()
     {
         m_pBody->bodyDescription() = m_pctrlBodyDescription->toPlainText();
         QColor clr = m_pctrlBodyColor->color();
-        m_pBody->setBodyColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
+        m_pBody->setBodyColor(clr);
     }
 
     s_bOutline    = m_gl3dBodyview.m_bOutline;
@@ -1122,7 +1122,7 @@ void GL3dBodyDlg::setControls()
     if(m_pBody)
     {
         m_pctrlPanelBunch->setSliderPosition(int(m_pBody->m_Bunch*100.0));
-        m_pctrlBodyColor->setColor(color(m_pBody->m_BodyColor));
+        m_pctrlBodyColor->setColor(m_pBody->m_BodyColor);
 
         m_pctrlNXPanels->setValue(m_pBody->m_nxPanels);
         m_pctrlNHoopPanels->setValue(m_pBody->m_nhPanels);

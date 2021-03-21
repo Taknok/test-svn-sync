@@ -28,37 +28,37 @@ class SplineFoil;
 
 class FoilDesignWt : public Section2dWidget
 {
-public:
-    FoilDesignWt(QWidget *pParent=nullptr);
+    public:
+        FoilDesignWt(QWidget *pParent=nullptr);
 
-    void setObjects(Foil *pBufferFoil, SplineFoil *pSF);
+        void setObjects(Foil *pBufferFoil, SplineFoil *pSF);
 
-    void setScale() override;
-    void paintEvent(QPaintEvent *event) override;
-    void resizeEvent (QResizeEvent *event) override;
+        void setScale() override;
+        void paintEvent(QPaintEvent *event) override;
+        void resizeEvent (QResizeEvent *event) override;
 
-    int highlightPoint(Vector3d real) override;
-    int selectPoint(Vector3d real) override;
-    void dragSelectedPoint(double x, double y) override;
+        int highlightPoint(Vector3d real) override;
+        int selectPoint(Vector3d real) override;
+        void dragSelectedPoint(double x, double y) override;
 
-public slots:
-    void onInsertPt() override;
-    void onRemovePt() override;
+    public slots:
+        void onInsertPt() override;
+        void onRemovePt() override;
 
-private:
-    void paintSplines(QPainter &painter);
-    void paintFoils(QPainter &painter);
-    void paintLegend(QPainter &painter);
-    void paintLECircle(QPainter &painter);
+    private:
+        void paintSplines(QPainter &painter);
+        void paintFoils(QPainter &painter);
+        void paintLegend(QPainter &painter);
+        void paintLECircle(QPainter &painter);
 
 
-private:
-    SplineFoil *m_pSF;          /**< a pointer to the SplineFoil object */
-    Foil *m_pBufferFoil;
+    private:
+        SplineFoil *m_pSF;          /**< a pointer to the SplineFoil object */
+        Foil *m_pBufferFoil;
 
-public:
-    bool m_bLECircle;           /**< true if the leading edge circle should be displayed >*/
-    double m_LERad;             /**< the radius of the leading edge circle to draw >*/
+    public:
+        bool m_bLECircle;           /**< true if the leading edge circle should be displayed >*/
+        double m_LERad;             /**< the radius of the leading edge circle to draw >*/
 
 };
 

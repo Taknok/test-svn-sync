@@ -326,7 +326,7 @@ public:
     QSlider *m_pctrlAnimateWOppSpeed;
     QCheckBox *m_pctrlMoment,  *m_pctrlDownwash, *m_pctrlCp,*m_pctrlSurfVel, *m_pctrlStream;
 
-    QCheckBox *m_pctrlShowCurve, *m_pctrlAlignChildren;
+    QCheckBox *m_pchShowCurve, *m_pctrlAlignChildren;
     LineCbBox *m_pctrlCurveStyle, *m_pctrlCurveWidth, *m_pctrlCurvePoints;
     LineBtn *m_pctrlCurveColor;
     LineDelegate *m_pStyleDelegate, *m_pWidthDelegate, *m_pPointDelegate;
@@ -399,8 +399,8 @@ public:
 
     bool m_bCurveVisible;                     /**< true if the active curve is to be displayed */
 
-    LineStyle m_LineStyle;                    /**< the style of the lines displayed in the comboboxes*/
-    LineStyle m_CpLineStyle;                    /**< the style of the lines displayed in the comboboxes*/
+    LS2 m_LineStyle;                    /**< the style of the lines displayed in the comboboxes*/
+    LS2 m_CpLineStyle;                    /**< the style of the lines displayed in the comboboxes*/
 
 
     QTimer *m_pTimerWOpp;         /**< A pointer to the timer which signals the animation in the operating point and 3D view */

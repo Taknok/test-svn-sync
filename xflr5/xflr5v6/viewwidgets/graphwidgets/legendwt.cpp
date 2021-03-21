@@ -226,20 +226,20 @@ void LegendWt::drawWPolarLegend(QPainter &painter, QPointF place, int bottom)
                     }
                     else
                     {
-                        LegendPen.setColor(color(pWPolar->curveColor()));
-                        LegendPen.setStyle(getStyle(pWPolar->curveStyle()));
-                        LegendPen.setWidth(pWPolar->curveWidth());
+                        LegendPen.setColor(pWPolar->color());
+                        LegendPen.setStyle(getStyle(pWPolar->lineStipple()));
+                        LegendPen.setWidth(pWPolar->lineWidth());
                         painter.setPen(LegendPen);
 
                         painter.drawLine(int(place.x() + 0.5*LegendSize), int(place.y() + 1.*ypos*ny),
                                          int(place.x() + 1.5*LegendSize), int(place.y() + 1.*ypos*ny));
 
-                        if(pWPolar->points())
+                        if(pWPolar->pointStyle()!=Line::NOSYMBOL)
                         {
                             x1 = int(place.x() + 1.0*LegendSize);
                             y1 = int(place.y() + 1.*ypos*ny);
 
-                            drawPoint(painter, pWPolar->points(), Settings::s_BackgroundColor, QPoint(x1, y1));
+                            drawPoint(painter, pWPolar->pointStyle1(), Settings::s_BackgroundColor, QPoint(x1, y1));
                         }
 
                         painter.setPen(TextPen);
@@ -325,21 +325,21 @@ void LegendWt::drawPOppGraphLegend(QPainter &painter, QPointF place, double bott
         painter.setPen(TextPen);
         painter.drawText(int(place.x() + 1.0*LegendSize), int(place.y() + ypos*ny-ypos/2.0), s_pMiarex->curPOpp()->planeName());
 
-        LegendPen.setColor(color(s_pMiarex->curPOpp()->color()));
-        LegendPen.setStyle(getStyle(s_pMiarex->curPOpp()->style()));
+        LegendPen.setColor(s_pMiarex->curPOpp()->color());
+        LegendPen.setStyle(getStyle(s_pMiarex->curPOpp()->lineStipple()));
         LegendPen.setWidth(s_pMiarex->curPOpp()->width());
         painter.setPen(LegendPen);
 
         painter.drawLine(int(place.x() + 1.5*LegendSize), int(place.y() + 1.*ypos*ny),
                          int(place.x() + 2.5*LegendSize), int(place.y() + 1.*ypos*ny));
 
-        if(s_pMiarex->curPOpp()->points())
+        if(s_pMiarex->curPOpp()->pointStyle1()!=Line::NOSYMBOL)
         {
             x1 = int(place.x() + 2.0*LegendSize);
             y1 = int(place.y() + 1.*ypos*ny);
 //            painter.drawRect(x1-2, place.y() + 1.*ypos*ny-2, 4, 4);
 
-            drawPoint(painter, s_pMiarex->curPOpp()->points(), Settings::s_BackgroundColor, QPoint(x1,y1));
+            drawPoint(painter, s_pMiarex->curPOpp()->pointStyle1(), Settings::s_BackgroundColor, QPoint(x1,y1));
         }
 
         painter.setPen(TextPen);
@@ -391,22 +391,21 @@ void LegendWt::drawPOppGraphLegend(QPainter &painter, QPointF place, double bott
                             ny=2;
                         }
 
-                        LegendPen.setColor(color(pPOpp->color()));
-                        LegendPen.setStyle(getStyle(pPOpp->style()));
+                        LegendPen.setColor(pPOpp->color());
+                        LegendPen.setStyle(getStyle(pPOpp->lineStipple()));
                         LegendPen.setWidth(pPOpp->width());
                         painter.setPen(LegendPen);
 
                         painter.drawLine(int(place.x() + 1.5*LegendSize), int(place.y() + 1.*ypos*ny),
                                          int(place.x() + 2.5*LegendSize), int(place.y() + 1.*ypos*ny));
 
-                        if(pPOpp->points())
+                        if(pPOpp->pointStyle()!=Line::NOSYMBOL)
                         {
                             x1 = int(place.x() + 2.0*LegendSize);
                             y1 = int(place.y() + 1.*ypos*ny);
 //                            painter.drawRect(x1-2, place.y() + 1.*ypos*ny-2, 4, 4);
-                            drawPoint(painter, pPOpp->points(), Settings::s_BackgroundColor, QPoint(x1,y1));
+                            drawPoint(painter, pPOpp->pointStyle1(), Settings::s_BackgroundColor, QPoint(x1,y1));
                         }
-
 
                         painter.setPen(TextPen);
                         painter.drawText(int(place.x() + 3.0*LegendSize),
@@ -421,9 +420,6 @@ void LegendWt::drawPOppGraphLegend(QPainter &painter, QPointF place, double bott
     }
     painter.restore();
 }
-
-
-
 
 
 /**

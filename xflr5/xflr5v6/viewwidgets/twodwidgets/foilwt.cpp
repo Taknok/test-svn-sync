@@ -34,7 +34,7 @@
 
 FoilWt::FoilWt(QWidget *pParent) : Section2dWidget(pParent)
 {
-    m_bNeutralLine = true;
+    m_NeutralStyle.m_bIsVisible = true;
 
     m_pBufferFoil = nullptr;
     createContextMenu();
@@ -111,7 +111,7 @@ void FoilWt::paintFoils(QPainter &painter)
         Foil const*pFoil = m_oaFoil.at(k);
         if (pFoil->isVisible())
         {
-            FoilPen.setStyle(getStyle(pFoil->lineStyle()));
+            FoilPen.setStyle(getStyle(pFoil->lineStipple()));
             FoilPen.setWidth(pFoil->lineWidth());
             FoilPen.setColor(colour(pFoil));
             painter.setPen(FoilPen);
@@ -195,7 +195,7 @@ void FoilWt::paintLegend(QPainter &painter)
                 if(strong.length())
                 {
                     LegendPen.setColor(colour(pRefFoil));
-                    LegendPen.setStyle(getStyle(pRefFoil->lineStyle()));
+                    LegendPen.setStyle(getStyle(pRefFoil->lineStipple()));
                     LegendPen.setWidth(pRefFoil->lineWidth());
 
                     painter.setPen(LegendPen);

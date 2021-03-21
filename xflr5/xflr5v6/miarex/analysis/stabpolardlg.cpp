@@ -47,8 +47,8 @@ StabPolarDlg::StabPolarDlg(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle(tr("Stability Polar Definition"));
 
-    s_StabWPolar.setPoints(2);
-    s_StabWPolar.setCurveWidth(2);
+    s_StabWPolar.setPointStyle(Line::BIGCIRCLE);
+    s_StabWPolar.setWidth(2);
     m_bAutoName = true;
     m_UnitType   = 1;
 

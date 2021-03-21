@@ -81,15 +81,15 @@ Graph::Graph()
     m_bAutoY        = true;
     m_bXAutoMinGrid = true;
     m_bYAutoMinGrid = true;
-    m_bBorder       = true;
+    m_BorderStyle.m_bIsVisible = true;
 
     m_ptoffset.rx() = 0;
     m_ptoffset.ry() = 0;
 
-    m_AxisStyle   = 0;
-    m_AxisWidth   = 1;
-    m_BorderStyle = 0;
-    m_BorderWidth = 2;
+    m_AxisStyle.m_Stipple   = Line::SOLID;
+    m_AxisStyle.m_Width   = 1;
+    m_BorderStyle.m_Stipple = Line::SOLID;
+    m_BorderStyle.m_Width = 2;
     m_XMajStyle   = 0;
     m_XMajWidth   = 1;
     m_XMinStyle   = 1;
@@ -127,11 +127,11 @@ void Graph::drawGraph(QPainter &painter)
     painter.save();
 
     //    Draw Border
-    if(m_bBorder) color = m_BorderColor;
-    else          color = m_BkColor;
+    if(m_BorderStyle.m_bIsVisible) color = m_BorderStyle.m_Color;
+    else                           color = m_BkColor;
     QPen BorderPen(color);
-    BorderPen.setStyle(getStyle(m_BorderStyle));
-    BorderPen.setWidth(m_BorderWidth);
+    BorderPen.setStyle(getStyle(m_BorderStyle.m_Stipple));
+    BorderPen.setWidth(m_BorderStyle.m_Width);
 
     painter.setPen(BorderPen);
     painter.fillRect(m_rCltRect, m_BkColor);
@@ -231,9 +231,9 @@ void Graph::drawAxes(QPainter &painter)
     double scaley = m_scaley;
     painter.save();
 
-    AxesPen.setColor(m_AxisColor);
-    AxesPen.setStyle(getStyle(m_AxisStyle));
-    AxesPen.setWidth(m_AxisWidth);
+    AxesPen.setColor(m_AxisStyle.m_Color);
+    AxesPen.setStyle(getStyle(m_AxisStyle.m_Stipple));
+    AxesPen.setWidth(m_AxisStyle.m_Width);
     painter.setPen(AxesPen);
 
     //vertical axis
@@ -313,10 +313,10 @@ void Graph::drawXTicks(QPainter &painter)
     int yExpOff = height/2;
 
 
-    QPen LabelPen(m_AxisColor);
+    QPen LabelPen(m_AxisStyle.m_Color);
 
-    LabelPen.setStyle(getStyle(m_AxisStyle));
-    LabelPen.setWidth(m_AxisWidth);
+    LabelPen.setStyle(getStyle(m_AxisStyle.m_Stipple));
+    LabelPen.setWidth(m_AxisStyle.m_Width);
     painter.setPen(LabelPen);
     double xt = xo-(xo-xmin);//one tick at the origin
     int nx = int((xo-xmin)/xunit);
@@ -395,9 +395,9 @@ void Graph::drawYTicks(QPainter &painter)
 
     int TickSize = 5;
 
-    QPen LabelPen(m_AxisColor);
-    LabelPen.setStyle(getStyle(m_AxisStyle));
-    LabelPen.setWidth(m_AxisWidth);
+    QPen LabelPen(m_AxisStyle.m_Color);
+    LabelPen.setStyle(getStyle(m_AxisStyle.m_Stipple));
+    LabelPen.setWidth(m_AxisStyle.m_Width);
 
     double xp=0;
     if(xo>=xmin && xo<=xmax) xp = xo;
@@ -747,19 +747,15 @@ void Graph::saveSettings(QSettings &settings)
 {
     QFont lgft;
     QColor clr;
-    int k,s,w;
+    int s,w;
     bool ba, bs;
     double f;
 
     settings.beginGroup(m_GraphName);
     {
         //read variables
-        clr = axisColor();
-        settings.setValue("AxisColor", clr);
-        k = axisStyle();
-        settings.setValue("AxisStyle", k);
-        k = axisWidth();
-        settings.setValue("AxisWidth", k);
+        m_AxisStyle.saveSettings(settings,"AxisStyle");
+        m_BorderStyle.saveSettings(settings,"BorderStyle");
 
         clr = titleColor();
         settings.setValue("TitleColor", clr);
@@ -822,10 +818,7 @@ void Graph::saveSettings(QSettings &settings)
         clr = borderColor();
         s   = borderStyle();
         w   = borderWidth();
-        settings.setValue("BorderColor", clr);
-        settings.setValue("BorderStyle", s);
-        settings.setValue("BorderWidth", w);
-        settings.setValue("BorderShow", m_bBorder);
+
 
         clr = backgroundColor();
         settings.setValue("BackgroundColor", clr);
@@ -853,10 +846,9 @@ void Graph::loadSettings(QSettings &settings)
     settings.beginGroup(m_GraphName);
     {
         //read variables
-        clr = settings.value("AxisColor", QColor(255,255,255)).value<QColor>();
-        s = settings.value("AxisStyle",0).toInt();
-        w = settings.value("AxisWidth",1).toInt();
-        setAxisData(s,w,clr);
+        m_AxisStyle.loadSettings(settings,"AxisStyle");
+        m_BorderStyle.loadSettings(settings,"BorderStyle");
+
 
         clr = settings.value("TitleColor", QColor(255,255,255)).value<QColor>();
         setTitleColor(clr);
@@ -917,14 +909,6 @@ void Graph::loadSettings(QSettings &settings)
         w  = settings.value("YMinGridWidth",1).toInt();
         f  = settings.value("YMinGridUnit",0.01).toDouble();
         setYMinGrid(bs,ba,clr,s,w,f);
-
-        clr  = settings.value("BorderColor", QColor(200,200,200)).value<QColor>();
-        s  = settings.value("BorderStyle",0).toInt();
-        w  = settings.value("BorderWidth",2).toInt();
-        m_bBorder = settings.value("BorderShow", true).toBool();
-        setBorderColor(clr);
-        setBorderStyle(s);
-        setBorderWidth(w);
 
         clr  = settings.value("BackgroundColor", QColor(15,19,20)).value<QColor>();
         setBkColor(clr);
@@ -1022,16 +1006,12 @@ void Graph::copySettings(Graph *pGraph, bool bScales)
         m_scaley        = pGraph->m_scaley;
     }
 
-    m_AxisColor     = pGraph->m_AxisColor;
-    m_BkColor       = pGraph->m_BkColor;
-    m_bBorder       = pGraph->m_bBorder;
-    m_BorderColor   = pGraph->m_BorderColor;
+    m_AxisStyle     = pGraph->m_AxisStyle;
     m_BorderStyle   = pGraph->m_BorderStyle;
-    m_BorderWidth   = pGraph->m_BorderWidth;
+
+    m_BkColor       = pGraph->m_BkColor;
     m_LabelColor    = pGraph->m_LabelColor;
     m_TitleColor    = pGraph->m_TitleColor;
-    m_AxisStyle     = pGraph->m_AxisStyle;
-    m_AxisWidth     = pGraph->m_AxisWidth;
     m_XMajClr       = pGraph->m_XMajClr;
     m_XMajStyle     = pGraph->m_XMajStyle;
     m_XMajWidth     = pGraph->m_XMajWidth;
@@ -1054,7 +1034,7 @@ void Graph::copySettings(Graph *pGraph, bool bScales)
     m_bXMinGrid     = pGraph->m_bXMinGrid;
     m_bYMajGrid     = pGraph->m_bYMajGrid;
     m_bYMinGrid     = pGraph->m_bYMinGrid;
-    m_bBorder       = pGraph->m_bBorder;
+
     m_iMargin       = pGraph->m_iMargin;
 }
 
@@ -1123,30 +1103,6 @@ void Graph::deleteCurves()
 //___________________Start Gets______________________________________________________________
 
 
-
-int Graph::axisStyle() const
-{
-    return m_AxisStyle;
-}
-
-int Graph::axisWidth() const
-{
-    return m_AxisWidth;
-}
-
-
-bool Graph::hasBorder() const
-{
-    return m_bBorder;
-}
-
-
-QRect * Graph::clientRect()
-{
-    return &m_rCltRect;
-}
-
-
 Curve* Graph::curve(int nIndex)
 {
     if(m_oaCurves.size()>nIndex)
@@ -1163,7 +1119,7 @@ Curve const* Graph::curveAt(int nIndex) const
 }
 
 
-Curve* Graph::curve(QString CurveTitle)
+Curve* Graph::curve(QString const &CurveTitle)
 {
     QString strong;
     Curve * pCurve;
@@ -1527,60 +1483,9 @@ void Graph::setAutoYUnit()
 
 void Graph::setAxisData(int s, int w, QColor clr)
 {
-    m_AxisStyle = s;
-    m_AxisWidth = w;
-    m_AxisColor = clr;
-}
-
-void Graph::setAxisColor(QColor crColor)
-{
-    m_AxisColor = crColor;
-}
-
-void Graph::setAxisStyle(int nStyle)
-{
-    m_AxisStyle = nStyle;
-}
-
-void Graph::setAxisWidth(int Width)
-{
-    m_AxisWidth = Width;
-}
-
-
-void Graph::setBkColor(QColor cr)
-{
-    m_BkColor = cr;
-}
-
-void Graph::setBorderColor(QColor crBorder)
-{
-    m_BorderColor = crBorder;
-}
-
-void Graph::setBorder(bool bBorder)
-{
-    m_bBorder = bBorder;
-}
-
-void Graph::setBorderWidth(int w)
-{
-    m_BorderWidth = w;
-}
-
-void Graph::setBorderStyle(int s)
-{
-    m_BorderStyle = s;
-}
-
-void Graph::setDrawRect(QRect Rect)
-{
-    m_rCltRect = Rect;
-}
-
-void Graph::setGraphName(QString GraphName)
-{
-    m_GraphName = GraphName;
+    m_AxisStyle.setStipple(s);
+    m_AxisStyle.m_Width = w;
+    m_AxisStyle.m_Color = clr;
 }
 
 
@@ -1589,7 +1494,7 @@ void Graph::setGraphDefaults(bool bDark)
     if(bDark)
     {
         m_BkColor = QColor(0,9,13);
-        m_BorderColor = QColor(200,200,200);
+        m_BorderStyle.m_Color = QColor(200,200,200);
 
         setAxisColor(QColor(200,200,200));
         setTitleColor(QColor(255,255,255));
@@ -1604,7 +1509,7 @@ void Graph::setGraphDefaults(bool bDark)
     else
     {
         m_BkColor = QColor(255,255,255);
-        m_BorderColor = QColor(55,55,55);
+        m_BorderStyle.m_Color = QColor(55,55,55);
 
         setAxisColor(QColor(55,55,55));
         setTitleColor(QColor(0,0,0));
@@ -1617,11 +1522,11 @@ void Graph::setGraphDefaults(bool bDark)
         m_YMinClr   = QColor(205,205,205);
     }
 
-    m_BorderStyle = 0;
-    m_BorderWidth = 3;
+    m_BorderStyle.m_Stipple = Line::SOLID;
+    m_BorderStyle.m_Width = 3;
 
-    m_AxisStyle = 0;
-    m_AxisWidth = 1;
+    m_AxisStyle.m_Stipple = Line::SOLID;
+    m_AxisStyle.m_Width = 1;
 
     m_bYInverted = false;
 
@@ -1647,7 +1552,7 @@ void Graph::setGraphDefaults(bool bDark)
 
 
 
-void Graph::setLabelColor(QColor crColor)
+void Graph::setLabelColor(QColor const &crColor)
 {
     m_LabelColor = crColor;
 }

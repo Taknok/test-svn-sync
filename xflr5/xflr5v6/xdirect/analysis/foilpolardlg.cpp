@@ -69,7 +69,7 @@ void FoilPolarDlg::setupLayout()
             {
                 m_pctrlAuto1 = new QRadioButton(tr("Automatic"));
                 m_pctrlAuto2 = new QRadioButton(tr("User Defined"));
-                m_pctrlAnalysisName = new QLineEdit(tr("Analysis Name"));
+                m_pleAnalysisName = new QLineEdit(tr("Analysis Name"));
                 pAutoNameLayout->addStretch(1);
                 pAutoNameLayout->addWidget(m_pctrlAuto1);
                 pAutoNameLayout->addStretch(1);
@@ -77,7 +77,7 @@ void FoilPolarDlg::setupLayout()
                 pAutoNameLayout->addStretch(1);
             }
             pAnalysisLayout->addLayout(pAutoNameLayout);
-            pAnalysisLayout->addWidget(m_pctrlAnalysisName);
+            pAnalysisLayout->addWidget(m_pleAnalysisName);
         }
         pNameGroupBox->setLayout(pAnalysisLayout);
     }
@@ -109,24 +109,24 @@ void FoilPolarDlg::setupLayout()
                 {
                     QGridLayout *PlaneDataLayout = new QGridLayout;
                     {
-                        m_pctrlChord = new DoubleEdit(0,3);
-                        m_pctrlMass = new DoubleEdit(0,3);
-                        m_pctrlSpan = new DoubleEdit(0,3);
+                        m_pdeChord = new DoubleEdit(0,3);
+                        m_pdeMass = new DoubleEdit(0,3);
+                        m_pdeSpan = new DoubleEdit(0,3);
                         QLabel *ChordLab = new QLabel(tr("Chord"));
                         QLabel *MassLab = new QLabel(tr("Mass"));
                         QLabel *SpanLab = new QLabel(tr("Span"));
-                        m_pctrlLengthUnit1 = new QLabel("m");
-                        m_pctrlLengthUnit2 = new QLabel("m");
-                        m_pctrlMassUnit = new QLabel("kg");
+                        m_plabLengthUnit1 = new QLabel("m");
+                        m_plabLengthUnit2 = new QLabel("m");
+                        m_plabMassUnit = new QLabel("kg");
                         PlaneDataLayout->addWidget(ChordLab,1,1);
-                        PlaneDataLayout->addWidget(m_pctrlChord,1,2);
-                        PlaneDataLayout->addWidget(m_pctrlLengthUnit1,1,3);
+                        PlaneDataLayout->addWidget(m_pdeChord,1,2);
+                        PlaneDataLayout->addWidget(m_plabLengthUnit1,1,3);
                         PlaneDataLayout->addWidget(SpanLab,2,1);
-                        PlaneDataLayout->addWidget(m_pctrlSpan,2,2);
-                        PlaneDataLayout->addWidget(m_pctrlLengthUnit2,2,3);
+                        PlaneDataLayout->addWidget(m_pdeSpan,2,2);
+                        PlaneDataLayout->addWidget(m_plabLengthUnit2,2,3);
                         PlaneDataLayout->addWidget(MassLab,3,1);
-                        PlaneDataLayout->addWidget(m_pctrlMass,3,2);
-                        PlaneDataLayout->addWidget(m_pctrlMassUnit,3,3);
+                        PlaneDataLayout->addWidget(m_pdeMass,3,2);
+                        PlaneDataLayout->addWidget(m_plabMassUnit,3,3);
                     }
                     pPlaneDataGroupBox->setLayout(PlaneDataLayout);
                 }
@@ -135,31 +135,31 @@ void FoilPolarDlg::setupLayout()
                     QGridLayout *pAeroDataLayout = new QGridLayout;
                     {
                         QLabel *lab9 = new QLabel(tr("Unit"));
-                        m_pctrlFluidUnit1 = new QRadioButton(tr("International"));
-                        m_pctrlFluidUnit2 = new QRadioButton(tr("Imperial"));
-                        m_pctrlRho = new QLabel("r =");
-                        m_pctrlDensity = new DoubleEdit(1.225,3);
-                        m_pctrlDensityUnit = new QLabel("kg/m3");
-                        m_pctrlNu = new QLabel("n =");
-                        m_pctrlRho->setAlignment(Qt::AlignRight | Qt::AlignCenter);
-                        m_pctrlNu->setAlignment(Qt::AlignRight | Qt::AlignCenter);
-                        m_pctrlViscosity = new DoubleEdit(1.500e-5,3);
-                        m_pctrlViscosityUnit = new QLabel(QString::fromUtf8("m²/s"));
-                        m_pctrlRho->setFont(SymbolFont);
-                        m_pctrlNu->setFont(SymbolFont);
-                        m_pctrlDensity->setDigits(5);
-                        m_pctrlViscosity->setDigits(3);
-                        m_pctrlDensity->setMin(0.0);
-                        m_pctrlViscosity->setMin(0.0);
+                        m_prbFluidUnit1 = new QRadioButton(tr("International"));
+                        m_prbFluidUnit2 = new QRadioButton(tr("Imperial"));
+                        m_plabRho = new QLabel("r =");
+                        m_pdeDensity = new DoubleEdit(1.225,3);
+                        m_plabDensityUnit = new QLabel("kg/m3");
+                        m_plabNu = new QLabel("n =");
+                        m_plabRho->setAlignment(Qt::AlignRight | Qt::AlignCenter);
+                        m_plabNu->setAlignment(Qt::AlignRight | Qt::AlignCenter);
+                        m_pdeViscosity = new DoubleEdit(1.500e-5,3);
+                        m_plabViscosityUnit = new QLabel(QString::fromUtf8("m²/s"));
+                        m_plabRho->setFont(SymbolFont);
+                        m_plabNu->setFont(SymbolFont);
+                        m_pdeDensity->setDigits(5);
+                        m_pdeViscosity->setDigits(3);
+                        m_pdeDensity->setMin(0.0);
+                        m_pdeViscosity->setMin(0.0);
                         pAeroDataLayout->addWidget(lab9,1,1);
-                        pAeroDataLayout->addWidget(m_pctrlFluidUnit1,   1,2);
-                        pAeroDataLayout->addWidget(m_pctrlFluidUnit2,   1,3);
-                        pAeroDataLayout->addWidget(m_pctrlRho,          2,1);
-                        pAeroDataLayout->addWidget(m_pctrlDensity,      2,2);
-                        pAeroDataLayout->addWidget(m_pctrlDensityUnit,  2,3);
-                        pAeroDataLayout->addWidget(m_pctrlNu,           3,1);
-                        pAeroDataLayout->addWidget(m_pctrlViscosity,    3,2);
-                        pAeroDataLayout->addWidget(m_pctrlViscosityUnit,3,3);
+                        pAeroDataLayout->addWidget(m_prbFluidUnit1,   1,2);
+                        pAeroDataLayout->addWidget(m_prbFluidUnit2,   1,3);
+                        pAeroDataLayout->addWidget(m_plabRho,          2,1);
+                        pAeroDataLayout->addWidget(m_pdeDensity,      2,2);
+                        pAeroDataLayout->addWidget(m_plabDensityUnit,  2,3);
+                        pAeroDataLayout->addWidget(m_plabNu,           3,1);
+                        pAeroDataLayout->addWidget(m_pdeViscosity,    3,2);
+                        pAeroDataLayout->addWidget(m_plabViscosityUnit,3,3);
                     }
                     pAeroDataGroupBox->setLayout(pAeroDataLayout);
                 }
@@ -170,26 +170,26 @@ void FoilPolarDlg::setupLayout()
 
             QHBoxLayout *pReMachValuesLayout= new QHBoxLayout;
             {
-                m_pctrlReLabel  = new QLabel(tr("  Re ="));
-                m_pctrlReLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-                m_pctrlReUnit  = new QLabel(tr(" "));
-                m_pctrlReUnit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-                m_pctrlMachLabel = new QLabel(tr("Mach ="));
-                m_pctrlMachLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-                m_pctrlReynolds = new DoubleEdit();
-                m_pctrlReynolds->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-                m_pctrlReynolds->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-                QFontMetrics fm(m_pctrlReynolds->font());
-                m_pctrlReynolds->setMinimumWidth(fm.averageCharWidth()*15);
-                m_pctrlMach = new DoubleEdit(0.0, 3);
-                m_pctrlMach->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                m_plabRe  = new QLabel(tr("  Re ="));
+                m_plabRe->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                m_plabReUnit  = new QLabel(tr(" "));
+                m_plabReUnit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                m_plabMach = new QLabel(tr("Mach ="));
+                m_plabMach->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                m_pdeReynolds = new DoubleEdit();
+                m_pdeReynolds->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                m_pdeReynolds->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+                QFontMetrics fm(m_pdeReynolds->font());
+                m_pdeReynolds->setMinimumWidth(fm.averageCharWidth()*15);
+                m_pdeMach = new DoubleEdit(0.0, 3);
+                m_pdeMach->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
                 pReMachValuesLayout->addStretch(1);
-                pReMachValuesLayout->addWidget(m_pctrlReLabel);
-                pReMachValuesLayout->addWidget(m_pctrlReynolds);
-                pReMachValuesLayout->addWidget(m_pctrlReUnit);
+                pReMachValuesLayout->addWidget(m_plabRe);
+                pReMachValuesLayout->addWidget(m_pdeReynolds);
+                pReMachValuesLayout->addWidget(m_plabReUnit);
                 pReMachValuesLayout->addStretch(1);
-                pReMachValuesLayout->addWidget(m_pctrlMachLabel);
-                pReMachValuesLayout->addWidget(m_pctrlMach);
+                pReMachValuesLayout->addWidget(m_plabMach);
+                pReMachValuesLayout->addWidget(m_pdeMach);
                 pReMachValuesLayout->addStretch(1);
             }
 
@@ -213,21 +213,21 @@ void FoilPolarDlg::setupLayout()
             QLabel*pNCritLabel      = new QLabel(tr("NCrit="));
             QLabel *pTopTripLabel     = new QLabel(tr("TripLocation (top)"));
             QLabel *pBotTripLabel     = new QLabel(tr("TripLocation (bot)"));
-            m_pctrlNCrit    = new DoubleEdit();
-            m_pctrlTopTrans = new DoubleEdit();
-            m_pctrlBotTrans = new DoubleEdit();
+            m_pdeNCrit    = new DoubleEdit();
+            m_pdeTopTrans = new DoubleEdit();
+            m_pdeBotTrans = new DoubleEdit();
 
-            m_pctrlNCrit->setAlignment(   Qt::AlignRight);
-            m_pctrlTopTrans->setAlignment(Qt::AlignRight);
-            m_pctrlBotTrans->setAlignment(Qt::AlignRight);
+            m_pdeNCrit->setAlignment(   Qt::AlignRight);
+            m_pdeTopTrans->setAlignment(Qt::AlignRight);
+            m_pdeBotTrans->setAlignment(Qt::AlignRight);
             pTransitionsLayout->addWidget(pFreeTransLabel,   1,1, 1,1, Qt::AlignLeft| Qt::AlignVCenter);
             pTransitionsLayout->addWidget(pForceTransLabel,  2,1, 1,1, Qt::AlignLeft| Qt::AlignVCenter);
             pTransitionsLayout->addWidget(pNCritLabel,       1,2, 1,1, Qt::AlignRight| Qt::AlignVCenter);
             pTransitionsLayout->addWidget(pTopTripLabel,     2,2, 1,1, Qt::AlignRight| Qt::AlignVCenter);
             pTransitionsLayout->addWidget(pBotTripLabel,     3,2, 1,1, Qt::AlignRight| Qt::AlignVCenter);
-            pTransitionsLayout->addWidget(m_pctrlNCrit,     1,3, 1,1, Qt::AlignRight| Qt::AlignVCenter);
-            pTransitionsLayout->addWidget(m_pctrlTopTrans,  2,3, 1,1, Qt::AlignRight| Qt::AlignVCenter);
-            pTransitionsLayout->addWidget(m_pctrlBotTrans,  3,3, 1,1, Qt::AlignRight| Qt::AlignVCenter);
+            pTransitionsLayout->addWidget(m_pdeNCrit,     1,3, 1,1, Qt::AlignRight| Qt::AlignVCenter);
+            pTransitionsLayout->addWidget(m_pdeTopTrans,  2,3, 1,1, Qt::AlignRight| Qt::AlignVCenter);
+            pTransitionsLayout->addWidget(m_pdeBotTrans,  3,3, 1,1, Qt::AlignRight| Qt::AlignVCenter);
             pTransGroup->setLayout(pTransitionsLayout);
         }
     }
@@ -248,22 +248,22 @@ void FoilPolarDlg::setupLayout()
 
     setLayout(pMainLayout);
 
-    m_pctrlTopTrans->setDigits(2);
-    m_pctrlTopTrans->setMin(0.0);
-    m_pctrlTopTrans->setMax(1.0);
+    m_pdeTopTrans->setDigits(2);
+    m_pdeTopTrans->setMin(0.0);
+    m_pdeTopTrans->setMax(1.0);
 
-    m_pctrlBotTrans->setDigits(2);
-    m_pctrlBotTrans->setMin(0.0);
-    m_pctrlBotTrans->setMax(1.0);
-
-
-    m_pctrlNCrit->setDigits(3);
-    m_pctrlNCrit->setMin(0.0);
-    m_pctrlNCrit->setMax(1000000.0);
+    m_pdeBotTrans->setDigits(2);
+    m_pdeBotTrans->setMin(0.0);
+    m_pdeBotTrans->setMax(1.0);
 
 
-    m_pctrlMach->setMin(0.0);
-    m_pctrlMach->setMax(1000.0);
+    m_pdeNCrit->setDigits(3);
+    m_pdeNCrit->setMin(0.0);
+    m_pdeNCrit->setMax(1000000.0);
+
+
+    m_pdeMach->setMin(0.0);
+    m_pdeMach->setMax(1000.0);
 }
 
 
@@ -277,22 +277,22 @@ void FoilPolarDlg::connectSignals()
     connect(m_rbtype3, SIGNAL(clicked()), this, SLOT(onPolarType()));
     connect(m_rbtype4, SIGNAL(clicked()), this, SLOT(onPolarType()));
 
-    connect(m_pctrlReynolds, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
-    connect(m_pctrlMach,     SIGNAL(editingFinished()), this, SLOT(editingFinished()));
-    connect(m_pctrlNCrit,    SIGNAL(editingFinished()), this, SLOT(editingFinished()));
-    connect(m_pctrlTopTrans, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
-    connect(m_pctrlBotTrans, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
+    connect(m_pdeReynolds, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
+    connect(m_pdeMach,     SIGNAL(editingFinished()), this, SLOT(editingFinished()));
+    connect(m_pdeNCrit,    SIGNAL(editingFinished()), this, SLOT(editingFinished()));
+    connect(m_pdeTopTrans, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
+    connect(m_pdeBotTrans, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
 
-    connect(m_pctrlAnalysisName, SIGNAL(textEdited (const QString &)), this, SLOT(onNameChanged()));
+    connect(m_pleAnalysisName, SIGNAL(textEdited (const QString &)), this, SLOT(onNameChanged()));
 
-    connect(m_pctrlFluidUnit1, SIGNAL(clicked(bool)), this, SLOT(onFluiUnit()));
-    connect(m_pctrlFluidUnit2, SIGNAL(clicked(bool)), this, SLOT(onFluiUnit()));
+    connect(m_prbFluidUnit1, SIGNAL(clicked(bool)), this, SLOT(onFluiUnit()));
+    connect(m_prbFluidUnit2, SIGNAL(clicked(bool)), this, SLOT(onFluiUnit()));
 
-    connect(m_pctrlChord,     SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
-    connect(m_pctrlSpan,      SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
-    connect(m_pctrlMass,      SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
-    connect(m_pctrlViscosity, SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
-    connect(m_pctrlDensity,   SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
+    connect(m_pdeChord,     SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
+    connect(m_pdeSpan,      SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
+    connect(m_pdeMass,      SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
+    connect(m_pdeViscosity, SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
+    connect(m_pdeDensity,   SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
 }
 
 
@@ -322,11 +322,11 @@ void FoilPolarDlg::initDialog()
     QString str = tr("Analysis parameters for ");
     setWindowTitle(str+ XDirect::s_RefPolar.m_FoilName);
 
-    m_pctrlReynolds->setValue(XDirect::s_RefPolar.m_Reynolds);
-    m_pctrlMach->setValue(XDirect::s_RefPolar.m_Mach);
-    m_pctrlNCrit->setValue(XDirect::s_RefPolar.m_ACrit);
-    m_pctrlTopTrans->setValue(XDirect::s_RefPolar.m_XTop);
-    m_pctrlBotTrans->setValue(XDirect::s_RefPolar.m_XBot);
+    m_pdeReynolds->setValue(XDirect::s_RefPolar.m_Reynolds);
+    m_pdeMach->setValue(XDirect::s_RefPolar.m_Mach);
+    m_pdeNCrit->setValue(XDirect::s_RefPolar.m_ACrit);
+    m_pdeTopTrans->setValue(XDirect::s_RefPolar.m_XTop);
+    m_pdeBotTrans->setValue(XDirect::s_RefPolar.m_XBot);
 
     switch(XDirect::s_RefPolar.polarType())
     {
@@ -358,20 +358,20 @@ void FoilPolarDlg::initDialog()
     }
 
     Units::getLengthUnitLabel(str);
-    m_pctrlLengthUnit1->setText(str);
-    m_pctrlLengthUnit2->setText(str);
+    m_plabLengthUnit1->setText(str);
+    m_plabLengthUnit2->setText(str);
 
     Units::getWeightUnitLabel(str);
-    m_pctrlMassUnit->setText(str);
+    m_plabMassUnit->setText(str);
 
-    m_pctrlFluidUnit1->setChecked(s_UnitType==1);
-    m_pctrlFluidUnit2->setChecked(s_UnitType!=1);
-    m_pctrlViscosity->setValue(s_Viscosity);
+    m_prbFluidUnit1->setChecked(s_UnitType==1);
+    m_prbFluidUnit2->setChecked(s_UnitType!=1);
+    m_pdeViscosity->setValue(s_Viscosity);
     onFluiUnit();
 
-    m_pctrlMass->setValue(s_Mass*Units::kgtoUnit());
-    m_pctrlSpan->setValue(s_Span*Units::mtoUnit());
-    m_pctrlChord->setValue(s_Chord*Units::mtoUnit());
+    m_pdeMass->setValue(s_Mass*Units::kgtoUnit());
+    m_pdeSpan->setValue(s_Span*Units::mtoUnit());
+    m_pdeChord->setValue(s_Chord*Units::mtoUnit());
 
     onPolarType();
 
@@ -419,8 +419,8 @@ void FoilPolarDlg::onAutoName()
     if(m_pctrlAuto2->isChecked())
     {
         m_bAutoName = false;
-        m_pctrlAnalysisName->setFocus();
-        m_pctrlAnalysisName->selectAll();
+        m_pleAnalysisName->setFocus();
+        m_pleAnalysisName->selectAll();
     }
     else
     {
@@ -440,7 +440,7 @@ void FoilPolarDlg::onNameChanged()
 
 void FoilPolarDlg::onOK()
 {
-    XDirect::s_RefPolar.m_PlrName = m_pctrlAnalysisName->text();
+    XDirect::s_RefPolar.setName(m_pleAnalysisName->text());
 
     XDirect::s_RefPolar.setPolarType(m_PolarType);
     XDirect::s_RefPolar.setNCrit(m_NCrit);
@@ -458,48 +458,48 @@ void FoilPolarDlg::onPolarType()
 {
     if(m_rbtype1->isChecked())
     {
-        m_pctrlReLabel->setText(tr("Reynolds ="));
-        m_pctrlReUnit->setText(" ");
-        m_pctrlMachLabel->setText(tr("Mach ="));
-        m_pctrlReynolds->setValue(XDirect::s_RefPolar.m_Reynolds);
+        m_plabRe->setText(tr("Reynolds ="));
+        m_plabReUnit->setText(" ");
+        m_plabMach->setText(tr("Mach ="));
+        m_pdeReynolds->setValue(XDirect::s_RefPolar.m_Reynolds);
 //        m_pctrlReynolds->setPrecision(0);
         m_PolarType = Xfl::FIXEDSPEEDPOLAR;
     }
     else if(m_rbtype2->isChecked())
     {
-        m_pctrlReLabel->setText(tr("Re.sqrt(Cl) ="));
-        m_pctrlReUnit->setText(" ");
-        m_pctrlMachLabel->setText(tr("Ma.sqrt(Cl) ="));
+        m_plabRe->setText(tr("Re.sqrt(Cl) ="));
+        m_plabReUnit->setText(" ");
+        m_plabMach->setText(tr("Ma.sqrt(Cl) ="));
         m_PolarType = Xfl::FIXEDLIFTPOLAR;
 //        m_pctrlReynolds->setPrecision(0);
         onCalcReynolds();
     }
     else if(m_rbtype3->isChecked())
     {
-        m_pctrlReLabel->setText(tr("Re.Cl ="));
-        m_pctrlReUnit->setText(" ");
-        m_pctrlMachLabel->setText(tr("Mach ="));
-        m_pctrlReynolds->setValue(XDirect::s_RefPolar.m_Reynolds);
+        m_plabRe->setText(tr("Re.Cl ="));
+        m_plabReUnit->setText(" ");
+        m_plabMach->setText(tr("Mach ="));
+        m_pdeReynolds->setValue(XDirect::s_RefPolar.m_Reynolds);
 //        m_pctrlReynolds->setPrecision(0);
         m_PolarType = Xfl::RUBBERCHORDPOLAR;
     }
     else if(m_rbtype4->isChecked())
     {
-        m_pctrlReLabel->setText(tr("Alpha ="));
-        m_pctrlReUnit->setText(QString::fromUtf8("°"));
-        m_pctrlMachLabel->setText(tr("Mach ="));
-        m_pctrlReynolds->setValue(m_ASpec);
+        m_plabRe->setText(tr("Alpha ="));
+        m_plabReUnit->setText(QString::fromUtf8("°"));
+        m_plabMach->setText(tr("Mach ="));
+        m_pdeReynolds->setValue(m_ASpec);
 //        m_pctrlReynolds->setPrecision(3);
         m_PolarType = Xfl::FIXEDAOAPOLAR;
     }
 
-    m_pctrlChord->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
-    m_pctrlSpan->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
-    m_pctrlMass->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
-    m_pctrlViscosity->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
-    m_pctrlDensity->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
-    m_pctrlFluidUnit1->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
-    m_pctrlFluidUnit2->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pdeChord->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pdeSpan->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pdeMass->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pdeViscosity->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pdeDensity->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_prbFluidUnit1->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_prbFluidUnit2->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
 
     setPlrName();
 }
@@ -512,32 +512,32 @@ void FoilPolarDlg::setPlrName()
     if(m_bAutoName)
     {
         m_PlrName= Polar::autoPolarName(m_PolarType, m_Reynolds, m_Mach, m_NCrit, m_ASpec, m_XTop, m_XBot);
-        m_pctrlAnalysisName->setText(m_PlrName);
+        m_pleAnalysisName->setText(m_PlrName);
     }
 }
 
 
 void FoilPolarDlg::onFluiUnit()
 {
-    if(m_pctrlFluidUnit1->isChecked())
+    if(m_prbFluidUnit1->isChecked())
     {
         s_UnitType   = 1;
 
-        m_pctrlViscosity->setValue(s_Viscosity);
-        m_pctrlViscosityUnit->setText("m"+QString::fromUtf8("²")+"/s");
+        m_pdeViscosity->setValue(s_Viscosity);
+        m_plabViscosityUnit->setText("m"+QString::fromUtf8("²")+"/s");
 
-        m_pctrlDensity->setValue(s_Density);
-        m_pctrlDensityUnit->setText("kg/m3");
+        m_pdeDensity->setValue(s_Density);
+        m_plabDensityUnit->setText("kg/m3");
     }
     else
     {
         s_UnitType   = 2;
 
-        m_pctrlViscosity->setValue(s_Viscosity* 10.7182881);
-        m_pctrlViscosityUnit->setText("ft"+QString::fromUtf8("²")+"/s");
+        m_pdeViscosity->setValue(s_Viscosity* 10.7182881);
+        m_plabViscosityUnit->setText("ft"+QString::fromUtf8("²")+"/s");
 
-        m_pctrlDensity->setValue(s_Density*0.00194122);
-        m_pctrlDensityUnit->setText("slugs/ft3");
+        m_pdeDensity->setValue(s_Density*0.00194122);
+        m_plabDensityUnit->setText("slugs/ft3");
     }
 }
 
@@ -546,28 +546,28 @@ void FoilPolarDlg::readParams()
 {
     bool bOK;
     QString str;
-    str = m_pctrlReynolds->text();
+    str = m_pdeReynolds->text();
     str.replace(" ","");
     if(m_PolarType==Xfl::FIXEDAOAPOLAR) m_ASpec    = locale().toDouble(str, &bOK);
     else                                  m_Reynolds = locale().toDouble(str, &bOK);
 
-    m_Mach     = m_pctrlMach->value();
+    m_Mach     = m_pdeMach->value();
 //  m_pctrlMach->clear();
 //    m_pctrlMach->insert(str.setNum(m_Mach,'f',3));
 
-    m_NCrit  = m_pctrlNCrit->value();
-    m_XTop = m_pctrlTopTrans->value();
-    m_XBot = m_pctrlBotTrans->value();
+    m_NCrit  = m_pdeNCrit->value();
+    m_XTop = m_pdeTopTrans->value();
+    m_XBot = m_pdeBotTrans->value();
 
-    s_Mass = m_pctrlMass->value()/Units::kgtoUnit();
-    s_Chord = m_pctrlChord->value()/Units::mtoUnit();
-    s_Span = m_pctrlSpan->value()/Units::mtoUnit();
-    s_Viscosity = m_pctrlViscosity->value();
+    s_Mass = m_pdeMass->value()/Units::kgtoUnit();
+    s_Chord = m_pdeChord->value()/Units::mtoUnit();
+    s_Span = m_pdeSpan->value()/Units::mtoUnit();
+    s_Viscosity = m_pdeViscosity->value();
 
-    if(m_pctrlFluidUnit1->isChecked()) s_UnitType=1; else s_UnitType=2;
+    if(m_prbFluidUnit1->isChecked()) s_UnitType=1; else s_UnitType=2;
 
-    s_Viscosity = m_pctrlViscosity->value();
-    s_Density = m_pctrlDensity->value();
+    s_Viscosity = m_pdeViscosity->value();
+    s_Density = m_pdeDensity->value();
     if(s_UnitType==2)
     {
         s_Viscosity *= 1.0/10.7182881;
@@ -589,7 +589,7 @@ void FoilPolarDlg::onCalcReynolds()
         double area   = s_Chord*s_Span;
         double VCl05  = sqrt(2.0*lift/s_Density/area);
         double ReCl05 = s_Chord/s_Viscosity*VCl05;
-        m_pctrlReynolds->setValue(ReCl05);
+        m_pdeReynolds->setValue(ReCl05);
     }
 }
 

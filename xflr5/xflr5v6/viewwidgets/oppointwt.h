@@ -19,16 +19,14 @@
 
 *****************************************************************************/
 
-#ifndef OPPOINTWIDGET_H
-#define OPPOINTWIDGET_H
-
+#pragma once
 #include <QObject>
 #include <QWidget>
 
 #include <graph/graph.h>
 #include <xflobjects/objects3d/vector3d.h>
 #include <xflobjects/objects2d/oppoint.h>
-#include <xflcore/linestyle.h>
+#include <xflcore/ls2.h>
 
 
 class OpPointWidget : public QWidget
@@ -38,79 +36,76 @@ class OpPointWidget : public QWidget
     friend class XDirectTileWidget;
     friend class XDirectStyleDlg;
     friend class MainFrame;
-public:
-    OpPointWidget(QWidget *parent = nullptr);
+    public:
+        OpPointWidget(QWidget *parent = nullptr);
 
-public slots:
-    void onXDirectStyle();
-    void onShowNeutralLine();
-//    void onShowPanels();
-    void onResetFoilScale();
+    public slots:
+        void onXDirectStyle();
+        void onShowNeutralLine();
+        void onResetFoilScale();
 
-    void onShowPressure(bool bPressure);
-    void onShowBL(bool bBL);
+        void onShowPressure(bool bPressure);
+        void onShowBL(bool bBL);
 
-    void onGraphSettings();
+        void onGraphSettings();
 
-    void setNeutralLineColor(QColor clr){m_NeutralStyle.m_Color = clr;}
-    QColor neutralLineColor() const {return m_NeutralStyle.m_Color;}
-    void setGraph(Graph* pGraph){m_pCpGraph = pGraph;}
-    void loadSettings(QSettings &settings);
-    void saveSettings(QSettings &settings);
+        void setNeutralLineColor(QColor clr){m_NeutralStyle.m_Color = clr;}
+        QColor neutralLineColor() const {return m_NeutralStyle.m_Color;}
+        void setGraph(Graph* pGraph){m_pCpGraph = pGraph;}
+        void loadSettings(QSettings &settings);
+        void saveSettings(QSettings &settings);
 
-signals:
-    void graphChanged(Graph *);
+    signals:
+        void graphChanged(Graph *);
 
-protected:
-    void keyPressEvent(QKeyEvent *pEvent);
-    void keyReleaseEvent(QKeyEvent *pEvent);
-    void mouseMoveEvent(QMouseEvent *pEvent);
-    void mousePressEvent(QMouseEvent *pEvent);
-    void mouseReleaseEvent(QMouseEvent *pEvent);
-    void paintEvent(QPaintEvent *pEvent);
-    void resizeEvent(QResizeEvent *pEvent);
-    void wheelEvent(QWheelEvent *pEvent);
-    void mouseDoubleClickEvent(QMouseEvent *pEvent);
+    protected:
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void keyReleaseEvent(QKeyEvent *pEvent) override;
+        void mouseMoveEvent(QMouseEvent *pEvent) override;
+        void mousePressEvent(QMouseEvent *pEvent) override;
+        void mouseReleaseEvent(QMouseEvent *pEvent) override;
+        void paintEvent(QPaintEvent *pEvent) override;
+        void resizeEvent(QResizeEvent *pEvent) override;
+        void wheelEvent(QWheelEvent *pEvent) override;
+        void mouseDoubleClickEvent(QMouseEvent *pEvent) override;
 
 
-private:
-    void resetGraphScale();
-    void setFoilScale();
-    void paintOpPoint(QPainter &painter);
-    void paintGraph(QPainter &painter);
+    private:
+        void resetGraphScale();
+        void setFoilScale();
+        void paintOpPoint(QPainter &painter);
+        void paintGraph(QPainter &painter);
 
-    void paintPressure(QPainter &painter, double scalex, double scaley);
-    void paintBL(QPainter &painter, OpPoint* pOpPoint, double scalex, double scaley);
+        void paintPressure(QPainter &painter, double scalex, double scaley);
+        void paintBL(QPainter &painter, OpPoint* pOpPoint, double scalex, double scaley);
 
-    void showPressure(bool bPressure){m_bPressure = bPressure;}
-    void showBL(bool bBL){m_bBL = bBL;}
+        void showPressure(bool bPressure){m_bPressure = bPressure;}
+        void showBL(bool bBL){m_bBL = bBL;}
 
-    Vector3d mousetoReal(QPoint point);
+        Vector3d mousetoReal(QPoint const &point);
 
-private:
-    static MainFrame *s_pMainFrame;   /**< A void pointer to the instance of the MainFrame object. */
+    private:
+        static MainFrame *s_pMainFrame;   /**< A void pointer to the instance of the MainFrame object. */
 
-    double m_fScale, m_fYScale;
-    QPointF m_FoilOffset;
+        double m_fScale, m_fYScale;
+        QPointF m_FoilOffset;
 
-    LineStyle m_BLStyle;             /**< the index of the style used to draw the boundary layer */
-    LineStyle m_PressureStyle;       /**< the index of the style used to draw the pressure arrows*/
-    LineStyle m_NeutralStyle;        /**< the index of the style used to draw the neutral line */
+        LS2 m_BLStyle;             /**< the index of the style used to draw the boundary layer */
+        LS2 m_PressureStyle;       /**< the index of the style used to draw the pressure arrows*/
+        LS2 m_NeutralStyle;        /**< the index of the style used to draw the neutral line */
 
-    bool m_bTransFoil;
-    bool m_bTransGraph;
-    bool m_bAnimate;
-    bool m_bBL;                /**< true if the Boundary layer shoud be displayed */
-    bool m_bPressure;          /**< true if the pressure distirbution should be displayed */
-    bool m_bNeutralLine;
-//    bool m_bShowPanels;
-    bool m_bXPressed;                  /**< true if the X key is pressed */
-    bool m_bYPressed;                  /**< true if the Y key is pressed */
+        bool m_bTransFoil;
+        bool m_bTransGraph;
+        bool m_bAnimate;
+        bool m_bBL;                /**< true if the Boundary layer shoud be displayed */
+        bool m_bPressure;          /**< true if the pressure distirbution should be displayed */
+        bool m_bNeutralLine;
 
-    Graph *m_pCpGraph;
+        bool m_bXPressed;                  /**< true if the X key is pressed */
+        bool m_bYPressed;                  /**< true if the Y key is pressed */
 
-    QPoint m_LastPoint;
-//    QRect m_rGraphRect;
+        Graph *m_pCpGraph;
+
+        QPoint m_LastPoint;
 };
 
-#endif // OPPOINTWIDGET_H

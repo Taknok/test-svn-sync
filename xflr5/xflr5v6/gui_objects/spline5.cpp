@@ -33,9 +33,12 @@
 */
 Spline5::Spline5() :Spline()
 {
-    m_Style = 0;
-    m_Width = 1;
-    m_Color = QColor(70, 200, 120);
+    m_theStyle.m_PointStyle = Line::NOSYMBOL; //no points to start with
+    m_theStyle.m_Stipple = Line::SOLID;
+    m_theStyle.m_Width = 2;
+    m_theStyle.m_bIsVisible    = true;
+
+    m_theStyle.m_Color = QColor(70, 200, 120);
 }
 
 
@@ -75,7 +78,7 @@ void Spline5::drawCtrlPoints(QPainter &painter, double const &scalex, double con
         else
         {
             PointPen.setWidth(1);
-            PointPen.setColor(m_Color);
+            PointPen.setColor(m_theStyle.m_Color);
         }
         painter.setPen(PointPen);
         painter.drawEllipse(int(pt.x()-width), int(pt.y()-width), 2*width, 2*width);
@@ -97,7 +100,7 @@ void Spline5::drawOutputPoints(QPainter & painter, double const &scalex, double 
 
     int width = 2;
 
-    OutPen.setColor(m_Color);
+    OutPen.setColor(m_theStyle.m_Color);
     OutPen.setStyle(Qt::SolidLine);
     OutPen.setWidth(1);
     painter.setPen(OutPen);
@@ -123,9 +126,9 @@ void Spline5::drawSpline(QPainter & painter, double const &scalex, double const 
 
     QPen SplinePen;
 
-    SplinePen.setColor(m_Color);
-    SplinePen.setStyle(getStyle(m_Style));
-    SplinePen.setWidth(m_Width);
+    SplinePen.setColor(m_theStyle.m_Color);
+    SplinePen.setStyle(getStyle(m_theStyle.m_Stipple));
+    SplinePen.setWidth(m_theStyle.m_Width);
     painter.setPen(SplinePen);
 
     QPolygonF poly;

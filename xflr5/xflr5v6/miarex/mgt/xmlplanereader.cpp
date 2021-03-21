@@ -228,7 +228,7 @@ bool XMLPlaneReader::readWing(Wing &newwing, Vector3d &position, double &tiltang
         {
             QColor clr;
             readColor(clr);
-            newwing.setWingColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
+            newwing.setWingColor(clr);
         }
         else if (name().compare(QString("description"),     Qt::CaseInsensitive)==0)
         {
@@ -392,7 +392,7 @@ bool XMLPlaneReader::readBody(Body *pBody, Vector3d &position, double lengthUnit
         {
             QColor clr;
             readColor(clr);
-            pBody->setBodyColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
+            pBody->setBodyColor(clr);
         }
         else if (name().toString().compare(QString("description"), Qt::CaseInsensitive)==0)
         {

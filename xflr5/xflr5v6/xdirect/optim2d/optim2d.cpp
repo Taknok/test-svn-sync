@@ -605,7 +605,7 @@ void Optim2d::onStoreBestFoil()
         name = basename + QString::asprintf("_%d", iter);
         iter++;
     }
-    pNewFoil->setFoilName(name);
+    pNewFoil->setName(name);
     pNewFoil->setColor(randomColor(true));
     Objects2d::insertThisFoil(pNewFoil); // overwrites existing
     outputText("Saved the foil with name: "+name+"\n");
@@ -688,7 +688,7 @@ void Optim2d::onMakeSwarm(bool bShow)
             for (int isw=0; isw<m_pPSOTask->swarmSize(); isw++)
             {
                 Foil *pFoil = new Foil;
-                pFoil->setFoilName(QString::asprintf("Particle_%d", isw));
+                pFoil->setName(QString::asprintf("Particle_%d", isw));
                 pFoil->setColor(clr);
                 clr = clr.darker(117);
 
@@ -704,7 +704,7 @@ void Optim2d::onMakeSwarm(bool bShow)
             for (int isw=0; isw<m_pGATask->swarmSize(); isw++)
             {
                 Foil *pFoil = new Foil;
-                pFoil->setFoilName(QString::asprintf("Particle_%d", isw));
+                pFoil->setName(QString::asprintf("Particle_%d", isw));
                 pFoil->setColor(clr);
                 clr = clr.darker(117);
 
@@ -875,7 +875,7 @@ void Optim2d::setFoil(Foil const *pFoil)
     m_pFoil = pFoil;
     m_pBestFoil->copyFoil(m_pFoil, false);
     m_pBestFoil->setColor(QColor(151, 107, 73));
-    m_pBestFoil->setFoilName("Best foil");
+    m_pBestFoil->setName("Best foil");
 
     m_pFoilWt->addFoil(m_pFoil);
     m_pFoilWt->addFoil(m_pBestFoil);

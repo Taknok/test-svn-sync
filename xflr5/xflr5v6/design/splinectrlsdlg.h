@@ -42,45 +42,45 @@ class SplineCtrlsDlg : public QDialog
     Q_OBJECT
     friend class AFoil;
 
-public:
-    SplineCtrlsDlg(QWidget *pParent);
-    ~SplineCtrlsDlg();
+    public:
+        SplineCtrlsDlg(QWidget *pParent);
+        ~SplineCtrlsDlg();
 
-    void initDialog();
+        void initDialog();
 
-private slots:
-    void onOK();
-    void onUpdate();
-    void onButton(QAbstractButton *pButton);
+    private slots:
+        void onOK();
+        void onUpdate();
+        void onButton(QAbstractButton *pButton);
 
-private:
-    void keyPressEvent(QKeyEvent *event) override;
-    void showEvent(QShowEvent *event) override;
+    private:
+        void keyPressEvent(QKeyEvent *event) override;
+        void showEvent(QShowEvent *event) override;
 
-    void fillPointLists();
-    void readData();
-    void setControls();
-    void setupLayout();
-    void updateSplines();
+        void fillPointLists();
+        void readData();
+        void setControls();
+        void setupLayout();
+        void updateSplines();
 
 
-    IntEdit   *m_pieOutExtrados;
-    IntEdit   *m_pieOutIntrados;
-    QComboBox *m_pcbDegExtrados;
-    QComboBox *m_pcbDegIntrados;
-    QCheckBox *m_pchSymetric, *m_pchCloseLE, *m_pchCloseTE;
+        IntEdit   *m_pieOutExtrados;
+        IntEdit   *m_pieOutIntrados;
+        QComboBox *m_pcbDegExtrados;
+        QComboBox *m_pcbDegIntrados;
+        QCheckBox *m_pchSymetric, *m_pchCloseLE, *m_pchCloseTE;
 
-    QDialogButtonBox *m_pButtonBox;
+        QDialogButtonBox *m_pButtonBox;
 
-    QTableView *m_ptvUpperList, *m_ptvLowerList;
-    QStandardItemModel *m_pUpperListModel,*m_pLowerListModel;
-    FloatEditDelegate *m_pUpperFloatDelegate, *m_pLowerFloatDelegate;
+        QTableView *m_ptvUpperList, *m_ptvLowerList;
+        QStandardItemModel *m_pUpperListModel,*m_pLowerListModel;
+        FloatEditDelegate *m_pUpperFloatDelegate, *m_pLowerFloatDelegate;
 
-    QLineEdit *m_pleSFName;
+        QLineEdit *m_pleSFName;
 
-protected:
-    SplineFoil *m_pSF;
+    protected:
+        SplineFoil *m_pSF;
 
-    static AFoil *s_pAFoil;
+        static AFoil *s_pAFoil;
 };
 

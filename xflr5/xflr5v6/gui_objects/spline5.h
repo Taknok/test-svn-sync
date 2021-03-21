@@ -27,8 +27,7 @@
  */
 
 
-#ifndef SPLINE5_H
-#define SPLINE5_H
+#pragma once
 
 
 #include <QPainter>
@@ -52,45 +51,6 @@ public:
 
     void exportSpline(QTextStream &out, bool bExtrados);
 
-
-    /** Sets the spline's drawing style
-    *@param style the index of the spline's style
-    */
-    void setStyle(int style){m_Style = style;}
-
-
-    /** Sets the spline's drawing width
-    *@param width the width of the spline
-    */
-    void setWidth(int width) {m_Width = width;}
-
-
-    /**
-    *Sets the spline drawing color
-    *@param color the spline's color
-    */
-    void setColor(QColor color) {m_Color = color;}
-
-
-    /**
-    *Sets the spline's style, width and color
-    *@param style the spline's drawing style
-    *@param width the width of the spline
-    *@param color the spline's color
-    */
-    void setSplineStyle(int style, int width, QColor color)
-    {
-        m_Width = width;
-        m_Style = style;
-        m_Color = color;
-    }
-
-    QColor color() const {return m_Color;}
-
-
-private:
-    QColor m_Color;                  /**< the spline's display color */
 };
 
 
-#endif

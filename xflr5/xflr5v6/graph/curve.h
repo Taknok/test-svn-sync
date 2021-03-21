@@ -81,25 +81,33 @@ public:
      * Sets the visibility of the curve in the graphs
      *@param bVisible true if the curve is to be displayed, false otherwise
      */
-    void setVisible(bool bVisible){m_curveStyle.m_bIsVisible = bVisible;}
+    void setVisible(bool bVisible){m_theStyle.m_bIsVisible = bVisible;}
 
     /**
      * Sets the curve's color
      * @param clr the new QColor value for the curve
      */
-    void setColor(QColor const &clr) {m_curveStyle.m_Color = clr;}
+    void setColor(QColor const &clr) {m_theStyle.m_Color = clr;}
 
     /**
      * Sets the curve's style
      * @param nStyle the index of the new curve's style
      */
-    void setStipple(int nStyle){ m_curveStyle.m_Stipple = nStyle;}
+    void setStipple(int nStyle){ m_theStyle.setStipple(nStyle);}
 
-    void setLineStyle(LineStyle lineStyle) { m_curveStyle = lineStyle; }
+    void setLineStyle(LS2 const &ls2) {m_theStyle=ls2;}
+
+    void setLineStyle(LineStyle const &style)
+    {
+        m_theStyle.setStipple(style.m_Stipple);
+        m_theStyle.m_Width = style.m_Width;
+        m_theStyle.m_Color = style.m_Color;
+        m_theStyle.setPointStyle(style.m_PointStyle);
+    }
 
     void setLineStyle(int Style, int Width, QColor color, int PointStyle, bool bVisible);
 
-    void setPointStyle(int pointstyle) {m_curveStyle.m_PointStyle=pointstyle;}
+    void setPointStyle(int pointstyle) {m_theStyle.setPointStyle(pointstyle);}
 
     /**
      * Sets the index of the currently selected point of this curve
@@ -111,7 +119,7 @@ public:
      *Sets the curve's width
      *@param nWidth the new curve's width in pixels
      **/
-    void setWidth(int nWidth){m_curveStyle.m_Width = nWidth;}
+    void setWidth(int nWidth){m_theStyle.m_Width = nWidth;}
 
     /**
      * Sets the curve title
@@ -121,10 +129,10 @@ public:
 
 
     /** Return the visibility of the curve as a boolean. */
-    bool isVisible() const {return m_curveStyle.m_bIsVisible;}
+    bool isVisible() const {return m_theStyle.m_bIsVisible;}
 
     /** Return the visibility of the points as a boolean. */
-    bool pointsVisible() const {return m_curveStyle.m_PointStyle>0; }
+    bool pointsVisible() const {return m_theStyle.m_PointStyle>0; }
 
     /** Returns the Curve's number of points. */
     int size() const {return m_x.count();}
@@ -133,15 +141,15 @@ public:
     int count() const {return m_x.size();}
 
     /** Returns the Curve style*/
-    int style() const {return m_curveStyle.m_Stipple;}
+    int style() const {return m_theStyle.m_Stipple;}
 
     /** Returns the Curve width*/
-    int width() const {return m_curveStyle.m_Width;}
+    int width() const {return m_theStyle.m_Width;}
 
     /** Returns the Curve color*/
-    QColor const& color() const {return m_curveStyle.m_Color;}
+    QColor const& color() const {return m_theStyle.m_Color;}
 
-    int pointStyle() const {return m_curveStyle.m_PointStyle;}
+    int pointStyle() const {return m_theStyle.m_PointStyle;}
 
     /** Returns the Curve's title */
     void curveName(QString &string) const {string =  m_CurveName;}
@@ -165,7 +173,7 @@ private:
     QString m_CurveName;                       /**< the curves's name */
     int m_iSelected;                           /**< the index of the curve's currently selected point, or -1 if none is selected */
     Graph *m_pParentGraph;                      /**< a pointer to the parent graph to which this curve belongs */
-    LineStyle m_curveStyle;
+    LS2 m_theStyle;
 };
 
 

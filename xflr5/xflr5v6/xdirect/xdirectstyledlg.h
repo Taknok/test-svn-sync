@@ -19,13 +19,12 @@
 
 *****************************************************************************/
 
-#ifndef XDIRECTSTYLEDLG_H
-#define XDIRECTSTYLEDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QKeyEvent>
 
-#include <xflcore/linestyle.h>
+#include <xflcore/ls2.h>
 
 
 class LineBtn;
@@ -36,27 +35,27 @@ class XDirectStyleDlg : public QDialog
     Q_OBJECT
     friend class OpPointWidget;
 
-public:
-    XDirectStyleDlg(OpPointWidget *pParent=nullptr);
+    public:
+        XDirectStyleDlg(OpPointWidget *pParent=nullptr);
 
-private slots:
-    void onRestoreDefaults();
-    void onNeutralStyle();
-    void onBLStyle();
-    void onPressureStyle();
+        private slots:
+        void onRestoreDefaults();
+        void onNeutralStyle();
+        void onBLStyle();
+        void onPressureStyle();
 
-private:
-    void keyPressEvent(QKeyEvent *pEvent);
-    void setupLayout();
+    private:
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void setupLayout();
 
-    OpPointWidget *m_pOpPointWt;
-    LineBtn *m_pctrlBL, *m_pctrlPressure, *m_pctrlNeutral;
-    QPushButton *m_pctrlOKButton;
+    private:
+        OpPointWidget *m_pOpPointWt;
+        LineBtn *m_plbBL, *m_plbPressure, *m_plbNeutral;
+        QPushButton *m_ppbOKButton;
 
-    LineStyle m_FoilStyle;
-    LineStyle m_BLStyle;
-    LineStyle m_PressureStyle;
-    LineStyle m_NeutralStyle;
+        LS2 m_FoilStyle;
+        LS2 m_BLStyle;
+        LS2 m_PressureStyle;
+        LS2 m_NeutralStyle;
 };
 
-#endif // XDIRECTSTYLEDLG_H

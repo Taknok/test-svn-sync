@@ -214,9 +214,7 @@ private:
     double m_fScale;           /**< the current scale for the Foil display */
     double m_fYScale;
 
-    int m_ReflectedStyle;      /**< the index of the reflected curve's style */
-    int m_ReflectedWidth;      /**< the reflected curve's width */
-    QColor m_ReflectedClr;     /**< the reflected curve's color */
+    LS2 m_ReflectedStyle;      /**< the reflected curve's style */
 
     Graph m_QGraph;           /**< the velocity QGraph object */
     Graph *m_pCurGraph;       /**< = &m_QGraph if the mouse hivers over the graph, false otherwise */

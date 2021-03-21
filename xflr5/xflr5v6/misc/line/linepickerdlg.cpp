@@ -103,11 +103,17 @@ void LinePickerDlg::initDialog(LineStyle const &ls, bool bAcceptPointStyle, bool
 }
 
 
-void LinePickerDlg::initDialog(int pointStyle, int lineStyle, int lineWidth, QColor lineColor, bool bAcceptPointStyle, bool bFlowDownEnable)
+void LinePickerDlg::initDialog(LS2 const &ls, bool bAcceptPointStyle, bool bFlowDownEnable)
+{
+    initDialog(ls.m_PointStyle, ls.m_Stipple, ls.m_Width, ls.m_Color, bAcceptPointStyle, bFlowDownEnable);
+}
+
+
+void LinePickerDlg::initDialog(int pointStyle, int linestipple, int lineWidth, QColor lineColor, bool bAcceptPointStyle, bool bFlowDownEnable)
 {
     m_bAcceptPointStyle = bAcceptPointStyle;
-    m_LineStyle.m_PointStyle = pointStyle;
-    m_LineStyle.m_Stipple = lineStyle;
+    m_LineStyle.setPointStyle(pointStyle);
+    m_LineStyle.setStipple(linestipple);
     m_LineStyle.m_Width = lineWidth;
     m_LineStyle.m_Color = lineColor;
     initDialog(bFlowDownEnable);
@@ -176,7 +182,7 @@ void LinePickerDlg::reject()
 
 void LinePickerDlg::onPointStyle(int val)
 {
-    m_LineStyle.m_PointStyle = val;
+    m_LineStyle.setPointStyle(val);
     fillBoxes();
     repaint();
     m_pctrlOKButton->setFocus();
@@ -185,7 +191,7 @@ void LinePickerDlg::onPointStyle(int val)
 
 void LinePickerDlg::onLineStyle(int val)
 {
-    m_LineStyle.m_Stipple = val;
+    m_LineStyle.setStipple(val);
     fillBoxes();
     repaint();
     m_pctrlOKButton->setFocus();
@@ -228,7 +234,7 @@ void LinePickerDlg::setLineColor(QColor color)
 
 void LinePickerDlg::setPointStyle(int pointStyle)
 {
-    m_LineStyle.m_PointStyle = pointStyle;
+    m_LineStyle.setPointStyle(pointStyle);
     fillBoxes();
     repaint();
 }
@@ -236,7 +242,7 @@ void LinePickerDlg::setPointStyle(int pointStyle)
 
 void LinePickerDlg::setLineStipple(int lineStyle)
 {
-    m_LineStyle.m_Stipple = lineStyle;
+    m_LineStyle.setStipple(lineStyle);
     fillBoxes();
     repaint();
 }

@@ -1819,10 +1819,7 @@ void XDirect::onDefinePolar()
 
         if(Settings::isAlignedChildrenStyle())
         {
-            m_pCurPolar->m_theStyle.setStipple(m_pCurFoil->m_theStyle.m_Stipple);
-            m_pCurPolar->m_theStyle.m_Width = m_pCurFoil->m_theStyle.m_Width;
-            m_pCurPolar->setColor(m_pCurFoil->red(), m_pCurFoil->green(), m_pCurFoil->blue(), m_pCurFoil->alphaChannel());
-            m_pCurPolar->m_theStyle.setPointStyle(m_pCurFoil->m_theStyle.m_PointStyle);
+            m_pCurPolar->setTheStyle(m_pCurFoil->theStyle());
         }
         else
         {
@@ -3194,10 +3191,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     if(Settings::isAlignedChildrenStyle())
     {
         pFoil = Objects2d::foil(FoilName);
-        pPolar->m_theStyle.setStipple(pFoil->m_theStyle.m_Stipple);
-        pPolar->m_theStyle.m_Width = pFoil->m_theStyle.m_Width;
-        pPolar->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
-        pPolar->m_theStyle.setPointStyle(pFoil->m_theStyle.m_PointStyle);
+        pPolar->setTheStyle(pFoil->theStyle());
     }
     else
     {
@@ -3354,7 +3348,7 @@ void XDirect::onInterpolateFoils()
     if(ifDlg.exec() == QDialog::Accepted)
     {
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->setFoilName(ifDlg.m_NewFoilName);
+        pNewFoil->setName(ifDlg.m_NewFoilName);
 
         if(addNewFoil(pNewFoil))
         {
@@ -3394,7 +3388,7 @@ void XDirect::onNacaFoils()
     updateView();
 
     Foil *pNacaFoil = new Foil;
-    pNacaFoil->setFoilName("Naca0009");
+    pNacaFoil->setName("Naca0009");
     m_XFoil.naca4(9, 50);
     for (int j=0; j< m_XFoil.nb; j++)
     {
@@ -3423,7 +3417,7 @@ void XDirect::onNacaFoils()
         str = "NACA "+ str;
 
         setRandomFoilColor(pNacaFoil, !Settings::isLightTheme());
-        pNacaFoil->setFoilName(str);
+        pNacaFoil->setName(str);
 
         setCurOpp(pCurOpp);
 
@@ -5024,7 +5018,7 @@ Foil* XDirect::addNewFoil(Foil *pFoil)
 
     if(renDlg.exec() != QDialog::Rejected)
     {
-        pFoil->setFoilName(renDlg.newName());
+        pFoil->setName(renDlg.newName());
         Objects2d::insertThisFoil(pFoil);
 
         return pFoil;

@@ -35,7 +35,7 @@
 
 FoilDesignWt::FoilDesignWt(QWidget *pParent) : Section2dWidget(pParent)
 {
-    m_bNeutralLine = true;
+    m_NeutralStyle.m_bIsVisible = true;
     m_bLECircle      = false;
     m_LERad   = 1.0;
 
@@ -112,18 +112,18 @@ void FoilDesignWt::paintSplines(QPainter &painter)
 {
     painter.save();
 
-    QPen CtrlPen;
-
-    QBrush FillBrush(Settings::s_BackgroundColor);
-    painter.setBrush(FillBrush);
-
     if(m_pSF->isVisible())
     {
-        m_pSF->drawFoil(painter, m_fScale, m_fScale*m_fScaleY, m_ptOffset);
+        QPen CtrlPen;
+
+        QBrush FillBrush(Settings::s_BackgroundColor);
+        painter.setBrush(FillBrush);
 
         CtrlPen.setStyle(Qt::SolidLine);
-        CtrlPen.setColor(m_pSF->splineFoilColor());
+        CtrlPen.setColor(m_pSF->color());
         painter.setPen(CtrlPen);
+
+        m_pSF->drawFoil(painter, m_fScale, m_fScale*m_fScaleY, m_ptOffset);
 
         m_pSF->drawCtrlPoints(painter, m_fScale,m_fScale*m_fScaleY, m_ptOffset);
 
@@ -158,7 +158,7 @@ void FoilDesignWt::paintFoils(QPainter &painter)
         Foil const*pFoil = Objects2d::foilAt(k);
         if (pFoil->isVisible())
         {
-            FoilPen.setStyle(getStyle(pFoil->lineStyle()));
+            FoilPen.setStyle(getStyle(pFoil->lineStipple()));
             FoilPen.setWidth(pFoil->lineWidth());
             FoilPen.setColor(colour(pFoil));
             painter.setPen(FoilPen);
@@ -236,9 +236,9 @@ void FoilDesignWt::paintLegend(QPainter &painter)
 
         if(m_pSF && m_pSF->isVisible())
         {
-            LegendPen.setColor(m_pSF->splineFoilColor());
-            LegendPen.setStyle(getStyle(m_pSF->splineFoilStyle()));
-            LegendPen.setWidth(m_pSF->splineFoilWidth());
+            LegendPen.setColor(m_pSF->color());
+            LegendPen.setStyle(getStyle(m_pSF->lineStipple()));
+            LegendPen.setWidth(m_pSF->lineWidth());
 
             painter.setPen(LegendPen);
             painter.drawLine(Place.x(), Place.y() + ypos*k, Place.x() + LegendSize, Place.y() + ypos*k);
@@ -265,7 +265,7 @@ void FoilDesignWt::paintLegend(QPainter &painter)
                 if(strong.length())
                 {
                     LegendPen.setColor(colour(pRefFoil));
-                    LegendPen.setStyle(getStyle(pRefFoil->lineStyle()));
+                    LegendPen.setStyle(getStyle(pRefFoil->lineStipple()));
                     LegendPen.setWidth(pRefFoil->lineWidth());
 
                     painter.setPen(LegendPen);

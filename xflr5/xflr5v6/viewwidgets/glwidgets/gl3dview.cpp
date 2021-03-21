@@ -1968,7 +1968,7 @@ void gl3dView::paintBody(Body const *pBody)
         m_ShaderProgramSurface.setUniformValue(m_pvmMatrixLocationSurface, m_pvmMatrix);
         if(GLLightDlg::s_Light.m_bIsLightOn) m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 1);
         else                                 m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 0);
-        m_ShaderProgramSurface.setUniformValue(m_ColorLocationSurface, color(pBody->bodyColor()));
+        m_ShaderProgramSurface.setUniformValue(m_ColorLocationSurface, pBody->bodyColor());
         m_ShaderProgramSurface.enableAttributeArray(m_VertexLocationSurface);
         m_ShaderProgramSurface.enableAttributeArray(m_NormalLocationSurface);
         m_ShaderProgramSurface.setAttributeBuffer(m_VertexLocationSurface, GL_FLOAT, 0,                  3, 8 * sizeof(GLfloat));
@@ -2176,7 +2176,7 @@ void gl3dView::paintWing(int iWing, Wing const *pWing)
             m_ShaderProgramSurface.setUniformValue(m_pvmMatrixLocationSurface, m_pvmMatrix);
             if(GLLightDlg::s_Light.m_bIsLightOn) m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 1);
             else                                 m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 0);
-            m_ShaderProgramSurface.setUniformValue(m_ColorLocationSurface, color(pWing->wingColor()));
+            m_ShaderProgramSurface.setUniformValue(m_ColorLocationSurface, pWing->wingColor());
 
             m_ShaderProgramSurface.enableAttributeArray(m_VertexLocationSurface);
             m_ShaderProgramSurface.enableAttributeArray(m_NormalLocationSurface);

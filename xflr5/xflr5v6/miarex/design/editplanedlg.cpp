@@ -1326,7 +1326,7 @@ void EditPlaneDlg::readWingTree(Wing *pWing, Vector3d &wingLE, double &tiltAngle
                     else if (field.compare("green", Qt::CaseInsensitive)==0)  g = dataIndex.data().toInt();
                     else if (field.compare("blue", Qt::CaseInsensitive)==0)   b = dataIndex.data().toInt();
                     else if (field.compare("alpha", Qt::CaseInsensitive)==0)  a = dataIndex.data().toInt();
-                    pWing->setWingColor(ObjectColor(r,g,b,a));
+                    pWing->setWingColor({r,g,b,a});
                     subIndex = subIndex.sibling(subIndex.row()+1,0);
                 }
                 while(subIndex.isValid());
@@ -1418,7 +1418,7 @@ void EditPlaneDlg::readBodyTree(Body *pBody, QModelIndex indexLevel)
 
                     dataIndex = subIndex.sibling(subIndex.row(),2);
 
-                    if(field.compare("red", Qt::CaseInsensitive)==0)         pBody->bodyColor().setRed(dataIndex.data().toInt());
+                    if     (field.compare("red", Qt::CaseInsensitive)==0)    pBody->bodyColor().setRed(dataIndex.data().toInt());
                     else if(field.compare("green", Qt::CaseInsensitive)==0)  pBody->bodyColor().setGreen(dataIndex.data().toInt());
                     else if(field.compare("blue",  Qt::CaseInsensitive)==0)  pBody->bodyColor().setBlue(dataIndex.data().toInt());
                     else if(field.compare("alpha", Qt::CaseInsensitive)==0)  pBody->bodyColor().setAlpha(dataIndex.data().toInt());

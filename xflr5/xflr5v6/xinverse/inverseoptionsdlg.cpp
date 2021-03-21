@@ -52,19 +52,19 @@ void InverseOptionsDlg::setupLayout()
         lab4->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
 
-        m_pctrlRefFoil   = new LineBtn(this);
-        m_pctrlModFoil   = new LineBtn(this);
-        m_pctrlSpline    = new LineBtn(this);
-        m_pctrlReflected = new LineBtn(this);
+        m_plbRefFoil   = new LineBtn(this);
+        m_plbModFoil   = new LineBtn(this);
+        m_plbSpline    = new LineBtn(this);
+        m_plbReflected = new LineBtn(this);
 
         pStyleLayout->addWidget(lab1,1,1);
         pStyleLayout->addWidget(lab2,2,1);
         pStyleLayout->addWidget(lab3,3,1);
         pStyleLayout->addWidget(lab4,4,1);
-        pStyleLayout->addWidget(m_pctrlRefFoil,1,2);
-        pStyleLayout->addWidget(m_pctrlModFoil,2,2);
-        pStyleLayout->addWidget(m_pctrlSpline,3,2);
-        pStyleLayout->addWidget(m_pctrlReflected,4,2);
+        pStyleLayout->addWidget(m_plbRefFoil,1,2);
+        pStyleLayout->addWidget(m_plbModFoil,2,2);
+        pStyleLayout->addWidget(m_plbSpline,3,2);
+        pStyleLayout->addWidget(m_plbReflected,4,2);
     }
 
     QHBoxLayout *pCommandButtons = new QHBoxLayout;
@@ -89,32 +89,31 @@ void InverseOptionsDlg::setupLayout()
 
     setLayout(pMainLayout);
 
-    connect(m_pctrlRefFoil,   SIGNAL(clickedLB()), this, SLOT(onRefStyle()));
-    connect(m_pctrlModFoil,   SIGNAL(clickedLB()), this, SLOT(onModStyle()));
-    connect(m_pctrlSpline,    SIGNAL(clickedLB()), this, SLOT(onSplineStyle()));
-    connect(m_pctrlReflected, SIGNAL(clickedLB()), this, SLOT(onReflectedStyle()));
+    connect(m_plbRefFoil,   SIGNAL(clickedLB()), this, SLOT(onRefStyle()));
+    connect(m_plbModFoil,   SIGNAL(clickedLB()), this, SLOT(onModStyle()));
+    connect(m_plbSpline,    SIGNAL(clickedLB()), this, SLOT(onSplineStyle()));
+    connect(m_plbReflected, SIGNAL(clickedLB()), this, SLOT(onReflectedStyle()));
 }
 
 
 void InverseOptionsDlg::initDialog()
 {
-    m_pctrlRefFoil->setTheStyle(m_pXInverse->m_pRefFoil->lineStyle(), m_pXInverse->m_pRefFoil->lineWidth(), colour(m_pXInverse->m_pRefFoil),0);
-    m_pctrlModFoil->setTheStyle(m_pXInverse->m_pModFoil->lineStyle(), m_pXInverse->m_pModFoil->lineWidth(), colour(m_pXInverse->m_pModFoil),0);
-    m_pctrlSpline->setTheStyle(m_pXInverse->m_Spline.style(), m_pXInverse->m_Spline.width(), m_pXInverse->m_Spline.color(),0);
-    m_pctrlReflected->setTheStyle(m_pXInverse->m_ReflectedStyle, m_pXInverse->m_ReflectedWidth, m_pXInverse->m_ReflectedClr,0);
+    m_plbRefFoil->setTheStyle(m_pXInverse->m_pRefFoil->theStyle());
+    m_plbModFoil->setTheStyle(m_pXInverse->m_pModFoil->theStyle());
+    m_plbSpline->setTheStyle(m_pXInverse->m_Spline.theStyle());
+    m_plbReflected->setTheStyle(m_pXInverse->m_ReflectedStyle);
 }
 
 
 void InverseOptionsDlg::onRefStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(m_pXInverse->m_pRefFoil->pointStyle(), m_pXInverse->m_pRefFoil->lineStyle(), m_pXInverse->m_pRefFoil->lineWidth(),
-                   colour(m_pXInverse->m_pRefFoil), false, false);
+    dlg.initDialog(m_pXInverse->m_pRefFoil->theStyle(), false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_pctrlRefFoil->setTheStyle(dlg.theStyle());
-        m_pXInverse->m_pRefFoil->setTheStyle(dlg.lineStipple(), dlg.lineWidth(), dlg.lineColor(), dlg.pointStyle());
+        m_plbRefFoil->setTheStyle(dlg.theStyle());
+        m_pXInverse->m_pRefFoil->setTheStyle(dlg.theStyle());
     }
 }
 
@@ -122,13 +121,12 @@ void InverseOptionsDlg::onRefStyle()
 void InverseOptionsDlg::onModStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(m_pXInverse->m_pModFoil->pointStyle(),m_pXInverse->m_pModFoil->lineStyle(), m_pXInverse->m_pModFoil->lineWidth(),
-                   colour(m_pXInverse->m_pModFoil), false, false);
+    dlg.initDialog(m_pXInverse->m_pModFoil->theStyle(), false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_pctrlModFoil->setTheStyle(dlg.theStyle());
-        m_pXInverse->m_pModFoil->setTheStyle(dlg.lineStipple(), dlg.lineWidth(), dlg.lineColor(), dlg.pointStyle());
+        m_plbModFoil->setTheStyle(dlg.theStyle());
+        m_pXInverse->m_pModFoil->setTheStyle(dlg.theStyle());
     }
 }
 
@@ -136,14 +134,12 @@ void InverseOptionsDlg::onModStyle()
 void InverseOptionsDlg::onSplineStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0, m_pXInverse->m_Spline.style(), m_pXInverse->m_Spline.width(), m_pXInverse->m_Spline.color(), false, false);
+    dlg.initDialog(m_pXInverse->m_Spline.theStyle(), false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_pctrlSpline->setTheStyle(dlg.lineStipple(),dlg.lineWidth(),dlg.lineColor(),0);
-        m_pXInverse->m_Spline.setStyle(dlg.lineStipple());
-        m_pXInverse->m_Spline.setWidth(dlg.lineWidth());
-        m_pXInverse->m_Spline.setColor(dlg.lineColor());
+        m_plbSpline->setTheStyle(dlg.lineStipple(),dlg.lineWidth(),dlg.lineColor(),0);
+        m_pXInverse->m_Spline.setTheStyle(dlg.theStyle());
     }
 }
 
@@ -151,14 +147,12 @@ void InverseOptionsDlg::onSplineStyle()
 void InverseOptionsDlg::onReflectedStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0, m_pXInverse->m_ReflectedStyle, m_pXInverse->m_ReflectedWidth, m_pXInverse->m_ReflectedClr, false, false);
+    dlg.initDialog(m_pXInverse->m_ReflectedStyle, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_pctrlReflected->setTheStyle(dlg.lineStipple(),dlg.lineWidth(),dlg.lineColor(),0);
-        m_pXInverse->m_ReflectedStyle = dlg.lineStipple();
-        m_pXInverse->m_ReflectedWidth = dlg.lineWidth();
-        m_pXInverse->m_ReflectedClr   = dlg.lineColor();
+        m_plbReflected->setTheStyle(dlg.lineStipple(),dlg.lineWidth(),dlg.lineColor(),0);
+        m_pXInverse->m_ReflectedStyle = dlg.ls2();
     }
 }
 

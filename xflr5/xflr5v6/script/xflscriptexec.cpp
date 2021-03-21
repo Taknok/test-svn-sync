@@ -90,9 +90,7 @@ void XflScriptExec::makeFoilAnalysisList()
             if(pPolar)
             {
                 pPolar->setFoilName(pFoil->name());
-                pPolar->setStipple(pFoil->lineStyle());
-                pPolar->setWidth(pFoil->lineWidth());
-                pPolar->setColor(pFoil->foilColor().red(), pFoil->foilColor().green(), pFoil->foilColor().blue());
+                pPolar->setTheStyle(pFoil->theStyle());
                 pPolar->setAutoPolarName();
 
                 if(pPolar->m_Reynolds<0.1)

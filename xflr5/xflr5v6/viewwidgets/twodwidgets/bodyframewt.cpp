@@ -111,7 +111,7 @@ void BodyFrameWt::drawFrameLines()
     //    xinc = 0.1;
     hinc = 1.0/double(nh-1);
 
-    QPen framePen(color(m_pBody->bodyColor()));
+    QPen framePen(m_pBody->bodyColor());
     framePen.setWidth(2);
     painter.setPen(framePen);
 
@@ -204,7 +204,7 @@ void BodyFrameWt::drawFramePoints()
     QPainter painter(this);
     painter.save();
 
-    QPen pointPen(color(m_pBody->bodyColor()));
+    QPen pointPen(m_pBody->bodyColor());
 
 
     for (int k=0; k<m_pFrame->pointCount();k++)
@@ -217,12 +217,12 @@ void BodyFrameWt::drawFramePoints()
         else if(Frame::highlightedIndex()==k)
         {
             pointPen.setWidth(4);
-            pointPen.setColor(color(m_pBody->bodyColor()).lighter());
+            pointPen.setColor(m_pBody->bodyColor().lighter());
         }
         else
         {
             pointPen.setWidth(2);
-            pointPen.setColor(color(m_pBody->bodyColor()));
+            pointPen.setColor(m_pBody->bodyColor());
         }
 
         painter.setPen(pointPen);
