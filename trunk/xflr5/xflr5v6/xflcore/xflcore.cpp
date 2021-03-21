@@ -1235,7 +1235,7 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         if(ArchiveFormat>=1004)
         {
             ar >> p;
-            pFoil->m_theStyle.m_PointStyle = p;
+            pFoil->m_theStyle.setPointStyle(p);
             ar >> p;
             if(p) pFoil->m_bCenterLine = true; else pFoil->m_bCenterLine = false;
         }
@@ -1309,7 +1309,10 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
 bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
 {
     int i=0, j=0, n=0, l=0, k=0;
-    int ArchiveFormat=0;// identifies the format of the file
+    // identifies the format of the file
+    // 1005: new linestyle format
+
+    int ArchiveFormat=1005;
     float f=0;
 
     if(bIsStoring)
@@ -1317,7 +1320,7 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         //write variables
         n = pPolar->m_Alpha.size();
 
-        ar << 1004; // identifies the format of the file
+        ar << ArchiveFormat; // identifies the format of the file
         // 1004 : added XCp
         // 1003 : re-instated NCrit, XtopTr and XBotTr with polar
         writeString(ar, pPolar->m_FoilName);
@@ -1334,11 +1337,12 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         ar << float(pPolar->m_ASpec);
         ar << n << float(pPolar->m_ACrit);
         ar << float(pPolar->m_XTop) << float(pPolar->m_XBot);
+        /*
         writeColor(ar, pPolar->m_red, pPolar->m_green, pPolar->m_blue);
-
         ar << pPolar->m_Style << pPolar->m_Width;
         if (pPolar->m_bIsVisible)  ar<<1; else ar<<0;
-        ar<<pPolar->m_PointStyle;
+        ar<<pPolar->m_PointStyle;*/
+        pPolar->m_theStyle.serializeXfl(ar, bIsStoring);
 
         for (i=0; i< pPolar->m_Alpha.size(); i++){
             ar << float(pPolar->m_Alpha[i]) << float(pPolar->m_Cd[i]) ;
@@ -1403,23 +1407,28 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         ar >> f; pPolar->m_XTop = double(f);
         ar >> f; pPolar->m_XBot = double(f);
 
-        readColor(ar, pPolar->m_red, pPolar->m_green, pPolar->m_blue);
-
-        ar >> pPolar->m_Style >> pPolar->m_Width;
-
-        if(ArchiveFormat>=1002)
+        if(ArchiveFormat<1005)
         {
-            ar >> l;
-            if(l!=0 && l!=1 )
+            int r,g,b;
+            readColor(ar, r,g,b);
+            pPolar->setColor({r,g,b});
+            ar >>n;
+            pPolar->m_theStyle.setStipple(n);
+            ar >> pPolar->m_theStyle.m_Width;
+            if(ArchiveFormat>=1002)
             {
-                return false;
+                ar >> l;
+                if(l!=0 && l!=1 )
+                {
+                    return false;
+                }
+                if (l) pPolar->m_theStyle.m_bIsVisible =true; else pPolar->m_theStyle.m_bIsVisible = false;
             }
-            if (l) pPolar->m_bIsVisible =true; else pPolar->m_bIsVisible = false;
+            ar >> l;  pPolar->m_theStyle.setPointStyle(l);
         }
+        else pPolar->m_theStyle.serializeXfl(ar, bIsStoring);
 
-        ar >> l;  pPolar->m_PointStyle =l;
-
-        bool bExists;
+        bool bExists=false;
         for (i=0; i< n; i++)
         {
             ar >> Alpha >> Cd >> Cdp >> Cl >> Cm;

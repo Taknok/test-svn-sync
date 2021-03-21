@@ -19,12 +19,13 @@
 
 *****************************************************************************/
 
+#include <QRandomGenerator>
 
 #include "oppoint.h"
 #include "foil.h"
 #include "polar.h"
 #include <xflobjects/objects_global.h>
-#include <QtDebug>
+
 
 
 
@@ -64,15 +65,15 @@ OpPoint::OpPoint()
 //    memset(x,  0, sizeof(x));
 //    memset(y,  0, sizeof(y));
 
-    m_bIsVisible = true;
-    m_PointStyle = 0;
-    m_Style = 0;
-    m_Width = 1;
+    m_theStyle.m_bIsVisible = true;
+    m_theStyle.m_PointStyle = Line::NOSYMBOL;
+    m_theStyle.m_Stipple = Line::SOLID;
+    m_theStyle.m_Width = 1;
 
-    m_red   = int((double(rand())/double(RAND_MAX))*200);
-    m_green = int((double(rand())/double(RAND_MAX))*200);
-    m_blue  = int((double(rand())/double(RAND_MAX))*200);
-    m_alphaChannel = 255;
+    m_theStyle.m_Color.setHsv(QRandomGenerator::global()->bounded(360),
+               QRandomGenerator::global()->bounded(55)+30,
+               QRandomGenerator::global()->bounded(55)+150);
+
 }
 
 /**
@@ -265,24 +266,6 @@ void OpPoint::getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bDa
 }
 
 
-void OpPoint::getColor(int &r, int &g, int &b, int &a) const
-{
-    r = m_red;
-    g = m_green;
-    b = m_blue;
-    a = m_alphaChannel;
-}
-
-
-void OpPoint::setColor(int r, int g, int b, int a)
-{
-    m_red          = r;
-    m_green        = g;
-    m_blue         = b;
-    m_alphaChannel = a;
-}
-
-
 QString OpPoint::opPointName() const
 {
     QString name;
@@ -371,16 +354,19 @@ bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
         }
         if(ArchiveFormat>=100002)
         {
-            ar>>m_Style>>m_Width;
-            readCOLORREF(ar, m_red,m_green,m_blue);
-
+            ar>>n;
+            m_theStyle.setStipple(n);
+            ar>>m_theStyle.m_Width;
+            int r,g,b;
+            readCOLORREF(ar, r,g,b);
+            m_theStyle.m_Color={r,g,b};
             ar >> a ;
             if(a!=0 && a!=1) return false;
-            if(a) m_bIsVisible = true; else m_bIsVisible = false;
+            if(a) m_theStyle.m_bIsVisible = true; else m_theStyle.m_bIsVisible = false;
 
-            ar >> a ;
+            ar >> a;
             if(a!=0 && a!=1) return false;
-            m_PointStyle = a;
+            m_theStyle.setPointStyle(a);
         }
     }
     return true;
@@ -393,24 +379,30 @@ bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveFormat)
+bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring)
 {
     bool boolean;
     int k=0;
     float f0=0,f1=0;
     double dble=0;
 
+    //identifies the archive's format
+    //200004: new LineStyle format
+    int ArchiveFormat = 200004;
     if(bIsStoring)
     {
-        ar << 200003;
+        ar << ArchiveFormat;
         //200003 : first xfl format
         //write variables
         ar << m_FoilName;
         ar << m_PlrName;
 
+        /*
         ar << m_Style << m_Width;
         writeQColor(ar, m_red, m_green, m_blue, m_alphaChannel);
         ar << m_bIsVisible << false;
+        */
+        m_theStyle.serializeXfl(ar, bIsStoring);
 
         ar << m_Reynolds << m_Mach << m_Alpha;
         ar << n << blx.nd1 << blx.nd2 << blx.nd3;
@@ -441,9 +433,18 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveForma
         ar >> m_FoilName;
         ar >> m_PlrName;
 
-        ar >> m_Style >> m_Width;
-        readQColor(ar, m_red, m_green, m_blue, m_alphaChannel);
-        ar >> m_bIsVisible >> boolean;
+        if(ArchiveFormat<200005)
+        {
+            ar >> n;
+            m_theStyle.setStipple(n);
+            ar >> m_theStyle.m_Width;
+            int r,g,b,a;
+            readQColor(ar, r,g,b,a);
+            m_theStyle.m_Color = {r,g,b,a};
+            ar >> m_theStyle.m_bIsVisible >> boolean;
+        }
+        else
+            m_theStyle.serializeXfl(ar, bIsStoring);
 
         ar >> m_Reynolds >> m_Mach >> m_Alpha;
         ar >> n >> blx.nd1 >> blx.nd2 >> blx.nd3;

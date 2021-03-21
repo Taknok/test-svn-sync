@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include <QRandomGenerator>
 
 #include "polar.h"
 #include <xflcore/constants.h>
@@ -30,15 +31,14 @@
 */
 Polar::Polar()
 {
-    m_bIsVisible = true;
-    m_PointStyle = 0;
-    m_Style = 0;// = PS_SOLID
-    m_Width = 1;
+    m_theStyle.m_bIsVisible = true;
+    m_theStyle.m_PointStyle = Line::NOSYMBOL;
+    m_theStyle.m_Stipple = Line::SOLID;// = PS_SOLID
+    m_theStyle.m_Width = 2;
 
-    m_red   = int((double(rand())/double(RAND_MAX))*200);
-    m_green = int((double(rand())/double(RAND_MAX))*200);
-    m_blue  = int((double(rand())/double(RAND_MAX))*200);
-    m_alphaChannel = 255;
+    m_theStyle.m_Color.setHsv(QRandomGenerator::global()->bounded(360),
+               QRandomGenerator::global()->bounded(55)+30,
+               QRandomGenerator::global()->bounded(55)+150);
 
     m_ASpec = 0.0;
     m_PolarType = Xfl::FIXEDSPEEDPOLAR;
@@ -825,25 +825,10 @@ void Polar::getPolarProperties(QString &polarProps) const
 }
 
 
-
-
-void Polar::getColor(int &r, int &g, int &b, int &a) const
-{
-    r = m_red;
-    g = m_green;
-    b = m_blue;
-    a = m_alphaChannel;
-}
-
 void Polar::setColor(int r, int g, int b, int a)
 {
-    m_red = r;
-    m_green = g;
-    m_blue = b;
-    m_alphaChannel = a;
+    m_theStyle.m_Color = {r,g,b,a};
 }
-
-
 
 
 /**

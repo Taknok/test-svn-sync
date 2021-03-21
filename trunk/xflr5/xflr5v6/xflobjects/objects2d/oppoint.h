@@ -28,8 +28,7 @@
  */
 
 
-#ifndef OPPOINT_H
-#define OPPOINT_H
+#pragma once
 
 #include <QString>
 #include <QTextStream>
@@ -38,6 +37,7 @@
 
 #include <xfoil_params.h>
 #include <xflobjects/objects2d/blxfoil.h>
+#include <xflcore/ls2.h>
 
 class Foil;
 class Polar;
@@ -65,7 +65,7 @@ public:
     void exportOpp(QTextStream &out, QString Version, bool bCSV, Foil *pFoil, bool bDataOnly=false) const;
 
     bool serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
-    bool serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
+    bool serializeOppXFL(QDataStream &ar, bool bIsStoring);
     void getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bData=false) const;
 
 
@@ -79,23 +79,43 @@ public:
     bool bViscResults() const {return m_bViscResults;}
     bool bBL()          const {return m_bBL;}
 
-    int oppStyle()    const {return m_Style;}
-    int oppWidth()    const {return m_Width;}
-    int pointStyle()  const {return m_PointStyle;}
-    bool isVisible()  const {return m_bIsVisible;}
-
-    void setVisible(bool bShow) {m_bIsVisible=bShow;}
 
     double aoa()      const {return m_Alpha;}
     double Reynolds() const {return m_Reynolds;}
     double Mach()     const {return m_Mach; }
 
-    void getColor(int &r, int &g, int &b, int &a) const;
-    void setColor(int r, int g, int b, int a);
-    int red()          const {return m_red;}
-    int green()        const {return m_green;}
-    int blue()         const {return m_blue;}
-    int alphaChannel() const {return m_alphaChannel;}
+
+    LS2 &theStyle() {return m_theStyle;}
+    LS2 const &theStyle() const {return m_theStyle;}
+    void setTheStyle(LS2 const &style) {m_theStyle=style;}
+    void setTheStyle(Line::enumLineStipple stipple, int w, const QColor &clr, Line::enumPointStyle pointstyle);
+    int width() const {return m_theStyle.m_Width;}
+    int pointStyle() const {return m_theStyle.m_PointStyle;}
+    Line::enumPointStyle pointStyle2() const {return m_theStyle.m_PointStyle;}
+
+    void setLineStipple(Line::enumLineStipple s) {m_theStyle.m_Stipple=s;}
+    void setLineWidth(int w)   {m_theStyle.m_Width=w;}
+
+    void setPointStyle(int n) {m_theStyle.setPointStyle(n);}
+    void setPointStyle2(Line::enumPointStyle pts) {m_theStyle.m_PointStyle=pts;}
+
+    QColor const &color() const {return m_theStyle.m_Color;}
+    void setColor(QColor const &clr) {m_theStyle.m_Color=clr;}
+    void setColor(int r, int g, int b, int a) {m_theStyle.m_Color = {r,g,b,a};}
+
+    int red() const {return m_theStyle.m_Color.red();}
+    int green() const {return m_theStyle.m_Color.green();}
+    int blue() const {return m_theStyle.m_Color.blue();}
+    int alphaChannel() const {return m_theStyle.m_Color.alpha();}
+    Line::enumLineStipple polarStyle() const     {return m_theStyle.m_Stipple;}
+    int lineWidth() const     {return m_theStyle.m_Width;}
+    bool isVisible() const     {return m_theStyle.m_bIsVisible;}
+
+    void setStipple(int n) {m_theStyle.setStipple(n);} // conversion
+    void setStipple2(Line::enumLineStipple s) {m_theStyle.m_Stipple=s;}
+    void setWidth(int w) {m_theStyle.m_Width=w;}
+    void setVisible(bool bVisible) {m_theStyle.m_bIsVisible=bVisible;}
+
 
 public:
     bool m_bViscResults;        /**< true if viscous results are stored in this OpPoint */
@@ -103,9 +123,7 @@ public:
     bool m_bTEFlap;             /**< true if the parent foil has a flap on the trailing edge */
     bool m_bLEFlap;             /**< true if the parent foil has a flap on the leading edge */
 
-    int m_Style, m_Width, m_PointStyle;
-    bool m_bIsVisible;
-    int m_red, m_blue, m_green, m_alphaChannel;
+    LS2 m_theStyle;
 
     int n;                          /**< the number of foil surface points */
 
@@ -140,4 +158,3 @@ public:
     QString m_PlrName;       /**< the name of the parent Polar */
 };
 
-#endif

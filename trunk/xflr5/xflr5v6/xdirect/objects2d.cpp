@@ -207,10 +207,7 @@ OpPoint* Objects2d::addOpPoint(Foil const *pFoil, Polar *pPolar, OpPoint *pOpPoi
 
     if(Settings::isAlignedChildrenStyle())
     {
-        pOpPoint->m_Style = pPolar->m_Style;
-        pOpPoint->m_Width = pPolar->m_Width;
-        pOpPoint->setColor(pPolar->m_red, pPolar->m_green, pPolar->m_blue, pPolar->alphaChannel());
-        pOpPoint->m_PointStyle = pPolar->m_PointStyle;
+        pOpPoint->setTheStyle(pPolar->theStyle());
     }
     else
     {
@@ -751,10 +748,7 @@ void Objects2d::setFoilChildrenStyle(Foil *pFoil)
         OpPoint *pOpPoint = s_oaOpp[j];
         if(pOpPoint->foilName() == pFoil->name())
         {
-            pOpPoint->m_Style = pFoil->m_theStyle.m_Stipple;
-            pOpPoint->m_Width = pFoil->m_theStyle.m_Width;
-            pOpPoint->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
-            pOpPoint->m_PointStyle = pFoil->m_theStyle.m_PointStyle;
+            pOpPoint->setTheStyle(pFoil->theStyle());
         }
     }
 
@@ -763,10 +757,7 @@ void Objects2d::setFoilChildrenStyle(Foil *pFoil)
         Polar *pPolar = s_oaPolar.at(j);
         if(pPolar->foilName() == pFoil->name())
         {
-            pPolar->m_Style = pFoil->m_theStyle.m_Stipple;
-            pPolar->m_Width = pFoil->m_theStyle.m_Width;
-            pPolar->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
-            pPolar->m_PointStyle = pFoil->m_theStyle.m_PointStyle;
+            pPolar->setTheStyle(pFoil->theStyle());
         }
     }
 }
@@ -780,10 +771,7 @@ void Objects2d::setPolarChildrenStyle(Polar const *pPolar)
         OpPoint *pOpPoint = s_oaOpp[j];
         if(pOpPoint->foilName() == pPolar->foilName() && pOpPoint->polarName()==pPolar->polarName())
         {
-            pOpPoint->m_Style = pPolar->m_Style;
-            pOpPoint->m_Width = pPolar->m_Width;
-            pOpPoint->setColor(pPolar->m_red, pPolar->m_green, pPolar->m_blue, pPolar->alphaChannel());
-            pOpPoint->m_PointStyle = pPolar->m_PointStyle;
+            pOpPoint->setTheStyle(pPolar->theStyle());
         }
     }
 }
@@ -806,10 +794,7 @@ Polar *Objects2d::createPolar(Foil *pFoil, Xfl::enumPolarType PolarType, double 
 
     if(Settings::isAlignedChildrenStyle())
     {
-        pNewPolar->m_Style = pFoil->m_theStyle.m_Stipple;
-        pNewPolar->m_Width = pFoil->m_theStyle.m_Width;
-        pNewPolar->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
-        pNewPolar->m_PointStyle = pFoil->m_theStyle.m_PointStyle;
+        pNewPolar->setTheStyle(pFoil->theStyle());
     }
     else
     {
