@@ -98,8 +98,8 @@ void InverseOptionsDlg::setupLayout()
 
 void InverseOptionsDlg::initDialog()
 {
-    m_pctrlRefFoil->setTheStyle(m_pXInverse->m_pRefFoil->foilLineStyle(), m_pXInverse->m_pRefFoil->foilLineWidth(), colour(m_pXInverse->m_pRefFoil),0);
-    m_pctrlModFoil->setTheStyle(m_pXInverse->m_pModFoil->foilLineStyle(), m_pXInverse->m_pModFoil->foilLineWidth(), colour(m_pXInverse->m_pModFoil),0);
+    m_pctrlRefFoil->setTheStyle(m_pXInverse->m_pRefFoil->lineStyle(), m_pXInverse->m_pRefFoil->lineWidth(), colour(m_pXInverse->m_pRefFoil),0);
+    m_pctrlModFoil->setTheStyle(m_pXInverse->m_pModFoil->lineStyle(), m_pXInverse->m_pModFoil->lineWidth(), colour(m_pXInverse->m_pModFoil),0);
     m_pctrlSpline->setTheStyle(m_pXInverse->m_Spline.style(), m_pXInverse->m_Spline.width(), m_pXInverse->m_Spline.color(),0);
     m_pctrlReflected->setTheStyle(m_pXInverse->m_ReflectedStyle, m_pXInverse->m_ReflectedWidth, m_pXInverse->m_ReflectedClr,0);
 }
@@ -108,7 +108,7 @@ void InverseOptionsDlg::initDialog()
 void InverseOptionsDlg::onRefStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(m_pXInverse->m_pRefFoil->foilPointStyle(), m_pXInverse->m_pRefFoil->foilLineStyle(), m_pXInverse->m_pRefFoil->foilLineWidth(),
+    dlg.initDialog(m_pXInverse->m_pRefFoil->pointStyle(), m_pXInverse->m_pRefFoil->lineStyle(), m_pXInverse->m_pRefFoil->lineWidth(),
                    colour(m_pXInverse->m_pRefFoil), false, false);
 
     if(QDialog::Accepted==dlg.exec())
@@ -122,7 +122,7 @@ void InverseOptionsDlg::onRefStyle()
 void InverseOptionsDlg::onModStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(m_pXInverse->m_pModFoil->foilPointStyle(),m_pXInverse->m_pModFoil->foilLineStyle(), m_pXInverse->m_pModFoil->foilLineWidth(),
+    dlg.initDialog(m_pXInverse->m_pModFoil->pointStyle(),m_pXInverse->m_pModFoil->lineStyle(), m_pXInverse->m_pModFoil->lineWidth(),
                    colour(m_pXInverse->m_pModFoil), false, false);
 
     if(QDialog::Accepted==dlg.exec())

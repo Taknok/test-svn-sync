@@ -36,6 +36,7 @@
 
 #include <xflobjects/objects3d/vector3d.h>
 #include <xfoil_params.h>
+#include <xflcore/linestyle.h>
 
 #define MIDPOINTCOUNT 1000
 
@@ -95,28 +96,33 @@ public:
     void showCenterLine(bool bShow) {m_bCenterLine=bShow;}
 
     void setTheStyle(int stipple, int w, QColor clr, int pointstyle);
-    bool isVisible() const {return m_bIsFoilVisible;}
-    int foilLineWidth() const {return m_Width;}
-    int foilLineStyle() const {return m_Stipple;}
-    int foilPointStyle() const {return m_PointStyle;}
-    void setVisible(bool bVis) {m_bIsFoilVisible=bVis;}
-    void setLineStipple(int s) {m_Stipple=s;}
-    void setLineWidth(int w)   {m_Width=w;}
-    void setPointStyle(int pts) {m_PointStyle=pts;}
     void setEditStyle();
+    LineStyle &theStyle() {return m_theStyle;}
+    LineStyle const &theStyle() const {return m_theStyle;}
+    void setTheStyle(LineStyle const &style) {m_theStyle=style;}
+    void setTheStyle(Line::enumLineStipple stipple, int w, const QColor &clr, Line::enumPointStyle pointstyle);
+    bool isVisible() const {return m_theStyle.m_bIsVisible;}
+    int lineWidth() const {return m_theStyle.m_Width;}
+    int lineStyle() const {return m_theStyle.m_Stipple;}
+    int pointStyle() const {return m_theStyle.m_PointStyle;}
+    void setVisible(bool bVis) {m_theStyle.m_bIsVisible=bVis;}
+    void setLineStipple(Line::enumLineStipple s) {m_theStyle.m_Stipple=s;}
+    void setLineWidth(int w)   {m_theStyle.m_Width=w;}
+    void setPointStyle(Line::enumPointStyle pts) {m_theStyle.m_PointStyle=pts;}
+    void setPointStyle(int n) {m_theStyle.m_PointStyle=n;}// conversion function
 
+    QColor const &foilColor() const {return m_theStyle.m_Color;}
+    void setColor(QColor const &clr) {m_theStyle.m_Color=clr;}
+    void getColor(int &r, int &g, int &b, int &a);
+    void setColor(int r, int g, int b, int a=255);
+    int red() const {return m_theStyle.m_Color.red();}
+    int green() const {return m_theStyle.m_Color.green();}
+    int blue() const {return m_theStyle.m_Color.blue();}
+    int alphaChannel() const {return m_theStyle.m_Color.alpha();}
 
     QString const &name() const {return m_FoilName;}
     void setFoilName(QString const &FoilName) {m_FoilName = FoilName;}
 
-    QColor const &foilColor() const {return m_Color;}
-    void setColor(QColor const &clr) {m_Color=clr;}
-    void getColor(int &r, int &g, int &b, int &a);
-    void setColor(int r, int g, int b, int a=255);
-    int red() const {return m_Color.red();}
-    int green() const {return m_Color.green();}
-    int blue() const {return m_Color.blue();}
-    int alphaChannel() const {return m_Color.alpha();}
 
     QString const &foilDescription() const {return m_FoilDescription;}
     void setFoilDescription(QString const &description) {m_FoilDescription=description;}
@@ -150,7 +156,6 @@ public:
 public:
     QString m_FoilDescription;             /**< a free description */
 
-    bool m_bIsFoilVisible;               /**< true if the foil is to be displayed */
     bool m_bCenterLine;                  /**< true if the foil mid camber line is to be displayed */
 //    bool m_bShowFoilPoints;              /**< true if the foil's panels are to be displayed */
 
@@ -160,10 +165,7 @@ public:
     int m_iInt;                          /**< the number of points on the lower surface of the current foil */
     int m_iExt;                          /**< the number of points on the upper surface of the current foil */
 
-    int m_PointStyle;                    /**< the index of the style for the foil's points*/
-    int m_Stipple;                     /**< the index of the style with which to draw the Foil contour*/
-    int m_Width;                     /**< the width with which to draw the Foil */
-    QColor m_Color;
+    LineStyle m_theStyle;
 
     int m_iHighLight;                    /**< the index of the point to highlight in the display */
 

@@ -534,7 +534,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
 
     drawFoil(painter, XDirect::curFoil(), -Alpha, m_fScale, m_fScale*m_fYScale, m_FoilOffset);
-    if(XDirect::curFoil()->foilPointStyle()>0)
+    if(XDirect::curFoil()->pointStyle()>0)
         drawPoints(painter, XDirect::curFoil(), -Alpha, m_fScale,m_fScale*m_fYScale, m_FoilOffset, Settings::s_BackgroundColor);
 
 

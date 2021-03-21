@@ -571,8 +571,8 @@ void drawFoil(QPainter &painter, Foil const*pFoil, double alpha, double scalex, 
     QPen FoilPen, HighPen;
 
     FoilPen.setColor(colour(pFoil));
-    FoilPen.setWidth(pFoil->foilLineWidth());
-    FoilPen.setStyle(getStyle(pFoil->foilLineStyle()));
+    FoilPen.setWidth(pFoil->lineWidth());
+    FoilPen.setStyle(getStyle(pFoil->lineStyle()));
     painter.setPen(FoilPen);
 
     HighPen.setColor(QColor(255,0,0));
@@ -614,7 +614,7 @@ void drawMidLine(QPainter &painter, const Foil *pFoil, double scalex, double sca
     QPen FoilPen;
 
     FoilPen.setColor(colour(pFoil));
-    FoilPen.setWidth(pFoil->foilLineWidth());
+    FoilPen.setWidth(pFoil->lineWidth());
     FoilPen.setStyle(Qt::DashLine);
     painter.setPen(FoilPen);
 
@@ -650,7 +650,7 @@ void drawPoints(QPainter &painter, Foil const*pFoil, double alpha, double scalex
 {
     QPen FoilPen, HighPen;
     FoilPen.setColor(colour(pFoil));
-    FoilPen.setWidth(pFoil->foilLineWidth());
+    FoilPen.setWidth(pFoil->lineWidth());
     FoilPen.setStyle(Qt::SolidLine);
     painter.setPen(FoilPen);
 
@@ -676,7 +676,7 @@ void drawPoints(QPainter &painter, Foil const*pFoil, double alpha, double scalex
 
         QPoint pt(int(xa*scalex + Offset.x()), int(-ya*scaley + Offset.y()));
 
-        drawPoint(painter, pFoil->foilPointStyle(), backColor, pt);
+        drawPoint(painter, pFoil->pointStyle(), backColor, pt);
     }
 
     if(pFoil->iHighLight()>=0)
@@ -690,7 +690,7 @@ void drawPoints(QPainter &painter, Foil const*pFoil, double alpha, double scalex
 
         QPoint pt(int(xa*scalex + Offset.x()), int(-ya*scaley + Offset.y()));
 
-        drawPoint(painter, pFoil->foilPointStyle(), backColor, pt);
+        drawPoint(painter, pFoil->pointStyle(), backColor, pt);
     }
 }
 
@@ -1185,11 +1185,11 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         ar << ArchiveFormat;
         writeString(ar, pFoil->m_FoilName);
         writeString(ar, pFoil->m_FoilDescription);
-        ar << pFoil->m_Stipple << pFoil->m_Width;
-        writeColor(ar, pFoil->m_Color.red(), pFoil->m_Color.green(), pFoil->m_Color.blue());
+        ar << pFoil->m_theStyle.m_Stipple << pFoil->m_theStyle.m_Width;
+        writeColor(ar, pFoil->m_theStyle.m_Color.red(), pFoil->m_theStyle.m_Color.green(), pFoil->m_theStyle.m_Color.blue());
 
-        if (pFoil->m_bIsFoilVisible) ar << 1; else ar << 0;
-        if (pFoil->m_PointStyle>0)   ar << 1; else ar << 0;//1004
+        if (pFoil->m_theStyle.m_bIsVisible) ar << 1; else ar << 0;
+        if (pFoil->m_theStyle.m_PointStyle>0)   ar << 1; else ar << 0;//1004
         if (pFoil->m_bCenterLine)    ar << 1; else ar << 0;//1004
         if (pFoil->m_bLEFlap)        ar << 1; else ar << 0;
         ar << float(pFoil->m_LEFlapAngle) << float(pFoil->m_LEXHinge) << float(pFoil->m_LEYHinge);
@@ -1222,7 +1222,7 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         }
         if(ArchiveFormat>=1002)
         {
-            ar >> pFoil->m_Stipple >> pFoil->m_Width;
+            ar >> pFoil->m_theStyle.m_Stipple >> pFoil->m_theStyle.m_Width;
             int r=0,g=0,b=0;
             readColor(ar, r, g, b);
             pFoil->setColor(r,g,b);
@@ -1230,12 +1230,12 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         if(ArchiveFormat>=1003)
         {
             ar >> p;
-            if(p) pFoil->m_bIsFoilVisible = true; else pFoil->m_bIsFoilVisible = false;
+            if(p) pFoil->m_theStyle.m_bIsVisible = true; else pFoil->m_theStyle.m_bIsVisible = false;
         }
         if(ArchiveFormat>=1004)
         {
             ar >> p;
-            pFoil->m_PointStyle = p;
+            pFoil->m_theStyle.m_PointStyle = p;
             ar >> p;
             if(p) pFoil->m_bCenterLine = true; else pFoil->m_bCenterLine = false;
         }

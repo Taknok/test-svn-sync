@@ -1817,10 +1817,10 @@ void XDirect::onDefinePolar()
 
         if(Settings::isAlignedChildrenStyle())
         {
-            m_pCurPolar->m_Style = m_pCurFoil->m_Stipple;
-            m_pCurPolar->m_Width = m_pCurFoil->m_Width;
+            m_pCurPolar->m_Style = m_pCurFoil->m_theStyle.m_Stipple;
+            m_pCurPolar->m_Width = m_pCurFoil->m_theStyle.m_Width;
             m_pCurPolar->setColor(m_pCurFoil->red(), m_pCurFoil->green(), m_pCurFoil->blue(), m_pCurFoil->alphaChannel());
-            m_pCurPolar->m_PointStyle = m_pCurFoil->m_PointStyle;
+            m_pCurPolar->m_PointStyle = m_pCurFoil->m_theStyle.m_PointStyle;
         }
         else
         {
@@ -2093,8 +2093,8 @@ void XDirect::onCadd()
     caDlg.m_pBufferFoil = pNewFoil;
     caDlg.m_pMemFoil    = pCurFoil;
     caDlg.initDialog();
-    int psState = pNewFoil->foilPointStyle();
-    if(psState==0) pNewFoil->setPointStyle(1);
+    int psState = pNewFoil->pointStyle();
+    if(psState==0) pNewFoil->setPointStyle(Line::LITTLECIRCLE);
     updateView();
 
     if(QDialog::Accepted == caDlg.exec())
@@ -3172,7 +3172,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 
     // jx-mod Use xflr5 standards for naming and coloring of a new polar
 
-    /**
+    /*
         Re = pPolar->Reynolds()/1000000.0;
         QString strange = QString("T%1_Re%2_M%3")
                 .arg(pPolar->polarType())
@@ -3192,17 +3192,16 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     if(Settings::isAlignedChildrenStyle())
     {
         pFoil = Objects2d::foil(FoilName);
-        pPolar->m_Style = pFoil->m_Stipple;
-        pPolar->m_Width = pFoil->m_Width;
+        pPolar->m_Style = pFoil->m_theStyle.m_Stipple;
+        pPolar->m_Width = pFoil->m_theStyle.m_Width;
         pPolar->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
-        pPolar->m_PointStyle = pFoil->m_PointStyle;
+        pPolar->m_PointStyle = pFoil->m_theStyle.m_PointStyle;
     }
     else
     {
         QColor clr = randomColor(!Settings::isLightTheme());
         pPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
     }
-
 
     Objects2d::addPolar(pPolar);
     return pPolar;
@@ -3536,7 +3535,7 @@ void XDirect::onRefinePanelsGlobally()
     TwoDPanelDlg tdpDlg(s_pMainFrame);
     tdpDlg.m_pBufferFoil = pNewFoil;
     tdpDlg.m_pMemFoil    = pCurFoil;
-    int psState = pNewFoil->foilPointStyle();
+    int psState = pNewFoil->pointStyle();
     if(psState==0)    pNewFoil->setPointStyle(1);
 
     updateView();

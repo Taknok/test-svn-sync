@@ -27,6 +27,8 @@
 #include <QCheckBox>
 #include <QSettings>
 
+#include <xflcore/ls2.h>
+
 class LineBtn;
 class ColorButton;
 class IntEdit;
@@ -60,7 +62,6 @@ private slots:
     void onWakePanels();
     void onStreamLines();
     void onVLMMesh();
-    void onShowWake();
     void onMasses();
     void onResetDefaults();
     void onOK();
@@ -72,49 +73,34 @@ private:
     static void loadSettings(QSettings &settings);
     static void resetDefaults();
 
-    LineBtn *m_pctrlAxis, *m_pctrlOutline, *m_pctrlVLMMesh, *m_pctrlTopTrans, *m_pctrlBotTrans;
-    LineBtn *m_pctrlLift, *m_pctrlMoments, *m_pctrlInducedDrag, *m_pctrlViscousDrag, *m_pctrlDownwash;
-    LineBtn *m_pctrlStreamLines, *m_pctrlWakePanels;
+    LineBtn *m_plbAxis, *m_plbOutline, *m_plbVLMMesh, *m_plbTopTrans, *m_plbBotTrans;
+    LineBtn *m_plbLift, *m_plbMoments, *m_plbInducedDrag, *m_plbViscousDrag, *m_plbDownwash;
+    LineBtn *m_plbStreamLines, *m_plbWakePanels;
 
-    ColorButton *m_pctrlMassColor;
+    ColorButton *m_pcbMassColor;
 
-    QCheckBox *m_pctrlAnimateTransitions, *m_pctrlAutoAdjustScale;
-    QCheckBox *m_pctrlEnableClipPlane;
-    IntEdit *m_pctrlChordwiseRes, *m_pctrlBodyAxialRes, *m_pctrlBodyHoopRes;
+    QCheckBox *m_pchAnimateTransitions, *m_pchAutoAdjustScale;
+    QCheckBox *m_pchEnableClipPlane;
+    IntEdit *m_pieChordwiseRes, *m_pieBodyAxialRes, *m_pcieBodyHoopRes;
 
 public:
     static double s_MassRadius;
     static QColor s_MassColor;
 
-    static int s_3DAxisStyle, s_3DAxisWidth;
-    static QColor s_3DAxisColor;
-    static int s_VLMStyle, s_VLMWidth;
-    static QColor s_VLMColor;
-    static int s_OutlineStyle, s_OutlineWidth;
-    static QColor s_OutlineColor;
-    static int s_XCPStyle, s_XCPWidth;
-    static QColor s_XCPColor;
-    static int s_MomentStyle, s_MomentWidth;
-    static QColor s_MomentColor;
-    static int s_IDragStyle, s_IDragWidth;
-    static QColor s_IDragColor;
-    static int s_VDragStyle, s_VDragWidth;
-    static QColor s_VDragColor;
+    static LS2 s_3DAxisStyle;
+    static LS2 s_VLMStyle;
+    static LS2 s_OutlineStyle;
+    static LS2 s_XCPStyle;
+    static LS2 s_MomentStyle;
+    static LS2 s_IDragStyle;
+    static LS2 s_VDragStyle;
+    static LS2 s_TopStyle;
+    static LS2 s_BotStyle;
+    static LS2 s_DownwashStyle;
+    static LS2 s_StreamStyle;
+    static LS2 s_WakeStyle;
+    static LS2 s_CpStyle;
 
-    static int s_TopStyle, s_TopWidth;
-    static QColor s_TopColor;
-    static int s_BotStyle, s_BotWidth;
-    static QColor s_BotColor;
-
-    static int s_DownwashStyle, s_DownwashWidth;
-    static QColor s_DownwashColor;
-    static int s_StreamLinesStyle, s_StreamLinesWidth;
-    static QColor s_StreamLinesColor;
-    static int s_WakeStyle, s_WakeWidth;
-    static QColor s_WakeColor;
-
-    static int s_CpStyle, s_CpWidth;
-    static QColor s_CpColor;
 
     static bool s_bWakePanels;
 

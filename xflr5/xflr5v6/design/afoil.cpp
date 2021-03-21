@@ -419,7 +419,7 @@ void AFoil::onAFoilDerotateFoil()
     Foil *pNewFoil = new Foil();
     pNewFoil->copyFoil(m_pBufferFoil);
     setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-    pNewFoil->setLineStipple(0);
+    pNewFoil->setLineStipple(Line::SOLID);
     pNewFoil->setLineWidth(1);
 
     addNewFoil(pNewFoil);
@@ -472,9 +472,9 @@ void AFoil::onAFoilCadd()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, Settings::isLightTheme());
-        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
-        pNewFoil->setPointStyle(0);
+        pNewFoil->setPointStyle(Line::NOSYMBOL);
 
         if(addNewFoil(pNewFoil))
         {
@@ -536,9 +536,9 @@ void AFoil::onAFoilPanels()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
-        pNewFoil->setPointStyle(0);
+        pNewFoil->setPointStyle(Line::NOSYMBOL);
 
         if(addNewFoil(pNewFoil))
         {
@@ -583,9 +583,9 @@ void AFoil::onAFoilFoilCoordinates()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        pNewFoil->setPointStyle(0);
+        pNewFoil->setPointStyle(Line::NOSYMBOL);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setHighLight(-1);
 
@@ -627,9 +627,9 @@ void AFoil::onAFoilFoilGeom()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
-        pNewFoil->setPointStyle(0);
+        pNewFoil->setPointStyle(Line::NOSYMBOL);
         if(addNewFoil(pNewFoil))
         {
             fillFoilTable();
@@ -675,9 +675,9 @@ void AFoil::onAFoilSetTEGap()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
-        pNewFoil->setPointStyle(0);
+        pNewFoil->setPointStyle(Line::NOSYMBOL);
 
         if(addNewFoil(pNewFoil))
         {
@@ -724,9 +724,9 @@ void AFoil::onAFoilSetLERadius()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
-        pNewFoil->setPointStyle(0);
+        pNewFoil->setPointStyle(Line::NOSYMBOL);
 
         if(addNewFoil(pNewFoil))
         {
@@ -778,9 +778,9 @@ void AFoil::onAFoilInterpolateFoils()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
-        pNewFoil->setPointStyle(0);
+        pNewFoil->setPointStyle(Line::NOSYMBOL);
         pNewFoil->setFoilName(ifDlg.m_NewFoilName);
 
         if(addNewFoil(pNewFoil))
@@ -829,9 +829,9 @@ void AFoil::onAFoilNacaFoils()
         Foil *pNewFoil    = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
-        pNewFoil->setPointStyle(0);
+        pNewFoil->setPointStyle(Line::NOSYMBOL);
         pNewFoil->setFoilName(str);
 
         if(addNewFoil(pNewFoil))
@@ -877,7 +877,7 @@ void AFoil::onAFoilSetFlap()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
 
         if(addNewFoil(pNewFoil))
@@ -1097,14 +1097,14 @@ void AFoil::onFoilStyle()
     else
     {
         LinePickerDlg dlg(this);
-        dlg.initDialog(XDirect::curFoil()->foilPointStyle(), XDirect::curFoil()->foilLineStyle(),
-                       XDirect::curFoil()->foilLineWidth(), colour(XDirect::curFoil()), true, true);
+        dlg.initDialog(XDirect::curFoil()->pointStyle(), XDirect::curFoil()->lineStyle(),
+                       XDirect::curFoil()->lineWidth(), colour(XDirect::curFoil()), true, true);
 
         if(QDialog::Accepted==dlg.exec())
         {
             emit projectModified();
-            XDirect::curFoil()->setPointStyle(dlg.pointStyle());
-            XDirect::curFoil()->setLineStipple(dlg.lineStipple());
+            XDirect::curFoil()->setPointStyle(dlg.pointStyle2());
+            XDirect::curFoil()->setLineStipple(dlg.lineStipple2());
             XDirect::curFoil()->setLineWidth(dlg.lineWidth());
             QColor clr = dlg.lineColor();
             XDirect::curFoil()->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());

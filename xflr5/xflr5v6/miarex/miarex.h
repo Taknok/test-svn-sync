@@ -51,7 +51,8 @@ class MainFrame;
 #include "./analysis/lltanalysisdlg.h"
 #include <xflanalysis/plane_analysis/planetask.h>
 #include <graph/graph.h>
-#include <graph/linestyle.h>
+#include <xflcore/linestyle.h>
+
 
 
 

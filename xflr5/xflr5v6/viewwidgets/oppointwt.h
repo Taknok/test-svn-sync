@@ -28,7 +28,8 @@
 #include <graph/graph.h>
 #include <xflobjects/objects3d/vector3d.h>
 #include <xflobjects/objects2d/oppoint.h>
-#include <graph/linestyle.h>
+#include <xflcore/linestyle.h>
+
 
 class OpPointWidget : public QWidget
 {

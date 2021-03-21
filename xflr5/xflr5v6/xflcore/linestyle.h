@@ -25,6 +25,10 @@
 #include <QSettings>
 #include <QDataStream>
 
+#include "ls2.h"
+
+
+/** @deprecated use ls2 and conversion functions instead */
 struct LineStyle
 {
     LineStyle()
@@ -45,13 +49,79 @@ struct LineStyle
         m_PointStyle = pointstyle;
     }
 
+    // Conversion functions to the new struct
+    void fromLS2(LS2 const &ls2)
+    {
+        m_bIsVisible = ls2.m_bIsVisible;
+        m_Width      = ls2.m_Width;
+        m_Color      = ls2.m_Color;
+
+        switch(ls2.m_Stipple)
+        {
+            case Line::SOLID:      m_Stipple = 0;   break;
+            case Line::DASH:       m_Stipple = 1;   break;
+            case Line::DOT:        m_Stipple = 2;   break;
+            case Line::DASHDOT:    m_Stipple = 3;   break;
+            case Line::DASHDOTDOT: m_Stipple = 4;   break;
+            case Line::NOLINE:     m_Stipple = 5;   break;
+        }
+
+        switch(ls2.m_PointStyle)
+        {
+            default:
+            case Line::NOSYMBOL:       m_PointStyle = 0;    break;
+            case Line::LITTLECIRCLE:   m_PointStyle = 1;    break;
+            case Line::BIGCIRCLE:      m_PointStyle = 2;    break;
+            case Line::LITTLESQUARE:   m_PointStyle = 3;    break;
+            case Line::BIGSQUARE:      m_PointStyle = 4;    break;
+        }
+    }
+
+    LS2 toLS2() const
+    {
+        LS2 ls2;
+        ls2.m_bIsVisible = m_bIsVisible;
+        ls2.m_Width      = m_Width;
+        ls2.m_Color      = m_Color;
+        ls2.m_Stipple    = lineStipple2();
+        ls2.m_PointStyle = pointStyle2();
+        return ls2;
+    }
+
+    Line::enumLineStipple lineStipple2() const
+    {
+        switch(m_Stipple)
+        {
+            default:
+            case 0: return Line::SOLID;
+            case 1: return Line::DASH;
+            case 2: return Line::DOT;
+            case 3: return Line::DASHDOT;
+            case 4: return Line::DASHDOTDOT;
+            case 5: return Line::NOLINE;
+        }
+    }
+
+
+    Line::enumPointStyle pointStyle2() const
+    {
+        switch(m_PointStyle)
+        {
+            default:
+            case 0: return Line::NOSYMBOL;
+            case 1: return Line::LITTLECIRCLE;
+            case 2: return Line::BIGCIRCLE;
+            case 3: return Line::LITTLESQUARE;
+            case 4: return Line::BIGSQUARE;
+        }
+    }
 
     void loadSettings(QSettings &settings, QString const &name)
     {
         if(settings.contains(name+"_visible")) m_bIsVisible = settings.value(name+"_visible", true).toBool();
         if(settings.contains(name+"_color"))   m_Color      = settings.value(name+"_color", QColor(205,205,205)).value<QColor>();
         if(settings.contains(name+"_width"))   m_Width      = settings.value(name+"_width", 1).toInt();
-        if(settings.contains(name+"_line"))    m_Stipple      = settings.value(name+"_style", 0).toInt();
+        if(settings.contains(name+"_line"))    m_Stipple    = settings.value(name+"_style", 0).toInt();
         if(settings.contains(name+"_pts"))     m_PointStyle = settings.value(name+"_pts", 0).toInt();
 
     }

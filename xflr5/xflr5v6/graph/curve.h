@@ -35,7 +35,7 @@
 #include <QColor>
 
 
-#include "linestyle.h"
+#include <xflcore/linestyle.h>
 
 class Graph;
 

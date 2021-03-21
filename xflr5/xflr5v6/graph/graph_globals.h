@@ -24,9 +24,11 @@
 
 #include <QPainter>
 
+#include <xflcore/ls2.h>
 
 void drawPoint(QPainter &painter, int pointStyle, const QPoint &pt, const QColor &backColor);
 Qt::PenStyle getStyle(int s);
+Qt::PenStyle getStyle(Line::enumLineStipple stip);
 
 
 #endif // GRAPH_GLOBALS_H

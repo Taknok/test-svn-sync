@@ -863,7 +863,7 @@ void gl3dMiarexView::paintDownwash(int iWing)
 
     m_ShaderProgramLine.bind();
     m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_DownwashColor);
+    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_DownwashStyle.m_Color);
     m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
     m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
 
@@ -871,9 +871,9 @@ void gl3dMiarexView::paintDownwash(int iWing)
     glEnable(GL_DEPTH_TEST);
     glEnable (GL_LINE_STIPPLE);
 
-    GLLineStipple(W3dPrefsDlg::s_DownwashStyle);
+    GLLineStipple(W3dPrefsDlg::s_DownwashStyle.m_Stipple);
 
-    glLineWidth(GLfloat(W3dPrefsDlg::s_DownwashWidth));
+    glLineWidth(GLfloat(W3dPrefsDlg::s_DownwashStyle.m_Width));
 
     m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
 
@@ -1249,7 +1249,7 @@ void gl3dMiarexView::paintLift(int iWing)
 
     m_ShaderProgramLine.bind();
     m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_XCPColor);
+    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_XCPStyle.m_Color);
     m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
     m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
     m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
@@ -1257,9 +1257,9 @@ void gl3dMiarexView::paintLift(int iWing)
     glEnable(GL_DEPTH_TEST);
     glEnable (GL_LINE_STIPPLE);
 
-    GLLineStipple(W3dPrefsDlg::s_XCPStyle);
+    GLLineStipple(W3dPrefsDlg::s_XCPStyle.m_Stipple);
 
-    glLineWidth(GLfloat(W3dPrefsDlg::s_XCPWidth));
+    glLineWidth(GLfloat(W3dPrefsDlg::s_XCPStyle.m_Width));
 
     m_vboLiftStrips[iWing].bind();
     m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
@@ -1268,7 +1268,7 @@ void gl3dMiarexView::paintLift(int iWing)
     m_vboLiftStrips[iWing].release();
 
     m_vboLiftForce.bind();
-    glLineWidth(GLfloat(W3dPrefsDlg::s_XCPWidth)*2.0f);
+    glLineWidth(GLfloat(W3dPrefsDlg::s_XCPStyle.m_Width)*2.0f);
     m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
     glDrawArrays(GL_LINES, 0, 6);
     m_vboLiftForce.release();
@@ -1285,7 +1285,7 @@ void gl3dMiarexView::paintMoments()
 
     m_ShaderProgramLine.bind();
     m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_MomentColor);
+    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_MomentStyle.m_Color);
     m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
     m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
 
@@ -1293,9 +1293,9 @@ void gl3dMiarexView::paintMoments()
     glEnable(GL_DEPTH_TEST);
     glEnable (GL_LINE_STIPPLE);
 
-    GLLineStipple(W3dPrefsDlg::s_MomentStyle);
+    GLLineStipple(W3dPrefsDlg::s_MomentStyle.m_Stipple);
 
-    glLineWidth(GLfloat(W3dPrefsDlg::s_MomentWidth));
+    glLineWidth(GLfloat(W3dPrefsDlg::s_MomentStyle.m_Width));
 
     m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
 
@@ -1690,10 +1690,10 @@ void gl3dMiarexView::paintDrag(int iWing)
     if(s_pMiarex->m_bICd)
     {
         m_vboICd[iWing].bind();
-        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_IDragColor);
-        GLLineStipple(W3dPrefsDlg::s_IDragStyle);
+        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_IDragStyle.m_Color);
+        GLLineStipple(W3dPrefsDlg::s_IDragStyle.m_Stipple);
 
-        glLineWidth(GLfloat(W3dPrefsDlg::s_IDragWidth));
+        glLineWidth(GLfloat(W3dPrefsDlg::s_IDragStyle.m_Width));
         m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
 
 
@@ -1707,10 +1707,10 @@ void gl3dMiarexView::paintDrag(int iWing)
     if(s_pMiarex->m_bVCd)
     {
         m_vboVCd[iWing].bind();
-        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VDragColor);
-        GLLineStipple(W3dPrefsDlg::s_VDragStyle);
+        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VDragStyle.m_Color);
+        GLLineStipple(W3dPrefsDlg::s_VDragStyle.m_Stipple);
 
-        glLineWidth(GLfloat(W3dPrefsDlg::s_VDragWidth));
+        glLineWidth(GLfloat(W3dPrefsDlg::s_VDragStyle.m_Width));
 
         m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
 
@@ -1750,11 +1750,11 @@ qDebug("gl3dMiarexView::paintStreamLines binding VBO");
     glEnable(GL_DEPTH_TEST);
     glEnable (GL_LINE_STIPPLE);
 
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_StreamLinesColor);
+    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_StreamStyle.m_Color);
 
-    GLLineStipple(W3dPrefsDlg::s_StreamLinesStyle);
+    GLLineStipple(W3dPrefsDlg::s_StreamStyle.m_Stipple);
 
-    glLineWidth(GLfloat(W3dPrefsDlg::s_StreamLinesWidth));
+    glLineWidth(GLfloat(W3dPrefsDlg::s_StreamStyle.m_Width));
 
     int pos=0;
 
@@ -1792,19 +1792,19 @@ void gl3dMiarexView::paintTransitions(int iWing)
 
     if(s_pMiarex->m_bXTop)
     {
-        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_TopColor);
-        GLLineStipple(W3dPrefsDlg::s_TopStyle);
+        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_TopStyle.m_Color);
+        GLLineStipple(W3dPrefsDlg::s_TopStyle.m_Stipple);
 
-        glLineWidth(GLfloat(W3dPrefsDlg::s_TopWidth));
+        glLineWidth(GLfloat(W3dPrefsDlg::s_TopStyle.m_Width));
         glDrawArrays(GL_LINE_STRIP, 0, m_Ny[iWing]);
     }
 
 
     if(s_pMiarex->m_bXBot)
     {
-        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_BotColor);
-        GLLineStipple(W3dPrefsDlg::s_BotStyle);
-        glLineWidth(GLfloat(W3dPrefsDlg::s_BotWidth));
+        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_BotStyle.m_Color);
+        GLLineStipple(W3dPrefsDlg::s_BotStyle.m_Stipple);
+        glLineWidth(GLfloat(W3dPrefsDlg::s_BotStyle.m_Width));
         glDrawArrays(GL_LINE_STRIP, m_Ny[iWing], m_Ny[iWing]);
     }
 
@@ -1830,12 +1830,12 @@ void gl3dMiarexView::paintSurfaceVelocities(int nPanels)
     m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_orthoMatrix * m_viewMatrix);
 
     m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_WakeColor);
+    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_WakeStyle.m_Color);
     m_vboSurfaceVelocities.bind();
     m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
 
 
-    glLineWidth(W3dPrefsDlg::s_WakeWidth);
+    glLineWidth(W3dPrefsDlg::s_WakeStyle.m_Width);
     glEnable(GL_DEPTH_TEST);
     glDrawArrays(GL_LINES, 0, nPanels*3*2);
 
@@ -1906,7 +1906,7 @@ void gl3dMiarexView::paintPanelForces(int nPanels)
     m_ShaderProgramGradient.setAttributeBuffer(m_VertexLocationGradient, GL_FLOAT, 0,                  3, 6 * sizeof(GLfloat));
     m_ShaderProgramGradient.setAttributeBuffer(m_ColorLocationGradient,  GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
 
-    glLineWidth(W3dPrefsDlg::s_XCPWidth);
+    glLineWidth(W3dPrefsDlg::s_XCPStyle.m_Width);
     glEnable(GL_DEPTH_TEST);
     glDrawArrays(GL_LINES, 0, nPanels*3*2);
 
@@ -2396,14 +2396,14 @@ void gl3dMiarexView::paintMesh(int nPanels)
     m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
     m_vboMesh.bind();
     m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 6 * sizeof(GLfloat));
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VLMColor);
+    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VLMStyle.m_Color);
 
     m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
     m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
 
-    glLineWidth(W3dPrefsDlg::s_VLMWidth);
+    glLineWidth(W3dPrefsDlg::s_VLMStyle.m_Width);
     glEnable(GL_LINE_STIPPLE);
-    GLLineStipple(W3dPrefsDlg::s_VLMStyle);
+    GLLineStipple(W3dPrefsDlg::s_VLMStyle.m_Stipple);
     int pos = 0;
     for(int p=0; p<nPanels*2; p++)
     {
