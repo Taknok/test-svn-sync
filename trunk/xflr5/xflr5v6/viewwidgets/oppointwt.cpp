@@ -64,9 +64,9 @@ OpPointWidget::OpPointWidget(QWidget *parent) : QWidget(parent)
 //    m_bShowPanels  = false;
     m_bXPressed = m_bYPressed = false;
 
-    m_NeutralStyle  = {true, 3, 1, QColor(155, 155,155), false};
-    m_BLStyle       = {true, 3, 2, QColor(255, 55,  55), false};
-    m_PressureStyle = {true, 3, 2, QColor( 95, 155, 95), false};
+    m_NeutralStyle  = {true, Line::DASHDOT, 1, QColor(155, 155,155), Line::NOSYMBOL};
+    m_BLStyle       = {true, Line::DASH,    2, QColor(255, 55,  55), Line::NOSYMBOL};
+    m_PressureStyle = {true, Line::SOLID,   2, QColor( 95, 155, 95), Line::NOSYMBOL};
 
     m_fScale = m_fYScale = 1.0;
     m_pCpGraph = nullptr;
@@ -780,7 +780,6 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
     if(!XDirect::curOpp()) return;
     if(!XDirect::curOpp()->bViscResults()) return;
 
-    int i;
     double alpha = -XDirect::curOpp()->m_Alpha*PI/180.0;
     double cosa = cos(alpha);
     double sina = sin(alpha);
@@ -796,7 +795,7 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
     painter.setPen(CpvPen);
 
 
-    for(i=0; i<XDirect::curFoil()->n; i++)
+    for(int i=0; i<XDirect::curFoil()->n; i++)
     {
         if(XDirect::curOpp()->m_bViscResults) cp = XDirect::curOpp()->Cpv[i];
         else                                  cp = XDirect::curOpp()->Cpi[i];
@@ -904,9 +903,6 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
 }
 
 
-
-
-
 /**
  * The method which draws the boundary layer in the OpPoint view.
  * @param painter a reference to the QPainter object with which to draw
@@ -918,8 +914,7 @@ void OpPointWidget::paintBL(QPainter &painter, OpPoint* pOpPoint, double scalex,
     if(!XDirect::curFoil() || !pOpPoint) return;
 
     QPointF offset, From, To;
-    double x,y;
-    int i;
+    double x=0,y=0;
     double alpha = -pOpPoint->aoa()*PI/180.0;
     double cosa = cos(alpha);
     double sina = sin(alpha);
@@ -940,7 +935,7 @@ void OpPointWidget::paintBL(QPainter &painter, OpPoint* pOpPoint, double scalex,
     y = (pOpPoint->blx.xd1[1]-0.5)*sina + pOpPoint->blx.yd1[1]*cosa;
     From.rx() =  x*scalex + offset.x();
     From.ry() = -y*scaley + offset.y();
-    for (i=2; i<=pOpPoint->blx.nd1; i++)
+    for (int i=2; i<=pOpPoint->blx.nd1; i++)
     {
         x = (pOpPoint->blx.xd1[i]-0.5)*cosa - pOpPoint->blx.yd1[i]*sina + 0.5;
         y = (pOpPoint->blx.xd1[i]-0.5)*sina + pOpPoint->blx.yd1[i]*cosa;
@@ -954,7 +949,7 @@ void OpPointWidget::paintBL(QPainter &painter, OpPoint* pOpPoint, double scalex,
     y = (pOpPoint->blx.xd2[0]-0.5)*sina + pOpPoint->blx.yd2[0]*cosa;
     From.rx() =  x*scalex + offset.x();
     From.ry() = -y*scaley + offset.y();
-    for (i=1; i<pOpPoint->blx.nd2; i++)
+    for (int i=1; i<pOpPoint->blx.nd2; i++)
     {
         x = (pOpPoint->blx.xd2[i]-0.5)*cosa - pOpPoint->blx.yd2[i]*sina + 0.5;
         y = (pOpPoint->blx.xd2[i]-0.5)*sina + pOpPoint->blx.yd2[i]*cosa;
@@ -968,7 +963,7 @@ void OpPointWidget::paintBL(QPainter &painter, OpPoint* pOpPoint, double scalex,
     y = (pOpPoint->blx.xd3[0]-0.5)*sina + pOpPoint->blx.yd3[0]*cosa;
     From.rx() =  x*scalex + offset.x();
     From.ry() = -y*scaley + offset.y();
-    for (i=1; i<pOpPoint->blx.nd3; i++)
+    for (int i=1; i<pOpPoint->blx.nd3; i++)
     {
         x = (pOpPoint->blx.xd3[i]-0.5)*cosa - pOpPoint->blx.yd3[i]*sina + 0.5;
         y = (pOpPoint->blx.xd3[i]-0.5)*sina + pOpPoint->blx.yd3[i]*cosa;
@@ -987,27 +982,15 @@ void OpPointWidget::paintBL(QPainter &painter, OpPoint* pOpPoint, double scalex,
 void OpPointWidget::onXDirectStyle()
 {
     XDirectStyleDlg xdsDlg(this);
-    xdsDlg.m_BLStyle.m_Stipple        = m_BLStyle.m_Stipple;
-    xdsDlg.m_BLStyle.m_Width        = m_BLStyle.m_Width;
-    xdsDlg.m_BLStyle.m_Color        = m_BLStyle.m_Color;
-    xdsDlg.m_PressureStyle.m_Stipple  = m_PressureStyle.m_Stipple;
-    xdsDlg.m_PressureStyle.m_Width  = m_PressureStyle.m_Width;
-    xdsDlg.m_PressureStyle.m_Color  = m_PressureStyle.m_Color;
-    xdsDlg.m_NeutralStyle.m_Stipple    = m_NeutralStyle.m_Stipple;
-    xdsDlg.m_NeutralStyle.m_Width    = m_NeutralStyle.m_Width;
-    xdsDlg.m_NeutralStyle.m_Color   = m_NeutralStyle.m_Color;
+    xdsDlg.m_BLStyle       = m_BLStyle;
+    xdsDlg.m_PressureStyle = m_PressureStyle;
+    xdsDlg.m_NeutralStyle   = m_NeutralStyle;
 
     if(xdsDlg.exec() == QDialog::Accepted)
     {
-        m_BLStyle.m_Stipple         = xdsDlg.m_BLStyle.m_Stipple;
-        m_BLStyle.m_Width         = xdsDlg.m_BLStyle.m_Width;
-        m_BLStyle.m_Color        = xdsDlg.m_BLStyle.m_Color;
-        m_PressureStyle.m_Stipple   = xdsDlg.m_PressureStyle.m_Stipple;
-        m_PressureStyle.m_Width   = xdsDlg.m_PressureStyle.m_Width;
-        m_PressureStyle.m_Color  = xdsDlg.m_PressureStyle.m_Color;
-        m_NeutralStyle.m_Stipple    = xdsDlg.m_NeutralStyle.m_Stipple;
-        m_NeutralStyle.m_Width    = xdsDlg.m_NeutralStyle.m_Width;
-        m_NeutralStyle.m_Color   = xdsDlg.m_NeutralStyle.m_Color;
+        m_BLStyle       = xdsDlg.m_BLStyle;
+        m_PressureStyle = xdsDlg.m_PressureStyle;
+        m_NeutralStyle  = xdsDlg.m_NeutralStyle;
     }
     update();
 }
@@ -1018,7 +1001,7 @@ void OpPointWidget::onXDirectStyle()
  * @param point the screen coordinates
  * @return the viewport coordinates
  */
-Vector3d OpPointWidget::mousetoReal(QPoint point)
+Vector3d OpPointWidget::mousetoReal(const QPoint &point)
 {
     Vector3d Real;
 
@@ -1028,7 +1011,6 @@ Vector3d OpPointWidget::mousetoReal(QPoint point)
 
     return Real;
 }
-
 
 
 /**
@@ -1089,38 +1071,21 @@ void OpPointWidget::saveSettings(QSettings &settings)
 {
     settings.beginGroup("OpPointSettings");
     {
-        settings.setValue("BLColor", m_BLStyle.m_Color);
-        settings.setValue("BLWidth", m_BLStyle.m_Width);
-        settings.setValue("BLStyle", m_BLStyle.m_Stipple);
-
-        settings.setValue("PressureWidth", m_PressureStyle.m_Width);
-        settings.setValue("PressureStyle", m_PressureStyle.m_Stipple);
-        settings.setValue("PressureColor", m_PressureStyle.m_Color);
-
-        settings.setValue("NeutralColor", m_NeutralStyle.m_Color);
-        settings.setValue("NeutralWidth", m_NeutralStyle.m_Width);
-        settings.setValue("NeutralStyle", m_NeutralStyle.m_Stipple);
+        m_BLStyle.saveSettings(      settings, "BLStyle");
+        m_PressureStyle.saveSettings(settings, "PressureStyle");
+        m_NeutralStyle.saveSettings( settings, "NeutralStyle");
     }
     settings.endGroup();
 }
-
 
 
 void OpPointWidget::loadSettings(QSettings &settings)
 {
     settings.beginGroup("OpPointSettings");
     {
-        m_BLStyle.m_Stipple  = settings.value("BLStyle", 1).toInt();
-        m_BLStyle.m_Width  = settings.value("BLWidth", 1).toInt();
-        m_BLStyle.m_Color = settings.value("BLColor",QColor(235,50,50)).value<QColor>();
-
-        m_PressureStyle.m_Stipple  = settings.value("PressureStyle", 0).toInt();
-        m_PressureStyle.m_Width  = settings.value("PressureWidth", 1).toInt();
-        m_PressureStyle.m_Color = settings.value("PressureColor",QColor(100,150,100)).value<QColor>();
-
-        m_NeutralStyle.m_Stipple  = settings.value("NeutralStyle", 3).toInt();
-        m_NeutralStyle.m_Width  = settings.value("NeutralWidth", 1).toInt();
-        m_NeutralStyle.m_Color = settings.value("NeutralColor",QColor(190,190,190)).value<QColor>();
+        m_BLStyle.loadSettings(      settings, "BLStyle");
+        m_PressureStyle.loadSettings(settings, "PressureStyle");
+        m_NeutralStyle.loadSettings( settings, "NeutralStyle");
     }
     settings.endGroup();
 }

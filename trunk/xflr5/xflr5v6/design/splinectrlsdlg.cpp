@@ -407,7 +407,7 @@ void SplineCtrlsDlg::updateSplines()
     m_pSF->m_Intrados.splineKnots();
     m_pSF->m_Intrados.splineCurve();
     m_pSF->updateSplineFoil();
-    s_pAFoil->m_p2DWidget->update();
+    s_pAFoil->m_p2dWidget->update();
 }
 
 

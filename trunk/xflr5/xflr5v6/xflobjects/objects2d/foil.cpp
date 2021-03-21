@@ -143,7 +143,7 @@ void Foil::copyFoil(const Foil *pSrcFoil, bool bMetaData)
 {
     if(bMetaData)
     {
-        m_FoilName    = pSrcFoil->name();
+        m_Name    = pSrcFoil->name();
         m_bCenterLine = pSrcFoil->m_bCenterLine;
         m_theStyle    = pSrcFoil->theStyle();
     }
@@ -262,7 +262,7 @@ bool Foil::exportFoil(QTextStream &out)
 
     QString strOut;
 
-    out << m_FoilName +"\n";
+    out << m_Name +"\n";
 
     for (i=0; i< n; i++)
     {
@@ -1467,21 +1467,6 @@ void Foil::setFlap()
 }
 
 
-void Foil::getColor(int &r, int &g, int &b, int &a)
-{
-    r = m_theStyle.m_Color.red();
-    g = m_theStyle.m_Color.green();
-    b = m_theStyle.m_Color.blue();
-    a = m_theStyle.m_Color.alpha();
-}
-
-
-void Foil::setColor(int r, int g, int b, int a)
-{
-    m_theStyle.m_Color = {r,g,b,a};
-}
-
-
 /** For debug purposes only */
 void Foil::displayCoords(bool bBaseCoords) const
 {
@@ -1499,15 +1484,6 @@ void Foil::displayCoords(bool bBaseCoords) const
             qDebug(" %13.5f   %13.5f", x[i], y[i]);
         }
     }
-}
-
-
-void Foil::setTheStyle(int stipple, int w, QColor clr, int pointstyle)
-{
-    m_theStyle.setStipple(stipple);
-    m_theStyle.m_Width = w;
-    m_theStyle.m_Color = clr;
-    m_theStyle.setPointStyle(pointstyle);
 }
 
 

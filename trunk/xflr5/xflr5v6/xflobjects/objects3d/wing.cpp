@@ -2572,7 +2572,7 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 
         int a,r,g,b;
         readQColor(ar, r, g, b, a);
-        m_WingColor.setColor(r,g,b,a);
+        m_WingColor = {r,g,b,a};
 
         ar >> m_bSymetric;
 

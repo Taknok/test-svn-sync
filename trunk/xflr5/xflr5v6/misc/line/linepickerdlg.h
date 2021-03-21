@@ -41,17 +41,33 @@ public:
 
     void initDialog(bool bFlowDownEnable);
     void initDialog(LineStyle const &ls, bool bAcceptPointStyle, bool bFlowDownEnable);
+    void initDialog(LS2 const &ls, bool bAcceptPointStyle, bool bFlowDownEnable);
     void initDialog(int pointStyle, int lineStyle, int lineWidth, QColor lineColor, bool bAcceptPointStyle, bool bFlowDownEnable);
 
     void keyPressEvent(QKeyEvent *event);
 
-    LS2 ls2() const {return m_LineStyle.toLS2();}
-    LineStyle const &theStyle() const {return m_LineStyle;}
-    void setTheStyle(LineStyle const &ls) {m_LineStyle=ls;}
-    void setTheStyle(LS2 const &ls) {m_LineStyle.fromLS2(ls);}
+    LS2 const &ls2()      const {return m_LineStyle;}
+    LS2 const &theStyle() const {return m_LineStyle;}
 
-    Line::enumLineStipple lineStipple2()  const {return m_LineStyle.lineStipple2();}
-    Line::enumPointStyle  pointStyle2()   const {return m_LineStyle.pointStyle2();}
+    void setTheStyle(LS2 const &ls) {m_LineStyle = ls;}
+    void setTheStyle(LineStyle const &style)
+    {
+        m_LineStyle.setStipple(style.m_Stipple);
+        m_LineStyle.m_Width = style.m_Width;
+        m_LineStyle.m_Color = style.m_Color;
+        m_LineStyle.setPointStyle(style.m_PointStyle);
+    }
+
+    void setTheStyle(Line::enumLineStipple stipple, int w, const QColor &clr, Line::enumPointStyle pointstyle)
+    {
+        m_LineStyle.setStipple(stipple);
+        m_LineStyle.m_Width = w;
+        m_LineStyle.m_Color = clr;
+        m_LineStyle.setPointStyle(pointstyle);
+    }
+
+    Line::enumLineStipple lineStipple2()  const {return m_LineStyle.m_Stipple;}
+    Line::enumPointStyle  pointStyle2()   const {return m_LineStyle.m_PointStyle;}
 
     int pointStyle()   const {return m_LineStyle.m_PointStyle;}
     int lineStipple()  const {return m_LineStyle.m_Stipple;}
@@ -84,7 +100,7 @@ private:
     QPushButton *m_pctrlOKButton, *m_pctrlCancelButton;
 
     bool m_bAcceptPointStyle;
-    LineStyle m_LineStyle;
+    LS2 m_LineStyle;
     LineDelegate *m_pPointStyleDelegate, *m_pLineStyleDelegate, *m_pWidthDelegate;
 };
 

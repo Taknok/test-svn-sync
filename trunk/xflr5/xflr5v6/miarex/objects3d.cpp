@@ -885,10 +885,7 @@ void Objects3d::setWPolarChildrenStyle(WPolar *pWPolar)
         PlaneOpp *pPOpp = s_oaPOpp.at(j);
         if(pPOpp->planeName() == pWPolar->planeName() && pPOpp->polarName()==pWPolar->polarName())
         {
-            pPOpp->setStyle(pWPolar->curveStyle());
-            pPOpp->setWidth(pWPolar->curveWidth());
-            pPOpp->setColor(pWPolar->curveColor());
-            pPOpp->setPoints(pWPolar->points());
+            pPOpp->setTheStyle(pWPolar->theStyle());
         }
     }
 }

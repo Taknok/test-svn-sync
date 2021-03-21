@@ -30,6 +30,8 @@
 #include <QVector>
 #include <QFont>
 
+#include <xflcore/ls2.h>
+
 class Curve;
 
 #define MAXTIMEGRAPHS  4  /**< The max number of graphs available for display in the stability time view. */
@@ -87,7 +89,7 @@ public:
     bool bAutoY() const {return m_bAutoY;}
     bool bAutoXMin() const {return m_bXAutoMinGrid;}
     bool bAutoYMin() const {return m_bYAutoMinGrid;}
-    bool hasBorder() const;
+    bool hasBorder() const {return m_BorderStyle.m_bIsVisible;}
     bool bInverted() const;
     bool isInDrawRect(int const &x, int const &y);
     bool isInDrawRect(QPointF const &pt);
@@ -118,12 +120,12 @@ public:
     void setAutoXUnit();
     void setAutoYUnit();
     void setAxisData(int s, int w, QColor clr);
-    void setBkColor(QColor cr);
-    void setBorderColor(QColor crBorder);
-    void setBorder(bool bBorder);
-    void setBorderStyle(int s);
-    void setBorderWidth(int w);
-    void setDrawRect(QRect Rect);
+    void setBkColor(QColor cr){m_BkColor = cr;}
+    void setBorderColor(QColor crBorder){m_BorderStyle.m_Color = crBorder;}
+    void setBorder(bool bBorder) {m_BorderStyle.m_bIsVisible = bBorder;}
+    void setBorderStyle(int s) {m_BorderStyle.setStipple(s);}
+    void setBorderWidth(int w) {m_BorderStyle.m_Width = w;}
+    void setDrawRect(QRect Rect) {m_rCltRect = Rect;}
     void setMargin(int m);
     void setInverted(bool bInverted);
     void setScaleType(int scaleType){ m_AutoScaleType = scaleType;}
@@ -147,20 +149,20 @@ public:
     void setAuto(bool bAuto);
     void setAutoX(bool bAuto);
     void setAutoY(bool bAuto);
-    void setAxisColor(QColor crColor);
-    void setAxisStyle(int nStyle);
-    void setAxisWidth(int Width);
-    void setTitleColor(QColor crColor) {m_TitleColor = crColor;}
-    void setLabelColor(QColor crColor);
+    void setAxisColor(QColor crColor){m_AxisStyle.m_Color = crColor;}
+    void setAxisStyle(int nStyle){m_AxisStyle.setStipple(nStyle);}
+    void setAxisWidth(int Width){m_AxisStyle.m_Width = Width;}
+    void setTitleColor(QColor const &crColor) {m_TitleColor = crColor;}
+    void setLabelColor(QColor const &crColor);
     void setWindow(double x1, double x2, double y1, double y2);
 
-    QColor axisColor()  const {return m_AxisColor;}
-    QColor titleColor() const {return m_TitleColor;}
-    QColor labelColor() const {return m_LabelColor;}
+    QColor const &axisColor()  const {return m_AxisStyle.m_Color;}
+    QColor const &titleColor() const {return m_TitleColor;}
+    QColor const &labelColor() const {return m_LabelColor;}
 
     int margin() const {return m_iMargin;}
-    int axisStyle() const;
-    int axisWidth() const;
+    int axisStyle() const {return m_AxisStyle.m_Stipple;}
+    int axisWidth() const {return m_AxisStyle.m_Width;}
     int scaleType() const {return m_AutoScaleType;}
     int xVariable() const;
     int yVariable() const;
@@ -197,16 +199,16 @@ public:
     QString xTitle() const {return m_XTitle;}
     QString yTitle() const {return m_YTitle;}
 
-    QRect *clientRect();
+    QRect *clientRect() {return &m_rCltRect;}
 
     void setGraphDefaults(bool bDark=true);
-    void setGraphName(QString GraphName);
+    void setGraphName(QString const &GraphName) {m_GraphName = GraphName;}
     void graphName(QString &GraphName);
 
-    QString graphName(){return m_GraphName;}
+    QString const &graphName() const{return m_GraphName;}
     Curve* curve(int nIndex);
     Curve const* curveAt(int nIndex) const;
-    Curve* curve(QString CurveTitle);
+    Curve* curve(QString const &CurveTitle);
     Curve* addCurve();
     Curve* addCurve(QString const &name);
     Curve* addCurve(Curve *pCurve);
@@ -224,9 +226,9 @@ public:
 
 
     QColor backgroundColor() const {return m_BkColor;}
-    QColor borderColor() const {return m_BorderColor;}
-    int borderStyle() const {return m_BorderStyle;}
-    int borderWidth() const {return m_BorderWidth;}
+    QColor borderColor() const {return m_BorderStyle.m_Color;}
+    int borderStyle() const {return m_BorderStyle.m_Stipple;}
+    int borderWidth() const {return m_BorderStyle.m_Width;}
 
 
     Graph();
@@ -249,10 +251,10 @@ private:
 
     bool m_bYInverted;
     bool m_bAutoX, m_bAutoY;
-    bool m_bBorder;
 
-    int m_AxisStyle;// axis style
-    int m_AxisWidth;// axis width
+
+    LS2 m_AxisStyle;
+    LS2 m_BorderStyle;
 
     int m_XMajStyle, m_YMajStyle;
     int m_XMajWidth, m_YMajWidth;
@@ -276,16 +278,12 @@ private:
     double m_scalex, m_scaley;
     double m_h, m_w; //graph width and height
     int m_iMargin;
-    QColor m_AxisColor;
-
 
     QColor m_TitleColor;
     QColor m_LabelColor;
 
     QColor m_BkColor;
-    QColor m_BorderColor;
-    int m_BorderStyle;
-    int m_BorderWidth;
+
 
 
     int m_X, m_Y; //index of X and Y variables

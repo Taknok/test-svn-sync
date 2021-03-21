@@ -19,12 +19,13 @@
 
 *****************************************************************************/
 
-#ifndef GRIDSETTINGSDLG_H
-#define GRIDSETTINGSDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QPushButton>
 #include <QCheckBox>
+
+#include <xflcore/ls2.h>
 
 class LineBtn;
 class DoubleEdit;
@@ -36,48 +37,46 @@ class GridSettingsDlg : public QDialog
     friend class AFoil;
     friend class Section2dWidget;
 
-public:
-    GridSettingsDlg(QWidget *pParent=nullptr);
-    void initDialog();
+    public:
+        GridSettingsDlg(QWidget *pParent=nullptr);
+        void initDialog();
 
-private slots:
-    void onOK();
-    void onScale();
-    void onNeutralStyle();
-    void onXMajStyle();
-    void onXMinStyle();
-    void onYMajStyle();
-    void onYMinStyle();
-    void onNeutralShow(bool bShow);
-    void onXMajShow(bool bShow);
-    void onYMajShow(bool bShow);
-    void onXMinShow(bool bShow);
-    void onYMinShow(bool bShow);
+    private slots:
+        void onOK();
+        void onScale();
+        void onNeutralStyle();
+        void onXMajStyle();
+        void onXMinStyle();
+        void onYMajStyle();
+        void onYMinStyle();
+        void onNeutralShow(bool bShow);
+        void onXMajShow(bool bShow);
+        void onYMajShow(bool bShow);
+        void onXMinShow(bool bShow);
+        void onYMinShow(bool bShow);
 
-private:
-    void setupLayout();
-    void keyPressEvent(QKeyEvent *event);
+    private:
+        void setupLayout();
+        void keyPressEvent(QKeyEvent *event) override;
 
-    void *m_pParent;
-    QCheckBox  *m_pctrlNeutralShow, *m_pctrlScale, *m_pctrlXMajShow, *m_pctrlYMajShow, *m_pctrlXMinShow, *m_pctrlYMinShow;
-    LineBtn *m_pctrlNeutralStyle, *m_pctrlXMajStyle, *m_pctrlYMajStyle, *m_pctrlXMinStyle, *m_pctrlYMinStyle;
-    DoubleEdit *m_pctrlXUnit, *m_pctrlYUnit,*m_pctrlXMinUnit, *m_pctrlYMinUnit;
-    QPushButton    *OKButton, *CancelButton;
+        QCheckBox  *m_pchNeutralShow, *m_pchScale, *m_pcHXMajShow, *m_pcHYMajShow, *m_pchXMinShow, *m_pchYMinShow;
+        LineBtn *m_plbNeutralStyle, *m_plbXMajStyle, *m_plbYMajStyle, *m_plbXMinStyle, *m_plbYMinStyle;
+        DoubleEdit *m_pdeXUnit, *m_pdeYUnit, *m_pdeXMinUnit, *m_pdeYMinUnit;
+        QPushButton *m_ppbOKButton, *m_ppbCancelButton;
 
-    bool m_bNeutralLine, m_bScale;
-    bool m_bXGrid,m_bYGrid;
-    bool m_bXMinGrid, m_bYMinGrid;
-    int m_XStyle, m_YStyle;
-    int m_XWidth, m_YWidth;
-    int m_XMinStyle, m_YMinStyle;
-    int m_XMinWidth, m_YMinWidth;
-    int m_NeutralStyle, m_NeutralWidth;
-    double m_XUnit, m_YUnit;
-    double m_XMinUnit, m_YMinUnit;
-    QColor m_XColor,m_YColor;
-    QColor m_XMinColor,m_YMinColor;
-    QColor m_NeutralColor;
+        bool m_bScale;
+        bool m_bXGrid,m_bYGrid;
+        bool m_bXMinGrid, m_bYMinGrid;
+        int m_XStyle, m_YStyle;
+        int m_XWidth, m_YWidth;
+        int m_XMinStyle, m_YMinStyle;
+        int m_XMinWidth, m_YMinWidth;
 
+        double m_XUnit, m_YUnit;
+        double m_XMinUnit, m_YMinUnit;
+        QColor m_XColor,m_YColor;
+        QColor m_XMinColor,m_YMinColor;
+
+        LS2 m_NeutralStyle;
 };
 
-#endif // GRIDSETTINGSDLG_H

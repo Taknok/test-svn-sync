@@ -408,7 +408,7 @@ void Objects2d::renameThisFoil(Foil *pFoil, QString const &newFoilName)
     }
 
     //rename it
-    pFoil->setFoilName(newFoilName);
+    pFoil->setName(newFoilName);
 
     //delete any former Foil with the new name
     for(int iFoil=0; iFoil<s_oaFoil.count(); iFoil++)

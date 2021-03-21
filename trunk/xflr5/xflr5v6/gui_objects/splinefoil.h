@@ -25,12 +25,12 @@
  */
 
 
-#ifndef SPLINEFOIL_H
-#define SPLINEFOIL_H
+#pragma once
 
 
 #include "spline5.h"
 #include <xflobjects/objects2d/foil.h>
+#include <xflobjects/xflobject.h>
 #include <xflcore/linestyle.h>
 
 
@@ -40,96 +40,74 @@
 
 The foil is contructed based on one spline for the upper surface and one spline for the lower surface.
 */
-class SplineFoil
+class SplineFoil : public XflObject
 {
     friend class AFoil;
     friend class SplineCtrlsDlg;
     friend class FoilTableDelegate;
 
 
-public:
-    SplineFoil();
-    SplineFoil(SplineFoil *pSF);
+    public:
+        SplineFoil();
+        SplineFoil(SplineFoil *pSF);
 
-    bool isSymetric()        const {return m_bSymetric;}
-    bool showOutPoints()     const {return m_bOutPoints;}
-    bool showCenterLine()    const {return m_bCenterLine;}
+        bool isSymetric()        const {return m_bSymetric;}
+        bool showOutPoints()     const {return m_bOutPoints;}
+        bool showCenterLine()    const {return m_bCenterLine;}
 
-    QString const &splineFoilName() const {return m_strFoilName;}
-    void setSplineFoilName(QString const &name) {m_strFoilName=name;}
+        QString const &splineFoilName() const {return m_Name;}
+        void setSplineFoilName(QString const &name) {m_Name=name;}
 
-    Spline *extrados() {return &m_Extrados;}
-    Spline *intrados() {return &m_Intrados;}
+        Spline *extrados() {return &m_Extrados;}
+        Spline *intrados() {return &m_Intrados;}
 
-    bool isModified() const  {return m_bModified;}
-    void setModified(bool bModified){m_bModified = bModified;}
+        bool isModified() const  {return m_bModified;}
+        void setModified(bool bModified){m_bModified = bModified;}
 
-    void compMidLine();
+        void compMidLine();
 
-    void initSplineFoil();
+        void initSplineFoil();
 
-    bool serialize(QDataStream &ar, bool bIsStoring);
-    bool serializeXFL(QDataStream &ar, bool bIsStoring);
+        bool serialize(QDataStream &ar, bool bIsStoring);
+        bool serializeXFL(QDataStream &ar, bool bIsStoring);
 
-    void copy(SplineFoil* pSF);
-    void drawCtrlPoints(QPainter &painter, double scalex, double scaley, QPointF Offset);
-    void drawMidLine(QPainter &painter, double scalex, double scaley, QPointF Offset);
-    void drawFoil(QPainter &painter, double scalex, double scaley, QPointF Offset);
-    void drawOutPoints(QPainter &painter, double scalex, double scaley, QPointF Offset);
-    void exportToBuffer(Foil *pFoil);
-    void exportToFile(QTextStream &out);
-    void updateSplineFoil();
-    void setCurveParams(int style, int width, QColor splineFoilColor);
+        void copy(SplineFoil* pSF);
+        void drawCtrlPoints(QPainter &painter, double scalex, double scaley, QPointF Offset);
+        void drawMidLine(QPainter &painter, double scalex, double scaley, QPointF Offset);
+        void drawFoil(QPainter &painter, double scalex, double scaley, QPointF Offset);
+        void drawOutPoints(QPainter &painter, double scalex, double scaley, QPointF Offset);
+        void exportToBuffer(Foil *pFoil);
+        void exportToFile(QTextStream &out);
+        void updateSplineFoil();
 
-    double camber() const {return m_fCamber;}
-    double xCamber() const {return m_fxCambMax;}
-    double thickness() const {return m_fThickness;}
-    double xThickness() const {return m_fxThickMax;}
+        double camber() const {return m_fCamber;}
+        double xCamber() const {return m_fxCambMax;}
+        double thickness() const {return m_fThickness;}
+        double xThickness() const {return m_fxThickMax;}
 
-    bool bClosedTE() const {return m_bForceCloseTE;}
-    bool bClosedLE() const {return m_bForceCloseLE;}
-    void setClosedTE(bool bClosed) {m_bForceCloseTE=bClosed;}
-    void setClosedLE(bool bClosed) {m_bForceCloseLE=bClosed;}
-
-    void setTheStyle(LineStyle const &ls) {m_LineStyle=ls;}
-    void setTheStyle(int const &splineFoilStyle, int const &width, QColor const & splineFoilColor, const int &splinePointStyle);
-    LineStyle theStyle() const {return m_LineStyle;}
-
-    void setColor(QColor const & splineFoilColor);
-    void setStipple(int const &splineFoilStyle);
-    void setWidth(int const &width);
-    void setPointStyle(int const & splinePointStyle);
-
-    QColor splineFoilColor()   const {return m_LineStyle.m_Color;}
-    int splineFoilStyle()  const {return m_LineStyle.m_Stipple;}
-    int splineFoilWidth()  const {return m_LineStyle.m_Width;}
-    int splinePointStyle() const {return m_LineStyle.m_PointStyle;}
-
-    void setVisible(bool bVisible){m_LineStyle.m_bIsVisible = bVisible;}
-    bool isVisible()   const {return m_LineStyle.m_bIsVisible;}
+        bool bClosedTE() const {return m_bForceCloseTE;}
+        bool bClosedLE() const {return m_bForceCloseLE;}
+        void setClosedTE(bool bClosed) {m_bForceCloseTE=bClosed;}
+        void setClosedLE(bool bClosed) {m_bForceCloseLE=bClosed;}
 
 
-private:
-    bool m_bModified;                /**< false if the SplineFoil has been serialized in its current dtate, false otherwise */
-    bool m_bOutPoints;               /**< true if the ouput line points should be displayed */
-    bool m_bCenterLine;              /**< true if the SplineFoil's mean camber line is to be displayed */
-    bool m_bSymetric;                /**< true if the SplineFoil is symetric. In which case the lower surface is set as symetric of the upper surface. */
-    bool m_bForceCloseLE;            /**< true if the leading end points of the top and bottom spline should be positioned at the same place */
-    bool m_bForceCloseTE;            /**< true if the traling end points of the top and bottom spline should be positioned at the same place */
-    int m_OutPoints;                 /**< the number of output points with which to draw the SplineFoil. */
-
-    LineStyle m_LineStyle;
+    private:
+        bool m_bModified;                /**< false if the SplineFoil has been serialized in its current dtate, false otherwise */
+        bool m_bOutPoints;               /**< true if the ouput line points should be displayed */
+        bool m_bCenterLine;              /**< true if the SplineFoil's mean camber line is to be displayed */
+        bool m_bSymetric;                /**< true if the SplineFoil is symetric. In which case the lower surface is set as symetric of the upper surface. */
+        bool m_bForceCloseLE;            /**< true if the leading end points of the top and bottom spline should be positioned at the same place */
+        bool m_bForceCloseTE;            /**< true if the traling end points of the top and bottom spline should be positioned at the same place */
+        int m_OutPoints;                 /**< the number of output points with which to draw the SplineFoil. */
 
 
-    double m_fCamber;                /**< the SplineFoil's max camber */
-    double m_fThickness;             /**< the SplineFoil's max thickness */
-    double m_fxCambMax;              /**< the x-position of the SplineFoil's max camber point */
-    double m_fxThickMax;             /**< the x-position of the SplineFoil's max thickness point */
-    QString m_strFoilName;           /**< the SplineFoil's name */
-    Spline5 m_Extrados;               /**< the spline which defines the upper surface */
-    Spline5 m_Intrados;               /**< the spline which defines the lower surface */
-    Vector3d m_rpMid[MIDPOINTCOUNT];  /**< the points on the SplineFoil's mid camber line @todo replace with a QVarLengthArray */
+        double m_fCamber;                /**< the SplineFoil's max camber */
+        double m_fThickness;             /**< the SplineFoil's max thickness */
+        double m_fxCambMax;              /**< the x-position of the SplineFoil's max camber point */
+        double m_fxThickMax;             /**< the x-position of the SplineFoil's max thickness point */
+        Spline5 m_Extrados;               /**< the spline which defines the upper surface */
+        Spline5 m_Intrados;               /**< the spline which defines the lower surface */
+        Vector3d m_rpMid[MIDPOINTCOUNT];  /**< the points on the SplineFoil's mid camber line @todo replace with a QVarLengthArray */
 
 };
 
-#endif

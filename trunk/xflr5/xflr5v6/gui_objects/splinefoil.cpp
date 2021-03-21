@@ -32,7 +32,7 @@
  */
 SplineFoil::SplineFoil()
 {
-    m_LineStyle = {true, 0, 1, QColor(119, 183, 83),0};
+    m_theStyle = {true, Line::SOLID, 1, QColor(119, 183, 83), Line::NOSYMBOL};
 
     m_OutPoints    = 0;
 
@@ -41,8 +41,8 @@ SplineFoil::SplineFoil()
     m_bCenterLine  = false;
     m_bForceCloseLE = true;
     m_bForceCloseTE = true;
-    m_Intrados.setSplineStyle(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color);
-    m_Extrados.setSplineStyle(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color);
+    m_Intrados.setTheStyle(m_theStyle);
+    m_Extrados.setTheStyle(m_theStyle);
     m_bSymetric = false;
 }
 
@@ -57,29 +57,14 @@ SplineFoil::SplineFoil(SplineFoil *pSF)
 
 
 /**
- * Sets the display style from the input parameters.
- * @param style the index of the style.
- * @param width the curve's width.
- * @param color te curve's color.
- */
-void SplineFoil::setCurveParams(int style, int width, QColor color)
-{
-    m_LineStyle.m_Stipple = style;
-    m_LineStyle.m_Width = width;
-    m_LineStyle.m_Color = color;
-    m_Intrados.setSplineStyle(style, width, color);
-    m_Extrados.setSplineStyle(style, width, color);
-}
-
-/**
  * Initializes the SplineFoil object with stock data.
  */
 void SplineFoil::initSplineFoil()
 {
     m_bModified   = false;
-    m_strFoilName = QObject::tr("Spline Foil");
+    m_Name = QObject::tr("Spline Foil");
 
-    m_Extrados.setSplineStyle(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color);
+    m_Extrados.setTheStyle(m_theStyle);
     m_Extrados.clearPoints();
     m_Extrados.insertPoint(0.0 , 0.0);
     m_Extrados.insertPoint(0.0 , 0.00774066);
@@ -89,7 +74,7 @@ void SplineFoil::initSplineFoil()
     m_Extrados.insertPoint(0.736139 , 0.0269428);
     m_Extrados.insertPoint(1. , 0.);
 
-    m_Intrados.setSplineStyle(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color);
+    m_Intrados.setTheStyle(m_theStyle);
     m_Intrados.clearPoints();
     m_Intrados.insertPoint(0. , 0.);
     m_Intrados.insertPoint(0. , -0.00774066);
@@ -151,7 +136,7 @@ void SplineFoil::compMidLine()
  */
 void SplineFoil::copy(SplineFoil* pSF)
 {
-    m_LineStyle  = pSF->theStyle();
+    m_theStyle  = pSF->theStyle();
     m_Extrados.copy(&pSF->m_Extrados);
     m_Intrados.copy(&pSF->m_Intrados);
     m_OutPoints  = pSF->m_OutPoints;
@@ -188,7 +173,7 @@ void SplineFoil::exportToBuffer(Foil *pFoil)
     memcpy(pFoil->xb, pFoil->x, sizeof(pFoil->x));
     memcpy(pFoil->yb, pFoil->y, sizeof(pFoil->y));
     pFoil->nb = pFoil->n;
-    pFoil->setFoilName(m_strFoilName);
+    pFoil->setName(m_Name);
 }
 
 /**
@@ -222,13 +207,15 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
     {
         ar >> ArchiveFormat;
         if(ArchiveFormat < 100000 || ArchiveFormat > 110000) return false;
-        readCString(ar, m_strFoilName);
-        m_strFoilName = QObject::tr("Spline Foil");
+        readCString(ar, m_Name);
+        m_Name = QObject::tr("Spline Foil");
         readCOLORREF(ar, r,g,b);
-        ar >>m_LineStyle.m_Stipple >> m_LineStyle.m_Width;
+        ar >> n;
+        m_theStyle.setStipple(n);
+        ar >> m_theStyle.m_Width;
 
-        m_Extrados.setSplineStyle(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color);
-        m_Intrados.setSplineStyle(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color);
+        m_Extrados.setTheStyle(m_theStyle);
+        m_Intrados.setTheStyle(m_theStyle);
 
         ar >> n;// m_Extrados.m_iCtrlPoints;
         m_Extrados.m_CtrlPt.clear();
@@ -265,7 +252,7 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
 
         ar >> k;
         if(k!=0 && k!=1) return false;
-        if(k) m_LineStyle.m_bIsVisible = true; else m_LineStyle.m_bIsVisible = false;
+        if(k) m_theStyle.m_bIsVisible = true; else m_theStyle.m_bIsVisible = false;
 
         ar >> k;
         if(k!=0 && k!=1) return false;
@@ -300,16 +287,18 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
 bool SplineFoil::serializeXFL(QDataStream &ar, bool bIsStoring)
 {
     double dble=0, x=0,y=0;
-    int ArchiveFormat=0,k=0,n=0;
+    int ArchiveFormat=200002; // 200002: nes LineStyle format
+    int k=0,n=0;
 
     if(bIsStoring)
     {
-        ar << 200001;
+        ar << ArchiveFormat;
 
-        ar << m_strFoilName;
-        ar << m_LineStyle.m_Color;
-        ar << m_LineStyle.m_Stipple<< m_LineStyle.m_Width;
-        ar << m_LineStyle.m_bIsVisible << m_bCenterLine << m_bOutPoints;
+        ar << m_Name;
+
+        m_theStyle.serializeXfl(ar, bIsStoring);
+
+        ar<<m_bCenterLine << m_bOutPoints;
 
         ar << m_Extrados.m_iDegree << m_Intrados.m_iDegree;
         ar << m_Extrados.m_iRes << m_Intrados.m_iRes;
@@ -341,10 +330,21 @@ bool SplineFoil::serializeXFL(QDataStream &ar, bool bIsStoring)
         ar >> ArchiveFormat;
         if(ArchiveFormat < 200000 || ArchiveFormat > 210000) return false;
 
-        ar >> m_strFoilName;
-        ar >> m_LineStyle.m_Color;
-        ar >> m_LineStyle.m_Stipple >> m_LineStyle.m_Width;
-        ar >> m_LineStyle.m_bIsVisible >> m_bCenterLine >> m_bOutPoints;
+        ar >> m_Name;
+        if(ArchiveFormat<200002)
+        {
+            ar >> m_theStyle.m_Color;
+            ar >> n; m_theStyle.setStipple(n);
+            ar >> m_theStyle.m_Width;
+            ar >> m_theStyle.m_bIsVisible;
+        }
+        else
+            m_theStyle.serializeXfl(ar, bIsStoring);
+
+        m_Intrados.setTheStyle(m_theStyle);
+        m_Extrados.setTheStyle(m_theStyle);
+
+        ar >> m_bCenterLine >> m_bOutPoints;
 
         ar >> m_Extrados.m_iDegree >> m_Intrados.m_iDegree;
         ar >> m_Extrados.m_iRes >> m_Intrados.m_iRes;
@@ -449,7 +449,7 @@ void SplineFoil::drawMidLine(QPainter &painter, double scalex, double scaley, QP
 
     QPointF From, To;
 
-    QPen MidPen(m_LineStyle.m_Color);
+    QPen MidPen(m_theStyle.m_Color);
     MidPen.setStyle(Qt::DashLine);
     MidPen.setWidth(1);
     painter.setPen(MidPen);

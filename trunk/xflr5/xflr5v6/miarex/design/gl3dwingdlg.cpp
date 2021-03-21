@@ -452,7 +452,7 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
 
     m_pctrlColor->setChecked(!m_pWing->textures());
     m_pctrlTextures->setChecked(m_pWing->textures());
-    m_pctrlWingColor->setColor(color(m_pWing->m_WingColor));
+    m_pctrlWingColor->setColor(m_pWing->m_WingColor);
     m_pctrlWingColor->setEnabled(m_pctrlColor->isChecked());
 
     m_pctrlWingTable->setFont(Settings::s_TableFont);
@@ -954,15 +954,15 @@ void GL3dWingDlg::onWingColor()
     dialogOptions |= QColorDialog::DontUseNativeDialog;
 #endif
 #endif
-    QColor clr = QColorDialog::getColor(color(m_pWing->wingColor()),
+    QColor clr = QColorDialog::getColor(m_pWing->wingColor(),
                                         this, "Color selection", dialogOptions);
     if(clr.isValid())
     {
-        m_pWing->setWingColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
+        m_pWing->setWingColor(clr);
         m_bDescriptionChanged = true;
     }
 
-    m_pctrlWingColor->setColor(color(m_pWing->wingColor()));
+    m_pctrlWingColor->setColor(m_pWing->wingColor());
     m_pglWingView->m_bResetglWing = true;
     m_pglWingView->update();
 }

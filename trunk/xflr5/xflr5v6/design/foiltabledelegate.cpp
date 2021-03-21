@@ -127,17 +127,17 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 
             if(index.row()==0)
             {
-                color = m_pAFoil->m_pSF->splineFoilColor();
-                pointStyle = m_pAFoil->m_pSF->splinePointStyle();
-                lineStyle = m_pAFoil->m_pSF->splineFoilStyle();
-                lineWidth = m_pAFoil->m_pSF->splineFoilWidth();
+                color = m_pAFoil->m_pSF->color();
+                pointStyle = m_pAFoil->m_pSF->pointStyle1();
+                lineStyle = m_pAFoil->m_pSF->lineStipple();
+                lineWidth = m_pAFoil->m_pSF->lineWidth();
             }
             else
             {
                 Foil *pFoil = Objects2d::foilAt(index.row()-1);
                 color = colour(pFoil);
                 pointStyle = pFoil->pointStyle();
-                lineStyle = pFoil->lineStyle();
+                lineStyle = pFoil->lineStipple();
                 lineWidth = pFoil->lineWidth();
             }
             QRect r = option.rect;

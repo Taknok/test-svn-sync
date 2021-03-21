@@ -314,7 +314,7 @@ void InterpolateFoilsDlg::onFrac()
 
 void InterpolateFoilsDlg::onOK()
 {
-    m_pBufferFoil->setFoilName(m_NewFoilName);
+    m_pBufferFoil->setName(m_NewFoilName);
 
     QDialog::accept();
 }

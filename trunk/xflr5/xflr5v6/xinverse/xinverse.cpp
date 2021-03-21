@@ -100,13 +100,13 @@ XInverse::XInverse(QWidget *parent)
     m_Spline.splineKnots();
     m_Spline.splineCurve();
 
-    m_Spline.setStyle(0);
+    m_Spline.setStipple(Line::SOLID);
     m_Spline.setWidth(1);
     m_Spline.setColor(QColor(170,120, 0));
 
-    m_ReflectedStyle = 1;
-    m_ReflectedWidth = 1;
-    m_ReflectedClr = QColor(170,120, 0);
+    m_ReflectedStyle.m_Stipple = Line::DASH;
+    m_ReflectedStyle.m_Width = 1;
+    m_ReflectedStyle.m_Color = QColor(195,155, 35);
 
     m_nPos    = 0;
     m_tmpPos  = -1;
@@ -223,8 +223,8 @@ void XInverse::checkActions()
 void XInverse::clear()
 {
     m_pRefFoil->n = 0;
-    m_pRefFoil->setFoilName(QString());
-    m_pModFoil->setFoilName(QString());
+    m_pRefFoil->setName(QString());
+    m_pModFoil->setName(QString());
 
     m_bLoaded = false;
     m_pReflectedCurve->clear();
@@ -495,7 +495,7 @@ bool XInverse::initXFoil(Foil * pFoil)
     //loads pFoil in XFoil, calculates normal vectors, and sets results in current foil
     if(!pFoil) return  false;
 
-    m_pModFoil->setFoilName(pFoil->name() + tr(" Modified"));
+    m_pModFoil->setName(pFoil->name() + tr(" Modified"));
 
     m_pXFoil->initialize();
     for(int i =0; i<pFoil->n; i++)
@@ -700,9 +700,7 @@ void XInverse::loadSettings(QSettings &settings)
     {
         m_bFullInverse = settings.value("FullInverse").toBool();
 
-        m_Spline.setColor(settings.value("SplineColor").value<QColor>());
-        m_Spline.setStyle(settings.value("SplineStyle").toInt());
-        m_Spline.setWidth(settings.value("SplineWdth").toInt());
+        m_Spline.theStyle().loadSettings(settings, "InverseSpline");
 
         m_pRefFoil->theStyle().loadSettings(settings, "BaseFoilStyle");
         m_pModFoil->theStyle().loadSettings(settings, "ModFoilStyle");
@@ -721,10 +719,7 @@ void XInverse::saveSettings(QSettings &settings)
     settings.beginGroup("XInverse");
     {
         settings.setValue("FullInverse", m_bFullInverse);
-        settings.setValue("SplineColor", m_Spline.color());
-        settings.setValue("SplineStyle", m_Spline.style());
-        settings.setValue("SplineWdth",  m_Spline.width());
-
+        m_Spline.theStyle().saveSettings(settings, "InverseSpline");
         m_pRefFoil->theStyle().saveSettings(settings, "BaseFoilStyle");
         m_pModFoil->theStyle().saveSettings(settings, "ModFoilStyle");
     }
@@ -1431,7 +1426,7 @@ void XInverse::onExtractFoil()
 
         m_pRefFoil->copyFoil(pFoil);
 
-        m_pModFoil->setFoilName(m_pRefFoil->name() + tr(" Modified"));
+        m_pModFoil->setName(m_pRefFoil->name() + tr(" Modified"));
         initXFoil(m_pRefFoil);
         setFoil();
         updateView();
@@ -1548,11 +1543,11 @@ void XInverse::onInverseStyles()
     m_pXInverseStyleDlg->initDialog();
     m_pXInverseStyleDlg->exec();
 
-    m_pQCurve->setStipple(m_pRefFoil->lineStyle());
+    m_pQCurve->setStipple(m_pRefFoil->lineStipple());
     m_pQCurve->setWidth(m_pRefFoil->lineWidth());
     m_pQCurve->setColor(colour(m_pRefFoil));
 
-    m_pMCurve->setStipple(m_pModFoil->lineStyle());
+    m_pMCurve->setStipple(m_pModFoil->lineStipple());
     m_pMCurve->setWidth(m_pModFoil->lineWidth());
     m_pMCurve->setColor(colour(m_pModFoil));
 
@@ -1830,7 +1825,7 @@ void XInverse::onStoreFoil()
     memcpy(pNewFoil->xb, m_pModFoil->x, sizeof(m_pModFoil->x));
     memcpy(pNewFoil->yb, m_pModFoil->y, sizeof(m_pModFoil->y));
     pNewFoil->nb = m_pModFoil->n;
-    pNewFoil->setFoilName(m_pRefFoil->name());
+    pNewFoil->setName(m_pRefFoil->name());
 
     QStringList NameList;
     for(int k=0; k<Objects2d::foilCount(); k++)
@@ -1843,7 +1838,7 @@ void XInverse::onStoreFoil()
     renDlg.initDialog(&NameList, m_pRefFoil->name() + " modified", tr("Enter the foil's new name"));
     if(renDlg.exec() !=QDialog::Rejected)
     {
-        pNewFoil->setFoilName(renDlg.newName());
+        pNewFoil->setName(renDlg.newName());
         Objects2d::insertThisFoil(pNewFoil);
     }
     else
@@ -2009,7 +2004,7 @@ void XInverse::paintFoil(QPainter &painter)
     if(m_bRefFoil && m_bLoaded)
     {
         QPen FoilPen(colour(m_pRefFoil));
-        FoilPen.setStyle(getStyle(m_pRefFoil->lineStyle()));
+        FoilPen.setStyle(getStyle(m_pRefFoil->lineStipple()));
         FoilPen.setWidth(m_pRefFoil->lineWidth());
         painter.setPen(FoilPen);
 
@@ -2022,7 +2017,7 @@ void XInverse::paintFoil(QPainter &painter)
     if(m_bModFoil && m_bLoaded)
     {
         QPen ModPen(colour(m_pModFoil));
-        ModPen.setStyle(getStyle(m_pModFoil->lineStyle()));
+        ModPen.setStyle(getStyle(m_pModFoil->lineStipple()));
         ModPen.setWidth(m_pModFoil->lineWidth());
         painter.setPen(ModPen);
 
@@ -2035,7 +2030,7 @@ void XInverse::paintFoil(QPainter &painter)
     if(m_pOverlayFoil)
     {
         QPen ModPen(colour(m_pOverlayFoil));
-        ModPen.setStyle(getStyle(m_pOverlayFoil->lineStyle()));
+        ModPen.setStyle(getStyle(m_pOverlayFoil->lineStipple()));
         ModPen.setWidth(m_pOverlayFoil->lineWidth());
         painter.setPen(ModPen);
 
@@ -2048,7 +2043,7 @@ void XInverse::paintFoil(QPainter &painter)
     if (m_pRefFoil->pointStyle()>0)
     {
         QPen CtrlPen(colour(m_pRefFoil));
-        CtrlPen.setStyle(getStyle(m_pRefFoil->lineStyle()));
+        CtrlPen.setStyle(getStyle(m_pRefFoil->lineStipple()));
         CtrlPen.setWidth(m_pRefFoil->lineWidth());
         painter.setPen(CtrlPen);
 
@@ -2314,10 +2309,10 @@ bool XInverse::setParams()
     }
 
     m_pQCurve->setColor(colour(m_pRefFoil));
-    m_pQCurve->setStipple(m_pRefFoil->lineStyle());
+    m_pQCurve->setStipple(m_pRefFoil->lineStipple());
     m_pQCurve->setWidth(m_pRefFoil->lineWidth());
     m_pMCurve->setColor(colour(m_pModFoil));
-    m_pMCurve->setStipple(m_pModFoil->lineStyle());
+    m_pMCurve->setStipple(m_pModFoil->lineStipple());
     m_pMCurve->setWidth(m_pModFoil->lineWidth());
     m_pQCurve->setName(tr("Q - Reference"));
     m_pMCurve->setName(tr("Q - Specification"));
@@ -2325,9 +2320,7 @@ bool XInverse::setParams()
     m_pQVCurve->setColor(QColor(50,170,0));
     m_pQVCurve->setStipple(0);
 
-    m_pReflectedCurve->setColor(m_ReflectedClr);
-    m_pReflectedCurve->setStipple(m_ReflectedStyle);
-    m_pReflectedCurve->setWidth(m_ReflectedWidth);
+    m_pReflectedCurve->setLineStyle(m_ReflectedStyle);
     m_pReflectedCurve->setName(tr("Reflected"));
 
     m_bTrans   = false;
@@ -2398,9 +2391,9 @@ bool XInverse::setParams()
 
     m_pRefFoil->n          = m_pXFoil->n;
     m_pRefFoil->nb         = m_pXFoil->n;
-    m_pRefFoil->setFoilName(strFoilName);
+    m_pRefFoil->setName(strFoilName);
     m_pRefFoil->initFoil();
-    m_pModFoil->setFoilName(strFoilName + tr(" Modified"));
+    m_pModFoil->setName(strFoilName + tr(" Modified"));
 
     setFoil();
     checkActions();

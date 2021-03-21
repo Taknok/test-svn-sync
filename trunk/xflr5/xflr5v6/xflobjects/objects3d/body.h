@@ -29,11 +29,10 @@
 #define BODY_H
 
 
-
+#include <QColor>
 #include <QTextStream>
 #include <QVarLengthArray>
 
-#include <xflobjects/objectcolor.h>
 #include <xflobjects/objects3d/panel.h>
 #include <xflobjects/objects3d/nurbssurface.h>
 #include <xflobjects/objects3d/pointmass.h>
@@ -127,8 +126,9 @@ public:
     bool hasTextures() const {return m_bTextures;}
     void setTextures(bool bTextures) {m_bTextures = bTextures;}
 
-    ObjectColor bodyColor() const {return m_BodyColor;}
-    void setBodyColor(ObjectColor color) {m_BodyColor=color;}
+    QColor const &bodyColor() const {return m_BodyColor;}
+    QColor &bodyColor() {return m_BodyColor;}
+    void setBodyColor(QColor const&color) {m_BodyColor=color;}
 
     NURBSSurface& nurbs() {return m_SplineSurface;}
 
@@ -174,7 +174,7 @@ public:
 
     int m_BodyStyle;                          /**< the index of the spline's style */
     int m_BodyWidth;                          /**< the width of the spline */
-    ObjectColor m_BodyColor;                       /**< the Body's display color */
+    QColor m_BodyColor;                       /**< the Body's display color */
 
     double m_Bunch;                            /**< a bunch parameter to set the density of the points of the NURBS surface; unused */
 

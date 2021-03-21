@@ -445,7 +445,7 @@ Foil *readFoilFile(QFile &xFoilFile)
         }
     }while (bRead && !strong.isNull());
 
-    pFoil->setFoilName(FoilName);
+    pFoil->setName(FoilName);
 
     // Check if the foil was written clockwise or counter-clockwise
 
@@ -572,7 +572,7 @@ void drawFoil(QPainter &painter, Foil const*pFoil, double alpha, double scalex, 
 
     FoilPen.setColor(colour(pFoil));
     FoilPen.setWidth(pFoil->lineWidth());
-    FoilPen.setStyle(getStyle(pFoil->lineStyle()));
+    FoilPen.setStyle(getStyle(pFoil->lineStipple()));
     painter.setPen(FoilPen);
 
     HighPen.setColor(QColor(255,0,0));
@@ -1177,19 +1177,20 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
     // 1003 : added Visible property
     // 1002 : added color and style save
     // 1001 : initial format
-    int p, j;
-    float f,ff;
+    int p=0, j=0, n=0;
+    float f=0, ff=0;
+    QString strange;
 
     if(bIsStoring)
     {
         ar << ArchiveFormat;
-        writeString(ar, pFoil->m_FoilName);
+        writeString(ar, pFoil->name());
         writeString(ar, pFoil->m_FoilDescription);
-        ar << pFoil->m_theStyle.m_Stipple << pFoil->m_theStyle.m_Width;
-        writeColor(ar, pFoil->m_theStyle.m_Color.red(), pFoil->m_theStyle.m_Color.green(), pFoil->m_theStyle.m_Color.blue());
+        ar << pFoil->theStyle().m_Stipple << pFoil->theStyle().m_Width;
+        writeColor(ar, pFoil->theStyle().m_Color.red(), pFoil->theStyle().m_Color.green(), pFoil->theStyle().m_Color.blue());
 
-        if (pFoil->m_theStyle.m_bIsVisible) ar << 1; else ar << 0;
-        if (pFoil->m_theStyle.m_PointStyle>0)   ar << 1; else ar << 0;//1004
+        if (pFoil->theStyle().m_bIsVisible) ar << 1; else ar << 0;
+        if (pFoil->theStyle().m_PointStyle>0)   ar << 1; else ar << 0;//1004
         if (pFoil->m_bCenterLine)    ar << 1; else ar << 0;//1004
         if (pFoil->m_bLEFlap)        ar << 1; else ar << 0;
         ar << float(pFoil->m_LEFlapAngle) << float(pFoil->m_LEXHinge) << float(pFoil->m_LEYHinge);
@@ -1214,7 +1215,7 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         if(ArchiveFormat<1000||ArchiveFormat>1010)
             return false;
 
-        readString(ar, pFoil->m_FoilName);
+        readString(ar, strange); pFoil->setName(strange);
 
         if(ArchiveFormat>=1006)
         {
@@ -1222,7 +1223,9 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         }
         if(ArchiveFormat>=1002)
         {
-            ar >> pFoil->m_theStyle.m_Stipple >> pFoil->m_theStyle.m_Width;
+            ar >> n;
+            pFoil->theStyle().setStipple(n);
+            ar >> pFoil->theStyle().m_Width;
             int r=0,g=0,b=0;
             readColor(ar, r, g, b);
             pFoil->setColor(r,g,b);
@@ -1230,12 +1233,12 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         if(ArchiveFormat>=1003)
         {
             ar >> p;
-            if(p) pFoil->m_theStyle.m_bIsVisible = true; else pFoil->m_theStyle.m_bIsVisible = false;
+            if(p) pFoil->theStyle().m_bIsVisible = true; else pFoil->theStyle().m_bIsVisible = false;
         }
         if(ArchiveFormat>=1004)
         {
             ar >> p;
-            pFoil->m_theStyle.setPointStyle(p);
+            pFoil->theStyle().setPointStyle(p);
             ar >> p;
             if(p) pFoil->m_bCenterLine = true; else pFoil->m_bCenterLine = false;
         }
@@ -1324,7 +1327,7 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         // 1004 : added XCp
         // 1003 : re-instated NCrit, XtopTr and XBotTr with polar
         writeString(ar, pPolar->m_FoilName);
-        writeString(ar, pPolar->m_PlrName);
+        writeString(ar, pPolar->name());
 
         if(pPolar->m_PolarType==Xfl::FIXEDSPEEDPOLAR)       ar<<1;
         else if(pPolar->m_PolarType==Xfl::FIXEDLIFTPOLAR)   ar<<2;
@@ -1342,7 +1345,7 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         ar << pPolar->m_Style << pPolar->m_Width;
         if (pPolar->m_bIsVisible)  ar<<1; else ar<<0;
         ar<<pPolar->m_PointStyle;*/
-        pPolar->m_theStyle.serializeXfl(ar, bIsStoring);
+        pPolar->theStyle().serializeXfl(ar, bIsStoring);
 
         for (i=0; i< pPolar->m_Alpha.size(); i++){
             ar << float(pPolar->m_Alpha[i]) << float(pPolar->m_Cd[i]) ;
@@ -1360,6 +1363,7 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
     else
     {
         //read variables
+        QString strange;
         float Alpha=0, Cd=0, Cdp=0, Cl=0, Cm=0, XTr1=0, XTr2=0, HMom=0, Cpmn=0, Re=0, XCp=0;
         int iRe=0;
 
@@ -1370,9 +1374,9 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         }
 
         readString(ar, pPolar->m_FoilName);
-        readString(ar, pPolar->m_PlrName);
+        readString(ar, strange); pPolar->setName(strange);
 
-        if(pPolar->m_FoilName =="" || pPolar->m_PlrName =="" )
+        if(pPolar->m_FoilName.isEmpty() || pPolar->name().isEmpty())
         {
             return false;
         }
@@ -1413,8 +1417,8 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
             readColor(ar, r,g,b);
             pPolar->setColor({r,g,b});
             ar >>n;
-            pPolar->m_theStyle.setStipple(n);
-            ar >> pPolar->m_theStyle.m_Width;
+            pPolar->theStyle().setStipple(n);
+            ar >> pPolar->theStyle().m_Width;
             if(ArchiveFormat>=1002)
             {
                 ar >> l;
@@ -1422,11 +1426,11 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
                 {
                     return false;
                 }
-                if (l) pPolar->m_theStyle.m_bIsVisible =true; else pPolar->m_theStyle.m_bIsVisible = false;
+                if (l) pPolar->theStyle().m_bIsVisible =true; else pPolar->theStyle().m_bIsVisible = false;
             }
-            ar >> l;  pPolar->m_theStyle.setPointStyle(l);
+            ar >> l;  pPolar->theStyle().setPointStyle(l);
         }
-        else pPolar->m_theStyle.serializeXfl(ar, bIsStoring);
+        else pPolar->theStyle().serializeXfl(ar, bIsStoring);
 
         bool bExists=false;
         for (i=0; i< n; i++)
@@ -1473,12 +1477,6 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
             ar >>pPolar->m_ACrit >> pPolar->m_XTop >> pPolar->m_XBot;
     }
     return true;
-}
-
-
-QColor color(ObjectColor clr)
-{
-    return QColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 }
 
 

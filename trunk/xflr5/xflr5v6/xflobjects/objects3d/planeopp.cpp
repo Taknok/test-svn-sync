@@ -45,18 +45,14 @@ PlaneOpp::PlaneOpp(Plane *pPlane, WPolar *pWPolar, int PanelArraySize)
 
     m_Weight = 0.0;
 
-    m_Style       = 0;
-    m_Width       = 1;
-    m_PointStyle  = 0;
-    m_bIsVisible  = true;
+    m_theStyle.m_Stipple     = Line::SOLID;
+    m_theStyle.m_Width       = 1;
+    m_theStyle.m_PointStyle  = Line::NOSYMBOL;
+    m_theStyle.m_bIsVisible  = true;
 
-    QColor clr;
-    clr.setHsv(QRandomGenerator::global()->bounded(360),
+    m_theStyle.m_Color.setHsv(QRandomGenerator::global()->bounded(360),
                QRandomGenerator::global()->bounded(55)+30,
                QRandomGenerator::global()->bounded(55)+150);
-    m_Color.setRed(  clr.red());
-    m_Color.setGreen(clr.green());
-    m_Color.setBlue( clr.blue());
 
     m_bVLM1 = false;
     m_bThinSurface = true;
@@ -254,9 +250,9 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 
         ar >> a;
         if (a!=0 && a!=1) return false;
-        if(a) m_bIsVisible = true; else m_bIsVisible = false;
+        if(a) m_theStyle.m_bIsVisible = true; else m_theStyle.m_bIsVisible = false;
 
-        ar >> a; m_PointStyle = a;
+        ar >> a; m_theStyle.setPointStyle(a);
 
         ar >> a;
         if (a!=0 && a!=1) return false;
@@ -272,7 +268,8 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
         if (a!=0 && a!=1) return false;
         //        if(a) m_bMiddle = true; else m_bMiddle = false;
 
-        ar >> m_Style >> m_Width;
+        ar >> k;   m_theStyle.setStipple(k);
+        ar >> m_theStyle.m_Width;
 
         int r,g,b;
         readCOLORREF(ar, r,g,b);
@@ -526,24 +523,27 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
  */
 bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 {
-    int ArchiveFormat;
     bool boolean;
     int k, n;
     float f0, f1, f2;
     double dble, dbl1, dbl2;
 
+    // 200002: added new format LineStyle
+    int ArchiveFormat = 200002;
     if(bIsStoring)
     {
-        ar << 200001;
+        ar << ArchiveFormat;
         //200001 : first go at the new format
 
         //write variables
         ar << m_PlaneName;
         ar << m_WPlrName;
-
+/*
         ar << m_Style << m_Width;
         writeQColor(ar, m_Color.red(), m_Color.green(), m_Color.blue(), m_Color.alpha());
         ar << m_bIsVisible << false;
+*/
+        m_theStyle.serializeXfl(ar, bIsStoring);
 
         ar << m_bOut;
         ar << m_bVLM1;
@@ -623,7 +623,7 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 
         // space allocation for the future storage of more data, without need to change the format
         for (int i=0; i<19; i++) ar << 0;
-        ar << m_PointStyle;
+        ar << k; //m_theStyle.m_PointStyle;
 
         ar << m_MAChord<<m_Span;
         ar << m_phiPH.real() << m_phiPH.imag();
@@ -633,18 +633,23 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
     else
     {
         ar >> ArchiveFormat;
-        if (ArchiveFormat<200000 || ArchiveFormat>200003 ) return false;
+        if (ArchiveFormat<200000 || ArchiveFormat>200100 ) return false;
 
         ar >> m_PlaneName;
         ar >> m_WPlrName;
 
-        ar >> m_Style >> m_Width;
+        if(ArchiveFormat<200002)
+        {
+            ar >> n; m_theStyle.setStipple(n);
+            ar >> m_theStyle.m_Width;
+            int a,r,g,b;
+            readQColor(ar, r, g, b, a);
+            m_theStyle.m_Color = {r,g,b,a};
 
-        int a,r,g,b;
-        readQColor(ar, r, g, b, a);
-        m_Color.setColor(r,g,b,a);
-
-        ar >> m_bIsVisible >> boolean;
+            ar >> m_theStyle.m_bIsVisible >> boolean;
+        }
+        else
+            m_theStyle.serializeXfl(ar, bIsStoring);
 
         ar >> m_bOut;
         ar >> m_bVLM1;
@@ -754,7 +759,7 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 
         // space allocation
         for (int i=0; i<19; i++) ar >> k;
-        ar >> m_PointStyle;
+        ar >> k; //m_PointStyle;
 
         ar>>m_MAChord>>m_Span;
 

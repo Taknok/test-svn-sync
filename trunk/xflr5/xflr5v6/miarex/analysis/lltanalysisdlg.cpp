@@ -271,10 +271,7 @@ void LLTAnalysisDlg::cleanUp()
             PlaneOpp *pPOpp = m_pTheTask->m_ptheLLTAnalysis->m_PlaneOppList.at(iPOpp);
             if(Settings::isAlignedChildrenStyle())
             {
-                pPOpp->setStyle(m_pTheTask->m_pWPolar->curveStyle());
-                pPOpp->setWidth(m_pTheTask->m_pWPolar->curveWidth());
-                pPOpp->setColor(m_pTheTask->m_pWPolar->curveColor());
-                pPOpp->setPoints(m_pTheTask->m_pWPolar->points());
+                pPOpp->setTheStyle(m_pTheTask->m_pWPolar->theStyle());
             }
 
             pPOpp->setVisible(true);

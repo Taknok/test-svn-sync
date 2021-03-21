@@ -143,7 +143,7 @@ private:
 
 private:
 
-    FoilDesignWt *m_p2DWidget;
+    FoilDesignWt *m_p2dWidget;
 
     QTableView *m_pctrlFoilTable;
     QStandardItemModel *m_pFoilModel;

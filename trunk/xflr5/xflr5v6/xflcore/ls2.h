@@ -56,6 +56,31 @@ struct LS2
         m_PointStyle = pointstyle;
     }
 
+    void saveSettings(QSettings &settings, QString const &name) const
+    {
+        settings.setValue(name+"_visible", m_bIsVisible);
+        settings.setValue(name+"_color", m_Color);
+        settings.setValue(name+"_width", m_Width);
+
+        switch (m_Stipple)
+        {
+            case Line::SOLID:      settings.setValue(name+"_line", 0);  break;
+            case Line::DASH:       settings.setValue(name+"_line", 1);  break;
+            case Line::DOT:        settings.setValue(name+"_line", 2);  break;
+            case Line::DASHDOT:    settings.setValue(name+"_line", 3);  break;
+            case Line::DASHDOTDOT: settings.setValue(name+"_line", 4);  break;
+            case Line::NOLINE:     settings.setValue(name+"_line", 5);  break;
+        }
+        switch (m_PointStyle)
+        {
+            case Line::NOSYMBOL:       settings.setValue(name+"_pts", 0);   break;
+            case Line::LITTLECIRCLE:   settings.setValue(name+"_pts", 1);   break;
+            case Line::BIGCIRCLE:      settings.setValue(name+"_pts", 2);   break;
+            case Line::LITTLESQUARE:   settings.setValue(name+"_pts", 3);   break;
+            case Line::BIGSQUARE:      settings.setValue(name+"_pts", 4);   break;
+        }
+    }
+
 
     void loadSettings(QSettings &settings, QString const &name)
     {
@@ -103,47 +128,80 @@ struct LS2
         }
     }
 
-
-    void saveSettings(QSettings &settings, QString const &name) const
+    static Line::enumLineStipple convertLineStyle(int iStipple)
     {
-        settings.setValue(name+"_visible", m_bIsVisible);
-        settings.setValue(name+"_color", m_Color);
-        settings.setValue(name+"_width", m_Width);
-
-        switch (m_Stipple)
+        switch (iStipple)
         {
-            case Line::SOLID:      settings.setValue(name+"_line", 0);  break;
-            case Line::DASH:       settings.setValue(name+"_line", 1);  break;
-            case Line::DOT:        settings.setValue(name+"_line", 2);  break;
-            case Line::DASHDOT:    settings.setValue(name+"_line", 3);  break;
-            case Line::DASHDOTDOT: settings.setValue(name+"_line", 4);  break;
-            case Line::NOLINE:     settings.setValue(name+"_line", 5);  break;
-        }
-        switch (m_PointStyle)
-        {
-            case Line::NOSYMBOL:       settings.setValue(name+"_pts", 0);   break;
-            case Line::LITTLECIRCLE:   settings.setValue(name+"_pts", 1);   break;
-            case Line::BIGCIRCLE:      settings.setValue(name+"_pts", 2);   break;
-            case Line::LITTLESQUARE:   settings.setValue(name+"_pts", 3);   break;
-            case Line::BIGSQUARE:      settings.setValue(name+"_pts", 4);   break;
+            default:
+            case 0: return Line::SOLID;
+            case 1: return Line::DASH;
+            case 2: return Line::DOT;
+            case 3: return Line::DASHDOT;
+            case 4: return Line::DASHDOTDOT;
+            case 5: return Line::NOLINE;
         }
     }
 
+
+    static int convertLineStyle(Line::enumLineStipple style)
+    {
+        switch (style)
+        {
+            case Line::SOLID:      return 0;
+            case Line::DASH:       return 1;
+            case Line::DOT:        return 2;
+            case Line::DASHDOT:    return 3;
+            case Line::DASHDOTDOT: return 4;
+            case Line::NOLINE:     return 5;
+        }
+        return 0;
+    }
+
+
+    static Line::enumPointStyle convertPointStyle(int iStyle)
+    {
+        switch (iStyle)
+        {
+            default:
+            case 0:  return Line::NOSYMBOL;
+            case 1:  return Line::LITTLECIRCLE;
+            case 2:  return Line::BIGCIRCLE;
+            case 3:  return Line::LITTLESQUARE;
+            case 4:  return Line::BIGSQUARE;
+        }
+    }
+
+
+    static int convertPointStyle(Line::enumPointStyle ptStyle)
+    {
+        switch (ptStyle)
+        {
+            case Line::NOSYMBOL:        return 0;
+            case Line::LITTLECIRCLE:    return 1;
+            case Line::BIGCIRCLE:       return 2;
+            case Line::LITTLESQUARE:    return 3;
+            case Line::BIGSQUARE:       return 4;
+        }
+        return 0;
+    }
+
+
     void serializeXfl(QDataStream &ar, bool bIsStoring)
     {
+        int k=0;
         if(bIsStoring)
         {
-            ar << m_Stipple;
+            ar << convertLineStyle(m_Stipple);
             ar << m_Width;
-            ar << m_PointStyle;
+            ar << convertPointStyle(m_PointStyle);
             ar << m_Color;
             ar << m_bIsVisible;
         }
         else
         {
-            ar >> m_Stipple;
+            ar >> k; m_Stipple=convertLineStyle(k);
             ar >> m_Width;
-            ar >> m_PointStyle;
+            ar >> k; m_PointStyle=convertPointStyle(k);
             ar >> m_Color;
             ar >> m_bIsVisible;
         }

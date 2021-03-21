@@ -49,8 +49,7 @@ Polar::Polar()
     m_ACrit    = 9.0;
     m_XTop     = 1.0;
     m_XBot     = 1.0;
-    m_FoilName = "";
-    m_PlrName = "";
+    m_FoilName.clear();
 }
 
 
@@ -687,7 +686,7 @@ void Polar::setPolarType(Xfl::enumPolarType type)
 
 void Polar::setAutoPolarName()
 {
-    m_PlrName = autoPolarName(m_PolarType, m_Reynolds, m_Mach, m_ACrit, m_ASpec, m_XTop, m_XBot);
+    m_Name = autoPolarName(m_PolarType, m_Reynolds, m_Mach, m_ACrit, m_ASpec, m_XTop, m_XBot);
 }
 
 
@@ -761,7 +760,7 @@ QString Polar::autoPolarName(Xfl::enumPolarType polarType, double Re, double Mac
 void Polar::getPolarProperties(QString &polarProps) const
 {
     QString strong;
-    polarProps = m_PlrName +"\n\n";
+    polarProps = m_Name +"\n\n";
 
 //    PolarProperties += QObject::tr("Parent foil")+" = "+ m_FoilName+"\n";
 
@@ -825,10 +824,7 @@ void Polar::getPolarProperties(QString &polarProps) const
 }
 
 
-void Polar::setColor(int r, int g, int b, int a)
-{
-    m_theStyle.m_Color = {r,g,b,a};
-}
+
 
 
 /**

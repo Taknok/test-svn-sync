@@ -26,7 +26,7 @@
 #include <QPixmap>
 
 #include <xflobjects/objects3d/vector3d.h>
-
+#include <xflcore/ls2.h>
 
 /**
 * @file
@@ -71,8 +71,8 @@ public:
 
     void setContextMenu(QMenu *pMenu);
 
-    void setNeutralLineColor(QColor clr){m_NeutralColor = clr;}
-    QColor const& neutralLineColor() const {return m_NeutralColor;}
+    void setNeutralLineColor(QColor clr){m_NeutralStyle.m_Color = clr;}
+    QColor const& neutralLineColor() const {return m_NeutralStyle.m_Color;}
 
 protected:
     Vector3d mousetoReal(QPoint &point);
@@ -129,7 +129,6 @@ protected:
     bool m_bScale;              /**< true if the scale should be displayed */
     bool m_bZoomPlus;           /**< true if the user is in the process of zooming in by drawing a rectangle */
     bool m_bZoomYOnly;          /**< true if only the y-axis should be scaled */
-    bool m_bNeutralLine;        /**< true if the neutral line should be displayed */
     bool m_bTrans;              /**< true if the view is being dragged by the user */
     bool m_bDrag;               /**< true if a point is being dragged by the user */
     bool m_bShowLegend;         /**< true if the legend should be shown */
@@ -148,8 +147,7 @@ protected:
     int m_YMinStyle;            /**< the style of the minor Y-grid */
     int m_XMinWidth;            /**< the width of the minor X-grid */
     int m_YMinWidth;            /**< the width of the minor Y-grid */
-    int m_NeutralStyle;         /**< the style of the neutral line y=0 */
-    int m_NeutralWidth;         /**< the width of the neutral line y=0 */
+    LS2 m_NeutralStyle;         /**< the style of the neutral line y=0 */
 
     double m_XGridUnit;         /**< the unit of the main X-grid */
     double m_YGridUnit;         /**< the unit of the main Y-grid */
@@ -160,7 +158,6 @@ protected:
     QColor m_YGridColor;        /**< the color of the main Y-grid */
     QColor m_XMinColor;         /**< the color of the minor X-grid */
     QColor m_YMinColor;         /**< the color of the minor Y-grid */
-    QColor m_NeutralColor;
 
 
     double m_fScale;            /**< the current scale of the display */

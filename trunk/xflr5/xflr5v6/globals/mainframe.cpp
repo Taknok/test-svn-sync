@@ -970,7 +970,7 @@ void MainFrame::createDockWindows()
     setMainFrameCentralWidget();
 
     m_pAFoil  = new AFoil(this);
-    m_pAFoil->m_p2DWidget = m_pDirect2dWidget;
+    m_pAFoil->m_p2dWidget = m_pDirect2dWidget;
     connect(m_pDirect2dWidget, SIGNAL(objectModified()), m_pAFoil, SLOT(onSplinesModified()));
 
     m_pctrlAFoilWidget->setWidget(m_pAFoil);
@@ -3690,8 +3690,7 @@ void MainFrame::onCurFoilStyle()
     if(!XDirect::curFoil()) return;
 
     LinePickerDlg dlg(this);
-    dlg.initDialog(XDirect::curFoil()->pointStyle(), XDirect::curFoil()->lineStyle(), XDirect::curFoil()->lineWidth(),
-                   colour(XDirect::curFoil()), true, true);
+    dlg.initDialog(XDirect::curFoil()->theStyle(), true, true);
 
     if(QDialog::Accepted==dlg.exec())
     {
@@ -6692,7 +6691,7 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
     if(bIsStoring)
     {
         ar << ArchiveFormat;
-        ar << pFoil->m_FoilName;
+        ar << pFoil->name();
         ar << pFoil->m_FoilDescription;
 
 /*        ar << pFoil->m_Stipple << pFoil->m_Width;
@@ -6701,7 +6700,7 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         //        ar << m_bShowFoilPoints;
         ar << qint8(pFoil->m_PointStyle);
         */
-        pFoil->m_theStyle.serializeXfl(ar, bIsStoring);
+        pFoil->theStyle().serializeXfl(ar, bIsStoring);
 
         ar << pFoil->m_bCenterLine << pFoil->m_bLEFlap << pFoil->m_bTEFlap;
         ar << pFoil->m_LEFlapAngle << pFoil->m_LEXHinge << pFoil->m_LEYHinge;
@@ -6718,20 +6717,22 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         ar >> ArchiveFormat;
 
         ar >> strange;
-        pFoil->setFoilName(strange);
+        pFoil->setName(strange);
 
         ar >> strange;
-        pFoil->setFoilDescription(strange);
+        pFoil->setDescription(strange);
 
         if(ArchiveFormat<100007)
         {
-            ar >> pFoil->m_theStyle.m_Stipple >> pFoil->m_theStyle.m_Width;
+            int n;
+            ar >> n ; pFoil->theStyle().setStipple(n);
+            ar >> pFoil->theStyle().m_Width;
 
             int r=0,g=0,blue=0,a=0;
             readColor(ar, r,g,blue,a);
             pFoil->setColor(r,g,blue,a);
-            ar >> pFoil->m_theStyle.m_bIsVisible;
-            ar >> b; pFoil->m_theStyle.setPointStyle(int(b));
+            ar >> pFoil->theStyle().m_bIsVisible;
+            ar >> b; pFoil->theStyle().setPointStyle(int(b));
         }
         else
             pFoil->theStyle().serializeXfl(ar, bIsStoring);
@@ -6777,12 +6778,12 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         ar << ArchiveFormat; // first format for XFL file
 
         ar << pPolar->m_FoilName;
-        ar << pPolar->m_PlrName;
+        ar << pPolar->name();
 
 /*        ar << pPolar->m_Style << pPolar->m_Width;
         writeColor(ar, pPolar->m_red, pPolar->m_green, pPolar->m_blue, pPolar->m_alphaChannel);
         ar << pPolar->m_bIsVisible << false;*/
-        pPolar->m_theStyle.serializeXfl(ar, bIsStoring);
+        pPolar->theStyle().serializeXfl(ar, bIsStoring);
 
         if      (pPolar->m_PolarType==Xfl::FIXEDSPEEDPOLAR) ar<<1;
         else if(pPolar->m_PolarType==Xfl::FIXEDLIFTPOLAR)   ar<<2;
@@ -6818,13 +6819,14 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
     else
     {
         //read variables
+        QString strange;
         float Alpha=0, Cd=0, Cdp=0, Cl=0, Cm=0, XTr1=0, XTr2=0, HMom=0, Cpmn=0, Re=0, XCp=0;
 
         ar >> ArchiveFormat;
         if (ArchiveFormat <100000 || ArchiveFormat>110000) return false;
 
         ar >> pPolar->m_FoilName;
-        ar >> pPolar->m_PlrName;
+        ar >> strange; pPolar->setName(strange);
 
         if(ArchiveFormat<100005)
         {
@@ -6833,11 +6835,11 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
             int r,g,b,a;
             readColor(ar, r,g,b,a);
             pPolar->setColor(r,g,b,a);
-            ar >> pPolar->m_theStyle.m_bIsVisible >> boolean;
+            ar >> pPolar->theStyle().m_bIsVisible >> boolean;
         }
         else
         {
-            pPolar->m_theStyle.serializeXfl(ar, bIsStoring);
+            pPolar->theStyle().serializeXfl(ar, bIsStoring);
         }
 
         ar >> n;
@@ -6862,7 +6864,10 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         }
 
         if(ArchiveFormat<100005)
-            ar >> pPolar->m_theStyle.m_PointStyle;
+        {
+            ar >> n;
+            pPolar->theStyle().setPointStyle(n);
+        }
 
         // space allocation
         for (int i=0; i<19; i++) ar >> k;
@@ -6870,122 +6875,6 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
     }
     return true;
 }
-
-
-/*
-bool MainFrame::serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring, int ArchiveFormat)
-{
-    bool boolean=false;
-    int k=0;
-    float f0=0.f,f1=0.f;
-    double dble=0;
-
-    // identifies the archive's format
-    // 200004: new linestyle format
-    int OppArchiveFormat = 200004;
-
-
-    if(bIsStoring)
-    {
-        ar << OppArchiveFormat;
-        //200003 : first xfl format
-        //write variables
-        ar << pOpp->foilName();
-        ar << pOpp->polarName();
-
-        pOpp->theStyle().serializeXfl(ar, bIsStoring);
-
-        ar << pOpp->m_Reynolds << pOpp->m_Mach << pOpp->m_Alpha;
-        ar << pOpp->n << pOpp->blx.nd1 << pOpp->blx.nd2 << pOpp->blx.nd3;
-
-        ar << pOpp->m_bViscResults;
-        ar << pOpp->m_bBL;
-
-        ar << pOpp->Cl << pOpp->Cm << pOpp->Cd << pOpp->Cdp;
-        ar << pOpp->Xtr1 << pOpp->Xtr2 << pOpp->m_XCP;
-        ar << pOpp->ACrit << pOpp->m_TEHMom << pOpp->Cpmn;
-
-        for (k=0; k<pOpp->n; k++)     ar << float(pOpp->Cpv[k]) << float(pOpp->Cpi[k]);
-        for (k=0; k<pOpp->n; k++)     ar << float(pOpp->Qv[k] ) << float(pOpp->Qi[k]);
-        for (k=0; k<=pOpp->blx.nd1; k++)  ar << float(pOpp->blx.xd1[k]) << float(pOpp->blx.yd1[k]);
-        for (k=0; k<pOpp->blx.nd2; k++)   ar << float(pOpp->blx.xd2[k]) << float(pOpp->blx.yd2[k]);
-        for (k=0; k<pOpp->blx.nd3; k++)      ar << float(pOpp->blx.xd3[k]) << float(pOpp->blx.yd3[k]);
-
-        // space allocation for the future storage of more data, without need to change the format
-        for (int i=0; i<20; i++) ar << 0;
-        dble = 0;
-        for (int i=0; i<50; i++) ar << dble;
-    }
-    else
-    {
-
-        ar >> ArchiveFormat;
-        //write variables
-        ar >> pOpp->m_FoilName;
-        ar >> pOpp->m_PlrName;
-
-        if(OppArchiveFormat<200004)
-        {
-            int n;
-            ar >> n;
-            pOpp->m_theStyle.setStipple(n);
-            ar >> pOpp->m_theStyle.m_Width;
-            int a,r,g,b;
-            readColor(ar, r,g,b,a);
-            pOpp->setColor(r,g,b,a);
-            ar >> pOpp->m_theStyle.m_bIsVisible >> boolean;
-        }
-        else
-            pOpp->theStyle().serializeXfl(ar, bIsStoring);
-
-        ar >> pOpp->m_Reynolds >> pOpp->m_Mach >> pOpp->m_Alpha;
-        ar >> pOpp->n >> pOpp->blx.nd1 >> pOpp->blx.nd2 >> pOpp->blx.nd3;
-
-        ar >> pOpp->m_bViscResults;
-        ar >> pOpp->m_bBL;
-
-        ar >> pOpp->Cl >> pOpp->Cm >> pOpp->Cd >> pOpp->Cdp;
-        ar >> pOpp->Xtr1 >> pOpp->Xtr2 >> pOpp->m_XCP;
-        ar >> pOpp->ACrit >> pOpp->m_TEHMom >> pOpp->Cpmn;
-
-        for (k=0; k<pOpp->n; k++)
-        {
-            ar >> f0 >> f1;
-            pOpp->Cpv[k] = double(f0);
-            pOpp->Cpi[k] = double(f1);
-        }
-        for (k=0; k<pOpp->n; k++)
-        {
-            ar >> f0 >> f1;
-            pOpp->Qv[k] = double(f0);
-            pOpp->Qi[k] = double(f1);
-        }
-        for (k=0; k<=pOpp->blx.nd1; k++)
-        {
-            ar >> f0 >> f1;
-            pOpp->blx.xd1[k] = double(f0);
-            pOpp->blx.yd1[k] = double(f1);
-        }
-        for (k=0; k<pOpp->blx.nd2; k++)
-        {
-            ar >> f0 >> f1;
-            pOpp->blx.xd2[k] = double(f0);
-            pOpp->blx.yd2[k] = double(f1);
-        }
-        for (k=0; k<pOpp->blx.nd3; k++)
-        {
-            ar >> f0 >> f1;
-            pOpp->blx.xd3[k] = double(f0);
-            pOpp->blx.yd3[k] = double(f1);
-        }
-
-        // space allocation
-        for (int i=0; i<20; i++) ar >> k;
-        for (int i=0; i<50; i++) ar >> dble;
-    }
-    return true;
-}
-*/
 
 
 /**
@@ -7063,12 +6952,12 @@ void MainFrame::onPreferences()
     if(Settings::s_Theme==SETTINGS::DARKTHEME)
     {
         m_pXDirectTileWidget->opPointWidget()->setNeutralLineColor(QColor(190,190,190));
-        m_pAFoil->m_p2DWidget->setNeutralLineColor(QColor(190,190,190));
+        m_pAFoil->m_p2dWidget->setNeutralLineColor(QColor(190,190,190));
     }
     else
     {
         m_pXDirectTileWidget->opPointWidget()->setNeutralLineColor(QColor(60,60,60));
-        m_pAFoil->m_p2DWidget->setNeutralLineColor(QColor(60,60,60));
+        m_pAFoil->m_p2dWidget->setNeutralLineColor(QColor(60,60,60));
     }
     gl3dMiarexView::s_bResetglGeom = true;
     gl3dMiarexView::s_bResetglBody = true;

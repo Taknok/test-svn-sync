@@ -181,9 +181,9 @@ Miarex::Miarex(QWidget *parent) : QWidget(parent)
     Panel::s_VortexPos = 0.25;
     Panel::s_CtrlPos   = 0.75;
 
-    m_LineStyle.m_Stipple = 0;
+    m_LineStyle.m_Stipple = Line::SOLID;
     m_LineStyle.m_Width = 1;
-    m_LineStyle.m_PointStyle  = 0;
+    m_LineStyle.m_PointStyle  = Line::NOSYMBOL;
     m_LineStyle.m_Color = QColor(127, 255, 70);
     m_bCurveVisible = true;
 
@@ -364,9 +364,9 @@ Miarex::Miarex(QWidget *parent) : QWidget(parent)
 
 
     m_CpLineStyle.m_Color = QColor(255,100,150);
-    m_CpLineStyle.m_Stipple = 0;
+    m_CpLineStyle.m_Stipple = Line::SOLID;
     m_CpLineStyle.m_Width = 1;
-    m_CpLineStyle.m_PointStyle = 0;
+    m_CpLineStyle.m_PointStyle = Line::NOSYMBOL;
     m_bShowCp       = true;
 
     m_iView          = Xfl::WOPPVIEW;
@@ -440,7 +440,7 @@ void Miarex::connectSignals()
     connect(m_pctrlCurvePoints, SIGNAL(activated(int)), SLOT(onCurvePoints(int)));
     connect(m_pctrlCurveColor,  SIGNAL(clickedLB()),    SLOT(onCurveColor()));
 
-    connect(m_pctrlShowCurve,     SIGNAL(clicked()), SLOT(onShowCurve()));
+    connect(m_pchShowCurve,     SIGNAL(clicked()), SLOT(onShowCurve()));
     connect(m_pctrlAlignChildren, SIGNAL(clicked(bool)), s_pMainFrame, SLOT(onAlignChildrenStyle(bool)));
 
     connect(m_pctrlPanelForce,  SIGNAL(clicked()), SLOT(onPanelForce()));
@@ -820,9 +820,9 @@ void Miarex::createWOppCurves()
                     for(int ic=0; ic<m_WingGraph.count(); ic++)
                     {
                         Curve *pWingCurve = m_WingGraph[ic]->addCurve();
-                        pWingCurve->setPointStyle(pPOpp->points());
-                        pWingCurve->setStipple(pPOpp->style());
-                        pWingCurve->setColor(color(pPOpp->color()));
+                        pWingCurve->setPointStyle(pPOpp->pointStyle1());
+                        pWingCurve->setStipple(pPOpp->lineStipple());
+                        pWingCurve->setColor(pPOpp->color());
                         pWingCurve->setWidth(pPOpp->width());
                         //only show the legend for the main wing
                         if(iw==0) pWingCurve->setName(POppTitle(pPOpp));
@@ -942,10 +942,10 @@ void Miarex::createWPolarCurves()
             {
                 pCurve[ig] = m_WPlrGraph[ig]->addCurve();
                 fillWPlrCurve(pCurve[ig], pWPolar, m_WPlrGraph[ig]->xVariable(), m_WPlrGraph[ig]->yVariable());
-                pCurve[ig]->setPointStyle(pWPolar->points());
-                pCurve[ig]->setStipple(pWPolar->curveStyle());
-                pCurve[ig]->setColor(color(pWPolar->curveColor()));
-                pCurve[ig]->setWidth(pWPolar->curveWidth());
+                pCurve[ig]->setPointStyle(pWPolar->pointStyle1());
+                pCurve[ig]->setStipple(pWPolar->lineStipple());
+                pCurve[ig]->setColor(pWPolar->color());
+                pCurve[ig]->setWidth(pWPolar->lineWidth());
                 pCurve[ig]->setName(pWPolar->polarName());
             }
         }
@@ -1280,10 +1280,10 @@ void Miarex::createStabRLCurves()
             {
                 pLongCurve[iCurve] = m_StabPlrGraph.at(0)->addCurve();
                 pLongCurve[iCurve]->setVisible(pWPolar->isVisible());
-                pLongCurve[iCurve]->setPointStyle(pWPolar->points());
-                pLongCurve[iCurve]->setStipple(pWPolar->curveStyle());
-                pLongCurve[iCurve]->setColor(color(pWPolar->curveColor()));
-                pLongCurve[iCurve]->setWidth(pWPolar->curveWidth());
+                pLongCurve[iCurve]->setPointStyle(pWPolar->pointStyle1());
+                pLongCurve[iCurve]->setStipple(pWPolar->lineStipple());
+                pLongCurve[iCurve]->setColor(pWPolar->color());
+                pLongCurve[iCurve]->setWidth(pWPolar->lineWidth());
                 pLongCurve[iCurve]->setName(pWPolar->polarName()+QString("_Mode_%1").arg(iCurve));
                 fillStabCurve(pLongCurve[iCurve], pWPolar, iCurve);
             }
@@ -1293,10 +1293,10 @@ void Miarex::createStabRLCurves()
             {
                 pLatCurve[iCurve] = m_StabPlrGraph.at(1)->addCurve();
                 pLatCurve[iCurve]->setVisible(pWPolar->isVisible());
-                pLatCurve[iCurve]->setPointStyle(pWPolar->points());
-                pLatCurve[iCurve]->setStipple(pWPolar->curveStyle());
-                pLatCurve[iCurve]->setColor(color(pWPolar->curveColor()));
-                pLatCurve[iCurve]->setWidth(pWPolar->curveWidth());
+                pLatCurve[iCurve]->setPointStyle(pWPolar->pointStyle1());
+                pLatCurve[iCurve]->setStipple(pWPolar->lineStipple());
+                pLatCurve[iCurve]->setColor(pWPolar->color());
+                pLatCurve[iCurve]->setWidth(pWPolar->lineWidth());
                 pLatCurve[iCurve]->setName(pWPolar->polarName()+QString("_Mode_%1").arg(iCurve));
                 fillStabCurve(pLatCurve[iCurve], pWPolar, iCurve+4);
             }
@@ -1316,7 +1316,7 @@ void Miarex::fillComboBoxes(bool bEnable)
     m_pctrlCurveStyle->setEnabled(bEnable);
     m_pctrlCurveWidth->setEnabled(bEnable);
     m_pctrlCurvePoints->setEnabled(bEnable);
-    m_pctrlShowCurve->setEnabled(bEnable);
+    m_pchShowCurve->setEnabled(bEnable);
     m_pctrlAlignChildren->setEnabled(bEnable);
 
     int LineStyle[]  = {0,0,0,0,0};
@@ -1951,10 +1951,7 @@ bool Miarex::loadSettings(QSettings &settings)
         m_ControlMax    = settings.value("ControlMax").toDouble();
         m_ControlDelta  = settings.value("ControlDelta").toDouble();
 
-        m_CpLineStyle.m_Stipple = settings.value("CpStyle").toInt();
-        m_CpLineStyle.m_Width = settings.value("CpWidth").toInt();
-        m_CpLineStyle.m_Color = settings.value("CpColor").value<QColor>();
-        m_CpLineStyle.m_PointStyle = settings.value("CpPointStyle").toInt();
+        m_CpLineStyle.loadSettings(settings,"CpStyle");
 
         int k = settings.value("iView").toInt();
         if(k==0)      m_iView = Xfl::WOPPVIEW;
@@ -2721,7 +2718,7 @@ void Miarex::onCurveColor()
 */
 void Miarex::onCurveStyle(int index)
 {
-    m_LineStyle.m_Stipple = index;
+    m_LineStyle.setStipple(index);
     fillComboBoxes();
     updateCurve();
 }
@@ -2748,7 +2745,7 @@ void Miarex::onCurveWidth(int index)
 */
 void Miarex::onCurvePoints(int index)
 {
-    m_LineStyle.m_PointStyle = index;
+    m_LineStyle.setPointStyle(index);
     fillComboBoxes();
     updateCurve();
 }
@@ -2778,9 +2775,9 @@ void Miarex::onDefineStabPolar()
         WPolar* pNewStabPolar = new WPolar;
         pNewStabPolar->setPlaneName(m_pCurPlane->planeName());
         QColor clr = MainFrame::getColor(4);
-        pNewStabPolar->setCurveColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
-        pNewStabPolar->setCurveWidth(2);
-        pNewStabPolar->setPoints(1);
+        pNewStabPolar->setColor(clr);
+        pNewStabPolar->setWidth(2);
+        pNewStabPolar->setPointStyle(Line::LITTLECIRCLE);
         pNewStabPolar->setVisible(true);
 
         pNewStabPolar->setReferenceChordLength(m_pCurPlane->mac());
@@ -2866,7 +2863,7 @@ void Miarex::onDefineWPolar()
 
 
         QColor clr = MainFrame::getColor(4);
-        pNewWPolar->setCurveColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
+        pNewWPolar->setColor(clr);
 
         m_pCurWPolar = Objects3d::insertNewWPolar(pNewWPolar, m_pCurPlane);
         m_pCurPOpp = nullptr;
@@ -2907,7 +2904,7 @@ void Miarex::onDefineWPolarObject()
     pNewWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
     pNewWPolar->setReferenceChordLength(m_pCurPlane->mac());
     QColor clr = MainFrame::getColor(4);
-    pNewWPolar->setCurveColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
+    pNewWPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 
     EditPolarDefDlg vpDlg(s_pMainFrame);
     vpDlg.initDialog(m_pCurPlane, pNewWPolar);
@@ -2999,7 +2996,7 @@ void Miarex::onEditCurWPolar()
         //        pNewWPolar->bDirichlet() = m_bDirichlet;
 
         QColor clr = MainFrame::getColor(4);
-        pNewWPolar->setCurveColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
+        pNewWPolar->setColor(clr);
         pNewWPolar->setVisible(true);
 
         m_pCurWPolar = Objects3d::insertNewWPolar(pNewWPolar, m_pCurPlane);
@@ -3046,7 +3043,7 @@ void Miarex::onEditCurWPolarObject()
         //        pNewWPolar->bDirichlet() = m_bDirichlet;
 
         QColor clr = MainFrame::getColor(4);
-        pNewWPolar->setCurveColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
+        pNewWPolar->setColor(clr);
         pNewWPolar->setVisible(true);
 
 
@@ -3087,8 +3084,8 @@ void Miarex::onEditCurWPolarPts()
     epDlg.initDialog(nullptr, nullptr, this, m_pCurWPolar);
 
 
-    bool bPoints = m_pCurWPolar->points();
-    m_pCurWPolar->setPoints(1);
+    Line::enumPointStyle ps = m_pCurWPolar->pointStyle2();
+    m_pCurWPolar->setPointStyle2(Line::LITTLECIRCLE);
 
     s_bResetCurves = true;
     updateView();
@@ -3101,7 +3098,7 @@ void Miarex::onEditCurWPolarPts()
     {
         m_pCurWPolar->copy(pMemWPolar);
     }
-    m_pCurWPolar->setPoints(bPoints);
+    m_pCurWPolar->setPointStyle(ps);
 
     m_bResetTextLegend = true;
     s_bResetCurves = true;
@@ -4933,7 +4930,7 @@ void Miarex::onHidePlaneWPolars()
         if (pWPolar->planeName() == PlaneName)
         {
             pWPolar->setVisible(false);
-            if(pWPolar->polarType()==Xfl::STABILITYPOLAR) pWPolar->setPoints(0);
+            if(pWPolar->polarType()==Xfl::STABILITYPOLAR) pWPolar->setPointStyle2(Line::NOSYMBOL);
         }
     }
 
@@ -5054,7 +5051,7 @@ void Miarex::onImportWPolars()
                 }
 
                 QColor clr = randomColor(!Settings::isLightTheme());
-                pWPolar->setCurveColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
+                pWPolar->setColor(clr);
 
                 Objects3d::addWPolar(pWPolar);
                 XFile.close();
@@ -5095,9 +5092,9 @@ void Miarex::onKeepCpSection()
     m_CpLineStyle.m_Color = randomColor(!Settings::isLightTheme());
     pCurrentCurve->setColor(m_CpLineStyle.m_Color);
 
-    m_CpLineStyle.m_Stipple = 0;
+    m_CpLineStyle.m_Stipple = Line::SOLID;
     m_CpLineStyle.m_Width = 1;
-    m_CpLineStyle.m_PointStyle = 0;
+    m_CpLineStyle.m_PointStyle = Line::NOSYMBOL;
     setCurveParams();
 
     createCpCurves();
@@ -5777,7 +5774,7 @@ void Miarex::onShowTransitions()
  */
 void Miarex::onShowCurve()
 {
-    m_bCurveVisible = m_pctrlShowCurve->isChecked();
+    m_bCurveVisible = m_pchShowCurve->isChecked();
     updateCurve();
 }
 
@@ -6525,10 +6522,8 @@ bool Miarex::saveSettings(QSettings &settings)
         settings.setValue("bAutoInertia", WPolarDlg::s_WPolar.m_bAutoInertia);
         settings.setValue("showFlapMoments", m_bShowFlapMoments);
 
-        settings.setValue("CpStyle", m_CpLineStyle.m_Stipple);
-        settings.setValue("CpWidth", m_CpLineStyle.m_Width);
-        settings.setValue("CpColor", m_CpLineStyle.m_Color);
-        settings.setValue("CpPointStyle", m_CpLineStyle.m_PointStyle);
+        m_CpLineStyle.saveSettings(settings,"CpStyle");
+
 
         settings.setValue("CvPrec", LLTAnalysis::s_CvPrec);
         settings.setValue("RelaxMax", LLTAnalysis::s_RelaxMax);
@@ -6804,12 +6799,9 @@ void Miarex::setCurveParams()
     {
         if(m_pCurWPolar)
         {
-            m_pctrlShowCurve->setChecked(m_pCurWPolar->isVisible());
+            m_pchShowCurve->setChecked(m_pCurWPolar->isVisible());
             m_bCurveVisible     = m_pCurWPolar->isVisible();
-            m_LineStyle.m_Color = color(m_pCurWPolar->curveColor());
-            m_LineStyle.m_Stipple = m_pCurWPolar->curveStyle();
-            m_LineStyle.m_Width = m_pCurWPolar->curveWidth();
-            m_LineStyle.m_PointStyle = m_pCurWPolar->points();
+            m_LineStyle = m_pCurWPolar->theStyle();
             fillComboBoxes();
         }
         else
@@ -6824,10 +6816,10 @@ void Miarex::setCurveParams()
         {
             m_bCurveVisible     = pStabView->m_pCurve->isVisible();
             m_LineStyle.m_Color = pStabView->m_pCurve->color();
-            m_LineStyle.m_Stipple = pStabView->m_pCurve->style();
+            m_LineStyle.setStipple(pStabView->m_pCurve->style());
             m_LineStyle.m_Width = pStabView->m_pCurve->width();
-            m_LineStyle.m_PointStyle = pStabView->m_pCurve->pointStyle();
-            m_pctrlShowCurve->setChecked(pStabView->m_pCurve->isVisible());
+            m_LineStyle.setPointStyle(pStabView->m_pCurve->pointStyle());
+            m_pchShowCurve->setChecked(pStabView->m_pCurve->isVisible());
             fillComboBoxes();
         }
     }
@@ -6836,13 +6828,10 @@ void Miarex::setCurveParams()
         //set OpPoint params
         if(m_pCurPOpp)
         {
-            m_pctrlShowCurve->setChecked(m_pCurPOpp->isVisible());
+            m_pchShowCurve->setChecked(m_pCurPOpp->isVisible());
 
             m_bCurveVisible     = m_pCurPOpp->isVisible();
-            m_LineStyle.m_Color = color(m_pCurPOpp->color());
-            m_LineStyle.m_Stipple = m_pCurPOpp->style();
-            m_LineStyle.m_Width = m_pCurPOpp->width();
-            m_LineStyle.m_PointStyle = m_pCurPOpp->points();
+            m_LineStyle = m_pCurPOpp->theStyle();
             fillComboBoxes();
         }
         else
@@ -6855,7 +6844,7 @@ void Miarex::setCurveParams()
         //set Cp params
         if(m_pCurPOpp)
         {
-            m_pctrlShowCurve->setChecked(true);
+            m_pchShowCurve->setChecked(true);
             m_bCurveVisible = true;
             m_LineStyle = m_CpLineStyle;
             fillComboBoxes();
@@ -7140,13 +7129,13 @@ void Miarex::setupLayout()
     {
         QHBoxLayout *pCheckLayout = new QHBoxLayout;
         {
-            m_pctrlShowCurve   = new QCheckBox(tr("Curve"));
+            m_pchShowCurve   = new QCheckBox(tr("Curve"));
             m_pctrlAlignChildren = new QCheckBox(tr("Flow down style"));
             QString tip = tr("If activated:\n"
                              "all changes made to the style of the polar objects will flow down to the operating points\n"
                              "all changes made to the style of the foil objects will flow down to the polars and to the operating points");
             m_pctrlAlignChildren->setToolTip(tip);
-            pCheckLayout->addWidget(m_pctrlShowCurve);
+            pCheckLayout->addWidget(m_pchShowCurve);
             pCheckLayout->addWidget(m_pctrlAlignChildren);
         }
 
@@ -7493,7 +7482,7 @@ void Miarex::setWPolar(bool bCurrent, QString WPlrName)
     if(m_pCurPlane && m_pCurWPolar)
     {
         m_bCurveVisible = m_pCurWPolar->isVisible();
-        m_LineStyle.m_PointStyle  = m_pCurWPolar->points();
+        m_LineStyle.m_PointStyle  = m_pCurWPolar->pointStyle();
 
         //make sure the polar is up to date with the latest plane data
         if(m_pCurWPolar->bAutoInertia())
@@ -7715,14 +7704,10 @@ void Miarex::stopAnimate()
  */
 void Miarex::updateCurve()
 {
-    bool bCurveVisible = m_pctrlShowCurve->isChecked();
+    bool bCurveVisible = m_pchShowCurve->isChecked();
     if(m_iView==Xfl::WPOLARVIEW && m_pCurWPolar)
     {
-        m_pCurWPolar->setCurveStyle(m_LineStyle.m_Stipple);
-        m_pCurWPolar->setCurveWidth(m_LineStyle.m_Width);
-        QColor c = m_LineStyle.m_Color;
-        m_pCurWPolar->setCurveColor(ObjectColor(c.red(), c.green(), c.blue(), c.alpha()));
-        m_pCurWPolar->setPoints(m_LineStyle.m_PointStyle);
+        m_pCurWPolar->setTheStyle(m_LineStyle);
         m_pCurWPolar->setVisible(bCurveVisible);
 
         if(Settings::isAlignedChildrenStyle()) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
@@ -7734,23 +7719,15 @@ void Miarex::updateCurve()
     }
     else if(m_iView==Xfl::STABPOLARVIEW)
     {
-        m_pCurWPolar->setCurveStyle(m_LineStyle.m_Stipple);
-        m_pCurWPolar->setCurveWidth(m_LineStyle.m_Width);
-        QColor c = m_LineStyle.m_Color;
-        m_pCurWPolar->setCurveColor(ObjectColor(c.red(), c.green(), c.blue(), c.alpha()));
-        m_pCurWPolar->setPoints(m_LineStyle.m_PointStyle);
-        m_pCurWPolar->setVisible(m_pctrlShowCurve->isChecked());
+        m_pCurWPolar->setTheStyle(m_LineStyle);
+        m_pCurWPolar->setVisible(m_pchShowCurve->isChecked());
         if(Settings::isAlignedChildrenStyle()) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
     }
     else if (m_iView==Xfl::WOPPVIEW)
     {
         if(m_pCurPOpp)
         {
-            m_pCurPOpp->setStyle(m_LineStyle.m_Stipple);
-            m_pCurPOpp->setWidth(m_LineStyle.m_Width);
-            QColor c = m_LineStyle.m_Color;
-            m_pCurPOpp->setColor(ObjectColor(c.red(), c.green(), c.blue(), c.alpha()));
-            m_pCurPOpp->setPoints(m_LineStyle.m_PointStyle);
+            m_pCurPOpp->setTheStyle(m_LineStyle);
             m_pCurPOpp->setVisible(bCurveVisible);
         }
     }
@@ -8134,7 +8111,7 @@ bool Miarex::setPlaneOpp(bool bCurrent, double x)
     else if(m_iView==Xfl::WOPPVIEW)
     {
         m_bCurveVisible = m_pCurPOpp->isVisible();
-        m_LineStyle.m_PointStyle  = m_pCurPOpp->points();
+        m_LineStyle.m_PointStyle  = m_pCurPOpp->pointStyle();
     }
 
     return true;

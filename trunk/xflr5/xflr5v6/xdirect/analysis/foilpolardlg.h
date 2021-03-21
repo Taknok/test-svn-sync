@@ -73,31 +73,31 @@ public:
     QRadioButton *m_pctrlAuto1;
     QRadioButton *m_pctrlAuto2;
 
-    QLabel *m_pctrlReLabel, *m_pctrlReUnit;
-    QLabel *m_pctrlMachLabel;
+    QLabel *m_plabRe, *m_plabReUnit;
+    QLabel *m_plabMach;
 
-    QLineEdit *m_pctrlAnalysisName;
+    QLineEdit *m_pleAnalysisName;
     QRadioButton *m_rbtype1;
     QRadioButton *m_rbtype2;
     QRadioButton *m_rbtype3;
     QRadioButton *m_rbtype4;
 
-    DoubleEdit *m_pctrlReynolds;
-    DoubleEdit *m_pctrlMach;
+    DoubleEdit *m_pdeReynolds;
+    DoubleEdit *m_pdeMach;
 
-    DoubleEdit *m_pctrlChord, *m_pctrlMass, *m_pctrlSpan;
-    QLabel *m_pctrlLengthUnit1, *m_pctrlLengthUnit2, *m_pctrlMassUnit;
+    DoubleEdit *m_pdeChord, *m_pdeMass, *m_pdeSpan;
+    QLabel *m_plabLengthUnit1, *m_plabLengthUnit2, *m_plabMassUnit;
 
-    QRadioButton *m_pctrlFluidUnit1, *m_pctrlFluidUnit2;
-    QLabel *m_pctrlRho, *m_pctrlNu, *m_pctrlViscosityUnit, *m_pctrlDensityUnit;
-    DoubleEdit *m_pctrlDensity, *m_pctrlViscosity;
+    QRadioButton *m_prbFluidUnit1, *m_prbFluidUnit2;
+    QLabel *m_plabRho, *m_plabNu, *m_plabViscosityUnit, *m_plabDensityUnit;
+    DoubleEdit *m_pdeDensity, *m_pdeViscosity;
 
     QDialogButtonBox *m_pButtonBox;
 
 
-    DoubleEdit *m_pctrlNCrit;
-    DoubleEdit *m_pctrlTopTrans;
-    DoubleEdit *m_pctrlBotTrans;
+    DoubleEdit *m_pdeNCrit;
+    DoubleEdit *m_pdeTopTrans;
+    DoubleEdit *m_pdeBotTrans;
 
     bool  m_bAutoName;
     int m_MaTypDef, m_ReTypDef;

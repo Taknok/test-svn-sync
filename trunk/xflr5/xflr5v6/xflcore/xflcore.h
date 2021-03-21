@@ -34,7 +34,6 @@
 
 
 #include <xflcore/core_enums.h>
-#include <xflobjects/objectcolor.h>
 
 
 using namespace std;
@@ -123,5 +122,3 @@ void writeColor(QDataStream &ar, int r, int g, int b, int a);
 
 bool serializeFoil(Foil*pFoil, QDataStream &ar, bool bIsStoring);
 bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring);
-
-QColor color(ObjectColor clr);
