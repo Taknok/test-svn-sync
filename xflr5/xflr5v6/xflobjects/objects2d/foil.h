@@ -36,7 +36,7 @@
 #include <xflobjects/objects3d/vector3d.h>
 #include <xflobjects/xflobject.h>
 #include <xfoil_params.h>
-#include <xflcore/linestyle.h>
+#include <xflcore/ls2.h>
 
 #define MIDPOINTCOUNT 1000
 

@@ -36,13 +36,9 @@ LineBtn::LineBtn(QWidget *parent)
     QSizePolicy szPolicyExpanding;
     szPolicyExpanding.setHorizontalPolicy(QSizePolicy::MinimumExpanding);
     szPolicyExpanding.setVerticalPolicy(QSizePolicy::Minimum);
-//    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     setSizePolicy(szPolicyExpanding);
 
-    m_LineStyle.m_Color = Qt::darkGray;
-    m_LineStyle.m_Stipple = 0;
-    m_LineStyle.m_Width = 1;
-    m_LineStyle.m_PointStyle = 0;
+    m_LineStyle = {true, Line::SOLID, 1, Qt::darkGray, Line::NOSYMBOL};
 }
 
 
@@ -75,7 +71,7 @@ void LineBtn::setColor(QColor const & color)
 
 void LineBtn::setStipple(int const & style)
 {
-    m_LineStyle.m_Stipple = style;
+    m_LineStyle.setStipple(style);
     update();
 }
 
@@ -89,17 +85,17 @@ void LineBtn::setWidth(int const & width)
 
 void LineBtn::setPointStyle(int const & pointStyle)
 {
-    m_LineStyle.m_PointStyle = pointStyle;
+    m_LineStyle.setPointStyle(pointStyle);
     update();
 }
 
 
 void LineBtn::setTheStyle(int const &style, int const &width, QColor const & color, int const & pointStyle)
 {
-    m_LineStyle.m_Stipple = style;
+    m_LineStyle.setStipple(style);
     m_LineStyle.m_Width = width;
     m_LineStyle.m_Color = color;
-    m_LineStyle.m_PointStyle = pointStyle;
+    m_LineStyle.setPointStyle(pointStyle);
     update();
 }
 

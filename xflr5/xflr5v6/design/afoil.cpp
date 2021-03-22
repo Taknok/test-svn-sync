@@ -71,7 +71,7 @@ AFoil::AFoil(QWidget *parent)
 
     m_StackPos = 0;
 
-    m_pctrlFoilTable = nullptr;
+    m_ptvFoil = nullptr;
     m_precision = nullptr;
 
     m_pSF = new SplineFoil();
@@ -349,35 +349,20 @@ void AFoil::loadSettings(QSettings &settings)
         for(int i=0; i<16; i++)
         {
             str = QString("Column_%1").arg(i);
-            m_pctrlFoilTable->setColumnWidth(i, settings.value(str,40).toInt());
-            if(settings.value(str+"_hidden", false).toBool()) m_pctrlFoilTable->hideColumn(i);
+            m_ptvFoil->setColumnWidth(i, settings.value(str,40).toInt());
+            if(settings.value(str+"_hidden", false).toBool()) m_ptvFoil->hideColumn(i);
         }
 
         m_p2dWidget->m_bScale = settings.value("x-scale", false).toBool();
         m_p2dWidget->m_NeutralStyle.loadSettings(settings, "NeutralLineStyle");
 
-        m_p2dWidget->m_bXGrid = settings.value("XGrid", false).toBool();
-        m_p2dWidget->m_XGridStyle = settings.value("XGridStyle", 1).toInt();
-        m_p2dWidget->m_XGridWidth = settings.value("XGridWidth", 1).toInt();
-        m_p2dWidget->m_XGridColor = settings.value("XGridColor", QColor(150,150,150)).value<QColor>();
-        m_p2dWidget->m_XGridUnit  = settings.value("XGridUnit", 0.05).toDouble();
-
-        m_p2dWidget->m_bXMinGrid = settings.value("XMinGrid", false).toBool();
-        m_p2dWidget->m_XMinStyle = settings.value("XMinGridStyle", 2).toInt();
-        m_p2dWidget->m_XMinWidth = settings.value("XMinGridWidth", 1).toInt();
-        m_p2dWidget->m_XMinColor = settings.value("XMinGridColor", QColor(70,70,70)).value<QColor>();
+        m_p2dWidget->m_XStyle.loadSettings(settings, "XGrid");
+        m_p2dWidget->m_YStyle.loadSettings(settings, "YGrid");
+        m_p2dWidget->m_XMinStyle.loadSettings(settings, "XMinGrid");
+        m_p2dWidget->m_YMinStyle.loadSettings(settings, "YMinGrid");
+        m_p2dWidget->m_XGridUnit = settings.value("XGridUnit", 0.05).toDouble();
+        m_p2dWidget->m_YGridUnit = settings.value("YGridUnit", 0.05).toDouble();
         m_p2dWidget->m_XMinUnit  = settings.value("XMinGridUnit", 0.01).toDouble();
-
-        m_p2dWidget->m_bYGrid = settings.value("YGrid", false).toBool();
-        m_p2dWidget->m_YGridStyle = settings.value("YGridStyle", 1).toInt();
-        m_p2dWidget->m_YGridWidth = settings.value("YGridWidth", 1).toInt();
-        m_p2dWidget->m_YGridColor = settings.value("YGridColor", QColor(150,150,150)).value<QColor>();
-        m_p2dWidget->m_YGridUnit  = settings.value("YGridUnit", 0.05).toDouble();
-
-        m_p2dWidget->m_bYMinGrid = settings.value("YMinGrid", false).toBool();
-        m_p2dWidget->m_YMinStyle = settings.value("YMinGridStyle", 2).toInt();
-        m_p2dWidget->m_YMinWidth = settings.value("YMinGridWidth", 1).toInt();
-        m_p2dWidget->m_YMinColor = settings.value("YMinGridColor", QColor(70,70,70)).value<QColor>();
         m_p2dWidget->m_YMinUnit  = settings.value("YMinGridUnit", 0.01).toDouble();
     }
     settings.endGroup();
@@ -1013,14 +998,14 @@ void AFoil::onExportSplinesToFile()
  */
 void AFoil::onFoilClicked(const QModelIndex& index)
 {
-    m_pctrlFoilTable->blockSignals(true);
+    m_ptvFoil->blockSignals(true);
     m_pFoilModel->blockSignals(true);
 
     if(index.row()>=Objects2d::foilCount()+1) return;
     QStandardItem *pItem = m_pFoilModel->item(index.row(),0);
     if(!pItem) return;
 
-    m_pctrlFoilTable->selectRow(index.row());
+    m_ptvFoil->selectRow(index.row());
 
     if(index.row()==0)
     {
@@ -1059,7 +1044,7 @@ void AFoil::onFoilClicked(const QModelIndex& index)
 
     setControls();
 
-    m_pctrlFoilTable->blockSignals(false);
+    m_ptvFoil->blockSignals(false);
     m_pFoilModel->blockSignals(false);
 }
 
@@ -1303,44 +1288,28 @@ void AFoil::saveSettings(QSettings &settings)
         for(int i=0; i<16; i++)
         {
             str = QString("Column_%1").arg(i);
-            settings.setValue(str,m_pctrlFoilTable->columnWidth(i));
+            settings.setValue(str,m_ptvFoil->columnWidth(i));
         }
         for(int i=0; i<16; i++)
         {
             str = QString("Column_%1").arg(i);
-            settings.setValue(str+"_hidden", m_pctrlFoilTable->isColumnHidden(i));
+            settings.setValue(str+"_hidden", m_ptvFoil->isColumnHidden(i));
         }
 
         settings.setValue("x-scale", m_p2dWidget->m_bScale);
         m_p2dWidget->m_NeutralStyle.saveSettings(settings, "NeutralLineStyle");
 
-        settings.setValue("XGrid", m_p2dWidget->m_bXGrid);
-        settings.setValue("XGridStyle", m_p2dWidget->m_XGridStyle);
-        settings.setValue("XGridWidth", m_p2dWidget->m_XGridWidth);
-        settings.setValue("XGridColor", m_p2dWidget->m_XGridColor);
-        settings.setValue("XGridUnit", m_p2dWidget->m_XGridUnit);
-
-        settings.setValue("YGrid", m_p2dWidget->m_bYGrid);
-        settings.setValue("YGridStyle", m_p2dWidget->m_YGridStyle);
-        settings.setValue("YGridWidth", m_p2dWidget->m_YGridWidth);
-        settings.setValue("YGridColor", m_p2dWidget->m_YGridColor);
-        settings.setValue("YGridUnit", m_p2dWidget->m_YGridUnit);
-
-        settings.setValue("XMinGrid", m_p2dWidget->m_bXMinGrid);
-        settings.setValue("XMinGridStyle", m_p2dWidget->m_XMinStyle);
-        settings.setValue("XMinGridWidth", m_p2dWidget->m_XMinWidth);
-        settings.setValue("XMinGridColor", m_p2dWidget->m_XMinColor);
+        m_p2dWidget->m_XStyle.saveSettings(settings, "XGrid");
+        m_p2dWidget->m_YStyle.saveSettings(settings, "YGrid");
+        m_p2dWidget->m_XMinStyle.saveSettings(settings, "XMinGrid");
+        m_p2dWidget->m_YMinStyle.saveSettings(settings, "YMinGrid");
+        settings.setValue("XGridUnit",    m_p2dWidget->m_XGridUnit);
+        settings.setValue("YGridUnit",    m_p2dWidget->m_YGridUnit);
         settings.setValue("XMinGridUnit", m_p2dWidget->m_XMinUnit);
-
-        settings.setValue("YMinGrid", m_p2dWidget->m_bYMinGrid);
-        settings.setValue("YMinGridStyle", m_p2dWidget->m_YMinStyle);
-        settings.setValue("YMinGridWidth", m_p2dWidget->m_YMinWidth);
-        settings.setValue("YMinGridColor", m_p2dWidget->m_YMinColor);
         settings.setValue("YMinGridUnit", m_p2dWidget->m_YMinUnit);
     }
     settings.endGroup();
 }
-
 
 
 /**
@@ -1359,19 +1328,19 @@ void AFoil::onFoilTableCtxMenu(const QPoint &)
  */
 void AFoil::setupLayout()
 {
-    m_pctrlFoilTable   = new QTableView(this);
-    m_pctrlFoilTable->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_pctrlFoilTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_pctrlFoilTable->setContextMenuPolicy(Qt::CustomContextMenu);
-    m_pctrlFoilTable->setWordWrap(false);
-    m_pctrlFoilTable->setFont(Settings::s_TableFont);
-    m_pctrlFoilTable->horizontalHeader()->setFont(Settings::s_TableFont);
+    m_ptvFoil = new QTableView(this);
+    m_ptvFoil->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_ptvFoil->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_ptvFoil->setContextMenuPolicy(Qt::CustomContextMenu);
+    m_ptvFoil->setWordWrap(false);
+    m_ptvFoil->setFont(Settings::s_TableFont);
+    m_ptvFoil->horizontalHeader()->setFont(Settings::s_TableFont);
 
     //    connect(m_pctrlFoilTable, SIGNAL(pressed(const QModelIndex &)), this, SLOT(OnFoilClicked(const QModelIndex&)));
-    connect(m_pctrlFoilTable, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onFoilTableCtxMenu(const QPoint &)));
+    connect(m_ptvFoil, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onFoilTableCtxMenu(const QPoint &)));
 
     QHBoxLayout *pMainLayout = new QHBoxLayout;
-    pMainLayout->addWidget(m_pctrlFoilTable);
+    pMainLayout->addWidget(m_ptvFoil);
     setLayout(pMainLayout);
 
 
@@ -1394,21 +1363,21 @@ void AFoil::setupLayout()
     m_pFoilModel->setHeaderData(12, Qt::Horizontal, tr("Show"));
     m_pFoilModel->setHeaderData(13, Qt::Horizontal, tr("Centerline"));
     m_pFoilModel->setHeaderData(14, Qt::Horizontal, tr("Style"));
-    m_pctrlFoilTable->setModel(m_pFoilModel);
-    m_pctrlFoilTable->setWindowTitle(tr("Foils"));
-    m_pctrlFoilTable->horizontalHeader()->setStretchLastSection(true);
+    m_ptvFoil->setModel(m_pFoilModel);
+    m_ptvFoil->setWindowTitle(tr("Foils"));
+    m_ptvFoil->horizontalHeader()->setStretchLastSection(true);
 
     m_pFoilDelegate = new FoilTableDelegate(this);
     m_pFoilDelegate->m_pAFoil = this;
-    m_pctrlFoilTable->setItemDelegate(m_pFoilDelegate);
+    m_ptvFoil->setItemDelegate(m_pFoilDelegate);
     m_pFoilDelegate->m_pFoilModel = m_pFoilModel;
 
     /*    int unitwidth = (int)(750.0/16.0);
     m_pctrlFoilTable->setColumnWidth(0, 3*unitwidth);
     for(int i=1; i<16; i++)        m_pctrlFoilTable->setColumnWidth(i, unitwidth);*/
-    m_pctrlFoilTable->setColumnHidden(9, true);
-    m_pctrlFoilTable->setColumnHidden(10, true);
-    m_pctrlFoilTable->setColumnHidden(11, true);
+    m_ptvFoil->setColumnHidden(9, true);
+    m_ptvFoil->setColumnHidden(10, true);
+    m_ptvFoil->setColumnHidden(11, true);
 
 
     m_precision = new int[16];
@@ -1456,14 +1425,14 @@ void AFoil::selectFoil(Foil* pFoil)
 
             if(FoilName == pFoil->name())
             {
-                m_pctrlFoilTable->selectRow(i);
+                m_ptvFoil->selectRow(i);
                 break;
             }
         }
     }
     else
     {
-        m_pctrlFoilTable->selectRow(0);
+        m_ptvFoil->selectRow(0);
     }
     XDirect::setCurFoil(pFoil);
 }
@@ -1606,12 +1575,12 @@ void AFoil::clearStack(int pos)
  */
 void AFoil::onResetColumnWidths()
 {
-    int unitwidth = int(double(m_pctrlFoilTable->width())/16.0);
-    m_pctrlFoilTable->setColumnWidth(0, 3*unitwidth);
-    for(int i=1; i<16; i++) m_pctrlFoilTable->setColumnWidth(i, unitwidth);
-    m_pctrlFoilTable->setColumnHidden(9, true);
-    m_pctrlFoilTable->setColumnHidden(10, true);
-    m_pctrlFoilTable->setColumnHidden(11, true);
+    int unitwidth = int(double(m_ptvFoil->width())/16.0);
+    m_ptvFoil->setColumnWidth(0, 3*unitwidth);
+    for(int i=1; i<16; i++) m_ptvFoil->setColumnWidth(i, unitwidth);
+    m_ptvFoil->setColumnHidden(9, true);
+    m_ptvFoil->setColumnHidden(10, true);
+    m_ptvFoil->setColumnHidden(11, true);
 }
 
 /**
@@ -1621,35 +1590,35 @@ void AFoil::onAFoilTableColumns()
 {
     AFoilTableDlg dlg(s_pMainFrame);
 
-    dlg.m_bFoilName    = !m_pctrlFoilTable->isColumnHidden(0);
-    dlg.m_bThickness   = !m_pctrlFoilTable->isColumnHidden(1);
-    dlg.m_bThicknessAt = !m_pctrlFoilTable->isColumnHidden(2);
-    dlg.m_bCamber      = !m_pctrlFoilTable->isColumnHidden(3);
-    dlg.m_bCamberAt    = !m_pctrlFoilTable->isColumnHidden(4);
-    dlg.m_bPoints      = !m_pctrlFoilTable->isColumnHidden(5);
-    dlg.m_bTEFlapAngle = !m_pctrlFoilTable->isColumnHidden(6);
-    dlg.m_bTEXHinge    = !m_pctrlFoilTable->isColumnHidden(7);
-    dlg.m_bTEYHinge    = !m_pctrlFoilTable->isColumnHidden(8);
-    dlg.m_bLEFlapAngle = !m_pctrlFoilTable->isColumnHidden(9);
-    dlg.m_bLEXHinge    = !m_pctrlFoilTable->isColumnHidden(10);
-    dlg.m_bLEYHinge    = !m_pctrlFoilTable->isColumnHidden(11);
+    dlg.m_bFoilName    = !m_ptvFoil->isColumnHidden(0);
+    dlg.m_bThickness   = !m_ptvFoil->isColumnHidden(1);
+    dlg.m_bThicknessAt = !m_ptvFoil->isColumnHidden(2);
+    dlg.m_bCamber      = !m_ptvFoil->isColumnHidden(3);
+    dlg.m_bCamberAt    = !m_ptvFoil->isColumnHidden(4);
+    dlg.m_bPoints      = !m_ptvFoil->isColumnHidden(5);
+    dlg.m_bTEFlapAngle = !m_ptvFoil->isColumnHidden(6);
+    dlg.m_bTEXHinge    = !m_ptvFoil->isColumnHidden(7);
+    dlg.m_bTEYHinge    = !m_ptvFoil->isColumnHidden(8);
+    dlg.m_bLEFlapAngle = !m_ptvFoil->isColumnHidden(9);
+    dlg.m_bLEXHinge    = !m_ptvFoil->isColumnHidden(10);
+    dlg.m_bLEYHinge    = !m_ptvFoil->isColumnHidden(11);
 
     dlg.initDialog();
 
     if(dlg.exec()==QDialog::Accepted)
     {
-        m_pctrlFoilTable->setColumnHidden(0,  !dlg.m_bFoilName);
-        m_pctrlFoilTable->setColumnHidden(1,  !dlg.m_bThickness);
-        m_pctrlFoilTable->setColumnHidden(2,  !dlg.m_bThicknessAt);
-        m_pctrlFoilTable->setColumnHidden(3,  !dlg.m_bCamber);
-        m_pctrlFoilTable->setColumnHidden(4,  !dlg.m_bCamberAt);
-        m_pctrlFoilTable->setColumnHidden(5,  !dlg.m_bPoints);
-        m_pctrlFoilTable->setColumnHidden(6,  !dlg.m_bTEFlapAngle);
-        m_pctrlFoilTable->setColumnHidden(7,  !dlg.m_bTEXHinge);
-        m_pctrlFoilTable->setColumnHidden(8,  !dlg.m_bTEYHinge);
-        m_pctrlFoilTable->setColumnHidden(9,  !dlg.m_bLEFlapAngle);
-        m_pctrlFoilTable->setColumnHidden(10, !dlg.m_bLEXHinge);
-        m_pctrlFoilTable->setColumnHidden(11, !dlg.m_bLEYHinge);
+        m_ptvFoil->setColumnHidden(0,  !dlg.m_bFoilName);
+        m_ptvFoil->setColumnHidden(1,  !dlg.m_bThickness);
+        m_ptvFoil->setColumnHidden(2,  !dlg.m_bThicknessAt);
+        m_ptvFoil->setColumnHidden(3,  !dlg.m_bCamber);
+        m_ptvFoil->setColumnHidden(4,  !dlg.m_bCamberAt);
+        m_ptvFoil->setColumnHidden(5,  !dlg.m_bPoints);
+        m_ptvFoil->setColumnHidden(6,  !dlg.m_bTEFlapAngle);
+        m_ptvFoil->setColumnHidden(7,  !dlg.m_bTEXHinge);
+        m_ptvFoil->setColumnHidden(8,  !dlg.m_bTEYHinge);
+        m_ptvFoil->setColumnHidden(9,  !dlg.m_bLEFlapAngle);
+        m_ptvFoil->setColumnHidden(10, !dlg.m_bLEXHinge);
+        m_ptvFoil->setColumnHidden(11, !dlg.m_bLEYHinge);
     }
 }
 
@@ -1661,15 +1630,15 @@ void AFoil::onAFoilTableColumns()
  */
 void AFoil::resizeEvent(QResizeEvent *event)
 {
-    int ncol = m_pctrlFoilTable->horizontalHeader()->count() - m_pctrlFoilTable->horizontalHeader()->hiddenSectionCount();
+    int ncol = m_ptvFoil->horizontalHeader()->count() - m_ptvFoil->horizontalHeader()->hiddenSectionCount();
     //add 1 to get double width for the name
     ncol++;
 
     //get column width and spare 10% for horizontal header
-    int unitwidth = int(double(m_pctrlFoilTable->width())/double(ncol)/1.1);
+    int unitwidth = int(double(m_ptvFoil->width())/double(ncol)/1.1);
 
-    m_pctrlFoilTable->setColumnWidth(0, 2*unitwidth);
-    for(int i=1; i<16; i++)    m_pctrlFoilTable->setColumnWidth(i, unitwidth);
+    m_ptvFoil->setColumnWidth(0, 2*unitwidth);
+    for(int i=1; i<16; i++)    m_ptvFoil->setColumnWidth(i, unitwidth);
     event->accept();
 }
 
@@ -1678,7 +1647,7 @@ void AFoil::resizeEvent(QResizeEvent *event)
 /** Sets the display font for the Foil table using the default defined in the MainFrame class/ */
 void AFoil::setTableFont()
 {
-    m_pctrlFoilTable->setFont(Settings::s_TableFont);
+    m_ptvFoil->setFont(Settings::s_TableFont);
 }
 
 

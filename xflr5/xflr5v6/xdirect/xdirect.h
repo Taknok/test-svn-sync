@@ -42,7 +42,7 @@
 #include <xflcore/gui_enums.h>
 #include <xflobjects/objects2d/oppoint.h>
 #include <graph/graph.h>
-#include <xflcore/linestyle.h>
+#include <xflcore/ls2.h>
 
 #include <xfoil.h>
 
@@ -331,7 +331,7 @@ private:
     Graph m_CpGraph;           /**< the Cp graph for the OpPoint view */
     QVector<Graph*> m_PlrGraph;  /**< the array of pointer to the 5 Polar graphs */
 
-    LineStyle m_LineStyle;      /**< the style of the lines displayed in the comboboxes*/
+    LS2 m_LineStyle;      /**< the style of the lines displayed in the comboboxes*/
 
     QRect m_rCltRect;            /**< the client rectangle of the central TwoDWidget */
     QPoint m_PointDown;            /**< the client coordinated of the last mouse left-click */

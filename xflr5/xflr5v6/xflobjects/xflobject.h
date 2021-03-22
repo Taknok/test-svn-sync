@@ -22,7 +22,7 @@
 #pragma once
 
 #include <QColor>
-#include <xflcore/linestyle.h>
+#include <xflcore/ls2.h>
 
 
 
@@ -57,13 +57,6 @@ class XflObject
         void setPointStyle(Line::enumPointStyle iPointStyle) {m_theStyle.m_PointStyle=iPointStyle;}
 
         void setTheStyle(LS2 const &ls) {m_theStyle=ls;}
-        void setTheStyle(LineStyle const &style)
-        {
-            m_theStyle.setStipple(style.m_Stipple);
-            m_theStyle.m_Width = style.m_Width;
-            m_theStyle.m_Color = style.m_Color;
-            m_theStyle.setPointStyle(style.m_PointStyle);
-        }
 
         void setTheStyle(Line::enumLineStipple stipple, int w, const QColor &clr, Line::enumPointStyle pointstyle)
         {

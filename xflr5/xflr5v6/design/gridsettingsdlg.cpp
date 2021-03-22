@@ -36,33 +36,18 @@ GridSettingsDlg::GridSettingsDlg(QWidget *pParent): QDialog(pParent)
 
     m_bScale = false;
 
-    m_bXGrid     = false;
+    m_NeutralStyle = {true, Line::SOLID, 1, QColor(70,70,70), Line::NOSYMBOL};
+
+    m_XStyle = {true, Line::DASH, 1, QColor(150,150,150), Line::NOSYMBOL};
+    m_YStyle = {true, Line::DASH, 1, QColor(150,150,150), Line::NOSYMBOL};
+
+    m_XMinStyle = {false, Line::DOT, 1, QColor(70,70,70), Line::NOSYMBOL};
+    m_YMinStyle = {false, Line::DOT, 1, QColor(70,70,70), Line::NOSYMBOL};
+
     m_XUnit  = 0.05;
-    m_XStyle = 1;
-    m_XWidth = 1;
-    m_XColor = QColor(150,150,150);
-
-    m_bYGrid     = false;
     m_YUnit  = 0.05;
-    m_YStyle = 1;
-    m_YWidth = 1;
-    m_YColor = QColor(150,150,150);
-
-    m_bXMinGrid  = false;
     m_XMinUnit = 0.01;
-    m_XMinStyle  = 2;
-    m_XMinWidth  = 1;
-    m_XMinColor  = QColor(70,70,70);
-
-    m_bYMinGrid  = false;
     m_YMinUnit = 0.01;
-    m_YMinStyle  = 2;
-    m_YMinWidth  = 1;
-    m_YMinColor  = QColor(70,70,70);
-
-    m_NeutralStyle.m_Stipple = Line::DASHDOT;
-    m_NeutralStyle.m_Width = 1;
-    m_NeutralStyle.m_Color = QColor(70,70,70);
 
     setupLayout();
 
@@ -80,8 +65,8 @@ GridSettingsDlg::GridSettingsDlg(QWidget *pParent): QDialog(pParent)
     connect(m_plbYMajStyle, SIGNAL(clickedLB()), this, SLOT(onYMajStyle()));
     connect(m_plbXMinStyle, SIGNAL(clickedLB()), this, SLOT(onXMinStyle()));
     connect(m_plbYMinStyle, SIGNAL(clickedLB()), this, SLOT(onYMinStyle()));
-
 }
+
 
 void GridSettingsDlg::keyPressEvent(QKeyEvent *event)
 {
@@ -116,27 +101,27 @@ void GridSettingsDlg::initDialog()
 {
     m_plbNeutralStyle->setTheStyle(m_NeutralStyle);
 
-    m_plbXMajStyle->setTheStyle(m_XStyle, m_XWidth, m_XColor,0);
-    m_plbXMinStyle->setTheStyle(m_XMinStyle, m_XMinWidth, m_XMinColor,0);
-    m_plbYMajStyle->setTheStyle(m_YStyle, m_YWidth, m_YColor,0);
-    m_plbYMinStyle->setTheStyle(m_YMinStyle, m_YMinWidth, m_YMinColor,0);
+    m_plbXMajStyle->setTheStyle(m_XStyle);
+    m_plbXMinStyle->setTheStyle(m_XMinStyle);
+    m_plbYMajStyle->setTheStyle(m_YStyle);
+    m_plbYMinStyle->setTheStyle(m_YMinStyle);
 
     m_plbNeutralStyle->setEnabled(m_NeutralStyle.m_bIsVisible);
-    m_plbXMajStyle->setEnabled(m_bXGrid);
-    m_plbYMajStyle->setEnabled(m_bYGrid);
-    m_plbXMinStyle->setEnabled(m_bXMinGrid);
-    m_plbYMinStyle->setEnabled(m_bYMinGrid);
-    m_pdeXUnit->setEnabled(m_bXGrid);
-    m_pdeYUnit->setEnabled(m_bYGrid);
-    m_pdeXMinUnit->setEnabled(m_bXMinGrid);
-    m_pdeYMinUnit->setEnabled(m_bYMinGrid);
+    m_plbXMajStyle->setEnabled(m_XStyle.m_bIsVisible);
+    m_plbYMajStyle->setEnabled(m_YStyle.m_bIsVisible);
+    m_plbXMinStyle->setEnabled(m_XMinStyle.m_bIsVisible);
+    m_plbYMinStyle->setEnabled(m_YMinStyle.m_bIsVisible);
+    m_pdeXUnit->setEnabled(m_XStyle.m_bIsVisible);
+    m_pdeYUnit->setEnabled(m_YStyle.m_bIsVisible);
+    m_pdeXMinUnit->setEnabled(m_XMinStyle.m_bIsVisible);
+    m_pdeYMinUnit->setEnabled(m_YMinStyle.m_bIsVisible);
 
     m_pchScale->setChecked(m_bScale);
     m_pchNeutralShow->setChecked(m_NeutralStyle.m_bIsVisible);
-    m_pcHXMajShow->setChecked(m_bXGrid);
-    m_pcHYMajShow->setChecked(m_bYGrid);
-    m_pchXMinShow->setChecked(m_bXMinGrid);
-    m_pchYMinShow->setChecked(m_bYMinGrid);
+    m_pcHXMajShow->setChecked(m_XStyle.m_bIsVisible);
+    m_pcHYMajShow->setChecked(m_YStyle.m_bIsVisible);
+    m_pchXMinShow->setChecked(m_XMinStyle.m_bIsVisible);
+    m_pchYMinShow->setChecked(m_YMinStyle.m_bIsVisible);
 
     m_pdeXUnit->setValue(m_XUnit);
     m_pdeYUnit->setValue(m_YUnit);
@@ -229,75 +214,71 @@ void GridSettingsDlg::onNeutralStyle()
 void GridSettingsDlg::onXMajStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0,m_XStyle,m_XWidth,m_XColor, false, false);
+    dlg.initDialog(m_XStyle, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_XStyle = dlg.lineStipple();
-        m_XWidth = dlg.lineWidth();
-        m_XColor = dlg.lineColor();
+        m_XStyle = dlg.theStyle();
         m_plbXMajStyle->setStipple(dlg.lineStipple());
         m_plbXMajStyle->setWidth(dlg.lineWidth());
         m_plbXMajStyle->setColor(dlg.lineColor());
     }
 }
 
+
 void GridSettingsDlg::onXMinStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0,m_XMinStyle,m_XMinWidth,m_XMinColor, false, false);
+    dlg.initDialog(m_XMinStyle, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_XMinStyle = dlg.lineStipple();
-        m_XMinWidth = dlg.lineWidth();
-        m_XMinColor = dlg.lineColor();
+        m_XMinStyle = dlg.theStyle();
         m_plbXMinStyle->setStipple(dlg.lineStipple());
         m_plbXMinStyle->setWidth(dlg.lineWidth());
         m_plbXMinStyle->setColor(dlg.lineColor());
     }
-
 }
+
 
 void GridSettingsDlg::onYMajStyle()
 {
     LinePickerDlg dlg(this);
 
-    dlg.initDialog(0,m_YStyle,m_YWidth,m_YColor, false, false);
+    dlg.initDialog(m_YStyle, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_YStyle = dlg.lineStipple();
-        m_YWidth = dlg.lineWidth();
-        m_YColor = dlg.lineColor();
+        m_YStyle = dlg.theStyle();
         m_plbYMajStyle->setStipple(dlg.lineStipple());
         m_plbYMajStyle->setWidth(dlg.lineWidth());
         m_plbYMajStyle->setColor(dlg.lineColor());
     }
 }
 
+
 void GridSettingsDlg::onYMinStyle()
 {
     LinePickerDlg dlg(this);
 
-    dlg.initDialog(0,m_YMinStyle,m_YMinWidth,m_YMinColor, false, false);
+    dlg.initDialog(m_YMinStyle, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_YMinStyle = dlg.lineStipple();
-        m_YMinWidth = dlg.lineWidth();
-        m_YMinColor = dlg.lineColor();
+        m_YMinStyle = dlg.theStyle();
         m_plbYMinStyle->setStipple(dlg.lineStipple());
         m_plbYMinStyle->setWidth(dlg.lineWidth());
         m_plbYMinStyle->setColor(dlg.lineColor());
     }
 }
 
+
 void GridSettingsDlg::onNeutralShow(bool bShow)
 {
     m_NeutralStyle.m_bIsVisible = bShow;
     m_plbNeutralStyle->setEnabled(m_NeutralStyle.m_bIsVisible);
 }
+
 
 void GridSettingsDlg::onScale()
 {
@@ -307,36 +288,33 @@ void GridSettingsDlg::onScale()
 
 void GridSettingsDlg::onXMajShow(bool bShow)
 {
-    m_bXGrid = bShow;
-    m_plbXMajStyle->setEnabled(m_bXGrid);
-    m_pdeXUnit->setEnabled(m_bXGrid);
+    m_XStyle.m_bIsVisible = bShow;
+    m_plbXMajStyle->setEnabled(bShow);
+    m_pdeXUnit->setEnabled(bShow);
 }
-
-
-
 
 
 void GridSettingsDlg::onYMajShow(bool bShow)
 {
-    m_bYGrid = bShow;
-    m_plbYMajStyle->setEnabled(m_bYGrid);
-    m_pdeYUnit->setEnabled(m_bYGrid);
+    m_YStyle.m_bIsVisible = bShow;
+    m_plbYMajStyle->setEnabled(bShow);
+    m_pdeYUnit->setEnabled(bShow);
 }
 
 
 void GridSettingsDlg::onXMinShow(bool bShow)
 {
-    m_bXMinGrid = bShow;
-    m_plbXMinStyle->setEnabled(m_bXMinGrid);
-    m_pdeXMinUnit->setEnabled(m_bXMinGrid);
+    m_XMinStyle.m_bIsVisible = bShow;
+    m_plbXMinStyle->setEnabled(bShow);
+    m_pdeXMinUnit->setEnabled(bShow);
 }
 
 
 void GridSettingsDlg::onYMinShow(bool bShow)
 {
-    m_bYMinGrid = bShow;
-    m_plbYMinStyle->setEnabled(m_bYMinGrid);
-    m_pdeYMinUnit->setEnabled(m_bYMinGrid);
+    m_YMinStyle.m_bIsVisible = bShow;
+    m_plbYMinStyle->setEnabled(bShow);
+    m_pdeYMinUnit->setEnabled(bShow);
 }
 
 void GridSettingsDlg::onOK()

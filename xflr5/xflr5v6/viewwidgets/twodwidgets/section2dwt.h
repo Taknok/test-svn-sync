@@ -52,132 +52,118 @@ class Section2dWidget : public QWidget
     friend class AFoil;
 
     Q_OBJECT
-public:
-    Section2dWidget(QWidget *parent = nullptr);
+    public:
+        Section2dWidget(QWidget *parent = nullptr);
 
-    QSize sizeHint() const;
-    QSize minimumSizeHint() const;
+        QSize sizeHint() const override;
+        QSize minimumSizeHint() const override;
 
-    void contextMenuEvent (QContextMenuEvent *pEvent);
-    void keyPressEvent(QKeyEvent *pEvent);
-    void keyReleaseEvent(QKeyEvent *pEvent);
-    void mouseDoubleClickEvent (QMouseEvent *pEvent);
-    void mouseMoveEvent(QMouseEvent *pEvent);
-    void mousePressEvent(QMouseEvent *pEvent);
-    void mouseReleaseEvent(QMouseEvent *pEvent);
-    virtual void paintEvent(QPaintEvent *pEvent);
-    void resizeEvent (QResizeEvent *pEvent);
-    void wheelEvent (QWheelEvent *pEvent);
+        void contextMenuEvent (QContextMenuEvent *pEvent) override;
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void keyReleaseEvent(QKeyEvent *pEvent) override;
+        void mouseDoubleClickEvent (QMouseEvent *pEvent) override;
+        void mouseMoveEvent(QMouseEvent *pEvent) override;
+        void mousePressEvent(QMouseEvent *pEvent) override;
+        void mouseReleaseEvent(QMouseEvent *pEvent) override;
+        virtual void paintEvent(QPaintEvent *pEvent) override;
+        void resizeEvent (QResizeEvent *pEvent) override;
+        void wheelEvent (QWheelEvent *pEvent) override;
 
-    void setContextMenu(QMenu *pMenu);
+        void setContextMenu(QMenu *pMenu);
 
-    void setNeutralLineColor(QColor clr){m_NeutralStyle.m_Color = clr;}
-    QColor const& neutralLineColor() const {return m_NeutralStyle.m_Color;}
+        void setNeutralLineColor(QColor clr){m_NeutralStyle.m_Color = clr;}
+        QColor const& neutralLineColor() const {return m_NeutralStyle.m_Color;}
 
-protected:
-    Vector3d mousetoReal(QPoint &point);
-    virtual void setScale();
-    virtual void createActions();
-    virtual void createContextMenu();
-    void drawScale(QPainter &painter, double scalex);
-    void drawScaleLegend(QPainter &painter);
-    void drawBackImage(QPainter &painter);
-    void drawXGrid(QPainter &painter, double scalex, QPointF Offset);
-    void drawYGrid(QPainter &painter, double scaley, QPointF Offset);
-    void drawXMinGrid(QPainter &painter, double scalex, QPointF Offset);
-    void drawYMinGrid(QPainter &painter, double scaley, QPointF Offset);
+    protected:
+        Vector3d mousetoReal(QPoint &point);
+        virtual void setScale();
+        virtual void createActions();
+        virtual void createContextMenu();
+        void drawScale(QPainter &painter, double scalex);
+        void drawScaleLegend(QPainter &painter);
+        void drawBackImage(QPainter &painter);
+        void drawXGrid(QPainter &painter, double scalex, QPointF Offset);
+        void drawYGrid(QPainter &painter, double scaley, QPointF Offset);
+        void drawXMinGrid(QPainter &painter, double scalex, QPointF Offset);
+        void drawYMinGrid(QPainter &painter, double scaley, QPointF Offset);
 
-    void releaseZoom();
-    void zoomView(double zoomFactor);
+        void releaseZoom();
+        void zoomView(double zoomFactor);
 
-    void paintGrids(QPainter &painter);
+        void paintGrids(QPainter &painter);
 
-    virtual int highlightPoint(Vector3d real) = 0;
-    virtual int selectPoint(Vector3d real) = 0;
-    virtual void dragSelectedPoint(double x, double y) =0;
-
-
-public slots:
-    void onResetXScale();
-    void onResetYScale();
-    void onResetScales();
-    void onClearBackImage();
-    void onLoadBackImage();
-    void onGridSettings();
-    void onZoomLess();
-    void onZoomIn();
-    void onZoomYOnly();
-    virtual void onInsertPt() {}
-    virtual void onRemovePt() {}
-
-signals:
-    void objectModified();
+        virtual int highlightPoint(Vector3d real) = 0;
+        virtual int selectPoint(Vector3d real) = 0;
+        virtual void dragSelectedPoint(double x, double y) =0;
 
 
-public:
-    Vector3d m_objectOffset;
-    double m_objectScale;
+    public slots:
+        void onResetXScale();
+        void onResetYScale();
+        void onResetScales();
+        void onClearBackImage();
+        void onLoadBackImage();
+        void onGridSettings();
+        void onZoomLess();
+        void onZoomIn();
+        void onZoomYOnly();
+        virtual void onInsertPt() {}
+        virtual void onRemovePt() {}
+
+    signals:
+        void objectModified();
 
 
-protected:
-    QCursor m_hcMove;           /**< the cursor to display when moving the viewport */
-    QCursor m_hcCross;          /**< the cursor to display in the client area, when not dragging or zooming */
-
-    QMenu *m_pSection2dContextMenu;
-    QVector<QAction*> m_ActionList;
-
-    bool m_bScale;              /**< true if the scale should be displayed */
-    bool m_bZoomPlus;           /**< true if the user is in the process of zooming in by drawing a rectangle */
-    bool m_bZoomYOnly;          /**< true if only the y-axis should be scaled */
-    bool m_bTrans;              /**< true if the view is being dragged by the user */
-    bool m_bDrag;               /**< true if a point is being dragged by the user */
-    bool m_bShowLegend;         /**< true if the legend should be shown */
-    bool m_bXDown;              /**< true if the 'X' key is pressed */
-    bool m_bYDown;              /**< true if the 'Y' key is pressed */
-    bool m_bXGrid;              /**< true if the X main grid (vertical lines) should be displayed */
-    bool m_bYGrid;              /**< true if the Y main grid (horizontal lines) should be displayed */
-    bool m_bXMinGrid;           /**< true if the X minor grid (vertical lines) should be displayed */
-    bool m_bYMinGrid;           /**< true if the Y minor grid (horizontal lines) should be displayed */
-
-    int m_XGridStyle;           /**< the style of the main X-grid */
-    int m_YGridStyle;           /**< the style of the main Y-grid */
-    int m_XGridWidth;           /**< the width of the main X-grid */
-    int m_YGridWidth;           /**< the width of the main Y-grid */
-    int m_XMinStyle;            /**< the style of the minor X-grid */
-    int m_YMinStyle;            /**< the style of the minor Y-grid */
-    int m_XMinWidth;            /**< the width of the minor X-grid */
-    int m_YMinWidth;            /**< the width of the minor Y-grid */
-    LS2 m_NeutralStyle;         /**< the style of the neutral line y=0 */
-
-    double m_XGridUnit;         /**< the unit of the main X-grid */
-    double m_YGridUnit;         /**< the unit of the main Y-grid */
-    double m_XMinUnit;          /**< the unit of the minor X-grid */
-    double m_YMinUnit;          /**< the unit of the minor Y-grid */
-
-    QColor m_XGridColor;        /**< the color of the main X-grid */
-    QColor m_YGridColor;        /**< the color of the main Y-grid */
-    QColor m_XMinColor;         /**< the color of the minor X-grid */
-    QColor m_YMinColor;         /**< the color of the minor Y-grid */
+    public:
+        Vector3d m_objectOffset;
+        double m_objectScale;
 
 
-    double m_fScale;            /**< the current scale of the display */
-    double m_fScaleY;           /**< the ratio between the  y and x scales */
-    double m_fRefScale;         /**< the reference scale of the display */
+    protected:
+        QCursor m_hcMove;           /**< the cursor to display when moving the viewport */
+        QCursor m_hcCross;          /**< the cursor to display in the client area, when not dragging or zooming */
 
-    QPointF m_ptOffset;          /**< the foil's leading edge position in screen coordinates */
-    QPointF m_ViewportTrans;     /**< the translation of the viewport */
-    QPoint m_PointDown;         /**< the screen point where the last left-click occured */
+        QMenu *m_pSection2dContextMenu;
+        QVector<QAction*> m_ActionList;
 
-    QRect m_ZoomRect;           /**< the user-defined rectangle for zooming in */
+        bool m_bScale;              /**< true if the scale should be displayed */
+        bool m_bZoomPlus;           /**< true if the user is in the process of zooming in by drawing a rectangle */
+        bool m_bZoomYOnly;          /**< true if only the y-axis should be scaled */
+        bool m_bTrans;              /**< true if the view is being dragged by the user */
+        bool m_bDrag;               /**< true if a point is being dragged by the user */
+        bool m_bShowLegend;         /**< true if the legend should be shown */
+        bool m_bXDown;              /**< true if the 'X' key is pressed */
+        bool m_bYDown;              /**< true if the 'Y' key is pressed */
 
-    Vector3d m_MousePos;         /**< the mouse position */
+        LS2 m_XStyle, m_YStyle;
+        LS2 m_XMinStyle;            /**< the style of the minor X-grid */
+        LS2 m_YMinStyle;            /**< the style of the minor Y-grid */
+        LS2 m_NeutralStyle;         /**< the style of the neutral line y=0 */
+
+        double m_XGridUnit;         /**< the unit of the main X-grid */
+        double m_YGridUnit;         /**< the unit of the main Y-grid */
+        double m_XMinUnit;          /**< the unit of the minor X-grid */
+        double m_YMinUnit;          /**< the unit of the minor Y-grid */
 
 
-    bool m_bIsImageLoaded;      /**< true if a backgruond image is loaded */
-    QPixmap m_BackImage;        /**< the QPixmap object with the background image */
+        double m_fScale;            /**< the current scale of the display */
+        double m_fScaleY;           /**< the ratio between the  y and x scales */
+        double m_fRefScale;         /**< the reference scale of the display */
 
-    //    QAction *m_pInsertPt, *m_pRemovePt, *m_pResetScaleAction, *m_pGridSettingsAction;
-    //    QAction *m_pLoadBackImage, *m_pClearBackImage;
+        QPointF m_ptOffset;          /**< the foil's leading edge position in screen coordinates */
+        QPointF m_ViewportTrans;     /**< the translation of the viewport */
+        QPoint m_PointDown;         /**< the screen point where the last left-click occured */
+
+        QRect m_ZoomRect;           /**< the user-defined rectangle for zooming in */
+
+        Vector3d m_MousePos;         /**< the mouse position */
+
+
+        bool m_bIsImageLoaded;      /**< true if a backgruond image is loaded */
+        QPixmap m_BackImage;        /**< the QPixmap object with the background image */
+
+        //    QAction *m_pInsertPt, *m_pRemovePt, *m_pResetScaleAction, *m_pGridSettingsAction;
+        //    QAction *m_pLoadBackImage, *m_pClearBackImage;
 
 };
 

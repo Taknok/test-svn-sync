@@ -54,33 +54,16 @@ Section2dWidget::Section2dWidget(QWidget *parent) : QWidget(parent)
     m_bIsImageLoaded = false;
     m_bXDown = m_bYDown = false;
 
-    m_bXGrid     = false;
+    m_NeutralStyle = {true, Line::DASHDOT, 1, QColor(150,150,150), Line::NOSYMBOL};
+    m_XStyle       = {true, Line::DASH, 1, QColor(95,95,95), Line::NOSYMBOL};
+    m_YStyle       = {true, Line::DASH, 1, QColor(95,95,95), Line::NOSYMBOL};
+    m_XMinStyle    = {false, Line::DOT, 1, QColor(75,75,75), Line::NOSYMBOL};
+    m_YMinStyle    = {false, Line::DOT, 1, QColor(75,75,75), Line::NOSYMBOL};
+
     m_XGridUnit  = 0.05;
-    m_XGridStyle = 1;
-    m_XGridWidth = 1;
-    m_XGridColor = QColor(150,150,150);
-
-    m_bYGrid     = false;
     m_YGridUnit  = 0.05;
-    m_YGridStyle = 1;
-    m_YGridWidth = 1;
-    m_YGridColor = QColor(150,150,150);
-
-    m_bXMinGrid  = false;
     m_XMinUnit = 0.01;
-    m_XMinStyle  = 2;
-    m_XMinWidth  = 1;
-    m_XMinColor  = QColor(70,70,70);
-
-    m_bYMinGrid  = false;
     m_YMinUnit = 0.01;
-    m_YMinStyle  = 2;
-    m_YMinWidth  = 1;
-    m_YMinColor  = QColor(70,70,70);
-
-    m_NeutralStyle.m_Stipple = Line::DASHDOT;
-    m_NeutralStyle.m_Width = 1;
-    m_NeutralStyle.m_Color = QColor(213,213,255);
 
     m_fScale    = 1.0;
     m_fRefScale = 1.0;
@@ -617,10 +600,10 @@ void Section2dWidget::paintGrids(QPainter &painter)
     }
 
     //draw grids
-    if(m_bXGrid)    drawXGrid(painter, m_fScale, m_ptOffset);
-    if(m_bYGrid)    drawYGrid(painter, m_fScale*m_fScaleY, m_ptOffset);
-    if(m_bXMinGrid) drawXMinGrid(painter, m_fScale, m_ptOffset);
-    if(m_bYMinGrid) drawYMinGrid(painter, m_fScale*m_fScaleY, m_ptOffset);
+    if(m_XStyle.m_bIsVisible) drawXGrid(painter, m_fScale, m_ptOffset);
+    if(m_YStyle.m_bIsVisible) drawYGrid(painter, m_fScale*m_fScaleY, m_ptOffset);
+    if(m_XMinStyle.m_bIsVisible) drawXMinGrid(painter, m_fScale, m_ptOffset);
+    if(m_YMinStyle.m_bIsVisible) drawYMinGrid(painter, m_fScale*m_fScaleY, m_ptOffset);
 
     if(m_bScale) drawScale(painter, m_fScale);
 
@@ -639,9 +622,9 @@ void Section2dWidget::paintGrids(QPainter &painter)
 void Section2dWidget::drawXGrid(QPainter &painter, double scalex, QPointF Offset)
 {
     painter.save();
-    QPen GridPen(m_XGridColor);
-    GridPen.setStyle(getStyle(m_XGridStyle));
-    GridPen.setWidth(m_XGridWidth);
+    QPen GridPen(m_XStyle.m_Color);
+    GridPen.setStyle(getStyle(m_XStyle.m_Stipple));
+    GridPen.setWidth(m_XStyle.m_Width);
     painter.setPen(GridPen);
 
     int YMin = rect().top();
@@ -684,9 +667,9 @@ void Section2dWidget::drawXGrid(QPainter &painter, double scalex, QPointF Offset
 void Section2dWidget::drawYGrid(QPainter &painter, double scaley, QPointF Offset)
 {
     painter.save();
-    QPen GridPen(m_YGridColor);
-    GridPen.setStyle(getStyle(m_YGridStyle));
-    GridPen.setWidth(m_YGridWidth);
+    QPen GridPen(m_YStyle.m_Color);
+    GridPen.setStyle(getStyle(m_YStyle.m_Stipple));
+    GridPen.setWidth(m_YStyle.m_Width);
     painter.setPen(GridPen);
 
     int XMin = rect().left();
@@ -727,9 +710,9 @@ void Section2dWidget::drawXMinGrid(QPainter &painter, double scalex, QPointF Off
 {
     painter.save();
 
-    QPen GridPen(m_XMinColor);
-    GridPen.setWidth(m_XMinWidth);
-    GridPen.setStyle(getStyle(m_XMinStyle));
+    QPen GridPen(m_XMinStyle.m_Color);
+    GridPen.setWidth(m_XMinStyle.m_Width);
+    GridPen.setStyle(getStyle(m_XMinStyle.m_Stipple));
 
     painter.setPen(GridPen);
 
@@ -774,9 +757,9 @@ void Section2dWidget::drawYMinGrid(QPainter &painter, double scaley, QPointF Off
 {
     painter.save();
 
-    QPen GridPen(m_YMinColor);
-    GridPen.setWidth(m_YMinWidth);
-    GridPen.setStyle(getStyle(m_YMinStyle));
+    QPen GridPen(m_YMinStyle.m_Color);
+    GridPen.setWidth(m_YMinStyle.m_Width);
+    GridPen.setStyle(getStyle(m_YMinStyle.m_Stipple));
 
     painter.setPen(GridPen);
 
@@ -951,26 +934,16 @@ void Section2dWidget::onGridSettings()
     dlg.m_bScale       = m_bScale;
     dlg.m_NeutralStyle = m_NeutralStyle;
 
-    dlg.m_bXGrid     = m_bXGrid;
-    dlg.m_bXMinGrid  = m_bXMinGrid;
-    dlg.m_XStyle     = m_XGridStyle;
-    dlg.m_XWidth     = m_XGridWidth;
-    dlg.m_XColor     = m_XGridColor;
+    dlg.m_XStyle     = m_XStyle;
     dlg.m_XUnit      = m_XGridUnit;
+
     dlg.m_XMinStyle  = m_XMinStyle;
-    dlg.m_XMinWidth  = m_XMinWidth;
-    dlg.m_XMinColor  = m_XMinColor;
     dlg.m_XMinUnit   = m_XMinUnit;
 
-    dlg.m_bYGrid     = m_bYGrid;
-    dlg.m_bYMinGrid  = m_bYMinGrid;
-    dlg.m_YStyle     = m_YGridStyle;
-    dlg.m_YWidth     = m_YGridWidth;
-    dlg.m_YColor     = m_YGridColor;
+    dlg.m_YStyle     = m_YStyle;
     dlg.m_YUnit      = m_YGridUnit;
+
     dlg.m_YMinStyle  = m_YMinStyle;
-    dlg.m_YMinWidth  = m_YMinWidth;
-    dlg.m_YMinColor  = m_YMinColor;
     dlg.m_YMinUnit   = m_YMinUnit;
 
     dlg.initDialog();
@@ -980,32 +953,20 @@ void Section2dWidget::onGridSettings()
         m_bScale       = dlg.m_bScale;
         m_NeutralStyle = dlg.m_NeutralStyle;
 
-        m_bXGrid     = dlg.m_bXGrid;
-        m_bXMinGrid  = dlg.m_bXMinGrid;
-        m_XGridStyle = dlg.m_XStyle;
-        m_XGridWidth = dlg.m_XWidth;
-        m_XGridColor = dlg.m_XColor;
+        m_XStyle = dlg.m_XStyle;
         m_XGridUnit  = dlg.m_XUnit;
+
         m_XMinStyle  = dlg.m_XMinStyle;
-        m_XMinWidth  = dlg.m_XMinWidth;
-        m_XMinColor  = dlg.m_XMinColor;
         m_XMinUnit   = dlg.m_XMinUnit;
 
-        m_bYGrid     = dlg.m_bYGrid;
-        m_bYMinGrid  = dlg.m_bYMinGrid;
-        m_YGridStyle = dlg.m_YStyle;
-        m_YGridWidth = dlg.m_YWidth;
-        m_YGridColor = dlg.m_YColor;
+        m_YStyle = dlg.m_YStyle;
         m_YGridUnit  = dlg.m_YUnit;
+
         m_YMinStyle  = dlg.m_YMinStyle;
-        m_YMinWidth  = dlg.m_YMinWidth;
-        m_YMinColor  = dlg.m_YMinColor;
         m_YMinUnit   = dlg.m_YMinUnit;
     }
     update();
 }
-
-
 
 
 void Section2dWidget::drawScaleLegend(QPainter &painter)

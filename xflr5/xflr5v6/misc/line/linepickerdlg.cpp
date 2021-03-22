@@ -42,27 +42,27 @@ LinePickerDlg::LinePickerDlg(QWidget *pParent): QDialog(pParent)
 
     setupLayout();
 
-    m_pPointStyleDelegate = new LineDelegate(m_pctrlPointStyle);
-    m_pLineStyleDelegate  = new LineDelegate(m_pctrlLineStyle);
-    m_pWidthDelegate      = new LineDelegate(m_pctrlLineWidth);
+    m_pPointStyleDelegate = new LineDelegate(m_plcbPointStyle);
+    m_pLineStyleDelegate  = new LineDelegate(m_plcbLineStyle);
+    m_pWidthDelegate      = new LineDelegate(m_plcbLineWidth);
 
-    m_pctrlPointStyle->setItemDelegate(m_pPointStyleDelegate);
-    m_pctrlLineStyle->setItemDelegate(m_pLineStyleDelegate);
-    m_pctrlLineWidth->setItemDelegate(m_pWidthDelegate);
+    m_plcbPointStyle->setItemDelegate(m_pPointStyleDelegate);
+    m_plcbLineStyle->setItemDelegate(m_pLineStyleDelegate);
+    m_plcbLineWidth->setItemDelegate(m_pWidthDelegate);
 
-    connect(m_pctrlPointStyle, SIGNAL(activated(int)), this, SLOT(onPointStyle(int)));
-    connect(m_pctrlLineStyle, SIGNAL(activated(int)), this, SLOT(onLineStyle(int)));
-    connect(m_pctrlLineWidth, SIGNAL(activated(int)), this, SLOT(onLineWidth(int)));
-    connect(m_pctrlLineColor, SIGNAL(clickedLB()), this, SLOT(onLineColor()));
+    connect(m_plcbPointStyle, SIGNAL(activated(int)), this, SLOT(onPointStyle(int)));
+    connect(m_plcbLineStyle, SIGNAL(activated(int)), this, SLOT(onLineStyle(int)));
+    connect(m_plcbLineWidth, SIGNAL(activated(int)), this, SLOT(onLineWidth(int)));
+    connect(m_plbLineColor, SIGNAL(clickedLB()), this, SLOT(onLineColor()));
 
-    connect(m_pctrlOKButton, SIGNAL(clicked()),this, SLOT(accept()));
-    connect(m_pctrlCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(m_ppbOKButton, SIGNAL(clicked()),this, SLOT(accept()));
+    connect(m_ppbCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 
 void LinePickerDlg::fillBoxes()
 {
-    m_pctrlLineColor->setTheStyle(m_LineStyle);
+    m_plbLineColor->setTheStyle(m_LineStyle);
 
     int LineStyle[5];
     int LineWidth[5];
@@ -87,19 +87,13 @@ void LinePickerDlg::fillBoxes()
     m_pPointStyleDelegate->setLineWidth(LineWidth);
     m_pPointStyleDelegate->setLineColor(m_LineStyle.m_Color);
 
-    m_pctrlPointStyle->setLine(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-    m_pctrlLineStyle->setLine(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, 0);
-    m_pctrlLineWidth->setLine(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, 0);
+    m_plcbPointStyle->setLine(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+    m_plcbLineStyle->setLine(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, 0);
+    m_plcbLineWidth->setLine(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, 0);
 
-    m_pctrlPointStyle->setCurrentIndex(m_LineStyle.m_PointStyle);
-    m_pctrlLineStyle->setCurrentIndex(m_LineStyle.m_Stipple);
-    m_pctrlLineWidth->setCurrentIndex(m_LineStyle.m_Width-1);
-}
-
-
-void LinePickerDlg::initDialog(LineStyle const &ls, bool bAcceptPointStyle, bool bFlowDownEnable)
-{
-    initDialog(ls.m_PointStyle, ls.m_Stipple, ls.m_Width, ls.m_Color, bAcceptPointStyle, bFlowDownEnable);
+    m_plcbPointStyle->setCurrentIndex(m_LineStyle.m_PointStyle);
+    m_plcbLineStyle->setCurrentIndex(m_LineStyle.m_Stipple);
+    m_plcbLineWidth->setCurrentIndex(m_LineStyle.m_Width-1);
 }
 
 
@@ -126,13 +120,13 @@ void LinePickerDlg::initDialog(bool bFlowDownEnable)
     for (int i=0; i<5; i++)
     {
         str = QString("%1").arg(i);
-        m_pctrlLineWidth->addItem(str);
-        m_pctrlPointStyle->addItem(str);//string doesn't matter, will be replaced when the boxes are filled
-        m_pctrlLineStyle->addItem(str);//string doesn't matter, will be replaced when the boxes are filled
+        m_plcbLineWidth->addItem(str);
+        m_plcbPointStyle->addItem(str);//string doesn't matter, will be replaced when the boxes are filled
+        m_plcbLineStyle->addItem(str);//string doesn't matter, will be replaced when the boxes are filled
     }
 
-    m_pctrlFlowDownStyle->setVisible(bFlowDownEnable);
-    m_pctrlFlowDownStyle->setChecked(Settings::isAlignedChildrenStyle());
+    m_pchFlowDownStyle->setVisible(bFlowDownEnable);
+    m_pchFlowDownStyle->setChecked(Settings::isAlignedChildrenStyle());
 
     fillBoxes();
 }
@@ -146,9 +140,9 @@ void LinePickerDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!m_pctrlOKButton->hasFocus())
+            if(!m_ppbOKButton->hasFocus())
             {
-                m_pctrlOKButton->setFocus();
+                m_ppbOKButton->setFocus();
                 return;
             }
             else
@@ -168,14 +162,14 @@ void LinePickerDlg::keyPressEvent(QKeyEvent *event)
 
 void LinePickerDlg::accept()
 {
-    Settings::setAlignedChildrenStyle(m_pctrlFlowDownStyle->isChecked());
+    Settings::setAlignedChildrenStyle(m_pchFlowDownStyle->isChecked());
     QDialog::accept();
 }
 
 
 void LinePickerDlg::reject()
 {
-    Settings::setAlignedChildrenStyle(m_pctrlFlowDownStyle->isChecked());
+    Settings::setAlignedChildrenStyle(m_pchFlowDownStyle->isChecked());
     QDialog::reject();
 }
 
@@ -185,7 +179,7 @@ void LinePickerDlg::onPointStyle(int val)
     m_LineStyle.setPointStyle(val);
     fillBoxes();
     repaint();
-    m_pctrlOKButton->setFocus();
+    m_ppbOKButton->setFocus();
 }
 
 
@@ -194,7 +188,7 @@ void LinePickerDlg::onLineStyle(int val)
     m_LineStyle.setStipple(val);
     fillBoxes();
     repaint();
-    m_pctrlOKButton->setFocus();
+    m_ppbOKButton->setFocus();
 }
 
 
@@ -203,7 +197,7 @@ void LinePickerDlg::onLineWidth(int val)
     m_LineStyle.m_Width = val+1;
     fillBoxes();
     repaint();
-    m_pctrlOKButton->setFocus();
+    m_ppbOKButton->setFocus();
 }
 
 
@@ -220,7 +214,7 @@ void LinePickerDlg::onLineColor()
 
     fillBoxes();
     repaint();
-    m_pctrlOKButton->setFocus();
+    m_ppbOKButton->setFocus();
 }
 
 
@@ -259,11 +253,11 @@ void LinePickerDlg::setLineWidth(int width)
 
 void LinePickerDlg::setupLayout()
 {
-    m_pctrlFlowDownStyle = new QCheckBox(tr("Flow down style"));
+    m_pchFlowDownStyle = new QCheckBox(tr("Flow down style"));
     QString tip = tr("If activated:\n"
                      "all changes made to the style of the polar objects will flow down to the operating points\n"
                      "all changes made to the style of the foil objects will flow down to the polars and to the operating points");
-    m_pctrlFlowDownStyle->setToolTip(tip);
+    m_pchFlowDownStyle->setToolTip(tip);
 
     QGridLayout *pStyleLayout = new QGridLayout;
     {
@@ -279,46 +273,46 @@ void LinePickerDlg::setupLayout()
         lab1->setMinimumWidth(60);
         lab2->setMinimumWidth(60);
         lab3->setMinimumWidth(60);
-        m_pctrlPointStyle = new LineCbBox(this);
-        m_pctrlPointStyle->showPoints(true);
-        m_pctrlLineStyle = new LineCbBox;
-        m_pctrlLineWidth = new LineCbBox;
-        m_pctrlLineColor = new LineBtn;
+        m_plcbPointStyle = new LineCbBox(this);
+        m_plcbPointStyle->showPoints(true);
+        m_plcbLineStyle = new LineCbBox;
+        m_plcbLineWidth = new LineCbBox;
+        m_plbLineColor = new LineBtn;
 
 
         QFontMetrics fm(Settings::s_TextFont);
 
-        m_pctrlPointStyle->setMinimumWidth(17*fm.averageCharWidth());
-        m_pctrlLineStyle->setMinimumWidth(17*fm.averageCharWidth());
-        m_pctrlLineWidth->setMinimumWidth(17*fm.averageCharWidth());
-        m_pctrlLineColor->setMinimumWidth(17*fm.averageCharWidth());
-        m_pctrlLineColor->setMinimumHeight(m_pctrlLineStyle->minimumSizeHint().height());
+        m_plcbPointStyle->setMinimumWidth(17*fm.averageCharWidth());
+        m_plcbLineStyle->setMinimumWidth(17*fm.averageCharWidth());
+        m_plcbLineWidth->setMinimumWidth(17*fm.averageCharWidth());
+        m_plbLineColor->setMinimumWidth(17*fm.averageCharWidth());
+        m_plbLineColor->setMinimumHeight(m_plcbLineStyle->minimumSizeHint().height());
 
         pStyleLayout->addWidget(lab0,1,1);
         pStyleLayout->addWidget(lab1,2,1);
         pStyleLayout->addWidget(lab2,3,1);
         pStyleLayout->addWidget(lab3,4,1);
-        pStyleLayout->addWidget(m_pctrlPointStyle,1,2);
-        pStyleLayout->addWidget(m_pctrlLineStyle, 2,2);
-        pStyleLayout->addWidget(m_pctrlLineWidth, 3,2);
-        pStyleLayout->addWidget(m_pctrlLineColor, 4,2);
+        pStyleLayout->addWidget(m_plcbPointStyle,1,2);
+        pStyleLayout->addWidget(m_plcbLineStyle, 2,2);
+        pStyleLayout->addWidget(m_plcbLineWidth, 3,2);
+        pStyleLayout->addWidget(m_plbLineColor, 4,2);
     }
 
     QHBoxLayout *pCommandButtons = new QHBoxLayout;
     {
-        m_pctrlOKButton = new QPushButton(tr("OK"));
-        m_pctrlCancelButton = new QPushButton(tr("Cancel"));
+        m_ppbOKButton = new QPushButton(tr("OK"));
+        m_ppbCancelButton = new QPushButton(tr("Cancel"));
         pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(m_pctrlOKButton);
+        pCommandButtons->addWidget(m_ppbOKButton);
         pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(m_pctrlCancelButton);
+        pCommandButtons->addWidget(m_ppbCancelButton);
         pCommandButtons->addStretch(1);
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
         pMainLayout->addStretch(1);
-        pMainLayout->addWidget(m_pctrlFlowDownStyle);
+        pMainLayout->addWidget(m_pchFlowDownStyle);
         pMainLayout->addLayout(pStyleLayout);
         pMainLayout->addStretch(1);
         pMainLayout->addLayout(pCommandButtons);

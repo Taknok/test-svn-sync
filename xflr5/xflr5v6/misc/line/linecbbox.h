@@ -20,11 +20,10 @@
 *****************************************************************************/
 
 
-#ifndef LINECBBOX_H
-#define LINECBBOX_H
+#pragma once
 
 #include <QComboBox>
-#include <xflcore/linestyle.h>
+#include <xflcore/ls2.h>
 
 
 
@@ -38,14 +37,13 @@ public:
     void paintEvent (QPaintEvent *pEvent);
 
     void setLine(int const &style, int const &width, QColor const &color, const int &pointStyle);
-    void setLine(LineStyle lineStyle);
+    void setLine(LS2 const &lineStyle);
     void showPoints(bool bShow){m_bShowPoints=bShow;}
 
     bool points() const {return m_bShowPoints; }
 
 private:
-    LineStyle m_LineStyle;
+    LS2 m_LineStyle;
     bool m_bShowPoints;
 };
 
-#endif // LINECBBOX_H

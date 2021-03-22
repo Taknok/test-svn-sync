@@ -65,17 +65,13 @@ class GridSettingsDlg : public QDialog
         QPushButton *m_ppbOKButton, *m_ppbCancelButton;
 
         bool m_bScale;
-        bool m_bXGrid,m_bYGrid;
-        bool m_bXMinGrid, m_bYMinGrid;
-        int m_XStyle, m_YStyle;
-        int m_XWidth, m_YWidth;
-        int m_XMinStyle, m_YMinStyle;
-        int m_XMinWidth, m_YMinWidth;
+
+        LS2 m_XStyle, m_YStyle;
+        LS2 m_XMinStyle, m_YMinStyle;
 
         double m_XUnit, m_YUnit;
         double m_XMinUnit, m_YMinUnit;
-        QColor m_XColor,m_YColor;
-        QColor m_XMinColor,m_YMinColor;
+
 
         LS2 m_NeutralStyle;
 };

@@ -97,10 +97,7 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
 
     m_pOpPointWidget = nullptr;
 
-    m_LineStyle.m_Stipple = 0;
-    m_LineStyle.m_Width = 1;
-    m_LineStyle.m_Color = QColor(0,0,0);
-    m_LineStyle.m_PointStyle = 0;
+    m_LineStyle = {true, Line::SOLID, 1, QColor(0,0,0), Line::NOSYMBOL};
 
     setupLayout();
 
@@ -402,8 +399,7 @@ void XDirect::createOppCurves(OpPoint *pOpp)
             pCurve1    = m_CpGraph.addCurve();
 
             //                pCurve1->setPoints(pOpp->pointStyle());
-            LineStyle ls;
-            ls.fromLS2(pOpp->theStyle());
+            LS2 ls(pOpp->theStyle());
             pCurve1->setLineStyle(ls);
             pCurve1->setName(pOpp->opPointName());
 
@@ -1776,7 +1772,7 @@ void XDirect::onCurveColor()
  */
 void XDirect::onCurveStyle(int index)
 {
-    m_LineStyle.m_Stipple = index;
+    m_LineStyle.setStipple(index);
     fillComboBoxes();
     updateCurveStyle();
 }
@@ -1795,7 +1791,7 @@ void XDirect::onCurveWidth(int index)
 
 void XDirect::onCurvePoints(int index)
 {
-    m_LineStyle.m_PointStyle = index;
+    m_LineStyle.setPointStyle(index);
     fillComboBoxes();
     updateCurveStyle();
 }
@@ -2207,12 +2203,7 @@ void XDirect::onEditCurPolar()
     EditPlrDlg epDlg(s_pMainFrame);
     epDlg.initDialog(this, m_pCurPolar, nullptr, nullptr);
 
-    LineStyle style;
-    style.m_Stipple = m_pCurPolar->polarStyle();
-    style.m_Width= m_pCurPolar->lineWidth();
-    style.m_Color= colour(m_pCurPolar);
-    style.m_bIsVisible= m_pCurPolar->isVisible();
-    style.m_PointStyle= m_pCurPolar->pointStyle();
+    LS2 style(m_pCurPolar->theStyle());
 
     m_pCurPolar->setPointStyle(Line::LITTLECIRCLE);
 
@@ -4372,7 +4363,7 @@ void XDirect::setCurveParams()
         {
             if(m_pCurOpp->isVisible())  m_pctrlShowCurve->setChecked(true);  else  m_pctrlShowCurve->setChecked(false);
 
-            m_LineStyle.fromLS2(m_pCurOpp->theStyle());
+            m_LineStyle = m_pCurOpp->theStyle();
             fillComboBoxes();
         }
         else
@@ -4940,7 +4931,7 @@ void XDirect::updateCurveStyle()
     }
     else if (!m_bPolarView && m_pCurOpp)
     {
-        m_pCurOpp->setTheStyle(m_LineStyle.toLS2());
+        m_pCurOpp->setTheStyle(m_LineStyle);
         m_bResetCurves = true;
     }
 
