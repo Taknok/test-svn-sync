@@ -100,7 +100,7 @@ struct LS2
         }
     }
 
-    //Conversion functions from LineStyle
+    //Conversion functions from deprecated struct LineStyle
     void setStipple(int n)
     {
         switch (n)

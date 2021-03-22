@@ -21,12 +21,10 @@
 
 
 
-#ifndef LINEBTN_H
-#define LINEBTN_H
+#pragma once
 
 
 #include <QAbstractButton>
-#include <xflcore/linestyle.h>
 #include <xflcore/ls2.h>
 
 class LineBtn : public QAbstractButton
@@ -36,10 +34,9 @@ class LineBtn : public QAbstractButton
 public:
     LineBtn(QWidget *parent = nullptr);
 
-    void setTheStyle(LineStyle const &ls) {m_LineStyle=ls;}
     void setTheStyle(int const &lineStyle, int const &width, QColor const & color, const int &pointStyle);
-    void setTheStyle(LS2 const &ls) {m_LineStyle.fromLS2(ls);}
-    LineStyle theStyle() const {return m_LineStyle;}
+    void setTheStyle(LS2 const &ls) {m_LineStyle = ls;}
+    LS2 const &theStyle() const {return m_LineStyle;}
 
     void setColor(QColor const & color);
     void setStipple(int const &lineStyle);
@@ -60,7 +57,6 @@ public:
     QSize sizeHint() const;
 
 private:
-    LineStyle m_LineStyle;
+    LS2 m_LineStyle;
 };
 
-#endif

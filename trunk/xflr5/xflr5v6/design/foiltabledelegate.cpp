@@ -141,7 +141,7 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
                 lineWidth = pFoil->lineWidth();
             }
             QRect r = option.rect;
-            r = m_pAFoil->m_pctrlFoilTable->visualRect(index);;
+            r = m_pAFoil->m_ptvFoil->visualRect(index);;
 
             painter->save();
 

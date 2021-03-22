@@ -19,13 +19,12 @@
 
 *****************************************************************************/
 
-#ifndef LINEPICKERDLG_H
-#define LINEPICKERDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QCheckBox>
 
-#include <xflcore/linestyle.h>
+#include <xflcore/ls2.h>
 
 
 class LineBtn;
@@ -36,72 +35,64 @@ class LinePickerDlg : public QDialog
 {
     Q_OBJECT
 
-public:
-    LinePickerDlg(QWidget *pParent);
+    public:
+        LinePickerDlg(QWidget *pParent);
 
-    void initDialog(bool bFlowDownEnable);
-    void initDialog(LineStyle const &ls, bool bAcceptPointStyle, bool bFlowDownEnable);
-    void initDialog(LS2 const &ls, bool bAcceptPointStyle, bool bFlowDownEnable);
-    void initDialog(int pointStyle, int lineStyle, int lineWidth, QColor lineColor, bool bAcceptPointStyle, bool bFlowDownEnable);
+        void initDialog(bool bFlowDownEnable);
+        void initDialog(LS2 const &ls, bool bAcceptPointStyle, bool bFlowDownEnable);
+        void initDialog(int pointStyle, int lineStyle, int lineWidth, QColor lineColor, bool bAcceptPointStyle, bool bFlowDownEnable);
 
-    void keyPressEvent(QKeyEvent *event);
+        void keyPressEvent(QKeyEvent *event) override;
 
-    LS2 const &ls2()      const {return m_LineStyle;}
-    LS2 const &theStyle() const {return m_LineStyle;}
+        LS2 const &ls2()      const {return m_LineStyle;}
+        LS2 const &theStyle() const {return m_LineStyle;}
 
-    void setTheStyle(LS2 const &ls) {m_LineStyle = ls;}
-    void setTheStyle(LineStyle const &style)
-    {
-        m_LineStyle.setStipple(style.m_Stipple);
-        m_LineStyle.m_Width = style.m_Width;
-        m_LineStyle.m_Color = style.m_Color;
-        m_LineStyle.setPointStyle(style.m_PointStyle);
-    }
+        void setTheStyle(LS2 const &ls) {m_LineStyle = ls;}
 
-    void setTheStyle(Line::enumLineStipple stipple, int w, const QColor &clr, Line::enumPointStyle pointstyle)
-    {
-        m_LineStyle.setStipple(stipple);
-        m_LineStyle.m_Width = w;
-        m_LineStyle.m_Color = clr;
-        m_LineStyle.setPointStyle(pointstyle);
-    }
+        void setTheStyle(Line::enumLineStipple stipple, int w, const QColor &clr, Line::enumPointStyle pointstyle)
+        {
+            m_LineStyle.setStipple(stipple);
+            m_LineStyle.m_Width = w;
+            m_LineStyle.m_Color = clr;
+            m_LineStyle.setPointStyle(pointstyle);
+        }
 
-    Line::enumLineStipple lineStipple2()  const {return m_LineStyle.m_Stipple;}
-    Line::enumPointStyle  pointStyle2()   const {return m_LineStyle.m_PointStyle;}
+        Line::enumLineStipple lineStipple2()  const {return m_LineStyle.m_Stipple;}
+        Line::enumPointStyle  pointStyle2()   const {return m_LineStyle.m_PointStyle;}
 
-    int pointStyle()   const {return m_LineStyle.m_PointStyle;}
-    int lineStipple()  const {return m_LineStyle.m_Stipple;}
-    int lineWidth()    const {return m_LineStyle.m_Width;}
-    QColor lineColor() const {return m_LineStyle.m_Color;}
+        int pointStyle()   const {return m_LineStyle.m_PointStyle;}
+        int lineStipple()  const {return m_LineStyle.m_Stipple;}
+        int lineWidth()    const {return m_LineStyle.m_Width;}
+        QColor lineColor() const {return m_LineStyle.m_Color;}
 
-    void setPointStyle(int pointStyle);
-    void setLineStipple(int lineStyle);
-    void setLineWidth(int width);
-    void setLineColor(QColor color);
+        void setPointStyle(int pointStyle);
+        void setLineStipple(int lineStyle);
+        void setLineWidth(int width);
+        void setLineColor(QColor color);
 
-    void fillBoxes();
-    void setupLayout();
+        void fillBoxes();
+        void setupLayout();
 
-    bool bFlowDownStyle() const {return m_pctrlFlowDownStyle->isChecked();}
+        bool bFlowDownStyle() const {return m_pchFlowDownStyle->isChecked();}
 
-private slots:
-    void onPointStyle(int val);
-    void onLineStyle(int val);
-    void onLineWidth(int val);
-    void onLineColor();
+    private slots:
+        void onPointStyle(int val);
+        void onLineStyle(int val);
+        void onLineWidth(int val);
+        void onLineColor();
 
-    void accept();
-    void reject();
+        void accept() override;
+        void reject() override;
 
-private:
-    LineBtn *m_pctrlLineColor;
-    LineCbBox *m_pctrlPointStyle, *m_pctrlLineWidth, *m_pctrlLineStyle;
-    QCheckBox *m_pctrlFlowDownStyle;
-    QPushButton *m_pctrlOKButton, *m_pctrlCancelButton;
+    private:
+        LineBtn *m_plbLineColor;
+        LineCbBox *m_plcbPointStyle, *m_plcbLineWidth, *m_plcbLineStyle;
+        QCheckBox *m_pchFlowDownStyle;
+        QPushButton *m_ppbOKButton, *m_ppbCancelButton;
 
-    bool m_bAcceptPointStyle;
-    LS2 m_LineStyle;
-    LineDelegate *m_pPointStyleDelegate, *m_pLineStyleDelegate, *m_pWidthDelegate;
+        bool m_bAcceptPointStyle;
+
+        LS2 m_LineStyle;
+        LineDelegate *m_pPointStyleDelegate, *m_pLineStyleDelegate, *m_pWidthDelegate;
 };
 
-#endif // LINEPICKERDLG_H

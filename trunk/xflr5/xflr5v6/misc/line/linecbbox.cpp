@@ -38,10 +38,7 @@ LineCbBox::LineCbBox(QWidget *pParent)
     :QComboBox(pParent)
 {
     setParent(pParent);
-    m_LineStyle.m_Stipple = 0;
-    m_LineStyle.m_Width = 1;
-    m_LineStyle.m_Color = QColor(255,100,50);
-    m_LineStyle.m_PointStyle = 0;
+    m_LineStyle = {true, Line::SOLID, 1, QColor(255,100,50), Line::NOSYMBOL};
     m_bShowPoints = false;
 
     QSizePolicy szPolicyExpanding;
@@ -62,14 +59,14 @@ QSize LineCbBox::sizeHint() const
 
 void LineCbBox::setLine(int const &style, int const &width, QColor const &color, int const &pointStyle)
 {
-    m_LineStyle.m_Stipple = style;
+    m_LineStyle.setStipple(style);
     m_LineStyle.m_Width = width;
     m_LineStyle.m_Color = color;
-    m_LineStyle.m_PointStyle = pointStyle;
+    m_LineStyle.setPointStyle(pointStyle);
 }
 
 
-void LineCbBox::setLine(LineStyle lineStyle)
+void LineCbBox::setLine(const LS2 &lineStyle)
 {
     m_LineStyle = lineStyle;
 }

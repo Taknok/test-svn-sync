@@ -165,7 +165,6 @@ SOURCES += \
 
 
 HEADERS += \
-    $$PWD/xflcore/linestyle.h \
     $$PWD/xflcore/ls2.h \
     $$PWD/xflobjects/xflobject.h \
     design/afoil.h \

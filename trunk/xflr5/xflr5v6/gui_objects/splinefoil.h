@@ -31,7 +31,7 @@
 #include "spline5.h"
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/xflobject.h>
-#include <xflcore/linestyle.h>
+#include <xflcore/ls2.h>
 
 
 /**
