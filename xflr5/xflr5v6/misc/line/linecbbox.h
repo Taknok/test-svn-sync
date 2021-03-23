@@ -29,21 +29,20 @@
 
 class LineCbBox : public QComboBox
 {
+    public:
+        LineCbBox(QWidget *pParent=nullptr);
 
-public:
-    LineCbBox(QWidget *pParent=nullptr);
+        QSize sizeHint() const override;
+        void paintEvent (QPaintEvent *pEvent) override;
 
-    QSize sizeHint() const;
-    void paintEvent (QPaintEvent *pEvent);
+        void setLine(int const &style, int const &width, QColor const &color, const int &pointStyle);
+        void setLine(LS2 const &lineStyle);
+        void showPoints(bool bShow){m_bShowPoints=bShow;}
 
-    void setLine(int const &style, int const &width, QColor const &color, const int &pointStyle);
-    void setLine(LS2 const &lineStyle);
-    void showPoints(bool bShow){m_bShowPoints=bShow;}
+        bool points() const {return m_bShowPoints; }
 
-    bool points() const {return m_bShowPoints; }
-
-private:
-    LS2 m_LineStyle;
-    bool m_bShowPoints;
+    private:
+        LS2 m_LineStyle;
+        bool m_bShowPoints;
 };
 

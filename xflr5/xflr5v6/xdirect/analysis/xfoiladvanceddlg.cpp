@@ -27,131 +27,125 @@
 XFoilAdvancedDlg::XFoilAdvancedDlg(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle(tr("XFoil Settings"));
-    SetupLayout();
+    setupLayout();
 
     m_IterLimit = 100;
     m_VAccel = 0.001;
     m_bAutoInitBL = true;
     m_bFullReport = false;
-
-    connect(m_pctrlDefaults, SIGNAL(clicked()), SLOT(OnDefaults()));
-    connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
-    connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 
-
-void XFoilAdvancedDlg::SetupLayout()
+void XFoilAdvancedDlg::setupLayout()
 {
-    QHBoxLayout *pVAccelBoxLayout = new QHBoxLayout;
-    {
-        QLabel *lab1 = new QLabel(tr("VAccel"));
-        lab1->setAlignment(Qt::AlignRight);
-        m_pctrlVAccel = new DoubleEdit(0.0, 3);     // jx-mod allow 3 decimals fo vaccel according to init value '0.001'
-        m_pctrlVAccel->setAlignment(Qt::AlignRight);
-        pVAccelBoxLayout->addStretch(1);
-        pVAccelBoxLayout->addWidget(lab1);
-        pVAccelBoxLayout->addWidget(m_pctrlVAccel);
-    }
-
-    QHBoxLayout *pIterBoxLayout = new QHBoxLayout;
-    {
-        QLabel *lab2 = new QLabel(tr("Iteration Limit"));
-        lab2->setAlignment(Qt::AlignRight);
-        m_pctrlIterLimit = new IntEdit;
-
-        pIterBoxLayout->addStretch(1);
-        pIterBoxLayout->addWidget(lab2);
-        pIterBoxLayout->addWidget(m_pctrlIterLimit);
-    }
-
-    m_pctrlInitBL = new QCheckBox(tr("Re-initialize BLs after an unconverged iteration"));
-    m_pctrlFullReport = new QCheckBox(tr("Show full log report for an XFoil analysis"));
-    m_pctrlKeepErrorsOpen = new QCheckBox(tr("Keep Xfoil interface open if analysis errors"));
-
-    QHBoxLayout *pTimerLayout = new QHBoxLayout;
-    {
-        QLabel *pTimerLabel = new QLabel(tr("Time interval between graph updates"));
-        QLabel *pTimerUnitLabel = new QLabel("ms");
-        m_pctrlTimerInterval = new IntEdit(XDirect::s_TimeUpdateInterval, this);
-        m_pctrlTimerInterval->setMin(0);
-        pTimerLayout->addStretch();
-        pTimerLayout->addWidget(pTimerLabel);
-        pTimerLayout->addWidget(m_pctrlTimerInterval);
-        pTimerLayout->addWidget(pTimerUnitLabel);
-    }
-
-    QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
-    {
-        m_pctrlDefaults = new QPushButton(tr("Reset Defaults"));
-        OKButton      = new QPushButton(tr("OK"));
-        CancelButton  = new QPushButton(tr("Cancel"));
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(m_pctrlDefaults);
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(OKButton);
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(CancelButton);
-        pCommandButtonsLayout->addStretch(1);
-    }
-
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
+        QHBoxLayout *pVAccelBoxLayout = new QHBoxLayout;
+        {
+            QLabel *lab1 = new QLabel(tr("VAccel"));
+            lab1->setAlignment(Qt::AlignRight);
+            m_pdeVAccel = new DoubleEdit(0.0, 3);     // jx-mod allow 3 decimals fo vaccel according to init value '0.001'
+            m_pdeVAccel->setAlignment(Qt::AlignRight);
+            pVAccelBoxLayout->addStretch(1);
+            pVAccelBoxLayout->addWidget(lab1);
+            pVAccelBoxLayout->addWidget(m_pdeVAccel);
+        }
+
+        QHBoxLayout *pIterBoxLayout = new QHBoxLayout;
+        {
+            QLabel *lab2 = new QLabel(tr("Iteration Limit"));
+            lab2->setAlignment(Qt::AlignRight);
+            m_pieIterLimit = new IntEdit;
+
+            pIterBoxLayout->addStretch(1);
+            pIterBoxLayout->addWidget(lab2);
+            pIterBoxLayout->addWidget(m_pieIterLimit);
+        }
+
+        m_pchInitBL = new QCheckBox(tr("Re-initialize BLs after an unconverged iteration"));
+        m_pchFullReport = new QCheckBox(tr("Show full log report for an XFoil analysis"));
+        m_pchKeepErrorsOpen = new QCheckBox(tr("Keep Xfoil interface open if analysis errors"));
+
+        QHBoxLayout *pTimerLayout = new QHBoxLayout;
+        {
+            QLabel *pTimerLabel = new QLabel(tr("Time interval between graph updates"));
+            QLabel *pTimerUnitLabel = new QLabel("ms");
+            m_pieTimerInterval = new IntEdit(XDirect::timeUpdateInterval(), this);
+            m_pieTimerInterval->setMin(0);
+            pTimerLayout->addStretch();
+            pTimerLayout->addWidget(pTimerLabel);
+            pTimerLayout->addWidget(m_pieTimerInterval);
+            pTimerLayout->addWidget(pTimerUnitLabel);
+        }
+
+        m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::RestoreDefaults, this);
+        {
+            connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
+        }
+
+
         pMainLayout->addStretch();
         pMainLayout->addLayout(pVAccelBoxLayout);
         pMainLayout->addLayout(pIterBoxLayout);
-        pMainLayout->addWidget(m_pctrlInitBL);
-        pMainLayout->addWidget(m_pctrlFullReport);
-        pMainLayout->addWidget(m_pctrlKeepErrorsOpen);
+        pMainLayout->addWidget(m_pchInitBL);
+        pMainLayout->addWidget(m_pchFullReport);
+        pMainLayout->addWidget(m_pchKeepErrorsOpen);
         pMainLayout->addLayout(pTimerLayout);
         pMainLayout->addStretch();
-        pMainLayout->addSpacing(15);
-        pMainLayout->addLayout(pCommandButtonsLayout);
+        pMainLayout->addWidget(m_pButtonBox);
     }
 
     setLayout(pMainLayout);
 }
 
 
-void XFoilAdvancedDlg::OnDefaults()
+void XFoilAdvancedDlg::onButton(QAbstractButton *pButton)
+{
+    if      (m_pButtonBox->button(QDialogButtonBox::Ok)              == pButton)   accept();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel)          == pButton)   reject();
+    else if (m_pButtonBox->button(QDialogButtonBox::RestoreDefaults) == pButton)   resetDefaults();
+}
+
+
+void XFoilAdvancedDlg::resetDefaults()
 {
     m_IterLimit = 100;
     m_VAccel = 0.001;
     m_bAutoInitBL = true;
     m_bFullReport = false;
-    XDirect::s_bKeepOpenErrors = true;
-    XDirect::s_TimeUpdateInterval = 100;
+    XDirect::setKeepOpenOnErrors(true);
+    XDirect::setTimeUpdateInterval(100);
     initDialog();
 }
 
 
 void XFoilAdvancedDlg::initDialog()
 {
-    m_pctrlVAccel->setValue(m_VAccel);
-    m_pctrlInitBL->setChecked(m_bAutoInitBL);
-    m_pctrlIterLimit->setValue(m_IterLimit);
-    m_pctrlFullReport->setChecked(m_bFullReport);
-    m_pctrlKeepErrorsOpen->setChecked(XDirect::s_bKeepOpenErrors);
-    m_pctrlTimerInterval->setValue(XDirect::s_TimeUpdateInterval);
+    m_pdeVAccel->setValue(m_VAccel);
+    m_pchInitBL->setChecked(m_bAutoInitBL);
+    m_pieIterLimit->setValue(m_IterLimit);
+    m_pchFullReport->setChecked(m_bFullReport);
+    m_pchKeepErrorsOpen->setChecked(XDirect::bKeepOpenOnErrors());
+    m_pieTimerInterval->setValue(XDirect::timeUpdateInterval());
 }
 
 
-
-
-void XFoilAdvancedDlg::keyPressEvent(QKeyEvent *event)
+void XFoilAdvancedDlg::keyPressEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                OKButton->setFocus();
+                m_pButtonBox->setFocus();
+                return;
             }
-            else if (OKButton->hasFocus())
+            else
             {
-                OnOK();
+                accept();
+                return;
             }
             break;
         }
@@ -161,19 +155,20 @@ void XFoilAdvancedDlg::keyPressEvent(QKeyEvent *event)
             return;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
 
 
-
-void XFoilAdvancedDlg::OnOK()
+void XFoilAdvancedDlg::accept()
 {
-    m_IterLimit = m_pctrlIterLimit->value();
-    m_VAccel = m_pctrlVAccel->value();
-    m_bAutoInitBL = m_pctrlInitBL->isChecked();
-    m_bFullReport = m_pctrlFullReport->isChecked();
-    XDirect::s_TimeUpdateInterval = m_pctrlTimerInterval->value();
-    XDirect::s_bKeepOpenErrors = m_pctrlKeepErrorsOpen->isChecked();
-    done(1);
+    m_IterLimit = m_pieIterLimit->value();
+    m_VAccel = m_pdeVAccel->value();
+    m_bAutoInitBL = m_pchInitBL->isChecked();
+    m_bFullReport = m_pchFullReport->isChecked();
+    XDirect::setTimeUpdateInterval(m_pieTimerInterval->value());
+    XDirect::setKeepOpenOnErrors(m_pchKeepErrorsOpen->isChecked());
+    QDialog::accept();
 }
+
+
