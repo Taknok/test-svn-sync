@@ -20,15 +20,14 @@
 *****************************************************************************/
 
 
-
-#ifndef XFOILADVANCEDDLG_H
-#define XFOILADVANCEDDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QCheckBox>
+#include <QDialogButtonBox>
 
 #include <misc/text/doubleedit.h>
 #include <misc/text/intedit.h>
@@ -42,30 +41,33 @@ class XFoilAdvancedDlg : public QDialog
     friend class BatchThreadDlg;
     friend class BatchDlg;
 
-public:
-    XFoilAdvancedDlg(QWidget *pParent=nullptr);
-    void initDialog();
+    public:
+        XFoilAdvancedDlg(QWidget *pParent=nullptr);
+        void initDialog();
+
+    private slots:
+        void accept() override;
+        void onButton(QAbstractButton *pButton);
+
+    private:
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void setupLayout();
+        void resetDefaults();
+
+    private:
+        QCheckBox *m_pchInitBL, *m_pchFullReport;
+        QCheckBox *m_pchKeepErrorsOpen;
+        IntEdit *m_pieIterLimit, *m_pieTimerInterval;
+        DoubleEdit * m_pdeVAccel;
+
+        QDialogButtonBox *m_pButtonBox;
 
 
-private slots:
-    void OnOK();
-    void OnDefaults();
-
-private:
-    void keyPressEvent(QKeyEvent *event);
-    void SetupLayout();
-    QCheckBox *m_pctrlInitBL, *m_pctrlFullReport;
-    IntEdit *m_pctrlIterLimit, *m_pctrlTimerInterval;
-    DoubleEdit * m_pctrlVAccel;
-    QPushButton *OKButton, *CancelButton, *m_pctrlDefaults;
-
-    QCheckBox *m_pctrlKeepErrorsOpen;
-
-    int m_IterLimit; /** @todo replace with a static variable in XFoilTask */
-    double m_VAccel;
-    bool m_bAutoInitBL;
-    bool m_bFullReport;
+        int m_IterLimit; /** @todo replace with a static variable in XFoilTask */
+        double m_VAccel;
+        bool m_bAutoInitBL;
+        bool m_bFullReport;
 
 };
 
-#endif // XFOILADVANCEDDLG_H
+

@@ -20,8 +20,7 @@
 *****************************************************************************/
 
 
-#ifndef LINEDELEGATE_H
-#define LINEDELEGATE_H
+#pragma once
 
 #include <QAbstractItemDelegate>
 #include <QModelIndex>
@@ -34,27 +33,26 @@ class LineDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
 
-public:
-    LineDelegate (LineCbBox *parent = nullptr);
+    public:
+        LineDelegate (LineCbBox *parent = nullptr);
 
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+        void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+        QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
-    void setLineColor(QColor color);
-    void setLineStyle(int *style);
-    void setLineWidth(int *width);
-    void setPointStyle(int *pointStyle);
+        void setLineColor(QColor color);
+        void setLineStyle(int *style);
+        void setLineWidth(int *width);
+        void setPointStyle(int *pointStyle);
 
 
-private:
-    LineCbBox * m_pCbBox; //pointer to the parent QLineComboBox
-    QSize m_Size;
+    private:
+        LineCbBox * m_pCbBox; //pointer to the parent QLineComboBox
+        QSize m_Size;
 
-    int m_LineStyle[5]; // values depend on whether we have a line or width CbBox....
-    int m_LineWidth[5]; // values depend on whether we have a line or width CbBox....
-    QColor m_LineColor; // the same for all CbBox items
-    int m_PointStyle[5];
+        int m_LineStyle[5]; // values depend on whether we have a line or width CbBox....
+        int m_LineWidth[5]; // values depend on whether we have a line or width CbBox....
+        QColor m_LineColor; // the same for all CbBox items
+        int m_PointStyle[5];
 };
 
 
-#endif //LINEDELEGATE_H

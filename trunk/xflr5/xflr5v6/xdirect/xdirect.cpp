@@ -135,9 +135,6 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
     m_iPlrView  = Xfl::ALLGRAPHS;
     m_FoilYPos  = 150;
 
-    m_PointDown.setX(0);
-    m_PointDown.setY(0);
-
     m_posAnimate = 0;
 
     setCurPolar(nullptr);
@@ -237,8 +234,8 @@ XDirect::~XDirect()
 /** Sets the state of the window's widgets i.a.w. the state of the active ojbects and views. */
 void XDirect::setControls()
 {
-    if(m_bPolarView) m_pctrlMiddleControls->setCurrentIndex(1);
-    else             m_pctrlMiddleControls->setCurrentIndex(0);
+    if(m_bPolarView) m_pswMiddleControls->setCurrentIndex(1);
+    else             m_pswMiddleControls->setCurrentIndex(0);
 
     if(m_pCurPolar)
     {
@@ -261,10 +258,10 @@ void XDirect::setControls()
 
     s_pMainFrame->m_pExportBLData->setEnabled(m_pCurOpp);
 
-    m_pctrlShowPressure->setEnabled(!m_bPolarView && m_pCurOpp);
-    m_pctrlShowBL->setEnabled(!m_bPolarView && m_pCurOpp);
-    m_pctrlAnimate->setEnabled(!m_bPolarView && m_pCurOpp);
-    m_pctrlAnimateSpeed->setEnabled(!m_bPolarView && m_pCurOpp && m_pctrlAnimate->isChecked());
+    m_pchShowPressure->setEnabled(!m_bPolarView && m_pCurOpp);
+    m_pchShowBL->setEnabled(!m_bPolarView && m_pCurOpp);
+    m_pchAnimate->setEnabled(!m_bPolarView && m_pCurOpp);
+    m_pslAnimateSpeed->setEnabled(!m_bPolarView && m_pCurOpp && m_pchAnimate->isChecked());
     //    m_pctrlHighlightOpp->setEnabled(m_bPolar);
 
     s_pMainFrame->m_pCurrentFoilMenu->setEnabled(m_pCurFoil);
@@ -309,7 +306,7 @@ void XDirect::setControls()
 
     s_pMainFrame->checkGraphActions();
 
-    m_pctrlAlignChildren->setChecked(Settings::isAlignedChildrenStyle());
+    m_pchAlignChildren->setChecked(Settings::isAlignedChildrenStyle());
 }
 
 
@@ -320,31 +317,31 @@ void XDirect::connectSignals()
 {
     connect(this, SIGNAL(projectModified()), s_pMainFrame, SLOT(onProjectModified()));
 
-    connect(m_pctrlSpec1,      SIGNAL(clicked()),          SLOT(onSpec()));
-    connect(m_pctrlSpec2,      SIGNAL(clicked()),          SLOT(onSpec()));
-    connect(m_pctrlSpec3,      SIGNAL(clicked()),          SLOT(onSpec()));
-    connect(m_pctrlAnalyze,    SIGNAL(clicked()),          SLOT(onAnalyze()));
-    connect(m_pctrlAlphaMin,   SIGNAL(editingFinished()),  SLOT(onInputChanged()));
-    connect(m_pctrlAlphaMax,   SIGNAL(editingFinished()),  SLOT(onInputChanged()));
-    connect(m_pctrlAlphaDelta, SIGNAL(editingFinished()),  SLOT(onInputChanged()));
-    connect(m_pctrlCurveStyle, SIGNAL(activated(int)),     SLOT(onCurveStyle(int)));
-    connect(m_pctrlCurveWidth, SIGNAL(activated(int)),     SLOT(onCurveWidth(int)));
-    connect(m_pctrlPointStyle, SIGNAL(activated(int)),     SLOT(onCurvePoints(int)));
-    connect(m_pctrlCurveColor, SIGNAL(clickedLB()),        SLOT(onCurveColor()));
-    connect(m_pctrlSequence,   SIGNAL(clicked()),          SLOT(onSequence()));
-    connect(m_pctrlViscous,    SIGNAL(clicked()),          SLOT(onViscous()));
-    connect(m_pctrlStoreOpp,   SIGNAL(clicked()),          SLOT(onStoreOpp()));
+    connect(m_prbSpec1,      SIGNAL(clicked()),          SLOT(onSpec()));
+    connect(m_prbSpec2,      SIGNAL(clicked()),          SLOT(onSpec()));
+    connect(m_prbSpec3,      SIGNAL(clicked()),          SLOT(onSpec()));
+    connect(m_ppbAnalyze,    SIGNAL(clicked()),          SLOT(onAnalyze()));
+    connect(m_pdeAlphaMin,   SIGNAL(editingFinished()),  SLOT(onInputChanged()));
+    connect(m_pdeAlphaMax,   SIGNAL(editingFinished()),  SLOT(onInputChanged()));
+    connect(m_pdeAlphaDelta, SIGNAL(editingFinished()),  SLOT(onInputChanged()));
+    connect(m_plcbCurveStyle, SIGNAL(activated(int)),     SLOT(onCurveStyle(int)));
+    connect(m_plcbCurveWidth, SIGNAL(activated(int)),     SLOT(onCurveWidth(int)));
+    connect(m_plcbPointStyle, SIGNAL(activated(int)),     SLOT(onCurvePoints(int)));
+    connect(m_plbCurveColor, SIGNAL(clickedLB()),        SLOT(onCurveColor()));
+    connect(m_pchSequence,   SIGNAL(clicked()),          SLOT(onSequence()));
+    connect(m_pchViscous,    SIGNAL(clicked()),          SLOT(onViscous()));
+    connect(m_pchStoreOpp,   SIGNAL(clicked()),          SLOT(onStoreOpp()));
 
-    connect(m_pctrlShowCurve,     SIGNAL(clicked()),  SLOT(onShowCurve()));
-    connect(m_pctrlAlignChildren, SIGNAL(clicked(bool)),  s_pMainFrame, SLOT(onAlignChildrenStyle(bool)));
+    connect(m_pchShowCurve,     SIGNAL(clicked()),  SLOT(onShowCurve()));
+    connect(m_pchAlignChildren, SIGNAL(clicked(bool)),  s_pMainFrame, SLOT(onAlignChildrenStyle(bool)));
 
-    connect(m_pctrlAnimate,      SIGNAL(clicked(bool)),    SLOT(onAnimate(bool)));
-    connect(m_pctrlAnimateSpeed, SIGNAL(sliderMoved(int)), SLOT(onAnimateSpeed(int)));
+    connect(m_pchAnimate,      SIGNAL(clicked(bool)),    SLOT(onAnimate(bool)));
+    connect(m_pslAnimateSpeed, SIGNAL(sliderMoved(int)), SLOT(onAnimateSpeed(int)));
     connect(m_pAnimateTimer,     SIGNAL(timeout()),        SLOT(onAnimateSingle()));
 
 
-    connect(m_pctrlShowBL,       SIGNAL(clicked(bool)), s_pMainFrame->m_pXDirectTileWidget->opPointWidget(), SLOT(onShowBL(bool)));
-    connect(m_pctrlShowPressure, SIGNAL(clicked(bool)), s_pMainFrame->m_pXDirectTileWidget->opPointWidget(), SLOT(onShowPressure(bool)));
+    connect(m_pchShowBL,       SIGNAL(clicked(bool)), s_pMainFrame->m_pXDirectTileWidget->opPointWidget(), SLOT(onShowBL(bool)));
+    connect(m_pchShowPressure, SIGNAL(clicked(bool)), s_pMainFrame->m_pXDirectTileWidget->opPointWidget(), SLOT(onShowPressure(bool)));
 }
 
 
@@ -485,13 +482,13 @@ void XDirect::createPolarCurves()
 */
 void XDirect::fillComboBoxes(bool bEnable)
 {
-    m_pctrlCurveColor->setEnabled(bEnable);
-    m_pctrlCurveStyle->setEnabled(bEnable);
-    m_pctrlCurveWidth->setEnabled(bEnable);
-    m_pctrlPointStyle->setEnabled(bEnable);
+    m_plbCurveColor->setEnabled(bEnable);
+    m_plcbCurveStyle->setEnabled(bEnable);
+    m_plcbCurveWidth->setEnabled(bEnable);
+    m_plcbPointStyle->setEnabled(bEnable);
 
-    m_pctrlShowCurve->setEnabled(bEnable);
-    m_pctrlAlignChildren->setEnabled(bEnable);
+    m_pchShowCurve->setEnabled(bEnable);
+    m_pchAlignChildren->setEnabled(bEnable);
 
     int LineWidth[5];
     int LineStyle[5];
@@ -517,46 +514,37 @@ void XDirect::fillComboBoxes(bool bEnable)
     m_pPointDelegate->setPointStyle(PointStyle);
     m_pPointDelegate->setLineColor(m_LineStyle.m_Color);
 
-/*    m_pctrlCurveStyle->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-    m_pctrlCurveWidth->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-    m_pctrlPointStyle->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-
-    m_pctrlCurveColor->setColor(m_LineStyle.m_Color);
-    m_pctrlCurveColor->setStyle(m_LineStyle.m_Style);
-    m_pctrlCurveColor->setWidth(m_LineStyle.m_Width);
-    m_pctrlCurveColor->setPointStyle(m_LineStyle.m_PointStyle);*/
-
     if(bEnable)
     {
-        m_pctrlCurveStyle->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_pctrlCurveWidth->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_pctrlPointStyle->setLine(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_pctrlCurveColor->setColor(m_LineStyle.m_Color);
-        m_pctrlCurveColor->setStipple(m_LineStyle.m_Stipple);
-        m_pctrlCurveColor->setWidth(m_LineStyle.m_Width);
-        m_pctrlCurveColor->setPointStyle(m_LineStyle.m_PointStyle);
+        m_plcbCurveStyle->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+        m_plcbCurveWidth->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+        m_plcbPointStyle->setLine(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+        m_plbCurveColor->setColor(m_LineStyle.m_Color);
+        m_plbCurveColor->setStipple(m_LineStyle.m_Stipple);
+        m_plbCurveColor->setWidth(m_LineStyle.m_Width);
+        m_plbCurveColor->setPointStyle(m_LineStyle.m_PointStyle);
     }
     else
     {
-        m_pctrlCurveStyle->setLine( 0, 1, QColor(100,100,100), 0);
-        m_pctrlCurveWidth->setLine( 0, 1, QColor(100,100,100), 0);
-        m_pctrlPointStyle->setLine(0, 1, QColor(100,100,100), 0);
-        m_pctrlCurveColor->setColor(QColor(100,100,100));
-        m_pctrlCurveColor->setStipple(0);
-        m_pctrlCurveColor->setWidth(1);
-        m_pctrlCurveColor->setPointStyle(0);
+        m_plcbCurveStyle->setLine( 0, 1, QColor(100,100,100), 0);
+        m_plcbCurveWidth->setLine( 0, 1, QColor(100,100,100), 0);
+        m_plcbPointStyle->setLine(0, 1, QColor(100,100,100), 0);
+        m_plbCurveColor->setColor(QColor(100,100,100));
+        m_plbCurveColor->setStipple(0);
+        m_plbCurveColor->setWidth(1);
+        m_plbCurveColor->setPointStyle(0);
     }
 
 
 
-    m_pctrlCurveStyle->update();
-    m_pctrlCurveWidth->update();
-    m_pctrlPointStyle->update();
-    m_pctrlCurveColor->update();
+    m_plcbCurveStyle->update();
+    m_plcbCurveWidth->update();
+    m_plcbPointStyle->update();
+    m_plbCurveColor->update();
 
-    m_pctrlCurveStyle->setCurrentIndex(m_LineStyle.m_Stipple);
-    m_pctrlCurveWidth->setCurrentIndex(m_LineStyle.m_Width-1);
-    m_pctrlPointStyle->setCurrentIndex(m_LineStyle.m_PointStyle);
+    m_plcbCurveStyle->setCurrentIndex(m_LineStyle.m_Stipple);
+    m_plcbCurveWidth->setCurrentIndex(m_LineStyle.m_Width-1);
+    m_plcbPointStyle->setCurrentIndex(m_LineStyle.m_PointStyle);
 }
 
 
@@ -1071,11 +1059,11 @@ void XDirect::keyPressEvent(QKeyEvent *pEvent)
             }
 
             readParams();
-            if(m_pctrlAnalyze->hasFocus())  onAnalyze();
+            if(m_ppbAnalyze->hasFocus())  onAnalyze();
             else
             {
                 activateWindow();
-                m_pctrlAnalyze->setFocus();
+                m_ppbAnalyze->setFocus();
             }
             break;
         case Qt::Key_Tab:
@@ -1378,7 +1366,7 @@ void XDirect::onInputChanged()
  */
 void XDirect::onAnimate(bool bChecked)
 {
-    m_pctrlAnimateSpeed->setEnabled(bChecked);
+    m_pslAnimateSpeed->setEnabled(bChecked);
     if(!m_pCurFoil || !m_pCurPolar)
     {
         m_bAnimate = false;
@@ -1403,7 +1391,7 @@ void XDirect::onAnimate(bool bChecked)
             }
         }
         m_bAnimate  = true;
-        int speed = m_pctrlAnimateSpeed->value();
+        int speed = m_pslAnimateSpeed->value();
         m_pAnimateTimer->setInterval(800-speed);
         m_pAnimateTimer->start();
     }
@@ -1506,7 +1494,7 @@ void XDirect::onAnalyze()
 
     readParams();
 
-    m_pctrlAnalyze->setEnabled(false);
+    m_ppbAnalyze->setEnabled(false);
 
     bool bHigh = Graph::isHighLighting();
     Graph::setOppHighlighting(false);
@@ -1537,10 +1525,10 @@ void XDirect::onAnalyze()
     // and update window
     emit projectModified();
 
-    m_pctrlAnalyze->setEnabled(true);
+    m_ppbAnalyze->setEnabled(true);
 
     s_bInitBL = !m_XFoil.isBLInitialized();
-    m_pctrlInitBL->setChecked(s_bInitBL);;
+    m_pchInitBL->setChecked(s_bInitBL);;
 
     s_pMainFrame->updateOppListBox();
 
@@ -1569,7 +1557,7 @@ void XDirect::onBatchAnalysis()
     onPolarView();
     updateView();
 
-    m_pctrlAnalyze->setEnabled(false);
+    m_ppbAnalyze->setEnabled(false);
 
     BatchDlg *pBatchDlg = new BatchDlg;
     pBatchDlg->m_pFoil     = m_pCurFoil;
@@ -1615,7 +1603,7 @@ void XDirect::onBatchAnalysis()
     setPolar();
     s_pMainFrame->updatePolarListBox();
 
-    m_pctrlAnalyze->setEnabled(true);
+    m_ppbAnalyze->setEnabled(true);
 
     setOpp();
 
@@ -1644,7 +1632,7 @@ void XDirect::onMultiThreadedBatchAnalysis()
     onPolarView();
     updateView();
 
-    m_pctrlAnalyze->setEnabled(false);
+    m_ppbAnalyze->setEnabled(false);
 
     BatchThreadDlg *pBatchThreadDlg   = new BatchThreadDlg;
 
@@ -1685,7 +1673,7 @@ void XDirect::onMultiThreadedBatchAnalysis()
     setPolar();
     s_pMainFrame->updatePolarListBox();
 
-    m_pctrlAnalyze->setEnabled(true);
+    m_ppbAnalyze->setEnabled(true);
 
 
     s_pMainFrame->updateOppListBox();
@@ -3771,7 +3759,7 @@ void XDirect::onResetCurPolar()
  */
 void XDirect::onSequence()
 {
-    m_bSequence = m_pctrlSequence->isChecked();
+    m_bSequence = m_pchSequence->isChecked();
     setOpPointSequence();
 }
 
@@ -3973,14 +3961,14 @@ void XDirect::onShowCurve()
     {
         if (m_pCurPolar)
         {
-            m_pCurPolar->setVisible(m_pctrlShowCurve->isChecked());
+            m_pCurPolar->setVisible(m_pchShowCurve->isChecked());
 
         }
         m_bResetCurves = true;
     }
     else if (m_pCurOpp)
     {
-        m_pCurOpp->setVisible(m_pctrlShowCurve->isChecked());
+        m_pCurOpp->setVisible(m_pchShowCurve->isChecked());
         m_bResetCurves = true;
     }
     emit projectModified();
@@ -4082,9 +4070,9 @@ void XDirect::onShowPolarOpps()
  */
 void XDirect::onSpec()
 {
-    if      (m_pctrlSpec1->isChecked()) s_bAlpha = true;
-    else if (m_pctrlSpec2->isChecked()) s_bAlpha = false;
-    else if (m_pctrlSpec3->isChecked()) s_bAlpha = false;
+    if      (m_prbSpec1->isChecked()) s_bAlpha = true;
+    else if (m_prbSpec2->isChecked()) s_bAlpha = false;
+    else if (m_prbSpec3->isChecked()) s_bAlpha = false;
 }
 
 
@@ -4093,7 +4081,7 @@ void XDirect::onSpec()
  */
 void XDirect::onStoreOpp()
 {
-    s_bStoreOpp = m_pctrlStoreOpp->isChecked();
+    s_bStoreOpp = m_pchStoreOpp->isChecked();
 }
 
 
@@ -4102,7 +4090,7 @@ void XDirect::onStoreOpp()
  */
 void XDirect::onViscous()
 {
-    s_bViscous = m_pctrlViscous->isChecked();
+    s_bViscous = m_pchViscous->isChecked();
 }
 
 
@@ -4135,36 +4123,36 @@ void XDirect::readParams()
 {
     if(!m_pCurPolar) return;
 
-    if      (m_pctrlSpec1->isChecked()) s_bAlpha = true;
-    else if (m_pctrlSpec2->isChecked()) s_bAlpha = false;
-    else if (m_pctrlSpec3->isChecked()) s_bAlpha = false;
+    if      (m_prbSpec1->isChecked()) s_bAlpha = true;
+    else if (m_prbSpec2->isChecked()) s_bAlpha = false;
+    else if (m_prbSpec3->isChecked()) s_bAlpha = false;
 
 
     if(m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
     {
         if(s_bAlpha)
         {
-            m_Alpha      = m_pctrlAlphaMin->value();
-            m_AlphaMax   = m_pctrlAlphaMax->value();
-            m_AlphaDelta = m_pctrlAlphaDelta->value();
+            m_Alpha      = m_pdeAlphaMin->value();
+            m_AlphaMax   = m_pdeAlphaMax->value();
+            m_AlphaDelta = m_pdeAlphaDelta->value();
         }
         else
         {
-            m_Cl      = m_pctrlAlphaMin->value();
-            m_ClMax   = m_pctrlAlphaMax->value();
-            m_ClDelta = m_pctrlAlphaDelta->value();
+            m_Cl      = m_pdeAlphaMin->value();
+            m_ClMax   = m_pdeAlphaMax->value();
+            m_ClDelta = m_pdeAlphaDelta->value();
         }
     }
     else
     {
-        m_Reynolds      = m_pctrlAlphaMin->value();
-        m_ReynoldsMax   = m_pctrlAlphaMax->value();
-        m_ReynoldsDelta = m_pctrlAlphaDelta->value();
+        m_Reynolds      = m_pdeAlphaMin->value();
+        m_ReynoldsMax   = m_pdeAlphaMax->value();
+        m_ReynoldsDelta = m_pdeAlphaDelta->value();
     }
-    m_bSequence = m_pctrlSequence->isChecked();
-    s_bInitBL   = m_pctrlInitBL->isChecked();
-    s_bViscous  = m_pctrlViscous->isChecked();
-    s_bStoreOpp = m_pctrlStoreOpp->isChecked();
+    m_bSequence = m_pchSequence->isChecked();
+    s_bInitBL   = m_pchInitBL->isChecked();
+    s_bViscous  = m_pchViscous->isChecked();
+    s_bStoreOpp = m_pchStoreOpp->isChecked();
 }
 
 
@@ -4279,9 +4267,9 @@ void XDirect::saveSettings(QSettings &settings)
  */
 void XDirect::setAnalysisParams()
 {
-    m_pctrlViscous->setChecked(s_bViscous);
-    m_pctrlInitBL->setChecked(s_bInitBL);
-    m_pctrlStoreOpp->setChecked(s_bStoreOpp);
+    m_pchViscous->setChecked(s_bViscous);
+    m_pchInitBL->setChecked(s_bInitBL);
+    m_pchStoreOpp->setChecked(s_bStoreOpp);
     //    m_pctrlShowPressure->setChecked(m_bPressure);
     //    m_pctrlShowBL->setChecked(m_bBL);
 
@@ -4289,33 +4277,33 @@ void XDirect::setAnalysisParams()
     {
         if(m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
         {
-            m_pctrlAlphaMin->setDigits(3);
-            m_pctrlAlphaMax->setDigits(3);
-            m_pctrlAlphaDelta->setDigits(3);
-            if(s_bAlpha) m_pctrlSpec1->setChecked(true);
-            else         m_pctrlSpec2->setChecked(true);
-            m_pctrlSpec3->setEnabled(false);
-            m_pctrlUnit1->setText(QString::fromUtf8("°"));
-            m_pctrlUnit2->setText(QString::fromUtf8("°"));
-            m_pctrlUnit3->setText(QString::fromUtf8("°"));
+            m_pdeAlphaMin->setDigits(3);
+            m_pdeAlphaMax->setDigits(3);
+            m_pdeAlphaDelta->setDigits(3);
+            if(s_bAlpha) m_prbSpec1->setChecked(true);
+            else         m_prbSpec2->setChecked(true);
+            m_prbSpec3->setEnabled(false);
+            m_plabUnit1->setText(QString::fromUtf8("°"));
+            m_plabUnit2->setText(QString::fromUtf8("°"));
+            m_plabUnit3->setText(QString::fromUtf8("°"));
         }
         else
         {
-            m_pctrlSpec3->setChecked(true);
-            m_pctrlSpec3->setEnabled(true);
-            m_pctrlAlphaMin->setDigits(0);
-            m_pctrlAlphaMax->setDigits(0);
-            m_pctrlAlphaDelta->setDigits(0);
-            m_pctrlUnit1->setText(" ");
-            m_pctrlUnit2->setText(" ");
-            m_pctrlUnit3->setText(" ");
+            m_prbSpec3->setChecked(true);
+            m_prbSpec3->setEnabled(true);
+            m_pdeAlphaMin->setDigits(0);
+            m_pdeAlphaMax->setDigits(0);
+            m_pdeAlphaDelta->setDigits(0);
+            m_plabUnit1->setText(" ");
+            m_plabUnit2->setText(" ");
+            m_plabUnit3->setText(" ");
         }
     }
     else
     {
-        if(s_bAlpha) m_pctrlSpec1->setChecked(true);
-        else         m_pctrlSpec2->setChecked(true);
-        m_pctrlSpec3->setEnabled(false);
+        if(s_bAlpha) m_prbSpec1->setChecked(true);
+        else         m_prbSpec2->setChecked(true);
+        m_prbSpec3->setEnabled(false);
     }
     setOpPointSequence();
     if(m_pCurPolar)
@@ -4343,7 +4331,7 @@ void XDirect::setCurveParams()
     {
         if(m_pCurPolar)
         {
-            if(m_pCurPolar->isVisible())  m_pctrlShowCurve->setChecked(true);  else  m_pctrlShowCurve->setChecked(false);
+            if(m_pCurPolar->isVisible())  m_pchShowCurve->setChecked(true);  else  m_pchShowCurve->setChecked(false);
 
             m_LineStyle.m_Color = colour(m_pCurPolar);
             m_LineStyle.m_Stipple = m_pCurPolar->polarStyle();
@@ -4361,7 +4349,7 @@ void XDirect::setCurveParams()
         //set Opoint params
         if(m_pCurOpp)
         {
-            if(m_pCurOpp->isVisible())  m_pctrlShowCurve->setChecked(true);  else  m_pctrlShowCurve->setChecked(false);
+            if(m_pCurOpp->isVisible())  m_pchShowCurve->setChecked(true);  else  m_pchShowCurve->setChecked(false);
 
             m_LineStyle = m_pCurOpp->theStyle();
             fillComboBoxes();
@@ -4510,7 +4498,7 @@ Polar * XDirect::setPolar(Polar *pPolar)
             }
         }
         s_bInitBL = true;
-        m_pctrlInitBL->setChecked(s_bInitBL);
+        m_pchInitBL->setChecked(s_bInitBL);
     }
 
     //    m_XFoil.InitXFoilAnalysis(m_pCurPolar, s_bViscous); //useless, will be done in XFoilTask
@@ -4589,72 +4577,72 @@ OpPoint * XDirect::setOpp(double Alpha)
  */
 void XDirect::setOpPointSequence()
 {
-    m_pctrlSequence->setEnabled(m_pCurPolar);
-    m_pctrlAlphaMin->setEnabled(m_pCurPolar);
-    m_pctrlAnalyze->setEnabled(m_pCurPolar);
-    m_pctrlViscous->setEnabled(m_pCurPolar);
-    m_pctrlInitBL->setEnabled(m_pCurPolar);
-    m_pctrlStoreOpp->setEnabled(m_pCurPolar);
+    m_pchSequence->setEnabled(m_pCurPolar);
+    m_pdeAlphaMin->setEnabled(m_pCurPolar);
+    m_ppbAnalyze->setEnabled(m_pCurPolar);
+    m_pchViscous->setEnabled(m_pCurPolar);
+    m_pchInitBL->setEnabled(m_pCurPolar);
+    m_pchStoreOpp->setEnabled(m_pCurPolar);
 
     if(m_bSequence && m_pCurPolar)
     {
-        m_pctrlSequence->setCheckState(Qt::Checked);
-        m_pctrlAlphaMax->setEnabled(true);
-        m_pctrlAlphaDelta->setEnabled(true);
+        m_pchSequence->setCheckState(Qt::Checked);
+        m_pdeAlphaMax->setEnabled(true);
+        m_pdeAlphaDelta->setEnabled(true);
     }
     else if (m_pCurPolar)
     {
-        m_pctrlSequence->setCheckState(Qt::Unchecked);
-        m_pctrlAlphaMax->setEnabled(false);
-        m_pctrlAlphaDelta->setEnabled(false);
+        m_pchSequence->setCheckState(Qt::Unchecked);
+        m_pdeAlphaMax->setEnabled(false);
+        m_pdeAlphaDelta->setEnabled(false);
     }
     else
     {
-        m_pctrlAlphaMax->setEnabled(false);
-        m_pctrlAlphaDelta->setEnabled(false);
+        m_pdeAlphaMax->setEnabled(false);
+        m_pdeAlphaDelta->setEnabled(false);
     }
 
 
     if(m_pCurPolar && m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
     {
-        if(m_pctrlSpec3->isChecked())
+        if(m_prbSpec3->isChecked())
         {
-            m_pctrlSpec1->setChecked(true);
+            m_prbSpec1->setChecked(true);
             s_bAlpha = true;
         }
 
         if(s_bAlpha)
         {
-            m_pctrlAlphaMin->setValue(m_Alpha);
-            m_pctrlAlphaMax->setValue(m_AlphaMax);
-            m_pctrlAlphaDelta->setValue(m_AlphaDelta);
+            m_pdeAlphaMin->setValue(m_Alpha);
+            m_pdeAlphaMax->setValue(m_AlphaMax);
+            m_pdeAlphaDelta->setValue(m_AlphaDelta);
         }
         else
         {
-            m_pctrlAlphaMin->setValue(m_Cl);
-            m_pctrlAlphaMax->setValue(m_ClMax);
-            m_pctrlAlphaDelta->setValue(m_ClDelta);
+            m_pdeAlphaMin->setValue(m_Cl);
+            m_pdeAlphaMax->setValue(m_ClMax);
+            m_pdeAlphaDelta->setValue(m_ClDelta);
         }
-        m_pctrlSpec1->setEnabled(true);
-        m_pctrlSpec2->setEnabled(true);
-        m_pctrlSpec3->setEnabled(false);
+        m_prbSpec1->setEnabled(true);
+        m_prbSpec2->setEnabled(true);
+        m_prbSpec3->setEnabled(false);
     }
     else if(m_pCurPolar && m_pCurPolar->polarType()==Xfl::FIXEDAOAPOLAR)
     {
-        m_pctrlSpec3->setChecked(true);
+        m_prbSpec3->setChecked(true);
         s_bAlpha = true;        // no choice with type 4 polars
-        m_pctrlAlphaMin->setValue(m_Reynolds);
-        m_pctrlAlphaMax->setValue(m_ReynoldsMax);
-        m_pctrlAlphaDelta->setValue(m_ReynoldsDelta);
-        m_pctrlSpec1->setEnabled(false);
-        m_pctrlSpec2->setEnabled(false);
-        m_pctrlSpec3->setEnabled(true);
+        m_pdeAlphaMin->setValue(m_Reynolds);
+        m_pdeAlphaMax->setValue(m_ReynoldsMax);
+        m_pdeAlphaDelta->setValue(m_ReynoldsDelta);
+        m_prbSpec1->setEnabled(false);
+        m_prbSpec2->setEnabled(false);
+        m_prbSpec3->setEnabled(true);
     }
     else
     {
-        m_pctrlSpec1->setEnabled(false);
-        m_pctrlSpec2->setEnabled(false);
-        m_pctrlSpec3->setEnabled(false);
+        m_prbSpec1->setEnabled(false);
+        m_prbSpec2->setEnabled(false);
+        m_prbSpec3->setEnabled(false);
     }
 }
 
@@ -4699,19 +4687,19 @@ void XDirect::setupLayout()
         pAnalysisBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
         QVBoxLayout *pAnalysisGroup = new QVBoxLayout;
         {
-            m_pctrlSequence = new QCheckBox(tr("Sequence"));
-            m_pctrlStoreOpp = new QCheckBox(tr("Store Opp"));
-            m_pctrlAnalyze  = new QPushButton(tr("Analyze"));
+            m_pchSequence = new QCheckBox(tr("Sequence"));
+            m_pchStoreOpp = new QCheckBox(tr("Store Opp"));
+            m_ppbAnalyze  = new QPushButton(tr("Analyze"));
 
             QHBoxLayout *pSpecVarsLayout = new QHBoxLayout;
             {
-                m_pctrlSpec1 = new QRadioButton("a");
-                m_pctrlSpec2 = new QRadioButton(tr("Cl"));
-                m_pctrlSpec3 = new QRadioButton(tr("Re"));
-                m_pctrlSpec1->setFont(QFont("Symbol"));
-                pSpecVarsLayout->addWidget(m_pctrlSpec1);
-                pSpecVarsLayout->addWidget(m_pctrlSpec2);
-                pSpecVarsLayout->addWidget(m_pctrlSpec3);
+                m_prbSpec1 = new QRadioButton("a");
+                m_prbSpec2 = new QRadioButton(tr("Cl"));
+                m_prbSpec3 = new QRadioButton(tr("Re"));
+                m_prbSpec1->setFont(QFont("Symbol"));
+                pSpecVarsLayout->addWidget(m_prbSpec1);
+                pSpecVarsLayout->addWidget(m_prbSpec2);
+                pSpecVarsLayout->addWidget(m_prbSpec3);
             }
 
             QGridLayout *pSequenceGroupLayout = new QGridLayout;
@@ -4724,46 +4712,46 @@ void XDirect::setupLayout()
                 pAlphaMinLab->setAlignment(Qt::AlignRight);
                 pAlphaMaxLab->setAlignment(Qt::AlignRight);
 
-                m_pctrlUnit1 = new QLabel(QString::fromUtf8("°"));
-                m_pctrlUnit2 = new QLabel(QString::fromUtf8("°"));
-                m_pctrlUnit3 = new QLabel(QString::fromUtf8("°"));
+                m_plabUnit1 = new QLabel(QString::fromUtf8("°"));
+                m_plabUnit2 = new QLabel(QString::fromUtf8("°"));
+                m_plabUnit3 = new QLabel(QString::fromUtf8("°"));
 
-                m_pctrlAlphaMin   = new DoubleEdit(0,3);
-                m_pctrlAlphaMax   = new DoubleEdit(0,3);
-                m_pctrlAlphaDelta = new DoubleEdit(0,3);
-                m_pctrlAlphaMin->setMinimumHeight(20);
-                m_pctrlAlphaMax->setMinimumHeight(20);
-                m_pctrlAlphaDelta->setMinimumHeight(20);
-                m_pctrlAlphaMin->setAlignment(Qt::AlignRight);
-                m_pctrlAlphaMax->setAlignment(Qt::AlignRight);
-                m_pctrlAlphaDelta->setAlignment(Qt::AlignRight);
+                m_pdeAlphaMin   = new DoubleEdit(0,3);
+                m_pdeAlphaMax   = new DoubleEdit(0,3);
+                m_pdeAlphaDelta = new DoubleEdit(0,3);
+                m_pdeAlphaMin->setMinimumHeight(20);
+                m_pdeAlphaMax->setMinimumHeight(20);
+                m_pdeAlphaDelta->setMinimumHeight(20);
+                m_pdeAlphaMin->setAlignment(Qt::AlignRight);
+                m_pdeAlphaMax->setAlignment(Qt::AlignRight);
+                m_pdeAlphaDelta->setAlignment(Qt::AlignRight);
                 pSequenceGroupLayout->addWidget(pAlphaMinLab,1,1);
                 pSequenceGroupLayout->addWidget(pAlphaMaxLab,2,1);
                 pSequenceGroupLayout->addWidget(pDeltaAlphaLab,3,1);
-                pSequenceGroupLayout->addWidget(m_pctrlAlphaMin,1,2);
-                pSequenceGroupLayout->addWidget(m_pctrlAlphaMax,2,2);
-                pSequenceGroupLayout->addWidget(m_pctrlAlphaDelta,3,2);
-                pSequenceGroupLayout->addWidget(m_pctrlUnit1,1,3);
-                pSequenceGroupLayout->addWidget(m_pctrlUnit2,2,3);
-                pSequenceGroupLayout->addWidget(m_pctrlUnit3,3,3);
+                pSequenceGroupLayout->addWidget(m_pdeAlphaMin,1,2);
+                pSequenceGroupLayout->addWidget(m_pdeAlphaMax,2,2);
+                pSequenceGroupLayout->addWidget(m_pdeAlphaDelta,3,2);
+                pSequenceGroupLayout->addWidget(m_plabUnit1,1,3);
+                pSequenceGroupLayout->addWidget(m_plabUnit2,2,3);
+                pSequenceGroupLayout->addWidget(m_plabUnit3,3,3);
             }
 
             QHBoxLayout *pAnalysisSettings = new QHBoxLayout;
             {
-                m_pctrlViscous  = new QCheckBox(tr("Viscous"));
-                m_pctrlInitBL   = new QCheckBox(tr("Init BL"));
-                pAnalysisSettings->addWidget(m_pctrlViscous);
-                pAnalysisSettings->addWidget(m_pctrlInitBL);
+                m_pchViscous  = new QCheckBox(tr("Viscous"));
+                m_pchInitBL   = new QCheckBox(tr("Init BL"));
+                pAnalysisSettings->addWidget(m_pchViscous);
+                pAnalysisSettings->addWidget(m_pchInitBL);
             }
 
             pAnalysisGroup->addLayout(pSpecVarsLayout);
             pAnalysisGroup->addStretch(1);
-            pAnalysisGroup->addWidget(m_pctrlSequence);
+            pAnalysisGroup->addWidget(m_pchSequence);
             pAnalysisGroup->addLayout(pSequenceGroupLayout);
             pAnalysisGroup->addStretch(1);
             pAnalysisGroup->addLayout(pAnalysisSettings);
-            pAnalysisGroup->addWidget(m_pctrlStoreOpp);
-            pAnalysisGroup->addWidget(m_pctrlAnalyze);
+            pAnalysisGroup->addWidget(m_pchStoreOpp);
+            pAnalysisGroup->addWidget(m_ppbAnalyze);
         }
         pAnalysisBox->setLayout(pAnalysisGroup);
 
@@ -4773,19 +4761,19 @@ void XDirect::setupLayout()
     {
         QVBoxLayout *pDisplayGroup = new QVBoxLayout;
         {
-            m_pctrlShowBL        = new QCheckBox(tr("Displacement thickness"));
-            m_pctrlShowPressure  = new QCheckBox(tr("Pressure"));
-            m_pctrlAnimate       = new QCheckBox(tr("Animate"));
-            m_pctrlAnimateSpeed  = new QSlider(Qt::Horizontal);
-            m_pctrlAnimateSpeed->setMinimum(0);
-            m_pctrlAnimateSpeed->setMaximum(1000);
-            m_pctrlAnimateSpeed->setSliderPosition(500);
-            m_pctrlAnimateSpeed->setTickInterval(50);
-            m_pctrlAnimateSpeed->setTickPosition(QSlider::TicksBelow);
-            pDisplayGroup->addWidget(m_pctrlShowBL);
-            pDisplayGroup->addWidget(m_pctrlShowPressure);
-            pDisplayGroup->addWidget(m_pctrlAnimate);
-            pDisplayGroup->addWidget(m_pctrlAnimateSpeed);
+            m_pchShowBL        = new QCheckBox(tr("Displacement thickness"));
+            m_pchShowPressure  = new QCheckBox(tr("Pressure"));
+            m_pchAnimate       = new QCheckBox(tr("Animate"));
+            m_pslAnimateSpeed  = new QSlider(Qt::Horizontal);
+            m_pslAnimateSpeed->setMinimum(0);
+            m_pslAnimateSpeed->setMaximum(1000);
+            m_pslAnimateSpeed->setSliderPosition(500);
+            m_pslAnimateSpeed->setTickInterval(50);
+            m_pslAnimateSpeed->setTickPosition(QSlider::TicksBelow);
+            pDisplayGroup->addWidget(m_pchShowBL);
+            pDisplayGroup->addWidget(m_pchShowPressure);
+            pDisplayGroup->addWidget(m_pchAnimate);
+            pDisplayGroup->addWidget(m_pslAnimateSpeed);
             pDisplayGroup->addStretch(1);
         }
         pDisplayBox->setLayout(pDisplayGroup);
@@ -4816,36 +4804,36 @@ void XDirect::setupLayout()
         {
             QHBoxLayout *pCurveDisplay = new QHBoxLayout;
             {
-                m_pctrlShowCurve     = new QCheckBox(tr("Curve"));
-                m_pctrlAlignChildren = new QCheckBox(tr("Flow down style"));
+                m_pchShowCurve     = new QCheckBox(tr("Curve"));
+                m_pchAlignChildren = new QCheckBox(tr("Flow down style"));
                 QString tip = tr("If activated:\n"
                                  "all changes made to the style of the polar objects will flow down to the operating points\n"
                                  "all changes made to the style of the foil objects will flow down to the polars and to the operating points");
-                m_pctrlAlignChildren->setToolTip(tip);
-                pCurveDisplay->addWidget(m_pctrlShowCurve);
-                pCurveDisplay->addWidget(m_pctrlAlignChildren);
+                m_pchAlignChildren->setToolTip(tip);
+                pCurveDisplay->addWidget(m_pchShowCurve);
+                pCurveDisplay->addWidget(m_pchAlignChildren);
             }
 
-            m_pctrlCurveStyle = new LineCbBox(this);
-            m_pctrlCurveWidth = new LineCbBox(this);
-            m_pctrlPointStyle = new LineCbBox(this);
-            m_pctrlPointStyle->showPoints(true);
-            m_pctrlCurveColor = new LineBtn(this);
-            m_pctrlCurveColor->setMinimumHeight(m_pctrlCurveStyle->minimumSizeHint().height());
+            m_plcbCurveStyle = new LineCbBox(this);
+            m_plcbCurveWidth = new LineCbBox(this);
+            m_plcbPointStyle = new LineCbBox(this);
+            m_plcbPointStyle->showPoints(true);
+            m_plbCurveColor = new LineBtn(this);
+            m_plbCurveColor->setMinimumHeight(m_plcbCurveStyle->minimumSizeHint().height());
 
             for (int i=0; i<5; i++)
             {
-                m_pctrlCurveStyle->addItem("item");
-                m_pctrlCurveWidth->addItem("item");
-                m_pctrlPointStyle->addItem("item");
+                m_plcbCurveStyle->addItem("item");
+                m_plcbCurveWidth->addItem("item");
+                m_plcbPointStyle->addItem("item");
             }
 
-            m_pStyleDelegate = new LineDelegate(m_pctrlCurveStyle);
-            m_pWidthDelegate = new LineDelegate(m_pctrlCurveWidth);
-            m_pPointDelegate = new LineDelegate(m_pctrlPointStyle);
-            m_pctrlCurveStyle->setItemDelegate(m_pStyleDelegate);
-            m_pctrlCurveWidth->setItemDelegate(m_pWidthDelegate);
-            m_pctrlPointStyle->setItemDelegate(m_pPointDelegate);
+            m_pStyleDelegate = new LineDelegate(m_plcbCurveStyle);
+            m_pWidthDelegate = new LineDelegate(m_plcbCurveWidth);
+            m_pPointDelegate = new LineDelegate(m_plcbPointStyle);
+            m_plcbCurveStyle->setItemDelegate(m_pStyleDelegate);
+            m_plcbCurveWidth->setItemDelegate(m_pWidthDelegate);
+            m_plcbPointStyle->setItemDelegate(m_pPointDelegate);
 
             QGridLayout *CurveStyleLayout = new QGridLayout;
             QLabel *lab200 = new QLabel(tr("Style"));
@@ -4859,10 +4847,10 @@ void XDirect::setupLayout()
             CurveStyleLayout->addWidget(lab200,2,1);
             CurveStyleLayout->addWidget(lab201,3,1);
             CurveStyleLayout->addWidget(lab202,4,1);
-            CurveStyleLayout->addWidget(m_pctrlPointStyle,1,2);
-            CurveStyleLayout->addWidget(m_pctrlCurveStyle,2,2);
-            CurveStyleLayout->addWidget(m_pctrlCurveWidth,3,2);
-            CurveStyleLayout->addWidget(m_pctrlCurveColor,4,2);
+            CurveStyleLayout->addWidget(m_plcbPointStyle,1,2);
+            CurveStyleLayout->addWidget(m_plcbCurveStyle,2,2);
+            CurveStyleLayout->addWidget(m_plcbCurveWidth,3,2);
+            CurveStyleLayout->addWidget(m_plbCurveColor,4,2);
             CurveStyleLayout->setColumnStretch(2,5);
 
             pCurveGroup->addLayout(pCurveDisplay);
@@ -4875,13 +4863,13 @@ void XDirect::setupLayout()
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        m_pctrlMiddleControls = new QStackedWidget;
-        m_pctrlMiddleControls->addWidget(pDisplayBox);
-        m_pctrlMiddleControls->addWidget(pPolarPropsFrame);
+        m_pswMiddleControls = new QStackedWidget;
+        m_pswMiddleControls->addWidget(pDisplayBox);
+        m_pswMiddleControls->addWidget(pPolarPropsFrame);
 
         pMainLayout->addWidget(pAnalysisBox);
         //        pMainLayout->addStretch(1);
-        pMainLayout->addWidget(m_pctrlMiddleControls);
+        pMainLayout->addWidget(m_pswMiddleControls);
         //        pMainLayout->addStretch(1);
         pMainLayout->addWidget(pCurveBox);
         //        pMainLayout->addStretch(1);
@@ -4904,7 +4892,7 @@ void XDirect::stopAnimate()
     {
         m_pAnimateTimer->stop();
         m_bAnimate = false;
-        m_pctrlAnimate->setChecked(false);
+        m_pchAnimate->setChecked(false);
         setOpp();
     }
 }
