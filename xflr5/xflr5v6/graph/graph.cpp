@@ -1481,13 +1481,6 @@ void Graph::setAutoYUnit()
         yunit = 5.0*pow(10.0,exp_y);
 }
 
-void Graph::setAxisData(int s, int w, QColor clr)
-{
-    m_AxisStyle.setStipple(s);
-    m_AxisStyle.m_Width = w;
-    m_AxisStyle.m_Color = clr;
-}
-
 
 void Graph::setGraphDefaults(bool bDark)
 {

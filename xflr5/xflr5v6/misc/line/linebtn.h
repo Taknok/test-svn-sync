@@ -31,32 +31,32 @@ class LineBtn : public QAbstractButton
 {
     Q_OBJECT
 
-public:
-    LineBtn(QWidget *parent = nullptr);
+    public:
+        LineBtn(QWidget *parent = nullptr);
 
-    void setTheStyle(int const &lineStyle, int const &width, QColor const & color, const int &pointStyle);
-    void setTheStyle(LS2 const &ls) {m_LineStyle = ls;}
-    LS2 const &theStyle() const {return m_LineStyle;}
+        void setTheStyle(int lineStyle, int width, QColor const & color, int pointStyle);
+        void setTheStyle(LS2 const &ls) {m_LineStyle = ls;}
+        LS2 const &theStyle() const {return m_LineStyle;}
 
-    void setColor(QColor const & color);
-    void setStipple(int const &lineStyle);
-    void setWidth(int const &width);
-    void setPointStyle(int const & pointStyle);
+        void setColor(QColor const & color);
+        void setStipple(int lineStyle);
+        void setWidth(int width);
+        void setPointStyle(int pointStyle);
 
-    QColor color()   const {return m_LineStyle.m_Color;}
-    int lineStyle()  const {return m_LineStyle.m_Stipple;}
-    int lineWidth()  const {return m_LineStyle.m_Width;}
-    int pointStyle() const {return m_LineStyle.m_PointStyle;}
+        QColor color()   const {return m_LineStyle.m_Color;}
+        int lineStyle()  const {return m_LineStyle.m_Stipple;}
+        int lineWidth()  const {return m_LineStyle.m_Width;}
+        int pointStyle() const {return m_LineStyle.m_PointStyle;}
 
-signals:
-    void clickedLB();
+    signals:
+        void clickedLB();
 
-public:
-    void mouseReleaseEvent(QMouseEvent *event);
-    void paintEvent(QPaintEvent *event);
-    QSize sizeHint() const;
+    public:
+        void mouseReleaseEvent(QMouseEvent *pEvent) override;
+        void paintEvent(QPaintEvent *pEvent) override;
+        QSize sizeHint() const override;
 
-private:
-    LS2 m_LineStyle;
+    private:
+        LS2 m_LineStyle;
 };
 
