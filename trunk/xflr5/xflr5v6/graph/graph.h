@@ -119,12 +119,13 @@ public:
     void setAutoYMinUnit(bool bAuto);
     void setAutoXUnit();
     void setAutoYUnit();
-    void setAxisData(int s, int w, QColor clr);
+    void setAxisStyle(const LS2 &ls2) {m_AxisStyle = ls2;}
     void setBkColor(QColor cr){m_BkColor = cr;}
-    void setBorderColor(QColor crBorder){m_BorderStyle.m_Color = crBorder;}
+//    void setBorderColor(QColor crBorder){m_BorderStyle.m_Color = crBorder;}
     void setBorder(bool bBorder) {m_BorderStyle.m_bIsVisible = bBorder;}
-    void setBorderStyle(int s) {m_BorderStyle.setStipple(s);}
-    void setBorderWidth(int w) {m_BorderStyle.m_Width = w;}
+//    void setBorderStipple(int s) {m_BorderStyle.setStipple(s);}
+//    void setBorderWidth(int w) {m_BorderStyle.m_Width = w;}
+    void setBorderStyle(LS2 const &ls2) {m_BorderStyle=ls2;}
     void setDrawRect(QRect Rect) {m_rCltRect = Rect;}
     void setMargin(int m);
     void setInverted(bool bInverted);

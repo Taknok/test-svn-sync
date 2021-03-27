@@ -66,75 +66,75 @@ GraphDlg::GraphDlg(QWidget *pParent): QDialog(pParent)
 
 void GraphDlg::connectSignals()
 {
-    connect(m_pctrlTitleClr, SIGNAL(clickedTB()),  this, SLOT(onTitleColor()));
-    connect(m_pctrlLabelClr, SIGNAL(clickedTB()),  this, SLOT(onLabelColor()));
+    connect(m_ptcbTitleClr, SIGNAL(clickedTB()),  this, SLOT(onTitleColor()));
+    connect(m_ptcbLabelClr, SIGNAL(clickedTB()),  this, SLOT(onLabelColor()));
 
-    connect(m_pctrlTitleButton, SIGNAL(clicked()),  this, SLOT(onTitleFont()));
-    connect(m_pctrlLabelButton, SIGNAL(clicked()),  this, SLOT(onLabelFont()));
+    connect(m_ppbTitleButton, SIGNAL(clicked()),  this, SLOT(onTitleFont()));
+    connect(m_ppbLabelButton, SIGNAL(clicked()),  this, SLOT(onLabelFont()));
 
-    connect(m_pctrlXAuto, SIGNAL(clicked()), this, SLOT(onAutoX()));
-    connect(m_pctrlYAuto, SIGNAL(clicked()), this, SLOT(onAutoY()));
-    connect(m_pctrlYInverted, SIGNAL(clicked()), this, SLOT(onYInverted()));
+    connect(m_pchXAuto, SIGNAL(clicked()), this, SLOT(onAutoX()));
+    connect(m_pchYAuto, SIGNAL(clicked()), this, SLOT(onAutoY()));
+    connect(m_pchYInverted, SIGNAL(clicked()), this, SLOT(onYInverted()));
 
-    connect(m_pctrlXMajGridShow, SIGNAL(stateChanged(int)), this, SLOT(onXMajGridShow(int)));
-    connect(m_pctrlYMajGridShow, SIGNAL(stateChanged(int)), this, SLOT(onYMajGridShow(int)));
-    connect(m_pctrlXMinGridShow, SIGNAL(stateChanged(int)), this, SLOT(onXMinGridShow(int)));
-    connect(m_pctrlYMinGridShow, SIGNAL(stateChanged(int)), this, SLOT(onYMinGridShow(int)));
+    connect(m_pchXMajGridShow, SIGNAL(stateChanged(int)), this, SLOT(onXMajGridShow(int)));
+    connect(m_pchYMajGridShow, SIGNAL(stateChanged(int)), this, SLOT(onYMajGridShow(int)));
+    connect(m_pchXMinGridShow, SIGNAL(stateChanged(int)), this, SLOT(onXMinGridShow(int)));
+    connect(m_pchYMinGridShow, SIGNAL(stateChanged(int)), this, SLOT(onYMinGridShow(int)));
 
-    connect(m_pctrlAxisStyle, SIGNAL(clickedLB()), this, SLOT(onAxisStyle()));
-    connect(m_pctrlXMajGridStyle, SIGNAL(clickedLB()), this, SLOT(onXMajGridStyle()));
-    connect(m_pctrlYMajGridStyle, SIGNAL(clickedLB()), this, SLOT(onYMajGridStyle()));
-    connect(m_pctrlXMinGridStyle, SIGNAL(clickedLB()), this, SLOT(onXMinGridStyle()));
-    connect(m_pctrlYMinGridStyle, SIGNAL(clickedLB()), this, SLOT(onYMinGridStyle()));
+    connect(m_plbAxisStyle, SIGNAL(clickedLB()), this, SLOT(onAxisStyle()));
+    connect(m_plbXMajGridStyle, SIGNAL(clickedLB()), this, SLOT(onXMajGridStyle()));
+    connect(m_plbYMajGridStyle, SIGNAL(clickedLB()), this, SLOT(onYMajGridStyle()));
+    connect(m_plbXMinGridStyle, SIGNAL(clickedLB()), this, SLOT(onXMinGridStyle()));
+    connect(m_plbYMinGridStyle, SIGNAL(clickedLB()), this, SLOT(onYMinGridStyle()));
 
-    connect(m_pctrlAutoXMinUnit, SIGNAL(clicked()), this, SLOT(onAutoMinGrid()));
-    connect(m_pctrlAutoYMinUnit, SIGNAL(clicked()), this, SLOT(onAutoMinGrid()));
+    connect(m_pchAutoXMinUnit, SIGNAL(clicked()), this, SLOT(onAutoMinGrid()));
+    connect(m_pchAutoYMinUnit, SIGNAL(clicked()), this, SLOT(onAutoMinGrid()));
 
-    connect(m_pctrlGraphBorder, SIGNAL(stateChanged(int)), this, SLOT(onGraphBorder(int)));
-    connect(m_pctrlGraphBack, SIGNAL(clicked()), this, SLOT(onGraphBackColor()));
-    connect(m_pctrlBorderStyle, SIGNAL(clicked()), this, SLOT(onBorderStyle()));
+    connect(m_pchGraphBorder, SIGNAL(stateChanged(int)), this, SLOT(onGraphBorder(int)));
+    connect(m_pcbGraphBack, SIGNAL(clicked()), this, SLOT(onGraphBackColor()));
+    connect(m_plbBorderStyle, SIGNAL(clicked()), this, SLOT(onBorderStyle()));
 
     /*    connect(m_pctrlXSel, SIGNAL(itemActivated ( QListWidgetItem*)), SLOT(OnVariableChanged()));
     connect(m_pctrlYSel, SIGNAL(itemActivated ( QListWidgetItem*)), SLOT(OnVariableChanged()));
     connect(m_pctrlXSel, SIGNAL(itemClicked ( QListWidgetItem*)), SLOT(OnVariableChanged()));
     connect(m_pctrlYSel, SIGNAL(itemClicked ( QListWidgetItem*)), SLOT(OnVariableChanged()));*/
-    connect(m_pctrlXSel, SIGNAL(itemSelectionChanged()), SLOT(onVariableChanged()));
-    connect(m_pctrlYSel, SIGNAL(itemSelectionChanged()), SLOT(onVariableChanged()));
+    connect(m_plwXSel, SIGNAL(itemSelectionChanged()), SLOT(onVariableChanged()));
+    connect(m_plwYSel, SIGNAL(itemSelectionChanged()), SLOT(onVariableChanged()));
 
-    connect(m_pctrlXSel, SIGNAL(itemDoubleClicked (QListWidgetItem *)), SLOT(onOK()));
-    connect(m_pctrlYSel, SIGNAL(itemDoubleClicked (QListWidgetItem *)), SLOT(onOK()));
+    connect(m_plwXSel, SIGNAL(itemDoubleClicked (QListWidgetItem *)), SLOT(onOK()));
+    connect(m_plwYSel, SIGNAL(itemDoubleClicked (QListWidgetItem *)), SLOT(onOK()));
 }
 
 
 void GraphDlg::fillVariableList()
 {
-    m_pctrlXSel->clear();
-    m_pctrlYSel->clear();
+    m_plwXSel->clear();
+    m_plwYSel->clear();
 
     switch(m_pGraph->graphType())
     {
         case  GRAPH::INVERSEGRAPH:
         {
-            m_pctrlXSel->addItem("X - Chord");
-            m_pctrlYSel->addItem("Q - Velocity");
+            m_plwXSel->addItem("X - Chord");
+            m_plwYSel->addItem("Q - Velocity");
             break;
         }
         case GRAPH::OPPGRAPH:
         {
             //foil oppoint graph variables
-            m_pctrlXSel->addItem("X - chord");
-            m_pctrlYSel->addItem("Cp");
-            m_pctrlYSel->addItem("Q - Velocity");
-            m_pctrlYSel->addItem("sqrt(Max. Shear Coefficient)");
-            m_pctrlYSel->addItem("Top Side D* and Theta");
-            m_pctrlYSel->addItem("Bottom Side D* and Theta");
-            m_pctrlYSel->addItem("Log(Re_Theta)");
-            m_pctrlYSel->addItem("Re_Theta");
-            m_pctrlYSel->addItem("Amplification Ratio");
-            m_pctrlYSel->addItem("Dissipation Coefficient");
-            m_pctrlYSel->addItem("Wall shear stress");
-            m_pctrlYSel->addItem("Edge Velocity");
-            m_pctrlYSel->addItem("Kinematic Shape Parameter");
+            m_plwXSel->addItem("X - chord");
+            m_plwYSel->addItem("Cp");
+            m_plwYSel->addItem("Q - Velocity");
+            m_plwYSel->addItem("sqrt(Max. Shear Coefficient)");
+            m_plwYSel->addItem("Top Side D* and Theta");
+            m_plwYSel->addItem("Bottom Side D* and Theta");
+            m_plwYSel->addItem("Log(Re_Theta)");
+            m_plwYSel->addItem("Re_Theta");
+            m_plwYSel->addItem("Amplification Ratio");
+            m_plwYSel->addItem("Dissipation Coefficient");
+            m_plwYSel->addItem("Wall shear stress");
+            m_plwYSel->addItem("Edge Velocity");
+            m_plwYSel->addItem("Kinematic Shape Parameter");
             break;
         }
         case GRAPH::POLARGRAPH:
@@ -142,31 +142,31 @@ void GraphDlg::fillVariableList()
             //foil polar graph variables
             for(int iVar=0; iVar<15; iVar++)
             {
-                m_pctrlXSel->addItem(Polar::variableName(iVar));
-                m_pctrlYSel->addItem(Polar::variableName(iVar));
+                m_plwXSel->addItem(Polar::variableName(iVar));
+                m_plwYSel->addItem(Polar::variableName(iVar));
             }
             break;
         }
         case GRAPH::POPPGRAPH:
         {
             //wing graph variable
-            m_pctrlXSel->addItem(tr("Y - span"));
+            m_plwXSel->addItem(tr("Y - span"));
 
-            m_pctrlYSel->addItem(tr("Induced Angle"));                        //0
-            m_pctrlYSel->addItem(tr("Total Angle"));                        //1
-            m_pctrlYSel->addItem(tr("Local lift coef."));                    //2
-            m_pctrlYSel->addItem(tr("Local Lift C.Cl/M.A.C."));                //3
-            m_pctrlYSel->addItem(tr("Airfoil viscous drag coef."));            //4
-            m_pctrlYSel->addItem(tr("Induced drag coef."));                    //5
-            m_pctrlYSel->addItem(tr("Total drag coef."));                    //6
-            m_pctrlYSel->addItem(tr("Local Drag C.Cd/M.A.C."));              //7
-            m_pctrlYSel->addItem(tr("Airfoil Pitching moment coef."));       //8
-            m_pctrlYSel->addItem(tr("Total Pitching moment coef."));         //9
-            m_pctrlYSel->addItem(tr("Reynolds"));                            //10
-            m_pctrlYSel->addItem(tr("Top Transition x-pos%"));               //11
-            m_pctrlYSel->addItem(tr("Bottom Transition x-pos%"));            //12
-            m_pctrlYSel->addItem(tr("Centre of Pressure x-pos%"));           //13
-            m_pctrlYSel->addItem(tr("Bending moment"));                      //14
+            m_plwYSel->addItem(tr("Induced Angle"));                        //0
+            m_plwYSel->addItem(tr("Total Angle"));                        //1
+            m_plwYSel->addItem(tr("Local lift coef."));                    //2
+            m_plwYSel->addItem(tr("Local Lift C.Cl/M.A.C."));                //3
+            m_plwYSel->addItem(tr("Airfoil viscous drag coef."));            //4
+            m_plwYSel->addItem(tr("Induced drag coef."));                    //5
+            m_plwYSel->addItem(tr("Total drag coef."));                    //6
+            m_plwYSel->addItem(tr("Local Drag C.Cd/M.A.C."));              //7
+            m_plwYSel->addItem(tr("Airfoil Pitching moment coef."));       //8
+            m_plwYSel->addItem(tr("Total Pitching moment coef."));         //9
+            m_plwYSel->addItem(tr("Reynolds"));                            //10
+            m_plwYSel->addItem(tr("Top Transition x-pos%"));               //11
+            m_plwYSel->addItem(tr("Bottom Transition x-pos%"));            //12
+            m_plwYSel->addItem(tr("Centre of Pressure x-pos%"));           //13
+            m_plwYSel->addItem(tr("Bending moment"));                      //14
             break;
         }
         case GRAPH::WPOLARGRAPH:
@@ -174,28 +174,28 @@ void GraphDlg::fillVariableList()
             //WingPolar Graph Variables
             for(int iVar=0; iVar<50; iVar++)
             {
-                m_pctrlXSel->addItem(Miarex::WPolarVariableName(iVar));
-                m_pctrlYSel->addItem(Miarex::WPolarVariableName(iVar));
+                m_plwXSel->addItem(Miarex::WPolarVariableName(iVar));
+                m_plwYSel->addItem(Miarex::WPolarVariableName(iVar));
             }
             break;
         }
         case GRAPH::CPGRAPH:
         {
-            m_pctrlXSel->addItem(tr("X - Chord"));
-            m_pctrlYSel->addItem(tr("Cp"));
+            m_plwXSel->addItem(tr("X - Chord"));
+            m_plwYSel->addItem(tr("Cp"));
             break;
         }
         case GRAPH::STABTIMEGRAPH:
         {
-            m_pctrlXSel->addItem(tr("X - Chord"));
-            m_pctrlYSel->addItem(tr("Cp"));
+            m_plwXSel->addItem(tr("X - Chord"));
+            m_plwYSel->addItem(tr("Cp"));
             break;
         }
         case GRAPH::OTHERGRAPH:
             return;
     }
-    m_pctrlXSel->adjustSize();
-    m_pctrlYSel->adjustSize();
+    m_plwXSel->adjustSize();
+    m_plwYSel->adjustSize();
 }
 
 
@@ -206,16 +206,16 @@ void GraphDlg::reject()
 }
 
 
-void GraphDlg::showEvent(QShowEvent *event)
+void GraphDlg::showEvent(QShowEvent *pEvent)
 {
     m_pTabWidget->setCurrentIndex(s_iActivePage);
-    event->ignore();
+    pEvent->ignore();
 }
 
 
-void GraphDlg::keyPressEvent(QKeyEvent *event)
+void GraphDlg::keyPressEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Return:
         case Qt::Key_Enter:
@@ -237,7 +237,7 @@ void GraphDlg::keyPressEvent(QKeyEvent *event)
             break;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
 
@@ -251,34 +251,34 @@ void GraphDlg::onActivePage(int index)
 void GraphDlg::onAutoMinGrid()
 {
     bool bAuto;
-    bAuto = m_pctrlAutoXMinUnit->isChecked();
+    bAuto = m_pchAutoXMinUnit->isChecked();
     m_pGraph->setAutoXMinUnit(bAuto);
-    m_pctrlXMinorUnit->setEnabled(!bAuto);
+    m_pdeXMinorUnit->setEnabled(!bAuto);
 
-    bAuto = m_pctrlAutoYMinUnit->isChecked();
+    bAuto = m_pchAutoYMinUnit->isChecked();
     m_pGraph->setAutoYMinUnit(bAuto);
-    m_pctrlYMinorUnit->setEnabled(!bAuto);
+    m_pdeYMinorUnit->setEnabled(!bAuto);
 }
 
 
 void GraphDlg::onAutoX()
 {
-    bool bAuto = m_pctrlXAuto->checkState() == Qt::Checked;
-    m_pctrlXMin->setEnabled(!bAuto);
-    m_pctrlXMax->setEnabled(!bAuto);
-    m_pctrlXUnit->setEnabled(!bAuto);
-    m_pctrlXOrigin->setEnabled(!bAuto);
+    bool bAuto = m_pchXAuto->checkState() == Qt::Checked;
+    m_pdeXMin->setEnabled(!bAuto);
+    m_pdeXMax->setEnabled(!bAuto);
+    m_pdeXUnit->setEnabled(!bAuto);
+    m_pdeXOrigin->setEnabled(!bAuto);
     setApplied(false);
 }
 
 
 void GraphDlg::onAutoY()
 {
-    bool bAuto = m_pctrlYAuto->checkState() == Qt::Checked;
-    m_pctrlYMin->setEnabled(!bAuto);
-    m_pctrlYMax->setEnabled(!bAuto);
-    m_pctrlYUnit->setEnabled(!bAuto);
-    m_pctrlYOrigin->setEnabled(!bAuto);
+    bool bAuto = m_pchYAuto->checkState() == Qt::Checked;
+    m_pdeYMin->setEnabled(!bAuto);
+    m_pdeYMax->setEnabled(!bAuto);
+    m_pdeYUnit->setEnabled(!bAuto);
+    m_pdeYOrigin->setEnabled(!bAuto);
     setApplied(false);
 }
 
@@ -290,10 +290,10 @@ void GraphDlg::onAxisStyle()
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_pGraph->setAxisData(dlg.lineStipple(), dlg.lineWidth(), dlg.lineColor());
-        m_pctrlAxisStyle->setStipple(dlg.lineStipple());
-        m_pctrlAxisStyle->setWidth(dlg.lineWidth());
-        m_pctrlAxisStyle->setColor(dlg.lineColor());
+        m_pGraph->setAxisStyle(dlg.theStyle());
+        m_plbAxisStyle->setStipple(dlg.lineStipple());
+        m_plbAxisStyle->setWidth(dlg.lineWidth());
+        m_plbAxisStyle->setColor(dlg.lineColor());
         setApplied(false);
     }
 }
@@ -311,12 +311,10 @@ void GraphDlg::onBorderStyle()
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_pGraph->setBorderColor(dlg.lineColor());
-        m_pGraph->setBorderStyle(dlg.lineStipple());
-        m_pGraph->setBorderWidth(dlg.lineWidth());
-        m_pctrlBorderStyle->setStipple(dlg.lineStipple());
-        m_pctrlBorderStyle->setWidth(dlg.lineWidth());
-        m_pctrlBorderStyle->setColor(dlg.lineColor());
+        m_pGraph->setBorderStyle(dlg.theStyle());
+        m_plbBorderStyle->setStipple(dlg.lineStipple());
+        m_plbBorderStyle->setWidth(dlg.lineWidth());
+        m_plbBorderStyle->setColor(dlg.lineColor());
         setApplied(false);
     }
 }
@@ -335,7 +333,7 @@ void GraphDlg::onGraphBackColor()
     BkColor = QColorDialog::getColor(BkColor);
     if(BkColor.isValid()) m_pGraph->setBkColor(BkColor);
 
-    m_pctrlGraphBack->setColor(m_pGraph->backgroundColor());
+    m_pcbGraphBack->setColor(m_pGraph->backgroundColor());
     setButtonColors();
     setApplied(false);
 }
@@ -347,7 +345,7 @@ void GraphDlg::onLabelColor()
     color = QColorDialog::getColor(color);
 
     m_pGraph->setLabelColor(color);
-    m_pctrlLabelClr->setTextColor(color);
+    m_ptcbLabelClr->setTextColor(color);
 
     setApplied(false);
     update();
@@ -364,9 +362,9 @@ void GraphDlg::onLabelFont()
 
     if (ok)
     {
-        m_pctrlLabelButton->setFont(font);
-        m_pctrlLabelButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
-        m_pctrlLabelClr->setFont(font);
+        m_ppbLabelButton->setFont(font);
+        m_ppbLabelButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
+        m_ptcbLabelClr->setFont(font);
         m_pGraph->setLabelFont(font);
         setApplied(false);
     }
@@ -385,9 +383,9 @@ void GraphDlg::onOK()
 {
     applyChanges();
 
-    m_XSel = m_pctrlXSel->currentRow();
-    m_YSel = m_pctrlYSel->currentRow();
-    m_pGraph->setVariables(m_pctrlXSel->currentRow(), m_pctrlYSel->currentRow());
+    m_XSel = m_plwXSel->currentRow();
+    m_YSel = m_plwYSel->currentRow();
+    m_pGraph->setVariables(m_plwXSel->currentRow(), m_plwYSel->currentRow());
 
     accept();
 }
@@ -395,38 +393,38 @@ void GraphDlg::onOK()
 
 void GraphDlg::applyChanges()
 {
-    m_pGraph->setAutoX(m_pctrlXAuto->isChecked());
-    m_pGraph->setXMin(m_pctrlXMin->value());
-    m_pGraph->setXMax(m_pctrlXMax->value());
-    m_pGraph->setX0(m_pctrlXOrigin->value());
-    m_pGraph->setXUnit(m_pctrlXUnit->value());
+    m_pGraph->setAutoX(m_pchXAuto->isChecked());
+    m_pGraph->setXMin(m_pdeXMin->value());
+    m_pGraph->setXMax(m_pdeXMax->value());
+    m_pGraph->setX0(m_pdeXOrigin->value());
+    m_pGraph->setXUnit(m_pdeXUnit->value());
 
-    m_pGraph->setAutoY(m_pctrlYAuto->isChecked());
-    m_pGraph->setYMin(m_pctrlYMin->value());
-    m_pGraph->setYMax(m_pctrlYMax->value());
-    m_pGraph->setY0(m_pctrlYOrigin->value());
-    m_pGraph->setYUnit(m_pctrlYUnit->value());
+    m_pGraph->setAutoY(m_pchYAuto->isChecked());
+    m_pGraph->setYMin(m_pdeYMin->value());
+    m_pGraph->setYMax(m_pdeYMax->value());
+    m_pGraph->setY0(m_pdeYOrigin->value());
+    m_pGraph->setYUnit(m_pdeYUnit->value());
 
     double MinUnit;
-    if(!m_pctrlAutoXMinUnit->isChecked())
+    if(!m_pchAutoXMinUnit->isChecked())
     {
-        MinUnit = m_pctrlXMinorUnit->value();
+        MinUnit = m_pdeXMinorUnit->value();
         m_pGraph->setXMinorUnit(MinUnit);
         m_pGraph->setAutoXMinUnit(false);
     }
     else
         m_pGraph->setAutoXMinUnit(true);
 
-    if(!m_pctrlAutoYMinUnit->isChecked())
+    if(!m_pchAutoYMinUnit->isChecked())
     {
-        MinUnit = m_pctrlYMinorUnit->value();
+        MinUnit = m_pdeYMinorUnit->value();
         m_pGraph->setYMinorUnit(MinUnit);
         m_pGraph->setAutoYMinUnit(false);
     }
     else
         m_pGraph->setAutoYMinUnit(true);
 
-    m_pGraph->setMargin(m_pctrlMargin->value());
+    m_pGraph->setMargin(m_pieMargin->value());
 
 }
 
@@ -448,7 +446,7 @@ void GraphDlg::onTitleColor()
     color = QColorDialog::getColor(color);
 
     m_pGraph->setTitleColor(color);
-    m_pctrlTitleClr->setTextColor(color);
+    m_ptcbTitleClr->setTextColor(color);
 
     setApplied(false);
     update();
@@ -465,9 +463,9 @@ void GraphDlg::onTitleFont()
 
     if (bOk)
     {
-        m_pctrlTitleButton->setFont(font);
-        m_pctrlTitleButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
-        m_pctrlTitleClr->setFont(font);
+        m_ppbTitleButton->setFont(font);
+        m_ppbTitleButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
+        m_ptcbTitleClr->setFont(font);
         m_pGraph->setTitleFont(font);
         setApplied(false);
     }
@@ -482,7 +480,7 @@ void GraphDlg::onVariableChanged()
 
 void GraphDlg::onMargin()
 {
-    m_pGraph->setMargin(m_pctrlMargin->value());
+    m_pGraph->setMargin(m_pieMargin->value());
 }
 
 
@@ -498,9 +496,9 @@ void GraphDlg::onXMajGridStyle()
     if(QDialog::Accepted==dlg.exec())
     {
         m_pGraph->setXMajGrid(bShow, dlg.lineColor(), dlg.lineStipple(), dlg.lineWidth());
-        m_pctrlXMajGridStyle->setStipple(dlg.lineStipple());
-        m_pctrlXMajGridStyle->setWidth(dlg.lineWidth());
-        m_pctrlXMajGridStyle->setColor(dlg.lineColor());
+        m_plbXMajGridStyle->setStipple(dlg.lineStipple());
+        m_plbXMajGridStyle->setWidth(dlg.lineWidth());
+        m_plbXMajGridStyle->setColor(dlg.lineColor());
         setApplied(false);
     }
 }
@@ -518,9 +516,9 @@ void GraphDlg::onXMinGridStyle()
     if(QDialog::Accepted==dlg.exec())
     {
         m_pGraph->setXMinGrid(bShow, bAuto, dlg.lineColor(), dlg.lineStipple(), dlg.lineWidth(),unit);
-        m_pctrlXMinGridStyle->setStipple(dlg.lineStipple());
-        m_pctrlXMinGridStyle->setWidth(dlg.lineWidth());
-        m_pctrlXMinGridStyle->setColor(dlg.lineColor());
+        m_plbXMinGridStyle->setStipple(dlg.lineStipple());
+        m_plbXMinGridStyle->setWidth(dlg.lineWidth());
+        m_plbXMinGridStyle->setColor(dlg.lineColor());
         setApplied(false);
     }
 }
@@ -530,7 +528,7 @@ void GraphDlg::onXMajGridShow(int state)
 {
     bool bShow = (state==Qt::Checked);
     m_pGraph->setXMajGrid(bShow);
-    m_pctrlXMajGridStyle->setEnabled(bShow);
+    m_plbXMajGridStyle->setEnabled(bShow);
     setApplied(false);
 }
 
@@ -539,9 +537,9 @@ void GraphDlg::onXMinGridShow(int state)
 {
     bool bShow = (state==Qt::Checked);
     m_pGraph->setXMinGrid(bShow);
-    m_pctrlXMinGridStyle->setEnabled(bShow);
-    m_pctrlAutoXMinUnit->setEnabled(bShow);
-    m_pctrlXMinorUnit->setEnabled(bShow && !m_pGraph->bAutoXMin());
+    m_plbXMinGridStyle->setEnabled(bShow);
+    m_pchAutoXMinUnit->setEnabled(bShow);
+    m_pdeXMinorUnit->setEnabled(bShow && !m_pGraph->bAutoXMin());
 
     setApplied(false);
 }
@@ -549,7 +547,7 @@ void GraphDlg::onXMinGridShow(int state)
 
 void GraphDlg::onYInverted()
 {
-    m_pGraph->setInverted(m_pctrlYInverted->checkState() == Qt::Checked);
+    m_pGraph->setInverted(m_pchYInverted->checkState() == Qt::Checked);
     setApplied(false);
 }
 
@@ -558,7 +556,7 @@ void GraphDlg::onYMajGridShow(int state)
 {
     bool bShow = (state==Qt::Checked);
     m_pGraph->setYMajGrid(bShow);
-    m_pctrlYMajGridStyle->setEnabled(bShow);
+    m_plbYMajGridStyle->setEnabled(bShow);
     setApplied(false);
 }
 
@@ -574,9 +572,9 @@ void GraphDlg::onYMajGridStyle()
     if(QDialog::Accepted==dlg.exec())
     {
         m_pGraph->setYMajGrid(bShow, dlg.lineColor(), dlg.lineStipple(), dlg.lineWidth());
-        m_pctrlYMajGridStyle->setStipple(dlg.lineStipple());
-        m_pctrlYMajGridStyle->setWidth(dlg.lineWidth());
-        m_pctrlYMajGridStyle->setColor(dlg.lineColor());
+        m_plbYMajGridStyle->setStipple(dlg.lineStipple());
+        m_plbYMajGridStyle->setWidth(dlg.lineWidth());
+        m_plbYMajGridStyle->setColor(dlg.lineColor());
     }
 }
 
@@ -585,9 +583,9 @@ void GraphDlg::onYMinGridShow(int state)
 {
     bool bShow = (state==Qt::Checked);
     m_pGraph->setYMinGrid(bShow);
-    m_pctrlYMinGridStyle->setEnabled(bShow);
-    m_pctrlAutoYMinUnit->setEnabled(bShow);
-    m_pctrlYMinorUnit->setEnabled(bShow && !m_pGraph->bAutoYMin());
+    m_plbYMinGridStyle->setEnabled(bShow);
+    m_pchAutoYMinUnit->setEnabled(bShow);
+    m_pdeYMinorUnit->setEnabled(bShow && !m_pGraph->bAutoYMin());
 
     setApplied(false);
 }
@@ -606,9 +604,9 @@ void GraphDlg::onYMinGridStyle()
     if(QDialog::Accepted==dlg.exec())
     {
         m_pGraph->setYMinGrid(bShow, bAuto, dlg.lineColor(), dlg.lineStipple(), dlg.lineWidth(),unit);
-        m_pctrlYMinGridStyle->setStipple(dlg.lineStipple());
-        m_pctrlYMinGridStyle->setWidth(dlg.lineWidth());
-        m_pctrlYMinGridStyle->setColor(dlg.lineColor());
+        m_plbYMinGridStyle->setStipple(dlg.lineStipple());
+        m_plbYMinGridStyle->setWidth(dlg.lineWidth());
+        m_plbYMinGridStyle->setColor(dlg.lineColor());
         setApplied(false);
     }
 }
@@ -623,27 +621,27 @@ void GraphDlg::setApplied(bool bApplied)
 
 void GraphDlg::setButtonColors()
 {
-    m_pctrlTitleClr->setTextColor(m_pGraph->titleColor());
-    m_pctrlTitleClr->setBackgroundColor(m_pGraph->backgroundColor());
+    m_ptcbTitleClr->setTextColor(m_pGraph->titleColor());
+    m_ptcbTitleClr->setBackgroundColor(m_pGraph->backgroundColor());
 
-    m_pctrlLabelClr->setTextColor(m_pGraph->labelColor());
-    m_pctrlLabelClr->setBackgroundColor(m_pGraph->backgroundColor());
+    m_ptcbLabelClr->setTextColor(m_pGraph->labelColor());
+    m_ptcbLabelClr->setBackgroundColor(m_pGraph->backgroundColor());
 }
 
 
 void GraphDlg::setControls()
 {
-    m_pctrlXAuto->setChecked(m_pGraph->bAutoX());
-    m_pctrlYAuto->setChecked(m_pGraph->bAutoY());
+    m_pchXAuto->setChecked(m_pGraph->bAutoX());
+    m_pchYAuto->setChecked(m_pGraph->bAutoY());
 
-    m_pctrlXMin->setValue(m_pGraph->xMin());
-    m_pctrlXMax->setValue(m_pGraph->xMax());
-    m_pctrlXOrigin->setValue(m_pGraph->xOrigin());
-    m_pctrlXUnit->setValue(m_pGraph->xUnit());
-    m_pctrlYMin->setValue(m_pGraph->yMin());
-    m_pctrlYMax->setValue(m_pGraph->yMax());
-    m_pctrlYOrigin->setValue(m_pGraph->yOrigin());
-    m_pctrlYUnit->setValue(m_pGraph->yUnit());
+    m_pdeXMin->setValue(m_pGraph->xMin());
+    m_pdeXMax->setValue(m_pGraph->xMax());
+    m_pdeXOrigin->setValue(m_pGraph->xOrigin());
+    m_pdeXUnit->setValue(m_pGraph->xUnit());
+    m_pdeYMin->setValue(m_pGraph->yMin());
+    m_pdeYMax->setValue(m_pGraph->yMax());
+    m_pdeYOrigin->setValue(m_pGraph->yOrigin());
+    m_pdeYUnit->setValue(m_pGraph->yUnit());
 
     onAutoX();
     onAutoY();
@@ -652,12 +650,12 @@ void GraphDlg::setControls()
 
     QFont font;
     m_pGraph->getLabelFont(font);
-    m_pctrlLabelButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
-    m_pctrlLabelButton->setFont(font);
+    m_ppbLabelButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
+    m_ppbLabelButton->setFont(font);
 
     m_pGraph->getTitleFont(font);
-    m_pctrlTitleButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
-    m_pctrlTitleButton->setFont(font);
+    m_ppbTitleButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
+    m_ppbTitleButton->setFont(font);
 
     bool bState, bAuto;
     QColor color;
@@ -665,60 +663,60 @@ void GraphDlg::setControls()
     double unit;
 
     m_pGraph->bXMajGrid(bState, color, style, width);
-    m_pctrlXMajGridShow->setChecked(bState);
-    m_pctrlXMajGridStyle->setColor(color);
-    m_pctrlXMajGridStyle->setStipple(style);
-    m_pctrlXMajGridStyle->setWidth(width);
-    m_pctrlXMajGridStyle->setEnabled(bState);
+    m_pchXMajGridShow->setChecked(bState);
+    m_plbXMajGridStyle->setColor(color);
+    m_plbXMajGridStyle->setStipple(style);
+    m_plbXMajGridStyle->setWidth(width);
+    m_plbXMajGridStyle->setEnabled(bState);
 
     m_pGraph->bXMinGrid(bState, bAuto,color, style, width, unit);
-    m_pctrlXMinGridShow->setChecked(bState);
-    m_pctrlXMinGridStyle->setColor(color);
-    m_pctrlXMinGridStyle->setStipple(style);
-    m_pctrlXMinGridStyle->setWidth(width);
-    m_pctrlXMinGridStyle->setEnabled(bState);
-    m_pctrlXMinorUnit->setValue(unit);
-    m_pctrlAutoXMinUnit->setChecked(bAuto);
-    m_pctrlAutoXMinUnit->setEnabled(bState);
-    m_pctrlXMinorUnit->setEnabled(!bAuto && bState);
+    m_pchXMinGridShow->setChecked(bState);
+    m_plbXMinGridStyle->setColor(color);
+    m_plbXMinGridStyle->setStipple(style);
+    m_plbXMinGridStyle->setWidth(width);
+    m_plbXMinGridStyle->setEnabled(bState);
+    m_pdeXMinorUnit->setValue(unit);
+    m_pchAutoXMinUnit->setChecked(bAuto);
+    m_pchAutoXMinUnit->setEnabled(bState);
+    m_pdeXMinorUnit->setEnabled(!bAuto && bState);
 
     m_pGraph->yMajGrid(bState, color, style, width);
-    m_pctrlYMajGridShow->setChecked(bState);
-    m_pctrlYMajGridStyle->setColor(color);
-    m_pctrlYMajGridStyle->setStipple(style);
-    m_pctrlYMajGridStyle->setWidth(width);
-    m_pctrlYMajGridStyle->setEnabled(bState);
+    m_pchYMajGridShow->setChecked(bState);
+    m_plbYMajGridStyle->setColor(color);
+    m_plbYMajGridStyle->setStipple(style);
+    m_plbYMajGridStyle->setWidth(width);
+    m_plbYMajGridStyle->setEnabled(bState);
 
     m_pGraph->bYMinGrid(bState, bAuto,color, style, width, unit);
-    m_pctrlYMinGridShow->setChecked(bState);
-    m_pctrlYMinGridStyle->setColor(color);
-    m_pctrlYMinGridStyle->setStipple(style);
-    m_pctrlYMinGridStyle->setWidth(width);
-    m_pctrlYMinGridStyle->setEnabled(bState);
-    m_pctrlYMinorUnit->setValue(unit);
-    m_pctrlAutoYMinUnit->setChecked(bAuto);
-    m_pctrlAutoYMinUnit->setEnabled(bState);
-    m_pctrlYMinorUnit->setEnabled(!bAuto && bState);
+    m_pchYMinGridShow->setChecked(bState);
+    m_plbYMinGridStyle->setColor(color);
+    m_plbYMinGridStyle->setStipple(style);
+    m_plbYMinGridStyle->setWidth(width);
+    m_plbYMinGridStyle->setEnabled(bState);
+    m_pdeYMinorUnit->setValue(unit);
+    m_pchAutoYMinUnit->setChecked(bAuto);
+    m_pchAutoYMinUnit->setEnabled(bState);
+    m_pdeYMinorUnit->setEnabled(!bAuto && bState);
 
-    m_pctrlAxisStyle->setColor(m_pGraph->axisColor());
-    m_pctrlAxisStyle->setStipple(m_pGraph->axisStyle());
-    m_pctrlAxisStyle->setWidth(m_pGraph->axisWidth());
+    m_plbAxisStyle->setColor(m_pGraph->axisColor());
+    m_plbAxisStyle->setStipple(m_pGraph->axisStyle());
+    m_plbAxisStyle->setWidth(m_pGraph->axisWidth());
 
-    m_pctrlGraphBorder->setChecked(m_pGraph->hasBorder());
-    m_pctrlBorderStyle->setColor(m_pGraph->borderColor());
-    m_pctrlBorderStyle->setStipple(m_pGraph->borderStyle());
-    m_pctrlBorderStyle->setWidth(m_pGraph->borderWidth());
+    m_pchGraphBorder->setChecked(m_pGraph->hasBorder());
+    m_plbBorderStyle->setColor(m_pGraph->borderColor());
+    m_plbBorderStyle->setStipple(m_pGraph->borderStyle());
+    m_plbBorderStyle->setWidth(m_pGraph->borderWidth());
 
-    m_pctrlGraphBack->setColor(m_pGraph->backgroundColor());
+    m_pcbGraphBack->setColor(m_pGraph->backgroundColor());
 
-    m_pctrlMargin->setValue(m_pGraph->margin());
+    m_pieMargin->setValue(m_pGraph->margin());
 
-    m_pctrlYInverted->setChecked(m_pGraph->bInverted());
+    m_pchYInverted->setChecked(m_pGraph->bInverted());
 
     fillVariableList();
 
-    m_pctrlXSel->setCurrentRow(m_pGraph->xVariable());
-    m_pctrlYSel->setCurrentRow(m_pGraph->yVariable());
+    m_plwXSel->setCurrentRow(m_pGraph->xVariable());
+    m_plwYSel->setCurrentRow(m_pGraph->yVariable());
     m_bVariableChanged = false;
 
     setApplied(true);
@@ -759,10 +757,10 @@ void GraphDlg::setupLayout()
 
         QHBoxLayout *pVariableBoxLayout = new QHBoxLayout;
         {
-            m_pctrlXSel = new QListWidget;
-            m_pctrlYSel = new QListWidget;
-            pVariableBoxLayout->addWidget(m_pctrlYSel);
-            pVariableBoxLayout->addWidget(m_pctrlXSel);
+            m_plwXSel = new QListWidget;
+            m_plwYSel = new QListWidget;
+            pVariableBoxLayout->addWidget(m_plwYSel);
+            pVariableBoxLayout->addWidget(m_plwXSel);
         }
 
         pVariablePageLayout->addLayout(pAxisNamesLayout);
@@ -791,19 +789,19 @@ void GraphDlg::setupLayout()
                 pFontButtonsLayout->addWidget(lab1,2,1);
                 pFontButtonsLayout->addWidget(lab2,3,1);
 
-                m_pctrlTitleButton  = new QPushButton();
-                m_pctrlLabelButton  = new QPushButton();
+                m_ppbTitleButton  = new QPushButton();
+                m_ppbLabelButton  = new QPushButton();
 
-                pFontButtonsLayout->addWidget(m_pctrlTitleButton,2,2);
-                pFontButtonsLayout->addWidget(m_pctrlLabelButton,3,2);
+                pFontButtonsLayout->addWidget(m_ppbTitleButton,2,2);
+                pFontButtonsLayout->addWidget(m_ppbLabelButton,3,2);
 
-                m_pctrlTitleClr  = new TextClrBtn(this);
-                m_pctrlTitleClr->setText(tr("Title Color"));
-                m_pctrlLabelClr  = new TextClrBtn(this);
-                m_pctrlLabelClr->setText(tr("Label Color"));
+                m_ptcbTitleClr  = new TextClrBtn(this);
+                m_ptcbTitleClr->setText(tr("Title Color"));
+                m_ptcbLabelClr  = new TextClrBtn(this);
+                m_ptcbLabelClr->setText(tr("Label Color"));
 
-                pFontButtonsLayout->addWidget(m_pctrlTitleClr,2,3);
-                pFontButtonsLayout->addWidget(m_pctrlLabelClr,3,3);
+                pFontButtonsLayout->addWidget(m_ptcbTitleClr,2,3);
+                pFontButtonsLayout->addWidget(m_ptcbLabelClr,3,3);
             }
             pFontBox->setLayout(pFontButtonsLayout);
         }
@@ -814,18 +812,18 @@ void GraphDlg::setupLayout()
             {
                 QLabel *GraphBackLabel = new QLabel(tr("Graph Background"));
                 GraphBackLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-                m_pctrlGraphBorder = new QCheckBox(tr("Graph Border"));
+                m_pchGraphBorder = new QCheckBox(tr("Graph Border"));
 
-                m_pctrlGraphBack = new ColorButton;
-                m_pctrlGraphBack->setMinimumWidth(100);
-                m_pctrlBorderStyle = new LineBtn(this);
-                m_pctrlBorderStyle->setMinimumWidth(100);
+                m_pcbGraphBack = new ColorButton;
+                m_pcbGraphBack->setMinimumWidth(100);
+                m_plbBorderStyle = new LineBtn(this);
+                m_plbBorderStyle->setMinimumWidth(100);
 
                 pBackDataLayout->addWidget(GraphBackLabel,1,1);
-                pBackDataLayout->addWidget(m_pctrlGraphBorder,2,1,1,1,Qt::AlignRight | Qt::AlignVCenter);
+                pBackDataLayout->addWidget(m_pchGraphBorder,2,1,1,1,Qt::AlignRight | Qt::AlignVCenter);
 
-                pBackDataLayout->addWidget(m_pctrlGraphBack,1,2);
-                pBackDataLayout->addWidget(m_pctrlBorderStyle,2,2);
+                pBackDataLayout->addWidget(m_pcbGraphBack,1,2);
+                pBackDataLayout->addWidget(m_plbBorderStyle,2,2);
 
                 pBackDataLayout->setColumnStretch(0,1);
             }
@@ -837,10 +835,10 @@ void GraphDlg::setupLayout()
             {
                 QLabel *pMarginLabel = new QLabel(tr("Margin"));
                 QLabel *pMarginUnit = new QLabel(tr("pixels"));
-                m_pctrlMargin = new IntEdit(31, this);
+                m_pieMargin = new IntEdit(31, this);
                 pPaddingLayout->addStretch(1);
                 pPaddingLayout->addWidget(pMarginLabel);
-                pPaddingLayout->addWidget(m_pctrlMargin);
+                pPaddingLayout->addWidget(m_pieMargin);
                 pPaddingLayout->addWidget(pMarginUnit);
             }
             pPaddingBox->setLayout(pPaddingLayout);
@@ -879,33 +877,33 @@ void GraphDlg::setupLayout()
         pScalePageLayout->addWidget(OriginLabel,7,1);
         pScalePageLayout->addWidget(UnitLabel,8,1);
 
-        m_pctrlXAuto    = new QCheckBox(tr("Auto Scale"));
-        m_pctrlXMin     = new DoubleEdit;
-        m_pctrlXMax     = new DoubleEdit;
-        m_pctrlXOrigin  = new DoubleEdit;
-        m_pctrlXUnit    = new DoubleEdit;
+        m_pchXAuto    = new QCheckBox(tr("Auto Scale"));
+        m_pdeXMin     = new DoubleEdit;
+        m_pdeXMax     = new DoubleEdit;
+        m_pdeXOrigin  = new DoubleEdit;
+        m_pdeXUnit    = new DoubleEdit;
 
         pScalePageLayout->addWidget(XAxis2,2,2);
-        pScalePageLayout->addWidget(m_pctrlXAuto,4,2);
-        pScalePageLayout->addWidget(m_pctrlXMin,5,2);
-        pScalePageLayout->addWidget(m_pctrlXMax,6,2);
-        pScalePageLayout->addWidget(m_pctrlXOrigin,7,2);
-        pScalePageLayout->addWidget(m_pctrlXUnit,8,2);
+        pScalePageLayout->addWidget(m_pchXAuto,4,2);
+        pScalePageLayout->addWidget(m_pdeXMin,5,2);
+        pScalePageLayout->addWidget(m_pdeXMax,6,2);
+        pScalePageLayout->addWidget(m_pdeXOrigin,7,2);
+        pScalePageLayout->addWidget(m_pdeXUnit,8,2);
 
-        m_pctrlYInverted = new QCheckBox(tr("Inverted Axis"));
-        m_pctrlYAuto     = new QCheckBox(tr("Auto Scale"));
-        m_pctrlYMin      = new DoubleEdit;
-        m_pctrlYMax      = new DoubleEdit;
-        m_pctrlYOrigin   = new DoubleEdit;
-        m_pctrlYUnit     = new DoubleEdit;
+        m_pchYInverted = new QCheckBox(tr("Inverted Axis"));
+        m_pchYAuto     = new QCheckBox(tr("Auto Scale"));
+        m_pdeYMin      = new DoubleEdit;
+        m_pdeYMax      = new DoubleEdit;
+        m_pdeYOrigin   = new DoubleEdit;
+        m_pdeYUnit     = new DoubleEdit;
 
         pScalePageLayout->addWidget(YAxis2,2,3);
-        pScalePageLayout->addWidget(m_pctrlYInverted,3,3);
-        pScalePageLayout->addWidget(m_pctrlYAuto,4,3);
-        pScalePageLayout->addWidget(m_pctrlYMin,5,3);
-        pScalePageLayout->addWidget(m_pctrlYMax,6,3);
-        pScalePageLayout->addWidget(m_pctrlYOrigin,7,3);
-        pScalePageLayout->addWidget(m_pctrlYUnit,8,3);
+        pScalePageLayout->addWidget(m_pchYInverted,3,3);
+        pScalePageLayout->addWidget(m_pchYAuto,4,3);
+        pScalePageLayout->addWidget(m_pdeYMin,5,3);
+        pScalePageLayout->addWidget(m_pdeYMax,6,3);
+        pScalePageLayout->addWidget(m_pdeYOrigin,7,3);
+        pScalePageLayout->addWidget(m_pdeYUnit,8,3);
         pScalePageLayout->setRowStretch(9,1);
     }
     m_pScalePage->setLayout(pScalePageLayout);
@@ -917,39 +915,39 @@ void GraphDlg::setupLayout()
         pAxisDataLayout->setRowStretch(0,1);
         QLabel *AxisStyleLabel = new QLabel(tr("Axis Style"));
 
-        m_pctrlXMajGridShow = new QCheckBox(tr("X Major Grid"));
-        m_pctrlYMajGridShow = new QCheckBox(tr("Y Major Grid"));
-        m_pctrlXMinGridShow = new QCheckBox(tr("X Minor Grid"));
-        m_pctrlYMinGridShow = new QCheckBox(tr("Y Minor Grid"));
-        m_pctrlAutoXMinUnit = new QCheckBox(tr("Auto Unit"));
-        m_pctrlAutoYMinUnit = new QCheckBox(tr("Auto Unit"));
+        m_pchXMajGridShow = new QCheckBox(tr("X Major Grid"));
+        m_pchYMajGridShow = new QCheckBox(tr("Y Major Grid"));
+        m_pchXMinGridShow = new QCheckBox(tr("X Minor Grid"));
+        m_pchYMinGridShow = new QCheckBox(tr("Y Minor Grid"));
+        m_pchAutoXMinUnit = new QCheckBox(tr("Auto Unit"));
+        m_pchAutoYMinUnit = new QCheckBox(tr("Auto Unit"));
 
-        m_pctrlAxisStyle = new LineBtn(this);
+        m_plbAxisStyle = new LineBtn(this);
 
-        m_pctrlXMajGridStyle = new LineBtn(this);
-        m_pctrlYMajGridStyle = new LineBtn(this);
-        m_pctrlXMinGridStyle = new LineBtn(this);
-        m_pctrlYMinGridStyle = new LineBtn(this);
+        m_plbXMajGridStyle = new LineBtn(this);
+        m_plbYMajGridStyle = new LineBtn(this);
+        m_plbXMinGridStyle = new LineBtn(this);
+        m_plbYMinGridStyle = new LineBtn(this);
 
-        m_pctrlXMinorUnit = new DoubleEdit;
-        m_pctrlYMinorUnit = new DoubleEdit;
+        m_pdeXMinorUnit = new DoubleEdit;
+        m_pdeYMinorUnit = new DoubleEdit;
 
         pAxisDataLayout->addWidget(AxisStyleLabel,1,1);
-        pAxisDataLayout->addWidget(m_pctrlXMajGridShow,2,1);
-        pAxisDataLayout->addWidget(m_pctrlYMajGridShow,3,1);
-        pAxisDataLayout->addWidget(m_pctrlXMinGridShow,4,1);
-        pAxisDataLayout->addWidget(m_pctrlYMinGridShow,5,1);
+        pAxisDataLayout->addWidget(m_pchXMajGridShow,2,1);
+        pAxisDataLayout->addWidget(m_pchYMajGridShow,3,1);
+        pAxisDataLayout->addWidget(m_pchXMinGridShow,4,1);
+        pAxisDataLayout->addWidget(m_pchYMinGridShow,5,1);
 
-        pAxisDataLayout->addWidget(m_pctrlAxisStyle,1,2);
-        pAxisDataLayout->addWidget(m_pctrlXMajGridStyle,2,2);
-        pAxisDataLayout->addWidget(m_pctrlYMajGridStyle,3,2);
-        pAxisDataLayout->addWidget(m_pctrlXMinGridStyle,4,2);
-        pAxisDataLayout->addWidget(m_pctrlYMinGridStyle,5,2);
+        pAxisDataLayout->addWidget(m_plbAxisStyle,1,2);
+        pAxisDataLayout->addWidget(m_plbXMajGridStyle,2,2);
+        pAxisDataLayout->addWidget(m_plbYMajGridStyle,3,2);
+        pAxisDataLayout->addWidget(m_plbXMinGridStyle,4,2);
+        pAxisDataLayout->addWidget(m_plbYMinGridStyle,5,2);
 
-        pAxisDataLayout->addWidget(m_pctrlAutoXMinUnit,4,3);
-        pAxisDataLayout->addWidget(m_pctrlAutoYMinUnit,5,3);
-        pAxisDataLayout->addWidget(m_pctrlXMinorUnit,4,4);
-        pAxisDataLayout->addWidget(m_pctrlYMinorUnit,5,4);
+        pAxisDataLayout->addWidget(m_pchAutoXMinUnit,4,3);
+        pAxisDataLayout->addWidget(m_pchAutoYMinUnit,5,3);
+        pAxisDataLayout->addWidget(m_pdeXMinorUnit,4,4);
+        pAxisDataLayout->addWidget(m_pdeYMinorUnit,5,4);
     }
     m_pGridPage->setLayout(pAxisDataLayout);
     //________End Axis Page______________________

@@ -160,10 +160,7 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
         m_PlrGraph[ig]->setYMin(-0.1);
         m_PlrGraph[ig]->setYMax(0.1);
         m_PlrGraph[ig]->setScaleType(2);
-        m_PlrGraph[ig]->setBorderColor(QColor(200,200,200));
-        m_PlrGraph[ig]->setBorder(true);
-        m_PlrGraph[ig]->setBorderStyle(0);
-        m_PlrGraph[ig]->setBorderWidth(3);
+        m_PlrGraph[ig]->setBorderStyle({true, Line::SOLID, 3, QColor(200,200,200), Line::NOSYMBOL});
         m_PlrGraph[ig]->setMargin(50);
         if(ig==0) m_PlrGraph[ig]->setVariables(2,1);
         if(ig==1) m_PlrGraph[ig]->setVariables(0,1);
@@ -184,9 +181,8 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
     m_CpGraph.setYMin(-0.1);
     m_CpGraph.setYMax(0.1);
     m_CpGraph.setMargin(50);
-    m_CpGraph.setBorderColor(QColor(200,200,200));
-    m_CpGraph.setBorder(true);
-    m_CpGraph.setBorderStyle(0);
+    m_CpGraph.setBorderStyle({true, Line::SOLID, 3, QColor(200,200,200), Line::NOSYMBOL});
+
     m_CpGraph.setGraphName("Cp_Graph");
     m_CpGraph.setVariables(0,0);
 
@@ -4101,7 +4097,7 @@ void XDirect::onXFoilAdvanced()
 {
     XFoilAdvancedDlg xfaDlg(s_pMainFrame);
     xfaDlg.m_IterLimit   = XFoilTask::s_IterLim;
-    xfaDlg.m_bAutoInitBL     = XFoilTask::s_bAutoInitBL;
+    xfaDlg.m_bAutoInitBL = XFoilTask::s_bAutoInitBL;
     xfaDlg.m_VAccel      = XFoil::VAccel();
     xfaDlg.m_bFullReport = XFoil::fullReport();
     xfaDlg.initDialog();

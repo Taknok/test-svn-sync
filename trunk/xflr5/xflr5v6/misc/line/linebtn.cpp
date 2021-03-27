@@ -42,14 +42,14 @@ LineBtn::LineBtn(QWidget *parent)
 }
 
 
-void LineBtn::mouseReleaseEvent(QMouseEvent *event)
+void LineBtn::mouseReleaseEvent(QMouseEvent *pEvent)
 {
-    if (event->button() == Qt::LeftButton)
+    if (pEvent->button() == Qt::LeftButton)
     {
         emit clickedLB();
     }
     else
-        QWidget::mouseReleaseEvent(event);
+        QWidget::mouseReleaseEvent(pEvent);
 }
 
 
@@ -69,28 +69,28 @@ void LineBtn::setColor(QColor const & color)
 }
 
 
-void LineBtn::setStipple(int const & style)
+void LineBtn::setStipple(int style)
 {
     m_LineStyle.setStipple(style);
     update();
 }
 
 
-void LineBtn::setWidth(int const & width)
+void LineBtn::setWidth(int width)
 {
     m_LineStyle.m_Width = width;
     update();
 }
 
 
-void LineBtn::setPointStyle(int const & pointStyle)
+void LineBtn::setPointStyle(int pointStyle)
 {
     m_LineStyle.setPointStyle(pointStyle);
     update();
 }
 
 
-void LineBtn::setTheStyle(int const &style, int const &width, QColor const & color, int const & pointStyle)
+void LineBtn::setTheStyle(int style, int width, QColor const & color, int pointStyle)
 {
     m_LineStyle.setStipple(style);
     m_LineStyle.m_Width = width;
@@ -100,7 +100,7 @@ void LineBtn::setTheStyle(int const &style, int const &width, QColor const & col
 }
 
 
-void LineBtn::paintEvent(QPaintEvent *event)
+void LineBtn::paintEvent(QPaintEvent *pEvent)
 {
     QPainter painter(this);
     painter.save();
@@ -120,5 +120,5 @@ void LineBtn::paintEvent(QPaintEvent *event)
     }
 
     painter.restore();
-    event->accept();
+    pEvent->accept();
 }
