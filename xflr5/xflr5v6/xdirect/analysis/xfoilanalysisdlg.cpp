@@ -25,7 +25,7 @@
 #include <QTimer>
 #include <QHBoxLayout>
 #include <QFontDatabase>
-#include <QtDebug>
+#include <QDebug>
 
 
 #include "xfoilanalysisdlg.h"
@@ -100,49 +100,47 @@ XFoilAnalysisDlg::~XFoilAnalysisDlg()
 
 void XFoilAnalysisDlg::setupLayout()
 {
-    m_pctrlTextOutput = new QTextEdit;
-    m_pctrlTextOutput->setReadOnly(true);
-    m_pctrlTextOutput->setLineWrapMode(QTextEdit::NoWrap);
-    m_pctrlTextOutput->setWordWrapMode(QTextOption::NoWrap);
-    m_pctrlTextOutput->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+    m_pteTextOutput = new QTextEdit;
+    m_pteTextOutput->setReadOnly(true);
+    m_pteTextOutput->setLineWrapMode(QTextEdit::NoWrap);
+    m_pteTextOutput->setWordWrapMode(QTextOption::NoWrap);
+    m_pteTextOutput->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
     m_pGraphWidget = new GraphWt;
     m_pGraphWidget->setMinimumHeight(350);
     m_pGraphWidget->setMinimumWidth(600);
     m_pGraphWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
-
-    QHBoxLayout *pButtonsLayout = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Close, this);
     {
-        m_pctrlSkip   = new QPushButton(tr("Skip"));
-        m_pctrlCancel = new QPushButton(tr("Cancel"));
-
-        connect(m_pctrlSkip,   SIGNAL(clicked()), this, SLOT(onSkipPoint()));
-        connect(m_pctrlCancel, SIGNAL(clicked()), this, SLOT(onCancelAnalysis()));
-
-        m_pctrlLogFile = new QCheckBox(tr("Keep this window opened on errors"));
-        connect(m_pctrlLogFile, SIGNAL(toggled(bool)), this, SLOT(onLogFile(bool)));
-
-        pButtonsLayout->addWidget(m_pctrlLogFile);
-        pButtonsLayout->addStretch(1);
-        pButtonsLayout->addWidget(m_pctrlSkip);
-        pButtonsLayout->addStretch(1);
-        pButtonsLayout->addWidget(m_pctrlCancel);
-        pButtonsLayout->addStretch(1);
+        m_pchLogFile = new QCheckBox(tr("Keep this window opened on errors"));
+        m_ppbSkip   = new QPushButton(tr("Skip"));
+        m_pButtonBox->addButton(m_pchLogFile, QDialogButtonBox::ActionRole);
+        m_pButtonBox->addButton(m_ppbSkip, QDialogButtonBox::ActionRole);
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        pMainLayout->addWidget(m_pctrlTextOutput);
+        pMainLayout->addWidget(m_pteTextOutput);
         pMainLayout->addWidget(m_pGraphWidget);
-        pMainLayout->addLayout(pButtonsLayout);
+        pMainLayout->addWidget(m_pButtonBox);
         setLayout(pMainLayout);
     }
 }
 
 
+void XFoilAnalysisDlg::onButton(QAbstractButton *pButton)
+{
+    if (m_pButtonBox->button(QDialogButtonBox::Close) == pButton)
+        onCancelAnalysis();
+    else if (m_ppbSkip == pButton)
+        onSkipPoint();
+}
+
+
 void XFoilAnalysisDlg::initDialog()
 {
-    m_pctrlLogFile->setChecked(XDirect::s_bKeepOpenErrors);
+    m_pchLogFile->setChecked(XDirect::s_bKeepOpenErrors);
 
     QString FileName = QDir::tempPath() + "/XFLR5.log";
     m_pXFile = new QFile(FileName);
@@ -160,7 +158,6 @@ void XFoilAnalysisDlg::initDialog()
     m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReDelta);
     m_pXFoilTask->initializeXFoilTask(XDirect::curFoil(), XDirect::curPolar(),
                                       XDirect::s_bViscous, XDirect::s_bInitBL, false);
-
 
     setFileHeader();
 
@@ -186,7 +183,7 @@ void XFoilAnalysisDlg::initDialog()
 
     m_pXFoilTask->setGraphPointers(&pCurve0->m_x, &pCurve0->m_y, &pCurve1->m_x, &pCurve1->m_y);
 
-    m_pctrlTextOutput->clear();
+    m_pteTextOutput->clear();
 }
 
 
@@ -247,10 +244,11 @@ void XFoilAnalysisDlg::accept()
 }
 
 
-void XFoilAnalysisDlg::onLogFile(bool bChecked)
+void XFoilAnalysisDlg::onLogFile()
 {
-    XDirect::s_bKeepOpenErrors = bChecked;
+    XDirect::s_bKeepOpenErrors = m_pchLogFile->isChecked();
 }
+
 
 void XFoilAnalysisDlg::onSkipPoint()
 {
@@ -319,8 +317,8 @@ void XFoilAnalysisDlg::setFileHeader()
 
 void XFoilAnalysisDlg::analyze()
 {
-    m_pctrlCancel->setText(tr("Cancel"));
-    m_pctrlSkip->setEnabled(true);
+    m_pButtonBox->button(QDialogButtonBox::Close)->setText(tr("Cancel"));
+    m_ppbSkip->setEnabled(true);
 
     //all set to launch the analysis
 
@@ -344,12 +342,12 @@ void XFoilAnalysisDlg::analyze()
     m_bErrors = m_pXFoilTask->m_bErrors;
     if(m_bErrors)
     {
-        m_pctrlTextOutput->insertPlainText(tr(" ...some points are unconverged"));
-        m_pctrlTextOutput->ensureCursorVisible();
+        m_pteTextOutput->insertPlainText(tr(" ...some points are unconverged"));
+        m_pteTextOutput->ensureCursorVisible();
     }
 
-    m_pctrlCancel->setText(tr("Close"));
-    m_pctrlSkip->setEnabled(false);
+    m_pButtonBox->button(QDialogButtonBox::Close)->setText(tr("Close"));
+    m_ppbSkip->setEnabled(false);
     update();
 }
 
@@ -358,9 +356,9 @@ void XFoilAnalysisDlg::onProgress()
 {
     if(m_pXFoilTask->m_OutMessage.length())
     {
-        m_pctrlTextOutput->insertPlainText(m_pXFoilTask->m_OutMessage);
+        m_pteTextOutput->insertPlainText(m_pXFoilTask->m_OutMessage);
         //        m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
-        m_pctrlTextOutput->ensureCursorVisible();
+        m_pteTextOutput->ensureCursorVisible();
     }
     m_pXFoilTask->m_OutMessage.clear();
     //    m_pGraphWidget->update();

@@ -241,14 +241,14 @@ void XFLR5App::addStandardBtnStrings()
 }
 
 
-bool XFLR5App::event(QEvent *event)
+bool XFLR5App::event(QEvent *pEvent)
 {
     int iApp = Xfl::NOAPP;
-    switch (event->type())
+    switch (pEvent->type())
     {
         case QEvent::FileOpen:
         {
-            iApp = MainFrame::self()->loadXFLR5File(static_cast<QFileOpenEvent *>(event)->file());
+            iApp = MainFrame::self()->loadXFLR5File(static_cast<QFileOpenEvent *>(pEvent)->file());
             if (iApp == Xfl::MIAREX)             MainFrame::self()->onMiarex();
             else if (iApp == Xfl::XFOILANALYSIS) MainFrame::self()->onXDirect();
 
@@ -258,7 +258,7 @@ bool XFLR5App::event(QEvent *event)
         default:
             break;
     }
-    return QApplication::event(event);
+    return QApplication::event(pEvent);
 }
 
 

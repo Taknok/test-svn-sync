@@ -19,10 +19,6 @@
 
 *****************************************************************************/
 
-#include <QThread>
-#include <QFutureSynchronizer>
-#include <QtConcurrent/QtConcurrent>
-
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QLabel>

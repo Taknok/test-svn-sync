@@ -370,7 +370,7 @@ private:
     //XDirect Actions
     QActionGroup *m_pXDirectViewActGroup;
     QAction *m_pPolarsAct, *m_pOpPointsAct, *m_pDeletePolar, *m_pDefinePolarAct, *m_pEditCurPolar, *m_pBatchAnalysisAct, *m_pResetCurPolar;
-    QAction *m_pMultiThreadedBatchAct;
+    QAction *m_pMultiThreadedBatchAct, *m_pBatchCtrlAct;
     QAction *m_pRestoreToolbarsAct;
     QAction *m_pExportCurPolar, *m_pHideFoilPolars, *m_pShowFoilPolars, *m_pShowFoilPolarsOnly, *m_pSaveFoilPolars,*m_pDeleteFoilPolars;
     QAction *m_pExportPolarsTxt, *m_pExportFoilPlrs;

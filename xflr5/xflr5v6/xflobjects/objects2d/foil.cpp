@@ -256,7 +256,7 @@ double Foil::deRotate()
  * @param out the QtextStream to which the output will be directed
  * @return true if the operation has been successful, false otherwise
  */
-bool Foil::exportFoil(QTextStream &out)
+bool Foil::exportFoil(QTextStream &out) const
 {
     int i;
 
@@ -349,17 +349,14 @@ double Foil::baseUpperY(double x) const
  * @param &x the chordwise position
  * @return the slope in radians
  */
-double Foil::bottomSlope(double const &x)
+double Foil::bottomSlope(double x) const
 {
-    //returns the bottom slope at position x
-    int i;
-    double dx, dy;
-    for (i=0; i<m_iInt; i++)
+    for (int i=0; i<m_iInt; i++)
     {
         if ((m_rpIntrados[i].x <= x) && (x < m_rpIntrados[i+1].x))
         {
-            dx = m_rpIntrados[i+1].x-m_rpIntrados[i].x;
-            dy = m_rpIntrados[i+1].y-m_rpIntrados[i].y;
+            double dx = m_rpIntrados[i+1].x-m_rpIntrados[i].x;
+            double dy = m_rpIntrados[i+1].y-m_rpIntrados[i].y;
             return -atan2(dy,dx);
         }
     }
@@ -372,11 +369,9 @@ double Foil::bottomSlope(double const &x)
  * @param &x the chordwise position
  * @return the slope in radians
  */
-double Foil::topSlope(double const &x)
+double Foil::topSlope(double x) const
 {
-    //returns the upper slope at position x
-    int i;
-    for (i=0; i<m_iExt; i++)
+    for (int i=0; i<m_iExt; i++)
     {
         if ((m_rpExtrados[i].x <= x) && (x < m_rpExtrados[i+1].x))
         {
@@ -389,7 +384,6 @@ double Foil::topSlope(double const &x)
 }
 
 
-
 /**
  * Returns the camber value at a specified chord position, in normalized units.
  * @param &x the chordwise position
@@ -397,7 +391,6 @@ double Foil::topSlope(double const &x)
  */
 double Foil::camber(double x) const
 {
-    //returns the camber value at position x
     for (int i=0; i<MIDPOINTCOUNT-1; i++)
     {
         if ((m_rpMid[i].x <= x) && (x < m_rpMid[i+1].x))
@@ -731,7 +724,7 @@ bool Foil::initFoil()
 *ABCD are assumed to lie in the xy plane
 *@return true and intersection point M if AB and CD intersect inside, false and intersection point M if AB and CD intersect outside
 */
-bool Foil::intersect(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d const &D, Vector3d *M)
+bool Foil::intersect(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d const &D, Vector3d *M) const
 {
     double Det, Det1, Det2, t, u;
     Vector3d AB, CD;

@@ -73,12 +73,12 @@ class Foil : public XflObject
         double camberSlope(double x) const;
         double length() const;
         double area() const;
-        double topSlope(double const &x);
-        double bottomSlope(double const &x);
+        double topSlope(double x) const;
+        double bottomSlope(double x) const;
         double normalizeGeometry();
         void compMidLine(bool bParams);
 
-        bool exportFoil(QTextStream &out);
+        bool exportFoil(QTextStream &out) const;
         bool initFoil();
 
         void copyFoil(Foil const *pSrcFoil, bool bMetaData=true);
@@ -90,9 +90,9 @@ class Foil : public XflObject
         void setLEFlapData(bool bFlap, double xhinge, double yhinge, double angle);
         void setTEFlapData(bool bFlap, double xhinge, double yhinge, double angle);
 
-        bool intersect(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d const &D, Vector3d *M);
+        bool intersect(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d const &D, Vector3d *M) const;
 
-        bool bCenterLine() const{return m_bCenterLine;}
+        bool bCenterLine() const {return m_bCenterLine;}
         void showCenterLine(bool bShow) {m_bCenterLine=bShow;}
 
         void setEditStyle();

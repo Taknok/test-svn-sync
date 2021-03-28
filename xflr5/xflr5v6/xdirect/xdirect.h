@@ -65,12 +65,13 @@ class XDirect : public QWidget
     friend class TwoDWidget;
     friend class XFoilAnalysisDlg;
     friend class BatchDlg;
+    friend class BatchCtrlDlg;
     friend class BatchThreadDlg;
     friend class FoilPolarDlg;
     friend class EditPlrDlg;
     friend class XDirectStyleDlg;
     friend class Settings;
-
+    friend class BatchAbstractDlg;
     friend class XDirectTileWidget;
 
 
@@ -113,6 +114,7 @@ class XDirect : public QWidget
         void onAnimateSingle();
         void onAnimateSpeed(int val);
         void onBatchAnalysis();
+        void onBatchCtrlAnalysis();
         void onCadd();
         void onCpGraph();
         void onCpi();
@@ -221,8 +223,6 @@ class XDirect : public QWidget
         Foil *setFoil(Foil* pFoil=nullptr);
         Polar *setPolar(Polar *pPolar=nullptr);
         OpPoint *setOpp(double Alpha=-123456789.0);
-
-
 
 
 

@@ -49,9 +49,11 @@ class GraphWt;
 class XDirect;
 
 /**
-* @class XFoilAnalysisDlg
+* @class BatchDlg
 * This class provides an interface to manage a batch analysis of Foils.
+* @todo either derive this class from BatchAbstractDlg or remove it altogether since it has been superseded by BatchThreadDlg
 */
+
 class BatchDlg : public QDialog
 {
     Q_OBJECT

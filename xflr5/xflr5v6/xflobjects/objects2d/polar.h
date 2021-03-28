@@ -51,7 +51,7 @@ class Polar : public XflObject
 {
     public:
         Polar();
-        void addOpPointData(OpPoint *pOpPoint);
+        void addOpPointData(OpPoint const*pOpPoint);
 
 
         void addPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
@@ -60,12 +60,12 @@ class Polar : public XflObject
         void resetPolar();
 
 
-        void copySpecification(Polar *pPolar);
-        void copyPolar(Polar *pPolar);
+        void copySpecification(Polar const*pPolar);
+        void copyPolar(Polar const*pPolar);
 
 
-        void replaceOppDataAt(int pos, OpPoint *pOpp);
-        void insertOppDataAt(int pos, OpPoint *pOpp);
+        void replaceOppDataAt(int pos, const OpPoint *pOpp);
+        void insertOppDataAt(int pos, OpPoint const*pOpp);
         void removePoint(int i);
 
         double getCm0() const;
@@ -79,8 +79,8 @@ class Polar : public XflObject
 
         void setPolarType(Xfl::enumPolarType type);
 
-        void setFoilName(QString newFoilName) {m_FoilName = newFoilName;}
-        void setPolarName(QString newPolarName) {m_Name = newPolarName;}
+        void setFoilName(QString const &newFoilName) {m_FoilName = newFoilName;}
+        void setPolarName(QString const &newPolarName) {m_Name = newPolarName;}
 
         void setAutoPolarName();
 

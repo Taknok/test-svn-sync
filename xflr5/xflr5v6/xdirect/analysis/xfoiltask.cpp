@@ -78,7 +78,7 @@ void XFoilTask::run()
     }
 
     if(m_pPolar->polarType()!=Xfl::FIXEDAOAPOLAR) alphaSequence();
-    else                                            ReSequence();
+    else                                          ReSequence();
 
     m_bIsFinished = true;
 
@@ -491,12 +491,11 @@ bool XFoilTask::iterate()
 }
 
 
-
 /** 
  * Sends the analysis messages to the specified text output stream
  * @param str the message to output.
  */
-void XFoilTask::traceLog(QString str)
+void XFoilTask::traceLog(const QString &str)
 {
     if(m_OutStream.device() || m_OutStream.string())
     {

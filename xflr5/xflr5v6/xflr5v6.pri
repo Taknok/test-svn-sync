@@ -1,5 +1,6 @@
 
 SOURCES += \
+    $$PWD/xdirect/analysis/batchabstractdlg.cpp \
     design/afoil.cpp \
     design/afoiltabledlg.cpp \
     design/foiltabledelegate.cpp \
@@ -104,6 +105,7 @@ SOURCES += \
     viewwidgets/twodwidgets/foilwt.cpp \
     viewwidgets/twodwidgets/section2dwt.cpp \
     viewwidgets/wingwt.cpp \
+    xdirect/analysis/batchctrldlg.cpp \
     xdirect/analysis/batchdlg.cpp \
     xdirect/analysis/batchthreaddlg.cpp \
     xdirect/analysis/foilpolardlg.cpp \
@@ -165,8 +167,7 @@ SOURCES += \
 
 
 HEADERS += \
-    $$PWD/xflcore/ls2.h \
-    $$PWD/xflobjects/xflobject.h \
+    $$PWD/xdirect/analysis/batchabstractdlg.h \
     design/afoil.h \
     design/afoiltabledlg.h \
     design/foiltabledelegate.h \
@@ -270,6 +271,7 @@ HEADERS += \
     viewwidgets/twodwidgets/foilwt.h \
     viewwidgets/twodwidgets/section2dwt.h \
     viewwidgets/wingwt.h \
+    xdirect/analysis/batchctrldlg.h \
     xdirect/analysis/batchdlg.h \
     xdirect/analysis/batchthreaddlg.h \
     xdirect/analysis/foilpolardlg.h \
@@ -311,6 +313,7 @@ HEADERS += \
     xflcore/core_enums.h \
     xflcore/gui_enums.h \
     xflcore/gui_params.h \
+    xflcore/ls2.h \
     xflcore/trace.h \
     xflcore/xflcore.h \
     xflcore/xflevents.h \
@@ -335,6 +338,7 @@ HEADERS += \
     xflobjects/objects3d/wingsection.h \
     xflobjects/objects3d/wpolar.h \
     xflobjects/objects_global.h \
+    xflobjects/xflobject.h \
     xinverse/foilselectiondlg.h \
     xinverse/inverseoptionsdlg.h \
     xinverse/pertdlg.h \
