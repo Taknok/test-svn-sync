@@ -36,45 +36,47 @@ class FloatEditDelegate;
 class ReListDlg : public QDialog
 {
     Q_OBJECT
-    friend class BatchDlg;
-    friend class BatchThreadDlg;
 
-public:
-    ReListDlg(QWidget *pParent=nullptr);
-    ~ReListDlg() override;
+    public:
+        ReListDlg(QWidget *pParent=nullptr);
+        ~ReListDlg() override;
 
-    QSize sizeHint() const override {return QSize(600,700);}
+        QSize sizeHint() const override {return QSize(600,700);}
 
-    void initDialog(QVector<double> ReList, QVector<double> MachList, QVector<double> NCritList);
+        void initDialog(QVector<double> ReList, QVector<double> MachList, QVector<double> NCritList);
 
-private slots:
-    void onDelete();
-    void onInsert();
-    void onOK();
-    void onCellChanged(QModelIndex topLeft, QModelIndex botRight);
-    void onButton(QAbstractButton *pButton);
+        QVector<double> const &ReList()    const {return m_ReList;}
+        QVector<double> const &MachList()  const {return m_MachList;}
+        QVector<double> const &NCritList() const {return m_NCritList;}
 
-private:
-    void fillReModel();
-    void setupLayout();
-    void sortData();
-    void sortRe();
-    void keyPressEvent(QKeyEvent *pEvent) override;
-    void resizeEvent(QResizeEvent *pEvent) override;
-    void showEvent(QShowEvent *pEvent) override;
+    private slots:
+        void onDelete();
+        void onInsert();
+        void onOK();
+        void onCellChanged(QModelIndex topLeft, QModelIndex botRight);
+        void onButton(QAbstractButton *pButton);
 
-private:
-    QPushButton *m_pctrlInsert, *m_pctrlDelete;
-    QDialogButtonBox *m_pButtonBox;
+    private:
+        void fillReModel();
+        void setupLayout();
+        void sortData();
+        void sortRe();
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void resizeEvent(QResizeEvent *pEvent) override;
+        void showEvent(QShowEvent *pEvent) override;
+
+    private:
+        QPushButton *m_pctrlInsert, *m_pctrlDelete;
+        QDialogButtonBox *m_pButtonBox;
 
 
-    QTableView *m_pctrlReTable;
-    QStandardItemModel *m_pReModel;
-    FloatEditDelegate *m_pFloatDelegate;
+        QTableView *m_pctrlReTable;
+        QStandardItemModel *m_pReModel;
+        FloatEditDelegate *m_pFloatDelegate;
 
-    QVector<double> m_ReList;
-    QVector<double> m_MachList;
-    QVector<double> m_NCritList;
+        QVector<double> m_ReList;
+        QVector<double> m_MachList;
+        QVector<double> m_NCritList;
 };
 
 #endif // RELISTDLG_H

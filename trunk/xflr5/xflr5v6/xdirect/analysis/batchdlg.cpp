@@ -793,9 +793,9 @@ void BatchDlg::onEditReList()
         XDirect::s_MachList.clear();
         XDirect::s_NCritList.clear();
 
-        XDirect::s_ReList.append(dlg.m_ReList);
-        XDirect::s_MachList.append(dlg.m_MachList);
-        XDirect::s_NCritList.append(dlg.m_NCritList);
+        XDirect::s_ReList.append(dlg.ReList());
+        XDirect::s_MachList.append(dlg.MachList());
+        XDirect::s_NCritList.append(dlg.NCritList());
     }
 }
 

@@ -20,8 +20,8 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
-#ifndef XFLR5APPLICATION_H
-#define XFLR5APPLICATION_H
+
+#pragma once
 
 #include <QApplication>
 #include <globals/mainframe.h>
@@ -31,16 +31,16 @@ class XFLR5App : public QApplication
 {
     Q_OBJECT
 
-public:
-    XFLR5App(int&, char**);
-    bool done() const {return m_bDone;}
+    public:
+        XFLR5App(int&, char**);
+        bool done() const {return m_bDone;}
 
-private:
-    bool event(QEvent *);
-    void addStandardBtnStrings();
-    void parseCmdLine(XFLR5App &xflapp, QString &scriptfilename, bool &bScript, bool &bShowProgress, int &OGLVersion);
+    private:
+        bool event(QEvent *pEvent) override;
+        void addStandardBtnStrings();
+        void parseCmdLine(XFLR5App &xflapp, QString &scriptfilename, bool &bScript, bool &bShowProgress, int &OGLVersion);
 
-    bool m_bDone;
+        bool m_bDone;
 };
 
-#endif // XFLR5APPLICATION_H
+

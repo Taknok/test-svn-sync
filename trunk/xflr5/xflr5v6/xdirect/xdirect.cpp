@@ -19,17 +19,16 @@
 
 *****************************************************************************/
 
-#include <QTimer>
-#include <QAction>
-#include <QMenu>
-#include <QMessageBox>
+
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QGroupBox>
-#include <QThread>
+#include <QMenu>
+#include <QMessageBox>
 #include <QStatusBar>
+#include <QThread>
+#include <QTimer>
 
-#include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
 #include <graph/curve.h>
 #include <graph/graphdlg.h>
@@ -44,6 +43,7 @@
 #include <misc/text/doubleedit.h>
 #include <misc/text/mintextedit.h>
 #include <viewwidgets/graphwidgets/xdirecttilewt.h>
+#include <xdirect/analysis/batchctrldlg.h>
 #include <xdirect/analysis/batchdlg.h>
 #include <xdirect/analysis/batchthreaddlg.h>
 #include <xdirect/analysis/foilpolardlg.h>
@@ -63,6 +63,7 @@
 #include <xdirect/xdirectstyledlg.h>
 #include <xdirect/xml/xmlpolarreader.h>
 #include <xdirect/xml/xmlpolarwriter.h>
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects_global.h>
 #include <xinverse/foilselectiondlg.h>
 
@@ -412,7 +413,6 @@ void XDirect::createOppCurves(OpPoint *pOpp)
             }
         }
     }
-
 }
 
 
@@ -424,13 +424,13 @@ void XDirect::createPolarCurves()
     // curves must be entirely reconstructed each time from the
     // operating points database, since user may have added
     // or deleted points & polars
-    int k;
-    Polar *pPolar;
+
+    Polar *pPolar = nullptr;
     QString str;
 
     for(int ig=0; ig<MAXPOLARGRAPHS; ig++) m_PlrGraph[ig]->deleteCurves();
 
-    for (k=0; k<m_poaPolar->size(); k++)
+    for (int k=0; k<m_poaPolar->size(); k++)
     {
         pPolar = m_poaPolar->at(k);
 
@@ -1146,13 +1146,13 @@ void XDirect::keyPressEvent(QKeyEvent *pEvent)
             onOpPointView();
             break;
         }
-        case Qt::Key_F6:
+/*        case Qt::Key_F6:
         {
             if (pEvent->modifiers().testFlag(Qt::ShiftModifier))        onBatchAnalysis();
             else if (pEvent->modifiers().testFlag(Qt::ControlModifier)) onMultiThreadedBatchAnalysis();
             else                                                        onDefinePolar();
             break;
-        }
+        }*/
         case Qt::Key_F8:
         {
             if(m_bPolarView) return;
@@ -1344,6 +1344,7 @@ void XDirect::loadSettings(QSettings &settings)
 
     FoilPolarDlg::loadSettings(settings);
     Optim2d::loadSettings(settings);
+    BatchCtrlDlg::loadSettings(settings);
 }
 
 
@@ -1612,7 +1613,6 @@ void XDirect::onBatchAnalysis()
 
 /**
  * Launches a multi-threaded batch analysis
- *
  */
 void XDirect::onMultiThreadedBatchAnalysis()
 {
@@ -1675,15 +1675,69 @@ void XDirect::onMultiThreadedBatchAnalysis()
     s_pMainFrame->updateOppListBox();
 
     setOpp();
-
     setControls();
-
     updateView();
 
     emit projectModified();
-
 }
 
+
+/**
+ * Launches a batch analysis for control polars
+ */
+void XDirect::onBatchCtrlAnalysis()
+{
+    if(!m_pCurFoil)         return;
+
+    m_ppbAnalyze->setEnabled(false);
+
+    BatchCtrlDlg *pBatchCtrlDlg  = new BatchCtrlDlg;
+
+    pBatchCtrlDlg->m_pCurFoil  = m_pCurFoil;
+    pBatchCtrlDlg->m_bAlpha    = true;
+    pBatchCtrlDlg->m_AlphaMin  = m_Alpha;
+    pBatchCtrlDlg->m_AlphaMax  = m_AlphaMax;
+    pBatchCtrlDlg->m_AlphaInc  = m_AlphaDelta;
+    pBatchCtrlDlg->m_ClMin     = m_Cl;
+    pBatchCtrlDlg->m_ClMax     = m_ClMax;
+    pBatchCtrlDlg->m_ClInc     = m_ClDelta;
+    pBatchCtrlDlg->m_ReMin     = m_Reynolds;
+    pBatchCtrlDlg->m_ReMax     = m_ReynoldsMax;
+    pBatchCtrlDlg->m_ReInc     = m_ReynoldsDelta;
+
+    pBatchCtrlDlg->m_bFromList = m_bFromList;
+    pBatchCtrlDlg->m_bFromZero = s_bFromZero;
+    pBatchCtrlDlg->initDialog();
+
+    pBatchCtrlDlg->exec();
+
+    m_Reynolds         = pBatchCtrlDlg->m_ReMin;
+    m_ReynoldsMax      = pBatchCtrlDlg->m_ReMax;
+    m_ReynoldsDelta    = pBatchCtrlDlg->m_ReInc;
+    m_Alpha            = pBatchCtrlDlg->m_AlphaMin;
+    m_AlphaMax         = pBatchCtrlDlg->m_AlphaMax;
+    m_AlphaDelta       = pBatchCtrlDlg->m_AlphaInc;
+    m_Cl               = pBatchCtrlDlg->m_ClMin;
+    m_ClMax            = pBatchCtrlDlg->m_ClMax;
+    m_ClDelta          = pBatchCtrlDlg->m_ClInc;
+    s_bAlpha           = pBatchCtrlDlg->m_bAlpha;
+    m_bFromList        = pBatchCtrlDlg->m_bFromList;
+    s_bFromZero        = pBatchCtrlDlg->m_bFromZero;
+
+    delete pBatchCtrlDlg;
+
+    setPolar();
+    s_pMainFrame->updatePolarListBox();
+    m_ppbAnalyze->setEnabled(true);
+
+    s_pMainFrame->updateOppListBox();
+
+    setOpp();
+    setControls();
+    updateView();
+
+    emit projectModified();
+}
 
 
 /**
@@ -4254,6 +4308,7 @@ void XDirect::saveSettings(QSettings &settings)
 
     FoilPolarDlg::saveSettings(settings);
     Optim2d::saveSettings(settings);
+    BatchCtrlDlg::saveSettings(settings);
 }
 
 
@@ -4938,6 +4993,7 @@ void XDirect::updateView()
         if(m_bResetCurves) createPolarCurves();
     }
     s_pMainFrame->m_pXDirectTileWidget->update();
+    update();
 }
 
 

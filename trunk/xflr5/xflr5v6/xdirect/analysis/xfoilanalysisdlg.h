@@ -23,15 +23,14 @@
  * This file implements the interface for the analysis of the active Foil and Polar objects in QXDirect.
 */
 
-#ifndef XFOILANALYSISDLG_H
-#define XFOILANALYSISDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QShowEvent>
 #include <QString>
 #include <QFile>
 #include <QTextEdit>
-#include <QPushButton>
+#include <QDialogButtonBox>
 #include <QCheckBox>
 
 #include <xdirect/analysis/xfoiltask.h>
@@ -52,58 +51,60 @@ class XFoilAnalysisDlg : public QDialog
     friend class MainFrame;
     friend class XDirect;
 
-public:
-    XFoilAnalysisDlg(QWidget *pParent=nullptr);
-    ~XFoilAnalysisDlg();
+    public:
+        XFoilAnalysisDlg(QWidget *pParent=nullptr);
+        ~XFoilAnalysisDlg();
 
-    void initDialog();
+        void initDialog();
 
-    void handleXFoilTaskEvent(const XFoilTaskEvent *pEvent);
-    void customEvent(QEvent *pEvent);
+        void handleXFoilTaskEvent(const XFoilTaskEvent *pEvent);
 
-private slots:
-    void onCancelAnalysis();
-    void onLogFile(bool bChecked);
-    void onSkipPoint();
-    void onProgress();
+    private slots:
+        void onCancelAnalysis();
+        void onLogFile();
+        void onSkipPoint();
+        void onProgress();
+        void onButton(QAbstractButton *pButton);
 
-private:
-    void accept();
-    void reject();
-    void showEvent(QShowEvent *event);
-    void hideEvent(QHideEvent *event);
+    private:
+        void accept() override;
+        void reject() override;
+        void showEvent(QShowEvent *pEvent) override;
+        void hideEvent(QHideEvent *pEvent) override;
+        void customEvent(QEvent *pEvent) override;
 
-    void resetCurves();
-    void setAlpha(double AlphaMin, double AlphaMax, double DeltaAlpha);
-    void setCl(double ClMin, double ClMax, double DeltaCl);
-    void setRe(double ReMin, double ReMax, double DeltaRe);
-    void setFileHeader();
-    void setupLayout();
-    void analyze();
-
-
-    //variables
-    GraphWt * m_pGraphWidget;
-    QTextEdit *m_pctrlTextOutput;
-    QPushButton* m_pctrlCancel, *m_pctrlSkip;
-    QCheckBox* m_pctrlLogFile;
+        void resetCurves();
+        void setAlpha(double AlphaMin, double AlphaMax, double DeltaAlpha);
+        void setCl(double ClMin, double ClMax, double DeltaCl);
+        void setRe(double ReMin, double ReMax, double DeltaRe);
+        void setFileHeader();
+        void setupLayout();
+        void analyze();
 
 
-    bool m_bAlpha;                 /**< true if the analysis should be performed for a range of aoa, false if for a range of licf coefficient.>*/
-    bool m_bErrors;                /**< true if some points are unconverged. Used by the calling class to know if the window should be kept visible at the end of the analysis.>*/
+        //variables
+        GraphWt * m_pGraphWidget;
+        QTextEdit *m_pteTextOutput;
 
-    double m_ReMin, m_ReMax, m_ReDelta;  /**< The range of Re values to analyze>*/
+        QCheckBox* m_pchLogFile;
+        QPushButton *m_ppbSkip;
+        QDialogButtonBox *m_pButtonBox;
 
-    double m_AlphaMin, m_AlphaMax, m_AlphaDelta;  /**< The range of aoa for a Type 1/2/3 Polar >*/
-    double m_ClMin, m_ClMax, m_ClDelta;           /**< The range of lift coefficient for a Type 1/2/3 Polar>*/
+        bool m_bAlpha;                 /**< true if the analysis should be performed for a range of aoa, false if for a range of licf coefficient.>*/
+        bool m_bErrors;                /**< true if some points are unconverged. Used by the calling class to know if the window should be kept visible at the end of the analysis.>*/
 
-    QFile *m_pXFile;               /**< a pointer to the log file>*/
-    Graph *m_pRmsGraph;           /**< a pointer to the output graph >*/
+        double m_ReMin, m_ReMax, m_ReDelta;  /**< The range of Re values to analyze>*/
 
-    XFoilTask *m_pXFoilTask;       /**< A pointer to the instance of the XFoilTask associated to this analysis. >*/
+        double m_AlphaMin, m_AlphaMax, m_AlphaDelta;  /**< The range of aoa for a Type 1/2/3 Polar >*/
+        double m_ClMin, m_ClMax, m_ClDelta;           /**< The range of lift coefficient for a Type 1/2/3 Polar>*/
 
-    static QByteArray s_Geometry;
-    static XDirect* s_pXDirect;     /**< a void pointer to the instance of the QXDirect object >*/
+        QFile *m_pXFile;               /**< a pointer to the log file>*/
+        Graph *m_pRmsGraph;           /**< a pointer to the output graph >*/
+
+        XFoilTask *m_pXFoilTask;       /**< A pointer to the instance of the XFoilTask associated to this analysis. >*/
+
+        static QByteArray s_Geometry;
+        static XDirect* s_pXDirect;     /**< a void pointer to the instance of the QXDirect object >*/
 };
 
-#endif
+

@@ -40,6 +40,7 @@ class XFoilAdvancedDlg : public QDialog
     friend class XDirect;
     friend class BatchThreadDlg;
     friend class BatchDlg;
+    friend class BatchAbstractDlg;
 
     public:
         XFoilAdvancedDlg(QWidget *pParent=nullptr);

@@ -21,8 +21,7 @@
 
 /** @file This file implements the management task of an XFoil calculation. Used in multithreaded analysis. */
 
-#ifndef XFOILTASK_H
-#define XFOILTASK_H
+#pragma once
 
 #include <QRunnable>
 
@@ -51,67 +50,67 @@ struct FoilAnalysis
 */
 class XFoilTask : public QRunnable
 {
-public:
-    XFoilTask(QObject *pParent = nullptr);
+    public:
+        XFoilTask(QObject *pParent = nullptr);
 
 
-public:
-    void run() override;
-    bool alphaSequence();
-    bool ReSequence();
-    bool isFinished(){return m_bIsFinished;}
+    public:
+        void run() override;
+        bool alphaSequence();
+        bool ReSequence();
+        bool isFinished() const {return m_bIsFinished;}
 
-    bool initializeTask(FoilAnalysis &pFoilAnalysis, bool bViscous, bool bInitBL, bool bFromZero);
-    bool initializeXFoilTask(const Foil *pFoil, Polar *pPolar, bool bViscous, bool bInitBL, bool bFromZero);
-    bool iterate();
+        bool initializeTask(FoilAnalysis &pFoilAnalysis, bool bViscous, bool bInitBL, bool bFromZero);
+        bool initializeXFoilTask(const Foil *pFoil, Polar *pPolar, bool bViscous, bool bInitBL, bool bFromZero);
+        bool iterate();
 
-    void setSequence(bool bAlpha, double SpMin, double SpMax, double SpInc);
-    void setReRange(double ReMin, double ReMax, double ReInc);
-    void traceLog(QString str);
+        void setSequence(bool bAlpha, double SpMin, double SpMax, double SpInc);
+        void setReRange(double ReMin, double ReMax, double ReInc);
+        void traceLog(QString const &str);
 
-    void setGraphPointers(QVector<double> *x0, QVector<double> *y0, QVector<double> *x1, QVector<double> *y1)
-    {
-        m_x0 = x0;
-        m_y0 = y0;
-        m_x1 = x1;
-        m_y1 = y1;
-    }
+        void setGraphPointers(QVector<double> *x0, QVector<double> *y0, QVector<double> *x1, QVector<double> *y1)
+        {
+            m_x0 = x0;
+            m_y0 = y0;
+            m_x1 = x1;
+            m_y1 = y1;
+        }
 
-    void addXFoilData(OpPoint *pOpp, XFoil *pXFoil, const Foil *pFoil);
+        void addXFoilData(OpPoint *pOpp, XFoil *pXFoil, const Foil *pFoil);
 
-    static void cancelTask() {s_bCancel=true;}
-    static void setCancelled(bool bCancelled) {s_bCancel=bCancelled;}
+        static void cancelTask() {s_bCancel=true;}
+        static void setCancelled(bool bCancelled) {s_bCancel=bCancelled;}
 
-    static bool s_bSkipPolar;
-    static bool s_bCancel;          /**< true if the user has asked to cancel the analysis */
-    static bool s_bAutoInitBL;      /**< true if the BL initialization is left to the code's decision */
-    static int s_IterLim;
-    static bool s_bSkipOpp;
+        static bool s_bSkipPolar;
+        static bool s_bCancel;          /**< true if the user has asked to cancel the analysis */
+        static bool s_bAutoInitBL;      /**< true if the BL initialization is left to the code's decision */
+        static int s_IterLim;
+        static bool s_bSkipOpp;
 
-    int m_Iterations;          /**< The number of iterations already performed */
-    bool m_bIsFinished;        /**< true if the calculation is over */
-    XFoil m_XFoilInstance;     /**< An instance of the XFoil class specific for this object */
+    public:
+        int m_Iterations;          /**< The number of iterations already performed */
+        bool m_bIsFinished;        /**< true if the calculation is over */
+        XFoil m_XFoilInstance;     /**< An instance of the XFoil class specific for this object */
 
-    QTextStream m_OutStream;
-    QString m_OutMessage;
-    QString m_XFoilLog;
-    QTextStream m_XFoilStream;
+        QTextStream m_OutStream;
+        QString m_OutMessage;
+        QString m_XFoilLog;
+        QTextStream m_XFoilStream;
 
-    //    Curve Data
-    QVector<double> *m_x0, *m_x1, *m_y0,*m_y1;
+        //    Curve Data
+        QVector<double> *m_x0, *m_x1, *m_y0,*m_y1;
 
 
-    double m_AlphaMin, m_AlphaMax, m_AlphaInc;
-    double m_ClMin, m_ClMax, m_ClInc;
-    double m_ReMin, m_ReMax, m_ReInc;
+        double m_AlphaMin, m_AlphaMax, m_AlphaInc;
+        double m_ClMin, m_ClMax, m_ClInc;
+        double m_ReMin, m_ReMax, m_ReInc;
 
-    bool m_bAlpha, m_bFromZero, m_bInitBL, m_bErrors;
+        bool m_bAlpha, m_bFromZero, m_bInitBL, m_bErrors;
 
-    QObject *m_pParent;
+        QObject *m_pParent;
 
-private:
-    Foil const*m_pFoil;           /**< A pointer to the instance of the Foil object for which the calculation is performed */
-    Polar *m_pPolar;         /**< A pointer to the instance of the Polar object for which the calculation is performed */
+    private:
+        Foil const*m_pFoil;       /**< A pointer to the instance of the Foil object for which the calculation is performed */
+        Polar *m_pPolar;         /**< A pointer to the instance of the Polar object for which the calculation is performed */
 };
 
-#endif // XFOILTASK_H

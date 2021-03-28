@@ -2340,6 +2340,11 @@ void MainFrame::createXDirectActions()
     m_pMultiThreadedBatchAct->setStatusTip(tr("Launches a batch of analysis calculation using all available computer CPU cores"));
     connect(m_pMultiThreadedBatchAct, SIGNAL(triggered()), m_pXDirect, SLOT(onMultiThreadedBatchAnalysis()));
 
+    m_pBatchCtrlAct = new QAction(tr("Batch Ctrl Analysis")/*+"\tCtrl+F6"*/, this);
+    m_pBatchCtrlAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_F6));
+    m_pBatchCtrlAct->setStatusTip(tr("Experimental"));
+    connect(m_pBatchCtrlAct, SIGNAL(triggered()), m_pXDirect, SLOT(onBatchCtrlAnalysis()));
+
     m_pDeletePolar = new QAction(tr("Delete"), this);
     m_pDeletePolar->setStatusTip(tr("Deletes the currently selected polar"));
     connect(m_pDeletePolar, SIGNAL(triggered()), m_pXDirect, SLOT(onDeleteCurPolar()));
@@ -2548,6 +2553,9 @@ void MainFrame::createXDirectMenus()
         m_pXFoilAnalysisMenu->addAction(m_pDefinePolarAct);
         m_pXFoilAnalysisMenu->addAction(m_pBatchAnalysisAct);
         m_pXFoilAnalysisMenu->addAction(m_pMultiThreadedBatchAct);
+#ifdef QT_DEBUG
+        m_pXFoilAnalysisMenu->addAction(m_pBatchCtrlAct);
+#endif
         m_pXFoilAnalysisMenu->addSeparator();
         m_pXFoilAnalysisMenu->addAction(m_pImportXMLFoilAnalysis);
         m_pXFoilAnalysisMenu->addSeparator();
@@ -6785,11 +6793,11 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         ar << pPolar->m_bIsVisible << false;*/
         pPolar->theStyle().serializeXfl(ar, bIsStoring);
 
-        if      (pPolar->m_PolarType==Xfl::FIXEDSPEEDPOLAR) ar<<1;
+        if     (pPolar->m_PolarType==Xfl::FIXEDSPEEDPOLAR)  ar<<1;
         else if(pPolar->m_PolarType==Xfl::FIXEDLIFTPOLAR)   ar<<2;
         else if(pPolar->m_PolarType==Xfl::RUBBERCHORDPOLAR) ar<<3;
         else if(pPolar->m_PolarType==Xfl::FIXEDAOAPOLAR)    ar<<4;
-        else                                                  ar<<1;
+        else                                                ar<<1;
 
         ar << pPolar->m_MaType << pPolar->m_ReType;
         ar << pPolar->m_Reynolds << pPolar->m_Mach;

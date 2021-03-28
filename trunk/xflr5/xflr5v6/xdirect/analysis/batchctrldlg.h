@@ -1,7 +1,7 @@
 /****************************************************************************
 
-    BatchThreadDlg Class
-    Copyright (C) 2003-2016 Andre Deperrois
+    BatchCtrlDlg Class
+    Copyright (C) 2003-201* Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,20 +22,16 @@
 
 #pragma once
 
-
-/** @file
- * This file implements the multi-threaded batch foil analysis
-*/
-
+#include <QSettings>
 
 #include "batchabstractdlg.h"
-#include <xflcore/core_enums.h>
 
+class DoubleEdit;
 
 /**
- * @brief This class implements an interface to perform a multi-threaded batch foil analysis.
+ * @brief Extension of the BacthThreadDlg class to include flaps and other control parameters
  */
-class BatchThreadDlg : public BatchAbstractDlg
+class BatchCtrlDlg : public BatchAbstractDlg
 {
     Q_OBJECT
     friend class XDirect;
@@ -43,30 +39,29 @@ class BatchThreadDlg : public BatchAbstractDlg
     friend class XFoilTask;
 
     public:
-        BatchThreadDlg(QWidget *pParent=nullptr);
-        ~BatchThreadDlg();
+        BatchCtrlDlg(QWidget *pParent=nullptr);
+
+        void initDialog() override;
+
+        static void loadSettings(QSettings &settings);
+        static void saveSettings(QSettings &settings);
 
     private:
-        void cleanUp() override;
-        void customEvent(QEvent *pEvent) override;
-        void handleXFoilTaskEvent(const XFoilTaskEvent *pEvent);
         void setupLayout() override;
-        void startAnalysis();
-        void startThread();
-        void updateOutput(const QString &str);
+        void readParams() override;
+        void startAnalyses();
+        void customEvent(QEvent * pEvent) override;
 
     private slots:
         void onAnalyze() override;
-        void onTimerEvent();
 
     private:
-        int m_nTaskStarted;         /**< the number of started tasks */
-        int m_nTaskDone;            /**< the number of finished tasks */
-        int m_nAnalysis;            /**< the number of analysis pairs to run */
+        DoubleEdit *m_pdeXHinge, *m_pdeYHinge;
+        DoubleEdit *m_pdeAngleMin, *m_pdeAngleMax, *m_pdeAngleDelta;
 
-        QTimer *m_pTimer;
-
-        QVector<FoilAnalysis *> m_AnalysisPair;  /**< the list of all analysis to be performed. Once performed, an analysis is removed from the list. */
-
+        static double s_XHinge, s_YHinge;
+        static double s_AngleMin, s_AngleMax, s_AngleDelta;
 };
+
+
 

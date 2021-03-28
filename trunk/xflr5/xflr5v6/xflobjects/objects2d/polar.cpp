@@ -33,12 +33,12 @@ Polar::Polar()
 {
     m_theStyle.m_bIsVisible = true;
     m_theStyle.m_PointStyle = Line::NOSYMBOL;
-    m_theStyle.m_Stipple = Line::SOLID;// = PS_SOLID
+    m_theStyle.m_Stipple = Line::SOLID;
     m_theStyle.m_Width = 2;
 
     m_theStyle.m_Color.setHsv(QRandomGenerator::global()->bounded(360),
-               QRandomGenerator::global()->bounded(55)+30,
-               QRandomGenerator::global()->bounded(55)+150);
+                              QRandomGenerator::global()->bounded(55)+30,
+                              QRandomGenerator::global()->bounded(55)+150);
 
     m_ASpec = 0.0;
     m_PolarType = Xfl::FIXEDSPEEDPOLAR;
@@ -51,7 +51,6 @@ Polar::Polar()
     m_XBot     = 1.0;
     m_FoilName.clear();
 }
-
 
 
 /**
@@ -205,17 +204,16 @@ void Polar::resetPolar()
  *
  * @param *pPOpPoint a pointer to the foil's operating point from which the data is to be extracted
  */
-void Polar::addOpPointData(OpPoint *pOpPoint)
+void Polar::addOpPointData(const OpPoint *pOpPoint)
 {
     if(!pOpPoint->m_bViscResults) return;
 
     bool bInserted = false;
-    int i;
     int size = m_Alpha.size();
 
     if(size)
     {
-        for (i=0; i<size; i++)
+        for (int i=0; i<size; i++)
         {
             if(m_PolarType<Xfl::FIXEDAOAPOLAR)
             {
@@ -263,7 +261,7 @@ void Polar::addOpPointData(OpPoint *pOpPoint)
 }
 
 
-void Polar::replaceOppDataAt(int pos, OpPoint *pOpp)
+void Polar::replaceOppDataAt(int pos, OpPoint const*pOpp)
 {
     if(pos<0 || pos>= m_Alpha.size()) return;
 
@@ -301,19 +299,19 @@ void Polar::replaceOppDataAt(int pos, OpPoint *pOpp)
 }
 
 
-void Polar::insertOppDataAt(int i, OpPoint *pOpp)
+void Polar::insertOppDataAt(int i, const OpPoint *pOpp)
 {
     m_Alpha.insert(i, pOpp->aoa());
-    m_Cd.insert(i, pOpp->Cd);
-    m_Cdp.insert(i, pOpp->Cdp);
-    m_Cl.insert(i, pOpp->Cl);
-    m_Cm.insert(i, pOpp->Cm);
-    m_XTr1.insert(i, pOpp->Xtr1);
-    m_XTr2.insert(i, pOpp->Xtr2);
-    m_HMom.insert(i, pOpp->m_TEHMom);
-    m_Cpmn.insert(i, pOpp->Cpmn);
-    m_ClCd.insert(i, pOpp->Cl/pOpp->Cd);
-    m_XCp.insert(i, pOpp->m_XCP);
+    m_Cd.insert(   i, pOpp->Cd);
+    m_Cdp.insert(  i, pOpp->Cdp);
+    m_Cl.insert(   i, pOpp->Cl);
+    m_Cm.insert(   i, pOpp->Cm);
+    m_XTr1.insert( i, pOpp->Xtr1);
+    m_XTr2.insert( i, pOpp->Xtr2);
+    m_HMom.insert( i, pOpp->m_TEHMom);
+    m_Cpmn.insert( i, pOpp->Cpmn);
+    m_ClCd.insert( i, pOpp->Cl/pOpp->Cd);
+    m_XCp.insert(  i, pOpp->m_XCP);
 
 //  Bug  if(pOpp->Cl>0.0) m_RtCl.insert(i, 1.0/sqrt(pOpp->Cl));
     if(pOpp->Cl>0.0) m_RtCl.insert(i, sqrt(pOpp->Cl));
@@ -348,7 +346,6 @@ void Polar::insertOppDataAt(int i, OpPoint *pOpp)
  * The index used to insert the data is the aoa for type 1, 2 and 3 polars, and the freestream velocity for type 4 polars.
  * If a point with identical index exists, the data is replaced.
  * If not, the data is inserted for this index.
- *
  */
 void Polar::addPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm, double Xtr1,
                      double Xtr2, double HMom, double Cpmn, double Reynolds, double XCp)
@@ -377,7 +374,7 @@ void Polar::addPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm, 
  * Copies the polar's data from an existing polar
  * @param pPolar a pointer to the instance of the reference Polar object from which the data should be copied
  */
-void Polar::copyPolar(Polar *pPolar)
+void Polar::copyPolar(const Polar *pPolar)
 {
     copySpecification(pPolar);
 
@@ -411,7 +408,7 @@ void Polar::copyPolar(Polar *pPolar)
  * Copies the polar's data from an existing polar
  * @param pPolar a pointer to the instance of the reference Polar object from which the data should be copied
  */
-void Polar::copySpecification(Polar *pPolar)
+void Polar::copySpecification(const Polar *pPolar)
 {
     m_PolarType = pPolar->polarType();
     m_ReType    = pPolar->ReType();

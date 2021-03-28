@@ -21,6 +21,7 @@
 
 #include <QGridLayout>
 #include <QLabel>
+#include <QPushButton>
 
 #include "xdirectstyledlg.h"
 #include <xdirect/xdirect.h>
