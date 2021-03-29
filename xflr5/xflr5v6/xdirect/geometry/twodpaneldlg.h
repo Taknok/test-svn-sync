@@ -20,8 +20,7 @@
 *****************************************************************************/
 
 
-#ifndef TWODPANELDLG_H
-#define TWODPANELDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -39,47 +38,46 @@ class TwoDPanelDlg : public QDialog
     friend class AFoil;
     friend class XDirect;
 
-private slots:
-    void onApply();
-    void onOK();
-    void onChanged();
-    void onButton(QAbstractButton *pButton);
+    private slots:
+        void onApply();
+        void onOK();
+        void onChanged();
+        void onButton(QAbstractButton *pButton);
 
-public:
-    TwoDPanelDlg(QWidget *pParent);
+    public:
+        TwoDPanelDlg(QWidget *pParent);
 
-    static XFoil *s_pXFoil;
+        static XFoil *s_pXFoil;
 
-    void initDialog();
+        void initDialog();
 
-private:
-    void keyPressEvent(QKeyEvent *pEvent);
-    void setupLayout();
-    void readParams();
+    private:
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void setupLayout();
+        void readParams();
 
-    QDialogButtonBox *m_pButtonBox;
+        QDialogButtonBox *m_pButtonBox;
 
-    IntEdit  *m_pctrlNPanels;
-    DoubleEdit *m_pctrlCVpar,  *m_pctrlCTErat, *m_pctrlCTRrat;
-    DoubleEdit *m_pctrlXsRef1, *m_pctrlXsRef2, *m_pctrlXpRef1, *m_pctrlXpRef2;
+        IntEdit  *m_pieNPanels;
+        DoubleEdit *m_pdeCVpar,  *m_pdeCTErat, *m_pdeCTRrat;
+        DoubleEdit *m_pdeXsRef1, *m_pdeXsRef2, *m_pdeXpRef1, *m_pdeXpRef2;
 
-    bool m_bApplied;
-    bool m_bModified;
+        bool m_bApplied;
+        bool m_bModified;
 
-    int npan;
-    double cvpar;
-    double cterat;
-    double ctrrat;
-    double xsref1;
-    double xsref2;
-    double xpref1;
-    double xpref2;
+        int npan;
+        double cvpar;
+        double cterat;
+        double ctrrat;
+        double xsref1;
+        double xsref2;
+        double xpref1;
+        double xpref2;
 
-    Foil *m_pBufferFoil;
-    Foil const*m_pMemFoil;
+        Foil *m_pBufferFoil;
+        Foil const*m_pMemFoil;
 
-    QWidget *m_pParent;
+        QWidget *m_pParent;
 };
 
-#endif // TWODPANELDLG_H
 

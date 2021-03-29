@@ -20,13 +20,13 @@
 *****************************************************************************/
 
 
-#ifndef FOILCOORDDLG_H
-#define FOILCOORDDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QPushButton>
 #include <QTableView>
 #include <QStandardItemModel>
+#include <QDialogButtonBox>
 
 class FloatEditDelegate;
 class Foil;
@@ -38,43 +38,45 @@ class FoilCoordDlg : public QDialog
     friend class XDirect;
     friend class AFoil;
 
-public:
-    FoilCoordDlg(QWidget *pParent);
-    ~FoilCoordDlg();
+    public:
+        FoilCoordDlg(QWidget *pParent);
+        ~FoilCoordDlg();
 
-    void initDialog();
+        void initDialog();
 
-private slots:
-    void onDeletePoint();
-    void onInsertPoint();
-    void onRestore();
-    void onApply();
-    void onCellChanged(QWidget *);
-    void onItemClicked(QModelIndex);
+    private slots:
+        void onDeletePoint();
+        void onInsertPoint();
+        void onRestore();
+        void onApply();
+        void onCellChanged(QWidget *);
+        void onItemClicked(QModelIndex);
+        void onButton(QAbstractButton *pButton);
 
 
-private:
-    void fillList();
-    void setSelection(int sel);
-    void setupLayout();
-    void readSectionData(int sel, double &X, double &Y);
-    void keyPressEvent(QKeyEvent *event);
-    void showEvent(QShowEvent *event);
-    void resizeEvent(QResizeEvent *event);
+    private:
+        void fillList();
+        void setSelection(int sel);
+        void setupLayout();
+        void readSectionData(int sel, double &X, double &Y);
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void showEvent(QShowEvent *pEvent) override;
+        void resizeEvent(QResizeEvent *pEvent) override;
+        QSize sizeHint() const override {return QSize(450,750);}
 
-private:
-    QPushButton *m_pctrlInsertPoint, *m_pctrlDeletePoint, *m_pctrlRestore, *m_pctrlApply;
-    QPushButton *OKButton, *CancelButton;
+    private:
+        QDialogButtonBox *m_pButtonBox;
+        QPushButton *m_ppbInsertPoint, *m_ppbDeletePoint;
 
-    QTableView *m_pctrlCoordTable;
-    QStandardItemModel *m_pCoordModel;
-    FloatEditDelegate *m_pFloatDelegate;
+        QTableView *m_ptvCoordTable;
+        QStandardItemModel *m_pCoordModel;
+        FloatEditDelegate *m_pFloatDelegate;
 
-    Foil const *m_pMemFoil;
-    Foil * m_pBufferFoil;
+        Foil const *m_pMemFoil;
+        Foil * m_pBufferFoil;
 
-    bool m_bApplied, m_bModified;
-    QWidget *m_pParent;
+        bool m_bApplied, m_bModified;
+        QWidget *m_pParent;
 };
 
-#endif // FOILCOORDDLG_H
+

@@ -20,8 +20,7 @@
 *****************************************************************************/
 
 
-#ifndef FOILPOLARDLG_H
-#define FOILPOLARDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QRadioButton>
@@ -41,83 +40,83 @@ class FoilPolarDlg : public QDialog
 {
     Q_OBJECT
 
-public:
-    FoilPolarDlg(QWidget *pParent=nullptr);
+    public:
+        FoilPolarDlg(QWidget *pParent=nullptr);
 
-    void readParams();
-    void initDialog();
-    void setPlrName();
-    void setupLayout();
-    void connectSignals();
-    void setDensity();
+        void readParams();
+        void initDialog();
+        void setPlrName();
+        void setupLayout();
+        void connectSignals();
+        void setDensity();
 
-    void keyPressEvent(QKeyEvent *pEvent);
-    void showEvent(QShowEvent *pEvent);
-    void hideEvent(QHideEvent *pEvent);
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void showEvent(QShowEvent *pEvent) override;
+        void hideEvent(QHideEvent *pEvent) override;
 
-    static void loadSettings(QSettings &settings);
-    static void saveSettings(QSettings &settings);
+        static void loadSettings(QSettings &settings);
+        static void saveSettings(QSettings &settings);
 
-public slots:
-    void onAutoName();
-    void onOK();
-    void onPolarType();
-    void onNameChanged();
-    void editingFinished();
-    void onFluiUnit();
-    void onCalcReynolds();
-    void onButton(QAbstractButton *pButton);
+    public slots:
+        void onAutoName();
+        void onOK();
+        void onPolarType();
+        void onNameChanged();
+        void editingFinished();
+        void onFluiUnit();
+        void onCalcReynolds();
+        void onButton(QAbstractButton *pButton);
 
-public:
+    public:
 
-    QRadioButton *m_pctrlAuto1;
-    QRadioButton *m_pctrlAuto2;
+        QRadioButton *m_pctrlAuto1;
+        QRadioButton *m_pctrlAuto2;
 
-    QLabel *m_plabRe, *m_plabReUnit;
-    QLabel *m_plabMach;
+        QLabel *m_plabRe, *m_plabReUnit;
+        QLabel *m_plabMach;
 
-    QLineEdit *m_pleAnalysisName;
-    QRadioButton *m_rbtype1;
-    QRadioButton *m_rbtype2;
-    QRadioButton *m_rbtype3;
-    QRadioButton *m_rbtype4;
+        QLineEdit *m_pleAnalysisName;
+        QRadioButton *m_rbtype1;
+        QRadioButton *m_rbtype2;
+        QRadioButton *m_rbtype3;
+        QRadioButton *m_rbtype4;
 
-    DoubleEdit *m_pdeReynolds;
-    DoubleEdit *m_pdeMach;
+        DoubleEdit *m_pdeReynolds;
+        DoubleEdit *m_pdeMach;
 
-    DoubleEdit *m_pdeChord, *m_pdeMass, *m_pdeSpan;
-    QLabel *m_plabLengthUnit1, *m_plabLengthUnit2, *m_plabMassUnit;
+        DoubleEdit *m_pdeChord, *m_pdeMass, *m_pdeSpan;
+        QLabel *m_plabLengthUnit1, *m_plabLengthUnit2, *m_plabMassUnit;
 
-    QRadioButton *m_prbFluidUnit1, *m_prbFluidUnit2;
-    QLabel *m_plabRho, *m_plabNu, *m_plabViscosityUnit, *m_plabDensityUnit;
-    DoubleEdit *m_pdeDensity, *m_pdeViscosity;
+        QRadioButton *m_prbFluidUnit1, *m_prbFluidUnit2;
+        QLabel *m_plabRho, *m_plabNu, *m_plabViscosityUnit, *m_plabDensityUnit;
+        DoubleEdit *m_pdeDensity, *m_pdeViscosity;
 
-    QDialogButtonBox *m_pButtonBox;
-
-
-    DoubleEdit *m_pdeNCrit;
-    DoubleEdit *m_pdeTopTrans;
-    DoubleEdit *m_pdeBotTrans;
-
-    bool  m_bAutoName;
-    int m_MaTypDef, m_ReTypDef;
-    Xfl::enumPolarType m_PolarType;
-    double m_Reynolds;
-    double m_Mach;
-    double m_ReDef;
-    double m_ASpec;
-    double m_XTop, m_XBot;
-    double m_NCrit;
-    QString m_FoilName;
-    QString m_PlrName;
-
-    static int s_UnitType;
-    static double s_Viscosity, s_Density;
-    static double s_Chord, s_Span, s_Mass;
+        QDialogButtonBox *m_pButtonBox;
 
 
-    static QByteArray s_WindowGeometry;
+        DoubleEdit *m_pdeNCrit;
+        DoubleEdit *m_pdeTopTrans;
+        DoubleEdit *m_pdeBotTrans;
+
+        bool  m_bAutoName;
+        int m_MaTypDef, m_ReTypDef;
+        Xfl::enumPolarType m_PolarType;
+        double m_Reynolds;
+        double m_Mach;
+        double m_ReDef;
+        double m_ASpec;
+        double m_XTop, m_XBot;
+        double m_NCrit;
+        QString m_FoilName;
+        QString m_PlrName;
+
+        static int s_UnitType;
+        static double s_Viscosity, s_Density;
+        static double s_Chord, s_Span, s_Mass;
+
+
+        static QByteArray s_WindowGeometry;
 
 };
 
-#endif // FOILPOLARDLG_H
+

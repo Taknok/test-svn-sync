@@ -40,30 +40,30 @@ class PreferencesDlg : public QDialog
     friend class MainFrame;
     Q_OBJECT
 
-public:
-    PreferencesDlg(QWidget *pParent);
+    public:
+        PreferencesDlg(QWidget *pParent);
 
-private:
-    void setupLayout();
-    void keyPressEvent(QKeyEvent *event);
+    private:
+        void setupLayout();
+        void keyPressEvent(QKeyEvent *pEvent) override;
 
-private slots:
-    void onPage(int iRow);
-    void onButton(QAbstractButton *pButton);
-    void onClose();
+    private slots:
+        void onPage(int iRow);
+        void onButton(QAbstractButton *pButton);
+        void onClose();
 
-private:
-    QListWidget *m_pTabWidget;
-    QStackedWidget *m_pPageStack;
+    private:
+        QListWidget *m_plwItems;
+        QStackedWidget *m_pPageStack;
 
-    SaveOptions *m_pSaveOptionsWt;
-    LanguageWt *m_pLanguageWt;
-    Units *m_pUnitsWt;
-    Settings *m_pDisplayOptionsWt;
+        SaveOptions *m_pSaveOptionsWt;
+        LanguageWt *m_pLanguageWt;
+        Units *m_pUnitsWt;
+        Settings *m_pDisplayOptionsWt;
 
-    QCheckBox *m_pctrlUpdateCheck;
+        QCheckBox *m_pchUpdateCheck;
 
-    QDialogButtonBox *m_pButtonBox;
+        QDialogButtonBox *m_pButtonBox;
 };
 
 

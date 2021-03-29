@@ -20,8 +20,7 @@
 *****************************************************************************/
 
 
-#ifndef RELISTDLG_H
-#define RELISTDLG_H
+#pragma once
 
 #include <QDialog>
 
@@ -66,11 +65,10 @@ class ReListDlg : public QDialog
         void showEvent(QShowEvent *pEvent) override;
 
     private:
-        QPushButton *m_pctrlInsert, *m_pctrlDelete;
+        QPushButton *m_ppbInsert, *m_ppbDelete;
         QDialogButtonBox *m_pButtonBox;
 
-
-        QTableView *m_pctrlReTable;
+        QTableView *m_ptvRe;
         QStandardItemModel *m_pReModel;
         FloatEditDelegate *m_pFloatDelegate;
 
@@ -79,4 +77,4 @@ class ReListDlg : public QDialog
         QVector<double> m_NCritList;
 };
 
-#endif // RELISTDLG_H
+

@@ -497,6 +497,10 @@ void BatchAbstractDlg::onClose()
     m_bCancel = true;
     XFoilTask::s_bCancel = true;
     QThreadPool::globalInstance()->waitForDone();
+
+    // leave things as they were
+    QThreadPool::globalInstance()->setMaxThreadCount(QThread::idealThreadCount());
+
     readParams();
 
     XDirect::s_RefPolar.setNCrit(m_ACrit);
