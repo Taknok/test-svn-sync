@@ -436,7 +436,7 @@ void XflScriptExec::runFoilAnalyses()
     //	QThreadPool::globalInstance()->setExpiryTimeout(60000);//ms
     traceLog("\n\n");
 
-    strong = "_____Starting foil analysis_____\n\n";
+    strong = "_____Starting foil analyses_____\n\n";
     traceLog(strong);
 
     m_nThreads = m_Reader.m_nMaxThreads;
@@ -518,16 +518,17 @@ void XflScriptExec::customEvent(QEvent *pEvent)
         m_nTaskDone++; //one down, more to go
 
         XFoilTaskEvent *pXFEvent = dynamic_cast<XFoilTaskEvent*>(pEvent);
-        QString str = "   ...Finished "+ (pXFEvent->foilPtr())->name()+" / "
-                +(pXFEvent->polarPtr())->polarName()+"\n";
+        QString str = "   ...Finished "+ (pXFEvent->foil())->name()+" / "
+                +(pXFEvent->polar())->polarName()+"\n";
 
         traceLog(str);
     }
     else if(pEvent->type() == XFOIL_END_OPP_EVENT)
     {
-        //		m_pRmsGraph->resetYLimits();
         XFoilOppEvent *pOppEvent = dynamic_cast<XFoilOppEvent*>(pEvent);
-        Objects2d::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->oppPtr(), false);
+//        Objects2d::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->oppPtr(), false);
+        if(OpPoint::bStoreOpp()) Objects2d::insertOpPoint(pOppEvent->theOpPoint()); // OpPoint data is added to the polar data on the fly in the XFoilTask
+        else                      delete pOppEvent->theOpPoint();
     }
 }
 

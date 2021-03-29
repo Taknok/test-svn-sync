@@ -162,7 +162,6 @@ void Graph::drawGraph(QPainter &painter)
 }
 
 
-
 void Graph::drawCurve(int nIndex, QPainter &painter)
 {
     painter.save();

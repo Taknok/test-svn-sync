@@ -1390,7 +1390,7 @@ void GL3dWingDlg::setupLayout()
             pDataLayout->addWidget(m_pctrlNFlaps,      12,2);
             pDataLayout->addWidget(m_pctrlLength3, 6, 3);
             pDataLayout->addWidget(m_pctrlLength4, 7, 3);
-            QLabel *lab30 = new QLabel(QString::fromUtf8("°"));
+            QLabel *lab30 = new QLabel(QChar(0260));
             lab30->setAlignment(Qt::AlignLeft);
             pDataLayout->addWidget(lab30, 11, 3);
 

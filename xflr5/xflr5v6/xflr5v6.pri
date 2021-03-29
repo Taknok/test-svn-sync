@@ -1,6 +1,7 @@
 
 SOURCES += \
     $$PWD/xdirect/analysis/batchabstractdlg.cpp \
+    $$PWD/xdirect/analysis/batchgraphdlg.cpp \
     design/afoil.cpp \
     design/afoiltabledlg.cpp \
     design/foiltabledelegate.cpp \
@@ -106,7 +107,6 @@ SOURCES += \
     viewwidgets/twodwidgets/section2dwt.cpp \
     viewwidgets/wingwt.cpp \
     xdirect/analysis/batchctrldlg.cpp \
-    xdirect/analysis/batchdlg.cpp \
     xdirect/analysis/batchthreaddlg.cpp \
     xdirect/analysis/foilpolardlg.cpp \
     xdirect/analysis/relistdlg.cpp \
@@ -168,6 +168,7 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/xdirect/analysis/batchabstractdlg.h \
+    $$PWD/xdirect/analysis/batchgraphdlg.h \
     design/afoil.h \
     design/afoiltabledlg.h \
     design/foiltabledelegate.h \
@@ -272,7 +273,6 @@ HEADERS += \
     viewwidgets/twodwidgets/section2dwt.h \
     viewwidgets/wingwt.h \
     xdirect/analysis/batchctrldlg.h \
-    xdirect/analysis/batchdlg.h \
     xdirect/analysis/batchthreaddlg.h \
     xdirect/analysis/foilpolardlg.h \
     xdirect/analysis/relistdlg.h \

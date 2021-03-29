@@ -202,7 +202,7 @@ OpPoint* Objects2d::addOpPoint(Foil const *pFoil, Polar *pPolar, OpPoint *pOpPoi
 {
     if(!pFoil || !pOpPoint) return nullptr;
 
-    if(!pPolar) pPolar = XDirect::curPolar();
+//    if(!pPolar) pPolar = XDirect::curPolar(); // risky
     if(!pPolar) return nullptr;
 
     if(Settings::isAlignedChildrenStyle())
@@ -211,20 +211,11 @@ OpPoint* Objects2d::addOpPoint(Foil const *pFoil, Polar *pPolar, OpPoint *pOpPoi
     }
     else
     {
-        QColor clr = randomColor(!Settings::isLightTheme());
-        pOpPoint->setColor(clr.red(), clr.green(), clr.black(), clr.alpha());
+        pOpPoint->setColor(randomColor(!Settings::isLightTheme()));
     }
 
-
-    if(pOpPoint ==nullptr)
-    {
-        return nullptr;
-    }
-    else
-    {
-        pOpPoint->setFoilName(pFoil->name());
-        pOpPoint->setPolarName(pPolar->polarName());
-    }
+    pOpPoint->setFoilName(pFoil->name());
+    pOpPoint->setPolarName(pPolar->polarName());
 
     if(bStoreOpp)
     {
@@ -232,7 +223,7 @@ OpPoint* Objects2d::addOpPoint(Foil const *pFoil, Polar *pPolar, OpPoint *pOpPoi
         Objects2d::insertOpPoint(pOpPoint);
     }
 
-    // Now insert OpPoint in the current Polar object
+    // Now insert the OpPoint in the current Polar object
     if(pPolar->polarType()==Xfl::FIXEDLIFTPOLAR || pPolar->polarType()==Xfl::RUBBERCHORDPOLAR)
     {
         if(pOpPoint && pOpPoint->Reynolds()<1.00e8)
@@ -254,8 +245,6 @@ OpPoint* Objects2d::addOpPoint(Foil const *pFoil, Polar *pPolar, OpPoint *pOpPoi
 
     return pOpPoint;
 }
-
-
 
 
 /**

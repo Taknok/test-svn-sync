@@ -800,7 +800,7 @@ void Polar::getPolarProperties(QString &polarProps) const
     }
     else if(m_PolarType==Xfl::FIXEDAOAPOLAR)
     {
-        strong = QString(QObject::tr("Alpha")+" = %L1"+QString::fromUtf8("°")+"\n").arg(m_ASpec,7,'f',2);
+        strong = QString(QObject::tr("Alpha")+" = %L1"+QChar(0260)+"\n").arg(m_ASpec,7,'f',2);
         polarProps += strong;
         strong = QString(QObject::tr("Mach number") + " = %L1\n").arg(m_Mach,5,'f',2);
         polarProps += strong;

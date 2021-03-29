@@ -30,16 +30,17 @@ const QEvent::Type MESSAGE_EVENT             = static_cast<QEvent::Type>(QEvent:
 const QEvent::Type STREAMLINE_END_TASK_EVENT = static_cast<QEvent::Type>(QEvent::User + 102);
 const QEvent::Type XFOIL_END_TASK_EVENT      = static_cast<QEvent::Type>(QEvent::User + 103);
 const QEvent::Type XFOIL_END_OPP_EVENT       = static_cast<QEvent::Type>(QEvent::User + 104);
-const QEvent::Type PLANE_END_TASK_EVENT      = static_cast<QEvent::Type>(QEvent::User + 105);
-const QEvent::Type PLANE_END_POPP_EVENT      = static_cast<QEvent::Type>(QEvent::User + 106);
-const QEvent::Type VPW_UPDATE_EVENT          = static_cast<QEvent::Type>(QEvent::User + 107);
-const QEvent::Type OPTIM_ITER_EVENT          = static_cast<QEvent::Type>(QEvent::User + 108);
-const QEvent::Type OPTIM_END_EVENT           = static_cast<QEvent::Type>(QEvent::User + 109);
+const QEvent::Type XFOIL_ITER_EVENT          = static_cast<QEvent::Type>(QEvent::User + 105);
+const QEvent::Type PLANE_END_TASK_EVENT      = static_cast<QEvent::Type>(QEvent::User + 106);
+const QEvent::Type PLANE_END_POPP_EVENT      = static_cast<QEvent::Type>(QEvent::User + 107);
+const QEvent::Type VPW_UPDATE_EVENT          = static_cast<QEvent::Type>(QEvent::User + 108);
+const QEvent::Type OPTIM_ITER_EVENT          = static_cast<QEvent::Type>(QEvent::User + 109);
+const QEvent::Type OPTIM_END_EVENT           = static_cast<QEvent::Type>(QEvent::User + 110);
+
 
 class Foil;
 class Polar;
 class OpPoint;
-
 
 class MessageEvent : public QEvent
 {
@@ -56,55 +57,55 @@ class MessageEvent : public QEvent
 };
 
 
-// Custom event identifier
-
-class Foil;
-class Polar;
-class OpPoint;
-
 class XFoilTaskEvent : public QEvent
 {
+    public:
+        XFoilTaskEvent(Foil const*pFoil, Polar *pPolar): QEvent(XFOIL_END_TASK_EVENT),
+            m_pFoil(pFoil),
+            m_pPolar(pPolar)
+        {
+        }
 
-public:
-    XFoilTaskEvent(Foil const*pFoil, Polar *pPolar): QEvent(XFOIL_END_TASK_EVENT),
-        m_pFoil(pFoil),
-        m_pPolar(pPolar)
-    {
-    }
+        Foil const*foil() const  {return m_pFoil;}
+        Polar * polar() const    {return m_pPolar;}
 
-    Foil const*foilPtr() const  {return m_pFoil;}
-    Polar * polarPtr() const    {return m_pPolar;}
-
-private:
-    Foil const*m_pFoil=nullptr;
-    Polar *m_pPolar=nullptr;
+    private:
+        Foil const*m_pFoil=nullptr;
+        Polar *m_pPolar=nullptr;
 };
 
 
 class XFoilOppEvent : public QEvent
 {
+    public:
+        XFoilOppEvent(OpPoint *pOpPoint): QEvent(XFOIL_END_OPP_EVENT)
+        {
+            m_pOpPoint = pOpPoint;
+        }
 
-public:
-    XFoilOppEvent(Foil const*pFoil, Polar *pPolar, OpPoint *pOpPoint): QEvent(XFOIL_END_OPP_EVENT),
-        m_pFoil(pFoil),
-        m_pPolar(pPolar)
-    {
-//        memcpy(&m_XFoil, pXFoilPtr, sizeof(XFoil));
-        m_pOpPoint = pOpPoint; /** use the copy constructor and = operator defined implicitly by the compiler */
-    }
+        OpPoint * theOpPoint()    const {return m_pOpPoint;}
 
-    ~XFoilOppEvent()
-    {
-    }
+    private:
+        OpPoint *m_pOpPoint=nullptr;    /** need to store current XFoil results */
+};
 
-    Foil const* foilPtr()   const {return m_pFoil;}
-    Polar * polarPtr() const {return m_pPolar;}
-    OpPoint * oppPtr() const {return m_pOpPoint;}
 
-private:
-    Foil const*m_pFoil=nullptr;
-    Polar *m_pPolar=nullptr;
-    OpPoint *m_pOpPoint=nullptr;    /** need to store current XFoil results */
+class XFoilIterEvent : public QEvent
+{
+    public:
+        XFoilIterEvent(double x0, double y0, double x1, double y1): QEvent(XFOIL_ITER_EVENT)
+        {
+            m_x0=x0;
+            m_y0=y0;
+            m_x1=x1;
+            m_y1=y1;
+        }
+
+    public:
+        double m_x0;
+        double m_y0;
+        double m_x1;
+        double m_y1;
 };
 
 

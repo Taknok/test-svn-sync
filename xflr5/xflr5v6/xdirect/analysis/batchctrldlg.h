@@ -23,7 +23,6 @@
 #pragma once
 
 #include <QSettings>
-
 #include "batchabstractdlg.h"
 
 class DoubleEdit;
@@ -40,6 +39,7 @@ class BatchCtrlDlg : public BatchAbstractDlg
 
     public:
         BatchCtrlDlg(QWidget *pParent=nullptr);
+        ~BatchCtrlDlg();
 
         void initDialog() override;
 
@@ -58,6 +58,8 @@ class BatchCtrlDlg : public BatchAbstractDlg
     private:
         DoubleEdit *m_pdeXHinge, *m_pdeYHinge;
         DoubleEdit *m_pdeAngleMin, *m_pdeAngleMax, *m_pdeAngleDelta;
+
+        int m_nTasks, m_TaskCounter;
 
         static double s_XHinge, s_YHinge;
         static double s_AngleMin, s_AngleMax, s_AngleDelta;

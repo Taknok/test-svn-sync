@@ -502,7 +502,7 @@ void GraphTileWidget::onAllGraphSettings()
     else if (m_xflr5App==Xfl::XFOILANALYSIS)
     {
         if(!s_pXDirect->bPolarView()) grDlg.setGraph(s_pXDirect->CpGraph());
-        else                        grDlg.setGraph(s_pXDirect->PlrGraph(0));
+        else                          grDlg.setGraph(s_pXDirect->PlrGraph(0));
 
         if(grDlg.exec() == QDialog::Accepted)
         {

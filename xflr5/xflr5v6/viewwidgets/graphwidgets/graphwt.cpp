@@ -39,6 +39,7 @@
 GraphWt::GraphWt(QWidget *pParent) : QWidget(pParent)
 {
     setMouseTracking(true);
+    m_bOverlayRectangle = false;
 
     m_TitlePosition.setX(0);
     m_TitlePosition.setY(0);

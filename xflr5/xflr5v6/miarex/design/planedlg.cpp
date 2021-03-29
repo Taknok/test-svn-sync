@@ -872,7 +872,7 @@ void PlaneDlg::setupLayout()
             m_pctrlWingTilt = new DoubleEdit(0.0, 3);
             m_pctrlLen1 = new QLabel("mm");
             m_pctrlLen2 = new QLabel("mm");
-            QLabel *lab4 = new QLabel(QString::fromUtf8("°"));
+            QLabel *lab4 = new QLabel(QChar(0260));
             pMainWingLayout->addWidget(m_pctrlDefineWing, 2,1);
             pMainWingLayout->addWidget(m_pctrlImportWing, 3,1);
             pMainWingLayout->addWidget(lab1,2,2);
@@ -908,7 +908,7 @@ void PlaneDlg::setupLayout()
             m_pctrlWingTilt2 = new DoubleEdit(0.0, 3);
             m_pctrlLen3 = new QLabel("mm");
             m_pctrlLen4 = new QLabel("mm");
-            QLabel *lab14 = new QLabel(QString::fromUtf8("°"));
+            QLabel *lab14 = new QLabel(QChar(0260));
             pMainWing2Layout->addWidget(m_pctrlDefineWing2, 2,1);
             pMainWing2Layout->addWidget(m_pctrlImportWing2, 3,1);
             pMainWing2Layout->addWidget(lab11,2,2);
@@ -941,7 +941,7 @@ void PlaneDlg::setupLayout()
             m_pctrlStabTilt = new DoubleEdit(0.0, 3);
             m_pctrlLen5 = new QLabel("mm");
             m_pctrlLen6 = new QLabel("mm");
-            QLabel *lab24 = new QLabel(QString::fromUtf8("°"));
+            QLabel *lab24 = new QLabel(QChar(0260));
             pStabLayout->addWidget(m_pctrlStabCheck,1,1);
             pStabLayout->addWidget(m_pctrlDefineStab, 2,1);
             pStabLayout->addWidget(lab21,2,2);
@@ -981,7 +981,7 @@ void PlaneDlg::setupLayout()
             m_pctrlLen7= new QLabel("mm");
             m_pctrlLen8 = new QLabel("mm");
             m_pctrlLen9 = new QLabel("mm");
-            QLabel *lab35 = new QLabel(QString::fromUtf8("°"));
+            QLabel *lab35 = new QLabel(QChar(0260));
             pFinLayout->addWidget(m_pctrlFinCheck,1,1);
             pFinLayout->addWidget(m_pctrlDefineFin, 2,1);
             pFinLayout->addWidget(m_pctrlSymFin, 3,1);

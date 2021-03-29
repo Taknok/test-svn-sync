@@ -186,10 +186,10 @@ void ManageFoilsDlg::setupLayout()
     m_pFoilModel->setHeaderData(3, Qt::Horizontal, tr("Camber (%)"));
     m_pFoilModel->setHeaderData(4, Qt::Horizontal, tr("at (%)"));
     m_pFoilModel->setHeaderData(5, Qt::Horizontal, tr("Points"));
-    m_pFoilModel->setHeaderData(6, Qt::Horizontal, tr("TE Flap (")+QString::fromUtf8("°")+")");
+    m_pFoilModel->setHeaderData(6, Qt::Horizontal, tr("TE Flap (")+QChar(0260)+")");
     m_pFoilModel->setHeaderData(7, Qt::Horizontal, tr("TE XHinge"));
     m_pFoilModel->setHeaderData(8, Qt::Horizontal, tr("TE YHinge"));
-    m_pFoilModel->setHeaderData(9, Qt::Horizontal, tr("LE Flap (")+QString::fromUtf8("°")+")");
+    m_pFoilModel->setHeaderData(9, Qt::Horizontal, tr("LE Flap (")+QChar(0260)+")");
     m_pFoilModel->setHeaderData(10, Qt::Horizontal, tr("LE XHinge"));
     m_pFoilModel->setHeaderData(11, Qt::Horizontal, tr("LE YHinge"));
 

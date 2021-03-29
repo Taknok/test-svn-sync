@@ -27,7 +27,7 @@
 #include <xflobjects/objects_global.h>
 
 
-
+bool OpPoint::s_bStoreOpp = true;
 
 /**
  * The public constructor
@@ -214,7 +214,7 @@ void OpPoint::getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bDa
     OpPointProperties += strong +"\n";
 
     strong  = QString(QObject::tr("Alpha")+" = %1").arg(m_Alpha,6,'f',2);
-    OpPointProperties += strong +QString::fromUtf8("°")+"\n";
+    OpPointProperties += strong +QChar(0260)+"\n";
 
     strong  = QString(QObject::tr("Mach")+"  = %1 ").arg(m_Mach,7,'f',3);
     OpPointProperties += strong + "\n";

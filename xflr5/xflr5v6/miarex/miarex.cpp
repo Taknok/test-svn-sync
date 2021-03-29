@@ -6209,7 +6209,7 @@ void Miarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar,
     painter.drawText(LeftPos, ZPos+D, Result);
     D+=dheight;
 
-    str1 = QString(tr("TipTwist       =")+"%1").arg(pPlane->m_Wing[0].tipTwist(), 10,'f', 3) + QString::fromUtf8("°");
+    str1 = QString(tr("TipTwist       =")+"%1").arg(pPlane->m_Wing[0].tipTwist(), 10,'f', 3) + QChar(0260);
     painter.drawText(LeftPos, ZPos+D, str1);
     D+=dheight;
 
@@ -6221,7 +6221,7 @@ void Miarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar,
     painter.drawText(LeftPos, ZPos+D, str1);
     D+=dheight;
 
-    str1 = QString(tr("Root-Tip Sweep =")+"%1").arg(pPlane->m_Wing[0].averageSweep(), 10,'f',3) + QString::fromUtf8("°");
+    str1 = QString(tr("Root-Tip Sweep =")+"%1").arg(pPlane->m_Wing[0].averageSweep(), 10,'f',3) + QChar(0260);
     painter.drawText(LeftPos, ZPos+D, str1);
     D+=dheight;
 
@@ -6887,9 +6887,9 @@ void Miarex::setCurveParams()
     }
     else if(m_pCurWPolar && m_pCurWPolar->polarType()==Xfl::BETAPOLAR)
     {
-        m_pctrlUnit1->setText(QString::fromUtf8("°"));
-        m_pctrlUnit2->setText(QString::fromUtf8("°"));
-        m_pctrlUnit3->setText(QString::fromUtf8("°"));
+        m_pctrlUnit1->setText(QChar(0260));
+        m_pctrlUnit2->setText(QChar(0260));
+        m_pctrlUnit3->setText(QChar(0260));
 
         m_pctrlParameterName->setText("b");
         QFont fontSymbol("Symbol");
@@ -6898,9 +6898,9 @@ void Miarex::setCurveParams()
     }
     else
     {
-        m_pctrlUnit1->setText(QString::fromUtf8("°"));
-        m_pctrlUnit2->setText(QString::fromUtf8("°"));
-        m_pctrlUnit3->setText(QString::fromUtf8("°"));
+        m_pctrlUnit1->setText(QChar(0260));
+        m_pctrlUnit2->setText(QChar(0260));
+        m_pctrlUnit3->setText(QChar(0260));
 
         m_pctrlParameterName->setText("a");
         QFont fontSymbol("Symbol");
@@ -7030,9 +7030,9 @@ void Miarex::setupLayout()
                 m_pctrlAlphaMax     = new DoubleEdit(1., 3);
                 m_pctrlAlphaDelta   = new DoubleEdit(0.5, 3);
 
-                m_pctrlUnit1 = new QLabel(QString::fromUtf8("°"));
-                m_pctrlUnit2 = new QLabel(QString::fromUtf8("°"));
-                m_pctrlUnit3 = new QLabel(QString::fromUtf8("°"));
+                m_pctrlUnit1 = new QLabel(QChar(0260));
+                m_pctrlUnit2 = new QLabel(QChar(0260));
+                m_pctrlUnit3 = new QLabel(QChar(0260));
 
                 m_pctrlAlphaMin->setAlignment(Qt::AlignRight);
                 m_pctrlAlphaMax->setAlignment(Qt::AlignRight);
@@ -8808,12 +8808,12 @@ void Miarex::getPolarProperties(const WPolar *pWPolar, QString &polarProps, bool
     else if(pWPolar->polarType()==Xfl::FIXEDAOAPOLAR)
     {
         strong  = QString(QObject::tr("Alpha =")+"%1").arg(pWPolar->Alpha(),7,'f',2);
-        polarProps += strong +QString::fromUtf8("°")+"\n";
+        polarProps += strong +QChar(0260)+"\n";
     }
     else if(pWPolar->polarType()==Xfl::BETAPOLAR)
     {
         strong  = QString(QObject::tr("Alpha =")+"%1").arg(pWPolar->Alpha(),7,'f',2);
-        polarProps += strong +QString::fromUtf8("°")+"\n";
+        polarProps += strong +QChar(0260)+"\n";
         strong  = QString(QObject::tr("VInf =")+"%1 ").arg(pWPolar->velocity()*Units::mstoUnit(),7,'g',2);
         polarProps += strong + speedunit+"\n";
     }
@@ -8821,7 +8821,7 @@ void Miarex::getPolarProperties(const WPolar *pWPolar, QString &polarProps, bool
     if(pWPolar->polarType() != Xfl::BETAPOLAR && qAbs(pWPolar->Beta())>PRECISION)
     {
         strong  = QString(QObject::tr("Beta")+" = %1").arg(pWPolar->Beta(),7,'f',2);
-        polarProps += strong +QString::fromUtf8("°")+"\n";
+        polarProps += strong +QChar(0260)+"\n";
     }
 
     //    PolarProperties += QObject::tr("Method")+" = ";
@@ -9123,7 +9123,7 @@ void Miarex::exportToTextStream(WPolar const *pWPolar, QTextStream &out, Xfl::en
             }
             else if(pWPolar->polarType()==Xfl::FIXEDAOAPOLAR)
             {
-                strong = QString("Alpha = %1").arg(pWPolar->Alpha()) + QString::fromUtf8("°") + "\n";
+                strong = QString("Alpha = %1").arg(pWPolar->Alpha()) + QChar(0260) + "\n";
             }
             else strong = "\n";
 

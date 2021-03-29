@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include <QApplication>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
@@ -102,7 +103,8 @@ BatchAbstractDlg::BatchAbstractDlg(QWidget *pParent) : QDialog(pParent)
  */
 BatchAbstractDlg::~BatchAbstractDlg()
 {
-    if(m_pXFile)     delete m_pXFile;
+    if(m_pXFile)  delete m_pXFile;
+    m_pXFile = nullptr;
 }
 
 
@@ -128,8 +130,8 @@ void BatchAbstractDlg::makeCommonWidgets()
     {
         QGridLayout *pBatchVarsLayout = new QGridLayout;
         {
-            m_rbRange1 = new QRadioButton(tr("Range"), this);
-            m_rbRange2 = new QRadioButton(tr("Re List"), this);
+            m_prbRange1 = new QRadioButton(tr("Range"), this);
+            m_prbRange2 = new QRadioButton(tr("Re List"), this);
             m_ppbEditList = new QPushButton(tr("Edit List"));
             QLabel *MinVal   = new QLabel(tr("Min"));
             QLabel *MaxVal   = new QLabel(tr("Max"));
@@ -166,8 +168,8 @@ void BatchAbstractDlg::makeCommonWidgets()
 
         QHBoxLayout *pRangeSpecLayout = new QHBoxLayout;
         {
-            pRangeSpecLayout->addWidget(m_rbRange1);
-            pRangeSpecLayout->addWidget(m_rbRange2);
+            pRangeSpecLayout->addWidget(m_prbRange1);
+            pRangeSpecLayout->addWidget(m_prbRange2);
             pRangeSpecLayout->addStretch(1);
             pRangeSpecLayout->addWidget(m_ppbEditList);
         }
@@ -298,18 +300,19 @@ void BatchAbstractDlg::makeCommonWidgets()
 
 void BatchAbstractDlg::connectSignals()
 {
-    connect(m_prbFoil1,           SIGNAL(clicked()),         this, SLOT(onFoilSelectionType()));
-    connect(m_prbFoil2,           SIGNAL(clicked()),         this, SLOT(onFoilSelectionType()));
-    connect(m_ppbFoilList,        SIGNAL(clicked()),         this, SLOT(onFoilList()));
-    connect(m_prbAlpha,           SIGNAL(toggled(bool)),     this, SLOT(onAcl()));
-    connect(m_prbCl,              SIGNAL(toggled(bool)),     this, SLOT(onAcl()));
-    connect(m_rbRange1,             SIGNAL(toggled(bool)),     this, SLOT(onRange()));
-    connect(m_ppbEditList,        SIGNAL(clicked()),         this, SLOT(onEditReList()));
-    connect(m_pchFromZero,        SIGNAL(stateChanged(int)), this, SLOT(onFromZero(int)));
-    connect(m_pdeSpecMin,         SIGNAL(editingFinished()), this, SLOT(onSpecChanged()));
-    connect(m_pdeSpecMax,         SIGNAL(editingFinished()), this, SLOT(onSpecChanged()));
-    connect(m_pdeSpecDelta,       SIGNAL(editingFinished()), this, SLOT(onSpecChanged()));
-    connect(m_pchUpdatePolarView, SIGNAL(clicked(bool)),     this, SLOT(onUpdatePolarView()));
+    connect(m_prbFoil1,           SIGNAL(clicked()),         SLOT(onFoilSelectionType()));
+    connect(m_prbFoil2,           SIGNAL(clicked()),         SLOT(onFoilSelectionType()));
+    connect(m_ppbFoilList,        SIGNAL(clicked()),         SLOT(onFoilList()));
+    connect(m_prbAlpha,           SIGNAL(toggled(bool)),     SLOT(onAcl()));
+    connect(m_prbCl,              SIGNAL(toggled(bool)),     SLOT(onAcl()));
+    connect(m_prbRange1,          SIGNAL(toggled(bool)),     SLOT(onRange()));
+    connect(m_prbRange2,          SIGNAL(toggled(bool)),     SLOT(onRange()));
+    connect(m_ppbEditList,        SIGNAL(clicked()),         SLOT(onEditReList()));
+    connect(m_pchFromZero,        SIGNAL(stateChanged(int)), SLOT(onFromZero(int)));
+    connect(m_pdeSpecMin,         SIGNAL(editingFinished()), SLOT(onSpecChanged()));
+    connect(m_pdeSpecMax,         SIGNAL(editingFinished()), SLOT(onSpecChanged()));
+    connect(m_pdeSpecDelta,       SIGNAL(editingFinished()), SLOT(onSpecChanged()));
+    connect(m_pchUpdatePolarView, SIGNAL(clicked(bool)),     SLOT(onUpdatePolarView()));
 }
 
 
@@ -319,6 +322,7 @@ void BatchAbstractDlg::onButton(QAbstractButton *pButton)
     else if (pButton == m_ppbAnalyze)                                  onAnalyze();
     else if (pButton == m_ppbAdvancedSettings)                         onAdvancedSettings();
 }
+
 
 
 /**
@@ -338,6 +342,7 @@ void BatchAbstractDlg::cleanUp()
     m_bCancel    = false;
     XFoil::setCancel(false);
     m_pButtonBox->button(QDialogButtonBox::Close)->setFocus();
+    qApp->restoreOverrideCursor();
 }
 
 
@@ -426,8 +431,8 @@ void BatchAbstractDlg::initDialog()
     onAcl();
 
 
-    if(!m_bFromList)  m_rbRange1->setChecked(true);
-    else              m_rbRange2->setChecked(true);
+    if(!m_bFromList)  m_prbRange1->setChecked(true);
+    else              m_prbRange2->setChecked(true);
 
     m_ppbEditList->setEnabled(m_bFromList);
     m_pdeReMin->setEnabled(!m_bFromList);
@@ -498,6 +503,9 @@ void BatchAbstractDlg::onClose()
     XDirect::s_RefPolar.setXtrBot(m_XBot);
     XDirect::s_RefPolar.setXtrTop(m_XTop);
     XDirect::s_RefPolar.setMach(m_Mach);
+
+//  jx-mod save also polar type
+    XDirect::s_RefPolar.setPolarType(m_PolarType);
 
     accept();
 }
@@ -606,7 +614,7 @@ void BatchAbstractDlg::onInitBL(int)
  */
 void BatchAbstractDlg::onRange()
 {
-    if(m_rbRange1->isChecked())
+    if(m_prbRange1->isChecked())
         m_bFromList = false;
     else
         m_bFromList = true;
@@ -725,10 +733,10 @@ void BatchAbstractDlg::writeString(QString &strong)
  */
 void BatchAbstractDlg::outputFoilList()
 {
-    m_pteTextOutput->appendPlainText(tr("Foils to analyze:")+"\n");
+    m_pteTextOutput->appendPlainText(tr("Foils to analyze:"));
     for(int i=0; i<m_FoilList.count();i++)
     {
-        m_pteTextOutput->appendPlainText("   "+m_FoilList.at(i)+"\n");
+        m_pteTextOutput->appendPlainText("   "+m_FoilList.at(i));
     }
     m_pteTextOutput->appendPlainText("\n");
 }

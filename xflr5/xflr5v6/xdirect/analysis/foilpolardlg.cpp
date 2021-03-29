@@ -486,7 +486,7 @@ void FoilPolarDlg::onPolarType()
     else if(m_rbtype4->isChecked())
     {
         m_plabRe->setText(tr("Alpha ="));
-        m_plabReUnit->setText(QString::fromUtf8("°"));
+        m_plabReUnit->setText(QChar(0260));
         m_plabMach->setText(tr("Mach ="));
         m_pdeReynolds->setValue(m_ASpec);
 //        m_pctrlReynolds->setPrecision(3);

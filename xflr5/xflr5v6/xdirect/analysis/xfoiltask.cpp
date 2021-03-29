@@ -43,6 +43,7 @@ bool XFoilTask::s_bSkipPolar = false;
 XFoilTask::XFoilTask(QObject *pParent)
 {
     setAutoDelete(true);
+
     m_pParent = pParent;
     m_pFoil  = nullptr;
     m_pPolar = nullptr;
@@ -60,13 +61,11 @@ XFoilTask::XFoilTask(QObject *pParent)
     m_OutStream.setDevice(nullptr);
 
     m_bErrors = false;
-    m_x0 = m_x1 = m_y0 = m_y1 = nullptr;
 }
 
 
 /**
 * Implements the run method of the QRunnable virtual base method
-*
 * Asssumes that XFoil has been initialized with Foil and Polar
 */
 void XFoilTask::run()
@@ -82,10 +81,11 @@ void XFoilTask::run()
 
     m_bIsFinished = true;
 
-    // For multithreaded analysis, post an event to notify parent window that the task is done
+    // post an event to notify the parent window that the task is done
     if(m_pParent)
     {
         qApp->postEvent(m_pParent, new XFoilTaskEvent(m_pFoil, m_pPolar));
+        qApp->processEvents();
     }
 }
 
@@ -284,8 +284,14 @@ bool XFoilTask::alphaSequence()
                 if(m_pParent)
                 {
                     OpPoint *pOpPoint = new OpPoint;
+                    pOpPoint->setFoilName(m_pFoil->name());
+                    pOpPoint->setPolarName(m_pPolar->name());
                     addXFoilData(pOpPoint, &m_XFoilInstance, m_pFoil);
-                    qApp->postEvent(m_pParent, new XFoilOppEvent(m_pFoil, m_pPolar, pOpPoint));
+                    m_pPolar->addOpPointData(pOpPoint); // store the data on the fly; a polar is only used by one task at a time
+
+                    // need to do this asynchronously in the main thread to keep the task thread safe
+                    qApp->postEvent(m_pParent, new XFoilOppEvent(pOpPoint));
+                    qApp->processEvents();
                 }
             }
             else
@@ -293,6 +299,8 @@ bool XFoilTask::alphaSequence()
                 str = QString(QObject::tr("   ...unconverged after %1 iterations\n")).arg(m_Iterations);
                 traceLog(str);
                 m_bErrors = true;
+                qApp->postEvent(m_pParent, new XFoilOppEvent(nullptr));
+                qApp->processEvents();
             }
 
             if(XFoil::fullReport())
@@ -301,11 +309,6 @@ bool XFoilTask::alphaSequence()
                 traceLog(m_XFoilLog);
                 m_XFoilLog.clear();
             }
-
-            if(m_x0) m_x0->clear();
-            if(m_x1) m_x1->clear();
-            if(m_y0) m_y0->clear();
-            if(m_y1) m_y1->clear();
 
         }// end Alpha or Cl loop
 
@@ -393,7 +396,8 @@ bool XFoilTask::ReSequence()
         {
             OpPoint *pOpPoint = new OpPoint;
             addXFoilData(pOpPoint, &m_XFoilInstance, m_pFoil);
-            qApp->postEvent(m_pParent, new XFoilOppEvent(m_pFoil, m_pPolar, pOpPoint));
+            qApp->postEvent(m_pParent, new XFoilOppEvent(pOpPoint));
+            qApp->processEvents();
         }
 
         if(XFoil::fullReport())
@@ -402,11 +406,6 @@ bool XFoilTask::ReSequence()
             traceLog(m_XFoilLog);
             m_XFoilLog.clear();
         }
-
-        if(m_x0) m_x0->clear();
-        if(m_x1) m_x1->clear();
-        if(m_y0) m_y0->clear();
-        if(m_y1) m_y1->clear();
     }
     return true;
 }
@@ -430,16 +429,13 @@ bool XFoilTask::iterate()
     {
         if(m_XFoilInstance.ViscousIter())
         {
-            if(m_x0 && m_y0)
+            if(m_pParent)
             {
-                m_x0->append(double(m_Iterations));
-                m_y0->append(m_XFoilInstance.rmsbl);
+                qApp->postEvent(m_pParent, new XFoilIterEvent(double(m_Iterations), m_XFoilInstance.rmsbl,
+                                                              double(m_Iterations), m_XFoilInstance.rmxbl));
+                qApp->processEvents();
             }
-            if(m_x1 && m_y1)
-            {
-                m_x1->append(double(m_Iterations));
-                m_y1->append(m_XFoilInstance.rmxbl);
-            }
+
             m_Iterations++;
         }
         else m_Iterations = s_IterLim;

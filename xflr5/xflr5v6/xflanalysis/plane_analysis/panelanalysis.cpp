@@ -3434,7 +3434,7 @@ bool PanelAnalysis::computeTrimmedConditions()
         return false;
     }
 
-    strong += QString("Alpha=%1").arg(m_AlphaEq,0,'f',5) + QString::fromUtf8("°") +"\n";
+    strong += QString("Alpha=%1").arg(m_AlphaEq,0,'f',5) + QChar(0260) +"\n";
     traceLog(strong);
 
     createSourceStrength(m_AlphaEq, 0.0, 1);
@@ -3507,7 +3507,7 @@ bool PanelAnalysis::computeTrimmedConditions()
             r      = W * cos(phi);
 
             strong = QString("      Phi         =%1").arg(m_pWPolar->m_BankAngle,5,'f',2);
-            strong += QString::fromUtf8("°");
+            strong += QChar(0260);
             if(m_bTrace) traceLog(strong);
 
             strong = QString("      Turn radius =%1").arg(radius,5,'f',2);

@@ -57,8 +57,6 @@ class XFoilAnalysisDlg : public QDialog
 
         void initDialog();
 
-        void handleXFoilTaskEvent(const XFoilTaskEvent *pEvent);
-
     private slots:
         void onCancelAnalysis();
         void onLogFile();
@@ -83,7 +81,7 @@ class XFoilAnalysisDlg : public QDialog
 
 
         //variables
-        GraphWt * m_pGraphWidget;
+        GraphWt * m_pGraphWt;
         QTextEdit *m_pteTextOutput;
 
         QCheckBox* m_pchLogFile;

@@ -44,7 +44,7 @@
 #include <misc/text/mintextedit.h>
 #include <viewwidgets/graphwidgets/xdirecttilewt.h>
 #include <xdirect/analysis/batchctrldlg.h>
-#include <xdirect/analysis/batchdlg.h>
+#include <xdirect/analysis/batchgraphdlg.h>
 #include <xdirect/analysis/batchthreaddlg.h>
 #include <xdirect/analysis/foilpolardlg.h>
 #include <xdirect/analysis/xfoiladvanceddlg.h>
@@ -78,7 +78,6 @@ bool XDirect::s_bAlpha = true;
 bool XDirect::s_bInitBL = true;
 bool XDirect::s_bKeepOpenErrors = true;
 bool XDirect::s_bFromZero = false;
-bool XDirect::s_bStoreOpp = true;
 
 int XDirect::s_TimeUpdateInterval = 100;
 
@@ -114,7 +113,6 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
 
     m_bShowUserGraph  = true;
     m_bSequence       = false;
-    s_bStoreOpp       = false;
 
     m_bXPressed = m_bYPressed = false;
 
@@ -1222,7 +1220,7 @@ void XDirect::loadSettings(QSettings &settings)
     int oppVar = 0;
     settings.beginGroup("XDirect");
     {
-        s_bStoreOpp       = settings.value("StoreOpp").toBool();
+        OpPoint::setStoreOpp(settings.value("StoreOpp").toBool());
         s_bAlpha          = settings.value("AlphaSpec").toBool();
         s_bViscous        = settings.value("ViscousAnalysis").toBool();
         s_bInitBL         = settings.value("InitBL").toBool();
@@ -1311,7 +1309,7 @@ void XDirect::loadSettings(QSettings &settings)
             s_NCritList.append(settings.value(str3).toDouble());
         }
 
-        BatchDlg::s_Geometry       = settings.value("BatchDlgGeometry").toByteArray();
+        BatchGraphDlg::s_Geometry       = settings.value("BatchDlgGeometry").toByteArray();
         BatchThreadDlg::s_Geometry = settings.value("BatchThreadDlgGeometry").toByteArray();
 
     }
@@ -1556,8 +1554,8 @@ void XDirect::onBatchAnalysis()
 
     m_ppbAnalyze->setEnabled(false);
 
-    BatchDlg *pBatchDlg = new BatchDlg;
-    pBatchDlg->m_pFoil     = m_pCurFoil;
+    BatchGraphDlg *pBatchDlg = new BatchGraphDlg;
+    pBatchDlg->m_pCurFoil     = m_pCurFoil;
     pBatchDlg->m_bAlpha    = true;
 
     pBatchDlg->m_SpMin     = m_Alpha;
@@ -1688,6 +1686,9 @@ void XDirect::onMultiThreadedBatchAnalysis()
 void XDirect::onBatchCtrlAnalysis()
 {
     if(!m_pCurFoil)         return;
+
+    onPolarView();
+    updateView();
 
     m_ppbAnalyze->setEnabled(false);
 
@@ -4131,7 +4132,7 @@ void XDirect::onSpec()
  */
 void XDirect::onStoreOpp()
 {
-    s_bStoreOpp = m_pchStoreOpp->isChecked();
+    OpPoint::setStoreOpp(m_pchStoreOpp->isChecked());
 }
 
 
@@ -4202,7 +4203,7 @@ void XDirect::readParams()
     m_bSequence = m_pchSequence->isChecked();
     s_bInitBL   = m_pchInitBL->isChecked();
     s_bViscous  = m_pchViscous->isChecked();
-    s_bStoreOpp = m_pchStoreOpp->isChecked();
+    OpPoint::setStoreOpp(m_pchStoreOpp->isChecked());
 }
 
 
@@ -4216,7 +4217,7 @@ void XDirect::saveSettings(QSettings &settings)
     settings.beginGroup("XDirect");
     {
         settings.setValue("AlphaSpec", s_bAlpha);
-        settings.setValue("StoreOpp", s_bStoreOpp);
+        settings.setValue("StoreOpp", OpPoint::bStoreOpp());
         settings.setValue("ViscousAnalysis", s_bViscous);
         settings.setValue("InitBL", s_bInitBL);
         settings.setValue("PolarView", m_bPolarView);
@@ -4295,7 +4296,7 @@ void XDirect::saveSettings(QSettings &settings)
             settings.setValue(str3, s_NCritList[i]);
         }
 
-        settings.setValue("BatchDlgGeometry",       BatchDlg::s_Geometry);
+        settings.setValue("BatchDlgGeometry",       BatchGraphDlg::s_Geometry);
         settings.setValue("BatchThreadDlgGeometry", BatchThreadDlg::s_Geometry);
     }
     settings.endGroup();
@@ -4312,7 +4313,6 @@ void XDirect::saveSettings(QSettings &settings)
 }
 
 
-
 /**
  * Initializes the widget values, depending on the type of Polar
  */
@@ -4320,9 +4320,7 @@ void XDirect::setAnalysisParams()
 {
     m_pchViscous->setChecked(s_bViscous);
     m_pchInitBL->setChecked(s_bInitBL);
-    m_pchStoreOpp->setChecked(s_bStoreOpp);
-    //    m_pctrlShowPressure->setChecked(m_bPressure);
-    //    m_pctrlShowBL->setChecked(m_bBL);
+    m_pchStoreOpp->setChecked(OpPoint::bStoreOpp());
 
     if(m_pCurPolar)
     {
@@ -4334,9 +4332,9 @@ void XDirect::setAnalysisParams()
             if(s_bAlpha) m_prbSpec1->setChecked(true);
             else         m_prbSpec2->setChecked(true);
             m_prbSpec3->setEnabled(false);
-            m_plabUnit1->setText(QString::fromUtf8("°"));
-            m_plabUnit2->setText(QString::fromUtf8("°"));
-            m_plabUnit3->setText(QString::fromUtf8("°"));
+            m_plabUnit1->setText(QChar(0260));
+            m_plabUnit2->setText(QChar(0260));
+            m_plabUnit3->setText(QChar(0260));
         }
         else
         {
@@ -4763,9 +4761,9 @@ void XDirect::setupLayout()
                 pAlphaMinLab->setAlignment(Qt::AlignRight);
                 pAlphaMaxLab->setAlignment(Qt::AlignRight);
 
-                m_plabUnit1 = new QLabel(QString::fromUtf8("°"));
-                m_plabUnit2 = new QLabel(QString::fromUtf8("°"));
-                m_plabUnit3 = new QLabel(QString::fromUtf8("°"));
+                m_plabUnit1 = new QLabel(QChar(0260));
+                m_plabUnit2 = new QLabel(QChar(0260));
+                m_plabUnit3 = new QLabel(QChar(0260));
 
                 m_pdeAlphaMin   = new DoubleEdit(0,3);
                 m_pdeAlphaMax   = new DoubleEdit(0,3);

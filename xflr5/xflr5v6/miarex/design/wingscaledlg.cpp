@@ -146,8 +146,8 @@ void WingScaleDlg::setupLayout()
         QLabel *pLengthUnit1 = new QLabel(unitLabel);
         QLabel *pLengthUnit2 = new QLabel(unitLabel);
 
-        QLabel *pAngleUnit1 = new QLabel(QString::fromUtf8("°"));
-        QLabel *pAngleUnit2 = new QLabel(QString::fromUtf8("°"));
+        QLabel *pAngleUnit1 = new QLabel(QChar(0260));
+        QLabel *pAngleUnit2 = new QLabel(QChar(0260));
 
         Units::getAreaUnitLabel(unitLabel);
         QLabel *pAreaUnit = new QLabel(unitLabel);
@@ -244,7 +244,7 @@ void WingScaleDlg::initDialog(double const &RefSpan, double const &RefChord, dou
     m_pctrlRefChord->setText(strong);
 
     strong = QString("%1").arg(m_RefSweep,8,'f',2);
-    strong += QString::fromUtf8("°");
+    strong += QChar(0260);
     m_pctrlRefSweep->setText(strong);
 
     strong = QString("%1").arg(m_RefTwist,8,'f',2);

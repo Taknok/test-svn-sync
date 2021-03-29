@@ -51,11 +51,11 @@ struct FoilAnalysis
 class XFoilTask : public QRunnable
 {
     public:
-        XFoilTask(QObject *pParent = nullptr);
-
+        XFoilTask(QObject *pParent=nullptr);
 
     public:
-        void run() override;
+        void run() override; // run in a thread started from the QThreadPool
+
         bool alphaSequence();
         bool ReSequence();
         bool isFinished() const {return m_bIsFinished;}
@@ -68,14 +68,6 @@ class XFoilTask : public QRunnable
         void setReRange(double ReMin, double ReMax, double ReInc);
         void traceLog(QString const &str);
 
-        void setGraphPointers(QVector<double> *x0, QVector<double> *y0, QVector<double> *x1, QVector<double> *y1)
-        {
-            m_x0 = x0;
-            m_y0 = y0;
-            m_x1 = x1;
-            m_y1 = y1;
-        }
-
         void addXFoilData(OpPoint *pOpp, XFoil *pXFoil, const Foil *pFoil);
 
         static void cancelTask() {s_bCancel=true;}
@@ -84,7 +76,7 @@ class XFoilTask : public QRunnable
         static bool s_bSkipPolar;
         static bool s_bCancel;          /**< true if the user has asked to cancel the analysis */
         static bool s_bAutoInitBL;      /**< true if the BL initialization is left to the code's decision */
-        static int s_IterLim;
+        static int  s_IterLim;
         static bool s_bSkipOpp;
 
     public:
@@ -96,9 +88,6 @@ class XFoilTask : public QRunnable
         QString m_OutMessage;
         QString m_XFoilLog;
         QTextStream m_XFoilStream;
-
-        //    Curve Data
-        QVector<double> *m_x0, *m_x1, *m_y0,*m_y1;
 
 
         double m_AlphaMin, m_AlphaMax, m_AlphaInc;
