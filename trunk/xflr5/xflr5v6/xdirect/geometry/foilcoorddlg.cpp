@@ -39,16 +39,78 @@ FoilCoordDlg::FoilCoordDlg(QWidget *pParent) : QDialog(pParent)
 
     m_pBufferFoil = nullptr;
     m_pMemFoil    = nullptr;
-    setupLayout();
-
     m_bApplied  = true;
     m_bModified = false;
+
+    setupLayout();
+
+    connect(m_ppbDeletePoint, SIGNAL(clicked()), SLOT(onDeletePoint()));
+    connect(m_ppbInsertPoint, SIGNAL(clicked()), SLOT(onInsertPoint()));
 }
 
 
 FoilCoordDlg::~FoilCoordDlg()
 {
 }
+
+
+void FoilCoordDlg::setupLayout()
+{
+    QHBoxLayout *pTopLayout = new QHBoxLayout;
+    {
+        m_ptvCoordTable = new QTableView(this);
+        {
+            m_ptvCoordTable->setFont(Settings::s_TableFont);
+
+            m_pCoordModel = new QStandardItemModel(this);
+            m_pCoordModel->setRowCount(10);//temporary
+            m_pCoordModel->setColumnCount(2);
+            m_pCoordModel->setHeaderData(0, Qt::Horizontal, QObject::tr("X"));
+            m_pCoordModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Y"));
+
+            m_ptvCoordTable->setModel(m_pCoordModel);
+
+            m_pFloatDelegate = new FloatEditDelegate(this);
+            m_ptvCoordTable->setItemDelegate(m_pFloatDelegate);
+
+            QVector<int> precision = {5,5};
+            m_pFloatDelegate->setPrecision(precision);
+
+            connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
+
+            QItemSelectionModel *pSelectionModel = new QItemSelectionModel(m_pCoordModel);
+            m_ptvCoordTable->setSelectionModel(pSelectionModel);
+            connect(pSelectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
+        }
+
+        QVBoxLayout *pCommandButtonsLayout = new QVBoxLayout;
+        {
+            m_ppbInsertPoint  = new QPushButton(tr("Insert Point"));
+            m_ppbDeletePoint  = new QPushButton(tr("Delete Point"));
+
+            pCommandButtonsLayout->addStretch(1);
+            pCommandButtonsLayout->addWidget(m_ppbInsertPoint);
+            pCommandButtonsLayout->addWidget(m_ppbDeletePoint);
+            pCommandButtonsLayout->addStretch(1);
+        }
+
+        pTopLayout->addWidget(m_ptvCoordTable);
+        pTopLayout->addLayout(pCommandButtonsLayout);
+    }
+
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Reset);
+    {
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
+    }
+
+    QVBoxLayout * pMainLayout = new QVBoxLayout(this);
+    {
+        pMainLayout->addLayout(pTopLayout);
+        pMainLayout->addWidget(m_pButtonBox);
+    }
+    setLayout(pMainLayout);
+}
+
 
 void FoilCoordDlg::fillList()
 {
@@ -69,75 +131,44 @@ void FoilCoordDlg::initDialog()
 {
     if(!m_pMemFoil || !m_pBufferFoil) return;
 
-    int w = m_pctrlCoordTable->width();
-    m_pctrlCoordTable->setColumnWidth(0,int(w/2));
-    m_pctrlCoordTable->setColumnWidth(1,int(w/2));
-    QHeaderView *HorizontalHeader = m_pctrlCoordTable->horizontalHeader();
+    int w = m_ptvCoordTable->width();
+    m_ptvCoordTable->setColumnWidth(0,int(w/2));
+    m_ptvCoordTable->setColumnWidth(1,int(w/2));
+    QHeaderView *HorizontalHeader = m_ptvCoordTable->horizontalHeader();
     HorizontalHeader->setStretchLastSection(true);
-
-    m_pCoordModel = new QStandardItemModel(this);
-    m_pCoordModel->setRowCount(10);//temporary
-    m_pCoordModel->setColumnCount(2);
-    m_pCoordModel->setHeaderData(0, Qt::Horizontal, QObject::tr("X"));
-    m_pCoordModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Y"));
-
-    m_pctrlCoordTable->setModel(m_pCoordModel);
-
-    m_pFloatDelegate = new FloatEditDelegate(this);
-    m_pctrlCoordTable->setItemDelegate(m_pFloatDelegate);
-
-    QVector<int> precision = {5,5};
-    m_pFloatDelegate->setPrecision(precision);
-
-//void QAbstractItemDelegate::closeEditor ( QWidget * editor, QAbstractItemDelegate::EndEditHint hint = NoHint )
-    connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
-
-    QItemSelectionModel *selectionModel = new QItemSelectionModel(m_pCoordModel);
-    m_pctrlCoordTable->setSelectionModel(selectionModel);
-    connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
-
-
-//void QAbstractItemView::activated ( const QModelIndex & index )   [signal]
-//void itemChanged ( QStandardItem * item )
-    connect(m_pctrlApply, SIGNAL(clicked()),this, SLOT(onApply()));
-    connect(m_pctrlDeletePoint, SIGNAL(clicked()),this, SLOT(onDeletePoint()));
-    connect(m_pctrlInsertPoint, SIGNAL(clicked()),this, SLOT(onInsertPoint()));
-    connect(m_pctrlRestore, SIGNAL(clicked()),this, SLOT(onRestore()));
-
-    connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
-    connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
     fillList();
 }
 
 
-void FoilCoordDlg::resizeEvent(QResizeEvent *event)
+void FoilCoordDlg::resizeEvent(QResizeEvent *pEvent)
 {
-    int w2 = int(double(m_pctrlCoordTable->width())*.7/2);
+    int w2 = int(double(m_ptvCoordTable->width())*.7/2);
 
-    m_pctrlCoordTable->setColumnWidth(0,w2);
-    m_pctrlCoordTable->setColumnWidth(1,w2);
-    event->accept();
+    m_ptvCoordTable->setColumnWidth(0,w2);
+    m_ptvCoordTable->setColumnWidth(1,w2);
+    pEvent->accept();
 }
 
 
-void FoilCoordDlg::keyPressEvent(QKeyEvent *event)
+void FoilCoordDlg::keyPressEvent(QKeyEvent *pEvent)
 {
     // Prevent Return Key from closing App
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                OKButton->setFocus();
+                m_pButtonBox->setFocus();
+                return;
             }
             else
             {
-                QDialog::accept();
+                accept();
+                return;
             }
-            break;
         }
         case Qt::Key_Escape:
         {
@@ -145,7 +176,7 @@ void FoilCoordDlg::keyPressEvent(QKeyEvent *event)
             return;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
 
@@ -163,7 +194,7 @@ void FoilCoordDlg::onApply()
 void FoilCoordDlg::onDeletePoint()
 {
     int i, sel;
-    QModelIndex index = m_pctrlCoordTable->currentIndex();
+    QModelIndex index = m_ptvCoordTable->currentIndex();
     sel = index.row();
 
     if(sel<0) return;
@@ -191,13 +222,11 @@ void FoilCoordDlg::onDeletePoint()
 
 void FoilCoordDlg::onInsertPoint()
 {
-    int i, sel;
-    sel = m_pctrlCoordTable->currentIndex().row();
-
+    int sel = m_ptvCoordTable->currentIndex().row();
 
     if(sel<=0) return;
 
-    for (i=m_pBufferFoil->nb; i>sel; i--)
+    for (int i=m_pBufferFoil->nb; i>sel; i--)
     {
         m_pBufferFoil->xb[i] = m_pBufferFoil->xb[i-1];
         m_pBufferFoil->yb[i] = m_pBufferFoil->yb[i-1];
@@ -205,7 +234,7 @@ void FoilCoordDlg::onInsertPoint()
     m_pBufferFoil->xb[sel] = (m_pBufferFoil->xb[sel-1] + m_pBufferFoil->xb[sel+1])/2.0;
     m_pBufferFoil->yb[sel] = (m_pBufferFoil->yb[sel-1] + m_pBufferFoil->yb[sel+1])/2.0 ;
 
-    for (i=m_pBufferFoil->n; i>sel; i--)
+    for (int i=m_pBufferFoil->n; i>sel; i--)
     {
         m_pBufferFoil->x[i] = m_pBufferFoil->x[i-1];
         m_pBufferFoil->y[i] = m_pBufferFoil->y[i-1];
@@ -225,21 +254,17 @@ void FoilCoordDlg::onInsertPoint()
 }
 
 
-
-
 void FoilCoordDlg::onCellChanged(QWidget *)
 {
-    double X,Y;
-
-    int  sel = m_pctrlCoordTable->currentIndex().row();
+    int  sel = m_ptvCoordTable->currentIndex().row();
 
     QModelIndex Xindex = m_pCoordModel->index(sel, 0);
-    X = Xindex.data().toDouble();
+    double X = Xindex.data().toDouble();
     m_pBufferFoil->x[sel]  = X;
     m_pBufferFoil->xb[sel] = X;
 
     QModelIndex Yindex = m_pCoordModel->index(sel, 1);
-    Y = Yindex.data().toDouble();
+    double Y = Yindex.data().toDouble();
     m_pBufferFoil->y[sel]  = Y;
     m_pBufferFoil->yb[sel] = Y;
 
@@ -251,7 +276,7 @@ void FoilCoordDlg::onCellChanged(QWidget *)
 
 void FoilCoordDlg::onItemClicked(QModelIndex)
 {
-    int sel = m_pctrlCoordTable->currentIndex().row();
+    int sel = m_ptvCoordTable->currentIndex().row();
     if(m_pBufferFoil)    m_pBufferFoil->setHighLight(sel);
 
     m_pParent->update();
@@ -260,15 +285,13 @@ void FoilCoordDlg::onItemClicked(QModelIndex)
 
 void FoilCoordDlg::onRestore()
 {
-    int i;
-
-    for (i=0;i<m_pMemFoil->nb; i++)
+    for (int i=0; i<m_pMemFoil->nb; i++)
     {
         m_pBufferFoil->xb[i] = m_pMemFoil->xb[i];
         m_pBufferFoil->yb[i] = m_pMemFoil->yb[i];
     }
     m_pBufferFoil->nb = m_pMemFoil->n;
-    for (i=0;i<m_pMemFoil->n; i++)
+    for (int i=0; i<m_pMemFoil->n; i++)
     {
         m_pBufferFoil->x[i]  = m_pMemFoil->x[i];
         m_pBufferFoil->y[i]  = m_pMemFoil->y[i];
@@ -298,54 +321,24 @@ void FoilCoordDlg::setSelection(int sel)
 {
     if(sel>=0)
     {
-        m_pctrlCoordTable->selectRow(sel);
+        m_ptvCoordTable->selectRow(sel);
     }
 }
 
 
-void FoilCoordDlg::setupLayout()
+void FoilCoordDlg::onButton(QAbstractButton *pButton)
 {
-    QVBoxLayout *pCommandButtonsLayout = new QVBoxLayout;
-    {
-        m_pctrlInsertPoint    = new QPushButton(tr("Insert Point"));
-        m_pctrlDeletePoint    = new QPushButton(tr("Delete Point"));
-        m_pctrlRestore      = new QPushButton(tr("Restore"));
-        m_pctrlApply        = new QPushButton(tr("Apply"));
-        OKButton            = new QPushButton(tr("OK"));
-        CancelButton        = new QPushButton(tr("Cancel"));
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(m_pctrlInsertPoint);
-        pCommandButtonsLayout->addWidget(m_pctrlDeletePoint);
-        pCommandButtonsLayout->addWidget(m_pctrlRestore);
-        pCommandButtonsLayout->addWidget(m_pctrlApply);
-        pCommandButtonsLayout->addStretch(2);
-        pCommandButtonsLayout->addWidget(OKButton);
-        pCommandButtonsLayout->addWidget(CancelButton);
-        pCommandButtonsLayout->addStretch(1);
-    }
-
-    m_pctrlCoordTable = new QTableView(this);
-    m_pctrlCoordTable->setFont(Settings::s_TableFont);
-    m_pctrlCoordTable->setMinimumHeight(500);
-    m_pctrlCoordTable->setMinimumWidth(150);
-
-    QHBoxLayout * pMainLayout = new QHBoxLayout(this);
-    {
-        pMainLayout->addWidget(m_pctrlCoordTable);
-        pMainLayout->addLayout(pCommandButtonsLayout);
-    }
-    setLayout(pMainLayout);
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)     == pButton)  accept();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
+    else if (m_pButtonBox->button(QDialogButtonBox::Reset)  == pButton)  onRestore();
 }
 
 
-void FoilCoordDlg::showEvent(QShowEvent *event)
+void FoilCoordDlg::showEvent(QShowEvent *pEvent)
 {
     //setWindowModality(Qt::NonModal);
     setModal(true);
-//    Qt::WindowFlags flags = windowFlags();
-//    flags = Qt::Dialog | Qt::WindowStaysOnTopHint;
-//    setWindowFlags(flags);
-    event->accept();
+    pEvent->accept();
 }
 
 

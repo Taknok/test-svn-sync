@@ -37,8 +37,8 @@ ReListDlg::ReListDlg(QWidget *pParent) : QDialog(pParent)
 
     setupLayout();
 
-    connect(m_pctrlDelete, SIGNAL(clicked()), SLOT(onDelete()));
-    connect(m_pctrlInsert, SIGNAL(clicked()), SLOT(onInsert()));
+    connect(m_ppbDelete, SIGNAL(clicked()), SLOT(onDelete()));
+    connect(m_ppbInsert, SIGNAL(clicked()), SLOT(onInsert()));
 }
 
 
@@ -67,13 +67,13 @@ void ReListDlg::initDialog(QVector<double> ReList, QVector<double> MachList, QVe
     m_pReModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Mach"));
     m_pReModel->setHeaderData(2, Qt::Horizontal, QObject::tr("NCrit"));
 
-    m_pctrlReTable->setModel(m_pReModel);
+    m_ptvRe->setModel(m_pReModel);
 
-    QHeaderView *pHorizontalHeader = m_pctrlReTable->horizontalHeader();
+    QHeaderView *pHorizontalHeader = m_ptvRe->horizontalHeader();
     pHorizontalHeader->setStretchLastSection(true);
 
     m_pFloatDelegate = new FloatEditDelegate(this);
-    m_pctrlReTable->setItemDelegate(m_pFloatDelegate);
+    m_ptvRe->setItemDelegate(m_pFloatDelegate);
 
     QVector<int> precision = {0,2,2};
     m_pFloatDelegate->setPrecision(precision);
@@ -121,22 +121,22 @@ void ReListDlg::setupLayout()
     {
         QHBoxLayout * pListLayout = new QHBoxLayout;
         {
-            m_pctrlReTable = new QTableView(this);
-            m_pctrlReTable->setFont(Settings::s_TableFont);
-            m_pctrlReTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-            m_pctrlReTable->setEditTriggers(QAbstractItemView::AllEditTriggers);
-            m_pctrlReTable->setWindowTitle(QObject::tr("Re List"));
+            m_ptvRe = new QTableView(this);
+            m_ptvRe->setFont(Settings::s_TableFont);
+            m_ptvRe->setSelectionBehavior(QAbstractItemView::SelectRows);
+            m_ptvRe->setEditTriggers(QAbstractItemView::AllEditTriggers);
+            m_ptvRe->setWindowTitle(QObject::tr("Re List"));
 
             QVBoxLayout *pCommandButtons = new QVBoxLayout;
             {
-                m_pctrlInsert    = new QPushButton(tr("Insert"));
-                m_pctrlDelete    = new QPushButton(tr("Delete"));
+                m_ppbInsert    = new QPushButton(tr("Insert"));
+                m_ppbDelete    = new QPushButton(tr("Delete"));
 
-                pCommandButtons->addWidget(m_pctrlInsert);
-                pCommandButtons->addWidget(m_pctrlDelete);
+                pCommandButtons->addWidget(m_ppbInsert);
+                pCommandButtons->addWidget(m_ppbDelete);
                 pCommandButtons->addStretch(1);
             }
-            pListLayout->addWidget(m_pctrlReTable);
+            pListLayout->addWidget(m_ptvRe);
             pListLayout->addLayout(pCommandButtons);
         }
         m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -175,13 +175,13 @@ void ReListDlg::fillReModel()
         m_pReModel->setData(Zindex, m_NCritList[i]);
     }
     m_pReModel->blockSignals(false);
-    m_pctrlReTable->resizeRowsToContents();
+    m_ptvRe->resizeRowsToContents();
 }
 
 
 void ReListDlg::onDelete()
 {
-    QModelIndex index = m_pctrlReTable->currentIndex();
+    QModelIndex index = m_ptvRe->currentIndex();
     int sel = index.row();
 
     if(sel<0 || sel>=m_ReList.count()) return;
@@ -197,7 +197,7 @@ void ReListDlg::onDelete()
 
 void ReListDlg::onInsert()
 {
-    int sel = m_pctrlReTable->currentIndex().row();
+    int sel = m_ptvRe->currentIndex().row();
     if(sel<0)
     {
         m_ReList.prepend(0.0);
@@ -230,8 +230,8 @@ void ReListDlg::onInsert()
     fillReModel();
 
     QModelIndex index = m_pReModel->index(sel, 0, QModelIndex());
-    m_pctrlReTable->setCurrentIndex(index);
-    m_pctrlReTable->openPersistentEditor(index);
+    m_ptvRe->setCurrentIndex(index);
+    m_ptvRe->openPersistentEditor(index);
 }
 
 
@@ -324,9 +324,9 @@ void ReListDlg::showEvent(QShowEvent *)
 
 void ReListDlg::resizeEvent(QResizeEvent *)
 {
-    int w3 = int(double(m_pctrlReTable->width())*0.9/3.0);
-    m_pctrlReTable->setColumnWidth(0, w3);
-    m_pctrlReTable->setColumnWidth(1, w3);
+    int w3 = int(double(m_ptvRe->width())*0.9/3.0);
+    m_ptvRe->setColumnWidth(0, w3);
+    m_ptvRe->setColumnWidth(1, w3);
 }
 
 

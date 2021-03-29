@@ -20,9 +20,9 @@
 *****************************************************************************/
 
 
-#ifndef FOILGEOMDLG_H
-#define FOILGEOMDLG_H
+#pragma once
 
+#include <QDialogButtonBox>
 #include <QDialog>
 #include <QPushButton>
 #include <QSlider>
@@ -38,58 +38,57 @@ class FoilGeomDlg : public QDialog
     friend class XDirect;
     friend class MainFrame;
 
-public:
-    FoilGeomDlg(QWidget *pParent);
-    void initDialog();
+    public:
+        FoilGeomDlg(QWidget *pParent);
+        void initDialog();
 
-private slots:
-    void onRestore();
-    void onOK();
+    private slots:
+        void onRestore();
+        void onOK();
+        void onButton(QAbstractButton *pButton);
 
-    void onCamberSlide(int pos);
-    void onXCamberSlide(int pos);
-    void onThickSlide(int pos);
-    void onXThickSlide(int pos);
-    void onCamber();
-    void onXCamber();
-    void onThickness();
-    void onXThickness();
-
-
-private:
-    void keyPressEvent(QKeyEvent *event);
-    void setupLayout();
-    void apply();
-    void setFoilDisplayStayle();
-    bool isXFoilOk ();
-
-private:
-    QSlider    *m_pctrlCamberSlide, *m_pctrlThickSlide, *m_pctrlXThickSlide, *m_pctrlXCamberSlide;
-    DoubleEdit *m_pctrlXCamber;
-    DoubleEdit *m_pctrlXThickness;
-    DoubleEdit *m_pctrlThickness;
-    DoubleEdit *m_pctrlCamber;
-
-    QPushButton *m_OKButton, *m_CancelButton, *m_pRestoreButton;
+        void onCamberSlide(int pos);
+        void onXCamberSlide(int pos);
+        void onThickSlide(int pos);
+        void onXThickSlide(int pos);
+        void onCamber();
+        void onXCamber();
+        void onThickness();
+        void onXThickness();
 
 
-private:
-    static XFoil* s_pXFoil;
+    private:
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void setupLayout();
+        void apply();
+        void setFoilDisplayStayle();
+        bool isXFoilOk () const;
 
-    double m_fCamber;
-    double m_fThickness;
-    double m_fXCamber;
-    double m_fXThickness;
+    private:
+        QSlider    *m_pslCamberSlide, *m_pslThickSlide, *m_pslXThickSlide, *m_pslXCamberSlide;
+        DoubleEdit *m_pdeXCamber;
+        DoubleEdit *m_pdeXThickness;
+        DoubleEdit *m_pdeThickness;
+        DoubleEdit *m_pdeCamber;
 
-    Foil *m_pBaseFoil;
-    Foil *m_pBufferFoil;
-    Foil const*m_pMemFoil;
+        QDialogButtonBox *m_pButtonBox;
 
-    QWidget *m_pParent;
+    private:
+        static XFoil* s_pXFoil;
 
-    bool m_bApplied,m_bAppliedX, m_bModified;
-    bool m_modifying;
+        double m_fCamber;
+        double m_fThickness;
+        double m_fXCamber;
+        double m_fXThickness;
+
+        Foil *m_pBaseFoil;
+        Foil *m_pBufferFoil;
+        Foil const*m_pMemFoil;
+
+        QWidget *m_pParent;
+
+        bool m_bApplied,m_bAppliedX, m_bModified;
+        bool m_modifying;
 
 };
 
-#endif // FOILGEOMDLG_H

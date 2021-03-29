@@ -42,20 +42,15 @@ FoilGeomDlg::FoilGeomDlg(QWidget *pParent) : QDialog(pParent)
 
     setupLayout();
 
-    connect(m_pRestoreButton, SIGNAL(clicked()),this, SLOT(onRestore()));
-    connect(m_OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-    connect(m_CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(m_pdeCamber, SIGNAL(editingFinished()), this, SLOT(onCamber()));
+    connect(m_pdeXCamber, SIGNAL(editingFinished()), this, SLOT(onXCamber()));
+    connect(m_pdeThickness, SIGNAL(editingFinished()), this, SLOT(onThickness()));
+    connect(m_pdeXThickness, SIGNAL(editingFinished()), this, SLOT(onXThickness()));
 
-    connect(m_pctrlCamber, SIGNAL(editingFinished()), this, SLOT(onCamber()));
-    connect(m_pctrlXCamber, SIGNAL(editingFinished()), this, SLOT(onXCamber()));
-    connect(m_pctrlThickness, SIGNAL(editingFinished()), this, SLOT(onThickness()));
-    connect(m_pctrlXThickness, SIGNAL(editingFinished()), this, SLOT(onXThickness()));
-
-    connect(m_pctrlCamberSlide, SIGNAL(sliderMoved(int)), this, SLOT(onCamberSlide(int)));
-    connect(m_pctrlXCamberSlide, SIGNAL(sliderMoved(int)), this, SLOT(onXCamberSlide(int)));
-    connect(m_pctrlThickSlide, SIGNAL(sliderMoved(int)), this, SLOT(onThickSlide(int)));
-    connect(m_pctrlXThickSlide, SIGNAL(sliderMoved(int)), this, SLOT(onXThickSlide(int)));
-
+    connect(m_pslCamberSlide, SIGNAL(sliderMoved(int)), this, SLOT(onCamberSlide(int)));
+    connect(m_pslXCamberSlide, SIGNAL(sliderMoved(int)), this, SLOT(onXCamberSlide(int)));
+    connect(m_pslThickSlide, SIGNAL(sliderMoved(int)), this, SLOT(onThickSlide(int)));
+    connect(m_pslXThickSlide, SIGNAL(sliderMoved(int)), this, SLOT(onXThickSlide(int)));
 }
 
 
@@ -65,16 +60,16 @@ void FoilGeomDlg::setupLayout()
     {
         QVBoxLayout *pCamberData = new QVBoxLayout;
         {
-            m_pctrlCamberSlide = new QSlider;
-            m_pctrlCamberSlide->setOrientation(Qt::Horizontal);
-            m_pctrlCamberSlide->setTickPosition(QSlider::TicksBelow);
-            m_pctrlCamberSlide->setMinimumWidth(200);
-            m_pctrlCamber =new DoubleEdit;
-            m_pctrlXCamberSlide = new QSlider;
-            m_pctrlXCamberSlide->setOrientation(Qt::Horizontal);
-            m_pctrlXCamberSlide->setTickPosition(QSlider::TicksBelow);
-            m_pctrlXCamberSlide->setMinimumWidth(200);
-            m_pctrlXCamber = new DoubleEdit;
+            m_pslCamberSlide = new QSlider;
+            m_pslCamberSlide->setOrientation(Qt::Horizontal);
+            m_pslCamberSlide->setTickPosition(QSlider::TicksBelow);
+            m_pslCamberSlide->setMinimumWidth(200);
+            m_pdeCamber =new DoubleEdit;
+            m_pslXCamberSlide = new QSlider;
+            m_pslXCamberSlide->setOrientation(Qt::Horizontal);
+            m_pslXCamberSlide->setTickPosition(QSlider::TicksBelow);
+            m_pslXCamberSlide->setMinimumWidth(200);
+            m_pdeXCamber = new DoubleEdit;
             QLabel *lab1 = new QLabel(tr("Value"));
             QLabel *lab2 = new QLabel(tr("%Chord"));
             QLabel *lab3 = new QLabel(tr("0%"));
@@ -99,22 +94,22 @@ void FoilGeomDlg::setupLayout()
             QHBoxLayout *pCambValLayout = new QHBoxLayout;
             {
                 pCambValLayout->addWidget(lab1);
-                pCambValLayout->addWidget(m_pctrlCamber);
+                pCambValLayout->addWidget(m_pdeCamber);
                 pCambValLayout->addWidget(lab2);
                 pCambValLayout->addStretch(1);
                 pCambValLayout->addWidget(lab3);
-                pCambValLayout->addWidget(m_pctrlCamberSlide);
+                pCambValLayout->addWidget(m_pslCamberSlide);
                 pCambValLayout->addWidget(lab4);
             }
 
             QHBoxLayout *XCambVal = new QHBoxLayout;
             {
                 XCambVal->addWidget(lab5);
-                XCambVal->addWidget(m_pctrlXCamber);
+                XCambVal->addWidget(m_pdeXCamber);
                 XCambVal->addWidget(lab6);
                 XCambVal->addStretch(1);
                 XCambVal->addWidget(lab7);
-                XCambVal->addWidget(m_pctrlXCamberSlide);
+                XCambVal->addWidget(m_pslXCamberSlide);
                 XCambVal->addWidget(lab8);
             }
             pCamberData->addLayout(pCambValLayout);
@@ -128,16 +123,16 @@ void FoilGeomDlg::setupLayout()
     {
         QVBoxLayout *pThicknessData = new QVBoxLayout;
         {
-            m_pctrlThickSlide = new QSlider;
-            m_pctrlThickSlide->setOrientation(Qt::Horizontal);
-            m_pctrlThickSlide->setTickPosition(QSlider::TicksBelow);
-            m_pctrlThickSlide->setMinimumWidth(200);
-            m_pctrlThickness =new DoubleEdit;
-            m_pctrlXThickSlide = new QSlider;
-            m_pctrlXThickSlide->setOrientation(Qt::Horizontal);
-            m_pctrlXThickSlide->setTickPosition(QSlider::TicksBelow);
-            m_pctrlXThickSlide->setMinimumWidth(200);
-            m_pctrlXThickness = new DoubleEdit;
+            m_pslThickSlide = new QSlider;
+            m_pslThickSlide->setOrientation(Qt::Horizontal);
+            m_pslThickSlide->setTickPosition(QSlider::TicksBelow);
+            m_pslThickSlide->setMinimumWidth(200);
+            m_pdeThickness =new DoubleEdit;
+            m_pslXThickSlide = new QSlider;
+            m_pslXThickSlide->setOrientation(Qt::Horizontal);
+            m_pslXThickSlide->setTickPosition(QSlider::TicksBelow);
+            m_pslXThickSlide->setMinimumWidth(200);
+            m_pdeXThickness = new DoubleEdit;
             QLabel *lab11 = new QLabel(tr("Value"));
             QLabel *lab12 = new QLabel(tr("%Chord"));
             QLabel *lab13 = new QLabel("0%");
@@ -163,22 +158,22 @@ void FoilGeomDlg::setupLayout()
             QHBoxLayout *ThickVal = new QHBoxLayout;
             {
                 ThickVal->addWidget(lab11);
-                ThickVal->addWidget(m_pctrlThickness);
+                ThickVal->addWidget(m_pdeThickness);
                 ThickVal->addWidget(lab12);
                 ThickVal->addStretch(1);
                 ThickVal->addWidget(lab13);
-                ThickVal->addWidget(m_pctrlThickSlide);
+                ThickVal->addWidget(m_pslThickSlide);
                 ThickVal->addWidget(lab14);
             }
 
             QHBoxLayout *pXThickVal = new QHBoxLayout;
             {
                 pXThickVal->addWidget(lab15);
-                pXThickVal->addWidget(m_pctrlXThickness);
+                pXThickVal->addWidget(m_pdeXThickness);
                 pXThickVal->addWidget(lab16);
                 pXThickVal->addStretch(1);
                 pXThickVal->addWidget(lab17);
-                pXThickVal->addWidget(m_pctrlXThickSlide);
+                pXThickVal->addWidget(m_pslXThickSlide);
                 pXThickVal->addWidget(lab18);
             }
 
@@ -187,21 +182,10 @@ void FoilGeomDlg::setupLayout()
         }
         pThicknessGroup->setLayout(pThicknessData);
     }
-
-    QHBoxLayout *pCommandButtons = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Reset);
     {
-        m_OKButton      = new QPushButton(tr("OK"));
-        m_CancelButton  = new QPushButton(tr("Cancel"));
-        m_pRestoreButton  = new QPushButton(tr("Restore"));
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(m_pRestoreButton);
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(m_OKButton);
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(m_CancelButton);
-        pCommandButtons->addStretch(1);
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
-
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
@@ -209,28 +193,35 @@ void FoilGeomDlg::setupLayout()
         pMainLayout->addStretch(1);
         pMainLayout->addWidget(pThicknessGroup);
         pMainLayout->addStretch(1);
-        pMainLayout->addLayout(pCommandButtons);
+        pMainLayout->addWidget(m_pButtonBox);
         setLayout(pMainLayout);
     }
 
     setMinimumWidth(500);
     setMinimumHeight(300);
 
-    m_pctrlCamber->setDigits(2);
-    m_pctrlXCamber->setDigits(2);
-    m_pctrlThickness->setDigits(2);
-    m_pctrlXThickness->setDigits(2);
+    m_pdeCamber->setDigits(2);
+    m_pdeXCamber->setDigits(2);
+    m_pdeThickness->setDigits(2);
+    m_pdeXThickness->setDigits(2);
 
-    m_pctrlCamberSlide->setRange(0,100);
-    m_pctrlCamberSlide->setTickInterval(5);
-    m_pctrlXCamberSlide->setRange(0,1000);
-    m_pctrlXCamberSlide->setTickInterval(100);
-    m_pctrlThickSlide->setRange(0,200);
-    m_pctrlThickSlide->setTickInterval(5);
-    m_pctrlXThickSlide->setRange(0,1000);
-    m_pctrlXThickSlide->setTickInterval(100);
+    m_pslCamberSlide->setRange(0,100);
+    m_pslCamberSlide->setTickInterval(5);
+    m_pslXCamberSlide->setRange(0,1000);
+    m_pslXCamberSlide->setTickInterval(100);
+    m_pslThickSlide->setRange(0,200);
+    m_pslThickSlide->setTickInterval(5);
+    m_pslXThickSlide->setRange(0,1000);
+    m_pslXThickSlide->setTickInterval(100);
 }
 
+
+void FoilGeomDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)     == pButton)  onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
+    else if (m_pButtonBox->button(QDialogButtonBox::Reset)  == pButton)  onRestore();
+}
 
 
 /*
@@ -316,7 +307,7 @@ void FoilGeomDlg::apply()
 
 
 
-bool FoilGeomDlg::isXFoilOk ()
+bool FoilGeomDlg::isXFoilOk () const
 {
     for (int j=0; j< s_pXFoil->nb; j++)
     {
@@ -329,11 +320,10 @@ bool FoilGeomDlg::isXFoilOk ()
 }
 
 
-
-void FoilGeomDlg::keyPressEvent(QKeyEvent *event)
+void FoilGeomDlg::keyPressEvent(QKeyEvent *pEvent)
 {
     // Prevent Return Key from closing App
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Escape:
         {
@@ -343,19 +333,19 @@ void FoilGeomDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!m_OKButton->hasFocus() && !m_CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                apply();
-                m_OKButton->setFocus();
+                m_pButtonBox->setFocus();
+                return;
             }
             else
             {
-                QDialog::accept();
+                onOK();
+                return;
             }
-            break;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
             break;
     }
 }
@@ -371,20 +361,20 @@ void FoilGeomDlg::initDialog()
 
     if(qAbs(m_fCamber) <0.0001)
     {
-        m_pctrlCamberSlide->setEnabled(false);
-        m_pctrlCamber->setEnabled(false);
+        m_pslCamberSlide->setEnabled(false);
+        m_pdeCamber->setEnabled(false);
     }
 
     // set values into entry fields and sliders
-    m_pctrlCamber->setValue(m_fCamber*100.0);
-    m_pctrlThickness->setValue(m_fThickness*100.0);
-    m_pctrlXCamber->setValue(m_fXCamber*100.0);
-    m_pctrlXThickness->setValue(m_fXThickness*100.0);
+    m_pdeCamber->setValue(m_fCamber*100.0);
+    m_pdeThickness->setValue(m_fThickness*100.0);
+    m_pdeXCamber->setValue(m_fXCamber*100.0);
+    m_pdeXThickness->setValue(m_fXThickness*100.0);
 
-    m_pctrlCamberSlide->setSliderPosition(int(m_fCamber*1000.0));
-    m_pctrlThickSlide->setSliderPosition(int(m_fThickness*1000.0));
-    m_pctrlXCamberSlide->setSliderPosition(int(m_fXCamber*1000.0));
-    m_pctrlXThickSlide->setSliderPosition(int(m_fXThickness*1000.0));
+    m_pslCamberSlide->setSliderPosition(int(m_fCamber*1000.0));
+    m_pslThickSlide->setSliderPosition(int(m_fThickness*1000.0));
+    m_pslXCamberSlide->setSliderPosition(int(m_fXCamber*1000.0));
+    m_pslXThickSlide->setSliderPosition(int(m_fXThickness*1000.0));
 
     m_modifying = false;
     m_pBaseFoil = new Foil();
@@ -403,6 +393,7 @@ void FoilGeomDlg::onRestore()
     m_pParent->update();
 }
 
+
 void FoilGeomDlg::onOK()
 {
     apply();
@@ -411,76 +402,82 @@ void FoilGeomDlg::onOK()
 }
 
 
-
 void FoilGeomDlg::onCamber()
 {
-    m_fCamber = m_pctrlCamber->value() / 100.0;
-    m_pctrlCamberSlide->blockSignals( true );
-    m_pctrlCamberSlide->setValue(int(m_fCamber*1000.0));
-    m_pctrlCamberSlide->blockSignals( false );
+    m_fCamber = m_pdeCamber->value() / 100.0;
+    m_pslCamberSlide->blockSignals( true );
+    m_pslCamberSlide->setValue(int(m_fCamber*1000.0));
+    m_pslCamberSlide->blockSignals( false );
     apply();
 }
+
 
 void FoilGeomDlg::onCamberSlide(int pos)
 {
     m_fCamber = double(pos)/1000.0;
-    m_pctrlCamber->blockSignals( true );
-    m_pctrlCamber->setValue(m_fCamber * 100.0);
-    m_pctrlCamber->blockSignals( false );
+    m_pdeCamber->blockSignals( true );
+    m_pdeCamber->setValue(m_fCamber * 100.0);
+    m_pdeCamber->blockSignals( false );
     apply();
 }
 
+
 void FoilGeomDlg::onThickness()
 {
-    m_fThickness = m_pctrlThickness->value() / 100.0;
-    m_pctrlThickSlide->blockSignals( true );
-    m_pctrlThickSlide->setValue(int(m_fThickness*1000.0));
-    m_pctrlThickSlide->blockSignals( false );
+    m_fThickness = m_pdeThickness->value() / 100.0;
+    m_pslThickSlide->blockSignals( true );
+    m_pslThickSlide->setValue(int(m_fThickness*1000.0));
+    m_pslThickSlide->blockSignals( false );
     apply();
 }
+
 
 void FoilGeomDlg::onThickSlide(int pos)
 {
     m_fThickness = double(pos)/1000.0;
-    m_pctrlThickness->blockSignals( true );
-    m_pctrlThickness->setValue(m_fThickness *100.0);
-    m_pctrlThickness->blockSignals( false );
+    m_pdeThickness->blockSignals( true );
+    m_pdeThickness->setValue(m_fThickness *100.0);
+    m_pdeThickness->blockSignals( false );
     apply();
 }
+
 
 void FoilGeomDlg::onXCamberSlide(int pos)
 {
     m_fXCamber = double(pos)/1000.0;
-    m_pctrlXCamber->blockSignals( true );
-    m_pctrlXCamber->setValue(m_fXCamber * 100.0);
-    m_pctrlXCamber->blockSignals( false );
+    m_pdeXCamber->blockSignals( true );
+    m_pdeXCamber->setValue(m_fXCamber * 100.0);
+    m_pdeXCamber->blockSignals( false );
     apply();
 }
 
+
 void FoilGeomDlg::onXCamber()
 {
-    m_fXCamber = m_pctrlXCamber->value() / 100.0;
-    m_pctrlXCamberSlide->blockSignals( true );
-    m_pctrlXCamberSlide->setValue(int(m_fXCamber*1000.0));
-    m_pctrlXCamberSlide->blockSignals( false );
+    m_fXCamber = m_pdeXCamber->value() / 100.0;
+    m_pslXCamberSlide->blockSignals( true );
+    m_pslXCamberSlide->setValue(int(m_fXCamber*1000.0));
+    m_pslXCamberSlide->blockSignals( false );
     apply();
 }
+
 
 void FoilGeomDlg::onXThickSlide(int pos)
 {
     m_fXThickness = double(pos)/1000.0;
-    m_pctrlXThickness->blockSignals( true );
-    m_pctrlXThickness->setValue(m_fXThickness * 100.0);
-    m_pctrlXThickness->blockSignals( false );
+    m_pdeXThickness->blockSignals( true );
+    m_pdeXThickness->setValue(m_fXThickness * 100.0);
+    m_pdeXThickness->blockSignals( false );
     apply();
 }
 
+
 void FoilGeomDlg::onXThickness()
 {
-    m_fXThickness = m_pctrlXThickness->value() / 100.0;
-    m_pctrlXThickSlide->blockSignals( true );
-    m_pctrlXThickSlide->setValue(int(m_fXThickness*1000.0));
-    m_pctrlXThickSlide->blockSignals( false );
+    m_fXThickness = m_pdeXThickness->value() / 100.0;
+    m_pslXThickSlide->blockSignals( true );
+    m_pslXThickSlide->setValue(int(m_fXThickness*1000.0));
+    m_pslXThickSlide->blockSignals( false );
     apply();
 }
 

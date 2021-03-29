@@ -22,14 +22,13 @@
 /** @file This file implements the class used to refine locally the points on a foil */
 
 
-#ifndef CADDDLG_H
-#define CADDDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QLabel>
 #include <QRadioButton>
 #include <QPushButton>
-
+#include <QDialogButtonBox>
 
 class Foil;
 class DoubleEdit;
@@ -51,39 +50,41 @@ class CAddDlg : public QDialog
     friend class XDirect;
     friend class AFoil;
 
-public:
-    CAddDlg(QWidget *pParent);
-    void initDialog();
-    void setupLayout();
+    public:
+        CAddDlg(QWidget *pParent);
+        void initDialog();
 
-private:
-    void keyPressEvent(QKeyEvent *event);
+    private:
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void setupLayout();
 
-private slots:
-    void onApply();
-    void onUniform();
+    private slots:
+        void onUniform();
+        void onButton(QAbstractButton *pButton);
+        void onApply();
 
+    private:
+        QDialogButtonBox *m_pButtonBox;
 
-private:
-    static XFoil* s_pXFoil;
+        QLabel *m_plabAtPanel;
+        QLabel *m_plabTotal;
+        QLabel *m_plabAdded;
+        QLabel *m_plabMaxAngle;
 
-    QPushButton    *ApplyButton, *OKButton, *CancelButton;
-    QLabel *m_pctrlAtPanel;
-    QLabel *m_pctrlTotal;
-    QLabel *m_pctrlAdded;
-    QLabel *m_pctrlMaxAngle;
-    QRadioButton    *m_pctrlrb1;
-    QRadioButton    *m_pctrlrb2;
-    DoubleEdit    *m_pctrlTo;
-    DoubleEdit    *m_pctrlFrom;
-    DoubleEdit    *m_pctrlAngTol;
+        QRadioButton  *m_prbUniform;
+        QRadioButton  *m_prbArcLength;
+        DoubleEdit    *m_pdeTo;
+        DoubleEdit    *m_pdeFrom;
+        DoubleEdit    *m_pdeAngTol;
 
-    Foil const* m_pMemFoil;
-    Foil* m_pBufferFoil;
-    QWidget *m_pParent;
-    double atol;
-    int m_iSplineType;
+        Foil const* m_pMemFoil;
+        Foil* m_pBufferFoil;
+        QWidget *m_pParent;
+        double atol;
+        int m_iSplineType;
+
+        static XFoil* s_pXFoil;
 
 };
 
-#endif // CADDDLG_H
+

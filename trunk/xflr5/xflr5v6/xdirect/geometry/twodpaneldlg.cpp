@@ -65,39 +65,39 @@ void TwoDPanelDlg::setupLayout()
         pInputDataLayout->addWidget(l6,6,1);
 
 
-        m_pctrlNPanels = new IntEdit(100, this);
-        m_pctrlNPanels->setMax(IQX);
+        m_pieNPanels = new IntEdit(100, this);
+        m_pieNPanels->setMax(IQX);
 
-        m_pctrlCVpar  = new DoubleEdit;
-        m_pctrlCTErat = new DoubleEdit;
-        m_pctrlCTRrat = new DoubleEdit;
-        m_pctrlXsRef1 = new DoubleEdit;
-        m_pctrlXsRef2 = new DoubleEdit;
-        m_pctrlXpRef1 = new DoubleEdit;
-        m_pctrlXpRef2 = new DoubleEdit;
+        m_pdeCVpar  = new DoubleEdit;
+        m_pdeCTErat = new DoubleEdit;
+        m_pdeCTRrat = new DoubleEdit;
+        m_pdeXsRef1 = new DoubleEdit;
+        m_pdeXsRef2 = new DoubleEdit;
+        m_pdeXpRef1 = new DoubleEdit;
+        m_pdeXpRef2 = new DoubleEdit;
 
-        pInputDataLayout->addWidget(m_pctrlNPanels, 1, 2);
-        pInputDataLayout->addWidget(m_pctrlCVpar,   2, 2);
-        pInputDataLayout->addWidget(m_pctrlCTErat,  3, 2);
-        pInputDataLayout->addWidget(m_pctrlCTRrat,  4, 2);
-        pInputDataLayout->addWidget(m_pctrlXsRef1,  5, 2);
-        pInputDataLayout->addWidget(m_pctrlXsRef2,  5, 3);
-        pInputDataLayout->addWidget(m_pctrlXpRef1,  6, 2);
-        pInputDataLayout->addWidget(m_pctrlXpRef2,  6, 3);
+        pInputDataLayout->addWidget(m_pieNPanels, 1, 2);
+        pInputDataLayout->addWidget(m_pdeCVpar,   2, 2);
+        pInputDataLayout->addWidget(m_pdeCTErat,  3, 2);
+        pInputDataLayout->addWidget(m_pdeCTRrat,  4, 2);
+        pInputDataLayout->addWidget(m_pdeXsRef1,  5, 2);
+        pInputDataLayout->addWidget(m_pdeXsRef2,  5, 3);
+        pInputDataLayout->addWidget(m_pdeXpRef1,  6, 2);
+        pInputDataLayout->addWidget(m_pdeXpRef2,  6, 3);
 
-        connect(m_pctrlNPanels, SIGNAL(editingFinished()), this, SLOT(onChanged()));
-        connect(m_pctrlCVpar,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
-        connect(m_pctrlCTErat,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
-        connect(m_pctrlCTRrat,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
-        connect(m_pctrlXsRef1,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
-        connect(m_pctrlXsRef2,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
-        connect(m_pctrlXpRef1,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
-        connect(m_pctrlXpRef2,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+        connect(m_pieNPanels, SIGNAL(editingFinished()), SLOT(onChanged()));
+        connect(m_pdeCVpar,   SIGNAL(editingFinished()), SLOT(onChanged()));
+        connect(m_pdeCTErat,  SIGNAL(editingFinished()), SLOT(onChanged()));
+        connect(m_pdeCTRrat,  SIGNAL(editingFinished()), SLOT(onChanged()));
+        connect(m_pdeXsRef1,  SIGNAL(editingFinished()), SLOT(onChanged()));
+        connect(m_pdeXsRef2,  SIGNAL(editingFinished()), SLOT(onChanged()));
+        connect(m_pdeXpRef1,  SIGNAL(editingFinished()), SLOT(onChanged()));
+        connect(m_pdeXpRef2,  SIGNAL(editingFinished()), SLOT(onChanged()));
     }
 
-    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Apply | QDialogButtonBox::Discard);
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Discard);
     {
-        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButton(QAbstractButton*)));
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
 
     QVBoxLayout *pmainLayout = new QVBoxLayout;
@@ -127,23 +127,23 @@ void TwoDPanelDlg::initDialog()
     xpref1 = s_pXFoil->xpref1;
     xpref2 = s_pXFoil->xpref2;
 
-    m_pctrlNPanels->setValue(npan);
-    m_pctrlCVpar->setValue(cvpar);
-    m_pctrlCTErat->setValue(cterat);
-    m_pctrlCTRrat->setValue(ctrrat);
-    m_pctrlXsRef1->setValue(xsref1);
-    m_pctrlXsRef2->setValue(xsref2);
-    m_pctrlXpRef1->setValue(xpref1);
-    m_pctrlXpRef2->setValue(xpref2);
-    m_pctrlNPanels->setFocus();
+    m_pieNPanels->setValue(npan);
+    m_pdeCVpar->setValue(cvpar);
+    m_pdeCTErat->setValue(cterat);
+    m_pdeCTRrat->setValue(ctrrat);
+    m_pdeXsRef1->setValue(xsref1);
+    m_pdeXsRef2->setValue(xsref2);
+    m_pdeXpRef1->setValue(xpref1);
+    m_pdeXpRef2->setValue(xpref2);
+    m_pieNPanels->setFocus();
 }
 
 
 
 void TwoDPanelDlg::onButton(QAbstractButton *pButton)
 {
-    if      (m_pButtonBox->button(QDialogButtonBox::Save) == pButton)     onOK();
-    else if (m_pButtonBox->button(QDialogButtonBox::Apply) == pButton)    onApply();
+    if      (m_pButtonBox->button(QDialogButtonBox::Ok)      == pButton)  onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Apply)   == pButton)  onApply();
     else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
 }
 
@@ -262,14 +262,14 @@ void TwoDPanelDlg::onOK()
 
 void TwoDPanelDlg::readParams()
 {
-    s_pXFoil->npan   = m_pctrlNPanels->value();
-    s_pXFoil->cvpar  = m_pctrlCVpar->value();
-    s_pXFoil->cterat = m_pctrlCTErat->value();
-    s_pXFoil->ctrrat = m_pctrlCTRrat->value();
-    s_pXFoil->xsref1 = m_pctrlXsRef1->value();
-    s_pXFoil->xsref2 = m_pctrlXsRef2->value();
-    s_pXFoil->xpref1 = m_pctrlXpRef1->value();
-    s_pXFoil->xpref2 = m_pctrlXpRef2->value();
+    s_pXFoil->npan   = m_pieNPanels->value();
+    s_pXFoil->cvpar  = m_pdeCVpar->value();
+    s_pXFoil->cterat = m_pdeCTErat->value();
+    s_pXFoil->ctrrat = m_pdeCTRrat->value();
+    s_pXFoil->xsref1 = m_pdeXsRef1->value();
+    s_pXFoil->xsref2 = m_pdeXsRef2->value();
+    s_pXFoil->xpref1 = m_pdeXpRef1->value();
+    s_pXFoil->xpref2 = m_pdeXpRef2->value();
 }
 
 

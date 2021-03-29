@@ -176,13 +176,14 @@ void BatchCtrlDlg::initDialog()
 
 void BatchCtrlDlg::readParams()
 {
+    BatchAbstractDlg::readParams();
     s_AngleMin   = m_pdeAngleMin->value();
     s_AngleMax   = m_pdeAngleMax->value();
     s_AngleDelta = m_pdeAngleDelta->value();
     s_XHinge     = m_pdeXHinge->value()/100.0;
     s_YHinge     = m_pdeYHinge->value()/100.0;
 
-    BatchAbstractDlg::readParams();
+    QThreadPool::globalInstance()->setMaxThreadCount(s_nThreads);
 }
 
 

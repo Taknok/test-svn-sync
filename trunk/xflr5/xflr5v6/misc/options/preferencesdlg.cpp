@@ -46,10 +46,9 @@ PreferencesDlg::PreferencesDlg(QWidget *pParent) : QDialog(pParent)
 }
 
 
-
-void PreferencesDlg::keyPressEvent(QKeyEvent *event)
+void PreferencesDlg::keyPressEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Return:
         case Qt::Key_Enter:
@@ -63,7 +62,7 @@ void PreferencesDlg::keyPressEvent(QKeyEvent *event)
             return;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
 
@@ -73,11 +72,11 @@ void PreferencesDlg::setupLayout()
     QWidget *pUpdateFrame = new QWidget;
     {
         QVBoxLayout *pUpdateLayout = new QVBoxLayout;
-        m_pctrlUpdateCheck = new QCheckBox("Check for updates on startup");
+        m_pchUpdateCheck = new QCheckBox("Check for updates on startup");
 //        m_pctrlUpdateCheck->setChecked(Updater::bAutoCheck());
-        m_pctrlUpdateCheck->setChecked(false);
-        m_pctrlUpdateCheck->setEnabled(false);
-        pUpdateLayout->addWidget(m_pctrlUpdateCheck);
+        m_pchUpdateCheck->setChecked(false);
+        m_pchUpdateCheck->setEnabled(false);
+        pUpdateLayout->addWidget(m_pchUpdateCheck);
         pUpdateLayout->addStretch();
         pUpdateFrame->setLayout(pUpdateLayout);
     }
@@ -89,19 +88,19 @@ void PreferencesDlg::setupLayout()
 
     QHBoxLayout *pOptionsLayout = new QHBoxLayout;
     {
-        m_pTabWidget = new QListWidget;
-        m_pTabWidget->addItem(tr("Updates"));
-        m_pTabWidget->addItem(tr("Save options"));
-        m_pTabWidget->addItem(tr("Display options"));
-        m_pTabWidget->addItem(tr("Language"));
-        m_pTabWidget->addItem(tr("Units"));
+        m_plwItems = new QListWidget;
+        m_plwItems->addItem(tr("Updates"));
+        m_plwItems->addItem(tr("Save options"));
+        m_plwItems->addItem(tr("Display options"));
+        m_plwItems->addItem(tr("Language"));
+        m_plwItems->addItem(tr("Units"));
         m_pPageStack = new QStackedWidget;
         m_pPageStack->addWidget(pUpdateFrame);
         m_pPageStack->addWidget(m_pSaveOptionsWt);
         m_pPageStack->addWidget(m_pDisplayOptionsWt);
         m_pPageStack->addWidget(m_pLanguageWt);
         m_pPageStack->addWidget(m_pUnitsWt);
-        pOptionsLayout->addWidget(m_pTabWidget);
+        pOptionsLayout->addWidget(m_plwItems);
         pOptionsLayout->addWidget(m_pPageStack);
     }
 
@@ -117,7 +116,7 @@ void PreferencesDlg::setupLayout()
     }
     setLayout(pMainLayout);
 
-    connect(m_pTabWidget, SIGNAL(currentRowChanged(int)), this, SLOT(onPage(int)));
+    connect(m_plwItems, SIGNAL(currentRowChanged(int)), this, SLOT(onPage(int)));
 }
 
 
@@ -135,7 +134,7 @@ void PreferencesDlg::onPage(int iRow)
 
 void PreferencesDlg::onClose()
 {
-    Updater::setAutoCheck(m_pctrlUpdateCheck->isChecked());
+    Updater::setAutoCheck(m_pchUpdateCheck->isChecked());
     m_pSaveOptionsWt->onOK();
 //    m_pLanguageWt->readLanguage();
     accept();

@@ -43,14 +43,11 @@ CAddDlg::CAddDlg(QWidget *pParent) : QDialog(pParent)
 
     setupLayout();
 
-    connect(m_pctrlTo,     SIGNAL(editingFinished()), this, SLOT(onApply()));
-    connect(m_pctrlFrom,   SIGNAL(editingFinished()), this, SLOT(onApply()));
-    connect(m_pctrlAngTol, SIGNAL(editingFinished()), this, SLOT(onApply()));
-    connect(m_pctrlrb1,    SIGNAL(toggled(bool)),     this, SLOT(onApply()));
-    connect(m_pctrlrb2,    SIGNAL(toggled(bool)),     this, SLOT(onApply()));
-    connect(ApplyButton,   SIGNAL(clicked()),         this, SLOT(onApply()));
-    connect(OKButton,      SIGNAL(clicked()),         this, SLOT(accept()));
-    connect(CancelButton,  SIGNAL(clicked()),         this, SLOT(reject()));
+    connect(m_pdeTo,         SIGNAL(valueChanged()),   SLOT(onApply()));
+    connect(m_pdeFrom,       SIGNAL(valueChanged()),   SLOT(onApply()));
+    connect(m_pdeAngTol,     SIGNAL(valueChanged()),   SLOT(onApply()));
+    connect(m_prbUniform,    SIGNAL(toggled(bool)),    SLOT(onApply()));
+    connect(m_prbArcLength,  SIGNAL(toggled(bool)),    SLOT(onApply()));
 }
 
 
@@ -58,65 +55,61 @@ void CAddDlg::setupLayout()
 {
     QGridLayout *pRefineGridLayout =new QGridLayout;
     {
-        QLabel *lab1 = new QLabel(tr("Angle Criterion ")+QString::fromUtf8("(°)"));
-        QLabel *lab2 = new QLabel(tr("Type of Spline"));
-        QLabel *lab3 = new QLabel(tr("Refinement X Limits"));
-        QLabel *lab4 = new QLabel(tr("From"));
-        QLabel *lab5 = new QLabel(tr("To"));
-        lab4->setAlignment(Qt::AlignCenter);
-        lab5->setAlignment(Qt::AlignCenter);
-        m_pctrlAngTol = new DoubleEdit;
-        m_pctrlFrom   = new DoubleEdit;
-        m_pctrlTo     = new DoubleEdit;
+        QLabel *pLab1 = new QLabel(tr("Angle Criterion ")+QString::fromUtf8("(°)"));
+        QLabel *pLab2 = new QLabel(tr("Type of Spline"));
+        QLabel *pLab3 = new QLabel(tr("Refinement X Limits"));
+        QLabel *pLab4 = new QLabel(tr("From"));
+        QLabel *pLab5 = new QLabel(tr("To"));
+        pLab4->setAlignment(Qt::AlignCenter);
+        pLab5->setAlignment(Qt::AlignCenter);
+        m_pdeAngTol = new DoubleEdit;
+        m_pdeFrom   = new DoubleEdit;
+        m_pdeTo     = new DoubleEdit;
 
-        m_pctrlrb1 = new QRadioButton(tr("Uniform"));
-        m_pctrlrb2 = new QRadioButton(tr("Arc Length"));
+        m_prbUniform   = new QRadioButton(tr("Uniform"));
+        m_prbArcLength = new QRadioButton(tr("Arc Length"));
 
-        pRefineGridLayout->addWidget(lab1,1,1);
-        pRefineGridLayout->addWidget(lab2,2,1);
-        pRefineGridLayout->addWidget(lab3,5,1);
-        pRefineGridLayout->addWidget(m_pctrlAngTol,1,2);
-        pRefineGridLayout->addWidget(m_pctrlrb1,2,2);
-        pRefineGridLayout->addWidget(m_pctrlrb2,2,3);
-        pRefineGridLayout->addWidget(lab4, 4, 2);
-        pRefineGridLayout->addWidget(lab5, 4, 3);
-        pRefineGridLayout->addWidget(m_pctrlFrom,5,2);
-        pRefineGridLayout->addWidget(m_pctrlTo,5,3);
+        pRefineGridLayout->addWidget(pLab1,          1, 1);
+        pRefineGridLayout->addWidget(m_pdeAngTol,    1, 2);
+        pRefineGridLayout->addWidget(pLab2,          2, 1);
+        pRefineGridLayout->addWidget(m_prbUniform,   2, 2);
+        pRefineGridLayout->addWidget(m_prbArcLength, 2, 3);
+        pRefineGridLayout->addWidget(pLab4,          4, 2);
+        pRefineGridLayout->addWidget(pLab5,          4, 3);
+        pRefineGridLayout->addWidget(m_pdeFrom,      5, 2);
+        pRefineGridLayout->addWidget(m_pdeTo,        5, 3);
+        pRefineGridLayout->addWidget(pLab3,          5, 1);
     }
 
-
-    QHBoxLayout *CommandButtons = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply);
     {
-        OKButton      = new QPushButton(tr("Accept"));
-        CancelButton  = new QPushButton(tr("Cancel"));
-        ApplyButton  = new QPushButton(tr("Apply"));
-
-        CommandButtons->addStretch(1);
-        CommandButtons->addWidget(ApplyButton);
-        CommandButtons->addStretch(1);
-        CommandButtons->addWidget(OKButton);
-        CommandButtons->addStretch(1);
-        CommandButtons->addWidget(CancelButton);
-        CommandButtons->addStretch(1);
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        m_pctrlTotal    = new QLabel(tr("Total"));
-        m_pctrlAdded    = new QLabel(tr("Added"));
-        m_pctrlMaxAngle = new QLabel(tr("MaxAngle"));
-        m_pctrlAtPanel  = new QLabel(tr("At Panel"));
+        m_plabTotal    = new QLabel(tr("Total"));
+        m_plabAdded    = new QLabel(tr("Added"));
+        m_plabMaxAngle = new QLabel(tr("MaxAngle"));
+        m_plabAtPanel  = new QLabel(tr("At Panel"));
         pMainLayout->addLayout(pRefineGridLayout);
         pMainLayout->addStretch(1);
-        pMainLayout->addWidget(m_pctrlTotal);
-        pMainLayout->addWidget(m_pctrlAdded);
-        pMainLayout->addWidget(m_pctrlMaxAngle);
-        pMainLayout->addWidget(m_pctrlAtPanel);
+        pMainLayout->addWidget(m_plabTotal);
+        pMainLayout->addWidget(m_plabAdded);
+        pMainLayout->addWidget(m_plabMaxAngle);
+        pMainLayout->addWidget(m_plabAtPanel);
         pMainLayout->addStretch(1);
-        pMainLayout->addLayout(CommandButtons);
+        pMainLayout->addWidget(m_pButtonBox);
     }
     setLayout(pMainLayout);
-    setMinimumHeight(300);
+}
+
+
+void CAddDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)     == pButton)  accept();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
+    else if (m_pButtonBox->button(QDialogButtonBox::Reset)  == pButton)  onApply();
 }
 
 
@@ -147,20 +140,20 @@ void CAddDlg::onApply()
         return;
     }
 
-    if (m_pctrlrb1->isChecked())
+    if (m_prbUniform->isChecked())
         m_iSplineType = 1;
     else
         m_iSplineType = 2;
 
-    int added = s_pXFoil->cadd(m_iSplineType, m_pctrlAngTol->value(),
-                               m_pctrlFrom->value(), m_pctrlTo->value());
+    int added = s_pXFoil->cadd(m_iSplineType, m_pdeAngTol->value(),
+                               m_pdeFrom->value(), m_pdeTo->value());
     s_pXFoil->abcopy();
 
     QString strong;
     strong  =QString(tr("Total number of points is %1")).arg(s_pXFoil->n);
-    m_pctrlTotal->setText(strong);
+    m_plabTotal->setText(strong);
     strong = QString(tr("(added %1 points to original foil)")).arg(added);
-    m_pctrlAdded->setText(strong);
+    m_plabAdded->setText(strong);
 
     for (int i=0; i<s_pXFoil->n; i++)
     {
@@ -173,9 +166,9 @@ void CAddDlg::onApply()
 
     s_pXFoil->CheckAngles();
     strong = QString(tr("Maximum panel angle is %1")).arg( s_pXFoil->amax,0,'f',1);
-    m_pctrlMaxAngle->setText(strong);
+    m_plabMaxAngle->setText(strong);
     strong = QString(tr("at panel position %1")).arg(s_pXFoil->imax);
-    m_pctrlAtPanel->setText(strong);
+    m_plabAtPanel->setText(strong);
 
     m_pParent->update();
 }
@@ -183,7 +176,7 @@ void CAddDlg::onApply()
 
 void CAddDlg::onUniform()
 {
-    if(m_pctrlrb1->isChecked()) m_iSplineType = 1;
+    if(m_prbUniform->isChecked()) m_iSplineType = 1;
     else                        m_iSplineType = 2;
 }
 
@@ -204,29 +197,29 @@ void CAddDlg::initDialog()
     double xrf1 = xbmin - 0.1*(xbmax-xbmin);
     double xrf2 = xbmax + 0.1*(xbmax-xbmin);
 
-    m_pctrlrb1->setChecked(1);
+    m_prbUniform->setChecked(1);
     m_iSplineType = 1;
-    m_pctrlFrom->setValue(xrf1);
-    m_pctrlTo->setValue(xrf2);
-    m_pctrlAngTol->setValue(atol);
+    m_pdeFrom->setValue(xrf1);
+    m_pdeTo->setValue(xrf2);
+    m_pdeAngTol->setValue(atol);
 
     QString strong;
     s_pXFoil->CheckAngles();
     strong = QString(tr("Maximum panel angle is %1 deg")).arg(s_pXFoil->amax,0,'f',1);
-    m_pctrlMaxAngle->setText(strong);
+    m_plabMaxAngle->setText(strong);
     strong = QString(tr("at panel position %1")).arg(s_pXFoil->imax);
-    m_pctrlAtPanel->setText(strong);
-    m_pctrlAdded->setText("  ");
+    m_plabAtPanel->setText(strong);
+    m_plabAdded->setText("  ");
     strong = QString(tr("Total number of points is %1")).arg(s_pXFoil->n);
-    m_pctrlTotal->setText(strong);
+    m_plabTotal->setText(strong);
 
 }
 
 
-void CAddDlg::keyPressEvent(QKeyEvent *event)
+void CAddDlg::keyPressEvent(QKeyEvent *pEvent)
 {
     // Prevent Return Key from closing dialog
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Escape:
         {
@@ -236,19 +229,19 @@ void CAddDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                onApply();
-                OKButton->setFocus();
+                m_pButtonBox->setFocus();
+                return;
             }
             else
             {
-                QDialog::accept();
+                accept();
+                return;
             }
-            break;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
 

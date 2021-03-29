@@ -126,6 +126,8 @@ void BatchThreadDlg::onAnalyze()
     setFileHeader();
     m_bInitBL = m_pchInitBL->isChecked();
 
+    QThreadPool::globalInstance()->setMaxThreadCount(2);
+
     m_ppbAnalyze->setFocus();
     startAnalysis();
 }
@@ -196,8 +198,8 @@ void BatchThreadDlg::startAnalysis()
     strong = QString(tr("Found %1 foil/polar pairs to analyze\n")).arg(m_nAnalysis);
     m_pteTextOutput->insertPlainText(strong);
 
-    //Start as many threads as the user has requested
-    //    m_nThreads = QThread::idealThreadCount();
+    // Start as many threads as the user has requested
+    // This is a complex way of doing things; QFuture and QRunnable are simpler
 
     XFoilTask::s_bCancel = false;
 
