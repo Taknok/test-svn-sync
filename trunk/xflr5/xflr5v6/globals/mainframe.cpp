@@ -80,7 +80,7 @@
 #include <viewwidgets/inverseviewwt.h>
 #include <viewwidgets/twodwidgets/foildesignwt.h>
 #include <viewwidgets/wingwt.h>
-#include <xdirect/analysis/batchdlg.h>
+#include <xdirect/analysis/batchgraphdlg.h>
 #include <xdirect/analysis/batchthreaddlg.h>
 #include <xdirect/analysis/foilpolardlg.h>
 #include <xdirect/analysis/xfoilanalysisdlg.h>
@@ -650,6 +650,7 @@ void MainFrame::createAFoilActions()
     connect(m_pAFoilInterpolateFoils, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilInterpolateFoils()));
 
     m_pAFoilNacaFoils = new QAction(tr("Naca Foils"), this);
+    m_pAFoilNacaFoils->setShortcut(QKeySequence(Qt::ALT+Qt::Key_N));
     connect(m_pAFoilNacaFoils, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilNacaFoils()));
 
     m_pAFoilTableColumns = new QAction(tr("Set Table Columns"), this);
@@ -1005,7 +1006,7 @@ void MainFrame::createDockWindows()
     FoilGeomDlg::s_pXFoil         = &m_pXDirect->m_XFoil;
     TEGapDlg::s_pXFoil            = &m_pXDirect->m_XFoil;
     LEDlg::s_pXFoil               = &m_pXDirect->m_XFoil;
-    BatchDlg::s_pXDirect          = m_pXDirect;
+    BatchGraphDlg::s_pXDirect          = m_pXDirect;
     BatchThreadDlg::s_pXDirect    = m_pXDirect;
 
     GraphTileWidget::s_pMainFrame = this;
@@ -2459,6 +2460,7 @@ void MainFrame::createXDirectActions()
     connect(m_pInterpolateFoils, SIGNAL(triggered()), m_pXDirect, SLOT(onInterpolateFoils()));
 
     m_pNacaFoils = new QAction(tr("Naca Foils"), this);
+    m_pNacaFoils->setShortcut(QKeySequence(Qt::ALT+Qt::Key_N));
     connect(m_pNacaFoils, SIGNAL(triggered()), m_pXDirect, SLOT(onNacaFoils()));
 
     m_psetCpVarGraph = new QAction(tr("Cp Variable"), this);

@@ -327,9 +327,6 @@ void BatchThreadDlg::cleanUp()
 
 void BatchThreadDlg::customEvent(QEvent * pEvent)
 {
-    // When we get here, we've crossed the thread boundary and are now
-    // executing in this widget's thread
-
     if(pEvent->type() == XFOIL_END_TASK_EVENT)
     {
         handleXFoilTaskEvent(static_cast<XFoilTaskEvent *>(pEvent));
@@ -337,17 +334,17 @@ void BatchThreadDlg::customEvent(QEvent * pEvent)
     else if(pEvent->type() == XFOIL_END_OPP_EVENT)
     {
         XFoilOppEvent *pOppEvent = dynamic_cast<XFoilOppEvent*>(pEvent);
-        Objects2d::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->oppPtr(), XDirect::s_bStoreOpp);
+        if(OpPoint::bStoreOpp()) Objects2d::insertOpPoint(pOppEvent->theOpPoint()); // OpPoint data is added to the polar data on the fly in the XFoilTask
+        else                     delete pOppEvent->theOpPoint();
     }
 }
 
 
 void BatchThreadDlg::handleXFoilTaskEvent(const XFoilTaskEvent *pEvent)
 {
-    // Now we can safely do something with our Qt objects.
     m_nTaskDone++; //one down, more to go
-    QString str = tr("   ...Finished ")+ (pEvent->foilPtr())->name()+" / "
-            +(pEvent->polarPtr())->polarName()+"\n";
+    QString str = tr("   ...Finished ")+ (pEvent->foil())->name()+" / "
+                  +(pEvent->polar())->polarName()+"\n";
     updateOutput(str);
 
     if(s_bUpdatePolarView)

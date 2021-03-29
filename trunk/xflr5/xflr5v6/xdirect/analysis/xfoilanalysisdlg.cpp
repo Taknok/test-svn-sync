@@ -25,6 +25,7 @@
 #include <QTimer>
 #include <QHBoxLayout>
 #include <QFontDatabase>
+#include <QThread>
 #include <QDebug>
 
 
@@ -55,7 +56,7 @@ XFoilAnalysisDlg::XFoilAnalysisDlg(QWidget *pParent) : QDialog(pParent)
     m_pXFile       = nullptr;
 
     m_pRmsGraph = new Graph;
-    m_pGraphWidget->setGraph(m_pRmsGraph);
+    m_pGraphWt->setGraph(m_pRmsGraph);
 
     m_pRmsGraph->setXTitle(tr("Iter"));
     m_pRmsGraph->setYTitle("");//Change from BL newton system solution
@@ -105,10 +106,10 @@ void XFoilAnalysisDlg::setupLayout()
     m_pteTextOutput->setLineWrapMode(QTextEdit::NoWrap);
     m_pteTextOutput->setWordWrapMode(QTextOption::NoWrap);
     m_pteTextOutput->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
-    m_pGraphWidget = new GraphWt;
-    m_pGraphWidget->setMinimumHeight(350);
-    m_pGraphWidget->setMinimumWidth(600);
-    m_pGraphWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    m_pGraphWt = new GraphWt;
+    m_pGraphWt->setMinimumHeight(350);
+    m_pGraphWt->setMinimumWidth(600);
+    m_pGraphWt->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
     m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Close, this);
     {
@@ -122,7 +123,7 @@ void XFoilAnalysisDlg::setupLayout()
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
         pMainLayout->addWidget(m_pteTextOutput);
-        pMainLayout->addWidget(m_pGraphWidget);
+        pMainLayout->addWidget(m_pGraphWt);
         pMainLayout->addWidget(m_pButtonBox);
         setLayout(pMainLayout);
     }
@@ -181,7 +182,7 @@ void XFoilAnalysisDlg::initDialog()
     m_pRmsGraph->setYMin(0.0);
     m_pRmsGraph->setYMax(1.0);
 
-    m_pXFoilTask->setGraphPointers(&pCurve0->m_x, &pCurve0->m_y, &pCurve1->m_x, &pCurve1->m_y);
+//    m_pXFoilTask->setGraphPointers(&pCurve0->m_x, &pCurve0->m_y, &pCurve1->m_x, &pCurve1->m_y);
 
     m_pteTextOutput->clear();
 }
@@ -311,7 +312,6 @@ void XFoilAnalysisDlg::setFileHeader()
 
     out << str;
     out << "\n___________________________________\n\n";
-
 }
 
 
@@ -330,7 +330,6 @@ void XFoilAnalysisDlg::analyze()
 
     //Launch the task
     m_pXFoilTask->run();
-
     qApp->processEvents();
 
     pTimer->stop();
@@ -354,48 +353,52 @@ void XFoilAnalysisDlg::analyze()
 
 void XFoilAnalysisDlg::onProgress()
 {
-    if(m_pXFoilTask->m_OutMessage.length())
+    if(m_pXFoilTask)
     {
-        m_pteTextOutput->insertPlainText(m_pXFoilTask->m_OutMessage);
-        //        m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
-        m_pteTextOutput->ensureCursorVisible();
+        if(m_pXFoilTask->m_OutMessage.length())
+        {
+            m_pteTextOutput->insertPlainText(m_pXFoilTask->m_OutMessage);
+            m_pteTextOutput->ensureCursorVisible();
+        }
+        m_pXFoilTask->m_OutMessage.clear();
+
+        repaint(); // not recommended
+
+        s_pXDirect->createPolarCurves();
+        s_pXDirect->updateView();
     }
-    m_pXFoilTask->m_OutMessage.clear();
-    //    m_pGraphWidget->update();
-    //    update();
-
-    repaint();
-
-    s_pXDirect->createPolarCurves();
-    s_pXDirect->updateView();
 }
 
 
 
 void XFoilAnalysisDlg::customEvent(QEvent * pEvent)
 {
-    // When we get here, we've crossed the thread boundary and are now
-    // executing in this widget's thread
-
     if(pEvent->type() == XFOIL_END_TASK_EVENT)
     {
-        handleXFoilTaskEvent(static_cast<XFoilTaskEvent *>(pEvent));
+    }
+    else if(pEvent->type() == XFOIL_ITER_EVENT)
+    {
+        XFoilIterEvent *pIterEvent = dynamic_cast<XFoilIterEvent*>(pEvent);
+        Curve *pCurve0 = m_pRmsGraph->curve(0);
+        Curve *pCurve1 = m_pRmsGraph->curve(1);
+        if(pCurve0) pCurve0->appendPoint(pIterEvent->m_x0, pIterEvent->m_y0);
+        if(pCurve1) pCurve1->appendPoint(pIterEvent->m_x1, pIterEvent->m_y1);
+        m_pGraphWt->update();
     }
     else if(pEvent->type() == XFOIL_END_OPP_EVENT)
     {
         XFoilOppEvent *pOppEvent = dynamic_cast<XFoilOppEvent*>(pEvent);
-        Objects2d::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->oppPtr(), XDirect::s_bStoreOpp);
+        if(OpPoint::bStoreOpp())  Objects2d::insertOpPoint(pOppEvent->theOpPoint());
+        else                      delete pOppEvent->theOpPoint();
+
         m_pRmsGraph->resetYLimits();
+        Curve *pCurve0 = m_pRmsGraph->curve(0);
+        Curve *pCurve1 = m_pRmsGraph->curve(1);
+        if(pCurve0) pCurve0->clear();
+        if(pCurve1) pCurve1->clear();
+        update();
     }
 }
-
-
-
-void XFoilAnalysisDlg::handleXFoilTaskEvent(const XFoilTaskEvent *pEvent)
-{
-    Q_UNUSED(pEvent);
-}
-
 
 
 

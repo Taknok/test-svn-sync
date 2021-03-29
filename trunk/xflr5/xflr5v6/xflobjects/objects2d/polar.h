@@ -121,7 +121,6 @@ class Polar : public XflObject
         static QString variableName(int iVar);
 
 
-
     public:
 
         QVector<double> m_Alpha;             /**< the array of aoa values, in degrees */

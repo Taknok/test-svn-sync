@@ -600,7 +600,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
     if(XDirect::curFoil()->m_bTEFlap)
     {
-        str1 = QString(tr("Flap Angle = %1")+QString::fromUtf8("°")).arg( XDirect::curFoil()->m_TEFlapAngle, 7, 'f', 2);
+        str1 = QString(tr("Flap Angle = %1")+QChar(0260)).arg( XDirect::curFoil()->m_TEFlapAngle, 7, 'f', 2);
         painter.drawText(LeftPos,ZPos+D, str1);
         D += dD;
 
@@ -678,7 +678,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
         }
         else if(XDirect::curPolar()->polarType()==Xfl::FIXEDAOAPOLAR)
         {
-            strong = QString("Alpha = %1 "+QString::fromUtf8("°")).arg(XDirect::curPolar()->aoa(),10,'f',2);
+            strong = QString("Alpha = %1 ").arg(XDirect::curPolar()->aoa(),10,'f',2)+QChar(0260);
             painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
             D += dD;
             strong = QString("Mach = %1").arg(XDirect::curPolar()->Mach(),9,'f',3);
@@ -714,7 +714,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
             }
             if(XDirect::curPolar()->polarType()!=Xfl::FIXEDAOAPOLAR)
             {
-                Result = QString(tr("Alpha = %1")+QString::fromUtf8("°")).arg(XDirect::curOpp()->m_Alpha, 8, 'f', 2);
+                Result = QString(tr("Alpha = %1")+QChar(0260)).arg(XDirect::curOpp()->m_Alpha, 8, 'f', 2);
                 painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
                 D += dD;
             }

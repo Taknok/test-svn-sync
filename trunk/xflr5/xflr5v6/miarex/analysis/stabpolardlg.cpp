@@ -252,7 +252,7 @@ void StabPolarDlg::fillControlList()
     if(!m_pPlane->isWing())
     {
         ind = m_pAngleControlModel->index(s_StabWPolar.m_nControls, 0, QModelIndex());
-        m_pAngleControlModel->setData(ind, tr("Wing Tilt (")+QString::fromUtf8("°")+")");
+        m_pAngleControlModel->setData(ind, tr("Wing Tilt (")+QChar(0260)+")");
 
         ind = m_pAngleControlModel->index(s_StabWPolar.m_nControls, 1, QModelIndex());
         m_pAngleControlModel->setData(ind, s_StabWPolar.m_ControlGain[0]);
@@ -849,8 +849,8 @@ void StabPolarDlg::setupLayout()
                 lab3->setFont(QFont("Symbol"));
                 lab2->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
                 lab3->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
-                QLabel *lab4 = new QLabel(QString::fromUtf8("°"));
-                QLabel *lab5 = new QLabel(QString::fromUtf8("°"));
+                QLabel *lab4 = new QLabel(QChar(0260));
+                QLabel *lab5 = new QLabel(QChar(0260));
                 m_pctrlBeta  = new DoubleEdit(0.818,2);
                 m_pctrlPhi   = new DoubleEdit(0.414,2);
 

@@ -61,18 +61,18 @@ class MinTextEdit;
 */
 class XDirect : public QWidget
 {
-    friend class MainFrame;
-    friend class TwoDWidget;
-    friend class XFoilAnalysisDlg;
-    friend class BatchDlg;
-    friend class BatchCtrlDlg;
-    friend class BatchThreadDlg;
-    friend class FoilPolarDlg;
-    friend class EditPlrDlg;
-    friend class XDirectStyleDlg;
-    friend class Settings;
     friend class BatchAbstractDlg;
+    friend class BatchCtrlDlg;
+    friend class BatchGraphDlg;
+    friend class BatchThreadDlg;
+    friend class EditPlrDlg;
+    friend class FoilPolarDlg;
+    friend class MainFrame;
+    friend class Settings;
+    friend class TwoDWidget;
+    friend class XDirectStyleDlg;
     friend class XDirectTileWidget;
+    friend class XFoilAnalysisDlg;
 
 
     Q_OBJECT
@@ -83,10 +83,12 @@ class XDirect : public QWidget
 
         void setView(Xfl::enumGraphView eView);
 
-        bool bPolarView() {return m_bPolarView;}
-        Graph *CpGraph(){return &m_CpGraph;}
-        Graph *PlrGraph(int iPlrGraph){return m_PlrGraph.at(iPlrGraph);}
-        int PlrGraphSize(){return m_PlrGraph.count();}
+        bool bPolarView() const {return m_bPolarView;}
+        Graph *CpGraph() {return &m_CpGraph;}
+        Graph *PlrGraph(int iPlrGraph) {return m_PlrGraph.at(iPlrGraph);}
+        int PlrGraphSize() const{return m_PlrGraph.count();}
+
+        void resetCurves() {m_bResetCurves=true;}
 
         static void setCurFoil(Foil*pFoil)    {m_pCurFoil = pFoil;}
         static void setCurPolar(Polar*pPolar) {m_pCurPolar = pPolar;}
@@ -285,8 +287,6 @@ class XDirect : public QWidget
 
         int m_posAnimate;          /**< the current aoa in the animation */
 
-
-
         int m_iPlrGraph;           /**< defines whch polar graph is selected if m_iPlrView=1 */
         Xfl::enumGraphView m_iPlrView;  /**< defines the number of graphs to be displayed in the polar view */
         int m_FoilYPos;            /**< y position for the foil display, in pixels from the bottom of the screen */
@@ -321,7 +321,6 @@ class XDirect : public QWidget
         static bool s_bInitBL;            /**< true if the boundary layer should be initialized for the next xfoil calculation */
         static bool s_bFromZero;          /**< true if the batch analysis should start from Alpha=0 */
         static bool s_bKeepOpenErrors;    /**< true if the XfoilAnalysisDlg should be kept open if errors occured in the XFoil calculation */
-        static bool s_bStoreOpp;          /**< true if the operating points should be stored */
         static Polar s_RefPolar;    /**< Used a static reference to store default data */
         static int s_TimeUpdateInterval;  /**< time interval in ms between two output display updates during an XFoil analysis */
         static QVector<double> s_ReList;        /**< the user-defined list of Re numbers, used for batch analysis */

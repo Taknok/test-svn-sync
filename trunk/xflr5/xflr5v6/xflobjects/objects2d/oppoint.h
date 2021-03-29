@@ -84,6 +84,8 @@ class OpPoint : public XflObject
         double Reynolds() const {return m_Reynolds;}
         double Mach()     const {return m_Mach; }
 
+        static bool bStoreOpp() {return s_bStoreOpp;}
+        static void setStoreOpp(bool b) {s_bStoreOpp=b;}
 
     public:
         bool m_bViscResults;        /**< true if viscous results are stored in this OpPoint */
@@ -121,5 +123,9 @@ class OpPoint : public XflObject
 
         QString m_FoilName;        /**< the name of the parent Foil */
         QString m_PlrName;         /**< the name of the parent Polar */
+
+
+        static bool s_bStoreOpp;          /**< true if the operating points should be stored; */
+
 };
 

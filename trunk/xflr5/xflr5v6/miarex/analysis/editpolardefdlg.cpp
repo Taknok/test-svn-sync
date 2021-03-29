@@ -312,10 +312,10 @@ void EditPolarDefDlg::showWPolar()
         dataItem = prepareDoubleRow("", "Velocity", m_pWPolar->velocity(), Units::speedUnitLabel());
         polarTypeFolder.first()->appendRow(dataItem);
 
-        dataItem = prepareDoubleRow("", "Alpha", m_pWPolar->Alpha(), QString::fromUtf8("°"));
+        dataItem = prepareDoubleRow("", "Alpha", m_pWPolar->Alpha(), QChar(0260));
         polarTypeFolder.first()->appendRow(dataItem);
 
-        dataItem = prepareDoubleRow("", "Beta", m_pWPolar->Beta(), QString::fromUtf8("°"));
+        dataItem = prepareDoubleRow("", "Beta", m_pWPolar->Beta(), QChar(0260));
         polarTypeFolder.first()->appendRow(dataItem);
     }
 

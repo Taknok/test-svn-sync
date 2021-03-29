@@ -763,8 +763,8 @@ void WPolarDlg::setupLayout()
                 m_pctrlBeta    = new DoubleEdit(0.00,2);
                 QLabel *labSpeedUnit   = new QLabel(strSpeedUnit);
 
-                QLabel *lab7 = new QLabel(QString::fromUtf8("°"));
-                QLabel *lab8 = new QLabel(QString::fromUtf8("°"));
+                QLabel *lab7 = new QLabel(QChar(0260));
+                QLabel *lab8 = new QLabel(QChar(0260));
                 pTypeDataLayout->addWidget(lab1,1,1);
                 pTypeDataLayout->addWidget(lab5,2,1);
                 pTypeDataLayout->addWidget(lab6,3,1);

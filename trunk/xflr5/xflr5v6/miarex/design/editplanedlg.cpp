@@ -892,7 +892,7 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
     dataItem.at(2)->setData(Xfl::BOOLVALUE, Qt::UserRole);
     wingFolder.first()->appendRow(dataItem);
 
-    dataItem = prepareDoubleRow("Pitch angle", "Angle", m_pPlane->wingTiltAngle(iw),QString::fromUtf8("°"));
+    dataItem = prepareDoubleRow("Pitch angle", "Angle", m_pPlane->wingTiltAngle(iw),QChar(0260));
     dataItem.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
     wingFolder.first()->appendRow(dataItem);
 
@@ -1013,10 +1013,10 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
                 dataItem = prepareDoubleRow("", "offset", wingsec->m_Offset*Units::mtoUnit(), Units::lengthUnitLabel());
                 sectionFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "dihedral", wingsec->m_Dihedral, QString::fromUtf8("°"));
+                dataItem = prepareDoubleRow("", "dihedral", wingsec->m_Dihedral, QChar(0260));
                 sectionFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "twist", wingsec->m_Twist, QString::fromUtf8("°"));
+                dataItem = prepareDoubleRow("", "twist", wingsec->m_Twist, QChar(0260));
                 sectionFolder.first()->appendRow(dataItem);
 
                 dataItem = prepareIntRow("", "x-panels", wingsec->m_NXPanels);
@@ -2111,7 +2111,7 @@ void EditPlaneDlg::paintPlaneLegend(QPainter &painter, Plane *pPlane, QRect draw
     painter.drawText(LeftPos, ZPos+D, Result);
     D+=dheight;
 
-    str1 = QString(tr("TipTwist       =")+"%1").arg(pPlane->m_Wing[0].tipTwist(), 10,'f', 3) + QString::fromUtf8("°");
+    str1 = QString(tr("TipTwist       =")+"%1").arg(pPlane->m_Wing[0].tipTwist(), 10,'f', 3) + QChar(0260);
     painter.drawText(LeftPos, ZPos+D, str1);
     D+=dheight;
 
@@ -2123,7 +2123,7 @@ void EditPlaneDlg::paintPlaneLegend(QPainter &painter, Plane *pPlane, QRect draw
     painter.drawText(LeftPos, ZPos+D, str1);
     D+=dheight;
 
-    str1 = QString(tr("Root-Tip Sweep =")+"%1").arg(pPlane->m_Wing[0].averageSweep(), 10,'f',3) + QString::fromUtf8("°");
+    str1 = QString(tr("Root-Tip Sweep =")+"%1").arg(pPlane->m_Wing[0].averageSweep(), 10,'f',3) + QChar(0260);
     painter.drawText(LeftPos, ZPos+D, str1);
     D+=dheight;
 

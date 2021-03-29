@@ -805,7 +805,7 @@ void PlaneOpp::getPlaneOppProperties(QString &planeOppProperties, QString length
     planeOppProperties += "\n"+strong + speedUnitLabel+"\n";
 
     strong  = QString(QObject::tr("Alpha")+" =%1").arg(m_Alpha,7,'f',2);
-    planeOppProperties += strong +QString::fromUtf8("°")+"\n";
+    planeOppProperties += strong +QChar(0260)+"\n";
 
     strong  = QString(QObject::tr("Mass")+"  = %1 ").arg(m_Weight*kgtoUnit,7,'f',3);
     planeOppProperties += strong + massUnitLabel + "\n";
@@ -813,7 +813,7 @@ void PlaneOpp::getPlaneOppProperties(QString &planeOppProperties, QString length
     if(qAbs(m_Beta)>PRECISION)
     {
         strong  = QString(QObject::tr("Beta")+"  = %1").arg(m_Beta,7,'f',2);
-        planeOppProperties += strong +QString::fromUtf8("°")+"\n\n";
+        planeOppProperties += strong +QChar(0260)+"\n\n";
     }
 
     if(m_WPolarType==Xfl::STABILITYPOLAR)

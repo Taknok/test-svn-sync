@@ -61,8 +61,8 @@ class BatchAbstractDlg : public QDialog
 
     protected:
         void keyPressEvent(QKeyEvent  *pEvent) override;
-        void showEvent(    QShowEvent *pEvent) override;
-        void hideEvent(    QHideEvent *pEvent) override;
+        virtual void showEvent(    QShowEvent *pEvent) override;
+        virtual void hideEvent(    QHideEvent *pEvent) override;
         void reject() override;
 
         virtual void cleanUp();
@@ -96,7 +96,7 @@ class BatchAbstractDlg : public QDialog
     protected:
         QRadioButton *m_prbFoil1, *m_prbFoil2;
         QPushButton *m_ppbFoilList;
-        QRadioButton *m_rbRange1, *m_rbRange2;
+        QRadioButton *m_prbRange1, *m_prbRange2;
         QRadioButton *m_prbAlpha, *m_prbCl;
         QPushButton *m_ppbEditList;
         DoubleEdit *m_pdeReMin, *m_pdeReMax, *m_pdeReDelta, *m_pdeMach;

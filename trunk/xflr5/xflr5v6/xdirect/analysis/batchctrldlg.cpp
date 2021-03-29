@@ -49,6 +49,13 @@ BatchCtrlDlg::BatchCtrlDlg(QWidget *pParent) : BatchAbstractDlg(pParent)
     s_bUpdatePolarView = false;
     m_pchUpdatePolarView->setChecked(false);
     m_pchUpdatePolarView->hide();
+
+    m_nTasks = m_TaskCounter = 0;
+}
+
+
+BatchCtrlDlg::~BatchCtrlDlg()
+{
 }
 
 
@@ -214,6 +221,30 @@ void BatchCtrlDlg::onAnalyze()
 }
 
 
+void BatchCtrlDlg::customEvent(QEvent * pEvent)
+{
+    if(pEvent->type()==XFOIL_END_TASK_EVENT)
+    {
+        XFoilTaskEvent *pTaskEvent = dynamic_cast<XFoilTaskEvent*>(pEvent);
+        m_TaskCounter++;
+        QString strange = QString::asprintf("%d/%d: ", m_TaskCounter, m_nTasks) + "Finished task "+ pTaskEvent->foil()->name() + " / " + pTaskEvent->polar()->name();
+        m_pteTextOutput->appendPlainText(strange);
+        if(m_TaskCounter>=m_nTasks)
+        {
+            m_pteTextOutput->appendPlainText("All tasks completed");
+            cleanUp();
+        }
+    }
+    else if(pEvent->type() == XFOIL_END_OPP_EVENT)
+    {
+        XFoilOppEvent *pOppEvent = dynamic_cast<XFoilOppEvent*>(pEvent);
+//        Objects2d::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->oppPtr(), XDirect::s_bStoreOpp);
+        if(OpPoint::bStoreOpp()) Objects2d::insertOpPoint(pOppEvent->theOpPoint()); // OpPoint data is added to the polar data on the fly in the XFoilTask
+        else                     delete pOppEvent->theOpPoint();
+    }
+}
+
+
 /**
  * Starts the multithreaded analysis.
  * First, creates a pool list of all (Foil, pairs) to analyze.
@@ -238,26 +269,29 @@ void BatchCtrlDlg::startAnalyses()
         return;
     }
 
-    QApplication::setOverrideCursor(Qt::BusyCursor);
+    qApp->setOverrideCursor(Qt::BusyCursor);
 
     m_ppbAnalyze->setText(tr("Cancel"));
 
     if(!m_bFromList) nRe = int(qAbs((m_ReMax-m_ReMin)/m_ReInc)+1);
     else             nRe = XDirect::s_ReList.count();
 
+    m_nTasks = m_FoilList.size()*nRe; // to monitor the progress
+    m_TaskCounter = 0;
+
     XFoilTask::s_bCancel = false;
 
-    m_pteTextOutput->appendPlainText("Starting analyses\n");
+    m_pteTextOutput->appendPlainText("Starting analyses");
 
     for(int i=0; i<m_FoilList.count(); i++)
     {
         Foil *pFoil = Objects2d::foil(m_FoilList.at(i));
         if(!pFoil) continue;
 
-        m_pteTextOutput->appendPlainText("Starting XFoil tasks for foil "+pFoil->name()+"\n");
+        m_pteTextOutput->appendPlainText("   starting XFoil tasks for "+pFoil->name());
         qApp->processEvents();
 
-        QFutureSynchronizer<void> futureSync;
+//        QFutureSynchronizer<void> futureSync;
         for (int iRe=0; iRe<nRe; iRe++)
         {
             Polar *pPolar = nullptr;
@@ -273,27 +307,21 @@ void BatchCtrlDlg::startAnalyses()
             else         pXFoilTask->setSequence(false, m_ClMin, m_ClMax, m_ClInc);
             pXFoilTask->initializeXFoilTask(pFoil, pPolar, true, m_bInitBL, m_bFromZero);
 
-            futureSync.addFuture(QtConcurrent::run(pXFoilTask, &XFoilTask::run));
+//            QFuture<Polar*> future = QtConcurrent::run(pXFoilTask, &XFoilTask::runFuture);
+//            futureSync.addFuture(future);
+            // event mechanism not compatible with QFuture?
+
+            QThreadPool::globalInstance()->start(pXFoilTask);
         }
-        futureSync.waitForFinished();
-        m_pteTextOutput->appendPlainText("Finished foil " + pFoil->name()+"\n");
-        s_pXDirect->m_bResetCurves = true;
-        s_pXDirect->updateView();
+//        futureSync.waitForFinished(); // maybe unnecessary: "The destructor of QFutureSynchronizer calls waitForFinished()"
+        m_pteTextOutput->appendPlainText("   finished launching XFoil tasks for " + pFoil->name());
+
         qApp->processEvents();
+        s_pXDirect->resetCurves();
+        s_pXDirect->updateView();
     }
+    m_pteTextOutput->appendPlainText("All tasks launched... waiting\n");
 
-    m_bIsRunning = false;
-    m_pButtonBox->button(QDialogButtonBox::Close)->setEnabled(true);
-    m_ppbAnalyze->setText(tr("Analyze"));
-    QApplication::restoreOverrideCursor();
+    m_bIsRunning = true;
 }
 
-
-void BatchCtrlDlg::customEvent(QEvent * pEvent)
-{
-    if(pEvent->type() == XFOIL_END_OPP_EVENT)
-    {
-        XFoilOppEvent *pOppEvent = dynamic_cast<XFoilOppEvent*>(pEvent);
-        Objects2d::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->oppPtr(), XDirect::s_bStoreOpp);
-    }
-}
