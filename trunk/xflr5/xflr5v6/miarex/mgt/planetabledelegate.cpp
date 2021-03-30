@@ -64,7 +64,7 @@ void PlaneTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 {
     QString strong;
     QStyleOptionViewItem myOption = option;
-    int NUFOs  = Objects3d::s_oaPlane.size();
+    int NUFOs  = Objects3d::planeCount();
 
     if(index.row()> NUFOs)
     {

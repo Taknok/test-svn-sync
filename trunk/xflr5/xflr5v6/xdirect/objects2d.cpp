@@ -35,10 +35,6 @@ QVector<OpPoint*> Objects2d::s_oaOpp;
 
 
 
-Objects2d::Objects2d()
-{
-}
-
 void Objects2d::deleteAllFoils()
 {
     for(int io=0; io<s_oaOpp.size(); io++) delete s_oaOpp.at(io);
@@ -663,7 +659,7 @@ Polar *Objects2d::getPolar(const Foil *pFoil, QString const &PolarName)
 }
 
 
-Polar *Objects2d::getPolar(QString m_FoilName, const QString &PolarName)
+Polar *Objects2d::getPolar(const QString &FoilName, const QString &PolarName)
 {
     if (!PolarName.length())
     {
@@ -673,7 +669,7 @@ Polar *Objects2d::getPolar(QString m_FoilName, const QString &PolarName)
     for (int i=0; i<s_oaPolar.size(); i++)
     {
         Polar *pPolar =  s_oaPolar.at(i);
-        if (pPolar->foilName() == m_FoilName &&  pPolar->polarName() == PolarName)
+        if (pPolar->foilName() == FoilName &&  pPolar->polarName() == PolarName)
         {
             return pPolar;
         }

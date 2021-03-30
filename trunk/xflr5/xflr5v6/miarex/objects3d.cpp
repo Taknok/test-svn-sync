@@ -38,10 +38,6 @@ QVector <PlaneOpp*> Objects3d::s_oaPOpp;
 QVector <Body*>     Objects3d::s_oaBody;
 
 
-Objects3d::Objects3d()
-{
-}
-
 
 /**
  * If the body is associated to a plane, duplicates the body and attaches it to the Plane
@@ -81,7 +77,7 @@ void Objects3d::addBody(Body *pBody)
  * @param planeName: the plane's name to check
  * @return true if a plane with the same name already exists, false otherwise
 */
-bool Objects3d::planeExists(QString planeName)
+bool Objects3d::planeExists(QString const &planeName)
 {
     Plane *pOldPlane = nullptr;
 
@@ -407,7 +403,7 @@ void Objects3d::deletePlaneResults(Plane *pPlane, bool bDeletePolars)
 *@param BodyName the QString holding the name of the body
 *@return a pointer to the body with the requested body name, or NULL if none has been found
 */
-Body * Objects3d::getBody(QString BodyName)
+Body * Objects3d::getBody(const QString &BodyName)
 {
     Body* pBody = nullptr;
     for (int ib=0; ib<s_oaBody.size(); ib++)
@@ -463,7 +459,7 @@ PlaneOpp * Objects3d::getPlaneOpp(Plane *pPlane, WPolar* pWPolar, double x)
 * @param WPolarName the name of the CWPolar object
 * @return a pointer to the instance of the CWPolar object, or NULL if non has been found
 */
-WPolar* Objects3d::getWPolar(Plane *pPlane, QString WPolarName)
+WPolar* Objects3d::getWPolar(Plane *pPlane, const QString &WPolarName)
 {
     WPolar *pWPolar = nullptr;
 
@@ -485,7 +481,7 @@ WPolar* Objects3d::getWPolar(Plane *pPlane, QString WPolarName)
 *@param PlaneName a QString object with the name of the requested CPlane object
 *@return a pointer to the instance of the CPlane object, or NULL if non has been found
 */
-Plane * Objects3d::getPlane(QString PlaneName)
+Plane * Objects3d::getPlane(QString const &PlaneName)
 {
     Plane* pPlane = nullptr;
     for (int i=0; i<s_oaPlane.size(); i++)
@@ -503,7 +499,7 @@ Plane * Objects3d::getPlane(QString PlaneName)
  * @param PlaneName the source Plane's name
  * @return a pointer to the Plane's main wing.
  */
-Wing* Objects3d::getWing(QString PlaneName)
+Wing* Objects3d::getWing(const QString &PlaneName)
 {
     for(int ip=0; ip<s_oaPlane.size(); ip++)
     {
@@ -794,15 +790,12 @@ WPolar* Objects3d::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
 }
 
 
-
-
-
 /**
  * Renames the active wing or plane
  * Updates the references in child polars and oppoints
  * @param PlaneName the new name for the wing or plane
  */
-void Objects3d::renamePlane(QString PlaneName)
+void Objects3d::renamePlane(const QString &PlaneName)
 {
     QString OldName;
     PlaneOpp *pPOpp;

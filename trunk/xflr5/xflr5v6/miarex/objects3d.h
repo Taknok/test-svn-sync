@@ -23,8 +23,7 @@
   */
 
 
-#ifndef OBJECTS3D_H
-#define OBJECTS3D_H
+#pragma once
 
 #include <QVector>
 
@@ -34,46 +33,47 @@ class Body;
 class WPolar;
 class PlaneOpp;
 
-class Objects3d
+namespace  Objects3d
 {
-public:
-    Objects3d();
+    extern QVector <Plane*>    s_oaPlane;   /**< The array of void pointers to the Plane objects. */
+    extern QVector <Body*>     s_oaBody;    /**< The array of void pointers to the Body objects. @todo deprecated, remove*/
+    extern QVector <WPolar*>   s_oaWPolar;  /**< The array of void pointers to the WPolar objects. */
+    extern QVector <PlaneOpp*> s_oaPOpp;    /**< The array of void pointers to the PlaneOpp objects. */
 
-    static void      addBody(Body *pBody);
-    static Plane *   addPlane(Plane *pPlane);
-    static void      addWPolar(WPolar *pWPolar);
-    static void      deleteObjects();
-    static void      deletePlane(Plane *pPlane);
-    static void      deletePlaneResults(Plane *pPlane, bool bDeletePolars=false);
-    static void      deleteWPolar(WPolar *pWPolar);
-    static Plane *   duplicatePlane(Plane *pPlane);
-    static Body*     getBody(QString BodyName);
-    static Plane*    getPlane(QString PlaneName);
-    static PlaneOpp* getPlaneOpp(Plane *pPlane, WPolar *pWPolar, double x);
-    static Wing*     getWing(QString PlaneName);
-    static WPolar*   getWPolar(Plane *pPlane, QString WPolarName);
-    static void      insertPOpp(PlaneOpp *pPOpp);
-    static WPolar *  insertNewWPolar(WPolar *pModWPolar, Plane *pCurPlane);
-    static bool      planeExists(QString planeName);
-    static void      renamePlane(QString PlaneName);
-    static Plane *   setModPlane(Plane *pModPlane);
-    static void      setWPolarChildrenStyle(WPolar *pWPolar);
+    void      addBody(Body *pBody);
+    Plane *   addPlane(Plane *pPlane);
+    inline void appendPlane(Plane*pPlane) {s_oaPlane.append(pPlane);}
+    void      addWPolar(WPolar *pWPolar);
+    inline void appendWPolar(WPolar*pWPolar) {s_oaWPolar.append(pWPolar);}
+    inline void removePolarAt(int i) {if(i<0 || i>=s_oaWPolar.size()) return; s_oaWPolar.removeAt(i);}
+    inline void insertPolar(int i, WPolar*pWPolar) {s_oaWPolar.insert(i, pWPolar);}
+    void      deleteObjects();
+    void      deletePlane(Plane *pPlane);
+    void      deletePlaneResults(Plane *pPlane, bool bDeletePolars=false);
+    void      deleteWPolar(WPolar *pWPolar);
+    Plane *   duplicatePlane(Plane *pPlane);
+    Body*     getBody(QString const &BodyName);
+    Plane*    getPlane(QString const&PlaneName);
+    PlaneOpp* getPlaneOpp(Plane *pPlane, WPolar *pWPolar, double x);
+    Wing*     getWing(QString const &PlaneName);
+    WPolar*   getWPolar(Plane *pPlane, QString const &WPolarName);
+    void      insertPOpp(PlaneOpp *pPOpp);
+    inline void appendPlaneOpp(PlaneOpp*pPOpp) {s_oaPOpp.append(pPOpp);}
+    inline void removePOppAt(int i)  {if(i<0 || i>=s_oaPOpp.size()) return; s_oaPOpp.removeAt(i);}
+    WPolar *  insertNewWPolar(WPolar *pModWPolar, Plane *pCurPlane);
+    bool      planeExists(QString const &planeName);
+    void      renamePlane(QString const &PlaneName);
+    Plane *   setModPlane(Plane *pModPlane);
+    void      setWPolarChildrenStyle(WPolar *pWPolar);
 
-    static Plane*    planeAt(int idx)    {if(idx<0 || idx>=s_oaPlane.size())  return nullptr; else return s_oaPlane.at(idx);}
-    static WPolar*   polarAt(int idx)    {if(idx<0 || idx>=s_oaWPolar.size()) return nullptr; else return s_oaWPolar.at(idx);}
-    static PlaneOpp* planeOppAt(int idx) {if(idx<0 || idx>=s_oaPOpp.size())   return nullptr; else return s_oaPOpp.at(idx);}
+    inline Plane*    planeAt(int idx)    {if(idx<0 || idx>=s_oaPlane.size())  return nullptr; else return s_oaPlane.at(idx);}
+    inline WPolar*   polarAt(int idx)    {if(idx<0 || idx>=s_oaWPolar.size()) return nullptr; else return s_oaWPolar.at(idx);}
+    inline PlaneOpp* planeOppAt(int idx) {if(idx<0 || idx>=s_oaPOpp.size())   return nullptr; else return s_oaPOpp.at(idx);}
 
-    static int       planeCount()   {return s_oaPlane.size();}
-    static int       polarCount()    {return s_oaWPolar.size();}
-    static int       planeOppCount() {return s_oaPOpp.size();}
+    inline int planeCount()    {return s_oaPlane.size();}
+    inline int polarCount()    {return s_oaWPolar.size();}
+    inline int planeOppCount() {return s_oaPOpp.size();}
 
-public:
-    // object variable lists
-
-    static QVector <Plane*>    s_oaPlane;   /**< The array of void pointers to the Plane objects. */
-    static QVector <Body*>     s_oaBody;    /**< The array of void pointers to the Body objects. @todo deprecated, remove*/
-    static QVector <WPolar*>   s_oaWPolar;  /**< The array of void pointers to the WPolar objects. */
-    static QVector <PlaneOpp*> s_oaPOpp;    /**< The array of void pointers to the PlaneOpp objects. */
 };
 
-#endif // OBJECTS3D_H
+

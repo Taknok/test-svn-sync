@@ -233,9 +233,9 @@ void ManagePlanesDlg::setupLayout()
 
 void ManagePlanesDlg::fillPlaneTable()
 {
-    m_pPlaneModel->setRowCount(Objects3d::s_oaPlane.size());
+    m_pPlaneModel->setRowCount(Objects3d::planeCount());
 
-    for(int i=0; i<Objects3d::s_oaPlane.size(); i++)
+    for(int i=0; i<Objects3d::planeCount(); i++)
     {
         fillPlaneRow(i);
     }
@@ -250,7 +250,7 @@ void ManagePlanesDlg::fillPlaneRow(int row)
 
     if(row>=Objects3d::s_oaPlane.size()) return;
 
-    Plane *pPlane = (Plane*)Objects3d::s_oaPlane.at(row);
+    Plane *pPlane = Objects3d::s_oaPlane.at(row);
     if(!pPlane) return;
     Wing *pWing = pPlane->wing();
 

@@ -47,9 +47,9 @@ void ImportObjectDlg::initDialog(bool bWing)
         m_pctrlQuestion->setText(tr("Select the wing to import"));
 
         Plane *pPlane;
-        for(int ip=0; ip<Objects3d::s_oaPlane.size(); ip++)
+        for(int ip=0; ip<Objects3d::planeCount(); ip++)
         {
-            pPlane = Objects3d::s_oaPlane.at(ip);
+            pPlane = Objects3d::planeAt(ip);
 
             if(pPlane->planeName() != m_ObjectName)
                 m_pctrlNameList->addItem(pPlane->planeName()+"/Main wing");
@@ -70,9 +70,9 @@ void ImportObjectDlg::initDialog(bool bWing)
         }
 
         Plane *pPlane;
-        for(int ip=0; ip<Objects3d::s_oaPlane.size(); ip++)
+        for(int ip=0; ip<Objects3d::planeCount(); ip++)
         {
-            pPlane = (Plane*)Objects3d::s_oaPlane.at(ip);
+            pPlane = Objects3d::planeAt(ip);
             if(pPlane->body())
             {
                 if(pPlane->m_BodyName != m_ObjectName)

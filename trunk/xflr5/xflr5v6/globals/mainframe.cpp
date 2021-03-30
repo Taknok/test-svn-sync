@@ -3609,7 +3609,7 @@ Xfl::enumApp MainFrame::loadXFLR5File(QString pathname)
 
         XFile.close();
 
-        if(Objects3d::s_oaPlane.size()) return Xfl::MIAREX;
+        if(Objects3d::planeCount()) return Xfl::MIAREX;
         else                            return Xfl::XFOILANALYSIS;
     }
     else if(end==".xfl")
@@ -3649,7 +3649,7 @@ Xfl::enumApp MainFrame::loadXFLR5File(QString pathname)
 
         XFile.close();
 
-        if(Objects3d::s_oaPlane.size()) return Xfl::MIAREX;
+        if(Objects3d::planeCount()) return Xfl::MIAREX;
         else                            return Xfl::XFOILANALYSIS;
     }
 
@@ -4702,15 +4702,15 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
     // save the WPolars associated to this plane
     //count the polars
     iSize = 0;
-    for (i=0; i<Objects3d::s_oaWPolar.size();i++)
+    for (i=0; i<Objects3d::polarCount();i++)
     {
-        pWPolar = Objects3d::s_oaWPolar.at(i);
+        pWPolar = Objects3d::polarAt(i);
         if(pWPolar->planeName()==PlaneName) iSize++;
     }
     ar << iSize;
-    for (i=0; i<Objects3d::s_oaWPolar.size();i++)
+    for (i=0; i<Objects3d::polarCount();i++)
     {
-        pWPolar = Objects3d::s_oaWPolar.at(i);
+        pWPolar = Objects3d::polarAt(i);
         if(pWPolar->planeName()==PlaneName) pWPolar->serializeWPlrXFL(ar, bIsStoring);
     }
 
@@ -5145,27 +5145,27 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 
         // save the planes...
         ar << Objects3d::s_oaPlane.size();
-        for (i=0; i<Objects3d::s_oaPlane.size();i++)
+        for (i=0; i<Objects3d::planeCount();i++)
         {
-            pPlane = Objects3d::s_oaPlane.at(i);
+            pPlane = Objects3d::planeAt(i);
             pPlane->serializePlaneXFL(ar, bIsStoring);
         }
 
         // save the WPolars
-        ar << Objects3d::s_oaWPolar.size();
-        for (i=0; i<Objects3d::s_oaWPolar.size();i++)
+        ar << Objects3d::polarCount();
+        for (i=0; i<Objects3d::polarCount();i++)
         {
-            pWPolar = Objects3d::s_oaWPolar.at(i);
+            pWPolar = Objects3d::polarAt(i);
             pWPolar->serializeWPlrXFL(ar, bIsStoring);
         }
 
         if(m_bSaveWOpps)
         {
             // not forgetting their POpps
-            ar << Objects3d::s_oaPOpp.size();
-            for (i=0; i<Objects3d::s_oaPOpp.size();i++)
+            ar << Objects3d::planeOppCount();
+            for (i=0; i<Objects3d::planeOppCount();i++)
             {
-                pPOpp = Objects3d::s_oaPOpp.at(i);
+                pPOpp = Objects3d::planeOppAt(i);
                 pPOpp->serializePOppXFL(ar, bIsStoring);
             }
         }
@@ -5268,7 +5268,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         for(i=0; i<n; i++)
         {
             pPlane = new Plane();
-            if(pPlane->serializePlaneXFL(ar, bIsStoring)) Objects3d::s_oaPlane.append(pPlane);
+            if(pPlane->serializePlaneXFL(ar, bIsStoring)) Objects3d::appendPlane(pPlane);
             else
             {
                 delete pPlane;
@@ -5288,7 +5288,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
                 pPlane = Objects3d::getPlane(pWPolar->planeName());
                 if(pPlane)
                 {
-                    Objects3d::s_oaWPolar.append(pWPolar);
+                    Objects3d::appendWPolar(pWPolar);
                     if(pWPolar->referenceDim()==Xfl::PLANFORMREFDIM)
                     {
                         pWPolar->setReferenceSpanLength(pPlane->planformSpan());
@@ -5329,7 +5329,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
                 pWPolar = Objects3d::getWPolar(pPlane, pPOpp->polarName());
 
                 // clean up : the project may be carrying useless PlaneOpps due to past programming errors
-                if(pPlane && pWPolar) Objects3d::s_oaPOpp.append(pPOpp);
+                if(pPlane && pWPolar) Objects3d::appendPlaneOpp(pPOpp);
                 else
                 {
                 }
@@ -5893,7 +5893,7 @@ void MainFrame::updatePlaneListBox()
     QStringList PlaneNames;
     for (i=0; i<Objects3d::s_oaPlane.size(); i++)
     {
-        pPlane = Objects3d::s_oaPlane[i];
+        pPlane = Objects3d::planeAt(i);
         PlaneNames.append(pPlane->planeName());
     }
 
@@ -5921,9 +5921,7 @@ void MainFrame::updateWPolarListBox()
     //    fills the combobox with WPolar names associated to Miarex's current wing
     //    then selects Miarex current WPolar if any, else selects the first, if any
     //    else disables the combobox
-    WPolar *pWPolar=nullptr;
-    QString PlaneName;
-    int i=0;
+
 
     m_pcbPlanePolar->blockSignals(true);
     m_pcbPlanePolar->clear();
@@ -5931,6 +5929,7 @@ void MainFrame::updateWPolarListBox()
     Plane  *pCurPlane = m_pMiarex->m_pCurPlane;
     WPolar *pCurWPlr  = m_pMiarex->m_pCurWPolar;
 
+    QString PlaneName;
     if(pCurPlane)      PlaneName = pCurPlane->planeName();
     else               PlaneName = "";
 
@@ -5942,9 +5941,9 @@ void MainFrame::updateWPolarListBox()
         return;
     }
 
-    for (i=0; i<Objects3d::s_oaWPolar.size(); i++)
+    for (int i=0; i<Objects3d::polarCount(); i++)
     {
-        pWPolar = Objects3d::s_oaWPolar[i];
+        WPolar *pWPolar = Objects3d::polarAt(i);
         if(pWPolar->planeName() == PlaneName)
         {
             m_pcbPlanePolar->addItem(pWPolar->polarName());
@@ -5982,9 +5981,9 @@ void MainFrame::updatePOppListBox()
         return;
     }
 
-    for (int iPOpp=0; iPOpp<Objects3d::s_oaPOpp.size(); iPOpp++)
+    for (int iPOpp=0; iPOpp<Objects3d::planeOppCount(); iPOpp++)
     {
-        PlaneOpp *pPOpp = Objects3d::s_oaPOpp.at(iPOpp);
+        PlaneOpp *pPOpp = Objects3d::planeOppAt(iPOpp);
         if (pPOpp->planeName()==pCurPlane->planeName() && pPOpp->polarName()==pCurWPlr->polarName())
         {
             if(pCurWPlr->polarType()<Xfl::FIXEDAOAPOLAR)        str = QString("%L1").arg(pPOpp->m_Alpha,8,'f',3);
