@@ -17,8 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
-#ifndef OBJECTS2D_H
-#define OBJECTS2D_H
+#pragma once
 
 /**
   * @file This file implements the variables and methods used to manage 3D objects
@@ -33,66 +32,60 @@ class Foil;
 class Polar;
 class OpPoint;
 
-class Objects2d
+namespace Objects2d
 {
-public:
-    Objects2d();
-
-    static void      deleteObjects();
-
-    static void      deleteFoilResults(Foil *pFoil, bool bDeletePolars=false);
-
-
-    static Foil*     duplicateFoil(Foil *pFoil);
-    static Foil*     foil(const QString &strFoilName);
-    static Foil*     foilAt(int iFoil);
-    static Foil*     deleteFoil(Foil *pFoil);
-    static Foil*     deleteThisFoil(Foil *pFoil);
-    static void      deleteAllFoils();
-    static void      insertThisFoil(Foil *pFoil);
-    static Foil *    addFoil(Foil *pFoil);
-    static void      appendFoil(Foil *pFoil) {s_oaFoil.append(pFoil);}
-    static bool      foilExists(QString const &FoilName, Qt::CaseSensitivity cs=Qt::CaseInsensitive);
-    static void      renameFoil(QString const &FoilName);
-    static void      renameThisFoil(Foil *pFoil, QString const &newFoilName);
-    static Foil *    setModFoil(Foil *pModFoil);
-    static void      setStaticPointers();
-
-    static void      addPolar(Polar *pPolar);
-    static void      appendPolar(Polar *pPolar) {s_oaPolar.append(pPolar);}
-    static Polar*    getPolar(Foil const *pFoil, QString const &PolarName);
-    static Polar*    getPolar(QString m_FoilName, QString const &PolarName);
-    static Polar*    polarAt(int index);
-    static void      deletePolar(Polar *pPolar);
-    static void      deletePolarAt(int index);
-
-    static OpPoint*  oppAt(int index);
-    static OpPoint*  getOpp(Foil *pFoil, Polar *pPolar, double Alpha);
-    static OpPoint*  getFoilOpp(Foil *pFoil, Polar *pPolar, double x);
-    static void      insertOpPoint(OpPoint *pNewPoint);
-    static void      appendOpp(OpPoint *pOpp) {s_oaOpp.append(pOpp);}
-    static bool      deleteOpp(OpPoint *pOpp);
-    static void      deleteOppAt(int index);
-    static OpPoint*  addOpPoint(const Foil *pFoil, Polar *pPolar, OpPoint *pOpPoint, bool bStoreOpp);
-
-    static int foilCount() {return s_oaFoil.size();}
-    static int polarCount() {return s_oaPolar.size();}
-    static int oppCount() {return s_oaOpp.size();}
-
-    static void setFoilChildrenStyle(Foil *pFoil);
-    static void setPolarChildrenStyle(const Polar *pPolar);
-
-    static QVector<Foil*> * pOAFoil() {return &s_oaFoil;}
-    static QVector<Polar*> * pOAPolar() {return &s_oaPolar;}
-    static QVector<OpPoint*> * pOAOpp() {return &s_oaOpp;}
-
-    static Polar* createPolar(Foil *pFoil, Xfl::enumPolarType PolarType, double Spec, double Mach, double NCrit, double m_XTop, double m_XBot);
-
-private:
     // object arrays
-    static QVector<Foil *> s_oaFoil;   /**< The array of pointers to the Foil objects. */
-    static QVector<Polar *> s_oaPolar;  /**< The array of pointers to the Polar objects. */
-    static QVector<OpPoint *> s_oaOpp;    /**< The array of pointers to the OpPoint objects. */
+    extern QVector<Foil *> s_oaFoil;   /**< The array of pointers to the Foil objects. */
+    extern QVector<Polar *> s_oaPolar;  /**< The array of pointers to the Polar objects. */
+    extern QVector<OpPoint *> s_oaOpp;    /**< The array of pointers to the OpPoint objects. */
+
+    void      deleteObjects();
+
+    void      deleteFoilResults(Foil *pFoil, bool bDeletePolars=false);
+
+    Foil*     duplicateFoil(Foil *pFoil);
+    Foil*     foil(const QString &strFoilName);
+    Foil*     foilAt(int iFoil);
+    Foil*     deleteFoil(Foil *pFoil);
+    Foil*     deleteThisFoil(Foil *pFoil);
+    void      deleteAllFoils();
+    void      insertThisFoil(Foil *pFoil);
+    Foil *    addFoil(Foil *pFoil);
+    inline void appendFoil(Foil *pFoil) {s_oaFoil.append(pFoil);}
+    bool      foilExists(QString const &FoilName, Qt::CaseSensitivity cs=Qt::CaseInsensitive);
+    void      renameFoil(QString const &FoilName);
+    void      renameThisFoil(Foil *pFoil, QString const &newFoilName);
+    Foil *    setModFoil(Foil *pModFoil);
+    void      setStaticPointers();
+
+    void      addPolar(Polar *pPolar);
+    inline void appendPolar(Polar *pPolar) {s_oaPolar.append(pPolar);}
+    Polar*    getPolar(Foil const *pFoil, QString const &PolarName);
+    Polar*    getPolar(QString const &FoilName, QString const &PolarName);
+    Polar*    polarAt(int index);
+    void      deletePolar(Polar *pPolar);
+    void      deletePolarAt(int index);
+
+    OpPoint*  oppAt(int index);
+    OpPoint*  getOpp(Foil *pFoil, Polar *pPolar, double Alpha);
+    OpPoint*  getFoilOpp(Foil *pFoil, Polar *pPolar, double x);
+    void      insertOpPoint(OpPoint *pNewPoint);
+    inline void appendOpp(OpPoint *pOpp) {s_oaOpp.append(pOpp);}
+    bool      deleteOpp(OpPoint *pOpp);
+    void      deleteOppAt(int index);
+    OpPoint*  addOpPoint(const Foil *pFoil, Polar *pPolar, OpPoint *pOpPoint, bool bStoreOpp);
+
+    inline int foilCount() {return s_oaFoil.size();}
+    inline int polarCount() {return s_oaPolar.size();}
+    inline int oppCount() {return s_oaOpp.size();}
+
+    void setFoilChildrenStyle(Foil *pFoil);
+    void setPolarChildrenStyle(const Polar *pPolar);
+
+    inline QVector<Foil*> * pOAFoil() {return &s_oaFoil;}
+    inline QVector<Polar*> * pOAPolar() {return &s_oaPolar;}
+    inline QVector<OpPoint*> * pOAOpp() {return &s_oaOpp;}
+
+    Polar* createPolar(Foil *pFoil, Xfl::enumPolarType PolarType, double Spec, double Mach, double NCrit, double m_XTop, double m_XBot);
 };
 
-#endif // OBJECTS2D_H

@@ -148,12 +148,12 @@ void LegendWt::drawWPolarLegend(QPainter &painter, QPointF place, int bottom)
     WPolar * pWPolar=nullptr;
     Plane *pPlane=nullptr;
 
-    for (int j=0; j<Objects3d::s_oaPlane.size(); j++)
+    for (int j=0; j<Objects3d::planeCount(); j++)
     {
-        pPlane = Objects3d::s_oaPlane.at(j);
-        for (int i=0; i<Objects3d::s_oaWPolar.size(); i++)
+        pPlane = Objects3d::planeAt(j);
+        for (int i=0; i<Objects3d::polarCount(); i++)
         {
-            pWPolar = Objects3d::s_oaWPolar.at(i);
+            pWPolar = Objects3d::polarAt(i);
             if (pWPolar->planeName()==pPlane->planeName() && pWPolar->isVisible() && !isFiltered(pWPolar))
             {
                 if(m_MiarexView==Xfl::WPOLARVIEW || (m_MiarexView==Xfl::STABPOLARVIEW && pWPolar->isStabilityPolar()))
@@ -182,9 +182,9 @@ void LegendWt::drawWPolarLegend(QPainter &painter, QPointF place, int bottom)
     for (int k=0; k<strPlaneList.size(); k++)
     {
         int nPlanePlrs = 0;
-        for (int l=0; l < Objects3d::s_oaWPolar.size(); l++)
+        for (int l=0; l < Objects3d::polarCount(); l++)
         {
-            pWPolar = Objects3d::s_oaWPolar.at(l);
+            pWPolar = Objects3d::polarAt(l);
 
             if (pWPolar->dataSize() && pWPolar->isVisible() && !isFiltered(pWPolar) && pWPolar->planeName()==strPlaneList.at(k))
             {
@@ -210,9 +210,9 @@ void LegendWt::drawWPolarLegend(QPainter &painter, QPointF place, int bottom)
                 painter.drawText(int(place.x()), int(place.y() + ypos*ny-ypos/2), strPlaneList.at(k));
             }
 
-            for (int nc=0; nc<Objects3d::s_oaWPolar.size(); nc++)
+            for (int nc=0; nc<Objects3d::polarCount(); nc++)
             {
-                pWPolar = Objects3d::s_oaWPolar.at(nc);
+                pWPolar = Objects3d::polarAt(nc);
                 if(strPlaneList.at(k) == pWPolar->planeName())
                 {
                     if(!pWPolar->dataSize())
@@ -282,10 +282,10 @@ void LegendWt::drawPOppGraphLegend(QPainter &painter, QPointF place, double bott
     PlaneOpp *pPOpp = nullptr;
 
 
-    for (i=0; i<Objects3d::s_oaPOpp.size(); i++)
+    for (i=0; i<Objects3d::planeOppCount(); i++)
     {
         bFound = false;
-        pPOpp = Objects3d::s_oaPOpp.at(i);
+        pPOpp = Objects3d::planeOppAt(i);
         for (j=0; j<str.size(); j++)
         {
             if (pPOpp->planeName() == str.at(j))    bFound = true;
@@ -353,9 +353,9 @@ void LegendWt::drawPOppGraphLegend(QPainter &painter, QPointF place, double bott
         for (k = 0; k<str.size(); k++)
         {
             int PlanePts = 0;
-            for (l=0; l < Objects3d::s_oaPOpp.size(); l++)
+            for (l=0; l < Objects3d::planeOppCount(); l++)
             {
-                pPOpp = Objects3d::s_oaPOpp.at(l);
+                pPOpp = Objects3d::planeOppAt(l);
                 if (pPOpp->isVisible() && pPOpp->planeName() == str.at(k)) PlanePts++;
             }
             if (PlanePts)
@@ -379,9 +379,9 @@ void LegendWt::drawPOppGraphLegend(QPainter &painter, QPointF place, double bott
                 }
 
                 bStarted = true;
-                for (nc=0; nc < Objects3d::s_oaPOpp.size(); nc++)
+                for (nc=0; nc < Objects3d::planeOppCount(); nc++)
                 {
-                    pPOpp = Objects3d::s_oaPOpp.at(nc);
+                    pPOpp = Objects3d::planeOppAt(nc);
                     if(str.at(k) == pPOpp->planeName() && pPOpp->isVisible())
                     {
                         if(qAbs(bottom)<fabs(place.y() + 1.*ypos*ny+ypos))

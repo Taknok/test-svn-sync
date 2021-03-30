@@ -3127,7 +3127,7 @@ void Miarex::onDeleteAllWPlrOpps()
             if(pPOpp->polarName() == m_pCurWPolar->polarName() &&
                     pPOpp->planeName() == m_pCurPlane->planeName())
             {
-                Objects3d::s_oaPOpp.removeAt(i);
+                Objects3d::removePOppAt(i);
                 delete pPOpp;
             }
         }
@@ -3153,7 +3153,7 @@ void Miarex::onDeleteAllWOpps()
     for (int i = Objects3d::planeOppCount()-1; i>=0; i--)
     {
         PlaneOpp* pPOpp =  Objects3d::planeOppAt(i);
-        Objects3d::s_oaPOpp.removeAt(i);
+        Objects3d::removePOppAt(i);
         delete pPOpp;
     }
 
@@ -3213,7 +3213,7 @@ void Miarex::onDeleteCurWOpp()
             PlaneOpp* pPOpp = Objects3d::planeOppAt(i);
             if(pPOpp == m_pCurPOpp)
             {
-                Objects3d::s_oaPOpp.removeAt(i);
+                Objects3d::removePOppAt(i);
                 delete pPOpp;
                 break;
             }
@@ -3252,7 +3252,7 @@ void Miarex::onDeletePlanePOpps()
             PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
             if (pPOpp->planeName() == m_pCurPlane->planeName())
             {
-                Objects3d::s_oaPOpp.removeAt(i);
+                Objects3d::removePOppAt(i);
                 delete pPOpp;
             }
         }
@@ -5360,7 +5360,7 @@ void Miarex::onRenameCurWPolar()
         pOldWPolar = Objects3d::polarAt(l);
         if(pOldWPolar==m_pCurWPolar)
         {
-            Objects3d::s_oaWPolar.removeAt(l);
+            Objects3d::removePolarAt(l);
             break;
         }
     }
@@ -5386,7 +5386,7 @@ void Miarex::onRenameCurWPolar()
         if(pOldWPolar->polarName().compare(m_pCurWPolar->polarName(), Qt::CaseInsensitive) >0)
         {
             //then insert before
-            Objects3d::s_oaWPolar.insert(l, m_pCurWPolar);
+            Objects3d::insertPolar(l, m_pCurWPolar);
             bInserted = true;
             break;
         }
@@ -5455,7 +5455,7 @@ void Miarex::onResetCurWPolar()
             pPOpp =  Objects3d::planeOppAt(i);
             if(pPOpp->polarName()==m_pCurWPolar->polarName() && pPOpp->planeName()==m_pCurPlane->planeName())
             {
-                Objects3d::s_oaPOpp.removeAt(i);
+                Objects3d::removePOppAt(i);
                 delete pPOpp;
             }
         }
@@ -6028,7 +6028,7 @@ void Miarex::onPlaneInertia()
                         PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
                         if(pPOpp && pPOpp->planeName()==PlaneName && pPOpp->polarName()==pWPolar->polarName())
                         {
-                            Objects3d::s_oaPOpp.removeAt(i);
+                            Objects3d::removePOppAt(i);
                             delete pPOpp;
                         }
                     }
@@ -6925,9 +6925,9 @@ void Miarex::setPlane(QString PlaneName)
     if(!pPlane)
     {
         //get the first one in the list
-        if(Objects3d::s_oaPlane.count())
+        if(Objects3d::planeCount())
         {
-            pPlane = Objects3d::s_oaPlane.at(0);
+            pPlane = Objects3d::planeAt(0);
         }
     }
 
@@ -7408,9 +7408,9 @@ void Miarex::setWPolar(bool bCurrent, QString WPlrName)
     if(!pWPolar)
     {
         //if we don't know anything, find the first for this plane
-        for (int i=0; i<Objects3d::s_oaWPolar.size(); i++)
+        for (int i=0; i<Objects3d::polarCount(); i++)
         {
-            WPolar *pOldWPolar = Objects3d::s_oaWPolar.at(i);
+            WPolar *pOldWPolar = Objects3d::polarAt(i);
             if (pOldWPolar->planeName() == m_pCurPlane->planeName())
             {
                 m_pCurWPolar = pOldWPolar;
@@ -8139,9 +8139,9 @@ PlaneOpp* Miarex::setPlaneOppObject(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pC
     if(!pPOpp)
     {
         //try to select the first in the object array
-        for(int iPOpp=0; iPOpp<Objects3d::s_oaPOpp.size(); iPOpp++)
+        for(int iPOpp=0; iPOpp<Objects3d::planeOppCount(); iPOpp++)
         {
-            PlaneOpp *pOldPOpp = Objects3d::s_oaPOpp.at(iPOpp);
+            PlaneOpp *pOldPOpp = Objects3d::planeOppAt(iPOpp);
             if(pOldPOpp->planeName()==pPlane->planeName() && pOldPOpp->polarName()==pWPolar->polarName())
             {
                 pPOpp = pOldPOpp;
