@@ -45,18 +45,16 @@ public:
     double z;
 
     //inline constructors
-    Vector3d()
+    Vector3d() : x{0},y{0},z{0}
     {
-        x  = 0.0;
-        y  = 0.0;
-        z  = 0.0;
     }
 
-    Vector3d(double const &xi, double const &yi, double const &zi)
+    Vector3d(double const &xi, double const &yi, double const &zi) : x{xi}, y{yi}, z{zi}
     {
-        x  = xi;
-        y  = yi;
-        z  = zi;
+    }
+
+    Vector3d(double const*coords) : x{coords[0]}, y{coords[1]}, z{coords[2]}
+    {
     }
 
     //inline operators

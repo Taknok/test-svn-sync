@@ -67,7 +67,6 @@
 #include <xflobjects/objects_global.h>
 #include <xinverse/foilselectiondlg.h>
 
-Polar XDirect::s_RefPolar;
 
 QVector<double> XDirect::s_ReList;
 QVector<double> XDirect::s_MachList;
@@ -77,7 +76,10 @@ bool XDirect::s_bViscous = true;
 bool XDirect::s_bAlpha = true;
 bool XDirect::s_bInitBL = true;
 bool XDirect::s_bKeepOpenErrors = true;
-bool XDirect::s_bFromZero = false;
+
+double XDirect::s_Re      =  100000.0;
+double XDirect::s_ReMax   = 1000000.0;
+double XDirect::s_ReDelta =  100000.0;
 
 int XDirect::s_TimeUpdateInterval = 100;
 
@@ -123,13 +125,12 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
     m_bType2          = true;
     m_bType3          = true;
     m_bType4          = true;
-    m_bFromList       = true;
     m_bShowTextOutput = true;
     m_bNeutralLine    = true;
     m_bShowInviscid   = false;
     m_bCurOppOnly     = true;
 
-    m_bPolarView          = true;
+    m_bPolarView      = true;
     m_iPlrGraph = 0;
     m_iPlrView  = Xfl::ALLGRAPHS;
     m_FoilYPos  = 150;
@@ -139,15 +140,6 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
     setCurPolar(nullptr);
     setCurOpp(nullptr);
 
-    m_Alpha      = 0.0;
-    m_AlphaMax   = 1.0;
-    m_AlphaDelta = 0.5;
-    m_Cl         = 0.0;
-    m_ClMax      = 1.0;
-    m_ClDelta    = 0.1;
-    m_Reynolds      = 100000.0;
-    m_ReynoldsMax   = 150000.0;
-    m_ReynoldsDelta =  10000.0;
 
     for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
     {
@@ -424,7 +416,6 @@ void XDirect::createPolarCurves()
     // or deleted points & polars
 
     Polar *pPolar = nullptr;
-    QString str;
 
     for(int ig=0; ig<MAXPOLARGRAPHS; ig++) m_PlrGraph[ig]->deleteCurves();
 
@@ -672,6 +663,7 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
             pBotCurve->setColor(QColor(55,75,155));
 
             double y[IVX][3];
+            memset(y, 0, 3*IVX*sizeof(double));
             for (int i=2; i<=pOpp->blx.nside1-1; i++){
                 if (pOpp->blx.RTheta[i][1]>0.0) y[i][1] = log10( pOpp->blx.RTheta[i][1] );
                 else                             y[i][1] = 0.0;
@@ -716,7 +708,7 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
             pBotCurve->setColor(QColor(55,75,155));
 
             double y[IVX][3];
-
+            memset(y, 0, 3*IVX*sizeof(double));
             for (int ibl=2; ibl<pOpp->blx.nside1; ibl++)
             {
                 y[ibl][1] = pOpp->blx.ctau[ibl][1];
@@ -740,6 +732,7 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
         {
             pGraph->setYTitle("Dissipation Coef.");
             double y[IVX][3];
+            memset(y, 0, 3*IVX*sizeof(double));
             Curve * pTopCurve = pGraph->addCurve();
             Curve * pBotCurve = pGraph->addCurve();
             pTopCurve->setName("Dissipation-Top");
@@ -788,6 +781,7 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
             double que = 0.5*pOpp->blx.qinf*pOpp->blx.qinf;
 
             double y[IVX][ISX];
+            memset(y, 0, IVX*ISX*sizeof(double));
             //---- fill compressible ue arrays
             for (int ibl=2; ibl<= pOpp->blx.nside1;ibl++)
             {
@@ -822,7 +816,8 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
             pBotCurve->setColor(QColor(55,75,155));
 
             double y[IVX][3];
-            double uei;
+            memset(y, 0, 3*IVX*sizeof(double));
+            double uei=0;
 
             //---- fill compressible ue arrays
             for (int ibl=2; ibl<= pOpp->blx.nside1;ibl++)
@@ -1216,7 +1211,7 @@ void XDirect::keyReleaseEvent(QKeyEvent *event)
 void XDirect::loadSettings(QSettings &settings)
 {
     QString str1, str2, str3;
-    int b;
+
     int oppVar = 0;
     settings.beginGroup("XDirect");
     {
@@ -1231,8 +1226,6 @@ void XDirect::loadSettings(QSettings &settings)
         m_bType2          = settings.value("Type2").toBool();
         m_bType3          = settings.value("Type3").toBool();
         m_bType4          = settings.value("Type4").toBool();
-        m_bFromList       = settings.value("FromList", true).toBool();
-        s_bFromZero       = settings.value("FromZero", true).toBool();
         m_bShowTextOutput = settings.value("TextOutput").toBool();
         m_bNeutralLine    = settings.value("NeutralLine").toBool();
         m_bCurOppOnly     = settings.value("CurOppOnly").toBool();
@@ -1240,6 +1233,9 @@ void XDirect::loadSettings(QSettings &settings)
         m_bCpGraph        = settings.value("ShowCpGraph", true).toBool();
         m_bSequence       = settings.value("Sequence", false).toBool();
 
+        s_Re              = settings.value("Reynolds",      s_Re).toDouble();
+        s_ReMax           = settings.value("ReynoldsMax",   s_ReMax).toDouble();
+        s_ReDelta         = settings.value("ReynoldsDelta", s_ReDelta).toDouble();
 
         oppVar = settings.value("OppVar",0).toInt();
         s_TimeUpdateInterval = settings.value("TimeUpdateInterval",100).toInt();
@@ -1262,15 +1258,6 @@ void XDirect::loadSettings(QSettings &settings)
                 break;
         }
 
-        m_Alpha           = settings.value("AlphaMin").toDouble();
-        m_AlphaMax        = settings.value("AlphaMax").toDouble();
-        m_AlphaDelta      = settings.value("AlphaDelta").toDouble();
-        m_Cl              = settings.value("ClMin").toDouble();
-        m_ClMax           = settings.value("ClMax").toDouble();
-        m_ClDelta         = settings.value("ClDelta").toDouble();
-        m_Reynolds        = settings.value("ReynoldsMin").toDouble();
-        m_ReynoldsMax     = settings.value("ReynoldsMax").toDouble();
-        m_ReynoldsDelta   = settings.value("ReynolsDelta").toDouble();
         m_XFoil.setVAccel(settings.value("VAccel").toDouble());
         s_bKeepOpenErrors = settings.value("KeepOpenErrors").toBool();
 
@@ -1281,19 +1268,6 @@ void XDirect::loadSettings(QSettings &settings)
 
         BatchThreadDlg::s_bUpdatePolarView = settings.value("BatchUpdatePolarView", false).toBool();
         BatchThreadDlg::s_nThreads = settings.value("MaxThreads", 12).toInt();
-
-        s_RefPolar.setNCrit(settings.value("NCrit").toDouble());
-        s_RefPolar.setXtrTop(settings.value("XTopTr").toDouble());
-        s_RefPolar.setXtrBot(settings.value("XBotTr").toDouble());
-        s_RefPolar.setMach(settings.value("Mach").toDouble());
-        s_RefPolar.setAoa(settings.value("ASpec").toDouble());
-
-        b = settings.value("Type").toInt();
-        if(b==1)      s_RefPolar.setPolarType(Xfl::FIXEDSPEEDPOLAR);
-        else if(b==2) s_RefPolar.setPolarType(Xfl::FIXEDLIFTPOLAR);
-        else if(b==3) s_RefPolar.setPolarType(Xfl::RUBBERCHORDPOLAR);
-        else if(b==4) s_RefPolar.setPolarType(Xfl::FIXEDAOAPOLAR);
-
 
         int NRe = settings.value("NReynolds").toInt();
         s_ReList.clear();
@@ -1308,10 +1282,6 @@ void XDirect::loadSettings(QSettings &settings)
             s_MachList.append(settings.value(str2).toDouble());
             s_NCritList.append(settings.value(str3).toDouble());
         }
-
-        BatchGraphDlg::s_Geometry       = settings.value("BatchDlgGeometry").toByteArray();
-        BatchThreadDlg::s_Geometry = settings.value("BatchThreadDlgGeometry").toByteArray();
-
     }
     settings.endGroup();
 
@@ -1340,8 +1310,10 @@ void XDirect::loadSettings(QSettings &settings)
     }
     m_pOpPointWidget->loadSettings(settings);
 
+    XFoilAnalysisDlg::loadSettings(settings);
     FoilPolarDlg::loadSettings(settings);
     Optim2d::loadSettings(settings);
+    BatchAbstractDlg::loadSettings(settings);
     BatchCtrlDlg::loadSettings(settings);
 }
 
@@ -1496,19 +1468,6 @@ void XDirect::onAnalyze()
 
     m_pXFADlg->m_pRmsGraph->copySettings(&Settings::s_RefGraph);
 
-    if(m_bSequence)
-    {
-        m_pXFADlg->setAlpha(m_Alpha, m_AlphaMax, m_AlphaDelta);
-        m_pXFADlg->setCl(m_Cl, m_ClMax, m_ClDelta);
-        m_pXFADlg->setRe(m_Reynolds, m_ReynoldsMax, m_ReynoldsDelta);
-    }
-    else
-    {
-        m_pXFADlg->setAlpha(m_Alpha, m_Alpha, m_AlphaDelta);
-        m_pXFADlg->setCl(m_Cl, m_Cl, m_ClDelta);
-        m_pXFADlg->setRe(m_Reynolds, m_Reynolds, m_ReynoldsDelta);
-    }
-
     m_pXFADlg->m_bAlpha = s_bAlpha;
 
     m_pXFADlg->initDialog();
@@ -1527,7 +1486,7 @@ void XDirect::onAnalyze()
 
     s_pMainFrame->updateOppListBox();
 
-    if(s_bAlpha) setOpp(m_Alpha);
+    if(s_bAlpha) setOpp(XFoilAnalysisDlg::s_Alpha);
     else         setOpp();
 
     Graph::setOppHighlighting(bHigh);
@@ -1539,7 +1498,6 @@ void XDirect::onAnalyze()
     setControls();
     updateView();
 }
-
 
 
 /**
@@ -1556,42 +1514,11 @@ void XDirect::onBatchAnalysis()
 
     BatchGraphDlg *pBatchDlg = new BatchGraphDlg;
     pBatchDlg->m_pCurFoil     = m_pCurFoil;
-    pBatchDlg->m_bAlpha    = true;
-
-    pBatchDlg->m_SpMin     = m_Alpha;
-    pBatchDlg->m_SpMax     = m_AlphaMax;
-    pBatchDlg->m_SpInc     = m_AlphaDelta;
-    pBatchDlg->m_AlphaMin  = m_Alpha;
-    pBatchDlg->m_AlphaMax  = m_AlphaMax;
-    pBatchDlg->m_AlphaInc  = m_AlphaDelta;
-    pBatchDlg->m_ClMin     = m_Cl;
-    pBatchDlg->m_ClMax     = m_ClMax;
-    pBatchDlg->m_ClInc     = m_ClDelta;
-    pBatchDlg->m_ReMin     = m_Reynolds;
-    pBatchDlg->m_ReMax     = m_ReynoldsMax;
-    pBatchDlg->m_ReInc     = m_ReynoldsDelta;
-
-    pBatchDlg->m_bFromList = m_bFromList;
-    pBatchDlg->m_bFromZero = s_bFromZero;
-
     pBatchDlg->m_pRmsGraph->copySettings(&Settings::s_RefGraph);
 
     pBatchDlg->initDialog();
 
     if(pBatchDlg->exec()==QDialog::Accepted) emit projectModified();
-
-    m_Reynolds         = pBatchDlg->m_ReMin;
-    m_ReynoldsMax      = pBatchDlg->m_ReMax;
-    m_ReynoldsDelta    = pBatchDlg->m_ReInc;
-    m_Alpha            = pBatchDlg->m_AlphaMin;
-    m_AlphaMax         = pBatchDlg->m_AlphaMax;
-    m_AlphaDelta       = pBatchDlg->m_AlphaInc;
-    m_Cl               = pBatchDlg->m_ClMin;
-    m_ClMax            = pBatchDlg->m_ClMax;
-    m_ClDelta          = pBatchDlg->m_ClInc;
-    s_bAlpha           = pBatchDlg->m_bAlpha;
-    m_bFromList        = pBatchDlg->m_bFromList;
-    s_bFromZero        = pBatchDlg->m_bFromZero;
 
     delete pBatchDlg;
 
@@ -1629,38 +1556,10 @@ void XDirect::onMultiThreadedBatchAnalysis()
     m_ppbAnalyze->setEnabled(false);
 
     BatchThreadDlg *pBatchThreadDlg   = new BatchThreadDlg;
-
     pBatchThreadDlg->m_pCurFoil  = m_pCurFoil;
-
-    pBatchThreadDlg->m_bAlpha    = true;
-    pBatchThreadDlg->m_AlphaMin  = m_Alpha;
-    pBatchThreadDlg->m_AlphaMax  = m_AlphaMax;
-    pBatchThreadDlg->m_AlphaInc  = m_AlphaDelta;
-    pBatchThreadDlg->m_ClMin     = m_Cl;
-    pBatchThreadDlg->m_ClMax     = m_ClMax;
-    pBatchThreadDlg->m_ClInc     = m_ClDelta;
-    pBatchThreadDlg->m_ReMin     = m_Reynolds;
-    pBatchThreadDlg->m_ReMax     = m_ReynoldsMax;
-    pBatchThreadDlg->m_ReInc     = m_ReynoldsDelta;
-
-    pBatchThreadDlg->m_bFromList = m_bFromList;
-    pBatchThreadDlg->m_bFromZero = s_bFromZero;
     pBatchThreadDlg->initDialog();
 
     pBatchThreadDlg->exec();
-
-    m_Reynolds         = pBatchThreadDlg->m_ReMin;
-    m_ReynoldsMax      = pBatchThreadDlg->m_ReMax;
-    m_ReynoldsDelta    = pBatchThreadDlg->m_ReInc;
-    m_Alpha            = pBatchThreadDlg->m_AlphaMin;
-    m_AlphaMax         = pBatchThreadDlg->m_AlphaMax;
-    m_AlphaDelta       = pBatchThreadDlg->m_AlphaInc;
-    m_Cl               = pBatchThreadDlg->m_ClMin;
-    m_ClMax            = pBatchThreadDlg->m_ClMax;
-    m_ClDelta          = pBatchThreadDlg->m_ClInc;
-    s_bAlpha           = pBatchThreadDlg->m_bAlpha;
-    m_bFromList        = pBatchThreadDlg->m_bFromList;
-    s_bFromZero        = pBatchThreadDlg->m_bFromZero;
 
     delete pBatchThreadDlg;
 
@@ -1695,35 +1594,9 @@ void XDirect::onBatchCtrlAnalysis()
     BatchCtrlDlg *pBatchCtrlDlg  = new BatchCtrlDlg;
 
     pBatchCtrlDlg->m_pCurFoil  = m_pCurFoil;
-    pBatchCtrlDlg->m_bAlpha    = true;
-    pBatchCtrlDlg->m_AlphaMin  = m_Alpha;
-    pBatchCtrlDlg->m_AlphaMax  = m_AlphaMax;
-    pBatchCtrlDlg->m_AlphaInc  = m_AlphaDelta;
-    pBatchCtrlDlg->m_ClMin     = m_Cl;
-    pBatchCtrlDlg->m_ClMax     = m_ClMax;
-    pBatchCtrlDlg->m_ClInc     = m_ClDelta;
-    pBatchCtrlDlg->m_ReMin     = m_Reynolds;
-    pBatchCtrlDlg->m_ReMax     = m_ReynoldsMax;
-    pBatchCtrlDlg->m_ReInc     = m_ReynoldsDelta;
-
-    pBatchCtrlDlg->m_bFromList = m_bFromList;
-    pBatchCtrlDlg->m_bFromZero = s_bFromZero;
     pBatchCtrlDlg->initDialog();
-
     pBatchCtrlDlg->exec();
 
-    m_Reynolds         = pBatchCtrlDlg->m_ReMin;
-    m_ReynoldsMax      = pBatchCtrlDlg->m_ReMax;
-    m_ReynoldsDelta    = pBatchCtrlDlg->m_ReInc;
-    m_Alpha            = pBatchCtrlDlg->m_AlphaMin;
-    m_AlphaMax         = pBatchCtrlDlg->m_AlphaMax;
-    m_AlphaDelta       = pBatchCtrlDlg->m_AlphaInc;
-    m_Cl               = pBatchCtrlDlg->m_ClMin;
-    m_ClMax            = pBatchCtrlDlg->m_ClMax;
-    m_ClDelta          = pBatchCtrlDlg->m_ClInc;
-    s_bAlpha           = pBatchCtrlDlg->m_bAlpha;
-    m_bFromList        = pBatchCtrlDlg->m_bFromList;
-    s_bFromZero        = pBatchCtrlDlg->m_bFromZero;
 
     delete pBatchCtrlDlg;
 
@@ -1865,9 +1738,8 @@ void XDirect::onDefinePolar()
         m_pCurPolar->setFoilName(m_pCurFoil->name());
         m_pCurPolar->setPolarName(fpDlg.m_PlrName);
         m_pCurPolar->setVisible(true);
-        m_pCurPolar->copySpecification(&s_RefPolar);
+        m_pCurPolar->copySpecification(&FoilPolarDlg::s_RefPolar);
 
-        m_pCurPolar->setPolarType(fpDlg.m_PolarType);
         Objects2d::addPolar(m_pCurPolar);
         setPolar(m_pCurPolar);
 
@@ -3069,8 +2941,8 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 
     bRead  = ReadAVLString(in, Line, strong);// analysis type
 
-    pPolar->setReType(strong.mid(0,2).toInt(&bOK));
-    pPolar->setMaType(strong.mid(2,2).toInt(&bOK2));
+    pPolar->setReType(strong.midRef(0,2).toInt(&bOK));
+    pPolar->setMaType(strong.midRef(2,2).toInt(&bOK2));
     if(!bOK || !bOK2)
     {
         str = QString("Error reading line %1: Unrecognized Mach and Reynolds type.\nThe polar(s) will not be stored").arg(Line);
@@ -3084,7 +2956,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     else                                                  pPolar->setPolarType(Xfl::FIXEDSPEEDPOLAR);
 
 
-    bRead  = ReadAVLString(in, Line, strong);
+    ReadAVLString(in, Line, strong);
     if(strong.length() < 34)
     {
         str = QString("Error reading line %1. The polar(s) will not be stored").arg(Line);
@@ -3093,7 +2965,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         return nullptr;
     }
 
-    pPolar->setXtrBot(strong.mid(9,6).toDouble(&bOK));
+    pPolar->setXtrBot(strong.midRef(9,6).toDouble(&bOK));
     if(!bOK)
     {
         str = QString("Error reading Bottom Transition value at line %1. The polar(s) will not be stored").arg(Line);
@@ -3102,7 +2974,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         return nullptr;
     }
 
-    pPolar->setXtrTop(strong.mid(28,6).toDouble(&bOK));
+    pPolar->setXtrTop(strong.midRef(28,6).toDouble(&bOK));
     if(!bOK)
     {
         str = QString("Error reading Top Transition value at line %1. The polar(s) will not be stored").arg(Line);
@@ -3112,7 +2984,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     }
 
     // Mach     Re     NCrit
-    bRead  = ReadAVLString(in, Line, strong);// blank line
+    ReadAVLString(in, Line, strong);// blank line
     if(strong.length() < 50)
     {
         str = QString("Error reading line %1. The polar(s) will not be stored").arg(Line);
@@ -3121,7 +2993,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         return nullptr;
     }
 
-    pPolar->setMach(strong.mid(8,6).toDouble(&bOK));
+    pPolar->setMach(strong.midRef(8,6).toDouble(&bOK));
     if(!bOK)
     {
         str = QString("Error reading Mach Number at line %1. The polar(s) will not be stored").arg(Line);
@@ -3130,7 +3002,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         return nullptr;
     }
 
-    Re = strong.mid(24,10).toDouble(&bOK);
+    Re = strong.midRef(24,10).toDouble(&bOK);
     if(!bOK)
     {
         str = QString("Error reading Reynolds Number at line %1. The polar(s) will not be stored").arg(Line);
@@ -3153,7 +3025,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     bRead  = ReadAVLString(in, Line, strong);// column titles
     bRead  = ReadAVLString(in, Line, strong);// underscores
 
-    while( bRead)
+    while(bRead)
     {
         bRead  = ReadAVLString(in, Line, strong);// polar data
         if(bRead)
@@ -3704,7 +3576,8 @@ void XDirect::onRenameCurPolar()
             delete pPolar;
 
             //and rename everything
-            m_pCurPolar->setPolarName(renDlg.newName());
+            if(m_pCurPolar)
+                m_pCurPolar->setPolarName(renDlg.newName());
 
             for (l=m_poaOpp->size()-1;l>=0; l--)
             {
@@ -4178,29 +4051,37 @@ void XDirect::readParams()
     else if (m_prbSpec2->isChecked()) s_bAlpha = false;
     else if (m_prbSpec3->isChecked()) s_bAlpha = false;
 
+    m_bSequence = m_pchSequence->isChecked();
 
+    double Alpha=0, AlphaMax=0, AlphaDelta=0;
+    double Cl=0, ClMax=0, ClDelta=0;
+    double Reynolds=0, ReynoldsMax=0, ReynoldsDelta=0;
     if(m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
     {
         if(s_bAlpha)
         {
-            m_Alpha      = m_pdeAlphaMin->value();
-            m_AlphaMax   = m_pdeAlphaMax->value();
-            m_AlphaDelta = m_pdeAlphaDelta->value();
+            Alpha      = m_pdeAlphaMin->value();
+            AlphaMax   = m_pdeAlphaMax->value();
+            AlphaDelta = m_pdeAlphaDelta->value();
         }
         else
         {
-            m_Cl      = m_pdeAlphaMin->value();
-            m_ClMax   = m_pdeAlphaMax->value();
-            m_ClDelta = m_pdeAlphaDelta->value();
+            Cl      = m_pdeAlphaMin->value();
+            ClMax   = m_pdeAlphaMax->value();
+            ClDelta = m_pdeAlphaDelta->value();
         }
     }
     else
     {
-        m_Reynolds      = m_pdeAlphaMin->value();
-        m_ReynoldsMax   = m_pdeAlphaMax->value();
-        m_ReynoldsDelta = m_pdeAlphaDelta->value();
+        Reynolds      = m_pdeAlphaMin->value();
+        ReynoldsMax   = m_pdeAlphaMax->value();
+        ReynoldsDelta = m_pdeAlphaDelta->value();
     }
-    m_bSequence = m_pchSequence->isChecked();
+
+    m_pXFADlg->setAlpha(Alpha, AlphaMax, AlphaDelta);
+    m_pXFADlg->setCl(Cl, ClMax, ClDelta);
+    m_pXFADlg->setRe(Reynolds, ReynoldsMax, ReynoldsDelta);
+
     s_bInitBL   = m_pchInitBL->isChecked();
     s_bViscous  = m_pchViscous->isChecked();
     OpPoint::setStoreOpp(m_pchStoreOpp->isChecked());
@@ -4226,8 +4107,6 @@ void XDirect::saveSettings(QSettings &settings)
         settings.setValue("Type2", m_bType2);
         settings.setValue("Type3", m_bType3);
         settings.setValue("Type4", m_bType4);
-        settings.setValue("FromList", m_bFromList);
-        settings.setValue("FromZero", s_bFromZero);
         settings.setValue("TextOutput", m_bShowTextOutput);
         settings.setValue("CurOppOnly", m_bCurOppOnly);
         settings.setValue("ShowInviscid", m_bShowInviscid);
@@ -4254,15 +4133,6 @@ void XDirect::saveSettings(QSettings &settings)
                 break;
         }
 
-        settings.setValue("AlphaMin", m_Alpha);
-        settings.setValue("AlphaMax", m_AlphaMax);
-        settings.setValue("AlphaDelta", m_AlphaDelta);
-        settings.setValue("ClMin", m_Cl);
-        settings.setValue("ClMax", m_ClMax);
-        settings.setValue("ClDelta", m_ClDelta);
-        settings.setValue("ReynoldsMin", m_Reynolds);
-        settings.setValue("ReynoldsMax", m_ReynoldsMax);
-        settings.setValue("ReynolsDelta", m_ReynoldsDelta);
 
         settings.setValue("AutoInitBL", XFoilTask::s_bAutoInitBL);
         settings.setValue("IterLim", XFoilTask::s_IterLim);
@@ -4271,19 +4141,12 @@ void XDirect::saveSettings(QSettings &settings)
         settings.setValue("BatchUpdatePolarView", BatchThreadDlg::s_bUpdatePolarView);
         settings.setValue("MaxThreads", BatchThreadDlg::s_nThreads);
 
+        settings.setValue("Reynolds",      s_Re);
+        settings.setValue("ReynoldsMax",   s_ReMax);
+        settings.setValue("ReynoldsDelta", s_ReDelta);
+
         settings.setValue("VAccel", m_XFoil.VAccel());
         settings.setValue("KeepOpenErrors", s_bKeepOpenErrors);
-        settings.setValue("NCrit", s_RefPolar.NCrit());
-        settings.setValue("XTopTr", s_RefPolar.XtrTop());
-        settings.setValue("XBotTr", s_RefPolar.XtrBot());
-        settings.setValue("Mach", s_RefPolar.Mach());
-        settings.setValue("ASpec", s_RefPolar.aoa());
-
-        if(s_RefPolar.polarType()==Xfl::FIXEDSPEEDPOLAR)       settings.setValue("Type", 1);
-        // jx-mod added missing FIXEDLIFTPOLAR, corrected RUBBERCHORDPOLAR
-        else if(s_RefPolar.polarType()==Xfl::FIXEDLIFTPOLAR)   settings.setValue("Type", 2);
-        else if(s_RefPolar.polarType()==Xfl::RUBBERCHORDPOLAR) settings.setValue("Type", 3);
-        else if(s_RefPolar.polarType()==Xfl::FIXEDAOAPOLAR)    settings.setValue("Type", 4);
 
         settings.setValue("NReynolds", s_ReList.count());
         for (int i=0; i<s_ReList.count(); i++)
@@ -4295,9 +4158,6 @@ void XDirect::saveSettings(QSettings &settings)
             settings.setValue(str2, s_MachList[i]);
             settings.setValue(str3, s_NCritList[i]);
         }
-
-        settings.setValue("BatchDlgGeometry",       BatchGraphDlg::s_Geometry);
-        settings.setValue("BatchThreadDlgGeometry", BatchThreadDlg::s_Geometry);
     }
     settings.endGroup();
 
@@ -4307,8 +4167,10 @@ void XDirect::saveSettings(QSettings &settings)
     m_CpGraph.saveSettings(settings);
     m_pOpPointWidget->saveSettings(settings);
 
+    XFoilAnalysisDlg::saveSettings(settings);
     FoilPolarDlg::saveSettings(settings);
     Optim2d::saveSettings(settings);
+    BatchAbstractDlg::saveSettings(settings);
     BatchCtrlDlg::saveSettings(settings);
 }
 
@@ -4662,15 +4524,15 @@ void XDirect::setOpPointSequence()
 
         if(s_bAlpha)
         {
-            m_pdeAlphaMin->setValue(m_Alpha);
-            m_pdeAlphaMax->setValue(m_AlphaMax);
-            m_pdeAlphaDelta->setValue(m_AlphaDelta);
+            m_pdeAlphaMin->setValue(XFoilAnalysisDlg::s_Alpha);
+            m_pdeAlphaMax->setValue(XFoilAnalysisDlg::s_AlphaMax);
+            m_pdeAlphaDelta->setValue(XFoilAnalysisDlg::s_AlphaDelta);
         }
         else
         {
-            m_pdeAlphaMin->setValue(m_Cl);
-            m_pdeAlphaMax->setValue(m_ClMax);
-            m_pdeAlphaDelta->setValue(m_ClDelta);
+            m_pdeAlphaMin->setValue(XFoilAnalysisDlg::s_Cl);
+            m_pdeAlphaMax->setValue(XFoilAnalysisDlg::s_ClMax);
+            m_pdeAlphaDelta->setValue(XFoilAnalysisDlg::s_ClDelta);
         }
         m_prbSpec1->setEnabled(true);
         m_prbSpec2->setEnabled(true);
@@ -4680,9 +4542,9 @@ void XDirect::setOpPointSequence()
     {
         m_prbSpec3->setChecked(true);
         s_bAlpha = true;        // no choice with type 4 polars
-        m_pdeAlphaMin->setValue(m_Reynolds);
-        m_pdeAlphaMax->setValue(m_ReynoldsMax);
-        m_pdeAlphaDelta->setValue(m_ReynoldsDelta);
+        m_pdeAlphaMin->setValue(s_Re);
+        m_pdeAlphaMax->setValue(s_ReMax);
+        m_pdeAlphaDelta->setValue(s_ReDelta);
         m_prbSpec1->setEnabled(false);
         m_prbSpec2->setEnabled(false);
         m_prbSpec3->setEnabled(true);

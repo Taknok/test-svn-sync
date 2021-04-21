@@ -105,7 +105,7 @@ class XDirect : public QWidget
         static void setKeepOpenOnErrors(bool b) {s_bKeepOpenErrors=b;}
 
     signals:
-        void projectModified();
+        void projectModified() const;
 
     public slots:
         void updateView();
@@ -274,7 +274,6 @@ class XDirect : public QWidget
         bool m_bType3;             /**< true if the type 3 polars are to be displayed in the graphs */
         bool m_bType4;             /**< true if the type 4 polars are to be displayed in the graphs */
         bool m_bTrans;             /**< true if the user is dragging a view */
-        bool m_bFromList;          /**< true if the batch analysis is based on a list of Re values */
         bool m_bShowTextOutput;    /**< true if the batch analysis should display text result output */
         bool m_bNeutralLine;       /**< true if the neutral line should be displayed */
         bool m_bCurOppOnly;        /**< true if only the current operating point should be displayed */
@@ -294,17 +293,6 @@ class XDirect : public QWidget
         double m_fFoilScale;        /**< the scale for foil display*/
 
 
-        double m_Alpha;             /**< the min value of the aoa for a sequential analysis of Type 1, 2, or 3*/
-        double m_AlphaMax;          /**< the max value of the aoa for a sequential analysis of Type 1, 2, or 3*/
-        double m_AlphaDelta;        /**< the increment value of the aoa for a sequential analysis of Type 1, 2, or 3*/
-        double m_Cl;                /**< the min value of the lift coefficient for a sequential analysis of Type 1, 2, or 3*/
-        double m_ClMax;             /**< the max value of the aoa for a sequential analysis of Type 1, 2, or 3*/
-        double m_ClDelta;           /**< the increment value of the aoa for a sequential analysis of Type 1, 2, or 3*/
-        double m_Reynolds;          /**< the min value of the Reynolds number for a sequential analysis of Type 4*/
-        double m_ReynoldsMax;       /**< the max value of the Reynolds number for a sequential analysis of Type 4*/
-        double m_ReynoldsDelta;     /**< the increment value of the Reynolds number for a sequential analysis of Type 4*/
-
-
         QVector<Foil*> *m_poaFoil;    /**< pointer to the foil object array */
         QVector<Polar*> *m_poaPolar;  /**< pointer to the polar object array */
         QVector<OpPoint*> *m_poaOpp;  /**< pointer to the OpPoint object array */
@@ -316,12 +304,11 @@ class XDirect : public QWidget
 
         XFoil m_XFoil;                /**< the unique instance of the XFoil object */
 
+        static double s_Re, s_ReMax, s_ReDelta;
         static bool s_bViscous;           /**< true if performing a viscous calculation, false if inviscid */
         static bool s_bAlpha;             /**< true if performing an analysis based on aoa, false if based on Cl */
         static bool s_bInitBL;            /**< true if the boundary layer should be initialized for the next xfoil calculation */
-        static bool s_bFromZero;          /**< true if the batch analysis should start from Alpha=0 */
         static bool s_bKeepOpenErrors;    /**< true if the XfoilAnalysisDlg should be kept open if errors occured in the XFoil calculation */
-        static Polar s_RefPolar;    /**< Used a static reference to store default data */
         static int s_TimeUpdateInterval;  /**< time interval in ms between two output display updates during an XFoil analysis */
         static QVector<double> s_ReList;        /**< the user-defined list of Re numbers, used for batch analysis */
         static QVector<double> s_MachList;      /**< the user-defined list of Mach numbers, used for batch analysis */

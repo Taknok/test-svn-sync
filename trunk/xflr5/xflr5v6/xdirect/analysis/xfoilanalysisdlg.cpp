@@ -44,6 +44,12 @@
 XDirect *XFoilAnalysisDlg::s_pXDirect;
 QByteArray XFoilAnalysisDlg::s_Geometry;
 
+double XFoilAnalysisDlg::s_Alpha      = 0.0;
+double XFoilAnalysisDlg::s_AlphaMax   = 1.0;
+double XFoilAnalysisDlg::s_AlphaDelta = 0.5;
+double XFoilAnalysisDlg::s_Cl         = 0.0;
+double XFoilAnalysisDlg::s_ClMax      = 1.0;
+double XFoilAnalysisDlg::s_ClDelta    = 0.1;
 
 XFoilAnalysisDlg::XFoilAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 {
@@ -80,12 +86,12 @@ XFoilAnalysisDlg::XFoilAnalysisDlg(QWidget *pParent) : QDialog(pParent)
     m_bErrors     = false;
     m_bAlpha      = true;
 
-    m_AlphaMin   = 0.0;
-    m_AlphaMax   = 1.0;
-    m_AlphaDelta = 0.5;
-    m_ClMin      = 0.0;
-    m_ClMax      = 1.0;
-    m_ClDelta    = 0.1;
+    s_Alpha   = 0.0;
+    s_AlphaMax   = 1.0;
+    s_AlphaDelta = 0.5;
+    s_Cl      = 0.0;
+    s_ClMax      = 1.0;
+    s_ClDelta    = 0.1;
     m_ReMin      =  10000.0;
     m_ReMax      = 100000.0;
     m_ReDelta    =  10000.0;
@@ -153,8 +159,8 @@ void XFoilAnalysisDlg::initDialog()
 
     m_pXFoilTask->m_OutStream.setDevice(m_pXFile);
 
-    if(m_bAlpha) m_pXFoilTask->setSequence(true,  m_AlphaMin, m_AlphaMax, m_AlphaDelta);
-    else         m_pXFoilTask->setSequence(false, m_ClMin, m_ClMax, m_ClDelta);
+    if(m_bAlpha) m_pXFoilTask->setSequence(true,  s_Alpha, s_AlphaMax, s_AlphaDelta);
+    else         m_pXFoilTask->setSequence(false, s_Cl, s_ClMax, s_ClDelta);
 
     m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReDelta);
     m_pXFoilTask->initializeXFoilTask(XDirect::curFoil(), XDirect::curPolar(),
@@ -269,17 +275,17 @@ void XFoilAnalysisDlg::resetCurves()
 
 void XFoilAnalysisDlg::setAlpha(double AlphaMin, double AlphaMax, double AlphaDelta)
 {
-    m_AlphaMin = AlphaMin;
-    m_AlphaMax = AlphaMax;
-    m_AlphaDelta = AlphaDelta;
+    s_Alpha = AlphaMin;
+    s_AlphaMax = AlphaMax;
+    s_AlphaDelta = AlphaDelta;
 }
 
 
 void XFoilAnalysisDlg::setCl(double ClMin, double ClMax, double DeltaCl)
 {
-    m_ClMin = ClMin;
-    m_ClMax = ClMax;
-    m_ClDelta = DeltaCl;
+    s_Cl = ClMin;
+    s_ClMax = ClMax;
+    s_ClDelta = DeltaCl;
 }
 
 
@@ -401,6 +407,39 @@ void XFoilAnalysisDlg::customEvent(QEvent * pEvent)
 }
 
 
+void XFoilAnalysisDlg::loadSettings(QSettings &settings)
+{
+    settings.beginGroup("XFoilAnalysisDlg");
+    {
+        s_Geometry = settings.value("WindowGeom", QByteArray()).toByteArray();
+
+        s_Alpha      = settings.value("AlphaMin",   s_Alpha).toDouble();
+        s_AlphaMax   = settings.value("AlphaMax",   s_AlphaMax).toDouble();
+        s_AlphaDelta = settings.value("AlphaDelta", s_AlphaDelta).toDouble();
+        s_Cl         = settings.value("ClMin",      s_Cl).toDouble();
+        s_ClMax      = settings.value("ClMax",      s_ClMax).toDouble();
+        s_ClDelta    = settings.value("ClDelta",    s_ClDelta).toDouble();
+    }
+    settings.endGroup();
+}
+
+
+
+void XFoilAnalysisDlg::saveSettings(QSettings &settings)
+{
+    settings.beginGroup("XFoilAnalysisDlg");
+    {
+        settings.setValue("WindowGeom", s_Geometry);
+
+        settings.setValue("AlphaMin",   s_Alpha);
+        settings.setValue("AlphaMax",   s_AlphaMax);
+        settings.setValue("AlphaDelta", s_AlphaDelta);
+        settings.setValue("ClMin",      s_Cl);
+        settings.setValue("ClMax",      s_ClMax);
+        settings.setValue("ClDelta",    s_ClDelta);
+    }
+    settings.endGroup();
+}
 
 
 

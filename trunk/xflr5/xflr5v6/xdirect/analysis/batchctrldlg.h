@@ -47,7 +47,7 @@ class BatchCtrlDlg : public BatchAbstractDlg
         static void saveSettings(QSettings &settings);
 
     private:
-        void setupLayout() override;
+        void setupLayout();
         void readParams() override;
         void startAnalyses();
         void customEvent(QEvent * pEvent) override;

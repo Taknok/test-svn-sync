@@ -37,18 +37,11 @@ double FoilPolarDlg::s_Chord = 1.0;
 double FoilPolarDlg::s_Span = 1.0;
 double FoilPolarDlg::s_Mass = 1.0;
 
+Polar FoilPolarDlg::s_RefPolar;
 
 FoilPolarDlg::FoilPolarDlg(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle(tr("Foil Polar Definition"));
-
-    m_PolarType = Xfl::FIXEDSPEEDPOLAR;
-    m_NCrit     = 9.0;
-    m_XTop      = 1.0;
-    m_XBot      = 1.0;
-    m_Mach      = 0.0;
-    m_Reynolds  = 100000.0;
-    m_ASpec     = 0.0;
 
     m_bAutoName = true;
 
@@ -316,19 +309,19 @@ void FoilPolarDlg::editingFinished()
 
 void FoilPolarDlg::initDialog()
 {
-    if(XDirect::curFoil()) XDirect::s_RefPolar.m_FoilName = XDirect::curFoil()->name();
-    else                   XDirect::s_RefPolar.m_FoilName = "";
+    if(XDirect::curFoil()) s_RefPolar.m_FoilName = XDirect::curFoil()->name();
+    else                   s_RefPolar.m_FoilName = "";
 
     QString str = tr("Analysis parameters for ");
-    setWindowTitle(str+ XDirect::s_RefPolar.m_FoilName);
+    setWindowTitle(str+ s_RefPolar.m_FoilName);
 
-    m_pdeReynolds->setValue(XDirect::s_RefPolar.m_Reynolds);
-    m_pdeMach->setValue(XDirect::s_RefPolar.m_Mach);
-    m_pdeNCrit->setValue(XDirect::s_RefPolar.m_ACrit);
-    m_pdeTopTrans->setValue(XDirect::s_RefPolar.m_XTop);
-    m_pdeBotTrans->setValue(XDirect::s_RefPolar.m_XBot);
+    m_pdeReynolds->setValue(s_RefPolar.m_Reynolds);
+    m_pdeMach->setValue(s_RefPolar.m_Mach);
+    m_pdeNCrit->setValue(s_RefPolar.m_NCrit);
+    m_pdeTopTrans->setValue(s_RefPolar.m_XTop);
+    m_pdeBotTrans->setValue(s_RefPolar.m_XBot);
 
-    switch(XDirect::s_RefPolar.polarType())
+    switch(s_RefPolar.polarType())
     {
         case Xfl::FIXEDSPEEDPOLAR:
         {
@@ -440,16 +433,7 @@ void FoilPolarDlg::onNameChanged()
 
 void FoilPolarDlg::onOK()
 {
-    XDirect::s_RefPolar.setName(m_pleAnalysisName->text());
-
-    XDirect::s_RefPolar.setPolarType(m_PolarType);
-    XDirect::s_RefPolar.setNCrit(m_NCrit);
-    XDirect::s_RefPolar.setXtrBot(m_XBot);
-    XDirect::s_RefPolar.setXtrTop(m_XTop);
-    XDirect::s_RefPolar.setMach(m_Mach);
-    XDirect::s_RefPolar.setReynolds(m_Reynolds);
-    XDirect::s_RefPolar.setAoa(m_ASpec);
-
+    s_RefPolar.setName(m_pleAnalysisName->text());
     accept();
 }
 
@@ -461,16 +445,16 @@ void FoilPolarDlg::onPolarType()
         m_plabRe->setText(tr("Reynolds ="));
         m_plabReUnit->setText(" ");
         m_plabMach->setText(tr("Mach ="));
-        m_pdeReynolds->setValue(XDirect::s_RefPolar.m_Reynolds);
+        m_pdeReynolds->setValue(s_RefPolar.m_Reynolds);
 //        m_pctrlReynolds->setPrecision(0);
-        m_PolarType = Xfl::FIXEDSPEEDPOLAR;
+        s_RefPolar.m_PolarType = Xfl::FIXEDSPEEDPOLAR;
     }
     else if(m_rbtype2->isChecked())
     {
         m_plabRe->setText(tr("Re.sqrt(Cl) ="));
         m_plabReUnit->setText(" ");
         m_plabMach->setText(tr("Ma.sqrt(Cl) ="));
-        m_PolarType = Xfl::FIXEDLIFTPOLAR;
+        s_RefPolar.m_PolarType = Xfl::FIXEDLIFTPOLAR;
 //        m_pctrlReynolds->setPrecision(0);
         onCalcReynolds();
     }
@@ -479,27 +463,27 @@ void FoilPolarDlg::onPolarType()
         m_plabRe->setText(tr("Re.Cl ="));
         m_plabReUnit->setText(" ");
         m_plabMach->setText(tr("Mach ="));
-        m_pdeReynolds->setValue(XDirect::s_RefPolar.m_Reynolds);
+        m_pdeReynolds->setValue(s_RefPolar.m_Reynolds);
 //        m_pctrlReynolds->setPrecision(0);
-        m_PolarType = Xfl::RUBBERCHORDPOLAR;
+        s_RefPolar.m_PolarType = Xfl::RUBBERCHORDPOLAR;
     }
     else if(m_rbtype4->isChecked())
     {
         m_plabRe->setText(tr("Alpha ="));
         m_plabReUnit->setText(QChar(0260));
         m_plabMach->setText(tr("Mach ="));
-        m_pdeReynolds->setValue(m_ASpec);
+        m_pdeReynolds->setValue(s_RefPolar.m_ASpec);
 //        m_pctrlReynolds->setPrecision(3);
-        m_PolarType = Xfl::FIXEDAOAPOLAR;
+        s_RefPolar.m_PolarType = Xfl::FIXEDAOAPOLAR;
     }
 
-    m_pdeChord->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
-    m_pdeSpan->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
-    m_pdeMass->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
-    m_pdeViscosity->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
-    m_pdeDensity->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
-    m_prbFluidUnit1->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
-    m_prbFluidUnit2->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pdeChord->setEnabled(     s_RefPolar.m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pdeSpan->setEnabled(      s_RefPolar.m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pdeMass->setEnabled(      s_RefPolar.m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pdeViscosity->setEnabled( s_RefPolar.m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pdeDensity->setEnabled(   s_RefPolar.m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_prbFluidUnit1->setEnabled(s_RefPolar.m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_prbFluidUnit2->setEnabled(s_RefPolar.m_PolarType==Xfl::FIXEDLIFTPOLAR);
 
     setPlrName();
 }
@@ -511,7 +495,7 @@ void FoilPolarDlg::setPlrName()
 
     if(m_bAutoName)
     {
-        m_PlrName= Polar::autoPolarName(m_PolarType, m_Reynolds, m_Mach, m_NCrit, m_ASpec, m_XTop, m_XBot);
+        m_PlrName= Polar::autoPolarName(s_RefPolar.m_PolarType, s_RefPolar.m_Reynolds, s_RefPolar.m_Mach, s_RefPolar.m_NCrit, s_RefPolar.m_ASpec, s_RefPolar.m_XTop, s_RefPolar.m_XBot);
         m_pleAnalysisName->setText(m_PlrName);
     }
 }
@@ -548,16 +532,18 @@ void FoilPolarDlg::readParams()
     QString str;
     str = m_pdeReynolds->text();
     str.replace(" ","");
-    if(m_PolarType==Xfl::FIXEDAOAPOLAR) m_ASpec    = locale().toDouble(str, &bOK);
-    else                                  m_Reynolds = locale().toDouble(str, &bOK);
+    if(s_RefPolar.m_PolarType==Xfl::FIXEDAOAPOLAR)
+        s_RefPolar.m_ASpec    = locale().toDouble(str, &bOK);
+    else
+        s_RefPolar.m_Reynolds = locale().toDouble(str, &bOK);
 
-    m_Mach     = m_pdeMach->value();
+    s_RefPolar.m_Mach     = m_pdeMach->value();
 //  m_pctrlMach->clear();
 //    m_pctrlMach->insert(str.setNum(m_Mach,'f',3));
 
-    m_NCrit  = m_pdeNCrit->value();
-    m_XTop = m_pdeTopTrans->value();
-    m_XBot = m_pdeBotTrans->value();
+    s_RefPolar.m_NCrit = m_pdeNCrit->value();
+    s_RefPolar.m_XTop  = m_pdeTopTrans->value();
+    s_RefPolar.m_XBot  = m_pdeBotTrans->value();
 
     s_Mass = m_pdeMass->value()/Units::kgtoUnit();
     s_Chord = m_pdeChord->value()/Units::mtoUnit();
@@ -576,14 +562,11 @@ void FoilPolarDlg::readParams()
 }
 
 
-
-
-
 void FoilPolarDlg::onCalcReynolds()
 {
     readParams();
 
-    if(m_PolarType==Xfl::FIXEDLIFTPOLAR)
+    if(s_RefPolar.m_PolarType==Xfl::FIXEDLIFTPOLAR)
     {
         double lift   = s_Mass*9.81;
         double area   = s_Chord*s_Span;
@@ -622,10 +605,22 @@ void FoilPolarDlg::loadSettings(QSettings &settings)
         s_Mass          = settings.value("Mass", 1.0).toDouble();
         s_Density       = settings.value("Density", 1.225).toDouble();
         s_Viscosity     = settings.value("Viscosity", 1.5e-5).toDouble();
+
+        s_RefPolar.setNCrit( settings.value("NCrit").toDouble());
+        s_RefPolar.setXtrTop(settings.value("XTopTr").toDouble());
+        s_RefPolar.setXtrBot(settings.value("XBotTr").toDouble());
+        s_RefPolar.setMach(  settings.value("Mach").toDouble());
+        s_RefPolar.setAoa(   settings.value("ASpec").toDouble());
+
+        int b = settings.value("Type").toInt();
+        if     (b==1) s_RefPolar.setPolarType(Xfl::FIXEDSPEEDPOLAR);
+        else if(b==2) s_RefPolar.setPolarType(Xfl::FIXEDLIFTPOLAR);
+        else if(b==3) s_RefPolar.setPolarType(Xfl::RUBBERCHORDPOLAR);
+        else if(b==4) s_RefPolar.setPolarType(Xfl::FIXEDAOAPOLAR);
+
     }
     settings.endGroup();
 }
-
 
 
 void FoilPolarDlg::saveSettings(QSettings &settings)
@@ -640,6 +635,17 @@ void FoilPolarDlg::saveSettings(QSettings &settings)
         settings.setValue("Mass", s_Mass);
         settings.setValue("Density", s_Density);
         settings.setValue("Viscosity", s_Viscosity);
+
+        settings.setValue("NCrit",  s_RefPolar.NCrit());
+        settings.setValue("XTopTr", s_RefPolar.XtrTop());
+        settings.setValue("XBotTr", s_RefPolar.XtrBot());
+        settings.setValue("Mach",   s_RefPolar.Mach());
+        settings.setValue("ASpec",  s_RefPolar.aoa());
+
+        if(     s_RefPolar.polarType()==Xfl::FIXEDSPEEDPOLAR)  settings.setValue("Type", 1);
+        else if(s_RefPolar.polarType()==Xfl::FIXEDLIFTPOLAR)   settings.setValue("Type", 2);
+        else if(s_RefPolar.polarType()==Xfl::RUBBERCHORDPOLAR) settings.setValue("Type", 3);
+        else if(s_RefPolar.polarType()==Xfl::FIXEDAOAPOLAR)    settings.setValue("Type", 4);
     }
     settings.endGroup();
 }

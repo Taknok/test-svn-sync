@@ -56,22 +56,16 @@ BatchGraphDlg::BatchGraphDlg(QWidget *pParent) : BatchAbstractDlg(pParent)
     m_pXFoilTask = new XFoilTask;
     m_pXFoilTask->m_pParent = this;
 
-
-    m_AlphaMin = m_AlphaMax = m_AlphaInc = 0.0;
-
     m_SpMin = 0.0;
     m_SpMax = 1.0;
     m_SpInc = 0.5;
-    m_ClMin = 0.0;
-    m_ClMax = 1.0;
-    m_ClInc = 0.1;
-
 
     m_bErrors         = false;
 
     XFoil::setCancel(false);
 
     setupLayout();
+    connectSignals();
 
     m_pRmsGraph = new Graph;
     m_pGraphWt->setGraph(m_pRmsGraph);
@@ -107,7 +101,7 @@ void BatchGraphDlg::connectSignals()
     connect(m_pchInitBL,    SIGNAL(toggled(bool)),     SLOT(onAnalysisSettings()));
     connect(m_pieMaxIter,   SIGNAL(editingFinished()), SLOT(onAnalysisSettings()));
 
-    BatchAbstractDlg::connectSignals();
+    connectBaseSignals();
 }
 
 
@@ -247,12 +241,12 @@ void BatchGraphDlg::alphaLoop()
         str = QString("Alpha = %1\n").arg(alphadeg,0,'f',2);
         outputMsg(str);
 
-        Polar *pCurPolar = Objects2d::createPolar(m_pCurFoil, Xfl::FIXEDAOAPOLAR, alphadeg, m_Mach, m_ACrit, m_XTop, m_XBot);
+        Polar *pCurPolar = Objects2d::createPolar(m_pCurFoil, Xfl::FIXEDAOAPOLAR, alphadeg, s_Mach, s_ACrit, s_XTop, s_XBot);
 
         if(!pCurPolar) return;
 
-        m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReInc);
-        m_pXFoilTask->initializeXFoilTask(m_pCurFoil, pCurPolar, XDirect::s_bViscous, m_bInitBL, m_bFromZero);
+        m_pXFoilTask->setReRange(s_ReMin, s_ReMax, s_ReInc);
+        m_pXFoilTask->initializeXFoilTask(m_pCurFoil, pCurPolar, XDirect::s_bViscous, s_bInitBL, s_bFromZero);
 
         m_pXFoilTask->run();
 
@@ -294,34 +288,26 @@ void BatchGraphDlg::initDialog()
 {
     if(!m_pCurFoil) return;
 
-    m_ACrit     = XDirect::s_RefPolar.NCrit();
-    m_XBot      = XDirect::s_RefPolar.XtrBot();
-    m_XTop      = XDirect::s_RefPolar.XtrTop();
-    m_Mach      = XDirect::s_RefPolar.Mach();
-    // jx-mod activated restore of polarType
-    m_PolarType = XDirect::s_RefPolar.polarType();
-
-
     m_prbFoil1->setChecked(s_bCurrentFoil);
     m_prbFoil2->setChecked(!s_bCurrentFoil);
     m_ppbFoilList->setEnabled(!s_bCurrentFoil);
 
-    if(m_bAlpha)
+    if(s_bAlpha)
     {
-        m_SpMin     = m_AlphaMin;
-        m_SpMax     = m_AlphaMax;
-        m_SpInc     = m_AlphaInc;
+        m_SpMin     = s_AlphaMin;
+        m_SpMax     = s_AlphaMax;
+        m_SpInc     = s_AlphaInc;
     }
     else
     {
-        m_SpMin     = m_ClMin;
-        m_SpMax     = m_ClMax;
-        m_SpInc     = m_ClInc;
+        m_SpMin     = s_ClMin;
+        m_SpMax     = s_ClMax;
+        m_SpInc     = s_ClInc;
     }
 
-    if(m_ReMin<=0.0) m_ReMin = qAbs(m_ReInc);
+    if(s_ReMin<=0.0) s_ReMin = qAbs(s_ReInc);
 
-    if(m_PolarType!=Xfl::FIXEDAOAPOLAR)
+    if(s_PolarType!=Xfl::FIXEDAOAPOLAR)
     {
         m_pdeReMin->setDigits(0);
         m_pdeReMax->setDigits(0);
@@ -331,9 +317,9 @@ void BatchGraphDlg::initDialog()
         m_pdeSpecMax->setDigits(3);
         m_pdeSpecDelta->setDigits(3);
 
-        m_pdeReMin->setValue(m_ReMin);
-        m_pdeReMax->setValue(m_ReMax);
-        m_pdeReDelta->setValue(m_ReInc);
+        m_pdeReMin->setValue(s_ReMin);
+        m_pdeReMax->setValue(s_ReMax);
+        m_pdeReDelta->setValue(s_ReInc);
         m_pdeSpecMin->setValue(m_SpMin);
         m_pdeSpecMax->setValue(m_SpMax);
         m_pdeSpecDelta->setValue(m_SpInc);
@@ -351,38 +337,37 @@ void BatchGraphDlg::initDialog()
         m_pdeReMin->setValue(m_SpMin);
         m_pdeReMax->setValue(m_SpMax);
         m_pdeReDelta->setValue(m_SpInc);
-        m_pdeSpecMin->setValue(m_ReMin);
-        m_pdeSpecMax->setValue(m_ReMax);
-        m_pdeSpecDelta->setValue(m_ReInc);
+        m_pdeSpecMin->setValue(s_ReMin);
+        m_pdeSpecMax->setValue(s_ReMax);
+        m_pdeSpecDelta->setValue(s_ReInc);
         m_prbRange2->setEnabled(false);
-        m_bFromList = false;
     }
 
 
-    m_pdeMach->setValue(m_Mach);
-    m_pdeACrit->setValue(m_ACrit);
-    m_pdeXTopTr->setValue(m_XTop);
-    m_pdeXBotTr->setValue(m_XBot);
+    m_pdeMach->setValue(  s_Mach);
+    m_pdeACrit->setValue( s_ACrit);
+    m_pdeXTopTr->setValue(s_XTop);
+    m_pdeXBotTr->setValue(s_XBot);
 
-    if(m_bAlpha) m_prbAlpha->setChecked(true);
+    if(s_bAlpha) m_prbAlpha->setChecked(true);
     else         m_prbCl->setChecked(true);
     onAcl();
 
-    if     (m_PolarType==Xfl::FIXEDSPEEDPOLAR)  m_rbtype1->setChecked(true);
-    else if(m_PolarType==Xfl::FIXEDLIFTPOLAR)   m_rbtype2->setChecked(true);
-    else if(m_PolarType==Xfl::RUBBERCHORDPOLAR) m_rbtype3->setChecked(true);
-    else if(m_PolarType==Xfl::FIXEDAOAPOLAR)    m_rbtype4->setChecked(true);
+    if     (s_PolarType==Xfl::FIXEDSPEEDPOLAR)  m_rbtype1->setChecked(true);
+    else if(s_PolarType==Xfl::FIXEDLIFTPOLAR)   m_rbtype2->setChecked(true);
+    else if(s_PolarType==Xfl::RUBBERCHORDPOLAR) m_rbtype3->setChecked(true);
+    else if(s_PolarType==Xfl::FIXEDAOAPOLAR)    m_rbtype4->setChecked(true);
     onPolarType();
 
 
-    if(!m_bFromList)  m_prbRange1->setChecked(!m_bFromList);
-    else              m_prbRange2->setChecked(m_bFromList);
+    if(!s_bFromList)  m_prbRange1->setChecked(!s_bFromList);
+    else              m_prbRange2->setChecked(s_bFromList);
     onRange();
 
-    if(m_bFromZero)  m_pchFromZero->setChecked(true);
+    if(s_bFromZero)  m_pchFromZero->setChecked(true);
     else             m_pchFromZero->setChecked(false);
 
-    m_pchInitBL->setChecked(m_bInitBL);
+    m_pchInitBL->setChecked(s_bInitBL);
     m_pchInitBLOpp->setChecked(XFoilTask::s_bAutoInitBL);
     m_pchStoreOpp->setChecked(OpPoint::bStoreOpp());
 
@@ -405,21 +390,21 @@ void BatchGraphDlg::onPolarType()
         m_plabReType->setText(tr("Reynolds ="));
         m_plabMaType->setText(tr("Mach ="));
         m_ppbEditList->setEnabled(true);
-        m_PolarType = Xfl::FIXEDSPEEDPOLAR;
+        s_PolarType = Xfl::FIXEDSPEEDPOLAR;
     }
     else if(m_rbtype2->isChecked())
     {
         m_plabReType->setText(tr("Re.sqrt(Cl) ="));
         m_plabMaType->setText(tr("Ma.sqrt(Cl) ="));
         m_ppbEditList->setEnabled(true);
-        m_PolarType = Xfl::FIXEDLIFTPOLAR;
+        s_PolarType = Xfl::FIXEDLIFTPOLAR;
     }
     else if(m_rbtype3->isChecked())
     {
         m_plabReType->setText(tr("Re.Cl ="));
         m_plabMaType->setText(tr("Mach ="));
         m_ppbEditList->setEnabled(true);
-        m_PolarType = Xfl::RUBBERCHORDPOLAR;
+        s_PolarType = Xfl::RUBBERCHORDPOLAR;
     }
     else if(m_rbtype4->isChecked())
     {
@@ -427,10 +412,10 @@ void BatchGraphDlg::onPolarType()
         m_plabMaType->setText(tr("Mach ="));
         m_ppbEditList->setEnabled(false);
         m_prbAlpha->setChecked(true);
-        m_PolarType = Xfl::FIXEDAOAPOLAR;
+        s_PolarType = Xfl::FIXEDAOAPOLAR;
     }
 
-    if(m_PolarType!=Xfl::FIXEDAOAPOLAR)
+    if(s_PolarType!=Xfl::FIXEDAOAPOLAR)
     {
         m_pdeReMin->setDigits(0);
         m_pdeReMax->setDigits(0);
@@ -443,9 +428,9 @@ void BatchGraphDlg::onPolarType()
         m_prbRange2->setEnabled(true);
         onAcl();
 
-        m_pdeReMin->setValue(m_ReMin);
-        m_pdeReMax->setValue(m_ReMax);
-        m_pdeReDelta->setValue(m_ReInc);
+        m_pdeReMin->setValue(s_ReMin);
+        m_pdeReMax->setValue(s_ReMax);
+        m_pdeReDelta->setValue(s_ReInc);
 
         m_pdeSpecMin->setValue(m_SpMin);
         m_pdeSpecMax->setValue(m_SpMax);
@@ -465,15 +450,14 @@ void BatchGraphDlg::onPolarType()
 
         m_prbRange1->setChecked(true);
         m_prbRange2->setEnabled(false);
-        m_bFromList = false;
 
         m_pdeReMin->setValue(m_SpMin);
         m_pdeReMax->setValue(m_SpMax);
         m_pdeReDelta->setValue(m_SpInc);
 
-        m_pdeSpecMin->setValue(m_ReMin);
-        m_pdeSpecMax->setValue(m_ReMax);
-        m_pdeSpecDelta->setValue(m_ReInc);
+        m_pdeSpecMin->setValue(s_ReMin);
+        m_pdeSpecMax->setValue(s_ReMax);
+        m_pdeSpecDelta->setValue(s_ReInc);
     }
 }
 
@@ -508,10 +492,10 @@ void BatchGraphDlg::onAnalyze()
     //initialize XFoil task
     m_pXFoilTask->m_OutStream.setDevice(m_pXFile);
 
-    if(m_bAlpha) m_pXFoilTask->setSequence(true,  m_AlphaMin, m_AlphaMax, m_AlphaInc);
-    else         m_pXFoilTask->setSequence(false, m_ClMin, m_ClMax, m_ClInc);
+    if(s_bAlpha) m_pXFoilTask->setSequence(true,  s_AlphaMin, s_AlphaMax, s_AlphaInc);
+    else         m_pXFoilTask->setSequence(false, s_ClMin, s_ClMax, s_ClInc);
 
-    m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReInc);
+    m_pXFoilTask->setReRange(s_ReMin, s_ReMax, s_ReInc);
 
     //prepare button state for analysis
     m_ppbAnalyze->setText(tr("Cancel"));
@@ -549,64 +533,25 @@ void BatchGraphDlg::onSkipPolar()
  */
 void BatchGraphDlg::readParams()
 {
-    m_bAlpha = m_prbAlpha->isChecked();
+    BatchAbstractDlg::readParams();
 
-    if(m_PolarType!=Xfl::FIXEDAOAPOLAR)
-    {
-        m_ReInc = m_pdeReDelta->value();
-        m_ReMax = m_pdeReMax->value();
-        m_ReMin = m_pdeReMin->value();
-
-        if(m_ReMin>m_ReMax)
-        {
-            double tmp = m_ReMin;
-            m_ReMin = m_ReMax;
-            m_ReMax = tmp;
-        }
-
-        if(m_bAlpha)
-        {
-            m_AlphaInc = m_pdeSpecDelta->value();
-            m_AlphaMax = m_pdeSpecMax->value();
-            m_AlphaMin = m_pdeSpecMin->value();
-            if(m_AlphaMin< m_AlphaMax) m_AlphaInc =  fabs(m_AlphaInc);
-            else                       m_AlphaInc = -fabs(m_AlphaInc);
-        }
-        else
-        {
-            m_ClInc = m_pdeSpecDelta->value();
-            m_ClMax = m_pdeSpecMax->value();
-            m_ClMin = m_pdeSpecMin->value();
-            if(m_ClMin< m_ClMax) m_ClInc =  qAbs(m_ClInc);
-            else                 m_ClInc = -qAbs(m_ClInc);
-        }
-    }
-    else
+    if(s_PolarType==Xfl::FIXEDAOAPOLAR)
     {
         m_SpInc = m_pdeReDelta->value();
         m_SpMax = m_pdeReMax->value();
         m_SpMin = m_pdeReMin->value();
 
-        m_ReInc = m_pdeSpecDelta->value();
-        m_ReMax = m_pdeSpecMax->value();
-        m_ReMin = m_pdeSpecMin->value();
+        s_ReInc = m_pdeSpecDelta->value();
+        s_ReMax = m_pdeSpecMax->value();
+        s_ReMin = m_pdeSpecMin->value();
     }
 
-    if(m_ReMin<=0.0) m_ReMin = fabs(m_ReInc);
-    if(m_ReMax<=0.0) m_ReMax = fabs(m_ReMax);
+    if(s_ReMin<=0.0) s_ReMin = fabs(s_ReInc);
+    if(s_ReMax<=0.0) s_ReMax = fabs(s_ReMax);
     m_SpInc = qAbs(m_SpInc);
 
-
-    m_Mach     = m_pdeMach->value();
-    if(m_Mach<=0.0) m_Mach = 0.0;
-    m_ACrit  = m_pdeACrit->value();
-    m_XTop   = m_pdeXTopTr->value();
-    m_XBot   = m_pdeXBotTr->value();
-
     OpPoint::setStoreOpp(m_pchStoreOpp->isChecked());
-    m_bInitBL = m_pchInitBL->isChecked();
     XFoilTask::s_bAutoInitBL = m_pchInitBLOpp->isChecked();
-    m_bFromZero = m_pchFromZero->isChecked();
 }
 
 
@@ -624,16 +569,16 @@ void BatchGraphDlg::ReLoop()
     int iRe, nRe;
     double Reynolds =0, Mach = 0, NCrit = 9.0;
 
-    if(!m_bFromList) nRe = int(qAbs((m_ReMax-m_ReMin)/m_ReInc));
+    if(!s_bFromList) nRe = int(qAbs((s_ReMax-s_ReMin)/s_ReInc));
     else             nRe = XDirect::s_ReList.count()-1;
 
     for (iRe=0; iRe<=nRe; iRe++)
     {
-        if(!m_bFromList)
+        if(!s_bFromList)
         {
-            Reynolds = m_ReMin + iRe *m_ReInc;
-            Mach  = m_Mach;
-            NCrit  = m_ACrit;
+            Reynolds = s_ReMin + iRe *s_ReInc;
+            Mach  = s_Mach;
+            NCrit  = s_ACrit;
         }
         else
         {
@@ -644,10 +589,10 @@ void BatchGraphDlg::ReLoop()
         str = QString("Re=%1   Ma=%2   Nc=%3\n").arg(Reynolds,8,'f',0).arg(Mach,5,'f',3).arg(NCrit,5,'f',2);
         outputMsg(str);
 
-        Polar *pCurPolar = Objects2d::createPolar(m_pCurFoil, Xfl::FIXEDSPEEDPOLAR, Reynolds, m_Mach, m_ACrit, m_XTop, m_XBot);
+        Polar *pCurPolar = Objects2d::createPolar(m_pCurFoil, Xfl::FIXEDSPEEDPOLAR, Reynolds, s_Mach, s_ACrit, s_XTop, s_XBot);
         if(!pCurPolar) return;
 
-        m_pXFoilTask->initializeXFoilTask(m_pCurFoil, pCurPolar, XDirect::s_bViscous, m_bInitBL, m_bFromZero);
+        m_pXFoilTask->initializeXFoilTask(m_pCurFoil, pCurPolar, XDirect::s_bViscous, s_bInitBL, s_bFromZero);
         m_pXFoilTask->run();
 
         m_bErrors = m_bErrors || m_pXFoilTask->m_bErrors;
@@ -716,7 +661,7 @@ void BatchGraphDlg::analyze()
 
     if(s_bCurrentFoil)
     {
-        if(m_PolarType!=Xfl::FIXEDAOAPOLAR) ReLoop();
+        if(s_PolarType!=Xfl::FIXEDAOAPOLAR) ReLoop();
         else                                  alphaLoop();
     }
     else
@@ -727,7 +672,7 @@ void BatchGraphDlg::analyze()
 
             strong = tr("Analyzing ")+m_pCurFoil->name()+("\n");
             outputMsg(strong);
-            if(m_PolarType!=Xfl::FIXEDAOAPOLAR) ReLoop();
+            if(s_PolarType!=Xfl::FIXEDAOAPOLAR) ReLoop();
             else                                  alphaLoop();
             strong = "\n\n";
             outputMsg(strong);
@@ -795,7 +740,7 @@ void BatchGraphDlg::outputMsg(QString &msg)
  */
 void BatchGraphDlg::onAnalysisSettings()
 {
-    m_bInitBL = m_pchInitBL->isChecked();
+    s_bInitBL = m_pchInitBL->isChecked();
     XFoilTask::s_bAutoInitBL = m_pchInitBLOpp->isChecked();
     XFoilTask::s_IterLim = m_pieMaxIter->value();
     m_pRmsGraph->setXMax(XFoilTask::s_IterLim);

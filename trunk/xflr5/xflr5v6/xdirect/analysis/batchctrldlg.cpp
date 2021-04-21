@@ -41,12 +41,14 @@ double BatchCtrlDlg::s_AngleDelta = 0.0;
 
 BatchCtrlDlg::BatchCtrlDlg(QWidget *pParent) : BatchAbstractDlg(pParent)
 {
-    setWindowTitle(tr("Batch control analysis"));
-
-    setupLayout();
-    connectSignals();
+    setWindowTitle(tr("Batch flap analysis"));
 
     s_bUpdatePolarView = false;
+
+    setupLayout();
+    connectBaseSignals();
+
+
     m_pchUpdatePolarView->setChecked(false);
     m_pchUpdatePolarView->hide();
 
@@ -214,7 +216,7 @@ void BatchCtrlDlg::onAnalyze()
     readParams();
 
     setFileHeader();
-    m_bInitBL = m_pchInitBL->isChecked();
+    s_bInitBL = m_pchInitBL->isChecked();
 
     m_ppbAnalyze->setFocus();
 
@@ -274,7 +276,7 @@ void BatchCtrlDlg::startAnalyses()
 
     m_ppbAnalyze->setText(tr("Cancel"));
 
-    if(!m_bFromList) nRe = int(qAbs((m_ReMax-m_ReMin)/m_ReInc)+1);
+    if(!s_bFromList) nRe = int(qAbs((s_ReMax-s_ReMin)/s_ReInc)+1);
     else             nRe = XDirect::s_ReList.count();
 
     m_nTasks = m_FoilList.size()*nRe; // to monitor the progress
@@ -296,21 +298,22 @@ void BatchCtrlDlg::startAnalyses()
         for (int iRe=0; iRe<nRe; iRe++)
         {
             Polar *pPolar = nullptr;
-            if(!m_bFromList)
-                pPolar = Objects2d::createPolar(pFoil, Xfl::FIXEDSPEEDPOLAR, m_ReMin + iRe *m_ReInc, m_Mach, m_ACrit, m_XTop, m_XBot);
+            if(!s_bFromList)
+                pPolar = Objects2d::createPolar(pFoil, Xfl::FIXEDSPEEDPOLAR, s_ReMin + iRe *s_ReInc,
+                                                s_Mach, s_ACrit, s_XTop, s_XBot);
             else
-                pPolar = Objects2d::createPolar(pFoil, Xfl::FIXEDSPEEDPOLAR, XDirect::s_ReList[iRe], XDirect::s_MachList[iRe], XDirect::s_NCritList[iRe], m_XTop, m_XBot);
+                pPolar = Objects2d::createPolar(pFoil, Xfl::FIXEDSPEEDPOLAR, XDirect::s_ReList[iRe],
+                                                XDirect::s_MachList[iRe], XDirect::s_NCritList[iRe], s_XTop, s_XBot);
 
             //initiate the task
             XFoilTask *pXFoilTask = new XFoilTask(this);
 
-            if(m_bAlpha) pXFoilTask->setSequence(true,  m_AlphaMin, m_AlphaMax, m_AlphaInc);
-            else         pXFoilTask->setSequence(false, m_ClMin, m_ClMax, m_ClInc);
-            pXFoilTask->initializeXFoilTask(pFoil, pPolar, true, m_bInitBL, m_bFromZero);
+            if(s_bAlpha) pXFoilTask->setSequence(true,  s_AlphaMin, s_AlphaMax, s_AlphaInc);
+            else         pXFoilTask->setSequence(false, s_ClMin, s_ClMax, s_ClInc);
+            pXFoilTask->initializeXFoilTask(pFoil, pPolar, true, s_bInitBL, s_bFromZero);
 
 //            QFuture<Polar*> future = QtConcurrent::run(pXFoilTask, &XFoilTask::runFuture);
 //            futureSync.addFuture(future);
-            // event mechanism not compatible with QFuture?
 
             QThreadPool::globalInstance()->start(pXFoilTask);
         }

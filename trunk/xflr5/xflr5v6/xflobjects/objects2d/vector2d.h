@@ -33,16 +33,12 @@ class Vector2d
         double y;
 
         //inline constructors
-        Vector2d()
+        Vector2d() : x{0}, y{0}
         {
-            x  = 0.0;
-            y  = 0.0;
         }
 
-        Vector2d(double xi, double yi)
+        Vector2d(double xi, double yi) : x{xi}, y{yi}
         {
-            x  = xi;
-            y  = yi;
         }
         //access
         float xf() const {return float(x);}

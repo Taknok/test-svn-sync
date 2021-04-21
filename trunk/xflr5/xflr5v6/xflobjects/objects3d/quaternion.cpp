@@ -38,7 +38,7 @@ void Quaternion::operator *=(Quaternion Q)
     qx = t2;
     qy = t3;
     qz = t4;
-    Settxx();
+    settxx();
 }
 
 
@@ -51,7 +51,7 @@ Quaternion Quaternion::operator *(Quaternion Q)
     prod.qx = a*Q.qx + qx*Q.a  + qy*Q.qz - qz*Q.qy ;
     prod.qy = a*Q.qy + qy*Q.a  + qz*Q.qx - qx*Q.qz ;
     prod.qz = a*Q.qz + qz*Q.a  + qx*Q.qy - qy*Q.qx ;
-    prod.Settxx();
+    prod.settxx();
 
     return prod;
 }
@@ -63,7 +63,7 @@ void Quaternion::operator =(Quaternion Q)
     qx = Q.qx;
     qy = Q.qy;
     qz = Q.qz;
-    Settxx();
+    settxx();
 }
 
 
@@ -72,7 +72,7 @@ void Quaternion::operator ~()
     qx = -qx;
     qy = -qy;
     qz = -qz;
-    Settxx();
+    settxx();
 }
 
 
@@ -94,7 +94,7 @@ void Quaternion::Normalize()
         qy *= 1/norm;
         qz *= 1/norm;
     }
-    Settxx();
+    settxx();
 }
 
 

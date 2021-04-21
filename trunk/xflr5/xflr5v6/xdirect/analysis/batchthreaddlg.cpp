@@ -48,7 +48,7 @@ BatchThreadDlg::BatchThreadDlg(QWidget *pParent) : BatchAbstractDlg(pParent)
     m_nAnalysis    = 0;
 
     setupLayout();
-    connectSignals();
+    connectBaseSignals();
 }
 
 
@@ -124,7 +124,7 @@ void BatchThreadDlg::onAnalyze()
     readParams();
 
     setFileHeader();
-    m_bInitBL = m_pchInitBL->isChecked();
+    s_bInitBL = m_pchInitBL->isChecked();
 
     QThreadPool::globalInstance()->setMaxThreadCount(2);
 
@@ -160,7 +160,7 @@ void BatchThreadDlg::startAnalysis()
     m_ppbAnalyze->setText(tr("Cancel"));
 
 
-    if(!m_bFromList) nRe = int(qAbs((m_ReMax-m_ReMin)/m_ReInc)+1);
+    if(!s_bFromList) nRe = int(qAbs((s_ReMax-s_ReMin)/s_ReInc)+1);
     else             nRe = XDirect::s_ReList.count();
 
     //    QThreadPool::globalInstance()->setExpiryTimeout(60000);//ms
@@ -182,13 +182,16 @@ void BatchThreadDlg::startAnalysis()
                 m_AnalysisPair.append(pAnalysis);
                 pAnalysis->pFoil = pFoil;
 
-                if(!m_bFromList)
+                if(!s_bFromList)
                 {
-                    pAnalysis->pPolar = Objects2d::createPolar(pFoil, Xfl::FIXEDSPEEDPOLAR, m_ReMin + iRe *m_ReInc, m_Mach, m_ACrit, m_XTop, m_XBot);
+                    pAnalysis->pPolar = Objects2d::createPolar(pFoil, Xfl::FIXEDSPEEDPOLAR, s_ReMin + iRe *s_ReInc,
+                                                               s_Mach, s_ACrit, s_XTop, s_XBot);
                 }
                 else
                 {
-                    pAnalysis->pPolar = Objects2d::createPolar(pFoil, Xfl::FIXEDSPEEDPOLAR, XDirect::s_ReList[iRe], XDirect::s_MachList[iRe], XDirect::s_NCritList[iRe], m_XTop, m_XBot);
+                    pAnalysis->pPolar = Objects2d::createPolar(pFoil, Xfl::FIXEDSPEEDPOLAR,
+                                                               XDirect::s_ReList[iRe], XDirect::s_MachList[iRe], XDirect::s_NCritList[iRe],
+                                                               s_XTop, s_XBot);
                 }
 
                 m_nAnalysis++;
@@ -278,10 +281,10 @@ void BatchThreadDlg::startThread()
         pAnalysis->pPolar->setVisible(true);
 
         //initiate the task
-        if(m_bAlpha) pXFoilTask->setSequence(true,  m_AlphaMin, m_AlphaMax, m_AlphaInc);
-        else         pXFoilTask->setSequence(false, m_ClMin, m_ClMax, m_ClInc);
+        if(s_bAlpha) pXFoilTask->setSequence(true,  s_AlphaMin, s_AlphaMax, s_AlphaInc);
+        else         pXFoilTask->setSequence(false, s_ClMin, s_ClMax, s_ClInc);
 
-        pXFoilTask->initializeXFoilTask(pAnalysis->pFoil, pAnalysis->pPolar, true, m_bInitBL, m_bFromZero);
+        pXFoilTask->initializeXFoilTask(pAnalysis->pFoil, pAnalysis->pPolar, true, s_bInitBL, s_bFromZero);
 
         //launch it
         m_nTaskStarted++;

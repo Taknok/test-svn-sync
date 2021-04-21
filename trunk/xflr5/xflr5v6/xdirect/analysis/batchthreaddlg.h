@@ -50,7 +50,7 @@ class BatchThreadDlg : public BatchAbstractDlg
         void cleanUp() override;
         void customEvent(QEvent *pEvent) override;
         void handleXFoilTaskEvent(const XFoilTaskEvent *pEvent);
-        void setupLayout() override;
+        void setupLayout();
         void startAnalysis();
         void startThread();
         void updateOutput(const QString &str);

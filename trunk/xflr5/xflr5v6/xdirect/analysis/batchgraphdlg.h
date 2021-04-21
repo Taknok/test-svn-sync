@@ -70,7 +70,7 @@ class BatchGraphDlg : public BatchAbstractDlg
     private:
         void alphaLoop();
         void cleanUp() override;
-        void setupLayout() override;
+        void setupLayout();
         void initDialog() override;
         void readParams() override;
         void ReLoop();
@@ -78,7 +78,7 @@ class BatchGraphDlg : public BatchAbstractDlg
 
         void analyze();
         void outputMsg(QString &msg);
-        void connectSignals() override;
+        void connectSignals();
 
     private slots:
         void onAnalyze() override;
@@ -103,10 +103,6 @@ class BatchGraphDlg : public BatchAbstractDlg
         QSplitter *m_pRightSplitter;
 
         double m_SpMin, m_SpMax, m_SpInc;  /**< The range of specified aoa, Cl or Re values, depending on the type of Polar and on the user-specified input method.>*/
-
-        double m_AlphaMin, m_AlphaMax, m_AlphaInc;  /**< The range of aoa for a Type 1/2/3 Polar >*/
-        double m_ClMin, m_ClMax, m_ClInc;           /**< The range of lift coefficient for a Type 1/2/3 Polar>*/
-
 
         bool m_bErrors;                /**< true if the analysis has generated errors>*/
 

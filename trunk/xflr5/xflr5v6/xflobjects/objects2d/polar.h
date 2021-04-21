@@ -93,14 +93,14 @@ class Polar : public XflObject
         double aoa()      const {return m_ASpec;}
         double Reynolds() const {return m_Reynolds;}
         double Mach()     const {return m_Mach;}
-        double NCrit()    const {return m_ACrit;}
+        double NCrit()    const {return m_NCrit;}
         double XtrTop()   const {return m_XTop;}
         double XtrBot()   const {return m_XBot;}
 
         void setAoa(double alpha)   {m_ASpec = alpha;}
         void setReynolds(double Re) {m_Reynolds=Re;}
         void setMach(double m)      {m_Mach=m;}
-        void setNCrit(double n)     {m_ACrit=n;}
+        void setNCrit(double n)     {m_NCrit=n;}
         void setXtrTop(double xtr)  {m_XTop=xtr;}
         void setXtrBot(double xtr)  {m_XBot=xtr;}
 
@@ -149,7 +149,7 @@ class Polar : public XflObject
         int m_MaType;                       /**< the type of Mach number input, cf. XFoil documentation */
         double m_ASpec;                     /**< the specified aoa in the case of Type 4 polars */
         double m_Mach;                      /**< the Mach number */
-        double m_ACrit;                     /**< the transition criterion */
+        double m_NCrit;                     /**< the transition criterion */
         double m_XTop;                      /**< the point of forced transition on the upper surface */
         double m_XBot;                      /**< the point of forced transition on the lower surface */
         double m_Reynolds;                  /**< the Reynolds number for a type 4 analysis */

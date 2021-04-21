@@ -99,14 +99,7 @@ class FoilPolarDlg : public QDialog
         DoubleEdit *m_pdeBotTrans;
 
         bool  m_bAutoName;
-        int m_MaTypDef, m_ReTypDef;
-        Xfl::enumPolarType m_PolarType;
-        double m_Reynolds;
-        double m_Mach;
-        double m_ReDef;
-        double m_ASpec;
-        double m_XTop, m_XBot;
-        double m_NCrit;
+
         QString m_FoilName;
         QString m_PlrName;
 
@@ -114,6 +107,7 @@ class FoilPolarDlg : public QDialog
         static double s_Viscosity, s_Density;
         static double s_Chord, s_Span, s_Mass;
 
+        static Polar s_RefPolar;    /**< Used a static reference to store default data */
 
         static QByteArray s_WindowGeometry;
 

@@ -48,8 +48,30 @@
 #include <xflobjects/objects2d/polar.h>
 #include <xinverse/foilselectiondlg.h>
 
+bool BatchAbstractDlg::s_bAlpha    = true;
+bool BatchAbstractDlg::s_bFromZero = true;
 
-bool BatchAbstractDlg::s_bCurrentFoil=true;
+double BatchAbstractDlg::s_ReMin     = 1.0e5;
+double BatchAbstractDlg::s_ReMax     = 1.0e6;
+double BatchAbstractDlg::s_ReInc     = 1.0e5;
+double BatchAbstractDlg::s_AlphaMin  = 0.0;
+double BatchAbstractDlg::s_AlphaMax  = 1.0;
+double BatchAbstractDlg::s_AlphaInc  = 0.5;
+double BatchAbstractDlg::s_ClMin     = 0.0;
+double BatchAbstractDlg::s_ClMax     = 1.0;
+double BatchAbstractDlg::s_ClInc     = 0.1;
+
+bool BatchAbstractDlg::s_bFromList = false;
+bool BatchAbstractDlg::s_bInitBL   = false;
+
+Xfl::enumPolarType BatchAbstractDlg::s_PolarType = Xfl::FIXEDSPEEDPOLAR;
+
+double BatchAbstractDlg::s_Mach    = 0.0;
+double BatchAbstractDlg::s_ACrit  = 9.0;
+double BatchAbstractDlg::s_XTop   = 1.0;
+double BatchAbstractDlg::s_XBot   = 1.0;
+
+bool BatchAbstractDlg::s_bCurrentFoil     = true;
 bool BatchAbstractDlg::s_bUpdatePolarView = false;
 XDirect * BatchAbstractDlg::s_pXDirect;
 
@@ -65,27 +87,10 @@ BatchAbstractDlg::BatchAbstractDlg(QWidget *pParent) : QDialog(pParent)
     m_pXFile = nullptr;
     m_pCurFoil = nullptr;
 
-    m_PolarType = Xfl::FIXEDSPEEDPOLAR;
 
     m_FoilList.clear();
 
-    m_Mach  = 0.0;
-    m_ReMin = 100000.0;
-    m_ReMax = 300000.0;
-    m_ReInc =  50000.0;
 
-    m_ClMin = 0.0;
-    m_ClMax = 1.0;
-    m_ClInc = 0.1;
-
-    m_ACrit  = 9.0;
-    m_XTop = 1.0;
-    m_XBot = 1.0;
-
-    m_bAlpha          = true;
-    m_bFromList       = false;
-    m_bFromZero       = false;
-    m_bInitBL         = false;
     m_bCancel         = false;
 
     m_bIsRunning      = false;
@@ -298,7 +303,7 @@ void BatchAbstractDlg::makeCommonWidgets()
 }
 
 
-void BatchAbstractDlg::connectSignals()
+void BatchAbstractDlg::connectBaseSignals()
 {
     connect(m_prbFoil1,           SIGNAL(clicked()),         SLOT(onFoilSelectionType()));
     connect(m_prbFoil2,           SIGNAL(clicked()),         SLOT(onFoilSelectionType()));
@@ -308,10 +313,6 @@ void BatchAbstractDlg::connectSignals()
     connect(m_prbRange1,          SIGNAL(toggled(bool)),     SLOT(onRange()));
     connect(m_prbRange2,          SIGNAL(toggled(bool)),     SLOT(onRange()));
     connect(m_ppbEditList,        SIGNAL(clicked()),         SLOT(onEditReList()));
-    connect(m_pchFromZero,        SIGNAL(stateChanged(int)), SLOT(onFromZero(int)));
-    connect(m_pdeSpecMin,         SIGNAL(editingFinished()), SLOT(onSpecChanged()));
-    connect(m_pdeSpecMax,         SIGNAL(editingFinished()), SLOT(onSpecChanged()));
-    connect(m_pdeSpecDelta,       SIGNAL(editingFinished()), SLOT(onSpecChanged()));
     connect(m_pchUpdatePolarView, SIGNAL(clicked(bool)),     SLOT(onUpdatePolarView()));
 }
 
@@ -394,12 +395,7 @@ void BatchAbstractDlg::initDialog()
     m_pteTextOutput->clear();
     m_pteTextOutput->setFont(Settings::s_TableFont);
 
-    m_ACrit     = XDirect::s_RefPolar.NCrit();
-    m_XBot      = XDirect::s_RefPolar.XtrBot();
-    m_XTop      = XDirect::s_RefPolar.XtrTop();
-    m_Mach      = XDirect::s_RefPolar.Mach();
-
-    m_PolarType = Xfl::FIXEDSPEEDPOLAR; //no choice...
+    s_PolarType = Xfl::FIXEDSPEEDPOLAR; //no choice...
 
     m_prbFoil1->setChecked(s_bCurrentFoil);
     m_prbFoil2->setChecked(!s_bCurrentFoil);
@@ -413,36 +409,35 @@ void BatchAbstractDlg::initDialog()
     m_pdeSpecMax->setDigits(3);
     m_pdeSpecDelta->setDigits(3);
 
-    if(m_ReMin<=0.0) m_ReMin = qAbs(m_ReInc);
-    m_pdeReMin->setValue(m_ReMin);
-    m_pdeReMax->setValue(m_ReMax);
-    m_pdeReDelta->setValue(m_ReInc);
-    m_pdeSpecMin->setValue(m_AlphaMin);
-    m_pdeSpecMax->setValue(m_AlphaMax);
-    m_pdeSpecDelta->setValue(m_AlphaInc);
+    if(s_ReMin<=0.0) s_ReMin = qAbs(s_ReInc);
+    m_pdeReMin->setValue(s_ReMin);
+    m_pdeReMax->setValue(s_ReMax);
+    m_pdeReDelta->setValue(s_ReInc);
+    m_pdeSpecMin->setValue(s_AlphaMin);
+    m_pdeSpecMax->setValue(s_AlphaMax);
+    m_pdeSpecDelta->setValue(s_AlphaInc);
 
-    m_pdeMach->setValue(m_Mach);
-    m_pdeACrit->setValue(m_ACrit);
-    m_pdeXTopTr->setValue(m_XTop);
-    m_pdeXBotTr->setValue(m_XBot);
+    m_pdeMach->setValue(  s_Mach);
+    m_pdeACrit->setValue( s_ACrit);
+    m_pdeXTopTr->setValue(s_XTop);
+    m_pdeXBotTr->setValue(s_XBot);
 
-    if(m_bAlpha) m_prbAlpha->setChecked(true);
-    else         m_prbCl->setChecked(m_bAlpha);
+    if(s_bAlpha) m_prbAlpha->setChecked(true);
+    else         m_prbCl->setChecked(true);
     onAcl();
 
 
-    if(!m_bFromList)  m_prbRange1->setChecked(true);
+    if(!s_bFromList)  m_prbRange1->setChecked(true);
     else              m_prbRange2->setChecked(true);
 
-    m_ppbEditList->setEnabled(m_bFromList);
-    m_pdeReMin->setEnabled(!m_bFromList);
-    m_pdeReMax->setEnabled(!m_bFromList);
-    m_pdeReDelta->setEnabled(!m_bFromList);
-    m_pdeMach->setEnabled(!m_bFromList);
-    m_pdeACrit->setEnabled(!m_bFromList);
+    m_ppbEditList->setEnabled(s_bFromList);
+    m_pdeReMin->setEnabled(!s_bFromList);
+    m_pdeReMax->setEnabled(!s_bFromList);
+    m_pdeReDelta->setEnabled(!s_bFromList);
+    m_pdeMach->setEnabled(!s_bFromList);
+    m_pdeACrit->setEnabled(!s_bFromList);
 
-    if(m_bFromZero)  m_pchFromZero->setChecked(true);
-    else             m_pchFromZero->setChecked(false);
+    m_pchFromZero->setChecked(s_bFromZero);
 
     m_pchInitBL->setChecked(true);
     m_pchUpdatePolarView->setChecked(s_bUpdatePolarView);
@@ -456,23 +451,23 @@ void BatchAbstractDlg::initDialog()
  */
 void BatchAbstractDlg::onAcl()
 {
-    if(m_PolarType==Xfl::FIXEDAOAPOLAR) return;
-    m_bAlpha = m_prbAlpha->isChecked();
-    if(m_bAlpha)
+    if(s_PolarType==Xfl::FIXEDAOAPOLAR) return;
+    s_bAlpha = m_prbAlpha->isChecked();
+    if(s_bAlpha)
     {
         m_plabSpecVar->setText(tr("Alpha"));
-        m_pdeSpecMin->setValue(m_AlphaMin);
-        m_pdeSpecMax->setValue(m_AlphaMax);
-        m_pdeSpecDelta->setValue(m_AlphaInc);
+        m_pdeSpecMin->setValue(s_AlphaMin);
+        m_pdeSpecMax->setValue(s_AlphaMax);
+        m_pdeSpecDelta->setValue(s_AlphaInc);
         m_pchFromZero->setEnabled(true);
     }
     else
     {
         m_plabSpecVar->setText(tr("CL"));
-        m_pdeSpecMin->setValue(m_ClMin);
-        m_pdeSpecMax->setValue(m_ClMax);
-        m_pdeSpecDelta->setValue(m_ClInc);
-        m_bFromZero = false;
+        m_pdeSpecMin->setValue(s_ClMin);
+        m_pdeSpecMax->setValue(s_ClMax);
+        m_pdeSpecDelta->setValue(s_ClInc);
+        s_bFromZero = false;
         m_pchFromZero->setChecked(false);
         m_pchFromZero->setEnabled(false);
     }
@@ -502,14 +497,6 @@ void BatchAbstractDlg::onClose()
     QThreadPool::globalInstance()->setMaxThreadCount(QThread::idealThreadCount());
 
     readParams();
-
-    XDirect::s_RefPolar.setNCrit(m_ACrit);
-    XDirect::s_RefPolar.setXtrBot(m_XBot);
-    XDirect::s_RefPolar.setXtrTop(m_XTop);
-    XDirect::s_RefPolar.setMach(m_Mach);
-
-//  jx-mod save also polar type
-    XDirect::s_RefPolar.setPolarType(m_PolarType);
 
     accept();
 }
@@ -593,24 +580,13 @@ void BatchAbstractDlg::onFoilSelectionType()
     outputFoilList();
 }
 
-/**
- * The user has clicked the "start from zero" checkbox
- * @param state the new state of the checkbox
- */
-void BatchAbstractDlg::onFromZero(int )
-{
-    if(m_pchFromZero->isChecked()) m_bFromZero = true;
-    else                           m_bFromZero = false;
-}
-
 
 /**
  * The user has clicked the checkbox which specifies the initialization of the boundary layer
  **/
 void BatchAbstractDlg::onInitBL(int)
 {
-    if (m_pchInitBL->isChecked()) m_bInitBL = true;
-    else                          m_bInitBL = false;
+    s_bInitBL = m_pchInitBL->isChecked();
 }
 
 /**
@@ -618,17 +594,14 @@ void BatchAbstractDlg::onInitBL(int)
  */
 void BatchAbstractDlg::onRange()
 {
-    if(m_prbRange1->isChecked())
-        m_bFromList = false;
-    else
-        m_bFromList = true;
+    s_bFromList = !m_prbRange1->isChecked();
 
-    m_ppbEditList->setEnabled(m_bFromList);
-    m_pdeReMin->setEnabled(!m_bFromList);
-    m_pdeReMax->setEnabled(!m_bFromList);
-    m_pdeReDelta->setEnabled(!m_bFromList);
-    m_pdeMach->setEnabled(!m_bFromList);
-    m_pdeACrit->setEnabled(!m_bFromList);
+    m_ppbEditList->setEnabled(s_bFromList);
+    m_pdeReMin->setEnabled(!s_bFromList);
+    m_pdeReMax->setEnabled(!s_bFromList);
+    m_pdeReDelta->setEnabled(!s_bFromList);
+    m_pdeMach->setEnabled(!s_bFromList);
+    m_pdeACrit->setEnabled(!s_bFromList);
 }
 
 
@@ -637,47 +610,49 @@ void BatchAbstractDlg::onRange()
  */
 void BatchAbstractDlg::readParams()
 {
-    m_bAlpha = m_prbAlpha->isChecked();
+   s_bAlpha = m_prbAlpha->isChecked();
 
-    if(m_PolarType!=Xfl::FIXEDAOAPOLAR)
+    if(s_PolarType!=Xfl::FIXEDAOAPOLAR)
     {
-        m_ReInc = m_pdeReDelta->value();
-        m_ReMax = m_pdeReMax->value();
-        m_ReMin = m_pdeReMin->value();
+        s_ReInc = m_pdeReDelta->value();
+        s_ReMax = m_pdeReMax->value();
+        s_ReMin = m_pdeReMin->value();
 
-        if(m_ReMin>m_ReMax)
+        if(s_ReMin>s_ReMax)
         {
-            double tmp = m_ReMin;
-            m_ReMin = m_ReMax;
-            m_ReMax = tmp;
+            double tmp = s_ReMin;
+            s_ReMin = s_ReMax;
+            s_ReMax = tmp;
         }
 
-        if(m_bAlpha)
+        if(s_bAlpha)
         {
-            m_AlphaInc = qAbs(m_pdeSpecDelta->value());
-            m_AlphaMax = m_pdeSpecMax->value();
-            m_AlphaMin = m_pdeSpecMin->value();
+            s_AlphaInc = qAbs(m_pdeSpecDelta->value());
+            s_AlphaMax = m_pdeSpecMax->value();
+            s_AlphaMin = m_pdeSpecMin->value();
         }
         else
         {
-            m_ClInc = qAbs(m_pdeSpecDelta->value());
-            m_ClMin = m_pdeSpecMin->value();
-            m_ClMax = m_pdeSpecMax->value();
+            s_ClInc = qAbs(m_pdeSpecDelta->value());
+            s_ClMin = m_pdeSpecMin->value();
+            s_ClMax = m_pdeSpecMax->value();
         }
     }
 
-    if(m_ReMin<=0.0) m_ReMin = qAbs(m_ReInc);
-    if(m_ReMax<=0.0) m_ReMax = qAbs(m_ReMax);
+    if(s_ReMin<=0.0) s_ReMin = qAbs(s_ReInc);
+    if(s_ReMax<=0.0) s_ReMax = qAbs(s_ReMax);
 
-    m_Mach     = m_pdeMach->value();
-    if(m_Mach<=0.0) m_Mach = 0.0;
-    m_ACrit    = m_pdeACrit->value();
-    m_XTop   = m_pdeXTopTr->value();
-    m_XBot   = m_pdeXBotTr->value();
+    s_Mach   = std::max(0.0, m_pdeMach->value());
+    s_ACrit  = m_pdeACrit->value();
+    s_XTop   = m_pdeXTopTr->value();
+    s_XBot   = m_pdeXBotTr->value();
 
     s_nThreads = m_pieMaxThreads->value();
     s_nThreads = std::min(s_nThreads, QThread::idealThreadCount());
     m_pieMaxThreads->setValue(s_nThreads);
+
+    s_bInitBL = m_pchInitBL->isChecked();
+    s_bFromZero = m_pchFromZero->isChecked();
 }
 
 
@@ -752,7 +727,7 @@ void BatchAbstractDlg::outputFoilList()
 void BatchAbstractDlg::outputReList()
 {
     m_pteTextOutput->appendPlainText(tr("Reynolds numbers to analyze:")+"\n");
-    if(m_bFromList)
+    if(s_bFromList)
     {
         for(int i=0; i<XDirect::s_ReList.count(); i++)
         {
@@ -765,12 +740,12 @@ void BatchAbstractDlg::outputReList()
     }
     else
     {
-        for(double Re=m_ReMin; Re<m_ReMax; Re+=m_ReInc)
+        for(double Re=s_ReMin; Re<s_ReMax; Re+=s_ReInc)
         {
             QString strong = QString("   Re = %L1  /  Mach = %L2  /  NCrit = %L3")
                     .arg(Re, 10,'f',0)
-                    .arg(m_Mach, 5,'f',3)
-                    .arg(m_ACrit, 5, 'f', 2);
+                    .arg(s_Mach, 5,'f',3)
+                    .arg(s_ACrit, 5, 'f', 2);
             m_pteTextOutput->appendPlainText(strong+"\n");
         }
     }
@@ -823,6 +798,67 @@ void BatchAbstractDlg::onUpdatePolarView()
 }
 
 
+
+void BatchAbstractDlg::loadSettings(QSettings &settings)
+{
+    settings.beginGroup("BatchAbstractDlg");
+    {
+        s_bFromList = settings.value("bFromList",    s_bFromList).toBool();
+        s_bInitBL   = settings.value("bInitBL",      s_bInitBL).toBool();
+
+        s_bAlpha    = settings.value("bAlpha",       s_bAlpha).toBool();
+        s_bFromZero = settings.value("bFromZero",    s_bFromZero).toBool();
+
+        s_Mach      = settings.value("Mach",         s_Mach).toDouble();
+        s_ACrit     = settings.value("NCrit",        s_ACrit).toDouble();
+        s_XTop      = settings.value("XTrTop",       s_XTop).toDouble();
+        s_XBot      = settings.value("XTrBot",       s_XBot).toDouble();
+
+        s_AlphaMin  = settings.value("AlphaMin",     s_AlphaMin).toDouble();
+        s_AlphaMax  = settings.value("AlphaMax",     s_AlphaMax).toDouble();
+        s_AlphaInc  = settings.value("AlphaDelta",   s_AlphaInc).toDouble();
+        s_ClMin     = settings.value("ClMin",        s_ClMin).toDouble();
+        s_ClMax     = settings.value("ClMax",        s_ClMax).toDouble();
+        s_ClInc     = settings.value("ClDelta",      s_ClInc).toDouble();
+        s_ReMin     = settings.value("ReynoldsMin",  s_ReMin).toDouble();
+        s_ReMax     = settings.value("ReynoldsMax",  s_ReMax).toDouble();
+        s_ReInc     = settings.value("ReynolsDelta", s_ReInc).toDouble();
+
+        s_Geometry = settings.value("WindowGeom", QByteArray()).toByteArray();
+    }
+    settings.endGroup();
+}
+
+
+void BatchAbstractDlg::saveSettings(QSettings &settings)
+{
+    settings.beginGroup("BatchAbstractDlg");
+    {
+        settings.setValue("bFromList",    s_bFromList);
+        settings.setValue("bInitBL",      s_bInitBL);
+
+        settings.setValue("bAlpha",       s_bAlpha);
+        settings.setValue("bFromZero",    s_bFromZero);
+
+        settings.setValue("Mach",   s_Mach);
+        settings.setValue("NCrit",  s_ACrit);
+        settings.setValue("XTrTop", s_XTop);
+        settings.setValue("XTrBot", s_XBot);
+
+        settings.setValue("AlphaMin",     s_AlphaMin);
+        settings.setValue("AlphaMax",     s_AlphaMax);
+        settings.setValue("AlphaDelta",   s_AlphaInc);
+        settings.setValue("ClMin",        s_ClMin);
+        settings.setValue("ClMax",        s_ClMax);
+        settings.setValue("ClDelta",      s_ClInc);
+        settings.setValue("ReynoldsMin",  s_ReMin);
+        settings.setValue("ReynoldsMax",  s_ReMax);
+        settings.setValue("ReynolsDelta", s_ReInc);
+
+        settings.setValue("WindowGeom",   s_Geometry);
+    }
+    settings.endGroup();
+}
 
 
 
