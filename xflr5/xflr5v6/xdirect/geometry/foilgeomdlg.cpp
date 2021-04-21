@@ -255,9 +255,9 @@ void FoilGeomDlg::apply()
     double nx[IBX], ny[IBX];     //needed because XFoil requires a const Foil
 
     s_pXFoil->initialize();
-    s_pXFoil->initXFoilGeometry(m_pBaseFoil->n, m_pBaseFoil->x, m_pBaseFoil->y, nx, ny);
-    memcpy(m_pBaseFoil->nx, nx, IBX*sizeof(double));
-    memcpy(m_pBaseFoil->ny, ny, IBX*sizeof(double));
+    s_pXFoil->initXFoilGeometry(m_pBaseFoil->m_n, m_pBaseFoil->m_x, m_pBaseFoil->m_y, nx, ny);
+    memcpy(m_pBaseFoil->m_nx, nx, IBX*sizeof(double));
+    memcpy(m_pBaseFoil->m_ny, ny, IBX*sizeof(double));
 
     // do it
     s_pXFoil->hipnt(m_fXCamber, m_fXThickness);     // xfoil hipnt is the most sensitive routine - better do it first
@@ -267,7 +267,7 @@ void FoilGeomDlg::apply()
     // output sanity
 
     // this never should happen
-    if(s_pXFoil->nb != m_pMemFoil->n)
+    if(s_pXFoil->nb != m_pMemFoil->m_n)
     {
         QMessageBox::information(window(), tr("Error"), tr("Panel number changed during modification"));
     }
@@ -276,15 +276,15 @@ void FoilGeomDlg::apply()
     else if (!isXFoilOk())
     {
         s_pXFoil->initialize();
-        s_pXFoil->initXFoilGeometry(m_pMemFoil->n, m_pMemFoil->x, m_pMemFoil->y, m_pBufferFoil->nx, m_pBufferFoil->ny);
+        s_pXFoil->initXFoilGeometry(m_pMemFoil->m_n, m_pMemFoil->m_x, m_pMemFoil->m_y, m_pBufferFoil->m_nx, m_pBufferFoil->m_ny);
         s_pXFoil->npan = s_pXFoil->nb;
         s_pXFoil->pangen();
         qDebug ("FoilGeomDlg: pangen with nb =%3d due to corrupted output airfoil", s_pXFoil->nb);
 
         for (int j=0; j< s_pXFoil->n; j++)
         {
-            m_pBaseFoil->x[j] = s_pXFoil->x[j+1];
-            m_pBaseFoil->y[j] = s_pXFoil->y[j+1];
+            m_pBaseFoil->m_x[j] = s_pXFoil->x[j+1];
+            m_pBaseFoil->m_y[j] = s_pXFoil->y[j+1];
         }
     }
     // everything ok - update bufferFoil to display for user
@@ -292,10 +292,10 @@ void FoilGeomDlg::apply()
     {
         for (int j=0; j< s_pXFoil->nb; j++)
         {
-            m_pBufferFoil->xb[j] = s_pXFoil->xb[j+1];
-            m_pBufferFoil->yb[j] = s_pXFoil->yb[j+1];
+            m_pBufferFoil->m_xb[j] = s_pXFoil->xb[j+1];
+            m_pBufferFoil->m_yb[j] = s_pXFoil->yb[j+1];
         }
-        m_pBufferFoil->nb = s_pXFoil->nb;
+        m_pBufferFoil->m_nb = s_pXFoil->nb;
         m_pBufferFoil->initFoil();
         m_pBufferFoil->setFlap();
     }

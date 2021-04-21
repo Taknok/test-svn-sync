@@ -161,18 +161,18 @@ void SplineFoil::exportToBuffer(Foil *pFoil)
     int k = m_Intrados.m_iRes;
     for (i=0; i<m_Extrados.m_iRes; i++)
     {
-        pFoil->x[j-i-1] = m_Extrados.m_Output[i].x;
-        pFoil->y[j-i-1] = m_Extrados.m_Output[i].y;
+        pFoil->m_x[j-i-1] = m_Extrados.m_Output[i].x;
+        pFoil->m_y[j-i-1] = m_Extrados.m_Output[i].y;
     }
     for (i=1; i<m_Intrados.m_iRes;i++)
     {
-        pFoil->x[i+j-1] = m_Intrados.m_Output[i].x;
-        pFoil->y[i+j-1] = m_Intrados.m_Output[i].y;
+        pFoil->m_x[i+j-1] = m_Intrados.m_Output[i].x;
+        pFoil->m_y[i+j-1] = m_Intrados.m_Output[i].y;
     }
-    pFoil->n = j+k-1;
-    memcpy(pFoil->xb, pFoil->x, sizeof(pFoil->x));
-    memcpy(pFoil->yb, pFoil->y, sizeof(pFoil->y));
-    pFoil->nb = pFoil->n;
+    pFoil->m_n = j+k-1;
+    memcpy(pFoil->m_xb, pFoil->m_x, sizeof(pFoil->m_x));
+    memcpy(pFoil->m_yb, pFoil->m_y, sizeof(pFoil->m_y));
+    pFoil->m_nb = pFoil->m_n;
     pFoil->setName(m_Name);
 }
 

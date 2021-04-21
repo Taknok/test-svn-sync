@@ -6714,10 +6714,10 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         ar << pFoil->m_bCenterLine << pFoil->m_bLEFlap << pFoil->m_bTEFlap;
         ar << pFoil->m_LEFlapAngle << pFoil->m_LEXHinge << pFoil->m_LEYHinge;
         ar << pFoil->m_TEFlapAngle << pFoil->m_TEXHinge << pFoil->m_TEYHinge;
-        ar << pFoil->nb;
-        for (int j=0; j<pFoil->nb; j++)
+        ar << pFoil->m_nb;
+        for (int j=0; j<pFoil->m_nb; j++)
         {
-            ar << pFoil->xb[j] << pFoil->yb[j];
+            ar << pFoil->m_xb[j] << pFoil->m_yb[j];
         }
         return true;
     }
@@ -6749,16 +6749,16 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         ar >> pFoil->m_bCenterLine >> pFoil->m_bLEFlap >> pFoil->m_bTEFlap;
         ar >> pFoil->m_LEFlapAngle >> pFoil->m_LEXHinge >> pFoil->m_LEYHinge;
         ar >> pFoil->m_TEFlapAngle >> pFoil->m_TEXHinge >> pFoil->m_TEYHinge;
-        ar >> pFoil->nb;
+        ar >> pFoil->m_nb;
 
-        for (int j=0; j<pFoil->nb; j++)
+        for (int j=0; j<pFoil->m_nb; j++)
         {
-            ar >> pFoil->xb[j] >> pFoil->yb[j];
+            ar >> pFoil->m_xb[j] >> pFoil->m_yb[j];
         }
 
-        memcpy(pFoil->x, pFoil->xb, sizeof(pFoil->xb));
-        memcpy(pFoil->y, pFoil->yb, sizeof(pFoil->yb));
-        pFoil->n = pFoil->nb;
+        memcpy(pFoil->m_x, pFoil->m_xb, sizeof(pFoil->m_xb));
+        memcpy(pFoil->m_y, pFoil->m_yb, sizeof(pFoil->m_yb));
+        pFoil->m_n = pFoil->m_nb;
 
         pFoil->initFoil();
         pFoil->setFlap();

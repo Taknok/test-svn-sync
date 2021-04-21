@@ -125,7 +125,7 @@ bool XFoilTask::initializeXFoilTask(Foil const*pFoil, Polar *pPolar, bool bVisco
 
     m_XFoilStream.setString(&m_XFoilLog);
     double nx[IBX], ny[IBX];     //needed because XFoil requires a const Foil
-    if(!m_XFoilInstance.initXFoilGeometry(m_pFoil->n, m_pFoil->x,m_pFoil->y, nx, ny))  return false;
+    if(!m_XFoilInstance.initXFoilGeometry(m_pFoil->m_n, m_pFoil->m_x,m_pFoil->m_y, nx, ny))  return false;
     if(!m_XFoilInstance.initXFoilAnalysis(m_pPolar->Reynolds(), m_pPolar->aoa(), m_pPolar->Mach(),
                                           m_pPolar->NCrit(), m_pPolar->XtrTop(), m_pPolar->XtrBot(),
                                           m_pPolar->ReType(), m_pPolar->MaType(),

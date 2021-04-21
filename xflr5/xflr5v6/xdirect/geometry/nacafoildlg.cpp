@@ -154,13 +154,13 @@ void NacaFoilDlg::generateFoil()
 
     for (int j=0; j< s_pXFoil->nb; j++)
     {
-        m_pBufferFoil->xb[j] = s_pXFoil->xb[j+1];
-        m_pBufferFoil->yb[j] = s_pXFoil->yb[j+1];
-        m_pBufferFoil->x[j]  = s_pXFoil->xb[j+1];
-        m_pBufferFoil->y[j]  = s_pXFoil->yb[j+1];
+        m_pBufferFoil->m_xb[j] = s_pXFoil->xb[j+1];
+        m_pBufferFoil->m_yb[j] = s_pXFoil->yb[j+1];
+        m_pBufferFoil->m_x[j]  = s_pXFoil->xb[j+1];
+        m_pBufferFoil->m_y[j]  = s_pXFoil->yb[j+1];
     }
-    m_pBufferFoil->nb = s_pXFoil->nb;
-    m_pBufferFoil->n = s_pXFoil->nb;
+    m_pBufferFoil->m_nb = s_pXFoil->nb;
+    m_pBufferFoil->m_n = s_pXFoil->nb;
     m_pBufferFoil->initFoil();
 
     m_pParent->update();

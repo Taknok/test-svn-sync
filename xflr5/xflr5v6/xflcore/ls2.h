@@ -32,28 +32,24 @@ namespace Line
     typedef enum {SOLID, DASH, DOT, DASHDOT, DASHDOTDOT, NOLINE} 	enumLineStipple;
 
     /**< @enum The different image formats usable to export screen captures*/
-    typedef enum {NOSYMBOL, LITTLECIRCLE,   BIGCIRCLE, LITTLESQUARE, BIGSQUARE}	enumPointStyle;
+    typedef enum {NOSYMBOL, LITTLECIRCLE, BIGCIRCLE, LITTLESQUARE, BIGSQUARE}	enumPointStyle;
 }
+
 
 /** new style line style - intended to replace the current LineStyle struct */
 struct LS2
 {
-    LS2()
+    LS2() : m_bIsVisible{true}, m_Stipple{Line::SOLID}, m_Width{1}, m_Color{Qt::gray}, m_PointStyle{Line::NOSYMBOL}
     {
-        m_bIsVisible=true;
-        m_Stipple= Line::SOLID;
-        m_Width=1;
-        m_Color = Qt::gray;
-        m_PointStyle=Line::NOSYMBOL;
     }
 
-    LS2(bool bVisible, Line::enumLineStipple style, int width, QColor color, Line::enumPointStyle pointstyle)
+    LS2(bool bVisible, Line::enumLineStipple style, int width, QColor color, Line::enumPointStyle pointstyle) :
+        m_bIsVisible{bVisible},
+        m_Stipple{style},
+        m_Width{width},
+        m_Color{color},
+        m_PointStyle{pointstyle}
     {
-        m_bIsVisible = bVisible;
-        m_Stipple    = style;
-        m_Width      = width;
-        m_Color      = color;
-        m_PointStyle = pointstyle;
     }
 
     void saveSettings(QSettings &settings, QString const &name) const
@@ -208,13 +204,13 @@ struct LS2
     }
 
 
-public:
-    bool m_bIsVisible=true;       /**< true if the curve is visible in the active view >*/
-    Line::enumLineStipple m_Stipple=Line::SOLID;              /**< the index of the style with which to draw the curve >*/
-    int m_Width=1;                /**< the width with which to draw the curve >*/
-    QColor m_Color=Qt::darkGray;     /**< the color with which to draw the curve >*/
+    public:
+        bool m_bIsVisible=true;       /**< true if the curve is visible in the active view >*/
+        Line::enumLineStipple m_Stipple=Line::SOLID;              /**< the index of the style with which to draw the curve >*/
+        int m_Width=1;                /**< the width with which to draw the curve >*/
+        QColor m_Color=Qt::darkGray;     /**< the color with which to draw the curve >*/
 
-    Line::enumPointStyle m_PointStyle=Line::NOSYMBOL;
+        Line::enumPointStyle m_PointStyle=Line::NOSYMBOL;
 };
 
 

@@ -259,8 +259,8 @@ void InterpolateFoilsDlg::update()
 
     if(!pFoil1 || !pFoil2) return;
 
-    s_pXFoil->interpolate(pFoil1->x, pFoil1->y, pFoil1->n,
-                        pFoil2->x, pFoil2->y, pFoil2->n,
+    s_pXFoil->interpolate(pFoil1->m_x, pFoil1->m_y, pFoil1->m_n,
+                        pFoil2->m_x, pFoil2->m_y, pFoil2->m_n,
                         m_Frac/100.0);
 /*
 qDebug()<<pFoil1->foilName();
@@ -271,16 +271,16 @@ pFoil2->displayCoords(false);
 qDebug()<<"________";*/
 
 
-    for (int j=0; j< pFoil1->n; j++)
+    for (int j=0; j< pFoil1->m_n; j++)
     {
-        m_pBufferFoil->x[j]  = s_pXFoil->xb[j+1];
-        m_pBufferFoil->y[j]  = s_pXFoil->yb[j+1];
-        m_pBufferFoil->xb[j] = s_pXFoil->xb[j+1];
-        m_pBufferFoil->yb[j] = s_pXFoil->yb[j+1];
+        m_pBufferFoil->m_x[j]  = s_pXFoil->xb[j+1];
+        m_pBufferFoil->m_y[j]  = s_pXFoil->yb[j+1];
+        m_pBufferFoil->m_xb[j] = s_pXFoil->xb[j+1];
+        m_pBufferFoil->m_yb[j] = s_pXFoil->yb[j+1];
     }
 
-    m_pBufferFoil->n  = pFoil1->n;
-    m_pBufferFoil->nb = pFoil1->n;
+    m_pBufferFoil->m_n  = pFoil1->m_n;
+    m_pBufferFoil->m_nb = pFoil1->m_n;
 
     m_pBufferFoil->initFoil();
 
