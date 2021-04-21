@@ -63,8 +63,8 @@ public:
     int     closestPoint(double xs, double ys, double &dist) const;
     void    closestPoint(double xs, double ys, double &dist, int &n) const;
     void    closestPoint(double const &xs, double const &ys, double &xSel, double &ySel, double &dist, int &nSel) const;
-    void    copyData(Curve *pCurve);
-    void    duplicate(Curve *pCurve);
+    void    copyData(const Curve *pCurve);
+    void    duplicate(const Curve *pCurve);
 
     double x(int i) const {return m_x.at(i);}
     double y(int i) const {return m_y.at(i);}

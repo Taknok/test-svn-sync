@@ -222,7 +222,7 @@ void XInverse::checkActions()
  */
 void XInverse::clear()
 {
-    m_pRefFoil->n = 0;
+    m_pRefFoil->m_n = 0;
     m_pRefFoil->setName(QString());
     m_pModFoil->setName(QString());
 
@@ -398,16 +398,16 @@ void XInverse::execMDES()
 
     for(int i=1; i<=m_pXFoil->nsp; i++)
     {
-        m_pModFoil->x[i-1] = m_pXFoil->xb[i];
-        m_pModFoil->y[i-1] = m_pXFoil->yb[i];
+        m_pModFoil->m_x[i-1] = m_pXFoil->xb[i];
+        m_pModFoil->m_y[i-1] = m_pXFoil->yb[i];
     }
     for(int i=1; i<=m_pXFoil->nsp; i++)
     {
-        m_pModFoil->xb[i-1] = m_pXFoil->xb[i];
-        m_pModFoil->yb[i-1] = m_pXFoil->yb[i];
+        m_pModFoil->m_xb[i-1] = m_pXFoil->xb[i];
+        m_pModFoil->m_yb[i-1] = m_pXFoil->yb[i];
     }
-    m_pModFoil->n  = m_pXFoil->nsp;
-    m_pModFoil->nb = m_pXFoil->nsp;
+    m_pModFoil->m_n  = m_pXFoil->nsp;
+    m_pModFoil->m_nb = m_pXFoil->nsp;
     m_pModFoil->initFoil();
 
     m_bModFoil = true;
@@ -467,16 +467,16 @@ bool XInverse::execQDES()
 
     for (int i=1; i<=m_pXFoil->n; i++)
     {
-        m_pModFoil->x[i-1] = m_pXFoil->x[i];
-        m_pModFoil->y[i-1] = m_pXFoil->y[i];
+        m_pModFoil->m_x[i-1] = m_pXFoil->x[i];
+        m_pModFoil->m_y[i-1] = m_pXFoil->y[i];
     }
     for (int i=1; i<=m_pXFoil->nb; i++)
     {
-        m_pModFoil->xb[i-1] = m_pXFoil->x[i];
-        m_pModFoil->yb[i-1] = m_pXFoil->y[i];
+        m_pModFoil->m_xb[i-1] = m_pXFoil->x[i];
+        m_pModFoil->m_yb[i-1] = m_pXFoil->y[i];
     }
-    m_pModFoil->n  = m_pXFoil->n;
-    m_pModFoil->nb = m_pXFoil->nb;
+    m_pModFoil->m_n  = m_pXFoil->n;
+    m_pModFoil->m_nb = m_pXFoil->nb;
 
     m_pModFoil->initFoil();
     m_bModFoil = true;
@@ -498,12 +498,12 @@ bool XInverse::initXFoil(Foil * pFoil)
     m_pModFoil->setName(pFoil->name() + tr(" Modified"));
 
     m_pXFoil->initialize();
-    for(int i =0; i<pFoil->n; i++)
+    for(int i =0; i<pFoil->m_n; i++)
     {
-        m_pXFoil->xb[i+1] = pFoil->x[i];
-        m_pXFoil->yb[i+1] = pFoil->y[i];
+        m_pXFoil->xb[i+1] = pFoil->m_x[i];
+        m_pXFoil->yb[i+1] = pFoil->m_y[i];
     }
-    m_pXFoil->nb     = pFoil->n;
+    m_pXFoil->nb     = pFoil->m_n;
     m_pXFoil->lflap  = false;
     m_pXFoil->lbflap = false;
     m_pXFoil->ddef   = 0.0;
@@ -519,10 +519,10 @@ bool XInverse::initXFoil(Foil * pFoil)
 
         for (int k=0; k<m_pXFoil->n;k++)
         {
-            pFoil->nx[k] = m_pXFoil->nx[k+1];
-            pFoil->ny[k] = m_pXFoil->ny[k+1];
+            pFoil->m_nx[k] = m_pXFoil->nx[k+1];
+            pFoil->m_ny[k] = m_pXFoil->ny[k+1];
         }
-        pFoil->n = m_pXFoil->n;
+        pFoil->m_n = m_pXFoil->n;
         return true;
     }
     else
@@ -1822,9 +1822,9 @@ void XInverse::onStoreFoil()
     pNewFoil->copyFoil(m_pModFoil);
     pNewFoil->setLineStipple(Line::SOLID);
     pNewFoil->setLineWidth(1);
-    memcpy(pNewFoil->xb, m_pModFoil->x, sizeof(m_pModFoil->x));
-    memcpy(pNewFoil->yb, m_pModFoil->y, sizeof(m_pModFoil->y));
-    pNewFoil->nb = m_pModFoil->n;
+    memcpy(pNewFoil->m_xb, m_pModFoil->m_x, sizeof(m_pModFoil->m_x));
+    memcpy(pNewFoil->m_yb, m_pModFoil->m_y, sizeof(m_pModFoil->m_y));
+    pNewFoil->m_nb = m_pModFoil->m_n;
     pNewFoil->setName(m_pRefFoil->name());
 
     QStringList NameList;
@@ -2211,10 +2211,10 @@ void XInverse::setFoil()
     QString strong;
     for(i=1; i<=m_pXFoil->n; i++)
     {
-        m_pModFoil->x[i-1] = m_pXFoil->x[i];
-        m_pModFoil->y[i-1] = m_pXFoil->y[i];
+        m_pModFoil->m_x[i-1] = m_pXFoil->x[i];
+        m_pModFoil->m_y[i-1] = m_pXFoil->y[i];
     }
-    m_pModFoil->n = m_pXFoil->n;
+    m_pModFoil->m_n = m_pXFoil->n;
 
     if(m_bFullInverse)
     {
@@ -2383,14 +2383,14 @@ bool XInverse::setParams()
     //XFOIL has already been initialized so retrieve the foil
     for (int i=1; i<=m_pXFoil->n; i++)
     {
-        m_pRefFoil->x[i-1]  = m_pXFoil->x[i];
-        m_pRefFoil->y[i-1]  = m_pXFoil->y[i];
-        m_pRefFoil->xb[i-1] = m_pXFoil->x[i];
-        m_pRefFoil->yb[i-1] = m_pXFoil->y[i];
+        m_pRefFoil->m_x[i-1]  = m_pXFoil->x[i];
+        m_pRefFoil->m_y[i-1]  = m_pXFoil->y[i];
+        m_pRefFoil->m_xb[i-1] = m_pXFoil->x[i];
+        m_pRefFoil->m_yb[i-1] = m_pXFoil->y[i];
     }
 
-    m_pRefFoil->n          = m_pXFoil->n;
-    m_pRefFoil->nb         = m_pXFoil->n;
+    m_pRefFoil->m_n          = m_pXFoil->n;
+    m_pRefFoil->m_nb         = m_pXFoil->n;
     m_pRefFoil->setName(strFoilName);
     m_pRefFoil->initFoil();
     m_pModFoil->setName(strFoilName + tr(" Modified"));

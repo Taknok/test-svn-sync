@@ -30,7 +30,7 @@
  */
 Curve::Curve()
 {
-    m_theStyle.m_Color = QColor(255,0,0,127);
+    m_theStyle.m_Color = QColor(255,0,0);
     m_theStyle.m_bIsVisible = true;
     m_theStyle.m_PointStyle = Line::NOSYMBOL;
     m_theStyle.m_Width = 1;
@@ -57,7 +57,7 @@ int Curve::appendPoint(double xn, double yn)
  * Copies the data and settings from an existing curve
  * @param pCurve: a pointer to the input curve
  */
-void Curve::duplicate(Curve *pCurve)
+void Curve::duplicate(Curve const*pCurve)
 {
     if(!pCurve) return;
 
@@ -72,7 +72,7 @@ void Curve::duplicate(Curve *pCurve)
  * Copies the data and settings from an existing curve
  * @param pCurve: a pointer to the input curve
  */
-void Curve::copyData(Curve *pCurve)
+void Curve::copyData(Curve const*pCurve)
 {
     if(!pCurve) return;
     clear();
@@ -88,7 +88,7 @@ void Curve::copyData(Curve *pCurve)
  * @param &dist distance to the return point
  * @return the index of the closest point
  */
-int Curve::closestPoint(double xs, double ys, double &dist ) const
+int Curve::closestPoint(double xs, double ys, double &dist) const
 {
     int ref;
     double d2;

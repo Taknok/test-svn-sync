@@ -50,18 +50,18 @@ void MOPSOTask2d::makeFoil(Particle const &particle, Foil *pFoil) const
 
     for(int i=0; i<m_iLE; i++)
     {
-        x = pFoil->x[i];
+        x = pFoil->m_x[i];
         for(int j=0; j<particle.dimension(); j++)
         {
             t1 = double(j+1)/double(particle.dimension()+1); // HH undefined for t1=0
             hh = HH(x, t1, m_HHt2) * particle.pos(j);
-            pFoil->xb[i] += pFoil->nx[i] *hh;
-            pFoil->yb[i] += pFoil->ny[i] *hh;
+            pFoil->m_xb[i] += pFoil->m_nx[i] *hh;
+            pFoil->m_yb[i] += pFoil->m_ny[i] *hh;
         }
     }
 
-    memcpy(pFoil->x, pFoil->xb, IBX*sizeof(double));
-    memcpy(pFoil->y, pFoil->yb, IBX*sizeof(double));
+    memcpy(pFoil->m_x, pFoil->m_xb, IBX*sizeof(double));
+    memcpy(pFoil->m_y, pFoil->m_yb, IBX*sizeof(double));
     pFoil->normalizeGeometry();
 }
 

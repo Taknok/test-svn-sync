@@ -96,14 +96,14 @@ void OpPoint::setHingeMoments(Foil const*pFoil)
         double hfy  = 0.0;
 
         //---- integrate pressures on top and bottom sides of flap
-        for (int i=0;i<pFoil->n-1;i++)
+        for (int i=0;i<pFoil->m_n-1;i++)
         {
-            if (pFoil->x[i]>xof &&    pFoil->x[i+1]>xof)
+            if (pFoil->m_x[i]>xof &&    pFoil->m_x[i+1]>xof)
             {
-                double dx = pFoil->x[i+1] - pFoil->x[i];
-                double dy = pFoil->y[i+1] - pFoil->y[i];
-                double xmid = 0.5*(pFoil->x[i+1]+pFoil->x[i]) - xof;
-                double ymid = 0.5*(pFoil->y[i+1]+pFoil->y[i]) - yof;
+                double dx = pFoil->m_x[i+1] - pFoil->m_x[i];
+                double dy = pFoil->m_y[i+1] - pFoil->m_y[i];
+                double xmid = 0.5*(pFoil->m_x[i+1]+pFoil->m_x[i]) - xof;
+                double ymid = 0.5*(pFoil->m_y[i+1]+pFoil->m_y[i]) - yof;
 
                 if(m_bViscResults) pmid = 0.5*(Cpv[i+1] + Cpv[i]);
                 else               pmid = 0.5*(Cpi[i+1] + Cpi[i]);
@@ -190,9 +190,9 @@ void OpPoint::exportOpp(QTextStream &out, QString Version, bool bCSV, Foil*pFoil
     for (int k=0; k<n; k++)
     {
         if(!bCSV) strong=QString("%1  %2   %3   %4   %5\n")
-                                       .arg(pFoil->x[k],7,'f',4).arg(Cpi[k],7,'f',3).arg(Cpv[k],7,'f',3).arg(Qi[k],7,'f',3).arg(Qv[k],7,'f',3);
+                                       .arg(pFoil->m_x[k],7,'f',4).arg(Cpi[k],7,'f',3).arg(Cpv[k],7,'f',3).arg(Qi[k],7,'f',3).arg(Qv[k],7,'f',3);
         else      strong=QString("%1,%2,%3,%4,%5\n")
-                                       .arg(pFoil->x[k],7,'f',4).arg(Cpi[k],7,'f',3).arg(Cpv[k],7,'f',3).arg(Qi[k],7,'f',3).arg(Qv[k],7,'f',3);
+                                       .arg(pFoil->m_x[k],7,'f',4).arg(Cpi[k],7,'f',3).arg(Cpv[k],7,'f',3).arg(Qi[k],7,'f',3).arg(Qv[k],7,'f',3);
         out<< strong;
     }
 

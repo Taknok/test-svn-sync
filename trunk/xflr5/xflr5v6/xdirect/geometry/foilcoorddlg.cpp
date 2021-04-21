@@ -114,15 +114,15 @@ void FoilCoordDlg::setupLayout()
 
 void FoilCoordDlg::fillList()
 {
-    m_pCoordModel->setRowCount(m_pBufferFoil->n);
+    m_pCoordModel->setRowCount(m_pBufferFoil->m_n);
     m_pCoordModel->setColumnCount(2);
-    for (int i=0; i<m_pMemFoil->n; i++)
+    for (int i=0; i<m_pMemFoil->m_n; i++)
     {
         QModelIndex Xindex = m_pCoordModel->index(i, 0, QModelIndex());
-        m_pCoordModel->setData(Xindex, m_pBufferFoil->x[i]);
+        m_pCoordModel->setData(Xindex, m_pBufferFoil->m_x[i]);
 
         QModelIndex Yindex =m_pCoordModel->index(i, 1, QModelIndex());
-        m_pCoordModel->setData(Yindex, m_pBufferFoil->y[i]);
+        m_pCoordModel->setData(Yindex, m_pBufferFoil->m_y[i]);
     }
 }
 
@@ -199,18 +199,18 @@ void FoilCoordDlg::onDeletePoint()
 
     if(sel<0) return;
 
-    for (i=sel;i<m_pBufferFoil->nb-1; i++)
+    for (i=sel;i<m_pBufferFoil->m_nb-1; i++)
     {
-        m_pBufferFoil->xb[i] = m_pBufferFoil->xb[i+1];
-        m_pBufferFoil->yb[i] = m_pBufferFoil->yb[i+1];
+        m_pBufferFoil->m_xb[i] = m_pBufferFoil->m_xb[i+1];
+        m_pBufferFoil->m_yb[i] = m_pBufferFoil->m_yb[i+1];
     }
-    for (i=sel;i<m_pBufferFoil->n-1; i++)
+    for (i=sel;i<m_pBufferFoil->m_n-1; i++)
     {
-        m_pBufferFoil->x[i] = m_pBufferFoil->x[i+1];
-        m_pBufferFoil->y[i] = m_pBufferFoil->y[i+1];
+        m_pBufferFoil->m_x[i] = m_pBufferFoil->m_x[i+1];
+        m_pBufferFoil->m_y[i] = m_pBufferFoil->m_y[i+1];
     }
-    m_pBufferFoil->nb--;
-    m_pBufferFoil->n--;
+    m_pBufferFoil->m_nb--;
+    m_pBufferFoil->m_n--;
 
     fillList();
     setSelection(sel);
@@ -226,24 +226,24 @@ void FoilCoordDlg::onInsertPoint()
 
     if(sel<=0) return;
 
-    for (int i=m_pBufferFoil->nb; i>sel; i--)
+    for (int i=m_pBufferFoil->m_nb; i>sel; i--)
     {
-        m_pBufferFoil->xb[i] = m_pBufferFoil->xb[i-1];
-        m_pBufferFoil->yb[i] = m_pBufferFoil->yb[i-1];
+        m_pBufferFoil->m_xb[i] = m_pBufferFoil->m_xb[i-1];
+        m_pBufferFoil->m_yb[i] = m_pBufferFoil->m_yb[i-1];
     }
-    m_pBufferFoil->xb[sel] = (m_pBufferFoil->xb[sel-1] + m_pBufferFoil->xb[sel+1])/2.0;
-    m_pBufferFoil->yb[sel] = (m_pBufferFoil->yb[sel-1] + m_pBufferFoil->yb[sel+1])/2.0 ;
+    m_pBufferFoil->m_xb[sel] = (m_pBufferFoil->m_xb[sel-1] + m_pBufferFoil->m_xb[sel+1])/2.0;
+    m_pBufferFoil->m_yb[sel] = (m_pBufferFoil->m_yb[sel-1] + m_pBufferFoil->m_yb[sel+1])/2.0 ;
 
-    for (int i=m_pBufferFoil->n; i>sel; i--)
+    for (int i=m_pBufferFoil->m_n; i>sel; i--)
     {
-        m_pBufferFoil->x[i] = m_pBufferFoil->x[i-1];
-        m_pBufferFoil->y[i] = m_pBufferFoil->y[i-1];
+        m_pBufferFoil->m_x[i] = m_pBufferFoil->m_x[i-1];
+        m_pBufferFoil->m_y[i] = m_pBufferFoil->m_y[i-1];
     }
-    m_pBufferFoil->x[sel] = (m_pBufferFoil->x[sel-1] + m_pBufferFoil->x[sel+1])/2.;
-    m_pBufferFoil->y[sel] = (m_pBufferFoil->y[sel-1] + m_pBufferFoil->y[sel+1])/2.;
+    m_pBufferFoil->m_x[sel] = (m_pBufferFoil->m_x[sel-1] + m_pBufferFoil->m_x[sel+1])/2.;
+    m_pBufferFoil->m_y[sel] = (m_pBufferFoil->m_y[sel-1] + m_pBufferFoil->m_y[sel+1])/2.;
 
-    m_pBufferFoil->nb++;
-    m_pBufferFoil->n++;
+    m_pBufferFoil->m_nb++;
+    m_pBufferFoil->m_n++;
 
     fillList();
     setSelection(sel);
@@ -260,13 +260,13 @@ void FoilCoordDlg::onCellChanged(QWidget *)
 
     QModelIndex Xindex = m_pCoordModel->index(sel, 0);
     double X = Xindex.data().toDouble();
-    m_pBufferFoil->x[sel]  = X;
-    m_pBufferFoil->xb[sel] = X;
+    m_pBufferFoil->m_x[sel]  = X;
+    m_pBufferFoil->m_xb[sel] = X;
 
     QModelIndex Yindex = m_pCoordModel->index(sel, 1);
     double Y = Yindex.data().toDouble();
-    m_pBufferFoil->y[sel]  = Y;
-    m_pBufferFoil->yb[sel] = Y;
+    m_pBufferFoil->m_y[sel]  = Y;
+    m_pBufferFoil->m_yb[sel] = Y;
 
     m_bApplied = false;
 
@@ -285,18 +285,18 @@ void FoilCoordDlg::onItemClicked(QModelIndex)
 
 void FoilCoordDlg::onRestore()
 {
-    for (int i=0; i<m_pMemFoil->nb; i++)
+    for (int i=0; i<m_pMemFoil->m_nb; i++)
     {
-        m_pBufferFoil->xb[i] = m_pMemFoil->xb[i];
-        m_pBufferFoil->yb[i] = m_pMemFoil->yb[i];
+        m_pBufferFoil->m_xb[i] = m_pMemFoil->m_xb[i];
+        m_pBufferFoil->m_yb[i] = m_pMemFoil->m_yb[i];
     }
-    m_pBufferFoil->nb = m_pMemFoil->n;
-    for (int i=0; i<m_pMemFoil->n; i++)
+    m_pBufferFoil->m_nb = m_pMemFoil->m_n;
+    for (int i=0; i<m_pMemFoil->m_n; i++)
     {
-        m_pBufferFoil->x[i]  = m_pMemFoil->x[i];
-        m_pBufferFoil->y[i]  = m_pMemFoil->y[i];
+        m_pBufferFoil->m_x[i]  = m_pMemFoil->m_x[i];
+        m_pBufferFoil->m_y[i]  = m_pMemFoil->m_y[i];
     }
-    m_pBufferFoil->n = m_pMemFoil->n;
+    m_pBufferFoil->m_n = m_pMemFoil->m_n;
 
 
     fillList();

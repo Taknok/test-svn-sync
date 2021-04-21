@@ -398,9 +398,9 @@ Foil *readFoilFile(QFile &xFoilFile)
             //there isn't a name on the first line, use the file's name
             FoilName = fileName;
             {
-                pFoil->xb[0] = x;
-                pFoil->yb[0] = y;
-                pFoil->nb=1;
+                pFoil->m_xb[0] = x;
+                pFoil->m_yb[0] = y;
+                pFoil->m_nb=1;
                 xp = x;
                 yp = y;
             }
@@ -429,10 +429,10 @@ Foil *readFoilFile(QFile &xFoilFile)
                 double dist = sqrt((x-xp)*(x-xp) + (y-yp)*(y-yp));
                 if(dist>0.000001)
                 {
-                    pFoil->xb[pFoil->nb] = x;
-                    pFoil->yb[pFoil->nb] = y;
-                    pFoil->nb++;
-                    if(pFoil->nb>IQX)
+                    pFoil->m_xb[pFoil->m_nb] = x;
+                    pFoil->m_yb[pFoil->m_nb] = y;
+                    pFoil->m_nb++;
+                    if(pFoil->m_nb>IQX)
                     {
                         delete pFoil;
                         return nullptr;
@@ -450,32 +450,32 @@ Foil *readFoilFile(QFile &xFoilFile)
     // Check if the foil was written clockwise or counter-clockwise
 
     area = 0.0;
-    for (int i=0; i<pFoil->nb; i++)
+    for (int i=0; i<pFoil->m_nb; i++)
     {
         int ip = 0;
-        if(i==pFoil->nb-1)  ip = 0;
+        if(i==pFoil->m_nb-1)  ip = 0;
         else                ip = i+1;
-        area +=  0.5*(pFoil->yb[i]+pFoil->yb[ip])*(pFoil->xb[i]-pFoil->xb[ip]);
+        area +=  0.5*(pFoil->m_yb[i]+pFoil->m_yb[ip])*(pFoil->m_xb[i]-pFoil->m_xb[ip]);
     }
 
     if(area < 0.0)
     {
         //reverse the points order
         double xtmp, ytmp;
-        for (int i=0; i<pFoil->nb/2; i++)
+        for (int i=0; i<pFoil->m_nb/2; i++)
         {
-            xtmp         = pFoil->xb[i];
-            ytmp         = pFoil->yb[i];
-            pFoil->xb[i] = pFoil->xb[pFoil->nb-i-1];
-            pFoil->yb[i] = pFoil->yb[pFoil->nb-i-1];
-            pFoil->xb[pFoil->nb-i-1] = xtmp;
-            pFoil->yb[pFoil->nb-i-1] = ytmp;
+            xtmp         = pFoil->m_xb[i];
+            ytmp         = pFoil->m_yb[i];
+            pFoil->m_xb[i] = pFoil->m_xb[pFoil->m_nb-i-1];
+            pFoil->m_yb[i] = pFoil->m_yb[pFoil->m_nb-i-1];
+            pFoil->m_xb[pFoil->m_nb-i-1] = xtmp;
+            pFoil->m_yb[pFoil->m_nb-i-1] = ytmp;
         }
     }
 
-    memcpy(pFoil->x, pFoil->xb, sizeof(pFoil->xb));
-    memcpy(pFoil->y, pFoil->yb, sizeof(pFoil->yb));
-    pFoil->n = pFoil->nb;
+    memcpy(pFoil->m_x, pFoil->m_xb, sizeof(pFoil->m_xb));
+    memcpy(pFoil->m_y, pFoil->m_yb, sizeof(pFoil->m_yb));
+    pFoil->m_n = pFoil->m_nb;
 
     QColor clr = randomColor(false);
     pFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
@@ -580,15 +580,15 @@ void drawFoil(QPainter &painter, Foil const*pFoil, double alpha, double scalex, 
     cosa = cos(alpha*PI/180.0);
     sina = sin(alpha*PI/180.0);
 
-    xa = (pFoil->x[0]-0.5)*cosa - pFoil->y[0]*sina + 0.5;
-    ya = (pFoil->x[0]-0.5)*sina + pFoil->y[0]*cosa;
+    xa = (pFoil->m_x[0]-0.5)*cosa - pFoil->m_y[0]*sina + 0.5;
+    ya = (pFoil->m_x[0]-0.5)*sina + pFoil->m_y[0]*cosa;
     From.rx() = ( xa*scalex + Offset.x());
     From.ry() = (-ya*scaley + Offset.y());
 
-    for (k=1; k<pFoil->n; k++)
+    for (k=1; k<pFoil->m_n; k++)
     {
-        xa = (pFoil->x[k]-0.5)*cosa - pFoil->y[k]*sina+ 0.5;
-        ya = (pFoil->x[k]-0.5)*sina + pFoil->y[k]*cosa;
+        xa = (pFoil->m_x[k]-0.5)*cosa - pFoil->m_y[k]*sina+ 0.5;
+        ya = (pFoil->m_x[k]-0.5)*sina + pFoil->m_y[k]*cosa;
         To.rx() =  xa*scalex+Offset.x();
         To.ry() = -ya*scaley+Offset.y();
 
@@ -669,10 +669,10 @@ void drawPoints(QPainter &painter, Foil const*pFoil, double alpha, double scalex
     cosa = cos(alpha*PI/180.0);
     sina = sin(alpha*PI/180.0);
 
-    for (int i=0; i<pFoil->n;i++)
+    for (int i=0; i<pFoil->m_n;i++)
     {
-        xa = (pFoil->x[i]-0.5)*cosa - pFoil->y[i]*sina + 0.5;
-        ya = (pFoil->x[i]-0.5)*sina + pFoil->y[i]*cosa;
+        xa = (pFoil->m_x[i]-0.5)*cosa - pFoil->m_y[i]*sina + 0.5;
+        ya = (pFoil->m_x[i]-0.5)*sina + pFoil->m_y[i]*cosa;
 
         QPoint pt(int(xa*scalex + Offset.x()), int(-ya*scaley + Offset.y()));
 
@@ -685,8 +685,8 @@ void drawPoints(QPainter &painter, Foil const*pFoil, double alpha, double scalex
         painter.setPen(HighPen);
 
         int ih = pFoil->iHighLight();
-        xa = (pFoil->x[ih]-0.5)*cosa - pFoil->y[ih]*sina + 0.5;
-        ya = (pFoil->x[ih]-0.5)*sina + pFoil->y[ih]*cosa;
+        xa = (pFoil->m_x[ih]-0.5)*cosa - pFoil->m_y[ih]*sina + 0.5;
+        ya = (pFoil->m_x[ih]-0.5)*sina + pFoil->m_y[ih]*cosa;
 
         QPoint pt(int(xa*scalex + Offset.x()), int(-ya*scaley + Offset.y()));
 
@@ -1197,15 +1197,15 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         if (pFoil->m_bTEFlap)        ar << 1; else ar << 0;
         ar << float(pFoil->m_TEFlapAngle) << float(pFoil->m_TEXHinge) << float(pFoil->m_TEYHinge);
         ar << 1.f << 1.f << 9.f;//formerly transition parameters
-        ar << pFoil->nb;
-        for (j=0; j<pFoil->nb; j++)
+        ar << pFoil->m_nb;
+        for (j=0; j<pFoil->m_nb; j++)
         {
-            ar << float(pFoil->xb[j]) << float(pFoil->yb[j]);
+            ar << float(pFoil->m_xb[j]) << float(pFoil->m_yb[j]);
         }
-        ar << pFoil->n;
-        for (j=0; j<pFoil->n; j++)
+        ar << pFoil->m_n;
+        for (j=0; j<pFoil->m_n; j++)
         {
-            ar << float(pFoil->x[j]) << float(pFoil->y[j]);
+            ar << float(pFoil->m_x[j]) << float(pFoil->m_y[j]);
         }
         return true;
     }
@@ -1258,23 +1258,23 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         ar >> f; pFoil->m_TEYHinge = double(f);
 
         ar >> f >> f >> f; //formerly transition parameters
-        ar >> pFoil->nb;
-        if(pFoil->nb>IBX) return false;
+        ar >> pFoil->m_nb;
+        if(pFoil->m_nb>IBX) return false;
 
-        for (j=0; j<pFoil->nb; j++)
+        for (j=0; j<pFoil->m_nb; j++)
         {
             ar >> f >> ff;
-            pFoil->xb[j]  = double(f);  pFoil->yb[j]=double(ff);
+            pFoil->m_xb[j]  = double(f);  pFoil->m_yb[j]=double(ff);
         }
 
         /** @todo remove. We don't need to save/load the current foil geom
          *  since we re-create later it using base geometry and flap data */
         if(ArchiveFormat>=1001)
         {
-            ar >> pFoil->n;
-            if(pFoil->n>IBX) return false;
+            ar >> pFoil->m_n;
+            if(pFoil->m_n>IBX) return false;
 
-            for (j=0; j<pFoil->n; j++)
+            for (j=0; j<pFoil->m_n; j++)
             {
                 ar >> f >> ff;
                 //                pFoil->x[j]=f; pFoil->y[j]=ff;

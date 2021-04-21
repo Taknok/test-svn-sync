@@ -100,9 +100,9 @@ class Foil : public XflObject
         QString const &description() const {return m_FoilDescription;}
         void setDescription(QString const &description) {m_FoilDescription=description;}
 
-        double camber() const {return m_fCamber;}
-        double xCamber() const {return m_fXCamber;}
-        double thickness() const {return m_fThickness;}
+        double camber()     const {return m_fCamber;}
+        double xCamber()    const {return m_fXCamber;}
+        double thickness()  const {return m_fThickness;}
         double xThickness() const {return m_fXThickness;}
         double TEGap() const {return m_TEGap;}
 
@@ -114,15 +114,15 @@ class Foil : public XflObject
 
     public:
         // Base geometry;
-       int nb;                              /**< the number of points of the base foil */
-       double xb[IBX];                      /**< the array of x-coordinates of the base foil points */
-       double yb[IBX];                      /**< the array of y-coordinates of the base foil points*/
-       int n;                               /**<  the number of points of the current foil */
-       double x[IBX];                       /**< the array of x-coordinates of the current foil points */
-       double y[IBX];                       /**< the array of y-coordinates of the current foil points*/
+       int m_nb;                              /**< the number of points of the base foil */
+       double m_xb[IBX];                      /**< the array of x-coordinates of the base foil points */
+       double m_yb[IBX];                      /**< the array of y-coordinates of the base foil points*/
+       int m_n;                               /**<  the number of points of the current foil */
+       double m_x[IBX];                       /**< the array of x-coordinates of the current foil points */
+       double m_y[IBX];                       /**< the array of y-coordinates of the current foil points*/
 
-       double nx[IBX];                      /**< the array of x-coordinates of the current foil normal Vector3ds*/
-       double ny[IBX];                      /**< the array of x-coordinates of the current foil normal Vector3ds*/
+       double m_nx[IBX];                      /**< the array of x-coordinates of the current foil normal Vector3ds*/
+       double m_ny[IBX];                      /**< the array of x-coordinates of the current foil normal Vector3ds*/
        Vector3d m_rpMid[MIDPOINTCOUNT];              /**< the mid camber line points */
 
 
@@ -130,7 +130,6 @@ class Foil : public XflObject
         QString m_FoilDescription;             /**< a free description */
 
         bool m_bCenterLine;                  /**< true if the foil mid camber line is to be displayed */
-    //    bool m_bShowFoilPoints;              /**< true if the foil's panels are to be displayed */
 
         int m_iBaseInt;                      /**< the number of points on the lower surface of the base foil */
         int m_iBaseExt;                      /**< the number of points on the upper surface of the base foil */

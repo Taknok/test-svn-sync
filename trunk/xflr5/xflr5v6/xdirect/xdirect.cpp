@@ -556,11 +556,11 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
             {
                 if(!bInviscid)
                 {
-                    if(pOpp->m_bViscResults) pCurve->appendPoint(pOpFoil->x[j], pOpp->Cpv[j]);
+                    if(pOpp->m_bViscResults) pCurve->appendPoint(pOpFoil->m_x[j], pOpp->Cpv[j]);
                 }
                 else
                 {
-                    pCurve->appendPoint(pOpFoil->x[j], pOpp->Cpi[j]);
+                    pCurve->appendPoint(pOpFoil->m_x[j], pOpp->Cpi[j]);
                 }
             }
             pGraph->setYTitle(tr("Cp"));
@@ -572,11 +572,11 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
             {
                 if(!bInviscid)
                 {
-                    if(pOpp->m_bViscResults) pCurve->appendPoint(pOpFoil->x[j], pOpp->Qv[j]);
+                    if(pOpp->m_bViscResults) pCurve->appendPoint(pOpFoil->m_x[j], pOpp->Qv[j]);
                 }
                 else
                 {
-                    pCurve->appendPoint(pOpFoil->x[j], pOpp->Qi[j]);
+                    pCurve->appendPoint(pOpFoil->m_x[j], pOpp->Qi[j]);
                 }
             }
             pGraph->setYTitle(tr("Q"));
@@ -873,10 +873,10 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
             {
                 if(!bInviscid)
                 {
-                    if(pOpp->m_bViscResults) pCurve->appendPoint(pOpFoil->x[j], pOpp->Cpv[j]);
+                    if(pOpp->m_bViscResults) pCurve->appendPoint(pOpFoil->m_x[j], pOpp->Cpv[j]);
                 }
                 else{
-                    pCurve->appendPoint(pOpFoil->x[j], pOpp->Cpi[j]);
+                    pCurve->appendPoint(pOpFoil->m_x[j], pOpp->Cpi[j]);
                 }
             }
             pGraph->setYTitle(tr("Cp"));
@@ -2024,7 +2024,7 @@ void XDirect::onCadd()
     setCurOpp(pOpPoint);
 
     if(m_pCurFoil)
-        m_XFoil.initXFoilGeometry(m_pCurFoil->n, m_pCurFoil->x, m_pCurFoil->y, m_pCurFoil->nx, m_pCurFoil->ny);
+        m_XFoil.initXFoilGeometry(m_pCurFoil->m_n, m_pCurFoil->m_x, m_pCurFoil->m_y, m_pCurFoil->m_nx, m_pCurFoil->m_ny);
     delete pNewFoil;
 
     updateView();
@@ -2095,7 +2095,7 @@ void XDirect::onNormalizeFoil()
     //restore things
     delete pNewFoil;
     setCurFoil(pCurFoil);
-    if(m_pCurFoil) m_XFoil.initXFoilGeometry(m_pCurFoil->n, m_pCurFoil->x, m_pCurFoil->y, m_pCurFoil->nx, m_pCurFoil->ny);
+    if(m_pCurFoil) m_XFoil.initXFoilGeometry(m_pCurFoil->m_n, m_pCurFoil->m_x, m_pCurFoil->m_y, m_pCurFoil->m_nx, m_pCurFoil->m_ny);
     updateView();
 }
 
@@ -2695,7 +2695,7 @@ void XDirect::onFoilCoordinates()
             //reset everything
             setFoil(pCurFoil);
             setCurOpp(pOpPoint);
-            m_XFoil.initXFoilGeometry(pCurFoil->n, pCurFoil->x, pCurFoil->y, pCurFoil->nx, pCurFoil->ny);
+            m_XFoil.initXFoilGeometry(pCurFoil->m_n, pCurFoil->m_x, pCurFoil->m_y, pCurFoil->m_nx, pCurFoil->m_ny);
             delete pNewFoil;
         }
 
@@ -2708,7 +2708,7 @@ void XDirect::onFoilCoordinates()
         setCurFoil(pCurFoil);
         setCurOpp(pOpPoint);
         if(m_pCurFoil)
-            m_XFoil.initXFoilGeometry(m_pCurFoil->n, m_pCurFoil->x, m_pCurFoil->y, m_pCurFoil->nx, m_pCurFoil->ny);
+            m_XFoil.initXFoilGeometry(m_pCurFoil->m_n, m_pCurFoil->m_x, m_pCurFoil->m_y, m_pCurFoil->m_nx, m_pCurFoil->m_ny);
         delete pNewFoil;
     }
 
@@ -2761,7 +2761,7 @@ void XDirect::onFoilGeom()
     delete pNewFoil;
     setCurFoil(pCurFoil);
     setCurOpp(pOpPoint);
-    if(m_pCurFoil) m_XFoil.initXFoilGeometry(m_pCurFoil->n, m_pCurFoil->x, m_pCurFoil->y, m_pCurFoil->nx, m_pCurFoil->ny);
+    if(m_pCurFoil) m_XFoil.initXFoilGeometry(m_pCurFoil->m_n, m_pCurFoil->m_x, m_pCurFoil->m_y, m_pCurFoil->m_nx, m_pCurFoil->m_ny);
 
     updateView();
 }
@@ -3265,7 +3265,7 @@ void XDirect::onInterpolateFoils()
     //restore things
     setCurFoil(pCurFoil);
     if(m_pCurFoil)
-        m_XFoil.initXFoilGeometry(m_pCurFoil->n, m_pCurFoil->x, m_pCurFoil->y, m_pCurFoil->nx, m_pCurFoil->ny);
+        m_XFoil.initXFoilGeometry(m_pCurFoil->m_n, m_pCurFoil->m_x, m_pCurFoil->m_y, m_pCurFoil->m_nx, m_pCurFoil->m_ny);
     delete pNewFoil;
     updateView();
 }
@@ -3294,13 +3294,13 @@ void XDirect::onNacaFoils()
     m_XFoil.naca4(9, 50);
     for (int j=0; j< m_XFoil.nb; j++)
     {
-        pNacaFoil->xb[j] = m_XFoil.xb[j+1];
-        pNacaFoil->yb[j] = m_XFoil.yb[j+1];
-        pNacaFoil->x[j]  = m_XFoil.xb[j+1];
-        pNacaFoil->y[j]  = m_XFoil.yb[j+1];
+        pNacaFoil->m_xb[j] = m_XFoil.xb[j+1];
+        pNacaFoil->m_yb[j] = m_XFoil.yb[j+1];
+        pNacaFoil->m_x[j]  = m_XFoil.xb[j+1];
+        pNacaFoil->m_y[j]  = m_XFoil.yb[j+1];
     }
-    pNacaFoil->nb = m_XFoil.nb;
-    pNacaFoil->n = m_XFoil.nb;
+    pNacaFoil->m_nb = m_XFoil.nb;
+    pNacaFoil->m_n = m_XFoil.nb;
     pNacaFoil->initFoil();
 
     setFoil(pNacaFoil);
@@ -3335,7 +3335,7 @@ void XDirect::onNacaFoils()
     //reset everything
     setCurFoil(pCurFoil);
     setCurOpp(pCurOpp);
-    if(m_pCurFoil) m_XFoil.initXFoilGeometry(m_pCurFoil->n, m_pCurFoil->x, m_pCurFoil->y, m_pCurFoil->nx, m_pCurFoil->ny);
+    if(m_pCurFoil) m_XFoil.initXFoilGeometry(m_pCurFoil->m_n, m_pCurFoil->m_x, m_pCurFoil->m_y, m_pCurFoil->m_nx, m_pCurFoil->m_ny);
     delete pNacaFoil;
     updateView();
 }
@@ -3457,7 +3457,7 @@ void XDirect::onRefinePanelsGlobally()
     //reset everything
     setFoil(pCurFoil);
     setCurOpp(pOpPoint);
-    m_XFoil.initXFoilGeometry(pCurFoil->n, pCurFoil->x, pCurFoil->y, pCurFoil->nx, pCurFoil->ny);
+    m_XFoil.initXFoilGeometry(pCurFoil->m_n, pCurFoil->m_x, pCurFoil->m_y, pCurFoil->m_nx, pCurFoil->m_ny);
     delete pNewFoil;
     updateView();
 }
@@ -3732,7 +3732,7 @@ void XDirect::onSetFlap()
     setCurFoil(pCurFoil);
     setCurOpp(pOpPoint);
 
-    if(m_pCurFoil)  m_XFoil.initXFoilGeometry(m_pCurFoil->n, m_pCurFoil->x, m_pCurFoil->y, m_pCurFoil->nx, m_pCurFoil->ny);
+    if(m_pCurFoil)  m_XFoil.initXFoilGeometry(m_pCurFoil->m_n, m_pCurFoil->m_x, m_pCurFoil->m_y, m_pCurFoil->m_nx, m_pCurFoil->m_ny);
 
     delete pNewFoil;
     updateView();
@@ -3781,7 +3781,7 @@ void XDirect::onSetLERadius()
     setCurOpp(pOpPoint);
 
     if(m_pCurFoil)
-        m_XFoil.initXFoilGeometry(m_pCurFoil->n, m_pCurFoil->x, m_pCurFoil->y, m_pCurFoil->nx, m_pCurFoil->ny);
+        m_XFoil.initXFoilGeometry(m_pCurFoil->m_n, m_pCurFoil->m_x, m_pCurFoil->m_y, m_pCurFoil->m_nx, m_pCurFoil->m_ny);
     delete pNewFoil;
     updateView();
 }
@@ -3828,7 +3828,7 @@ void XDirect::onSetTEGap()
     setCurFoil(pCurFoil);
     setCurOpp(pOpPoint);
     if(m_pCurFoil)
-        m_XFoil.initXFoilGeometry(m_pCurFoil->n, m_pCurFoil->x, m_pCurFoil->y, m_pCurFoil->nx, m_pCurFoil->ny);
+        m_XFoil.initXFoilGeometry(m_pCurFoil->m_n, m_pCurFoil->m_x, m_pCurFoil->m_y, m_pCurFoil->m_nx, m_pCurFoil->m_ny);
     delete pNewFoil;
     updateView();
 }
@@ -4300,16 +4300,16 @@ Foil* XDirect::setFoil(Foil* pFoil)
     bool bRes = false;
     if(pCurFoil)
     {
-        if(pCurFoil->n>=IQX-2)
+        if(pCurFoil->m_n>=IQX-2)
         {
             QString strange;
             strange = QString::asprintf("Cannot initialize the foil %s:\nNumber of panels=%d, Max. size=%d,\nRecommended size=100-150 panels",
-                            pCurFoil->name().toStdString().c_str(), pCurFoil->n, IQX-2);
+                            pCurFoil->name().toStdString().c_str(), pCurFoil->m_n, IQX-2);
             QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
         }
         else
         {
-            bRes = m_XFoil.initXFoilGeometry(pCurFoil->n, pCurFoil->x,pCurFoil->y, pCurFoil->nx, pCurFoil->ny);
+            bRes = m_XFoil.initXFoilGeometry(pCurFoil->m_n, pCurFoil->m_x,pCurFoil->m_y, pCurFoil->m_nx, pCurFoil->m_ny);
             if(!bRes)
             {
                 QString strange;

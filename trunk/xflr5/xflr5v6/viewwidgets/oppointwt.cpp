@@ -594,7 +594,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
     painter.drawText(LeftPos,ZPos+D, str1+str);
     D += dD;
 
-    str1 = QString(tr("Number of Panels  =  %1")).arg( XDirect::curFoil()->n);
+    str1 = QString(tr("Number of Panels  =  %1")).arg( XDirect::curFoil()->m_n);
     painter.drawText(LeftPos,ZPos+D, str1);
     D += dD;
 
@@ -795,20 +795,20 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
     painter.setPen(CpvPen);
 
 
-    for(int i=0; i<XDirect::curFoil()->n; i++)
+    for(int i=0; i<XDirect::curFoil()->m_n; i++)
     {
         if(XDirect::curOpp()->m_bViscResults) cp = XDirect::curOpp()->Cpv[i];
         else                                  cp = XDirect::curOpp()->Cpi[i];
-        x = XDirect::curFoil()->x[i];
-        y = XDirect::curFoil()->y[i];
+        x = XDirect::curFoil()->m_x[i];
+        y = XDirect::curFoil()->m_y[i];
 
         xs = (x-0.5)*cosa - y*sina + 0.5;
         ys = (x-0.5)*sina + y*cosa;
 
         if(cp>0)
         {
-            x += XDirect::curFoil()->nx[i] * cp * 0.05;
-            y += XDirect::curFoil()->ny[i] * cp * 0.05;
+            x += XDirect::curFoil()->m_nx[i] * cp * 0.05;
+            y += XDirect::curFoil()->m_ny[i] * cp * 0.05;
 
             xe = (x-0.5)*cosa - y*sina + 0.5;
             ye = (x-0.5)*sina + y*cosa;
@@ -838,8 +838,8 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
         else
         {
 
-            x += -XDirect::curFoil()->nx[i] * cp *0.05;
-            y += -XDirect::curFoil()->ny[i] * cp *0.05;
+            x += -XDirect::curFoil()->m_nx[i] * cp *0.05;
+            y += -XDirect::curFoil()->m_ny[i] * cp *0.05;
 
             xe = (x-0.5)*cosa - y*sina+ 0.5;
             ye = (x-0.5)*sina + y*cosa;

@@ -115,12 +115,12 @@ void CAddDlg::onButton(QAbstractButton *pButton)
 
 void CAddDlg::onApply()
 {
-    for (int i=0; i< m_pMemFoil->nb; i++)
+    for (int i=0; i< m_pMemFoil->m_nb; i++)
     {
-        s_pXFoil->xb[i+1] = m_pMemFoil->xb[i] ;
-        s_pXFoil->yb[i+1] = m_pMemFoil->yb[i];
+        s_pXFoil->xb[i+1] = m_pMemFoil->m_xb[i] ;
+        s_pXFoil->yb[i+1] = m_pMemFoil->m_yb[i];
     }
-    s_pXFoil->nb = m_pMemFoil->nb;
+    s_pXFoil->nb = m_pMemFoil->m_nb;
 
     s_pXFoil->lflap = false;
     s_pXFoil->lbflap = false;
@@ -157,10 +157,10 @@ void CAddDlg::onApply()
 
     for (int i=0; i<s_pXFoil->n; i++)
     {
-        m_pBufferFoil->xb[i] = s_pXFoil->x[i+1];
-        m_pBufferFoil->yb[i] = s_pXFoil->y[i+1];
+        m_pBufferFoil->m_xb[i] = s_pXFoil->x[i+1];
+        m_pBufferFoil->m_yb[i] = s_pXFoil->y[i+1];
     }
-    m_pBufferFoil->nb = s_pXFoil->n;
+    m_pBufferFoil->m_nb = s_pXFoil->n;
     m_pBufferFoil->initFoil();
     m_pBufferFoil->setFlap();
 

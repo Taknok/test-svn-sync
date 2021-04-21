@@ -46,22 +46,22 @@ Foil::Foil()
 
     m_iHighLight = -1;
 
-    m_bCenterLine       = false;
+    m_bCenterLine = false;
 
     m_fCamber     = 0.0;
     m_fXCamber    = 0.0;
     m_fThickness  = 0.0;
     m_fXThickness = 0.0;
 
-    n = 0;
-    memset(x, 0, sizeof(x));
-    memset(y, 0, sizeof(y));
-    memset(nx, 0, sizeof(nx));
-    memset(ny, 0, sizeof(ny));
+    m_n = 0;
+    memset(m_x, 0, sizeof(m_x));
+    memset(m_y, 0, sizeof(m_y));
+    memset(m_nx, 0, sizeof(m_nx));
+    memset(m_ny, 0, sizeof(m_ny));
 
-    nb = 0;
-    memset(xb, 0, sizeof(xb));
-    memset(yb, 0, sizeof(yb));
+    m_nb = 0;
+    memset(m_xb, 0, sizeof(m_xb));
+    memset(m_yb, 0, sizeof(m_yb));
 
 
     m_iInt = 0;
@@ -80,7 +80,7 @@ Foil::Foil()
 
     m_bTEFlap     = false;
     m_TEFlapAngle = 0.0;
-    m_TEXHinge    = 80.0;
+    m_TEXHinge    = 70.0;
     m_TEYHinge    = 50.0;
 
     m_bLEFlap     = false;
@@ -148,12 +148,12 @@ void Foil::copyFoil(const Foil *pSrcFoil, bool bMetaData)
         m_theStyle    = pSrcFoil->theStyle();
     }
 
-    memcpy(x, pSrcFoil->x,  sizeof(pSrcFoil->x));
-    memcpy(y, pSrcFoil->y,  sizeof(pSrcFoil->y));
-    memcpy(xb,pSrcFoil->xb, sizeof(pSrcFoil->xb));
-    memcpy(yb,pSrcFoil->yb, sizeof(pSrcFoil->yb));
-    memcpy(nx,pSrcFoil->nx, sizeof(pSrcFoil->nx));
-    memcpy(ny,pSrcFoil->ny, sizeof(pSrcFoil->ny));
+    memcpy(m_x, pSrcFoil->m_x,  sizeof(pSrcFoil->m_x));
+    memcpy(m_y, pSrcFoil->m_y,  sizeof(pSrcFoil->m_y));
+    memcpy(m_xb,pSrcFoil->m_xb, sizeof(pSrcFoil->m_xb));
+    memcpy(m_yb,pSrcFoil->m_yb, sizeof(pSrcFoil->m_yb));
+    memcpy(m_nx,pSrcFoil->m_nx, sizeof(pSrcFoil->m_nx));
+    memcpy(m_ny,pSrcFoil->m_ny, sizeof(pSrcFoil->m_ny));
     memcpy(m_rpMid,        pSrcFoil->m_rpMid,        sizeof(m_rpMid));
     memcpy(m_rpBaseMid,    pSrcFoil->m_rpBaseMid,    sizeof(m_rpBaseMid));
     memcpy(m_rpExtrados,   pSrcFoil->m_rpExtrados,   sizeof(m_rpExtrados));
@@ -175,8 +175,8 @@ void Foil::copyFoil(const Foil *pSrcFoil, bool bMetaData)
     m_fCamber     = pSrcFoil->camber();
     m_fXCamber    = pSrcFoil->xCamber();
 
-    n  = pSrcFoil->n;
-    nb = pSrcFoil->nb;
+    m_n  = pSrcFoil->m_n;
+    m_nb = pSrcFoil->m_nb;
 
     m_bLEFlap     = pSrcFoil->m_bLEFlap;
     m_LEFlapAngle = pSrcFoil->m_LEFlapAngle;
@@ -197,16 +197,16 @@ void Foil::copyFoil(const Foil *pSrcFoil, bool bMetaData)
 double Foil::deRotate()
 {
     // first translate the leading edge to the origin point
-    for (int i=0; i<nb; i++)
+    for (int i=0; i<m_nb; i++)
     {
-        xb[i] -= m_LE.x;
-        yb[i] -= m_LE.y;
+        m_xb[i] -= m_LE.x;
+        m_yb[i] -= m_LE.y;
     }
 
-    for (int i=0; i<n; i++)
+    for (int i=0; i<m_n; i++)
     {
-        x[i] -= m_LE.x;
-        y[i] -= m_LE.y;
+        m_x[i] -= m_LE.x;
+        m_y[i] -= m_LE.y;
     }
 
     m_LE.set(0.0,0.0,0.0);
@@ -223,20 +223,20 @@ double Foil::deRotate()
 
 
     double xr=0, yr=0;
-    for (int i=0; i<nb; i++)
+    for (int i=0; i<m_nb; i++)
     {
-        xr = xb[i]*cosa - yb[i]*sina;
-        yr = xb[i]*sina + yb[i]*cosa;
-        xb[i] = xr;
-        yb[i] = yr;
+        xr = m_xb[i]*cosa - m_yb[i]*sina;
+        yr = m_xb[i]*sina + m_yb[i]*cosa;
+        m_xb[i] = xr;
+        m_yb[i] = yr;
     }
 
-    for (int i=0; i<n; i++)
+    for (int i=0; i<m_n; i++)
     {
-        xr = x[i]*cosa - y[i]*sina;
-        yr = x[i]*sina + y[i]*cosa;
-        x[i] = xr;
-        y[i] = yr;
+        xr = m_x[i]*cosa - m_y[i]*sina;
+        yr = m_x[i]*sina + m_y[i]*cosa;
+        m_x[i] = xr;
+        m_y[i] = yr;
     }
 
     xr = m_TE.x*cosa - m_TE.y*sina;
@@ -258,16 +258,14 @@ double Foil::deRotate()
  */
 bool Foil::exportFoil(QTextStream &out) const
 {
-    int i;
-
     QString strOut;
 
     out << m_Name +"\n";
 
-    for (i=0; i< n; i++)
+    for (int i=0; i< m_n; i++)
     {
         // jojo-Patch increase precision from 5 to 7 (2020/01)
-        strOut = QString("%1    %2\n").arg(x[i],10,'f',7).arg(y[i],10,'f',7);
+        strOut = QString("%1    %2\n").arg(m_x[i],10,'f',7).arg(m_y[i],10,'f',7);
         // strOut = QString("%1    %2\n").arg(x[i],8,'f',5).arg(y[i],8,'f',5);
         out << strOut;
     }
@@ -282,11 +280,10 @@ bool Foil::exportFoil(QTextStream &out) const
  */
 double Foil::area() const
 {
-    int i;
     double area = 0.0;
-    for (i=0; i<nb-1; i++)
+    for (int i=0; i<m_nb-1; i++)
     {
-        area +=  qAbs((yb[i+1]+yb[i])/2.0 * (xb[i+1]-xb[i]));
+        area +=  qAbs((m_yb[i+1]+m_yb[i])/2.0 * (m_xb[i+1]-m_xb[i]));
     }
     return area;
 }
@@ -300,17 +297,14 @@ double Foil::area() const
  */
 double Foil::baseLowerY(double x) const
 {
-    int i;
-    double y;
-
     x = m_BaseIntrados[0].x + x*(m_BaseIntrados[m_iBaseInt].x-m_BaseIntrados[0].x);//in case there is a flap which reduces the length
 
-    for (i=0; i<m_iBaseInt; i++)
+    for (int i=0; i<m_iBaseInt; i++)
     {
         if (m_BaseIntrados[i].x <m_BaseIntrados[i+1].x  &&  m_BaseIntrados[i].x <= x && x<=m_BaseIntrados[i+1].x )
         {
-            y = (m_BaseIntrados[i].y   +(m_BaseIntrados[i+1].y-m_BaseIntrados[i].y)
-               /(m_BaseIntrados[i+1].x - m_BaseIntrados[i].x) * (x-m_BaseIntrados[i].x));
+            double y = (m_BaseIntrados[i].y   +(m_BaseIntrados[i+1].y-m_BaseIntrados[i].y)
+                      /(m_BaseIntrados[i+1].x - m_BaseIntrados[i].x) * (x-m_BaseIntrados[i].x));
             return y;
         }
     }
@@ -326,17 +320,14 @@ double Foil::baseLowerY(double x) const
  */
 double Foil::baseUpperY(double x) const
 {
-    double y;
-    int i;
-
     x = m_BaseExtrados[0].x + x*(m_BaseExtrados[m_iBaseExt].x-m_BaseExtrados[0].x);//in case there is a flap which reduces the length
 
-    for (i=0; i<m_iBaseExt; i++)
+    for (int i=0; i<m_iBaseExt; i++)
     {
         if (m_BaseExtrados[i].x <m_BaseExtrados[i+1].x  &&  m_BaseExtrados[i].x <= x && x<=m_BaseExtrados[i+1].x )
         {
-            y = (m_BaseExtrados[i].y   +(m_BaseExtrados[i+1].y-m_BaseExtrados[i].y)
-               /(m_BaseExtrados[i+1].x - m_BaseExtrados[i].x) * (x-m_BaseExtrados[i].x));
+            double y = (m_BaseExtrados[i].y   +(m_BaseExtrados[i+1].y-m_BaseExtrados[i].y)
+                      /(m_BaseExtrados[i+1].x - m_BaseExtrados[i].x) * (x-m_BaseExtrados[i].x));
             return y;
         }
     }
@@ -629,14 +620,14 @@ bool Foil::initFoil()
 
     //first time is to calculate the base foil's thickness and camber
 
-    if(nb<=0)
+    if(m_nb<=0)
     {
         return false;
     }
 
-    while (k<nb)
+    while (k<m_nb)
     {
-        if (xb[k+1] < xb[k]) 
+        if (m_xb[k+1] < m_xb[k])
         {
             k++;
         }
@@ -645,22 +636,22 @@ bool Foil::initFoil()
             if(bNotFound)
             {
                 m_iBaseExt = k;
-                m_BaseExtrados[k].x = xb[k];
-                m_BaseExtrados[k].y = yb[k];
+                m_BaseExtrados[k].x = m_xb[k];
+                m_BaseExtrados[k].y = m_yb[k];
                 bNotFound = false;
             }
-            m_BaseIntrados[k-m_iBaseExt].x = xb[k]; /** @todo m_iBaseInt ? */
-            m_BaseIntrados[k-m_iBaseExt].y = yb[k];
+            m_BaseIntrados[k-m_iBaseExt].x = m_xb[k]; /** @todo m_iBaseInt ? */
+            m_BaseIntrados[k-m_iBaseExt].y = m_yb[k];
             k++;
         }
     }
-    m_iBaseInt = nb-m_iBaseExt-1;
-    m_BaseIntrados[nb-m_iBaseExt-1].x = xb[nb-1];
-    m_BaseIntrados[nb-m_iBaseExt-1].y = yb[nb-1];
+    m_iBaseInt = m_nb-m_iBaseExt-1;
+    m_BaseIntrados[m_nb-m_iBaseExt-1].x = m_xb[m_nb-1];
+    m_BaseIntrados[m_nb-m_iBaseExt-1].y = m_yb[m_nb-1];
     for (k=0; k<=m_iBaseExt;k++)
     {
-        m_BaseExtrados[k].x = xb[m_iBaseExt-k];
-        m_BaseExtrados[k].y = yb[m_iBaseExt-k];
+        m_BaseExtrados[k].x = m_xb[m_iBaseExt-k];
+        m_BaseExtrados[k].y = m_yb[m_iBaseExt-k];
     }
 
     memcpy(m_rpExtrados, m_BaseExtrados, sizeof(m_rpExtrados));
@@ -686,9 +677,9 @@ bool Foil::initFoil()
     //used for the VLM analysis
     k=0;
     bNotFound = true;
-    while (k<n)
+    while (k<m_n)
     {
-        if (x[k+1] < x[k]) 
+        if (m_x[k+1] < m_x[k])
         {
             k++;
         }
@@ -696,22 +687,22 @@ bool Foil::initFoil()
             if(bNotFound)
             {
                 m_iExt = k;
-                m_rpExtrados[k].x = x[k];
-                m_rpExtrados[k].y = y[k];
+                m_rpExtrados[k].x = m_x[k];
+                m_rpExtrados[k].y = m_y[k];
                 bNotFound = false;
             }
-            m_rpIntrados[k-m_iExt].x = x[k];
-            m_rpIntrados[k-m_iExt].y = y[k];
+            m_rpIntrados[k-m_iExt].x = m_x[k];
+            m_rpIntrados[k-m_iExt].y = m_y[k];
             k++;
         }
     }
-    m_iInt = n-m_iExt-1;
-    m_rpIntrados[n-m_iExt-1].x = x[n-1];
-    m_rpIntrados[n-m_iExt-1].y = y[n-1];
+    m_iInt = m_n-m_iExt-1;
+    m_rpIntrados[m_n-m_iExt-1].x = m_x[m_n-1];
+    m_rpIntrados[m_n-m_iExt-1].y = m_y[m_n-1];
     for (k=0; k<=m_iExt;k++)
     {
-        m_rpExtrados[k].x = x[m_iExt-k];
-        m_rpExtrados[k].y = y[m_iExt-k];
+        m_rpExtrados[k].x = m_x[m_iExt-k];
+        m_rpExtrados[k].y = m_y[m_iExt-k];
     }
 
 
@@ -763,9 +754,9 @@ bool Foil::intersect(Vector3d const &A, Vector3d const &B, Vector3d const &C, Ve
 */
 int Foil::isPoint(Vector3d const &Real) const
 {
-    for (int k=0; k<n; k++)
+    for (int k=0; k<m_n; k++)
     {
-        if(qAbs(Real.x-x[k])<0.005 && qAbs(Real.y-y[k])<0.005) return k;
+        if(qAbs(Real.x-m_x[k])<0.005 && qAbs(Real.y-m_y[k])<0.005) return k;
     }
     return -10;
 }
@@ -777,43 +768,42 @@ int Foil::isPoint(Vector3d const &Real) const
 */
 double Foil::normalizeGeometry()
 {
-    int i;
     double xmin = 1.0;
     double xmax = 0.0;
 
-    for (i=0; i<nb; i++)
+    for (int i=0; i<m_nb; i++)
     {
-        xmin = qMin(xmin, xb[i]);
-        xmax = qMax(xmax, xb[i]);
+        xmin = qMin(xmin, m_xb[i]);
+        xmax = qMax(xmax, m_xb[i]);
     }
     double length = xmax - xmin;
 
     //reset origin
-    for (i=0; i<nb; i++) xb[i] -= xmin;
+    for (int i=0; i<m_nb; i++) m_xb[i] -= xmin;
 
     //set length to 1. and cancel y offset
-    for(i=0; i<nb; i++)
+    for(int i=0; i<m_nb; i++)
     {
-        xb[i] = xb[i]/length;
-        yb[i] = yb[i]/length;
+        m_xb[i] = m_xb[i]/length;
+        m_yb[i] = m_yb[i]/length;
     }
-    double yTrans = yb[0];
-    for(i=0; i<nb; i++)    yb[i] -= yTrans;
+    double yTrans = m_yb[0];
+    for(int i=0; i<m_nb; i++)    m_yb[i] -= yTrans;
 
     //reset origin
-    for (i=0; i<n; i++)
+    for (int i=0; i<m_n; i++)
     {
-        x[i] -= xmin;
+        m_x[i] -= xmin;
     }
 
     //set length to 1. and cancel y offset
-    for(i=0; i<n; i++)
+    for(int i=0; i<m_n; i++)
     {
-        x[i] = x[i]/length;
-        y[i] = y[i]/length;
+        m_x[i] = m_x[i]/length;
+        m_y[i] = m_y[i]/length;
     }
-    yTrans = y[0];
-    for(i=0; i<n; i++)    y[i] -= yTrans;
+    yTrans = m_y[0];
+    for(int i=0; i<m_n; i++)    m_y[i] -= yTrans;
 
     return length;
 }
@@ -824,48 +814,48 @@ double Foil::normalizeGeometry()
  */
 void Foil::setNaca009()
 {    
-    x[0]  = 1.00000    ; y[0]  = 0.00000;
-    x[1]  = 0.99572    ; y[1]  = 0.00057;
-    x[2]  = 0.98296    ; y[2]  = 0.00218;
-    x[3]  = 0.96194    ; y[3]  = 0.00463;
-    x[4]  = 0.93301    ; y[4]  = 0.00770;
-    x[5]  = 0.89668    ; y[5]  = 0.01127;
-    x[6]  = 0.85355    ; y[6]  = 0.01522;
-    x[7]  = 0.80438    ; y[7]  = 0.01945;
-    x[8]  = 0.75000    ; y[8]  = 0.02384;
-    x[9]  = 0.69134    ; y[9]  = 0.02823;
-    x[10] = 0.62941    ; y[10] = 0.03247;
-    x[11] = 0.56526    ; y[11] = 0.03638;
-    x[12] = 0.50000    ; y[12] = 0.03978;
-    x[13] = 0.43474    ; y[13] = 0.04248;
-    x[14] = 0.37059    ; y[14] = 0.04431;
-    x[15] = 0.33928    ; y[15] = 0.04484;
-    x[16] = 0.30866    ; y[16] = 0.04509;
-    x[17] = 0.27886    ; y[17] = 0.04504;
-    x[18] = 0.25000    ; y[18] = 0.04466;
-    x[19] = 0.22221    ; y[19] = 0.04397;
-    x[20] = 0.19562    ; y[20] = 0.04295;
-    x[21] = 0.17033    ; y[21] = 0.04161;
-    x[22] = 0.14645    ; y[22] = 0.03994;
-    x[23] = 0.12408    ; y[23] = 0.03795;
-    x[24] = 0.10332    ; y[24] = 0.03564;
-    x[25] = 0.08427    ; y[25] = 0.03305;
-    x[26] = 0.06699    ; y[26] = 0.03023;
-    x[27] = 0.05156    ; y[27] = 0.02720;
-    x[28] = 0.03806    ; y[28] = 0.02395;
-    x[29] = 0.02653    ; y[29] = 0.02039;
-    x[30] = 0.01704    ; y[30] = 0.01646;
-    x[31] = 0.00961    ; y[31] = 0.01214;
-    x[32] = 0.00428    ; y[32] = 0.00767;
-    x[33] = 0.00107    ; y[33] = 0.00349;
-    x[34] = 0.00000    ; y[34] = 0.00000;
+    m_x[0]  = 1.00000    ; m_y[0]  = 0.00000;
+    m_x[1]  = 0.99572    ; m_y[1]  = 0.00057;
+    m_x[2]  = 0.98296    ; m_y[2]  = 0.00218;
+    m_x[3]  = 0.96194    ; m_y[3]  = 0.00463;
+    m_x[4]  = 0.93301    ; m_y[4]  = 0.00770;
+    m_x[5]  = 0.89668    ; m_y[5]  = 0.01127;
+    m_x[6]  = 0.85355    ; m_y[6]  = 0.01522;
+    m_x[7]  = 0.80438    ; m_y[7]  = 0.01945;
+    m_x[8]  = 0.75000    ; m_y[8]  = 0.02384;
+    m_x[9]  = 0.69134    ; m_y[9]  = 0.02823;
+    m_x[10] = 0.62941    ; m_y[10] = 0.03247;
+    m_x[11] = 0.56526    ; m_y[11] = 0.03638;
+    m_x[12] = 0.50000    ; m_y[12] = 0.03978;
+    m_x[13] = 0.43474    ; m_y[13] = 0.04248;
+    m_x[14] = 0.37059    ; m_y[14] = 0.04431;
+    m_x[15] = 0.33928    ; m_y[15] = 0.04484;
+    m_x[16] = 0.30866    ; m_y[16] = 0.04509;
+    m_x[17] = 0.27886    ; m_y[17] = 0.04504;
+    m_x[18] = 0.25000    ; m_y[18] = 0.04466;
+    m_x[19] = 0.22221    ; m_y[19] = 0.04397;
+    m_x[20] = 0.19562    ; m_y[20] = 0.04295;
+    m_x[21] = 0.17033    ; m_y[21] = 0.04161;
+    m_x[22] = 0.14645    ; m_y[22] = 0.03994;
+    m_x[23] = 0.12408    ; m_y[23] = 0.03795;
+    m_x[24] = 0.10332    ; m_y[24] = 0.03564;
+    m_x[25] = 0.08427    ; m_y[25] = 0.03305;
+    m_x[26] = 0.06699    ; m_y[26] = 0.03023;
+    m_x[27] = 0.05156    ; m_y[27] = 0.02720;
+    m_x[28] = 0.03806    ; m_y[28] = 0.02395;
+    m_x[29] = 0.02653    ; m_y[29] = 0.02039;
+    m_x[30] = 0.01704    ; m_y[30] = 0.01646;
+    m_x[31] = 0.00961    ; m_y[31] = 0.01214;
+    m_x[32] = 0.00428    ; m_y[32] = 0.00767;
+    m_x[33] = 0.00107    ; m_y[33] = 0.00349;
+    m_x[34] = 0.00000    ; m_y[34] = 0.00000;
     for (int i=0; i<34; i++){
-        x[i+35] =  x[33-i];
-        y[i+35] = -y[33-i];
+        m_x[i+35] =  m_x[33-i];
+        m_y[i+35] = -m_y[33-i];
     }
-    n = 69;
-    nb = 69;
-    memcpy(xb,x, sizeof(x));
+    m_n = 69;
+    m_nb = 69;
+    memcpy(m_xb,m_x, sizeof(m_x));
     initFoil();
 }
 
@@ -908,15 +898,14 @@ void  Foil::setLEFlapData(bool bFlap, double xhinge, double yhinge, double angle
  */
 void Foil::setLEFlap()
 {
-    int  j,k, l, p, i1, i2;
-    j=k=l=p=i1=i2=0;
-    double xh, yh, dx, dy;
-    Vector3d M;
-    bool bIntersect;
-    double cosa, sina;
+    int j=0, k=0;
 
-    cosa = cos(m_LEFlapAngle*PI/180.0);
-    sina = sin(m_LEFlapAngle*PI/180.0);
+    double xh=0, yh=0, dx=0, dy=0;
+    Vector3d M;
+    bool bIntersect=false;
+
+    double cosa = cos(m_LEFlapAngle*PI/180.0);
+    double sina = sin(m_LEFlapAngle*PI/180.0);
     //first convert xhinge and yhinge in absolute coordinates
     xh = m_LEXHinge/100.0;
     double ymin = baseLowerY(xh);
@@ -1091,10 +1080,11 @@ void Foil::setLEFlap()
 
         m_iExt+=2;
     }
+
     // trim upper surface first
-    i1 = iUpperh;
-    i2 = iUpperh-1;
-    p=0;
+    int i1 = iUpperh;
+    int i2 = iUpperh-1;
+
     bIntersect = false;
     for (j=i2-1; j>0; j--)
     {
@@ -1114,8 +1104,8 @@ void Foil::setLEFlap()
     {
         m_rpExtrados[j+1].x = M.x;
         m_rpExtrados[j+1].y = M.y;
-        p=1;
-        for (l=k+1;l<=m_iExt; l++){
+        int p=1;
+        for (int l=k+1;l<=m_iExt; l++){
             m_rpExtrados[j+1+p]  = m_rpExtrados[l];
             p++;
         }
@@ -1125,7 +1115,7 @@ void Foil::setLEFlap()
     // trim lower surface next
     i1 = iLowerh;
     i2 = iLowerh-1;
-    p=0;
+
     bIntersect = false;
     for (j=i2-1; j>0; j--)
     {
@@ -1145,8 +1135,8 @@ void Foil::setLEFlap()
     {
         m_rpIntrados[j+1].x = M.x;
         m_rpIntrados[j+1].y = M.y;
-        p=1;
-        for (l=k+1;l<=m_iInt; l++)
+        int p=1;
+        for (int l=k+1; l<=m_iInt; l++)
         {
             m_rpIntrados[j+1+p]  = m_rpIntrados[l];
             p++;
@@ -1162,14 +1152,13 @@ void Foil::setLEFlap()
  */
 void Foil::setTEFlap()
 {
-    int i, j, k, l, p, i1, i2;
-    double xh, yh, dx, dy;
+    int j{0};
+    double xh{0}, yh{0}, dx{0}, dy{0};
     Vector3d M;
-    bool bIntersect;
-    double cosa, sina;
+    bool bIntersect{false};
 
-    cosa = cos(m_TEFlapAngle*PI/180.0);
-    sina = sin(m_TEFlapAngle*PI/180.0);
+    double cosa = cos(m_TEFlapAngle*PI/180.0);
+    double sina = sin(m_TEFlapAngle*PI/180.0);
     //first convert xhinge and yhinge in absolute coordinates
     xh = m_TEXHinge/100.0;
     double ymin = baseLowerY(xh);
@@ -1179,7 +1168,7 @@ void Foil::setTEFlap()
     // insert a breakpoint at xhinge location, if there isn't one already
     int iUpperh = 0;
     int iLowerh = 0;
-    for (i=0; i<m_iExt; i++)
+    for (int i=0; i<m_iExt; i++)
     {
         if(qAbs(m_rpExtrados[i].x-xh)<0.001)
         {
@@ -1202,7 +1191,7 @@ void Foil::setTEFlap()
         }
     }
 
-    for (i=0; i<m_iInt; i++)
+    for (int i=0; i<m_iInt; i++)
     {
                     if(qAbs(m_rpIntrados[i].x-xh)<0.001)
         {
@@ -1229,7 +1218,7 @@ void Foil::setTEFlap()
     if(m_TEFlapAngle>0.0)
     {
         //insert an extra point on intrados
-        for (i=m_iInt+1; i>iLowerh; i--)
+        for (int i=m_iInt+1; i>iLowerh; i--)
         {
             m_rpIntrados[i] = m_rpIntrados[i-1];
         }
@@ -1244,7 +1233,7 @@ void Foil::setTEFlap()
     if(m_TEFlapAngle<0.0)
     {
         //insert an extra point on extrados
-        for (i=m_iExt+1; i>iUpperh; i--)
+        for (int i=m_iExt+1; i>iUpperh; i--)
         {
             m_rpExtrados[i] = m_rpExtrados[i-1];
         }
@@ -1257,14 +1246,14 @@ void Foil::setTEFlap()
         m_rpExtrados[iUpperh].x   += 30.0 * (m_rpExtrados[iUpperh].x-m_rpExtrados[iUpperh-1].x);
         m_rpExtrados[iUpperh].y   += 30.0 * (m_rpExtrados[iUpperh].y-m_rpExtrados[iUpperh-1].y);
     }
-    for (i=iUpperh+1; i<=m_iExt; i++)
+    for (int i=iUpperh+1; i<=m_iExt; i++)
     {
         dx = m_rpExtrados[i].x-xh;
         dy = m_rpExtrados[i].y-yh;
         m_rpExtrados[i].x = xh + cosa * dx + sina * dy;
         m_rpExtrados[i].y = yh - sina * dx + cosa * dy;
     }
-    for (i=iLowerh+1; i<=m_iInt; i++)
+    for (int i=iLowerh+1; i<=m_iInt; i++)
     {
         dx = m_rpIntrados[i].x-xh;
         dy = m_rpIntrados[i].y-yh;
@@ -1293,7 +1282,7 @@ void Foil::setTEFlap()
         LinkSpline.splineKnots();
         LinkSpline.splineCurve();
         //retrieve point 1 and 2 and insert them
-        for (i=m_iInt; i>=iLowerh+1; i--)
+        for (int i=m_iInt; i>=iLowerh+1; i--)
         {
             m_rpIntrados[i+2].x = m_rpIntrados[i].x;
             m_rpIntrados[i+2].y = m_rpIntrados[i].y;
@@ -1323,7 +1312,7 @@ void Foil::setTEFlap()
         LinkSpline.splineCurve();
 
         //retrieve point 1 and 2 and insert them
-        for (i=m_iExt; i>=iUpperh+1; i--)
+        for (int i=m_iExt; i>=iUpperh+1; i--)
         {
             m_rpExtrados[i+2].x = m_rpExtrados[i].x;
             m_rpExtrados[i+2].y = m_rpExtrados[i].y;
@@ -1338,12 +1327,12 @@ void Foil::setTEFlap()
     }
 
     // trim upper surface first
-    i1 = iUpperh;
-    i2 = iUpperh+1;
-    p=0;
+    int i1 = iUpperh;
+    int i2 = iUpperh+1;
+
     bIntersect = false;
 
-    k=0;
+    int k=0;
     for (j=i2; j<m_iExt; j++)
     {
         for (k=i1; k>0; k--)
@@ -1360,8 +1349,8 @@ void Foil::setTEFlap()
     if(bIntersect)
     {
         m_rpExtrados[k] = M;
-        p=1;
-        for (l=j+1; l<=m_iExt; l++)
+        int p=1;
+        for (int l=j+1; l<=m_iExt; l++)
         {
             m_rpExtrados[k+p]  = m_rpExtrados[l];
             p++;
@@ -1372,7 +1361,7 @@ void Foil::setTEFlap()
 
     i1 = iLowerh;
     i2 = iLowerh+1;
-    p=0;
+
     bIntersect = false;
     for (j=i2; j<m_iInt; j++)
     {
@@ -1390,8 +1379,8 @@ void Foil::setTEFlap()
     if(bIntersect)
     {
         m_rpIntrados[k] = M;
-        p=1;
-        for (l=j+1; l<=m_iInt; l++)
+        int p=1;
+        for (int l=j+1; l<=m_iInt; l++)
         {
             m_rpIntrados[k+p]  = m_rpIntrados[l];
             p++;
@@ -1405,8 +1394,6 @@ void Foil::setTEFlap()
  */
 void Foil::setFlap()
 {
-    int i;
-
     //copy the base foil to the current foil
     memcpy(m_rpExtrados, m_BaseExtrados, sizeof(m_rpExtrados));
     memcpy(m_rpIntrados, m_BaseIntrados, sizeof(m_rpIntrados));
@@ -1418,18 +1405,18 @@ void Foil::setFlap()
     if(m_bTEFlap) setTEFlap();
 
     //And finally rebuild the current foil
-    for (i=m_iExt; i>=0; i--)
+    for (int i=m_iExt; i>=0; i--)
     {
-        x[m_iExt-i] = m_rpExtrados[i].x;
-        y[m_iExt-i] = m_rpExtrados[i].y;
+        m_x[m_iExt-i] = m_rpExtrados[i].x;
+        m_y[m_iExt-i] = m_rpExtrados[i].y;
     }
-    for (i=1; i<=m_iInt; i++)
+    for (int i=1; i<=m_iInt; i++)
     {
-        x[m_iExt+i] = m_rpIntrados[i].x;
-        y[m_iExt+i] = m_rpIntrados[i].y;
+        m_x[m_iExt+i] = m_rpIntrados[i].x;
+        m_y[m_iExt+i] = m_rpIntrados[i].y;
     }
     
-    n = m_iExt + m_iInt + 1;
+    m_n = m_iExt + m_iInt + 1;
 
     if(m_bTEFlap)
     {
@@ -1465,16 +1452,16 @@ void Foil::displayCoords(bool bBaseCoords) const
 {
     if(bBaseCoords)
     {
-        for(int i=0; i<nb; i++)
+        for(int i=0; i<m_nb; i++)
         {
-            qDebug(" %13.5f   %13.5f", xb[i], yb[i]);
+            qDebug(" %13.5f   %13.5f", m_xb[i], m_yb[i]);
         }
     }
     else
     {
-        for(int i=0; i<n; i++)
+        for(int i=0; i<m_n; i++)
         {
-            qDebug(" %13.5f   %13.5f", x[i], y[i]);
+            qDebug(" %13.5f   %13.5f", m_x[i], m_y[i]);
         }
     }
 }

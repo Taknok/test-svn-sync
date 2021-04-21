@@ -218,7 +218,7 @@ void AFoil::fillTableRow(int row)
     m_pFoilModel->setData(ind,pFoil->xCamber());
 
     ind = m_pFoilModel->index(row, 5, QModelIndex());
-    m_pFoilModel->setData(ind,pFoil->n);
+    m_pFoilModel->setData(ind,pFoil->m_n);
 
 
     if(pFoil && pFoil->m_bTEFlap)
