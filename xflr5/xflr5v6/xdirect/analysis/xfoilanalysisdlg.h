@@ -57,6 +57,9 @@ class XFoilAnalysisDlg : public QDialog
 
         void initDialog();
 
+        static void loadSettings(QSettings &settings);
+        static void saveSettings(QSettings &settings);
+
     private slots:
         void onCancelAnalysis();
         void onLogFile();
@@ -93,13 +96,14 @@ class XFoilAnalysisDlg : public QDialog
 
         double m_ReMin, m_ReMax, m_ReDelta;  /**< The range of Re values to analyze>*/
 
-        double m_AlphaMin, m_AlphaMax, m_AlphaDelta;  /**< The range of aoa for a Type 1/2/3 Polar >*/
-        double m_ClMin, m_ClMax, m_ClDelta;           /**< The range of lift coefficient for a Type 1/2/3 Polar>*/
 
         QFile *m_pXFile;               /**< a pointer to the log file>*/
         Graph *m_pRmsGraph;           /**< a pointer to the output graph >*/
 
         XFoilTask *m_pXFoilTask;       /**< A pointer to the instance of the XFoilTask associated to this analysis. >*/
+
+        static double s_Alpha, s_AlphaMax, s_AlphaDelta;  /**< The range of aoa for a Type 1/2/3 Polar >*/
+        static double s_Cl, s_ClMax, s_ClDelta;           /**< The range of lift coefficient for a Type 1/2/3 Polar>*/
 
         static QByteArray s_Geometry;
         static XDirect* s_pXDirect;     /**< a void pointer to the instance of the QXDirect object >*/

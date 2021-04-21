@@ -46,7 +46,7 @@ Polar::Polar()
     m_MaType = 1;
     m_Reynolds = 100000.0;
     m_Mach     = 0.0;
-    m_ACrit    = 9.0;
+    m_NCrit    = 9.0;
     m_XTop     = 1.0;
     m_XBot     = 1.0;
     m_FoilName.clear();
@@ -89,7 +89,7 @@ void Polar::exportPolar(QTextStream &out, QString versionName, bool bCSV, bool b
         out << strong;
 
         strong = QString(" Mach = %1     Re = %2 e 6     Ncrit = %3\n\n")
-                 .arg(m_Mach,7,'f',3).arg(m_Reynolds/1.e6,9,'f',3).arg(m_ACrit,7,'f',3);
+                 .arg(m_Mach,7,'f',3).arg(m_Reynolds/1.e6,9,'f',3).arg(m_NCrit,7,'f',3);
         out << strong;
     }
 
@@ -403,24 +403,22 @@ void Polar::copyPolar(const Polar *pPolar)
 }
 
 
-
 /**
  * Copies the polar's data from an existing polar
  * @param pPolar a pointer to the instance of the reference Polar object from which the data should be copied
  */
 void Polar::copySpecification(const Polar *pPolar)
 {
-    m_PolarType = pPolar->polarType();
-    m_ReType    = pPolar->ReType();
-    m_MaType    = pPolar->MaType();
-    m_Reynolds  = pPolar->Reynolds();
+    m_PolarType = pPolar->m_PolarType;
+    m_ReType    = pPolar->m_ReType;
+    m_MaType    = pPolar->m_MaType;
+    m_Reynolds  = pPolar->m_Reynolds;
     m_ASpec     = pPolar->m_ASpec;
     m_Mach      = pPolar->m_Mach;
-    m_ACrit     = pPolar->m_ACrit;
+    m_NCrit     = pPolar->m_NCrit;
     m_XTop      = pPolar->m_XTop;
     m_XBot      = pPolar->m_XBot;
 }
-
 
 
 /**
@@ -683,7 +681,7 @@ void Polar::setPolarType(Xfl::enumPolarType type)
 
 void Polar::setAutoPolarName()
 {
-    m_Name = autoPolarName(m_PolarType, m_Reynolds, m_Mach, m_ACrit, m_ASpec, m_XTop, m_XBot);
+    m_Name = autoPolarName(m_PolarType, m_Reynolds, m_Mach, m_NCrit, m_ASpec, m_XTop, m_XBot);
 }
 
 
@@ -807,7 +805,7 @@ void Polar::getPolarProperties(QString &polarProps) const
     }
 
 
-    strong = QString(QObject::tr("NCrit") + " = %L1\n").arg(m_ACrit,6,'f',2);
+    strong = QString(QObject::tr("NCrit") + " = %L1\n").arg(m_NCrit,6,'f',2);
     polarProps += strong;
 
     strong = QString(QObject::tr("Forced top trans.   ") + " = %L1\n").arg(m_XTop,6,'f',2);

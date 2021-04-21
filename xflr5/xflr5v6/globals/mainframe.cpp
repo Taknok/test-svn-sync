@@ -2341,7 +2341,7 @@ void MainFrame::createXDirectActions()
     m_pMultiThreadedBatchAct->setStatusTip(tr("Launches a batch of analysis calculation using all available computer CPU cores"));
     connect(m_pMultiThreadedBatchAct, SIGNAL(triggered()), m_pXDirect, SLOT(onMultiThreadedBatchAnalysis()));
 
-    m_pBatchCtrlAct = new QAction(tr("Batch Ctrl Analysis")/*+"\tCtrl+F6"*/, this);
+    m_pBatchCtrlAct = new QAction(tr("Batch flap analysis")/*+"\tCtrl+F6"*/, this);
     m_pBatchCtrlAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_F6));
     m_pBatchCtrlAct->setStatusTip(tr("Experimental"));
     connect(m_pBatchCtrlAct, SIGNAL(triggered()), m_pXDirect, SLOT(onBatchCtrlAnalysis()));
@@ -6804,7 +6804,7 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         ar << pPolar->m_Reynolds << pPolar->m_Mach;
         ar << pPolar->m_ASpec;
         ar << pPolar->m_XTop << pPolar->m_XBot;
-        ar << pPolar->m_ACrit;
+        ar << pPolar->m_NCrit;
 
         ar << pPolar->m_Alpha.size();
         for (i=0; i< pPolar->m_Alpha.size(); i++)
@@ -6861,7 +6861,7 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         ar >> pPolar->m_Reynolds >> pPolar->m_Mach;
         ar >> pPolar->m_ASpec;
         ar >> pPolar->m_XTop >> pPolar->m_XBot;
-        ar >> pPolar->m_ACrit;
+        ar >> pPolar->m_NCrit;
 
         ar >> n;
 

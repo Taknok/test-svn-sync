@@ -20,7 +20,6 @@
 *****************************************************************************/
 
 
-
 /** @file
  *
  * This class defines the Quaternion used for the calculation of rotations in 3D display
@@ -28,11 +27,7 @@
  */
 
 
-#ifndef QUATERNION_H
-#define QUATERNION_H
-
-
-
+#pragma once
 
 
 /**
@@ -48,122 +43,125 @@ Home made class. Since it was written, Qt has developed and provided a QQuaterni
 
 class Quaternion
 {
-private:
-    double theta;
-    double t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t15, t19, t20, t24;
-    Vector3d R;    
+    private:
+        double t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t15, t19, t20, t24;
+        double theta;
+        Vector3d R;
 
-public:
-    double a, qx, qy,qz;
-    
-    void Normalize();
+    public:
+        double a, qx, qy,qz;
+
+        void Normalize();
 
 
-    void operator*=(Quaternion Q);
-    void operator ~();
-    void operator =(Quaternion Q);
-    Quaternion operator *(Quaternion Q);
+        void operator*=(Quaternion Q);
+        void operator ~();
+        void operator =(Quaternion Q);
+        Quaternion operator *(Quaternion Q);
 
-    //inline constructors
-    Quaternion(void)
-    {
-        t1 = t2 = t3 = t4 = t5 = t6 = t7 = t8 = t9 = t10 = t11 = t12 = t15 = t19 = t20 = t24 = 0.0;
-        a=0.0; qx= 0.0; qy=0.0; qz = 0.0;
-        theta = 0.0;
-        Settxx();
-    }
+        //inline constructors
+        Quaternion(void) : t1{0}, t2{0}, t3{0}, t4{0}, t5{0}, t6{0}, t7{0}, t8{0}, t9{0},
+                           t10{0}, t11{0}, t12{0}, t15{0}, t19{0}, t20{0}, t24{0},
+                           theta{0},
+                           a{0.0}, qx{0.0}, qy{0.0}, qz{0}
+        {
 
-    Quaternion(double const &t, double const &x, double const &y, double const &z)
-    {
-        t1 = t2 = t3 = t4 = t5 = t6 = t7 = t8 = t9 = t10 = t11 = t12 = t15 = t19 = t20 = t24 = 0.0;
-        a=t; qx= x; qy=y; qz = z;
-        theta = 2.0*acos(t);
-        Settxx();
-    }
+            settxx();
+        }
 
-    Quaternion(double const &Angle, Vector3d const &R)
-    {    
-        t1 = t2 = t3 = t4 = t5 = t6 = t7 = t8 = t9 = t10 = t11 = t12 = t15 = t19 = t20 = t24 = 0.0;
-        Vector3d N;
-        N = R;
-        N.normalize();
-        theta = Angle*PI/180.0;
+        Quaternion(double const &t, double const &x, double const &y, double const &z) :
+            t1{0}, t2{0}, t3{0}, t4{0}, t5{0}, t6{0}, t7{0}, t8{0}, t9{0},
+            t10{0}, t11{0}, t12{0}, t15{0}, t19{0}, t20{0}, t24{0},
+            a{t}, qx{x}, qy{y}, qz{z}
+        {
+            theta = 2.0*acos(t);
+            settxx();
+        }
 
-        a = cos(theta/2.0);
-        double sina = sin(theta/2.0);
+        Quaternion(double const &Angle, Vector3d const &R) :
+            t1{0}, t2{0}, t3{0}, t4{0}, t5{0}, t6{0}, t7{0}, t8{0}, t9{0},
+            t10{0}, t11{0}, t12{0}, t15{0}, t19{0}, t20{0}, t24{0}
+        {
+            Vector3d N;
+            N = R;
+            N.normalize();
+            theta = Angle*PI/180.0;
 
-        qx = N.x*sina;
-        qy = N.y*sina;
-        qz = N.z*sina;
-        Settxx();
-    }
+            a = cos(theta/2.0);
+            double sina = sin(theta/2.0);
 
-    //inline functions
-    void Conjugate(Vector3d const &Vin, Vector3d &Vout)
-    {
-        Vout.x = 2.0*( (t8 + t10)*Vin.x + (t6 -  t4)*Vin.y + (t3 + t7)*Vin.z ) + Vin.x;
-        Vout.y = 2.0*( (t4 +  t6)*Vin.x + (t5 + t10)*Vin.y + (t9 - t2)*Vin.z ) + Vin.y;
-        Vout.z = 2.0*( (t7 -  t3)*Vin.x + (t2 +  t9)*Vin.y + (t5 + t8)*Vin.z ) + Vin.z;
-    }
+            qx = N.x*sina;
+            qy = N.y*sina;
+            qz = N.z*sina;
+            settxx();
+        }
 
-    void Conjugate(Vector3d &V)
-    {
-        R.x = V.x;
-        R.y = V.y;
-        R.z = V.z;
-    
-        V.x = 2.0*( (t8 + t10)*R.x + (t6 -  t4)*R.y + (t3 + t7)*R.z ) + R.x;
-        V.y = 2.0*( (t4 +  t6)*R.x + (t5 + t10)*R.y + (t9 - t2)*R.z ) + R.y;
-        V.z = 2.0*( (t7 -  t3)*R.x + (t2 +  t9)*R.y + (t5 + t8)*R.z ) + R.z;
-    }
+        //inline functions
+        void Conjugate(Vector3d const &Vin, Vector3d &Vout)
+        {
+            Vout.x = 2.0*( (t8 + t10)*Vin.x + (t6 -  t4)*Vin.y + (t3 + t7)*Vin.z ) + Vin.x;
+            Vout.y = 2.0*( (t4 +  t6)*Vin.x + (t5 + t10)*Vin.y + (t9 - t2)*Vin.z ) + Vin.y;
+            Vout.z = 2.0*( (t7 -  t3)*Vin.x + (t2 +  t9)*Vin.y + (t5 + t8)*Vin.z ) + Vin.z;
+        }
 
-    void Conjugate(double &x, double &y, double &z)
-    {
-        R.x = x;
-        R.y = y;
-        R.z = z;
-    
-        x = 2.0*( (t8 + t10)*R.x + (t6 -  t4)*R.y + (t3 + t7)*R.z ) + R.x;
-        y = 2.0*( (t4 +  t6)*R.x + (t5 + t10)*R.y + (t9 - t2)*R.z ) + R.y;
-        z = 2.0*( (t7 -  t3)*R.x + (t2 +  t9)*R.y + (t5 + t8)*R.z ) + R.z;
-    }
-    
-    void Settxx()
-    {
-        t2 =   a*qx;
-        t3 =   a*qy;
-        t4 =   a*qz;
-        t5 =  -qx*qx;
-        t6 =   qx*qy;
-        t7 =   qx*qz;
-        t8 =  -qy*qy;
-        t9 =   qy*qz;
-        t10 = -qz*qz;    
-    }
+        void Conjugate(Vector3d &V)
+        {
+            R.x = V.x;
+            R.y = V.y;
+            R.z = V.z;
 
-    void set(double const &real, double const &x, double const &y, double const &z)
-    {    
-        a = real;
-        qx = x;
-        qy = y;
-        qz = z;
-        Settxx();
-    }
+            V.x = 2.0*( (t8 + t10)*R.x + (t6 -  t4)*R.y + (t3 + t7)*R.z ) + R.x;
+            V.y = 2.0*( (t4 +  t6)*R.x + (t5 + t10)*R.y + (t9 - t2)*R.z ) + R.y;
+            V.z = 2.0*( (t7 -  t3)*R.x + (t2 +  t9)*R.y + (t5 + t8)*R.z ) + R.z;
+        }
 
-    void set(double const &Angle, Vector3d const &R)
-    {    
-        Vector3d N;
-        N = R;
-        N.normalize();
-        theta = Angle*PI/180.0;
+        void Conjugate(double &x, double &y, double &z)
+        {
+            R.x = x;
+            R.y = y;
+            R.z = z;
 
-        a = cos(theta/2.0);
-        double sina = sin(theta/2.0);
+            x = 2.0*( (t8 + t10)*R.x + (t6 -  t4)*R.y + (t3 + t7)*R.z ) + R.x;
+            y = 2.0*( (t4 +  t6)*R.x + (t5 + t10)*R.y + (t9 - t2)*R.z ) + R.y;
+            z = 2.0*( (t7 -  t3)*R.x + (t2 +  t9)*R.y + (t5 + t8)*R.z ) + R.z;
+        }
 
-        qx = N.x*sina;
-        qy = N.y*sina;
-        qz = N.z*sina;
-        Settxx();
-    }
+        void settxx()
+        {
+            t2 =   a*qx;
+            t3 =   a*qy;
+            t4 =   a*qz;
+            t5 =  -qx*qx;
+            t6 =   qx*qy;
+            t7 =   qx*qz;
+            t8 =  -qy*qy;
+            t9 =   qy*qz;
+            t10 = -qz*qz;
+        }
+
+        void set(double const &real, double const &x, double const &y, double const &z)
+        {
+            a = real;
+            qx = x;
+            qy = y;
+            qz = z;
+            settxx();
+        }
+
+        void set(double const &Angle, Vector3d const &R)
+        {
+            Vector3d N;
+            N = R;
+            N.normalize();
+            theta = Angle*PI/180.0;
+
+            a = cos(theta/2.0);
+            double sina = sin(theta/2.0);
+
+            qx = N.x*sina;
+            qy = N.y*sina;
+            qz = N.z*sina;
+            settxx();
+        }
 };
-#endif
+

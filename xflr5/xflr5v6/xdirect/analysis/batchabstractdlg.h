@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <QSettings>
 #include <QDialog>
 #include <QCheckBox>
 #include <QFile>
@@ -59,6 +60,9 @@ class BatchAbstractDlg : public QDialog
         virtual void initDialog();
         QSize sizeHint() const override {return QSize(1100,900);}
 
+        static void loadSettings(QSettings &settings);
+        static void saveSettings(QSettings &settings);
+
     protected:
         void keyPressEvent(QKeyEvent  *pEvent) override;
         virtual void showEvent(    QShowEvent *pEvent) override;
@@ -66,9 +70,8 @@ class BatchAbstractDlg : public QDialog
         void reject() override;
 
         virtual void cleanUp();
-        virtual void connectSignals();
+        void connectBaseSignals();
         virtual void readParams();
-        virtual void setupLayout() = 0;
 
         void makeCommonWidgets();
         void outputFoilList();
@@ -86,7 +89,6 @@ class BatchAbstractDlg : public QDialog
         void onEditReList();
         void onFoilList();
         void onFoilSelectionType();
-        void onFromZero(int);
         void onInitBL(int);
         void onRange();
         void onSpecChanged();
@@ -114,31 +116,10 @@ class BatchAbstractDlg : public QDialog
         QPushButton *m_ppbAnalyze, *m_ppbAdvancedSettings;
         QPlainTextEdit *m_pteTextOutput;
 
-        double m_ReMin;             /**< the min Re for a range analysis */
-        double m_ReMax;             /**< the max Re for a range analysis */
-        double m_ReInc;             /**< the incement Re for a range analysis */
-        double m_AlphaMin;          /**< The starting aoa */
-        double m_AlphaMax;          /**< The ending aoa */
-        double m_AlphaInc;          /**< The aoa increment */
-        double m_ClMin;             /**< The starting Cl coefficient  */
-        double m_ClMax;             /**< The ending Cl coefficient */
-        double m_ClInc;             /**< The Cl increment  */
 
-        //    bool m_bOutput;             /**< true if the output should be displayed in the text widget */
-        bool m_bAlpha;              /**< true if the analysis should be performed for a range of aoa rather than lift coefficient */
-        bool m_bFromList;           /**< true if the analysis should be performed for a list of Re values rather than for a range */
-        bool m_bFromZero;           /**< true if the iterations should start from aoa=0 rather than aoa=alpha_min */
-        bool m_bInitBL;             /**< true if the boundary layer should be restored to the default value before each polar analysis */
         bool m_bCancel;             /**< true if the user has clicked the cancel button */
         bool m_bIsRunning;          /**< true until all the pairs of (foil, polar) have been calculated */
 
-        Xfl::enumPolarType m_PolarType;  /**< the type of analysis to perform */
-
-        double m_Mach;              /**< the Mach number used if not from the list of Re numbers */
-        double m_ACrit;             /**< the transition criterion used if not from the list of Re numbers */
-
-        double m_XTop;            /**< the point of forced transition on the upper surface */
-        double m_XBot;            /**< the point of forced transition on the lower surface */
 
 
         QFile *m_pXFile;                   /**< a pointer to the output log file */
@@ -146,6 +127,29 @@ class BatchAbstractDlg : public QDialog
         Foil *m_pCurFoil;                  /**< a pointer to the current Foil */
 
         QStringList m_FoilList;            /**< the list of foils to analyze */
+
+        static bool s_bAlpha;              /**< true if the analysis should be performed for a range of aoa rather than lift coefficient */
+        static bool s_bFromZero;           /**< true if the iterations should start from aoa=0 rather than aoa=alpha_min */
+
+        static double s_Mach;              /**< the Mach number used if not from the list of Re numbers */
+        static double s_ACrit;             /**< the transition criterion used if not from the list of Re numbers */
+        static double s_XTop;            /**< the point of forced transition on the upper surface */
+        static double s_XBot;            /**< the point of forced transition on the lower surface */
+
+        static Xfl::enumPolarType s_PolarType;  /**< the type of analysis to perform */
+
+        static double s_ReMin;             /**< the min Re for a range analysis */
+        static double s_ReMax;             /**< the max Re for a range analysis */
+        static double s_ReInc;             /**< the incement Re for a range analysis */
+        static double s_AlphaMin;          /**< The starting aoa */
+        static double s_AlphaMax;          /**< The ending aoa */
+        static double s_AlphaInc;          /**< The aoa increment */
+        static double s_ClMin;             /**< The starting Cl coefficient  */
+        static double s_ClMax;             /**< The ending Cl coefficient */
+        static double s_ClInc;             /**< The Cl increment  */
+
+        static bool s_bFromList;           /**< true if the analysis should be performed for a list of Re values rather than for a range */
+        static bool s_bInitBL;             /**< true if the boundary layer should be restored to the default value before each polar analysis */
 
         static QByteArray s_Geometry;
         static XDirect* s_pXDirect;           /**< a void pointer to the unique instance of the QXDirect class */

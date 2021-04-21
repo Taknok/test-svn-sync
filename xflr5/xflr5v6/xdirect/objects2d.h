@@ -56,7 +56,6 @@ namespace Objects2d
     void      renameFoil(QString const &FoilName);
     void      renameThisFoil(Foil *pFoil, QString const &newFoilName);
     Foil *    setModFoil(Foil *pModFoil);
-    void      setStaticPointers();
 
     void      addPolar(Polar *pPolar);
     inline void appendPolar(Polar *pPolar) {s_oaPolar.append(pPolar);}

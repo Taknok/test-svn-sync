@@ -1338,7 +1338,7 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         ar << pPolar->m_MaType << pPolar->m_ReType  ;
         ar << int(pPolar->m_Reynolds) << float(pPolar->m_Mach);
         ar << float(pPolar->m_ASpec);
-        ar << n << float(pPolar->m_ACrit);
+        ar << n << float(pPolar->m_NCrit);
         ar << float(pPolar->m_XTop) << float(pPolar->m_XBot);
         /*
         writeColor(ar, pPolar->m_red, pPolar->m_green, pPolar->m_blue);
@@ -1356,7 +1356,7 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
             ar << float(pPolar->m_XCp[i]);
         }
 
-        ar << pPolar->m_ACrit << pPolar->m_XTop << pPolar->m_XBot;
+        ar << pPolar->m_NCrit << pPolar->m_XTop << pPolar->m_XBot;
 
         return true;
     }
@@ -1407,7 +1407,7 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         ar >> f; pPolar->m_ASpec = double(f);
 
         ar >> n;
-        ar >> f; pPolar->m_ACrit = double(f);
+        ar >> f; pPolar->m_NCrit = double(f);
         ar >> f; pPolar->m_XTop = double(f);
         ar >> f; pPolar->m_XBot = double(f);
 
@@ -1474,7 +1474,7 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
             }
         }
         if(ArchiveFormat>=1003)
-            ar >>pPolar->m_ACrit >> pPolar->m_XTop >> pPolar->m_XBot;
+            ar >>pPolar->m_NCrit >> pPolar->m_XTop >> pPolar->m_XBot;
     }
     return true;
 }
