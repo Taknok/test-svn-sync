@@ -128,7 +128,7 @@ private:
     QCheckBox *m_pctrlTiltGeom;
     QCheckBox *m_pctrlAutoName;
 
-    QRadioButton *m_pctrlType1,*m_pctrlType2,*m_pctrlType4,*m_pctrlType5;
+    QRadioButton *m_prbType1,*m_prbType2,*m_prbType4,*m_prbType5;
     QRadioButton *m_pctrlLLTMethod, *m_pctrlVLM1Method, *m_pctrlVLM2Method, *m_pctrlPanelMethod;
     QRadioButton *m_pctrlUnit1, *m_pctrlUnit2;
     QRadioButton *m_pctrlArea1, *m_pctrlArea2, *m_pctrlArea3;

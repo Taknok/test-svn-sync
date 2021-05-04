@@ -309,41 +309,41 @@ public:
 
 
     // Widget variables ... self explicit, not documented
-    QPushButton *m_pctrlKeepCpSection, *m_pctrlResetCpSection;
-    QSlider *m_pctrlCpSectionSlider;
-    DoubleEdit *m_pctrlSpanPos;
-    QCheckBox *m_pctrlSequence;
-    DoubleEdit *m_pctrlAlphaMin;
-    DoubleEdit *m_pctrlAlphaMax;
-    DoubleEdit *m_pctrlAlphaDelta;
-    QCheckBox *m_pctrlInitLLTCalc;
-    QCheckBox *m_pctrlStoreWOpp;
-    QPushButton *m_pctrlAnalyze;
+    QPushButton *m_ppbKeepCpSection, *m_ppbResetCpSection;
+    QSlider *m_pslCpSectionSlider;
+    DoubleEdit *m_pdeSpanPos;
+    QCheckBox *m_pchSequence;
+    DoubleEdit *m_pdeAlphaMin;
+    DoubleEdit *m_pdeAlphaMax;
+    DoubleEdit *m_pdeAlphaDelta;
+    QCheckBox *m_pchInitLLTCalc;
+    QCheckBox *m_pchStoreWOpp;
+    QPushButton *m_ppbAnalyze;
 
-    QCheckBox *m_pctrlPanelForce, *m_pctrlLift, *m_pctrlIDrag, *m_pctrlVDrag, *m_pctrlTrans, *m_pctrlWOppAnimate;
-    QSlider *m_pctrlAnimateWOppSpeed;
-    QCheckBox *m_pctrlMoment,  *m_pctrlDownwash, *m_pctrlCp,*m_pctrlSurfVel, *m_pctrlStream;
+    QCheckBox *m_pchPanelForce, *m_pchLift, *m_pchIDrag, *m_pchVDrag, *m_pchTrans, *m_pchWOppAnimate;
+    QSlider *m_pslAnimateWOppSpeed;
+    QCheckBox *m_pchMoment,  *m_pchDownwash, *m_pchCp,*m_pchSurfVel, *m_pchStream;
 
     QCheckBox *m_pchShowCurve, *m_pctrlAlignChildren;
-    LineCbBox *m_pctrlCurveStyle, *m_pctrlCurveWidth, *m_pctrlCurvePoints;
-    LineBtn *m_pctrlCurveColor;
+    LineCbBox *m_plcbCurveStyle, *m_plcbCurveWidth, *m_plcbCurvePoints;
+    LineBtn *m_pclbCurveColor;
     LineDelegate *m_pStyleDelegate, *m_pWidthDelegate, *m_pPointDelegate;
 
-    QCheckBox *m_pctrlAxes, *m_pctrlLight, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels;
-    QCheckBox *m_pctrlFoilNames, *m_pctrlMasses;
+    QCheckBox *m_pchAxes, *m_pchLight, *m_pchSurfaces, *m_pchOutline, *m_pchPanels;
+    QCheckBox *m_pchFoilNames, *m_pchMasses;
 
     QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
-    QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso, *m_pctrlFlip;
+    QToolButton *m_ptbX, *m_ptbY, *m_ptbZ, *m_ptbIso, *m_ptbFlip;
 
-    QPushButton *m_pctrl3DResetScale;
-    QSlider *m_pctrlClipPlanePos;
+    QPushButton *m_ppb3DResetScale;
+    QSlider *m_pslClipPlanePos;
 
-    QLabel *m_pctrlUnit1, *m_pctrlUnit2, *m_pctrlUnit3;
-    QLabel *m_pctrlParameterName;
+    QLabel *m_plabUnit1, *m_plabUnit2, *m_plabUnit3;
+    QLabel *m_plabParameterName;
 
     //stability widgets
-    MinTextEdit *m_pctrlPolarProps;
-    QStackedWidget *m_pctrlBottomControls, *m_pctrlMiddleControls;
+    MinTextEdit *m_pmtePolarProps;
+    QStackedWidget *m_pswBottomControls, *m_pswMiddleControls;
 
 
 public:

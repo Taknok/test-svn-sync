@@ -77,10 +77,10 @@ void WPolarDlg::connectSignals()
     connect(m_pctrlUnit1, SIGNAL(toggled(bool)), this, SLOT(onUnit()));
     connect(m_pctrlUnit2, SIGNAL(toggled(bool)), this, SLOT(onUnit()));
 
-    connect(m_pctrlType1, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
-    connect(m_pctrlType2, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
-    connect(m_pctrlType4, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
-    connect(m_pctrlType5, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
+    connect(m_prbType1, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
+    connect(m_prbType2, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
+    connect(m_prbType4, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
+    connect(m_prbType5, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
 
     connect(m_pctrlTiltGeom, SIGNAL(clicked()), this, SLOT(onTiltedGeom()));
     connect(m_pctrlViscous, SIGNAL(clicked()), this, SLOT(onViscous()));
@@ -225,10 +225,10 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 
 
     //initialize polar type
-    if(s_WPolar.polarType()==Xfl::FIXEDSPEEDPOLAR)     m_pctrlType1->setChecked(true);
-    else if(s_WPolar.polarType()==Xfl::FIXEDLIFTPOLAR) m_pctrlType2->setChecked(true);
-    else if(s_WPolar.polarType()==Xfl::FIXEDAOAPOLAR)  m_pctrlType4->setChecked(true);
-    else if(s_WPolar.polarType()==Xfl::BETAPOLAR)      m_pctrlType5->setChecked(true);
+    if(s_WPolar.polarType()==Xfl::FIXEDSPEEDPOLAR)     m_prbType1->setChecked(true);
+    else if(s_WPolar.polarType()==Xfl::FIXEDLIFTPOLAR) m_prbType2->setChecked(true);
+    else if(s_WPolar.polarType()==Xfl::FIXEDAOAPOLAR)  m_prbType4->setChecked(true);
+    else if(s_WPolar.polarType()==Xfl::BETAPOLAR)      m_prbType5->setChecked(true);
 
 
     //initialize inertia
@@ -586,19 +586,19 @@ void WPolarDlg::onPolarName()
 
 void WPolarDlg::onPolarType()
 {
-    if (m_pctrlType1->isChecked())
+    if (m_prbType1->isChecked())
     {
         s_WPolar.setPolarType(Xfl::FIXEDSPEEDPOLAR);
     }
-    else if(m_pctrlType2->isChecked())
+    else if(m_prbType2->isChecked())
     {
         s_WPolar.setPolarType(Xfl::FIXEDLIFTPOLAR);
     }
-    else if(m_pctrlType4->isChecked())
+    else if(m_prbType4->isChecked())
     {
         s_WPolar.setPolarType(Xfl::FIXEDAOAPOLAR);
     }
-    else if(m_pctrlType5->isChecked())
+    else if(m_prbType5->isChecked())
     {
         s_WPolar.setPolarType(Xfl::BETAPOLAR);
         s_WPolar.setVLM1(false);
@@ -736,22 +736,22 @@ void WPolarDlg::setupLayout()
         {
             QVBoxLayout *pTypeLayout = new QVBoxLayout;
             {
-                m_pctrlType1 = new QRadioButton(tr("Type 1 (Fixed Speed)"));
-                m_pctrlType2 = new QRadioButton(tr("Type 2 (Fixed Lift)"));
-                m_pctrlType4 = new QRadioButton(tr("Type 4 (Fixed aoa)"));
-                m_pctrlType5 = new QRadioButton(tr("Type 5 (Beta range)"));
-                pTypeLayout->addWidget(m_pctrlType1);
-                pTypeLayout->addWidget(m_pctrlType2);
-                pTypeLayout->addWidget(m_pctrlType4);
-                pTypeLayout->addWidget(m_pctrlType5);
+                m_prbType1 = new QRadioButton(tr("Type 1 (Fixed Speed)"));
+                m_prbType2 = new QRadioButton(tr("Type 2 (Fixed Lift)"));
+                m_prbType4 = new QRadioButton(tr("Type 4 (Fixed aoa)"));
+                m_prbType5 = new QRadioButton(tr("Type 5 (Beta range)"));
+                pTypeLayout->addWidget(m_prbType1);
+                pTypeLayout->addWidget(m_prbType2);
+                pTypeLayout->addWidget(m_prbType4);
+                pTypeLayout->addWidget(m_prbType5);
                 pTypeLayout->addStretch();
             }
 
             QGridLayout *pTypeDataLayout = new QGridLayout;
             {
                 QLabel *lab1 = new QLabel(tr("Free Stream Speed ="));
-                QLabel *lab5 = new QLabel("a =");
-                QLabel *lab6 = new QLabel("b =");
+                QLabel *lab5 = new QLabel(QString(QChar(0x03B1)) + "=");
+                QLabel *lab6 = new QLabel(QString(QChar(0x03B2)) + "=");
                 lab5->setFont(symbolFont);
                 lab6->setFont(symbolFont);
                 lab1->setAlignment(Qt::AlignRight | Qt::AlignCenter);
