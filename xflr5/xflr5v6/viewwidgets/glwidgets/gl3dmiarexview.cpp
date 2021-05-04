@@ -2598,9 +2598,9 @@ void gl3dMiarexView::glMake3dObjects()
             {
                 m_bStream  = false;
                 s_bResetglStream = true;
-                s_pMiarex->m_pctrlStream->blockSignals(true);
-                s_pMiarex->m_pctrlStream->setChecked(false);
-                s_pMiarex->m_pctrlStream->blockSignals(false);
+                s_pMiarex->m_pchStream->blockSignals(true);
+                s_pMiarex->m_pchStream->setChecked(false);
+                s_pMiarex->m_pchStream->blockSignals(false);
             }
             else
             {

@@ -431,60 +431,60 @@ void Miarex::connectSignals()
 {
     connect(this, SIGNAL(projectModified()), s_pMainFrame, SLOT(onProjectModified()));
 
-    connect(m_pctrlSequence,    SIGNAL(clicked()),      SLOT(onSequence()));
-    connect(m_pctrlStoreWOpp,   SIGNAL(clicked()),      SLOT(onStoreWOpp()));
-    connect(m_pctrlInitLLTCalc, SIGNAL(clicked()),      SLOT(onInitLLTCalc()));
-    connect(m_pctrlAnalyze,     SIGNAL(clicked()),      SLOT(onAnalyze()));
-    connect(m_pctrlCurveStyle,  SIGNAL(activated(int)), SLOT(onCurveStyle(int)));
-    connect(m_pctrlCurveWidth,  SIGNAL(activated(int)), SLOT(onCurveWidth(int)));
-    connect(m_pctrlCurvePoints, SIGNAL(activated(int)), SLOT(onCurvePoints(int)));
-    connect(m_pctrlCurveColor,  SIGNAL(clickedLB()),    SLOT(onCurveColor()));
+    connect(m_pchSequence,    SIGNAL(clicked()),      SLOT(onSequence()));
+    connect(m_pchStoreWOpp,   SIGNAL(clicked()),      SLOT(onStoreWOpp()));
+    connect(m_pchInitLLTCalc, SIGNAL(clicked()),      SLOT(onInitLLTCalc()));
+    connect(m_ppbAnalyze,     SIGNAL(clicked()),      SLOT(onAnalyze()));
+    connect(m_plcbCurveStyle,  SIGNAL(activated(int)), SLOT(onCurveStyle(int)));
+    connect(m_plcbCurveWidth,  SIGNAL(activated(int)), SLOT(onCurveWidth(int)));
+    connect(m_plcbCurvePoints, SIGNAL(activated(int)), SLOT(onCurvePoints(int)));
+    connect(m_pclbCurveColor,  SIGNAL(clickedLB()),    SLOT(onCurveColor()));
 
     connect(m_pchShowCurve,     SIGNAL(clicked()), SLOT(onShowCurve()));
     connect(m_pctrlAlignChildren, SIGNAL(clicked(bool)), s_pMainFrame, SLOT(onAlignChildrenStyle(bool)));
 
-    connect(m_pctrlPanelForce,  SIGNAL(clicked()), SLOT(onPanelForce()));
-    connect(m_pctrlLift,        SIGNAL(clicked()), SLOT(onShowLift()));
-    connect(m_pctrlIDrag,       SIGNAL(clicked()), SLOT(onShowIDrag()));
-    connect(m_pctrlVDrag,       SIGNAL(clicked()), SLOT(onShowVDrag()));
-    connect(m_pctrlTrans,       SIGNAL(clicked()), SLOT(onShowTransitions()));
-    connect(m_pctrlCp,          SIGNAL(clicked()), SLOT(on3DCp()));
-    connect(m_pctrlMoment,      SIGNAL(clicked()), SLOT(onMoment()));
-    connect(m_pctrlDownwash,    SIGNAL(clicked()), SLOT(onDownwash()));
-    connect(m_pctrlStream,      SIGNAL(clicked()), SLOT(onStreamlines()));
-    connect(m_pctrlSurfVel,     SIGNAL(clicked()), SLOT(onSurfaceSpeeds()));
+    connect(m_pchPanelForce,  SIGNAL(clicked()), SLOT(onPanelForce()));
+    connect(m_pchLift,        SIGNAL(clicked()), SLOT(onShowLift()));
+    connect(m_pchIDrag,       SIGNAL(clicked()), SLOT(onShowIDrag()));
+    connect(m_pchVDrag,       SIGNAL(clicked()), SLOT(onShowVDrag()));
+    connect(m_pchTrans,       SIGNAL(clicked()), SLOT(onShowTransitions()));
+    connect(m_pchCp,          SIGNAL(clicked()), SLOT(on3DCp()));
+    connect(m_pchMoment,      SIGNAL(clicked()), SLOT(onMoment()));
+    connect(m_pchDownwash,    SIGNAL(clicked()), SLOT(onDownwash()));
+    connect(m_pchStream,      SIGNAL(clicked()), SLOT(onStreamlines()));
+    connect(m_pchSurfVel,     SIGNAL(clicked()), SLOT(onSurfaceSpeeds()));
 
-    connect(m_pctrlWOppAnimate,      SIGNAL(clicked()),        SLOT(onAnimateWOpp()));
-    connect(m_pctrlAnimateWOppSpeed, SIGNAL(sliderMoved(int)), SLOT(onAnimateWOppSpeed(int)));
+    connect(m_pchWOppAnimate,      SIGNAL(clicked()),        SLOT(onAnimateWOpp()));
+    connect(m_pslAnimateWOppSpeed, SIGNAL(sliderMoved(int)), SLOT(onAnimateWOppSpeed(int)));
     connect(m_pTimerWOpp,            SIGNAL(timeout()),        SLOT(onAnimateWOppSingle()));
     connect(m_pTimerMode,            SIGNAL(timeout()),        SLOT(onAnimateModeSingle()));
 
-    connect(m_pctrlSurfaces,  SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onSurfaces(bool)));
-    connect(m_pctrlOutline,   SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onOutline(bool)));
-    connect(m_pctrlPanels,    SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onPanels(bool)));
-    connect(m_pctrlFoilNames, SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onFoilNames(bool)));
-    connect(m_pctrlMasses,    SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onShowMasses(bool)));
+    connect(m_pchSurfaces,  SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onSurfaces(bool)));
+    connect(m_pchOutline,   SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onOutline(bool)));
+    connect(m_pchPanels,    SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onPanels(bool)));
+    connect(m_pchFoilNames, SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onFoilNames(bool)));
+    connect(m_pchMasses,    SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onShowMasses(bool)));
 
 
 
-    connect(m_pctrlKeepCpSection,   SIGNAL(clicked()),         this, SLOT(onKeepCpSection()));
-    connect(m_pctrlResetCpSection,  SIGNAL(clicked()),         this, SLOT(onResetCpSection()));
-    connect(m_pctrlCpSectionSlider, SIGNAL(sliderMoved(int)),  this, SLOT(onCpSectionSlider(int)));
-    connect(m_pctrlSpanPos,         SIGNAL(editingFinished()), this, SLOT(onCpPosition()));
+    connect(m_ppbKeepCpSection,   SIGNAL(clicked()),         this, SLOT(onKeepCpSection()));
+    connect(m_ppbResetCpSection,  SIGNAL(clicked()),         this, SLOT(onResetCpSection()));
+    connect(m_pslCpSectionSlider, SIGNAL(sliderMoved(int)),  this, SLOT(onCpSectionSlider(int)));
+    connect(m_pdeSpanPos,         SIGNAL(editingFinished()), this, SLOT(onCpPosition()));
 
-    connect(m_pctrlAxes,  SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onAxes(bool)));
-    connect(m_pctrlX,     SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DFront()));
-    connect(m_pctrlY,     SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DLeft()));
-    connect(m_pctrlZ,     SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DTop()));
-    connect(m_pctrlIso,   SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DIso()));
-    connect(m_pctrlFlip,  SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DFlip()));
-    connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pgl3dMiarexView, SLOT(onClipPlane(int)));
+    connect(m_pchAxes,  SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onAxes(bool)));
+    connect(m_ptbX,     SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DFront()));
+    connect(m_ptbY,     SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DLeft()));
+    connect(m_ptbZ,     SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DTop()));
+    connect(m_ptbIso,   SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DIso()));
+    connect(m_ptbFlip,  SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DFlip()));
+    connect(m_pslClipPlanePos, SIGNAL(sliderMoved(int)), m_pgl3dMiarexView, SLOT(onClipPlane(int)));
 
-    connect(m_pctrl3DResetScale, SIGNAL(clicked()), this, SLOT(on3DResetScale()));
+    connect(m_ppb3DResetScale, SIGNAL(clicked()), this, SLOT(on3DResetScale()));
 
-    connect(m_pctrlAlphaMin,   SIGNAL(editingFinished()), this, SLOT(onReadAnalysisData()));
-    connect(m_pctrlAlphaMax,   SIGNAL(editingFinished()), this, SLOT(onReadAnalysisData()));
-    connect(m_pctrlAlphaDelta, SIGNAL(editingFinished()), this, SLOT(onReadAnalysisData()));
+    connect(m_pdeAlphaMin,   SIGNAL(editingFinished()), this, SLOT(onReadAnalysisData()));
+    connect(m_pdeAlphaMax,   SIGNAL(editingFinished()), this, SLOT(onReadAnalysisData()));
+    connect(m_pdeAlphaDelta, SIGNAL(editingFinished()), this, SLOT(onReadAnalysisData()));
 
     connect(m_pgl3dMiarexView, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
 }
@@ -495,10 +495,10 @@ void Miarex::connectSignals()
  */
 void Miarex::onCheckViewIcons()
 {
-    m_pctrlIso->setChecked(false);
-    m_pctrlX->setChecked(false);
-    m_pctrlY->setChecked(false);
-    m_pctrlZ->setChecked(false);
+    m_ptbIso->setChecked(false);
+    m_ptbX->setChecked(false);
+    m_ptbY->setChecked(false);
+    m_ptbZ->setChecked(false);
 }
 
 
@@ -510,13 +510,13 @@ void Miarex::setControls()
 {
     blockSignals(true);
 
-    if(m_iView==Xfl::W3DVIEW) m_pctrlBottomControls->setCurrentIndex(1);
-    else                        m_pctrlBottomControls->setCurrentIndex(0);
+    if(m_iView==Xfl::W3DVIEW) m_pswBottomControls->setCurrentIndex(1);
+    else                        m_pswBottomControls->setCurrentIndex(0);
 
-    if(m_iView==Xfl::WPOLARVIEW)     m_pctrlMiddleControls->setCurrentIndex(1);
-    else if(m_iView==Xfl::WCPVIEW)   m_pctrlMiddleControls->setCurrentIndex(2);
-    else if(m_iView==Xfl::STABTIMEVIEW || m_iView==Xfl::STABPOLARVIEW) m_pctrlMiddleControls->setCurrentIndex(1);
-    else                                                                   m_pctrlMiddleControls->setCurrentIndex(0);
+    if(m_iView==Xfl::WPOLARVIEW)     m_pswMiddleControls->setCurrentIndex(1);
+    else if(m_iView==Xfl::WCPVIEW)   m_pswMiddleControls->setCurrentIndex(2);
+    else if(m_iView==Xfl::STABTIMEVIEW || m_iView==Xfl::STABPOLARVIEW) m_pswMiddleControls->setCurrentIndex(1);
+    else                                                                   m_pswMiddleControls->setCurrentIndex(0);
 
     if (m_iView==Xfl::W3DVIEW && (m_pCurWPolar && m_pCurWPolar->isStabilityPolar()))
         s_pMainFrame->m_pctrlStabViewWidget->show();
@@ -532,14 +532,14 @@ void Miarex::setControls()
     {
         QString PolarProps;
         getPolarProperties(m_pCurWPolar, PolarProps);
-        m_pctrlPolarProps->setText(PolarProps);
+        m_pmtePolarProps->setText(PolarProps);
     }
     else
     {
-        m_pctrlPolarProps->clear();
+        m_pmtePolarProps->clear();
     }
 
-    m_pctrlInitLLTCalc->setEnabled(m_pCurWPolar && m_pCurWPolar->analysisMethod()==Xfl::LLTMETHOD);
+    m_pchInitLLTCalc->setEnabled(m_pCurWPolar && m_pCurWPolar->analysisMethod()==Xfl::LLTMETHOD);
 
 /*    s_pMainFrame->m_pWOppAct->setChecked(m_iView==XFLR5::WOPPVIEW);
     s_pMainFrame->m_pWPolarAct->setChecked(m_iView==XFLR5::WPOLARVIEW);
@@ -557,13 +557,13 @@ void Miarex::setControls()
 
     s_pMainFrame->m_pShowFlapMoments->setChecked(m_bShowFlapMoments);
 
-    m_pctrlAnalyze->setEnabled(m_pCurWPolar);
-    m_pctrlAlphaMin->setEnabled(m_pCurWPolar);
-    m_pctrlAlphaMax->setEnabled(m_pCurWPolar && m_bSequence);
-    m_pctrlAlphaDelta->setEnabled(m_pCurWPolar && m_bSequence);
-    m_pctrlSequence->setEnabled(m_pCurWPolar);
+    m_ppbAnalyze->setEnabled(m_pCurWPolar);
+    m_pdeAlphaMin->setEnabled(m_pCurWPolar);
+    m_pdeAlphaMax->setEnabled(m_pCurWPolar && m_bSequence);
+    m_pdeAlphaDelta->setEnabled(m_pCurWPolar && m_bSequence);
+    m_pchSequence->setEnabled(m_pCurWPolar);
 
-    m_pctrlStoreWOpp->setEnabled(m_pCurWPolar);
+    m_pchStoreWOpp->setEnabled(m_pCurWPolar);
 
     s_pMainFrame->m_pShowCurWOppOnly->setEnabled(m_iView==Xfl::WOPPVIEW);
     s_pMainFrame->m_pShowAllWOpps->setEnabled(m_iView==Xfl::WOPPVIEW);
@@ -581,21 +581,21 @@ void Miarex::setControls()
     s_pMainFrame->m_pShowPlaneWOpps->setEnabled(m_iView==Xfl::WOPPVIEW);
     s_pMainFrame->m_pHidePlaneWOpps->setEnabled(m_iView==Xfl::WOPPVIEW);
 
-    m_pctrlLift->setEnabled( (m_iView==Xfl::WOPPVIEW||m_iView==Xfl::W3DVIEW) && m_pCurPOpp);
-    m_pctrlTrans->setEnabled((m_iView==Xfl::WOPPVIEW||m_iView==Xfl::W3DVIEW) && m_pCurPOpp);
-    m_pctrlWOppAnimate->setEnabled((m_iView==Xfl::WOPPVIEW||m_iView==Xfl::W3DVIEW) && m_pCurPOpp && m_pCurPOpp->polarType()!=Xfl::STABILITYPOLAR);
-    m_pctrlAnimateWOppSpeed->setEnabled((m_iView==Xfl::WOPPVIEW||m_iView==Xfl::W3DVIEW) && m_pCurPOpp && m_pctrlWOppAnimate->isChecked());
-    m_pctrlIDrag->setEnabled(     m_iView==Xfl::W3DVIEW && m_pCurPOpp);
-    m_pctrlVDrag->setEnabled(     m_iView==Xfl::W3DVIEW && m_pCurPOpp);
-    m_pctrlDownwash->setEnabled(  m_iView==Xfl::W3DVIEW && m_pCurPOpp);
-    m_pctrlMoment->setEnabled(    m_iView==Xfl::W3DVIEW && m_pCurPOpp);
-    m_pctrlPanelForce->setEnabled(m_iView==Xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD);
-    m_pctrlCp->setEnabled(        m_iView==Xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD);
-    m_pctrlStream->setEnabled(    m_iView==Xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD);
-    m_pctrlSurfVel->setEnabled(   m_iView==Xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD);
+    m_pchLift->setEnabled( (m_iView==Xfl::WOPPVIEW||m_iView==Xfl::W3DVIEW) && m_pCurPOpp);
+    m_pchTrans->setEnabled((m_iView==Xfl::WOPPVIEW||m_iView==Xfl::W3DVIEW) && m_pCurPOpp);
+    m_pchWOppAnimate->setEnabled((m_iView==Xfl::WOPPVIEW||m_iView==Xfl::W3DVIEW) && m_pCurPOpp && m_pCurPOpp->polarType()!=Xfl::STABILITYPOLAR);
+    m_pslAnimateWOppSpeed->setEnabled((m_iView==Xfl::WOPPVIEW||m_iView==Xfl::W3DVIEW) && m_pCurPOpp && m_pchWOppAnimate->isChecked());
+    m_pchIDrag->setEnabled(     m_iView==Xfl::W3DVIEW && m_pCurPOpp);
+    m_pchVDrag->setEnabled(     m_iView==Xfl::W3DVIEW && m_pCurPOpp);
+    m_pchDownwash->setEnabled(  m_iView==Xfl::W3DVIEW && m_pCurPOpp);
+    m_pchMoment->setEnabled(    m_iView==Xfl::W3DVIEW && m_pCurPOpp);
+    m_pchPanelForce->setEnabled(m_iView==Xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD);
+    m_pchCp->setEnabled(        m_iView==Xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD);
+    m_pchStream->setEnabled(    m_iView==Xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD);
+    m_pchSurfVel->setEnabled(   m_iView==Xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD);
 
-    m_pctrlFoilNames->setChecked(m_pgl3dMiarexView->m_bFoilNames);
-    m_pctrlMasses->setChecked(m_pgl3dMiarexView->m_bShowMasses);
+    m_pchFoilNames->setChecked(m_pgl3dMiarexView->m_bFoilNames);
+    m_pchMasses->setChecked(m_pgl3dMiarexView->m_bShowMasses);
 
     s_pMainFrame->m_pHighlightOppAct->setChecked(Graph::isHighLighting());
 
@@ -632,36 +632,36 @@ void Miarex::setControls()
 
     s_pMainFrame->checkGraphActions();
 
-    m_pctrlSpanPos->setValue(m_CurSpanPos);
-    m_pctrlCpSectionSlider->setValue(int(m_CurSpanPos*100.0));
+    m_pdeSpanPos->setValue(m_CurSpanPos);
+    m_pslCpSectionSlider->setValue(int(m_CurSpanPos*100.0));
 
     s_pMainFrame->m_pW3DScalesAct->setChecked(s_pMainFrame->m_pctrl3DScalesWidget->isVisible());
 
-    m_pctrlAxes->setChecked(m_pgl3dMiarexView->m_bAxes);
-    m_pctrlOutline->setChecked(m_pgl3dMiarexView->m_bOutline);
+    m_pchAxes->setChecked(m_pgl3dMiarexView->m_bAxes);
+    m_pchOutline->setChecked(m_pgl3dMiarexView->m_bOutline);
 
-    m_pctrlAxes->setChecked(m_pgl3dMiarexView->m_bAxes);
-    m_pctrlSurfaces->setChecked(m_pgl3dMiarexView->m_bSurfaces);
-    m_pctrlOutline->setChecked(m_pgl3dMiarexView->m_bOutline);
+    m_pchAxes->setChecked(m_pgl3dMiarexView->m_bAxes);
+    m_pchSurfaces->setChecked(m_pgl3dMiarexView->m_bSurfaces);
+    m_pchOutline->setChecked(m_pgl3dMiarexView->m_bOutline);
 
-    m_pctrlCp->setChecked(m_b3DCp);
-    m_pctrlPanelForce->setChecked(m_bPanelForce);
-    m_pctrlDownwash->setChecked(m_bDownwash);
-    m_pctrlMoment->setChecked(m_bMoments);
-    m_pctrlTrans->setChecked(m_bXTop);
-    m_pctrlLift->setChecked(m_bXCP);
-    m_pctrlIDrag->setChecked(m_bICd);
-    m_pctrlVDrag->setChecked(m_bVCd);
-    m_pctrlStream->setChecked(m_pgl3dMiarexView->m_bStream);
-    m_pctrlClipPlanePos->setValue(int(m_pgl3dMiarexView->m_ClipPlanePos*100.0f));
-    m_pctrlClipPlanePos->setEnabled(W3dPrefsDlg::s_bEnableClipPlane);
+    m_pchCp->setChecked(m_b3DCp);
+    m_pchPanelForce->setChecked(m_bPanelForce);
+    m_pchDownwash->setChecked(m_bDownwash);
+    m_pchMoment->setChecked(m_bMoments);
+    m_pchTrans->setChecked(m_bXTop);
+    m_pchLift->setChecked(m_bXCP);
+    m_pchIDrag->setChecked(m_bICd);
+    m_pchVDrag->setChecked(m_bVCd);
+    m_pchStream->setChecked(m_pgl3dMiarexView->m_bStream);
+    m_pslClipPlanePos->setValue(int(m_pgl3dMiarexView->m_ClipPlanePos*100.0f));
+    m_pslClipPlanePos->setEnabled(W3dPrefsDlg::s_bEnableClipPlane);
 
-    m_pctrlOutline->setEnabled(m_pCurPlane);
-    m_pctrlSurfaces->setEnabled(m_pCurPlane);
-    m_pctrlMasses->setEnabled(m_pCurPlane);
-    m_pctrlFoilNames->setEnabled(m_pCurPlane);
+    m_pchOutline->setEnabled(m_pCurPlane);
+    m_pchSurfaces->setEnabled(m_pCurPlane);
+    m_pchMasses->setEnabled(m_pCurPlane);
+    m_pchFoilNames->setEnabled(m_pCurPlane);
 
-    m_pctrlPanels->setChecked(m_pgl3dMiarexView->m_bVLMPanels);
+    m_pchPanels->setChecked(m_pgl3dMiarexView->m_bVLMPanels);
     //    m_pctrlPanels->setEnabled(m_pCurPlane && m_pCurWPolar &&  !m_pCurWPolar->isLLTMethod());
 
     setCurveParams();
@@ -677,10 +677,10 @@ void Miarex::setControls()
  */
 void Miarex::setViewControls()
 {
-    m_pctrlX->setChecked(false);
-    m_pctrlY->setChecked(false);
-    m_pctrlZ->setChecked(false);
-    m_pctrlIso->setChecked(false);
+    m_ptbX->setChecked(false);
+    m_ptbY->setChecked(false);
+    m_ptbZ->setChecked(false);
+    m_ptbIso->setChecked(false);
 }
 
 
@@ -1312,10 +1312,10 @@ void Miarex::createStabRLCurves()
  */
 void Miarex::fillComboBoxes(bool bEnable)
 {
-    m_pctrlCurveColor->setEnabled(bEnable);
-    m_pctrlCurveStyle->setEnabled(bEnable);
-    m_pctrlCurveWidth->setEnabled(bEnable);
-    m_pctrlCurvePoints->setEnabled(bEnable);
+    m_pclbCurveColor->setEnabled(bEnable);
+    m_plcbCurveStyle->setEnabled(bEnable);
+    m_plcbCurveWidth->setEnabled(bEnable);
+    m_plcbCurvePoints->setEnabled(bEnable);
     m_pchShowCurve->setEnabled(bEnable);
     m_pctrlAlignChildren->setEnabled(bEnable);
 
@@ -1350,32 +1350,32 @@ void Miarex::fillComboBoxes(bool bEnable)
 
     if(bEnable)
     {
-        m_pctrlCurveStyle->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_pctrlCurveWidth->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_pctrlCurvePoints->setLine(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_pctrlCurveColor->setColor(m_LineStyle.m_Color);
-        m_pctrlCurveColor->setStipple(m_LineStyle.m_Stipple);
-        m_pctrlCurveColor->setWidth(m_LineStyle.m_Width);
+        m_plcbCurveStyle->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+        m_plcbCurveWidth->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+        m_plcbCurvePoints->setLine(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+        m_pclbCurveColor->setColor(m_LineStyle.m_Color);
+        m_pclbCurveColor->setStipple(m_LineStyle.m_Stipple);
+        m_pclbCurveColor->setWidth(m_LineStyle.m_Width);
     }
     else
     {
-        m_pctrlCurveStyle->setLine( 0, 1, QColor(100,100,100), 0);
-        m_pctrlCurveWidth->setLine( 0, 1, QColor(100,100,100), 0);
-        m_pctrlCurvePoints->setLine(0, 1, QColor(100,100,100), 0);
-        m_pctrlCurveColor->setColor(QColor(100,100,100));
-        m_pctrlCurveColor->setStipple(0);
-        m_pctrlCurveColor->setWidth(1);
+        m_plcbCurveStyle->setLine( 0, 1, QColor(100,100,100), 0);
+        m_plcbCurveWidth->setLine( 0, 1, QColor(100,100,100), 0);
+        m_plcbCurvePoints->setLine(0, 1, QColor(100,100,100), 0);
+        m_pclbCurveColor->setColor(QColor(100,100,100));
+        m_pclbCurveColor->setStipple(0);
+        m_pclbCurveColor->setWidth(1);
     }
 
 
-    m_pctrlCurveStyle->update();
-    m_pctrlCurveWidth->update();
-    m_pctrlCurvePoints->update();
-    m_pctrlCurveColor->update();
+    m_plcbCurveStyle->update();
+    m_plcbCurveWidth->update();
+    m_plcbCurvePoints->update();
+    m_pclbCurveColor->update();
 
-    m_pctrlCurveStyle->setCurrentIndex(m_LineStyle.m_Stipple);
-    m_pctrlCurveWidth->setCurrentIndex(m_LineStyle.m_Width-1);
-    m_pctrlCurvePoints->setCurrentIndex(m_LineStyle.m_PointStyle);
+    m_plcbCurveStyle->setCurrentIndex(m_LineStyle.m_Stipple);
+    m_plcbCurveWidth->setCurrentIndex(m_LineStyle.m_Width-1);
+    m_plcbCurvePoints->setCurrentIndex(m_LineStyle.m_PointStyle);
 }
 
 
@@ -1671,10 +1671,10 @@ void Miarex::keyPressEvent(QKeyEvent *pEvent)
                 onWPolarProperties();
                 break;
             }
-            if(!m_pctrlAnalyze->hasFocus())
+            if(!m_ppbAnalyze->hasFocus())
             {
                 activateWindow();
-                m_pctrlAnalyze->setFocus();
+                m_ppbAnalyze->setFocus();
             }
             else
             {
@@ -2142,15 +2142,15 @@ void Miarex::on3DView()
  */
 void Miarex::on3DCp()
 {
-    m_b3DCp = m_pctrlCp->isChecked();
+    m_b3DCp = m_pchCp->isChecked();
     m_bResetTextLegend = true;
 
     if(m_b3DCp)
     {
         m_pgl3dMiarexView->m_bSurfaces = false;
-        m_pctrlSurfaces->setChecked(false);
+        m_pchSurfaces->setChecked(false);
         m_bPanelForce = false;
-        m_pctrlPanelForce->setChecked(false);
+        m_pchPanelForce->setChecked(false);
     }
     updateView();
 }
@@ -2215,8 +2215,8 @@ void Miarex::onAnalyze()
 
     //prevent an automatic and lengthy redraw of the streamlines after the calculation
     m_pgl3dMiarexView->m_bStream = m_pgl3dMiarexView->m_bSurfVelocities = false;
-    m_pctrlStream->setChecked(false);
-    m_pctrlSurfVel->setChecked(false);
+    m_pchStream->setChecked(false);
+    m_pchSurfVel->setChecked(false);
 
     // make sure that the latest parameters are loaded
     onReadAnalysisData();
@@ -2277,7 +2277,7 @@ void Miarex::onAnalyze()
         }
     }
 
-    m_pctrlAnalyze->setEnabled(false);
+    m_ppbAnalyze->setEnabled(false);
     s_pMainFrame->m_pcbPlane->setEnabled(false);
     s_pMainFrame->m_pcbPlanePolar->setEnabled(false);
     s_pMainFrame->m_pcbPlaneOpp->setEnabled(false);
@@ -2291,7 +2291,7 @@ void Miarex::onAnalyze()
         panelAnalyze(V0, VMax, VDelta, m_bSequence);
     }
 
-    m_pctrlAnalyze->setEnabled(true);
+    m_ppbAnalyze->setEnabled(true);
     s_pMainFrame->m_pcbPlane->setEnabled(true);
     s_pMainFrame->m_pcbPlanePolar->setEnabled(true);
     s_pMainFrame->m_pcbPlaneOpp->setEnabled(true);
@@ -2315,7 +2315,7 @@ void Miarex::onAnalyze()
 */
 void Miarex::onAnimateWOpp()
 {
-    m_pctrlAnimateWOppSpeed->setEnabled(m_pctrlWOppAnimate->isChecked());
+    m_pslAnimateWOppSpeed->setEnabled(m_pchWOppAnimate->isChecked());
     if(!m_pCurPlane || !m_pCurWPolar || m_iView==Xfl::WPOLARVIEW)
     {
         m_bAnimateWOpp = false;
@@ -2323,7 +2323,7 @@ void Miarex::onAnimateWOpp()
     }
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    if(m_pctrlWOppAnimate->isChecked())
+    if(m_pchWOppAnimate->isChecked())
     {
         if(m_pCurPlane && m_pCurPOpp)
         {
@@ -2342,7 +2342,7 @@ void Miarex::onAnimateWOpp()
         }
 
         m_bAnimateWOpp  = true;
-        int speed = m_pctrlAnimateWOppSpeed->value();
+        int speed = m_pslAnimateWOppSpeed->value();
         m_pTimerWOpp->setInterval(800-speed);
         m_pTimerWOpp->start();
     }
@@ -2640,7 +2640,7 @@ void Miarex::onAdvancedSettings()
 void Miarex::onCpSectionSlider(int pos)
 {
     m_CurSpanPos = double(pos)/100.0;
-    m_pctrlSpanPos->setValue(m_CurSpanPos);
+    m_pdeSpanPos->setValue(m_CurSpanPos);
     createCpCurves();
     updateView();
 }
@@ -2651,8 +2651,8 @@ void Miarex::onCpSectionSlider(int pos)
 */
 void Miarex::onCpPosition()
 {
-    m_CurSpanPos = m_pctrlSpanPos->value();
-    m_pctrlCpSectionSlider->setValue(int(m_CurSpanPos*100.0));
+    m_CurSpanPos = m_pdeSpanPos->value();
+    m_pslCpSectionSlider->setValue(int(m_CurSpanPos*100.0));
     createCpCurves();
     updateView();
 }
@@ -2877,7 +2877,7 @@ void Miarex::onDefineWPolar()
 
         s_pMainFrame->updateWPolarListBox();
         updateView();
-        m_pctrlAnalyze->setFocus();
+        m_ppbAnalyze->setFocus();
     }
     else
     {
@@ -2945,7 +2945,7 @@ void Miarex::onDefineWPolarObject()
 
         s_pMainFrame->updateWPolarListBox();
         updateView();
-        m_pctrlAnalyze->setFocus();
+        m_ppbAnalyze->setFocus();
     }
     else
     {
@@ -3010,7 +3010,7 @@ void Miarex::onEditCurWPolar()
         setWPolar();
         s_pMainFrame->updateWPolarListBox();
         updateView();
-        m_pctrlAnalyze->setFocus();
+        m_ppbAnalyze->setFocus();
     }
     else
     {
@@ -3058,7 +3058,7 @@ void Miarex::onEditCurWPolarObject()
         setWPolar();
         s_pMainFrame->updateWPolarListBox();
         updateView();
-        m_pctrlAnalyze->setFocus();
+        m_ppbAnalyze->setFocus();
     }
     setControls();
 }
@@ -3326,7 +3326,7 @@ void Miarex::onDeleteCurWPolar()
  */
 void Miarex::onDownwash()
 {
-    m_bDownwash = m_pctrlDownwash->isChecked();
+    m_bDownwash = m_pchDownwash->isChecked();
     updateView();
 }
 
@@ -5071,7 +5071,7 @@ void Miarex::onImportWPolars()
  */
 void Miarex::onInitLLTCalc()
 {
-    m_bInitLLTCalc = m_pctrlInitLLTCalc->isChecked();
+    m_bInitLLTCalc = m_pchInitLLTCalc->isChecked();
 }
 
 
@@ -5139,7 +5139,7 @@ void Miarex::onManagePlanes()
  **/
 void Miarex::onMoment()
 {
-    m_bMoments = m_pctrlMoment->isChecked();
+    m_bMoments = m_pchMoment->isChecked();
     updateView();
 }
 
@@ -5228,52 +5228,52 @@ void Miarex::onNewPlaneObject()
  */
 void Miarex::onReadAnalysisData()
 {
-    m_bSequence = m_pctrlSequence->isChecked();
-    m_bInitLLTCalc = m_pctrlInitLLTCalc->isChecked();
+    m_bSequence = m_pchSequence->isChecked();
+    m_bInitLLTCalc = m_pchInitLLTCalc->isChecked();
 
     if(m_pCurWPolar && m_pCurWPolar->polarType()==Xfl::FIXEDAOAPOLAR)
     {
-        m_QInfMin   = m_pctrlAlphaMin->value()         /Units::mstoUnit();
-        m_QInfMax   = m_pctrlAlphaMax->value()         /Units::mstoUnit();
-        m_QInfDelta = qAbs(m_pctrlAlphaDelta->value()) /Units::mstoUnit();
+        m_QInfMin   = m_pdeAlphaMin->value()         /Units::mstoUnit();
+        m_QInfMax   = m_pdeAlphaMax->value()         /Units::mstoUnit();
+        m_QInfDelta = qAbs(m_pdeAlphaDelta->value()) /Units::mstoUnit();
         if(qAbs(m_QInfDelta)<0.1)
         {
             m_QInfDelta = 1.0;
-            m_pctrlAlphaDelta->setValue(1.0);
+            m_pdeAlphaDelta->setValue(1.0);
         }
     }
     else if(m_pCurWPolar && m_pCurWPolar->polarType()==Xfl::BETAPOLAR)
     {
-        m_BetaMin   = m_pctrlAlphaMin->value();
-        m_BetaMax   = m_pctrlAlphaMax->value();
-        m_BetaDelta = qAbs(m_pctrlAlphaDelta->value());
+        m_BetaMin   = m_pdeAlphaMin->value();
+        m_BetaMax   = m_pdeAlphaMax->value();
+        m_BetaDelta = qAbs(m_pdeAlphaDelta->value());
         if(qAbs(m_BetaDelta)<0.01)
         {
             m_BetaDelta = 0.01;
-            m_pctrlAlphaDelta->setValue(0.01);
+            m_pdeAlphaDelta->setValue(0.01);
         }
     }
     else if(m_pCurWPolar && m_pCurWPolar->polarType()==Xfl::STABILITYPOLAR)
     {
-        m_ControlMin   = m_pctrlAlphaMin->value();
-        m_ControlMax   = m_pctrlAlphaMax->value();
-        m_ControlDelta = qAbs(m_pctrlAlphaDelta->value());
+        m_ControlMin   = m_pdeAlphaMin->value();
+        m_ControlMax   = m_pdeAlphaMax->value();
+        m_ControlDelta = qAbs(m_pdeAlphaDelta->value());
         if(qAbs(m_ControlDelta)<0.001)
         {
             m_ControlDelta = 0.001;
-            m_pctrlAlphaDelta->setValue(0.001);
+            m_pdeAlphaDelta->setValue(0.001);
         }
     }
     else if(m_pCurWPolar)
     {
-        m_AlphaMin   = m_pctrlAlphaMin->value();
-        m_AlphaMax   = m_pctrlAlphaMax->value();
-        m_AlphaDelta = qAbs(m_pctrlAlphaDelta->value());
+        m_AlphaMin   = m_pdeAlphaMin->value();
+        m_AlphaMax   = m_pdeAlphaMax->value();
+        m_AlphaDelta = qAbs(m_pdeAlphaDelta->value());
 
         if(qAbs(m_AlphaDelta)<0.01)
         {
             m_AlphaDelta = 0.01;
-            m_pctrlAlphaDelta->setValue(0.01);
+            m_pdeAlphaDelta->setValue(0.01);
         }
     }
 }
@@ -5469,7 +5469,7 @@ void Miarex::onResetCurWPolar()
         {
             QString PolarProps;
             getPolarProperties(m_pCurWPolar, PolarProps);
-            m_pctrlPolarProps->setText(PolarProps);
+            m_pmtePolarProps->setText(PolarProps);
         }
     }
 
@@ -5484,9 +5484,9 @@ void Miarex::onResetCurWPolar()
  */
 void Miarex::onSequence()
 {
-    m_bSequence = m_pctrlSequence->isChecked();
-    m_pctrlAlphaMax->setEnabled(m_bSequence);
-    m_pctrlAlphaDelta->setEnabled(m_bSequence);
+    m_bSequence = m_pchSequence->isChecked();
+    m_pdeAlphaMax->setEnabled(m_bSequence);
+    m_pdeAlphaDelta->setEnabled(m_bSequence);
 }
 
 
@@ -5700,12 +5700,12 @@ void Miarex::onShowXCmRef()
  */
 void Miarex::onPanelForce()
 {
-    m_bPanelForce     = m_pctrlPanelForce->isChecked();
+    m_bPanelForce     = m_pchPanelForce->isChecked();
     m_bResetTextLegend = true;
     if(m_bPanelForce)
     {
         m_b3DCp =false;
-        m_pctrlCp->setChecked(false);
+        m_pchCp->setChecked(false);
     }
     if(m_iView == Xfl::W3DVIEW)
     {
@@ -5719,7 +5719,7 @@ void Miarex::onPanelForce()
  */
 void Miarex::onShowLift()
 {
-    m_bXCP     = m_pctrlLift->isChecked();
+    m_bXCP     = m_pchLift->isChecked();
     if(m_iView==Xfl::WOPPVIEW || m_iView == Xfl::W3DVIEW)
     {
         if(!m_bAnimateWOpp) updateView();
@@ -5732,7 +5732,7 @@ void Miarex::onShowLift()
  */
 void Miarex::onShowIDrag()
 {
-    m_bICd = m_pctrlIDrag->isChecked();
+    m_bICd = m_pchIDrag->isChecked();
     gl3dMiarexView::s_bResetglDrag = true;
     if(m_iView==Xfl::WOPPVIEW || m_iView == Xfl::W3DVIEW)
     {
@@ -5746,7 +5746,7 @@ void Miarex::onShowIDrag()
  */
 void Miarex::onShowVDrag()
 {
-    m_bVCd = m_pctrlVDrag->isChecked();
+    m_bVCd = m_pchVDrag->isChecked();
     gl3dMiarexView::s_bResetglDrag = true;
     if(m_iView==Xfl::WOPPVIEW || m_iView == Xfl::W3DVIEW)
     {
@@ -5760,8 +5760,8 @@ void Miarex::onShowVDrag()
  */
 void Miarex::onShowTransitions()
 {
-    m_bXTop = m_pctrlTrans->isChecked();
-    m_bXBot = m_pctrlTrans->isChecked();
+    m_bXTop = m_pchTrans->isChecked();
+    m_bXBot = m_pchTrans->isChecked();
     if(m_iView==Xfl::WOPPVIEW || m_iView == Xfl::W3DVIEW)
     {
         if(!m_bAnimateWOpp) updateView();
@@ -5863,8 +5863,8 @@ void Miarex::onRootLocusView()
  */
 void Miarex::onStreamlines()
 {
-    m_pgl3dMiarexView->m_bStream = m_pctrlStream->isChecked();
-    if(m_pctrlStream->isChecked())
+    m_pgl3dMiarexView->m_bStream = m_pchStream->isChecked();
+    if(m_pchStream->isChecked())
     {
         //        m_bResetglStream = true;
     }
@@ -5879,11 +5879,11 @@ void Miarex::onStreamlines()
  */
 void Miarex::onSurfaces()
 {
-    m_pgl3dMiarexView->m_bSurfaces = m_pctrlSurfaces->isChecked();
+    m_pgl3dMiarexView->m_bSurfaces = m_pchSurfaces->isChecked();
     if(m_pgl3dMiarexView->m_bSurfaces)
     {
         m_b3DCp = false;
-        m_pctrlCp->setChecked(false);
+        m_pchCp->setChecked(false);
     }
     updateView();
 }
@@ -5895,8 +5895,8 @@ void Miarex::onSurfaces()
  */
 void Miarex::onSurfaceSpeeds()
 {
-    m_pgl3dMiarexView->m_bSurfVelocities = m_pctrlSurfVel->isChecked();
-    if(m_pctrlSurfVel->isChecked())
+    m_pgl3dMiarexView->m_bSurfVelocities = m_pchSurfVel->isChecked();
+    if(m_pchSurfVel->isChecked())
     {
         //        m_bResetglStream = true;
     }
@@ -5923,7 +5923,7 @@ void Miarex::onSetupLight()
  */
 void Miarex::onStoreWOpp()
 {
-    PlaneOpp::s_bStoreOpps = m_pctrlStoreWOpp->isChecked();
+    PlaneOpp::s_bStoreOpps = m_pchStoreWOpp->isChecked();
 }
 
 
@@ -6733,59 +6733,59 @@ void Miarex::setScale()
  */
 void Miarex::setAnalysisParams()
 {
-    m_pctrlSequence->setChecked(m_bSequence);
+    m_pchSequence->setChecked(m_bSequence);
 
-    m_pctrlAlphaMax->setEnabled(m_bSequence);
-    m_pctrlAlphaDelta->setEnabled(m_bSequence);
+    m_pdeAlphaMax->setEnabled(m_bSequence);
+    m_pdeAlphaDelta->setEnabled(m_bSequence);
 
     if (!m_pCurWPolar)
     {
-        m_pctrlSequence->setEnabled(false);
-        m_pctrlAlphaMin->setEnabled(false);
-        m_pctrlAlphaMax->setEnabled(false);
-        m_pctrlAlphaDelta->setEnabled(false);
-        m_pctrlInitLLTCalc->setEnabled(false);
-        m_pctrlStoreWOpp->setEnabled(false);
+        m_pchSequence->setEnabled(false);
+        m_pdeAlphaMin->setEnabled(false);
+        m_pdeAlphaMax->setEnabled(false);
+        m_pdeAlphaDelta->setEnabled(false);
+        m_pchInitLLTCalc->setEnabled(false);
+        m_pchStoreWOpp->setEnabled(false);
         return;
     }
     else
     {
-        m_pctrlSequence->setEnabled(true);
-        m_pctrlAlphaMin->setEnabled(true);
+        m_pchSequence->setEnabled(true);
+        m_pdeAlphaMin->setEnabled(true);
 
-        m_pctrlAlphaMax->setEnabled(m_bSequence);
-        m_pctrlAlphaDelta->setEnabled(m_bSequence);
+        m_pdeAlphaMax->setEnabled(m_bSequence);
+        m_pdeAlphaDelta->setEnabled(m_bSequence);
 
-        m_pctrlInitLLTCalc->setEnabled(true);
-        m_pctrlStoreWOpp->setEnabled(true);
+        m_pchInitLLTCalc->setEnabled(true);
+        m_pchStoreWOpp->setEnabled(true);
     }
 
-    m_pctrlInitLLTCalc->setChecked(m_bInitLLTCalc);
-    m_pctrlStoreWOpp->setChecked(PlaneOpp::s_bStoreOpps);
+    m_pchInitLLTCalc->setChecked(m_bInitLLTCalc);
+    m_pchStoreWOpp->setChecked(PlaneOpp::s_bStoreOpps);
 
     if (!m_pCurWPolar || (m_pCurWPolar && m_pCurWPolar->polarType() < Xfl::FIXEDAOAPOLAR))
     {
-        m_pctrlAlphaMin->setValue(m_AlphaMin);
-        m_pctrlAlphaMax->setValue(m_AlphaMax);
-        m_pctrlAlphaDelta->setValue(m_AlphaDelta);
+        m_pdeAlphaMin->setValue(m_AlphaMin);
+        m_pdeAlphaMax->setValue(m_AlphaMax);
+        m_pdeAlphaDelta->setValue(m_AlphaDelta);
     }
     else if(m_pCurWPolar  && m_pCurWPolar->polarType() == Xfl::FIXEDAOAPOLAR)
     {
-        m_pctrlAlphaMin->setValue(m_QInfMin*Units::mstoUnit());
-        m_pctrlAlphaMax->setValue(m_QInfMax*Units::mstoUnit());
-        m_pctrlAlphaDelta->setValue(m_QInfDelta*Units::mstoUnit());
+        m_pdeAlphaMin->setValue(m_QInfMin*Units::mstoUnit());
+        m_pdeAlphaMax->setValue(m_QInfMax*Units::mstoUnit());
+        m_pdeAlphaDelta->setValue(m_QInfDelta*Units::mstoUnit());
     }
     else if (m_pCurWPolar && m_pCurWPolar->polarType() == Xfl::BETAPOLAR)
     {
-        m_pctrlAlphaMin->setValue(m_BetaMin);
-        m_pctrlAlphaMax->setValue(m_BetaMax);
-        m_pctrlAlphaDelta->setValue(m_BetaDelta);
+        m_pdeAlphaMin->setValue(m_BetaMin);
+        m_pdeAlphaMax->setValue(m_BetaMax);
+        m_pdeAlphaDelta->setValue(m_BetaDelta);
     }
     else if (m_pCurWPolar && (m_pCurWPolar->polarType() == Xfl::STABILITYPOLAR))
     {
-        m_pctrlAlphaMin->setValue(m_ControlMin);
-        m_pctrlAlphaMax->setValue(m_ControlMax);
-        m_pctrlAlphaDelta->setValue(m_ControlDelta);
+        m_pdeAlphaMin->setValue(m_ControlMin);
+        m_pdeAlphaMax->setValue(m_ControlMax);
+        m_pdeAlphaDelta->setValue(m_ControlDelta);
     }
 }
 
@@ -6864,51 +6864,50 @@ void Miarex::setCurveParams()
     {
         QString str;
         Units::getSpeedUnitLabel(str);
-        m_pctrlUnit1->setText(str);
-        m_pctrlUnit2->setText(str);
-        m_pctrlUnit3->setText(str);
+        m_plabUnit1->setText(str);
+        m_plabUnit2->setText(str);
+        m_plabUnit3->setText(str);
 
-        m_pctrlParameterName->setText("Freestream velocity");
+        m_plabParameterName->setText("Freestream velocity");
         QFont fontSymbol(Settings::s_TextFont);
         fontSymbol.setBold(true);
         fontSymbol.setPointSize(Settings::s_TextFont.pointSize()+2);
-        m_pctrlParameterName->setFont(fontSymbol);
+        m_plabParameterName->setFont(fontSymbol);
     }
     else if(m_pCurWPolar && m_pCurWPolar->polarType()==Xfl::STABILITYPOLAR)
     {
-        m_pctrlUnit1->setText("");
-        m_pctrlUnit2->setText("");
-        m_pctrlUnit3->setText("");
+        m_plabUnit1->setText("");
+        m_plabUnit2->setText("");
+        m_plabUnit3->setText("");
 
-        m_pctrlParameterName->setText("Control parameter");
+        m_plabParameterName->setText("Control parameter");
         QFont fontSymbol(Settings::s_TextFont);
         fontSymbol.setBold(true);
-        m_pctrlParameterName->setFont(fontSymbol);
+        m_plabParameterName->setFont(fontSymbol);
     }
     else if(m_pCurWPolar && m_pCurWPolar->polarType()==Xfl::BETAPOLAR)
     {
-        m_pctrlUnit1->setText(QChar(0260));
-        m_pctrlUnit2->setText(QChar(0260));
-        m_pctrlUnit3->setText(QChar(0260));
+        m_plabUnit1->setText(QChar(0260));
+        m_plabUnit2->setText(QChar(0260));
+        m_plabUnit3->setText(QChar(0260));
 
-        m_pctrlParameterName->setText("b");
+        m_plabParameterName->setText(QChar(0x03B2));
         QFont fontSymbol("Symbol");
         fontSymbol.setBold(true);
-        m_pctrlParameterName->setFont(fontSymbol);
+        m_plabParameterName->setFont(fontSymbol);
     }
     else
     {
-        m_pctrlUnit1->setText(QChar(0260));
-        m_pctrlUnit2->setText(QChar(0260));
-        m_pctrlUnit3->setText(QChar(0260));
+        m_plabUnit1->setText(QChar(0260));
+        m_plabUnit2->setText(QChar(0260));
+        m_plabUnit3->setText(QChar(0260));
 
-        m_pctrlParameterName->setText("a");
+        m_plabParameterName->setText(QChar(0x03B1));
         QFont fontSymbol("Symbol");
         fontSymbol.setBold(true);
-        m_pctrlParameterName->setFont(fontSymbol);
+        m_plabParameterName->setFont(fontSymbol);
     }
 }
-
 
 
 /**
@@ -7015,10 +7014,10 @@ void Miarex::setupLayout()
     {
         QVBoxLayout *pAnalysisGroupLayout = new QVBoxLayout;
         {
-            m_pctrlSequence = new QCheckBox(tr("Sequence"));
+            m_pchSequence = new QCheckBox(tr("Sequence"));
             QGridLayout *pSequenceGroupLayout = new QGridLayout;
             {
-                m_pctrlParameterName = new QLabel("Alpha");
+                m_plabParameterName = new QLabel("Alpha");
                 QLabel *AlphaMinLab   = new QLabel(tr("Start="));
                 QLabel *AlphaMaxLab   = new QLabel(tr("End="));
                 QLabel *AlphaDeltaLab = new QLabel(tr("D="));
@@ -7026,42 +7025,42 @@ void Miarex::setupLayout()
                 AlphaDeltaLab->setAlignment(Qt::AlignRight);
                 AlphaMinLab->setAlignment(Qt::AlignRight);
                 AlphaMaxLab->setAlignment(Qt::AlignRight);
-                m_pctrlAlphaMin     = new DoubleEdit(0.0, 3);
-                m_pctrlAlphaMax     = new DoubleEdit(1., 3);
-                m_pctrlAlphaDelta   = new DoubleEdit(0.5, 3);
+                m_pdeAlphaMin     = new DoubleEdit(0.0, 3);
+                m_pdeAlphaMax     = new DoubleEdit(1., 3);
+                m_pdeAlphaDelta   = new DoubleEdit(0.5, 3);
 
-                m_pctrlUnit1 = new QLabel(QChar(0260));
-                m_pctrlUnit2 = new QLabel(QChar(0260));
-                m_pctrlUnit3 = new QLabel(QChar(0260));
+                m_plabUnit1 = new QLabel(QChar(0260));
+                m_plabUnit2 = new QLabel(QChar(0260));
+                m_plabUnit3 = new QLabel(QChar(0260));
 
-                m_pctrlAlphaMin->setAlignment(Qt::AlignRight);
-                m_pctrlAlphaMax->setAlignment(Qt::AlignRight);
-                m_pctrlAlphaDelta->setAlignment(Qt::AlignRight);
-                pSequenceGroupLayout->addWidget(m_pctrlParameterName,1,1,1,3, Qt::AlignVCenter|Qt::AlignCenter);
+                m_pdeAlphaMin->setAlignment(Qt::AlignRight);
+                m_pdeAlphaMax->setAlignment(Qt::AlignRight);
+                m_pdeAlphaDelta->setAlignment(Qt::AlignRight);
+                pSequenceGroupLayout->addWidget(m_plabParameterName,1,1,1,3, Qt::AlignVCenter|Qt::AlignCenter);
                 pSequenceGroupLayout->addWidget(AlphaMinLab,2,1);
                 pSequenceGroupLayout->addWidget(AlphaMaxLab,3,1);
                 pSequenceGroupLayout->addWidget(AlphaDeltaLab,4,1);
-                pSequenceGroupLayout->addWidget(m_pctrlAlphaMin,2,2);
-                pSequenceGroupLayout->addWidget(m_pctrlAlphaMax,3,2);
-                pSequenceGroupLayout->addWidget(m_pctrlAlphaDelta,4,2);
-                pSequenceGroupLayout->addWidget(m_pctrlUnit1,2,3);
-                pSequenceGroupLayout->addWidget(m_pctrlUnit2,3,3);
-                pSequenceGroupLayout->addWidget(m_pctrlUnit3,4,3);
+                pSequenceGroupLayout->addWidget(m_pdeAlphaMin,2,2);
+                pSequenceGroupLayout->addWidget(m_pdeAlphaMax,3,2);
+                pSequenceGroupLayout->addWidget(m_pdeAlphaDelta,4,2);
+                pSequenceGroupLayout->addWidget(m_plabUnit1,2,3);
+                pSequenceGroupLayout->addWidget(m_plabUnit2,3,3);
+                pSequenceGroupLayout->addWidget(m_plabUnit3,4,3);
             }
             QHBoxLayout *pAnalysisSettingsLayout = new QHBoxLayout;
             {
-                m_pctrlInitLLTCalc = new QCheckBox(tr("Init LLT"));
-                m_pctrlStoreWOpp   = new QCheckBox(tr("Store OpPoint"));
-                pAnalysisSettingsLayout->addWidget(m_pctrlInitLLTCalc);
-                pAnalysisSettingsLayout->addWidget(m_pctrlStoreWOpp);
+                m_pchInitLLTCalc = new QCheckBox(tr("Init LLT"));
+                m_pchStoreWOpp   = new QCheckBox(tr("Store OpPoint"));
+                pAnalysisSettingsLayout->addWidget(m_pchInitLLTCalc);
+                pAnalysisSettingsLayout->addWidget(m_pchStoreWOpp);
             }
 
-            m_pctrlAnalyze     = new QPushButton(tr("Analyze"));
+            m_ppbAnalyze     = new QPushButton(tr("Analyze"));
 
-            pAnalysisGroupLayout->addWidget(m_pctrlSequence);
+            pAnalysisGroupLayout->addWidget(m_pchSequence);
             pAnalysisGroupLayout->addLayout(pSequenceGroupLayout);
             pAnalysisGroupLayout->addLayout(pAnalysisSettingsLayout);
-            pAnalysisGroupLayout->addWidget(m_pctrlAnalyze);
+            pAnalysisGroupLayout->addWidget(m_ppbAnalyze);
         }
         pAnalysisBox->setLayout(pAnalysisGroupLayout);
     }
@@ -7071,38 +7070,38 @@ void Miarex::setupLayout()
     {
         QGridLayout *pCheckDispLayout = new QGridLayout;
         {
-            m_pctrlPanelForce = new QCheckBox("F/s=q.Cp");
-            m_pctrlPanelForce->setToolTip(tr("Display the force 1/2.rho.V2.S.Cp acting on the panel"));
-            m_pctrlLift           = new QCheckBox(tr("Lift"));
-            m_pctrlIDrag          = new QCheckBox(tr("Ind. Drag"));
-            m_pctrlVDrag          = new QCheckBox(tr("Visc. Drag"));
-            m_pctrlTrans          = new QCheckBox(tr("Trans."));
-            m_pctrlMoment         = new QCheckBox(tr("Moment"));
-            m_pctrlDownwash       = new QCheckBox(tr("Downwash"));
-            m_pctrlCp             = new QCheckBox(tr("Cp"));
-            m_pctrlSurfVel        = new QCheckBox(tr("Surf. Vel."));
-            m_pctrlStream         = new QCheckBox(tr("Stream"));
-            m_pctrlWOppAnimate    = new QCheckBox(tr("Animate"));
+            m_pchPanelForce = new QCheckBox("F/s=q.Cp");
+            m_pchPanelForce->setToolTip(tr("Display the force 1/2.rho.V2.S.Cp acting on the panel"));
+            m_pchLift           = new QCheckBox(tr("Lift"));
+            m_pchIDrag          = new QCheckBox(tr("Ind. Drag"));
+            m_pchVDrag          = new QCheckBox(tr("Visc. Drag"));
+            m_pchTrans          = new QCheckBox(tr("Trans."));
+            m_pchMoment         = new QCheckBox(tr("Moment"));
+            m_pchDownwash       = new QCheckBox(tr("Downwash"));
+            m_pchCp             = new QCheckBox(tr("Cp"));
+            m_pchSurfVel        = new QCheckBox(tr("Surf. Vel."));
+            m_pchStream         = new QCheckBox(tr("Stream"));
+            m_pchWOppAnimate    = new QCheckBox(tr("Animate"));
 
-            m_pctrlAnimateWOppSpeed  = new QSlider(Qt::Horizontal);
-            m_pctrlAnimateWOppSpeed->setSizePolicy(szPolicyMinimum);
-            m_pctrlAnimateWOppSpeed->setMinimum(0);
-            m_pctrlAnimateWOppSpeed->setMaximum(500);
-            m_pctrlAnimateWOppSpeed->setSliderPosition(250);
-            m_pctrlAnimateWOppSpeed->setTickInterval(50);
-            m_pctrlAnimateWOppSpeed->setTickPosition(QSlider::TicksBelow);
-            pCheckDispLayout->addWidget(m_pctrlCp,       1,1);
-            pCheckDispLayout->addWidget(m_pctrlPanelForce, 1, 2);
-            pCheckDispLayout->addWidget(m_pctrlLift,     2, 1);
-            pCheckDispLayout->addWidget(m_pctrlMoment,   2, 2);
-            pCheckDispLayout->addWidget(m_pctrlIDrag,    3, 1);
-            pCheckDispLayout->addWidget(m_pctrlVDrag,    3, 2);
-            pCheckDispLayout->addWidget(m_pctrlTrans,    4, 1);
-            pCheckDispLayout->addWidget(m_pctrlDownwash, 4, 2);
-            pCheckDispLayout->addWidget(m_pctrlSurfVel,  5, 1);
-            pCheckDispLayout->addWidget(m_pctrlStream,   5, 2);
-            pCheckDispLayout->addWidget(m_pctrlWOppAnimate,  6, 1);
-            pCheckDispLayout->addWidget(m_pctrlAnimateWOppSpeed,6,2);
+            m_pslAnimateWOppSpeed  = new QSlider(Qt::Horizontal);
+            m_pslAnimateWOppSpeed->setSizePolicy(szPolicyMinimum);
+            m_pslAnimateWOppSpeed->setMinimum(0);
+            m_pslAnimateWOppSpeed->setMaximum(500);
+            m_pslAnimateWOppSpeed->setSliderPosition(250);
+            m_pslAnimateWOppSpeed->setTickInterval(50);
+            m_pslAnimateWOppSpeed->setTickPosition(QSlider::TicksBelow);
+            pCheckDispLayout->addWidget(m_pchCp,       1,1);
+            pCheckDispLayout->addWidget(m_pchPanelForce, 1, 2);
+            pCheckDispLayout->addWidget(m_pchLift,     2, 1);
+            pCheckDispLayout->addWidget(m_pchMoment,   2, 2);
+            pCheckDispLayout->addWidget(m_pchIDrag,    3, 1);
+            pCheckDispLayout->addWidget(m_pchVDrag,    3, 2);
+            pCheckDispLayout->addWidget(m_pchTrans,    4, 1);
+            pCheckDispLayout->addWidget(m_pchDownwash, 4, 2);
+            pCheckDispLayout->addWidget(m_pchSurfVel,  5, 1);
+            pCheckDispLayout->addWidget(m_pchStream,   5, 2);
+            pCheckDispLayout->addWidget(m_pchWOppAnimate,  6, 1);
+            pCheckDispLayout->addWidget(m_pslAnimateWOppSpeed,6,2);
             pCheckDispLayout->setRowStretch(7,1);
         }
         pDisplayBox->setLayout(pCheckDispLayout);
@@ -7113,13 +7112,13 @@ void Miarex::setupLayout()
         QVBoxLayout *pPolarPropsLayout = new QVBoxLayout;
         {
             QLabel *pPolarProps = new QLabel(tr("Polar properties"));
-            m_pctrlPolarProps = new MinTextEdit;
+            m_pmtePolarProps = new MinTextEdit;
             QFont fnt("Courier");
-            m_pctrlPolarProps->setFont(fnt);
-            m_pctrlPolarProps->setReadOnly(true);
+            m_pmtePolarProps->setFont(fnt);
+            m_pmtePolarProps->setReadOnly(true);
 
             pPolarPropsLayout->addWidget(pPolarProps);
-            pPolarPropsLayout->addWidget(m_pctrlPolarProps);
+            pPolarPropsLayout->addWidget(m_pmtePolarProps);
         }
         pPolarPropsFrame->setLayout(pPolarPropsLayout);
     }
@@ -7141,25 +7140,25 @@ void Miarex::setupLayout()
 
         QVBoxLayout *pCurveGroupLayout = new QVBoxLayout;
         {
-            m_pctrlCurveStyle  = new LineCbBox(this);
-            m_pctrlCurveWidth  = new LineCbBox(this);
-            m_pctrlCurvePoints = new LineCbBox(this);
-            m_pctrlCurvePoints->showPoints(true);
-            m_pctrlCurveColor  = new LineBtn();
+            m_plcbCurveStyle  = new LineCbBox(this);
+            m_plcbCurveWidth  = new LineCbBox(this);
+            m_plcbCurvePoints = new LineCbBox(this);
+            m_plcbCurvePoints->showPoints(true);
+            m_pclbCurveColor  = new LineBtn();
 
             for (int i=0; i<5; i++)
             {
-                m_pctrlCurveStyle->addItem(tr("item"));
-                m_pctrlCurveWidth->addItem(tr("item"));
-                m_pctrlCurvePoints->addItem(tr("item"));
+                m_plcbCurveStyle->addItem(tr("item"));
+                m_plcbCurveWidth->addItem(tr("item"));
+                m_plcbCurvePoints->addItem(tr("item"));
             }
 
-            m_pStyleDelegate = new LineDelegate(m_pctrlCurveStyle);
-            m_pWidthDelegate = new LineDelegate(m_pctrlCurveWidth);
-            m_pPointDelegate = new LineDelegate(m_pctrlCurvePoints);
-            m_pctrlCurveStyle->setItemDelegate(m_pStyleDelegate);
-            m_pctrlCurveWidth->setItemDelegate(m_pWidthDelegate);
-            m_pctrlCurvePoints->setItemDelegate(m_pPointDelegate);
+            m_pStyleDelegate = new LineDelegate(m_plcbCurveStyle);
+            m_pWidthDelegate = new LineDelegate(m_plcbCurveWidth);
+            m_pPointDelegate = new LineDelegate(m_plcbCurvePoints);
+            m_plcbCurveStyle->setItemDelegate(m_pStyleDelegate);
+            m_plcbCurveWidth->setItemDelegate(m_pWidthDelegate);
+            m_plcbCurvePoints->setItemDelegate(m_pPointDelegate);
 
             QGridLayout *pCurveStyleLayout = new QGridLayout;
             {
@@ -7175,10 +7174,10 @@ void Miarex::setupLayout()
                 pCurveStyleLayout->addWidget(lab200,2,1);
                 pCurveStyleLayout->addWidget(lab201,3,1);
                 pCurveStyleLayout->addWidget(lab202,4,1);
-                pCurveStyleLayout->addWidget(m_pctrlCurvePoints,1,2);
-                pCurveStyleLayout->addWidget(m_pctrlCurveStyle,2,2);
-                pCurveStyleLayout->addWidget(m_pctrlCurveWidth,3,2);
-                pCurveStyleLayout->addWidget(m_pctrlCurveColor,4,2);
+                pCurveStyleLayout->addWidget(m_plcbCurvePoints,1,2);
+                pCurveStyleLayout->addWidget(m_plcbCurveStyle,2,2);
+                pCurveStyleLayout->addWidget(m_plcbCurveWidth,3,2);
+                pCurveStyleLayout->addWidget(m_pclbCurveColor,4,2);
 
                 pCurveStyleLayout->setColumnStretch(2,5);
             }
@@ -7195,28 +7194,28 @@ void Miarex::setupLayout()
     {
         QVBoxLayout *pCpParams = new QVBoxLayout;
         {
-            m_pctrlCpSectionSlider = new QSlider(Qt::Horizontal);
-            m_pctrlCpSectionSlider->setSizePolicy(szPolicyMinimum);
-            m_pctrlCpSectionSlider->setMinimum(-100);
-            m_pctrlCpSectionSlider->setMaximum(100);
-            m_pctrlCpSectionSlider->setSliderPosition(00);
-            m_pctrlCpSectionSlider->setTickInterval(10);
-            m_pctrlCpSectionSlider->setTickPosition(QSlider::TicksBelow);
+            m_pslCpSectionSlider = new QSlider(Qt::Horizontal);
+            m_pslCpSectionSlider->setSizePolicy(szPolicyMinimum);
+            m_pslCpSectionSlider->setMinimum(-100);
+            m_pslCpSectionSlider->setMaximum(100);
+            m_pslCpSectionSlider->setSliderPosition(00);
+            m_pslCpSectionSlider->setTickInterval(10);
+            m_pslCpSectionSlider->setTickPosition(QSlider::TicksBelow);
             QHBoxLayout *CpPos = new QHBoxLayout;
             {
                 QLabel *label1000 = new QLabel(tr("Span Position"));
-                m_pctrlSpanPos = new DoubleEdit(0.0, 3);
+                m_pdeSpanPos = new DoubleEdit(0.0, 3);
                 CpPos->addWidget(label1000);
-                CpPos->addWidget(m_pctrlSpanPos);
+                CpPos->addWidget(m_pdeSpanPos);
             }
             QHBoxLayout *pCpSections = new QHBoxLayout;
             {
-                m_pctrlKeepCpSection  = new QPushButton(tr("Keep"));
-                m_pctrlResetCpSection = new QPushButton(tr("Reset"));
-                pCpSections->addWidget(m_pctrlKeepCpSection);
-                pCpSections->addWidget(m_pctrlResetCpSection);
+                m_ppbKeepCpSection  = new QPushButton(tr("Keep"));
+                m_ppbResetCpSection = new QPushButton(tr("Reset"));
+                pCpSections->addWidget(m_ppbKeepCpSection);
+                pCpSections->addWidget(m_ppbResetCpSection);
             }
-            pCpParams->addWidget(m_pctrlCpSectionSlider);
+            pCpParams->addWidget(m_pslCpSectionSlider);
             pCpParams->addLayout(CpPos);
             pCpParams->addLayout(pCpSections);
             pCpParams->addStretch(1);
@@ -7231,39 +7230,39 @@ void Miarex::setupLayout()
         {
             QGridLayout *pThreeDParamsLayout = new QGridLayout;
             {
-                m_pctrlAxes         = new QCheckBox(tr("Axes"), this);
+                m_pchAxes         = new QCheckBox(tr("Axes"), this);
                 //                m_pctrlLight      = new QCheckBox(tr("Light"), this);
-                m_pctrlSurfaces     = new QCheckBox(tr("Surfaces"), this);
-                m_pctrlOutline      = new QCheckBox(tr("Outline"), this);
-                m_pctrlPanels       = new QCheckBox(tr("Panels"), this);
-                m_pctrlFoilNames    = new QCheckBox(tr("Foil Names"), this);
-                m_pctrlMasses       = new QCheckBox(tr("Masses"), this);
+                m_pchSurfaces     = new QCheckBox(tr("Surfaces"), this);
+                m_pchOutline      = new QCheckBox(tr("Outline"), this);
+                m_pchPanels       = new QCheckBox(tr("Panels"), this);
+                m_pchFoilNames    = new QCheckBox(tr("Foil Names"), this);
+                m_pchMasses       = new QCheckBox(tr("Masses"), this);
 
-                pThreeDParamsLayout->addWidget(m_pctrlAxes, 1,1);
-                pThreeDParamsLayout->addWidget(m_pctrlPanels, 1,2);
-                pThreeDParamsLayout->addWidget(m_pctrlSurfaces, 2,1);
-                pThreeDParamsLayout->addWidget(m_pctrlOutline, 2,2);
-                pThreeDParamsLayout->addWidget(m_pctrlFoilNames, 3,1);
-                pThreeDParamsLayout->addWidget(m_pctrlMasses, 3,2);
+                pThreeDParamsLayout->addWidget(m_pchAxes, 1,1);
+                pThreeDParamsLayout->addWidget(m_pchPanels, 1,2);
+                pThreeDParamsLayout->addWidget(m_pchSurfaces, 2,1);
+                pThreeDParamsLayout->addWidget(m_pchOutline, 2,2);
+                pThreeDParamsLayout->addWidget(m_pchFoilNames, 3,1);
+                pThreeDParamsLayout->addWidget(m_pchMasses, 3,2);
             }
 
             QVBoxLayout *pThreeDViewLayout = new QVBoxLayout;
             {
                 QHBoxLayout *pAxisViewLayout = new QHBoxLayout;
                 {
-                    m_pctrlX          = new QToolButton;
-                    m_pctrlY          = new QToolButton;
-                    m_pctrlZ          = new QToolButton;
-                    m_pctrlIso        = new QToolButton;
-                    m_pctrlFlip       = new QToolButton;
+                    m_ptbX          = new QToolButton;
+                    m_ptbY          = new QToolButton;
+                    m_ptbZ          = new QToolButton;
+                    m_ptbIso        = new QToolButton;
+                    m_ptbFlip       = new QToolButton;
                     int iconSize =32;
-                    if(m_pctrlX->iconSize().height()<=iconSize)
+                    if(m_ptbX->iconSize().height()<=iconSize)
                     {
-                        m_pctrlX->setIconSize(QSize(iconSize,iconSize));
-                        m_pctrlY->setIconSize(QSize(iconSize,iconSize));
-                        m_pctrlZ->setIconSize(QSize(iconSize,iconSize));
-                        m_pctrlIso->setIconSize(QSize(iconSize,iconSize));
-                        m_pctrlFlip->setIconSize(QSize(iconSize,iconSize));
+                        m_ptbX->setIconSize(QSize(iconSize,iconSize));
+                        m_ptbY->setIconSize(QSize(iconSize,iconSize));
+                        m_ptbZ->setIconSize(QSize(iconSize,iconSize));
+                        m_ptbIso->setIconSize(QSize(iconSize,iconSize));
+                        m_ptbFlip->setIconSize(QSize(iconSize,iconSize));
                     }
                     m_pXView    = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
                     m_pYView    = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
@@ -7276,36 +7275,36 @@ void Miarex::setupLayout()
                     m_pIsoView->setCheckable(true);
                     m_pFlipView->setCheckable(false);
 
-                    m_pctrlX->setDefaultAction(m_pXView);
-                    m_pctrlY->setDefaultAction(m_pYView);
-                    m_pctrlZ->setDefaultAction(m_pZView);
-                    m_pctrlIso->setDefaultAction(m_pIsoView);
-                    m_pctrlFlip->setDefaultAction(m_pFlipView);
-                    pAxisViewLayout->addWidget(m_pctrlX);
-                    pAxisViewLayout->addWidget(m_pctrlY);
-                    pAxisViewLayout->addWidget(m_pctrlZ);
-                    pAxisViewLayout->addWidget(m_pctrlIso);
-                    pAxisViewLayout->addWidget(m_pctrlFlip);
+                    m_ptbX->setDefaultAction(m_pXView);
+                    m_ptbY->setDefaultAction(m_pYView);
+                    m_ptbZ->setDefaultAction(m_pZView);
+                    m_ptbIso->setDefaultAction(m_pIsoView);
+                    m_ptbFlip->setDefaultAction(m_pFlipView);
+                    pAxisViewLayout->addWidget(m_ptbX);
+                    pAxisViewLayout->addWidget(m_ptbY);
+                    pAxisViewLayout->addWidget(m_ptbZ);
+                    pAxisViewLayout->addWidget(m_ptbIso);
+                    pAxisViewLayout->addWidget(m_ptbFlip);
                 }
 
                 pThreeDViewLayout->addLayout(pAxisViewLayout);
-                m_pctrl3DResetScale = new QPushButton(tr("Reset scale"));
-                m_pctrl3DResetScale->setStatusTip(tr("Resets the display scale so that the plane fits in the window"));
-                pThreeDViewLayout->addWidget(m_pctrl3DResetScale);
+                m_ppb3DResetScale = new QPushButton(tr("Reset scale"));
+                m_ppb3DResetScale->setStatusTip(tr("Resets the display scale so that the plane fits in the window"));
+                pThreeDViewLayout->addWidget(m_ppb3DResetScale);
             }
 
             QHBoxLayout *pClipLayout = new QHBoxLayout;
             {
                 QLabel *ClipLabel = new QLabel(tr("Clip:"));
-                m_pctrlClipPlanePos = new QSlider(Qt::Horizontal);
-                m_pctrlClipPlanePos->setSizePolicy(szPolicyMinimum);
-                m_pctrlClipPlanePos->setMinimum(-100);
-                m_pctrlClipPlanePos->setMaximum( 100);
-                m_pctrlClipPlanePos->setSliderPosition(0);
-                m_pctrlClipPlanePos->setTickInterval(10);
-                m_pctrlClipPlanePos->setTickPosition(QSlider::TicksBelow);
+                m_pslClipPlanePos = new QSlider(Qt::Horizontal);
+                m_pslClipPlanePos->setSizePolicy(szPolicyMinimum);
+                m_pslClipPlanePos->setMinimum(-100);
+                m_pslClipPlanePos->setMaximum( 100);
+                m_pslClipPlanePos->setSliderPosition(0);
+                m_pslClipPlanePos->setTickInterval(10);
+                m_pslClipPlanePos->setTickPosition(QSlider::TicksBelow);
                 pClipLayout->addWidget(ClipLabel);
-                pClipLayout->addWidget(m_pctrlClipPlanePos,1);
+                pClipLayout->addWidget(m_pslClipPlanePos,1);
             }
             pThreeDViewControlsLayout->addLayout(pThreeDParamsLayout);
             pThreeDViewControlsLayout->addStretch(1);
@@ -7320,24 +7319,24 @@ void Miarex::setupLayout()
     //_________________________Main Layout
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        m_pctrlMiddleControls = new QStackedWidget;
-        m_pctrlMiddleControls->addWidget(pDisplayBox);
-        m_pctrlMiddleControls->addWidget(pPolarPropsFrame);
-        m_pctrlMiddleControls->addWidget(pCpBox);
+        m_pswMiddleControls = new QStackedWidget;
+        m_pswMiddleControls->addWidget(pDisplayBox);
+        m_pswMiddleControls->addWidget(pPolarPropsFrame);
+        m_pswMiddleControls->addWidget(pCpBox);
 
-        m_pctrlBottomControls = new QStackedWidget;
-        m_pctrlBottomControls->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+        m_pswBottomControls = new QStackedWidget;
+        m_pswBottomControls->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
         pCurveBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
         pThreeDViewBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 
-        m_pctrlBottomControls->addWidget(pCurveBox);
-        m_pctrlBottomControls->addWidget(pThreeDViewBox);
+        m_pswBottomControls->addWidget(pCurveBox);
+        m_pswBottomControls->addWidget(pThreeDViewBox);
 
         pMainLayout->addWidget(pAnalysisBox);
         //        pMainLayout->addStretch();
-        pMainLayout->addWidget(m_pctrlMiddleControls);
+        pMainLayout->addWidget(m_pswMiddleControls);
         //        pMainLayout->addStretch();
-        pMainLayout->addWidget(m_pctrlBottomControls);
+        pMainLayout->addWidget(m_pswBottomControls);
     }
     setLayout(pMainLayout);
 }
@@ -7517,9 +7516,9 @@ void Miarex::setWPolar(bool bCurrent, QString WPlrName)
 
         QString PolarProps;
         getPolarProperties(m_pCurWPolar, PolarProps);
-        m_pctrlPolarProps->setText(PolarProps);
+        m_pmtePolarProps->setText(PolarProps);
     }
-    else m_pctrlPolarProps->clear();
+    else m_pmtePolarProps->clear();
 
     setAnalysisParams();
     setCurveParams();
@@ -7682,7 +7681,7 @@ void Miarex::snapClient(QString const &FileName)
 void Miarex::stopAnimate()
 {
     m_bAnimateWOpp = false;
-    m_pctrlWOppAnimate->setChecked(false);
+    m_pchWOppAnimate->setChecked(false);
     m_pTimerWOpp->stop();
     m_pTimerMode->stop();
 
