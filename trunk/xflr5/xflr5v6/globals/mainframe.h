@@ -43,9 +43,9 @@
 
 #include <xflcore/gui_enums.h>
 #include <xflcore/gui_params.h>
-#include <graph/graph.h>
+#include <xflgraph/graph.h>
 #include <miarex/view/gllightdlg.h>
-#include <misc/voidwidget.h>
+#include <xflwidgets/voidwidget.h>
 #include <xflcore/core_enums.h>
 
 class AFoil;

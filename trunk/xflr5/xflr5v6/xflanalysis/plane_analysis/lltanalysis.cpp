@@ -1068,9 +1068,6 @@ double LLTAnalysis::getCm0(const Foil *pFoil0, const Foil *pFoil1, double Re, do
     if(IsOutRe) bOutRe = true;
     if(IsError) bError = true;
 
-    if (Tau<0.0) Tau = 0.0;
-    if (Tau>1.0) Tau = 1.0;
-
     double Res = Cm0 + (Cm1-Cm0)*(0.0-Cl0)/(Cl1-Cl0);
 
     return Res;

@@ -34,7 +34,7 @@
 
 #include <xflobjects/objects2d/foil.h>
 #include <xdirect/optim2d/particle.h>
-#include <graph/graph.h>
+#include <xflgraph/graph.h>
 
 class Foil;
 class FoilWt;

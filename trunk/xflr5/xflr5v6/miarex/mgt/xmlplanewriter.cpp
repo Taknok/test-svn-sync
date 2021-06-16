@@ -21,7 +21,7 @@
 
 #include "xmlplanewriter.h"
 #include <xflcore/xflcore.h>
-#include <misc/options/units.h>
+#include <xflcore/units.h>
 #include <xflobjects/objects3d/plane.h>
 
 

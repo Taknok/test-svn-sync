@@ -35,9 +35,9 @@
 #include <miarex/miarex.h>
 #include <xdirect/xdirect.h>
 #include <xinverse/xinverse.h>
-#include <graph/graphdlg.h>
-#include <misc/text/textclrbtn.h>
-#include <misc/color/colorbutton.h>
+#include <xflgraph/controls/graphdlg.h>
+#include <xflwidgets/text/textclrbtn.h>
+#include <xflwidgets/color/colorbutton.h>
 
 
 bool Settings::s_bStyleSheets = true;

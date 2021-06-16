@@ -28,7 +28,7 @@
 #include "flapdlg.h"
 
 #include <xflobjects/objects2d/foil.h>
-#include <misc/text/doubleedit.h>
+#include <xflwidgets/text/doubleedit.h>
 
 
 FlapDlg::FlapDlg(QWidget *pParent) : QDialog(pParent)

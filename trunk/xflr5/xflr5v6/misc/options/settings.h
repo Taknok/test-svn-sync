@@ -33,7 +33,7 @@
 #include <QSettings>
 
 #include <xflcore/gui_enums.h>
-#include <graph/graph.h>
+#include <xflgraph/graph.h>
 
 class MainFrame;
 class TextClrBtn;

@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef AERODATADLG_H
-#define AERODATADLG_H
+#pragma once
 
 
 
@@ -37,6 +36,7 @@
 #include <QDialog>
 #include <QLabel>
 #include <QComboBox>
+#include <QDialogButtonBox>
 
 class DoubleEdit;
 
@@ -52,56 +52,58 @@ class AeroDataDlg : public QDialog
 
     friend class Miarex;
 
-public:
-    AeroDataDlg(QWidget *parent = nullptr);
+    public:
+        AeroDataDlg(QWidget *parent = nullptr);
 
-public:
-    double AirDensity();   //[kg/m3]
-    double KinematicViscosity();     //[kg/m3]
-
-
-private:
-    void setupLayout();
-
-    double TemperatureCorrection(double temp);
-    double AirTemperature(double Altitude);   //[K]
-    double AirPressure(double Altitude);    //[Pa]
-    double AirDensity(double Altitude, double temp);   //[kg/m3]
-    double DynamicViscosity(double Altitude, double temp);     //[kg/m3]
-    double KinematicViscosity(double Altitude , double Temp);   //[kg/m3]
-    double SpeedOfSound(double temp);       //[m/s]
-
-private:
-    void keyPressEvent(QKeyEvent *event);
-
-private slots:
-    void OnTempUnit();
-    void updateResults();
+    public:
+        double AirDensity();   //[kg/m3]
+        double KinematicViscosity();     //[kg/m3]
 
 
-private:
-    static double s_Altitude;    // meters
-    static double s_Temperature; // degree Kelvin
-    static bool s_bCelsius;
+    private:
+        void setupLayout();
 
-    double UniversalGasConstant;        // [J/(mol.K)]
-    double DryAirMolarMass;             // [kg/mol]
-    double AdiabaticIndex;
-    double SutherlandsConstant;         // [K]
-    double ReferenceViscosity;          // [Pa.s] !!!!
+        double TemperatureCorrection(double temp);
+        double AirTemperature(double Altitude);   //[K]
+        double AirPressure(double Altitude);    //[Pa]
+        double AirDensity(double Altitude, double temp);   //[kg/m3]
+        double DynamicViscosity(double Altitude, double temp);     //[kg/m3]
+        double KinematicViscosity(double Altitude , double Temp);   //[kg/m3]
+        double SpeedOfSound(double temp);       //[m/s]
 
-private:
-    QComboBox *m_pctrlTempUnit;
-    QPushButton *m_pOKButton, *m_pCancelButton;
-    DoubleEdit *m_pctrlTemperature, *m_pctrlAltitude;
+    private:
+        void keyPressEvent(QKeyEvent *event);
 
-    QLabel *m_pctrlAirDensity, *m_pctrlAirPressure;
-    QLabel *m_pctrlKinematicViscosity;
-    QLabel *m_pctrlDynamicViscosity;
-    QLabel *m_pctrlSpeedOfSound;
+    private slots:
+        void onTempUnit();
+        void updateResults();
+        void onButton(QAbstractButton *pButton);
+
+    private:
+        static double s_Altitude;    // meters
+        static double s_Temperature; // degree Kelvin
+        static bool s_bCelsius;
+
+        double UniversalGasConstant;        // [J/(mol.K)]
+        double DryAirMolarMass;             // [kg/mol]
+        double AdiabaticIndex;
+        double SutherlandsConstant;         // [K]
+        double ReferenceViscosity;          // [Pa.s] !!!!
+
+    private:
+        QComboBox *m_pcbTempUnit;
+
+        DoubleEdit *m_pdeTemperature, *m_pdeAltitude;
+
+        QLabel *m_plabAirDensity, *m_plabAirPressure;
+        QLabel *m_plabKinematicViscosity;
+        QLabel *m_plabDynamicViscosity;
+        QLabel *m_plabSpeedOfSound;
+
+        QDialogButtonBox *m_pButtonBox;
 };
 
-#endif // AERODATADLG_H
+
 
 
 

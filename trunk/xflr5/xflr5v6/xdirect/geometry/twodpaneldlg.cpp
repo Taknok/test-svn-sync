@@ -28,8 +28,8 @@
 
 #include <xflobjects/objects2d/foil.h>
 #include <xfoil.h>
-#include <misc/text/intedit.h>
-#include <misc/text/doubleedit.h>
+#include <xflwidgets/text/intedit.h>
+#include <xflwidgets/text/doubleedit.h>
 
 XFoil *TwoDPanelDlg::s_pXFoil;
 

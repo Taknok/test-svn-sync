@@ -37,8 +37,8 @@
 #include <miarex/design/wingseldlg.h>
 #include <miarex/view/w3dprefsdlg.h>
 #include <misc/options/settings.h>
-#include <misc/options/units.h>
-#include <viewwidgets/glwidgets/gl3dplaneview.h>
+#include <xflcore/units.h>
+#include <xfl3d/gl3dplaneview.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/surface.h>
 
@@ -338,11 +338,11 @@ void EditPlaneDlg::setupLayout()
                             m_pctrlIso->setIconSize(QSize(iconSize,iconSize));
                             m_pctrlFlip->setIconSize(QSize(iconSize,iconSize));
                         }
-                        m_pXView    = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
-                        m_pYView    = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
-                        m_pZView    = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
-                        m_pIsoView  = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
-                        m_pFlipView = new QAction(QIcon(":/images/OnFlipView.png"), tr("Flip View"), this);
+                        m_pXView    = new QAction(QIcon(":/resources/images/OnXView.png"), tr("X View"), this);
+                        m_pYView    = new QAction(QIcon(":/resources/images/OnYView.png"), tr("Y View"), this);
+                        m_pZView    = new QAction(QIcon(":/resources/images/OnZView.png"), tr("Z View"), this);
+                        m_pIsoView  = new QAction(QIcon(":/resources/images/OnIsoView.png"), tr("Iso View"), this);
+                        m_pFlipView = new QAction(QIcon(":/resources/images/OnFlipView.png"), tr("Flip View"), this);
                         m_pXView->setCheckable(true);
                         m_pYView->setCheckable(true);
                         m_pZView->setCheckable(true);

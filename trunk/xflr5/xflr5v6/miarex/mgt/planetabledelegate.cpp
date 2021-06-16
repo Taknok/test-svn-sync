@@ -22,7 +22,7 @@
 
 #include "planetabledelegate.h"
 #include <miarex/objects3d.h>
-#include <misc/text/doubleedit.h>
+#include <xflwidgets/text/doubleedit.h>
 
 
 PlaneTableDelegate::PlaneTableDelegate(QObject *parent)

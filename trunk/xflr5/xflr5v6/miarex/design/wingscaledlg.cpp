@@ -25,8 +25,8 @@
 
 #include "wingscaledlg.h"
 #include <xflcore/xflcore.h>
-#include <misc/options/units.h>
-#include <misc/text/doubleedit.h>
+#include <xflcore/units.h>
+#include <xflwidgets/text/doubleedit.h>
 
 
 WingScaleDlg::WingScaleDlg(QWidget *pParent) : QDialog(pParent)

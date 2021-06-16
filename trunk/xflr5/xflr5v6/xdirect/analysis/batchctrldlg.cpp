@@ -30,7 +30,7 @@
 #include <xdirect/analysis/xfoiltask.h>
 #include <xdirect/objects2d.h>
 #include <xdirect/xdirect.h>
-#include <misc/text/doubleedit.h>
+#include <xflwidgets/text/doubleedit.h>
 
 double BatchCtrlDlg::s_XHinge     = 0.7;
 double BatchCtrlDlg::s_YHinge     = 0.5;

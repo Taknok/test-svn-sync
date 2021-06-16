@@ -31,22 +31,23 @@ class SaveOptions : public QWidget
 {
     friend class MainFrame;
     Q_OBJECT
-public:
-    SaveOptions(QWidget *parent = nullptr);
+    public:
+        SaveOptions(QWidget *parent = nullptr);
 
-    void initWidget(bool bAutoLoadLast=false, bool bOpps=false, bool bWOpps = true, bool bAutoSave=true, int saveInterval=10);
+        void initWidget(bool bAutoLoadLast=false, bool bOpps=false, bool bWOpps = true, bool bAutoSave=true, int saveInterval=10);
 
-public slots:
-    void onOK();
+    public slots:
+        void onOK();
 
-private:
-    void setupLayout();
-    void readParams();
+    private:
+        void setupLayout();
+        void readParams();
 
-    bool m_bOpps, m_bWOpps, m_bAutoSave, m_bAutoLoadLast;
-    int m_SaveInterval;
-    IntEdit *m_pctrlInterval;
-    QCheckBox *m_pctrlOpps, *m_pctrlWOpps;
-    QCheckBox *m_pctrlAutoSave, *m_pctrlAutoLoadLast;
+        bool m_bOpps, m_bWOpps, m_bAutoSave, m_bAutoLoadLast;
+        int m_SaveInterval;
+
+        IntEdit *m_pieInterval;
+        QCheckBox *m_pchOpps, *m_pchWOpps;
+        QCheckBox *m_pchAutoSave, *m_pchAutoLoadLast;
 };
 

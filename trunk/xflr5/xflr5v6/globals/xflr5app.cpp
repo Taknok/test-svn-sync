@@ -107,7 +107,7 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
     parseCmdLine(*this, scriptPathName, bScript, bShowProgress, OGLversion);
 
     QPixmap pixmap;
-    pixmap.load(":/images/splash.png");
+    pixmap.load(":/resources/images/splash.png");
     QSplashScreen splash(pixmap);
     splash.setWindowFlags(Qt::SplashScreen);
     if(!bScript)

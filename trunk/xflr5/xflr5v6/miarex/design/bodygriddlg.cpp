@@ -30,10 +30,10 @@
 
 #include "bodygriddlg.h"
 #include <xflcore/xflcore.h>
-#include <misc/line/linebtn.h>
-#include <misc/line/linepickerdlg.h>
-#include <misc/options/units.h>
-#include <misc/text/doubleedit.h>
+#include <xflwidgets/line/linebtn.h>
+#include <xflwidgets/line/linepickerdlg.h>
+#include <xflcore/units.h>
+#include <xflwidgets/text/doubleedit.h>
 
 
 bool BodyGridDlg::s_bScale = false;

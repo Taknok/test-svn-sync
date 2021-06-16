@@ -31,11 +31,11 @@
 #include "optim2d.h"
 
 #include <xflcore/xflcore.h>
-#include <graph/curve.h>
-#include <misc/text/doubleedit.h>
-#include <misc/text/intedit.h>
-#include <viewwidgets/graphwidgets/graphwt.h>
-#include <viewwidgets/twodwidgets/foilwt.h>
+#include <xflgraph/curve.h>
+#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/text/intedit.h>
+#include <xflgraph/containers/graphwt.h>
+#include <twodwidgets/foilwt.h>
 #include <xdirect/analysis/xfoiltask.h>
 #include <xdirect/objects2d.h>
 #include <xdirect/optim2d/gatask.h>

@@ -36,8 +36,8 @@
 #include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
 #include <xflcore/trace.h>
-#include <graph/curve.h>
-#include <graph/graph.h>
+#include <xflgraph/curve.h>
+#include <xflgraph/graph.h>
 #include <miarex/analysis/aerodatadlg.h>
 #include <miarex/analysis/editpolardefdlg.h>
 #include <miarex/analysis/panelanalysisdlg.h>
@@ -63,23 +63,23 @@
 #include <miarex/view/targetcurvedlg.h>
 #include <miarex/view/w3dprefsdlg.h>
 #include <misc/editplrdlg.h>
-#include <misc/line/linebtn.h>
-#include <misc/line/linecbbox.h>
-#include <misc/line/linedelegate.h>
+#include <xflwidgets/line/linebtn.h>
+#include <xflwidgets/line/linecbbox.h>
+#include <xflwidgets/line/linedelegate.h>
 #include <misc/moddlg.h>
 #include <misc/objectpropsdlg.h>
 #include <misc/options/settings.h>
-#include <misc/options/units.h>
+#include <xflcore/units.h>
 #include <misc/polarfilterdlg.h>
 #include <misc/renamedlg.h>
 #include <misc/stlexportdialog.h>
-#include <misc/text/doubleedit.h>
-#include <misc/text/mintextedit.h>
-#include <viewwidgets/glwidgets/gl3dmiarexview.h>
-#include <viewwidgets/graphwidgets/graphtilewt.h>
-#include <viewwidgets/graphwidgets/graphwt.h>
-#include <viewwidgets/graphwidgets/miarextilewt.h>
-#include <viewwidgets/wingwt.h>
+#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/text/mintextedit.h>
+#include <xfl3d/gl3dmiarexview.h>
+#include <xflgraph/containers/graphtilewt.h>
+#include <xflgraph/containers/graphwt.h>
+#include <xflgraph/containers/miarextilewt.h>
+#include <twodwidgets/wingwt.h>
 #include <xdirect/objects2d.h>
 #include <xflanalysis/matrix.h>
 #include <xflobjects/objects3d/body.h>
@@ -7264,11 +7264,11 @@ void Miarex::setupLayout()
                         m_ptbIso->setIconSize(QSize(iconSize,iconSize));
                         m_ptbFlip->setIconSize(QSize(iconSize,iconSize));
                     }
-                    m_pXView    = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
-                    m_pYView    = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
-                    m_pZView    = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
-                    m_pIsoView  = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
-                    m_pFlipView = new QAction(QIcon(":/images/OnFlipView.png"), tr("Flip View"), this);
+                    m_pXView    = new QAction(QIcon(":/resources/images/OnXView.png"), tr("X View"), this);
+                    m_pYView    = new QAction(QIcon(":/resources/images/OnYView.png"), tr("Y View"), this);
+                    m_pZView    = new QAction(QIcon(":/resources/images/OnZView.png"), tr("Z View"), this);
+                    m_pIsoView  = new QAction(QIcon(":/resources/images/OnIsoView.png"), tr("Iso View"), this);
+                    m_pFlipView = new QAction(QIcon(":/resources/images/OnFlipView.png"), tr("Flip View"), this);
                     m_pXView->setCheckable(true);
                     m_pYView->setCheckable(true);
                     m_pZView->setCheckable(true);

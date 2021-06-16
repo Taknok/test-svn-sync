@@ -31,7 +31,7 @@
 
 #include "editpolardefdlg.h"
 #include <xflanalysis/analysis3d_globals.h>
-#include <misc/options/units.h>
+#include <xflcore/units.h>
 #include <xflcore/xflcore.h>
 #include <xflcore/gui_enums.h>
 #include <xflobjects/objects3d/wpolar.h>

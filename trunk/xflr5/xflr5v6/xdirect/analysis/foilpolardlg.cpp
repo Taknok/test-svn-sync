@@ -23,9 +23,9 @@
 #include <QVBoxLayout>
 #include "foilpolardlg.h"
 #include <xflcore/xflcore.h>
-#include <misc/options/units.h>
+#include <xflcore/units.h>
 #include <xdirect/xdirect.h>
-#include <misc/text/doubleedit.h>
+#include <xflwidgets/text/doubleedit.h>
 #include <xflobjects/objects2d/polar.h>
 
 QByteArray FoilPolarDlg::s_WindowGeometry;

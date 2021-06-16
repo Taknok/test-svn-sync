@@ -38,7 +38,7 @@
 #include <QStackedWidget>
 #include <QSettings>
 
-#include <graph/graph.h>
+#include <xflgraph/graph.h>
 
 #include <gui_objects/spline5.h>
 

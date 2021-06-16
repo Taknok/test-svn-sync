@@ -11171,23 +11171,23 @@ de la corba de QSpec.</translation>
 <context>
     <name>gl3dMiarexView</name>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/glWidgets/gl3dmiarexview.cpp" line="110"/>
+        <location filename="../xflr5-gui/xfl3d/gl3dmiarexview.cpp" line="110"/>
         <source>Time =</source>
         <translation>Temps =</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/glWidgets/gl3dmiarexview.cpp" line="416"/>
+        <location filename="../xflr5-gui/xfl3d/gl3dmiarexview.cpp" line="416"/>
         <source>Streamlines calculation</source>
         <translation>Càlcul de les línies de corrent</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/glWidgets/gl3dmiarexview.cpp" line="416"/>
-        <location filename="../xflr5-gui/viewwidgets/glWidgets/gl3dmiarexview.cpp" line="765"/>
+        <location filename="../xflr5-gui/xfl3d/gl3dmiarexview.cpp" line="416"/>
+        <location filename="../xflr5-gui/xfl3d/gl3dmiarexview.cpp" line="765"/>
         <source>Abort</source>
         <translation>Atura-ho</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/glWidgets/gl3dmiarexview.cpp" line="765"/>
+        <location filename="../xflr5-gui/xfl3d/gl3dmiarexview.cpp" line="765"/>
         <source>Velocities calculation</source>
         <translation>Càlcul de velocitats</translation>
     </message>

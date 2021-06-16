@@ -25,7 +25,7 @@
 
 
 #include "ctrltabledelegate.h"
-#include <misc/text/doubleedit.h>
+#include <xflwidgets/text/doubleedit.h>
 
 
 CtrlTableDelegate::CtrlTableDelegate(QObject *parent)

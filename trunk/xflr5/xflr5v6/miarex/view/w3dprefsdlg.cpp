@@ -27,11 +27,11 @@
 #include <QPushButton>
 
 #include "w3dprefsdlg.h"
-#include <misc/line/linepickerdlg.h>
+#include <xflwidgets/line/linepickerdlg.h>
 
-#include <misc/line/linebtn.h>
-#include <misc/color/colorbutton.h>
-#include <misc/text/intedit.h>
+#include <xflwidgets/line/linebtn.h>
+#include <xflwidgets/color/colorbutton.h>
+#include <xflwidgets/text/intedit.h>
 
 
 bool W3dPrefsDlg::s_bAutoAdjustScale = true;
