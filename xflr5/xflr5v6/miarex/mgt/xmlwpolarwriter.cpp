@@ -21,7 +21,7 @@
 #include <QDebug>
 
 #include "xmlwpolarwriter.h"
-#include <misc/options/units.h>
+#include <xflcore/units.h>
 #include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/wpolar.h>
 

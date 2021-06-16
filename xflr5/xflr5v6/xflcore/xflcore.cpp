@@ -37,8 +37,8 @@
 
 #include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
-#include <graph/graph_globals.h>
-#include <misc/options/units.h>
+#include <xflgraph/graph_globals.h>
+#include <xflcore/units.h>
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects2d/polar.h>
 #include <xflobjects/objects3d/wpolar.h>

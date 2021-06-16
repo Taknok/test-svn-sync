@@ -30,13 +30,13 @@
 
 #include "preferencesdlg.h"
 #include <globals/mainframe.h>
-#include <misc/color/colorbutton.h>
-#include <misc/options/units.h>
+#include <xflwidgets/color/colorbutton.h>
+#include <xflcore/units.h>
 #include <misc/options/settings.h>
 #include <misc/options/languagewt.h>
 #include <misc/options/saveoptions.h>
-#include <misc/text/intedit.h>
-#include <misc/text/textclrbtn.h>
+#include <xflwidgets/text/intedit.h>
+#include <xflwidgets/text/textclrbtn.h>
 #include <misc/updater.h>
 
 PreferencesDlg::PreferencesDlg(QWidget *pParent) : QDialog(pParent)

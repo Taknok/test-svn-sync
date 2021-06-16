@@ -37,7 +37,7 @@
 #include <globals/mainframe.h>
 #include <xdirect/xdirect.h>
 #include <misc/options/settings.h>
-#include <misc/line/linepickerdlg.h>
+#include <xflwidgets/line/linepickerdlg.h>
 #include <misc/renamedlg.h>
 #include <xdirect/objects2d.h>
 #include <xdirect/geometry/nacafoildlg.h>

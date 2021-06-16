@@ -23,7 +23,7 @@
 #include <QPolygon>
 
 #include <xflcore/xflcore.h>
-#include <graph/graph_globals.h>
+#include <xflgraph/graph_globals.h>
 #include "spline5.h"
 
 

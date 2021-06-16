@@ -33,13 +33,13 @@
 #include <QtDebug>
 
 #include "lltanalysisdlg.h"
-#include <viewwidgets/graphwidgets/graphwt.h>
+#include <xflgraph/containers/graphwt.h>
 #include <xflanalysis/plane_analysis/lltanalysis.h>
 #include <xflanalysis/plane_analysis/planetask.h>
 #include <xflanalysis/plane_analysis/planetaskevent.h>
 #include <xflcore/gui_params.h>
-#include <graph/curve.h>
-#include <graph/graph.h>
+#include <xflgraph/curve.h>
+#include <xflgraph/graph.h>
 #include <miarex/miarex.h>
 #include <miarex/objects3d.h>
 #include <misc/options/settings.h>

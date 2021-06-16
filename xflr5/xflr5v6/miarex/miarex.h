@@ -50,7 +50,7 @@ class MainFrame;
 #include "./analysis/panelanalysisdlg.h"
 #include "./analysis/lltanalysisdlg.h"
 #include <xflanalysis/plane_analysis/planetask.h>
-#include <graph/graph.h>
+#include <xflgraph/graph.h>
 #include <xflcore/ls2.h>
 
 

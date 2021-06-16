@@ -26,8 +26,8 @@
 
 #include "relistdlg.h"
 #include <misc/options/settings.h>
-#include <misc/text/doubleedit.h>
-#include <misc/text/floateditdelegate.h>
+#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/text/floateditdelegate.h>
 
 ReListDlg::ReListDlg(QWidget *pParent) : QDialog(pParent)
 {

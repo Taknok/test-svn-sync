@@ -37,9 +37,9 @@
 #include <miarex/mgt/importobjectdlg.h>
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/objects3d.h>
-#include <misc/options/units.h>
+#include <xflcore/units.h>
 #include <misc/options/settings.h>
-#include <misc/text/doubleedit.h>
+#include <xflwidgets/text/doubleedit.h>
 #include <xflobjects/objects3d/plane.h>
 
 QByteArray PlaneDlg::s_Geometry;

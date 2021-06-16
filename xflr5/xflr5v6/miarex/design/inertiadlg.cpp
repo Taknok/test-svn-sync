@@ -34,10 +34,10 @@
 
 #include "inertiadlg.h"
 #include <xflcore/xflcore.h>
-#include <misc/options/units.h>
+#include <xflcore/units.h>
 #include <misc/options/settings.h>
-#include <misc/text/doubleedit.h>
-#include <misc/text/floateditdelegate.h>
+#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/text/floateditdelegate.h>
 #include <xflobjects/objects3d/plane.h>
 
 QByteArray InertiaDlg::s_Geometry;

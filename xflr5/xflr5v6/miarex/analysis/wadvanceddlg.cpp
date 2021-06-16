@@ -30,9 +30,9 @@
 
 #include "wadvanceddlg.h"
 #include <xflcore/xflcore.h>
-#include <misc/options/units.h>
-#include <misc/text/doubleedit.h>
-#include <misc/text/intedit.h>
+#include <xflcore/units.h>
+#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/text/intedit.h>
 
 WAdvancedDlg::WAdvancedDlg(QWidget *pParent) : QDialog(pParent)
 {

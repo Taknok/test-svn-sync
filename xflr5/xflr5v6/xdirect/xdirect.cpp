@@ -30,19 +30,11 @@
 #include <QTimer>
 
 #include <globals/mainframe.h>
-#include <graph/curve.h>
-#include <graph/graphdlg.h>
 #include <misc/editplrdlg.h>
-#include <misc/line/linebtn.h>
-#include <misc/line/linecbbox.h>
-#include <misc/line/linedelegate.h>
 #include <misc/objectpropsdlg.h>
 #include <misc/options/settings.h>
 #include <misc/polarfilterdlg.h>
 #include <misc/renamedlg.h>
-#include <misc/text/doubleedit.h>
-#include <misc/text/mintextedit.h>
-#include <viewwidgets/graphwidgets/xdirecttilewt.h>
 #include <xdirect/analysis/batchctrldlg.h>
 #include <xdirect/analysis/batchgraphdlg.h>
 #include <xdirect/analysis/batchthreaddlg.h>
@@ -64,7 +56,15 @@
 #include <xdirect/xml/xmlpolarreader.h>
 #include <xdirect/xml/xmlpolarwriter.h>
 #include <xflcore/xflcore.h>
+#include <xflgraph/containers/xdirecttilewt.h>
+#include <xflgraph/controls/graphdlg.h>
+#include <xflgraph/curve.h>
 #include <xflobjects/objects_global.h>
+#include <xflwidgets/line/linebtn.h>
+#include <xflwidgets/line/linecbbox.h>
+#include <xflwidgets/line/linedelegate.h>
+#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/text/mintextedit.h>
 #include <xinverse/foilselectiondlg.h>
 
 

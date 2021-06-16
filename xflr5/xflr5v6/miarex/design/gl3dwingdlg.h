@@ -148,32 +148,30 @@ private:
 
     gl3dWingView *m_pglWingView;              /**< a pointer to the openGL 3.0 widget where 3d calculations and rendering are performed */
 
-    QLineEdit *m_pctrlWingName;
+    QLineEdit *m_pleWingName;
     QTextEdit *m_pctrlWingDescription;
-    QCheckBox *m_pctrlSymetric;
-    QRadioButton *m_pctrlLeftSide, *m_pctrlRightSide;
-    ColorButton *m_pctrlWingColor;
+    QCheckBox *m_pchSymetric;
+    QRadioButton *m_prbLeftSide, *m_prbRightSide;
+    ColorButton *m_pcbWingColor;
     QPushButton *m_pctrlResetMesh;
-    QPushButton *m_pctrlInsertBefore, *m_pctrlInsertAfter, *m_pctrlDeleteSection;
-    QLabel *m_pctrlWingSpan, *m_pctrlWingArea, *m_pctrlMAC, *m_pctrlGeomChord;
+    QPushButton *m_ppbInsertBefore, *m_ppbInsertAfter, *m_ppbDeleteSection;
+    QLabel *m_plabWingSpan, *m_plabWingArea, *m_pctrlMAC, *m_pctrlGeomChord;
     QLabel *m_pctrlAspectRatio, *m_pctrlTaperRatio, *m_pctrlSweep, *m_pctrlNFlaps;
-    QLabel *m_pctrlVLMPanels, *m_pctrl3DPanels;
-    QLabel *m_pctrlProjectedArea, *m_pctrlProjectedSpan;
+    QLabel *m_plabVLMPanels, *m_plab3DPanels;
+    QLabel *m_plabProjectedArea, *m_plabProjectedSpan;
 
-    QLabel *m_pctrlLength1, *m_pctrlLength2, *m_pctrlLength3, *m_pctrlLength4;
-    QLabel *m_pctrlAreaUnit1, *m_pctrlAreaUnit2, * m_pctrlVolumeUnit;
-    QTableView *m_pctrlWingTable;
+    QTableView *m_ptvWingSections;
     QStandardItemModel *m_pWingModel;
     WingDelegate *m_pWingDelegate;
 
     QDialogButtonBox *m_pButtonBox;
 
-    QCheckBox *m_pctrlAxes, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels, *m_pctrlFoilNames;
-    QCheckBox *m_pctrlShowMasses;
+    QCheckBox *m_pchAxes, *m_pchSurfaces, *m_pchOutline, *m_pchPanels, *m_pchFoilNames;
+    QCheckBox *m_pchShowMasses;
     QPushButton *m_pctrlReset;
-    QRadioButton *m_pctrlColor, *m_pctrlTextures;
+    QRadioButton *m_prbColor, *m_prbTextures;
 
-    QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso, *m_pctrlFlip;
+    QToolButton *m_ptbX, *m_ptbY, *m_ptbZ, *m_ptbIso, *m_ptbFlip;
     QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
 
     QAction *m_pScaleWing, *m_pInertia;
@@ -187,8 +185,8 @@ private:
     QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteSection, *m_pResetSection;
 
     QWidget *m_pctrlControlsWidget;
-    QSplitter *m_pctrlLeftSideSplitter;
-    QSplitter *m_pctrlHSplitter;
+    QSplitter *m_pspLeftSide;
+    QSplitter *m_pspHorizontal;
 
     static QByteArray s_LeftSplitterSizes;
     static QByteArray s_HSplitterSizes;

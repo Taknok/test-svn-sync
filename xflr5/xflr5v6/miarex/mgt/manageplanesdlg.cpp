@@ -28,7 +28,7 @@
 
 #include "manageplanesdlg.h"
 #include <miarex/objects3d.h>
-#include <misc/options/units.h>
+#include <xflcore/units.h>
 #include <xflcore/xflcore.h>
 #include <misc/options/settings.h>
 #include "planetabledelegate.h"

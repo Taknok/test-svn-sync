@@ -29,8 +29,8 @@
 #include <QCheckBox>
 #include <QDialogButtonBox>
 
-#include <misc/text/doubleedit.h>
-#include <misc/text/intedit.h>
+#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/text/intedit.h>
 
 
 class XFoilAdvancedDlg : public QDialog

@@ -35,7 +35,7 @@
 #include <QVector>
 
 
-#include <viewwidgets/twodwidgets/foildesignwt.h>
+#include <twodwidgets/foildesignwt.h>
 
 
 class FoilTableDelegate;

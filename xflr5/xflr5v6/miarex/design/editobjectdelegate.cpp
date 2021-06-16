@@ -24,8 +24,8 @@
 #include "editobjectdelegate.h"
 #include <xflobjects/objects2d/foil.h>
 #include <misc/options/settings.h>
-#include <misc/text/intedit.h>
-#include <misc/text/doubleedit.h>
+#include <xflwidgets/text/intedit.h>
+#include <xflwidgets/text/doubleedit.h>
 #include <xflcore/core_enums.h>
 
 

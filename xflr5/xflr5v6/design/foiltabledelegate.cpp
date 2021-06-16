@@ -27,9 +27,9 @@
 #include <xflobjects/objects2d/foil.h>
 #include <xdirect/objects2d.h>
 #include <xflcore/xflcore.h>
-#include <graph/graph_globals.h>
+#include <xflgraph/graph_globals.h>
 #include <misc/options/settings.h>
-#include <misc/text/doubleedit.h>
+#include <xflwidgets/text/doubleedit.h>
 
 
 

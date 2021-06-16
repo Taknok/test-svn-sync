@@ -37,11 +37,7 @@
 
 
 #include <design/afoil.h>
-#include <glcontextinfo/opengldlg.h>
-#include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
-#include <xflcore/trace.h>
-#include <graph/graphdlg.h>
 #include <gui_objects/splinefoil.h>
 #include <miarex/analysis/panelanalysisdlg.h>
 #include <miarex/analysis/stabpolardlg.h>
@@ -59,27 +55,21 @@
 #include <miarex/view/w3dprefsdlg.h>
 #include <misc/aboutq5.h>
 #include <misc/editplrdlg.h>
-#include <misc/line/linepickerdlg.h>
 #include <misc/objectpropsdlg.h>
 #include <misc/options/languagewt.h>
 #include <misc/options/preferencesdlg.h>
 #include <misc/options/saveoptions.h>
 #include <misc/options/settings.h>
-#include <misc/options/units.h>
+#include <xflcore/units.h>
 #include <misc/popup.h>
 #include <misc/renamedlg.h>
 #include <misc/updater.h>
-#include <script/logwt.h>
-#include <script/xflscriptexec.h>
-#include <script/xflscriptreader.h>
-#include <viewwidgets/glwidgets/gl3dmiarexview.h>
-#include <viewwidgets/graphwidgets/graphwt.h>
-#include <viewwidgets/graphwidgets/legendwt.h>
-#include <viewwidgets/graphwidgets/miarextilewt.h>
-#include <viewwidgets/graphwidgets/xdirecttilewt.h>
-#include <viewwidgets/inverseviewwt.h>
-#include <viewwidgets/twodwidgets/foildesignwt.h>
-#include <viewwidgets/wingwt.h>
+#include <xflscript/logwt.h>
+#include <xflscript/xflscriptexec.h>
+#include <xflscript/xflscriptreader.h>
+#include <twodwidgets/inverseviewwt.h>
+#include <twodwidgets/foildesignwt.h>
+#include <twodwidgets/wingwt.h>
 #include <xdirect/analysis/batchgraphdlg.h>
 #include <xdirect/analysis/batchthreaddlg.h>
 #include <xdirect/analysis/foilpolardlg.h>
@@ -95,10 +85,20 @@
 #include <xdirect/mgt/managefoilsdlg.h>
 #include <xdirect/objects2d.h>
 #include <xdirect/xdirect.h>
+#include <xfl3d/gl3dmiarexview.h>
+#include <xfl3d/opengldlg.h>
+#include <xflcore/trace.h>
+#include <xflcore/xflcore.h>
+#include <xflgraph/containers/graphwt.h>
+#include <xflgraph/containers/legendwt.h>
+#include <xflgraph/containers/miarextilewt.h>
+#include <xflgraph/containers/xdirecttilewt.h>
+#include <xflgraph/controls/graphdlg.h>
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects2d/polar.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/wing.h>
+#include <xflwidgets/line/linepickerdlg.h>
 #include <xinverse/xinverse.h>
 
 #ifdef Q_OS_MAC
@@ -126,7 +126,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowTitle(VERSIONNAME);
-    setWindowIcon(QIcon(":/images/xflr5_64.png"));
+    setWindowIcon(QIcon(":/resources/images/xflr5_64.png"));
 
     testConfiguration();
 
@@ -426,18 +426,18 @@ void MainFrame::closeEvent (QCloseEvent * pEvent)
 
 void MainFrame::createActions()
 {
-    m_pNewProjectAct = new QAction(QIcon(":/images/new.png"), tr("New Project") + "\tCtrl+N", this);
+    m_pNewProjectAct = new QAction(QIcon(":/resources/images/new.png"), tr("New Project") + "\tCtrl+N", this);
 //    m_pNewProjectAct->setShortcut(QKeySequence::New); // bug in Qt libs: shortcut is defined twice in translation files
 //    m_pNewProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
     m_pNewProjectAct->setStatusTip(tr("Save and close the current project, create a new project"));
     connect(m_pNewProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
 
-    m_pOpenAct = new QAction(QIcon(":/images/open.png"), tr("Open")  + "\tCtrl+O", this);
+    m_pOpenAct = new QAction(QIcon(":/resources/images/open.png"), tr("Open")  + "\tCtrl+O", this);
 //    m_pOpenAct->setShortcut(QKeySequence::Open); // bug in Qt libs: shortcut is defined twice in translation files
     m_pOpenAct->setStatusTip(tr("Open an existing file"));
     connect(m_pOpenAct, SIGNAL(triggered()), this, SLOT(onLoadFile()));
 
-    m_pSaveAct = new QAction(QIcon(":/images/save.png"), tr("Save") + "\tCtrl+S", this);
+    m_pSaveAct = new QAction(QIcon(":/resources/images/save.png"), tr("Save") + "\tCtrl+S", this);
 //    m_pSaveAct->setShortcut(QKeySequence::Save); // bug in Qt libs: shortcut is defined twice in translation files
     m_pSaveAct->setStatusTip(tr("Save the project to disk"));
     connect(m_pSaveAct, SIGNAL(triggered()), this, SLOT(onSaveProject()));
@@ -451,7 +451,7 @@ void MainFrame::createActions()
     m_pExecuteScript->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_X));
     connect(m_pExecuteScript, SIGNAL(triggered()), SLOT(onExecuteScript()));
 
-    m_pCloseProjectAct = new QAction(QIcon(":/images/new.png"), tr("Close the Project"), this);
+    m_pCloseProjectAct = new QAction(QIcon(":/resources/images/new.png"), tr("Close the Project"), this);
     m_pCloseProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F4));
     m_pCloseProjectAct->setStatusTip(tr("Save and close the current project"));
     connect(m_pCloseProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
@@ -521,7 +521,7 @@ void MainFrame::createActions()
     m_pExportCurGraphAct->setStatusTip(tr("Export the current graph data to a text file"));
     connect(m_pExportCurGraphAct, SIGNAL(triggered()), this, SLOT(onExportCurGraph()));
 
-    m_pResetCurGraphScales = new QAction(QIcon(":/images/OnResetGraphScale.png"), tr("Reset Graph Scales")+"\tR", this);
+    m_pResetCurGraphScales = new QAction(QIcon(":/resources/images/OnResetGraphScale.png"), tr("Reset Graph Scales")+"\tR", this);
     //    m_pResetCurGraphScales->setShortcut(Qt::Key_R);
     m_pResetCurGraphScales->setStatusTip(tr("Restores the graph's x and y scales"));
     connect(m_pResetCurGraphScales, SIGNAL(triggered()), this, SLOT(onResetCurGraphScales()));
@@ -558,7 +558,7 @@ void MainFrame::createActions()
 
 void MainFrame::createAFoilActions()
 {
-    m_pStoreSplineAct= new QAction(QIcon(":/images/OnStoreFoil.png"), tr("Store Splines as Foil"), this);
+    m_pStoreSplineAct= new QAction(QIcon(":/resources/images/OnStoreFoil.png"), tr("Store Splines as Foil"), this);
     m_pStoreSplineAct->setStatusTip(tr("Store the current splines in the foil database"));
     connect(m_pStoreSplineAct, SIGNAL(triggered()), m_pAFoil, SLOT(onStoreSplines()));
 
@@ -574,12 +574,12 @@ void MainFrame::createAFoilActions()
     m_pNewSplinesAct->setStatusTip(tr("Reset the splines"));
     connect(m_pNewSplinesAct, SIGNAL(triggered()), m_pAFoil, SLOT(onNewSplines()));
 
-    m_pUndoAFoilAct= new QAction(QIcon(":/images/OnUndo.png"), tr("Undo") + "\tCtrl+Z", this);
+    m_pUndoAFoilAct= new QAction(QIcon(":/resources/images/OnUndo.png"), tr("Undo") + "\tCtrl+Z", this);
 //    m_pUndoAFoilAct->setShortcut(QKeySequence::Undo); // bug in Qt libs: shortcut is defined twice in translation files
     m_pUndoAFoilAct->setStatusTip(tr("Cancels the last modification"));
     connect(m_pUndoAFoilAct, SIGNAL(triggered()), m_pAFoil, SLOT(onUndo()));
 
-    m_pRedoAFoilAct= new QAction(QIcon(":/images/OnRedo.png"), tr("Redo") + "\tCtrl+Shift+Z", this);
+    m_pRedoAFoilAct= new QAction(QIcon(":/resources/images/OnRedo.png"), tr("Redo") + "\tCtrl+Shift+Z", this);
 //    m_pRedoAFoilAct->setShortcut(QKeySequence::Redo); // bug in Qt libs: shortcut is defined twice in translation files
     m_pRedoAFoilAct->setStatusTip(tr("Restores the last cancelled modification"));
     connect(m_pRedoAFoilAct, SIGNAL(triggered()), m_pAFoil, SLOT(onRedo()));
@@ -671,11 +671,11 @@ void MainFrame::createAFoilActions()
     m_pRemoveSplinePt = new QAction(tr("Remove Control Point")+"\tCtrl+Click", this);
     connect(m_pRemoveSplinePt, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onRemovePt()));
 
-    m_pResetXScaleAct= new QAction(QIcon(":/images/OnResetXScale.png"), tr("Reset X Scale"), this);
+    m_pResetXScaleAct= new QAction(QIcon(":/resources/images/OnResetXScale.png"), tr("Reset X Scale"), this);
     m_pResetXScaleAct->setStatusTip(tr("Resets the scale to fit the current screen width"));
     connect(m_pResetXScaleAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onResetXScale()));
 
-    m_pResetXYScaleAct= new QAction(QIcon(":/images/OnResetFoilScale.png"), tr("Reset Scales")+"\tR", this);
+    m_pResetXYScaleAct= new QAction(QIcon(":/resources/images/OnResetFoilScale.png"), tr("Reset Scales")+"\tR", this);
     m_pResetXYScaleAct->setStatusTip(tr("Resets the x and y scales to screen size"));
     connect(m_pResetXYScaleAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onResetScales()));
 
@@ -690,15 +690,15 @@ void MainFrame::createAFoilActions()
     m_pResetYScaleAct= new QAction(tr("Reset Y Scale"), this);
     connect(m_pResetYScaleAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onResetYScale()));
 
-    m_pZoomInAct= new QAction(QIcon(":/images/OnZoomIn.png"), tr("Zoom in"), this);
+    m_pZoomInAct= new QAction(QIcon(":/resources/images/OnZoomIn.png"), tr("Zoom in"), this);
     m_pZoomInAct->setStatusTip(tr("Zoom the view by drawing a rectangle in the client area"));
     connect(m_pZoomInAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onZoomIn()));
 
-    m_pZoomLessAct= new QAction(QIcon(":/images/OnZoomLess.png"), tr("Zoom Less"), this);
+    m_pZoomLessAct= new QAction(QIcon(":/resources/images/OnZoomLess.png"), tr("Zoom Less"), this);
     m_pZoomLessAct->setStatusTip(tr("Zoom Less"));
     connect(m_pZoomLessAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onZoomLess()));
 
-    m_pZoomYAct= new QAction(QIcon(":/images/OnZoomYScale.png"), tr("Zoom Y Scale Only"), this);
+    m_pZoomYAct= new QAction(QIcon(":/resources/images/OnZoomYScale.png"), tr("Zoom Y Scale Only"), this);
     m_pZoomYAct->setStatusTip(tr("Zoom Y scale Only"));
     connect(m_pZoomYAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onZoomYOnly()));
 }
@@ -1160,34 +1160,34 @@ void MainFrame::createMiarexActions()
     //groups view actions so their exclusive state is properly toggled in menu and toolbar
     m_pMiarexViewActGroup = new QActionGroup(this);
     {
-        m_pWOppAct = new QAction(QIcon(":/images/OnWOppView.png"), tr("OpPoint View")+"\tF5", this);
+        m_pWOppAct = new QAction(QIcon(":/resources/images/OnWOppView.png"), tr("OpPoint View")+"\tF5", this);
         m_pWOppAct->setCheckable(true);
         m_pWOppAct->setStatusTip(tr("Switch to the Operating point view"));
         m_pWOppAct->setActionGroup(m_pMiarexViewActGroup);
         //    WOppAct->setShortcut(Qt::Key_F5);
         connect(m_pWOppAct, SIGNAL(triggered()), m_pMiarex, SLOT(onWOppView()));
 
-        m_pWPolarAct = new QAction(QIcon(":/images/OnPolarView.png"), tr("Polar View")+"\tF8", this);
+        m_pWPolarAct = new QAction(QIcon(":/resources/images/OnPolarView.png"), tr("Polar View")+"\tF8", this);
         m_pWPolarAct->setCheckable(true);
         m_pWPolarAct->setStatusTip(tr("Switch to the Polar view"));
         m_pWPolarAct->setActionGroup(m_pMiarexViewActGroup);
         //    WPolarAct->setShortcut(Qt::Key_F8);
         connect(m_pWPolarAct, SIGNAL(triggered()), m_pMiarex, SLOT(onWPolarView()));
 
-        m_pStabTimeAct = new QAction(QIcon(":/images/OnStabView.png"),tr("Time Response View")+"\tShift+F8", this);
+        m_pStabTimeAct = new QAction(QIcon(":/resources/images/OnStabView.png"),tr("Time Response View")+"\tShift+F8", this);
         m_pStabTimeAct->setCheckable(true);
         m_pStabTimeAct->setStatusTip(tr("Switch to stability analysis post-processing"));
         m_pStabTimeAct->setActionGroup(m_pMiarexViewActGroup);
         //    StabTimeAct->setShortcut(tr("Shift+F8"));
         connect(m_pStabTimeAct, SIGNAL(triggered()), m_pMiarex, SLOT(onStabTimeView()));
 
-        m_pRootLocusAct = new QAction(QIcon(":/images/OnRootLocus.png"),tr("Root Locus View")+"\tCtrl+F8", this);
+        m_pRootLocusAct = new QAction(QIcon(":/resources/images/OnRootLocus.png"),tr("Root Locus View")+"\tCtrl+F8", this);
         m_pRootLocusAct->setCheckable(true);
         m_pRootLocusAct->setStatusTip(tr("Switch to root locus view"));
         m_pRootLocusAct->setActionGroup(m_pMiarexViewActGroup);
         connect(m_pRootLocusAct, SIGNAL(triggered()), m_pMiarex, SLOT(onRootLocusView()));
 
-        m_pW3DAct = new QAction(QIcon(":/images/On3DView.png"), tr("3D View")+"\tF4", this);
+        m_pW3DAct = new QAction(QIcon(":/resources/images/On3DView.png"), tr("3D View")+"\tF4", this);
         m_pW3DAct->setCheckable(true);
         m_pW3DAct->setStatusTip(tr("Switch to the 3D view"));
         m_pW3DAct->setActionGroup(m_pMiarexViewActGroup);
@@ -1195,7 +1195,7 @@ void MainFrame::createMiarexActions()
         if(!hasOpenGL()) m_pW3DAct->setEnabled(false);
         //end action group
 
-        m_pCpViewAct = new QAction(QIcon(":/images/OnCpView.png"), tr("Cp View")+"\tF9", this);
+        m_pCpViewAct = new QAction(QIcon(":/resources/images/OnCpView.png"), tr("Cp View")+"\tF9", this);
         m_pCpViewAct->setCheckable(true);
         m_pCpViewAct->setStatusTip(tr("Switch to the Cp view"));
         m_pCpViewAct->setActionGroup(m_pMiarexViewActGroup);
@@ -2250,13 +2250,13 @@ void MainFrame::createXDirectActions()
     // groups the XDirect view so toolbar and menu actions are toggled properly
     m_pXDirectViewActGroup = new QActionGroup(this);
     {
-        m_pOpPointsAct = new QAction(QIcon(":/images/OnCpView.png"), tr("OpPoint view")+"\tF5", this);
+        m_pOpPointsAct = new QAction(QIcon(":/resources/images/OnCpView.png"), tr("OpPoint view")+"\tF5", this);
         m_pOpPointsAct->setCheckable(true);
         m_pOpPointsAct->setStatusTip(tr("Show Operating point view"));
         m_pOpPointsAct->setActionGroup(m_pXDirectViewActGroup);
         connect(m_pOpPointsAct, SIGNAL(triggered()), m_pXDirect, SLOT(onOpPointView()));
 
-        m_pPolarsAct = new QAction(QIcon(":/images/OnPolarView.png"), tr("Polar view")+"\tF8", this);
+        m_pPolarsAct = new QAction(QIcon(":/resources/images/OnPolarView.png"), tr("Polar view")+"\tF8", this);
         m_pPolarsAct->setCheckable(true);
         m_pPolarsAct->setStatusTip(tr("Show Polar view"));
         m_pPolarsAct->setActionGroup(m_pXDirectViewActGroup);
@@ -2805,11 +2805,11 @@ void MainFrame::createXDirectMenus()
 
 void MainFrame::createXInverseActions()
 {
-    m_pStoreFoil = new QAction(QIcon(":/images/OnStoreFoil.png"), tr("Store Foil"), this);
+    m_pStoreFoil = new QAction(QIcon(":/resources/images/OnStoreFoil.png"), tr("Store Foil"), this);
     m_pStoreFoil->setStatusTip(tr("Store Foil in database"));
     connect(m_pStoreFoil, SIGNAL(triggered()), m_pXInverse, SLOT(onStoreFoil()));
 
-    m_pExtractFoil = new QAction(QIcon(":/images/OnExtractFoil.png"),tr("Extract Foil"), this);
+    m_pExtractFoil = new QAction(QIcon(":/resources/images/OnExtractFoil.png"),tr("Extract Foil"), this);
     m_pExtractFoil->setStatusTip(tr("Extract a Foil from the database for modification"));
     connect(m_pExtractFoil, SIGNAL(triggered()), m_pXInverse, SLOT(onExtractFoil()));
 
@@ -2824,7 +2824,7 @@ void MainFrame::createXInverseActions()
     m_pClearOverlayFoil = new QAction(tr("Clear overlay foil"), this);
     connect(m_pClearOverlayFoil, SIGNAL(triggered()), m_pXInverse, SLOT(onClearOverlayFoil()));
 
-    m_pXInverseResetFoilScale = new QAction(QIcon(":/images/OnResetFoilScale.png"), tr("Reset foil scale")+"\tR", this);
+    m_pXInverseResetFoilScale = new QAction(QIcon(":/resources/images/OnResetFoilScale.png"), tr("Reset foil scale")+"\tR", this);
     m_pXInverseResetFoilScale->setStatusTip(tr("Resets the scale to fit the screen size"));
     connect(m_pXInverseResetFoilScale, SIGNAL(triggered()), m_pXInverse, SLOT(onResetFoilScale()));
 
@@ -2854,7 +2854,7 @@ void MainFrame::createXInverseActions()
     m_pInvQReflected->setCheckable(true);
     connect(m_pInvQReflected, SIGNAL(triggered()), m_pXInverse, SLOT(onQReflected()));
 
-    m_pInverseZoomIn = new QAction(QIcon(":/images/OnZoomIn.png"), tr("Zoom in"), this);
+    m_pInverseZoomIn = new QAction(QIcon(":/resources/images/OnZoomIn.png"), tr("Zoom in"), this);
     m_pInverseZoomIn->setStatusTip(tr("Zoom the view by drawing a rectangle in the client area"));
     connect(m_pInverseZoomIn, SIGNAL(triggered()), m_pXInverse, SLOT(onZoomIn()));
 }

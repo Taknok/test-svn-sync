@@ -38,7 +38,7 @@
 #include <QPixmap>
 #include <QDialogButtonBox>
 
-#include <viewwidgets/glwidgets/gl3dbodyview.h>
+#include <xfl3d/gl3dbodyview.h>
 
 class ColorButton;
 class DoubleEdit;

@@ -28,7 +28,7 @@
 #include "editplrdlg.h"
 #include <miarex/miarex.h>
 #include <misc/options/settings.h>
-#include <misc/text/floateditdelegate.h>
+#include <xflwidgets/text/floateditdelegate.h>
 #include <xflobjects/objects2d/polar.h>
 #include <xflobjects/objects3d/wpolar.h>
 #include <xdirect/xdirect.h>

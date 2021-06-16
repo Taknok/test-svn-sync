@@ -41,7 +41,7 @@ void AboutQ5::setupLayout()
     {
         QLabel *LabIconQ5 = new QLabel;
         LabIconQ5->setObjectName("iconXFLR5");
-        LabIconQ5->setPixmap(QPixmap(QString::fromUtf8(":/images/xflr5_64.png")));
+        LabIconQ5->setPixmap(QPixmap(QString::fromUtf8(":/resources/images/xflr5_64.png")));
         QLabel *lab1  = new QLabel(VERSIONNAME);
         lab1->setAlignment(Qt::AlignVCenter| Qt::AlignLeft);
         QLabel *XFLR5Link = new QLabel;

@@ -37,16 +37,16 @@
 #include <miarex/mgt/xmlplanewriter.h>
 #include <miarex/objects3d.h>
 #include <miarex/view/w3dprefsdlg.h>
-#include <misc/color/colorbutton.h>
-#include <misc/options/units.h>
+#include <xflwidgets/color/colorbutton.h>
+#include <xflcore/units.h>
 #include <misc/options/settings.h>
-#include <misc/text/doubleedit.h>
+#include <xflwidgets/text/doubleedit.h>
 #include <xdirect/objects2d.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/surface.h>
 #include <xflobjects/objects3d/wing.h>
 #include <xflobjects/objects_global.h>
-#include <viewwidgets/glwidgets/gl3dwingview.h>
+#include <xfl3d/gl3dwingview.h>
 #include <xdirect/objects2d.h>
 
 
@@ -72,7 +72,7 @@ GL3dWingDlg::GL3dWingDlg(QWidget *pParent) : QDialog(pParent)
 
     m_iSection   = -1;
 
-    m_pctrlLeftSideSplitter = nullptr;
+    m_pspLeftSide = nullptr;
 
     m_bEnableName              = true;
     m_bAcceptName              = true;
@@ -117,7 +117,7 @@ bool GL3dWingDlg::checkWing()
     if(!m_pWing->m_WingName.length())
     {
         QMessageBox::warning(this, tr("Warning"), tr("Please enter a name for the wing"));
-        m_pctrlWingName->setFocus();
+        m_pleWingName->setFocus();
         return false;
     }
 
@@ -193,7 +193,7 @@ void GL3dWingDlg::computeGeometry()
 void GL3dWingDlg::contextMenuEvent(QContextMenuEvent *pEvent)
 {
     // Display the context menu
-    if(m_pctrlWingTable->geometry().contains(pEvent->pos())) m_pContextMenu->exec(pEvent->globalPos());
+    if(m_ptvWingSections->geometry().contains(pEvent->pos())) m_pContextMenu->exec(pEvent->globalPos());
 }
 
 
@@ -206,33 +206,33 @@ void GL3dWingDlg::connectSignals()
 
     connect(m_pResetScales, SIGNAL(triggered()), m_pglWingView, SLOT(on3DReset()));
 
-    connect(m_pctrlIso,        SIGNAL(clicked()), m_pglWingView, SLOT(on3DIso()));
-    connect(m_pctrlX,          SIGNAL(clicked()), m_pglWingView, SLOT(on3DFront()));
-    connect(m_pctrlY,          SIGNAL(clicked()), m_pglWingView, SLOT(on3DLeft()));
-    connect(m_pctrlZ,          SIGNAL(clicked()), m_pglWingView, SLOT(on3DTop()));
+    connect(m_ptbIso,        SIGNAL(clicked()), m_pglWingView, SLOT(on3DIso()));
+    connect(m_ptbX,          SIGNAL(clicked()), m_pglWingView, SLOT(on3DFront()));
+    connect(m_ptbY,          SIGNAL(clicked()), m_pglWingView, SLOT(on3DLeft()));
+    connect(m_ptbZ,          SIGNAL(clicked()), m_pglWingView, SLOT(on3DTop()));
     connect(m_pctrlReset,      SIGNAL(clicked()), m_pglWingView, SLOT(on3DReset()));
-    connect(m_pctrlFlip,       SIGNAL(clicked()), m_pglWingView, SLOT(on3DFlip()));
+    connect(m_ptbFlip,       SIGNAL(clicked()), m_pglWingView, SLOT(on3DFlip()));
 
 
-    connect(m_pctrlFoilNames,  SIGNAL(clicked()),this, SLOT(onFoilNames()));
-    connect(m_pctrlShowMasses, SIGNAL(clicked()),this, SLOT(onShowMasses()));
+    connect(m_pchFoilNames,  SIGNAL(clicked()),this, SLOT(onFoilNames()));
+    connect(m_pchShowMasses, SIGNAL(clicked()),this, SLOT(onShowMasses()));
 
-    connect(m_pctrlAxes,       SIGNAL(clicked()), this, SLOT(onAxes()));
-    connect(m_pctrlPanels,     SIGNAL(clicked()), this, SLOT(onPanels()));
-    connect(m_pctrlSurfaces,   SIGNAL(clicked()), this, SLOT(onSurfaces()));
-    connect(m_pctrlOutline,    SIGNAL(clicked()), this, SLOT(onOutline()));
+    connect(m_pchAxes,       SIGNAL(clicked()), this, SLOT(onAxes()));
+    connect(m_pchPanels,     SIGNAL(clicked()), this, SLOT(onPanels()));
+    connect(m_pchSurfaces,   SIGNAL(clicked()), this, SLOT(onSurfaces()));
+    connect(m_pchOutline,    SIGNAL(clicked()), this, SLOT(onOutline()));
 
-    connect(m_pctrlInsertBefore,  SIGNAL(clicked()), this, SLOT(onInsertBefore()));
-    connect(m_pctrlInsertAfter,   SIGNAL(clicked()), this, SLOT(onInsertAfter()));
-    connect(m_pctrlDeleteSection, SIGNAL(clicked()), this, SLOT(onDeleteSection()));
+    connect(m_ppbInsertBefore,  SIGNAL(clicked()), this, SLOT(onInsertBefore()));
+    connect(m_ppbInsertAfter,   SIGNAL(clicked()), this, SLOT(onInsertAfter()));
+    connect(m_ppbDeleteSection, SIGNAL(clicked()), this, SLOT(onDeleteSection()));
 
     connect(m_pctrlResetMesh,     SIGNAL(clicked()), this, SLOT(onResetMesh()));
-    connect(m_pctrlWingColor,     SIGNAL(clicked()), this, SLOT(onWingColor()));
-    connect(m_pctrlTextures,      SIGNAL(clicked()), this, SLOT(onTextures()));
-    connect(m_pctrlColor,         SIGNAL(clicked()), this, SLOT(onTextures()));
-    connect(m_pctrlSymetric,      SIGNAL(clicked()), this, SLOT(onSymetric()));
-    connect(m_pctrlRightSide,     SIGNAL(clicked()), this, SLOT(onSide()));
-    connect(m_pctrlLeftSide,      SIGNAL(clicked()), this, SLOT(onSide()));
+    connect(m_pcbWingColor,     SIGNAL(clicked()), this, SLOT(onWingColor()));
+    connect(m_prbTextures,      SIGNAL(clicked()), this, SLOT(onTextures()));
+    connect(m_prbColor,         SIGNAL(clicked()), this, SLOT(onTextures()));
+    connect(m_pchSymetric,      SIGNAL(clicked()), this, SLOT(onSymetric()));
+    connect(m_prbRightSide,     SIGNAL(clicked()), this, SLOT(onSide()));
+    connect(m_prbLeftSide,      SIGNAL(clicked()), this, SLOT(onSide()));
 
     connect(m_pctrlWingDescription, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
 
@@ -251,10 +251,10 @@ void GL3dWingDlg::connectSignals()
  */
 void GL3dWingDlg::onCheckViewIcons()
 {
-    m_pctrlIso->setChecked(false);
-    m_pctrlX->setChecked(false);
-    m_pctrlY->setChecked(false);
-    m_pctrlZ->setChecked(false);
+    m_ptbIso->setChecked(false);
+    m_ptbX->setChecked(false);
+    m_ptbY->setChecked(false);
+    m_ptbZ->setChecked(false);
 }
 
 
@@ -409,23 +409,12 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
     QString str;
     m_iSection = 0;
 
-    Units::getAreaUnitLabel(str);
-    m_pctrlAreaUnit1->setText(str);
-    m_pctrlAreaUnit2->setText(str);
-
-    Units::getLengthUnitLabel(str);
-
-    m_pctrlLength1->setText(str);
-    m_pctrlLength2->setText(str);
-    m_pctrlLength3->setText(str);
-    m_pctrlLength4->setText(str);
-
     m_pWing = pWing;
     if(!m_pWing) return false;
     m_pglWingView->setWing(m_pWing);
     computeGeometry();
 
-    m_pctrlWingName->setText(m_pWing->m_WingName);
+    m_pleWingName->setText(m_pWing->m_WingName);
     if(m_pWing->m_WingDescription.length())
     {
         m_pctrlWingDescription->setPlainText(m_pWing->m_WingDescription);
@@ -435,27 +424,27 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
         m_pctrlWingDescription->setPlainText("");
     }
 
-    if(!m_bAcceptName) m_pctrlWingName->setEnabled(false);
-    m_pctrlSymetric->setChecked(m_pWing->m_bSymetric);
-    m_pctrlRightSide->setChecked(m_pWing->m_bSymetric);
-    m_pctrlLeftSide->setEnabled(!m_pWing->m_bSymetric);
-    m_pctrlRightSide->setChecked(m_bRightSide);
-    m_pctrlLeftSide->setChecked(!m_bRightSide);
+    if(!m_bAcceptName) m_pleWingName->setEnabled(false);
+    m_pchSymetric->setChecked(m_pWing->m_bSymetric);
+    m_prbRightSide->setChecked(m_pWing->m_bSymetric);
+    m_prbLeftSide->setEnabled(!m_pWing->m_bSymetric);
+    m_prbRightSide->setChecked(m_bRightSide);
+    m_prbLeftSide->setChecked(!m_bRightSide);
 
 
-    m_pctrlSurfaces->setChecked(m_pglWingView->m_bSurfaces);
-    m_pctrlOutline->setChecked(m_pglWingView->m_bOutline);
-    m_pctrlAxes->setChecked(m_pglWingView->m_bAxes);
-    m_pctrlPanels->setChecked(m_pglWingView->m_bVLMPanels);
-    m_pctrlFoilNames->setChecked(m_pglWingView->m_bFoilNames);
-    m_pctrlShowMasses->setChecked(m_pglWingView->m_bShowMasses);
+    m_pchSurfaces->setChecked(m_pglWingView->m_bSurfaces);
+    m_pchOutline->setChecked(m_pglWingView->m_bOutline);
+    m_pchAxes->setChecked(m_pglWingView->m_bAxes);
+    m_pchPanels->setChecked(m_pglWingView->m_bVLMPanels);
+    m_pchFoilNames->setChecked(m_pglWingView->m_bFoilNames);
+    m_pchShowMasses->setChecked(m_pglWingView->m_bShowMasses);
 
-    m_pctrlColor->setChecked(!m_pWing->textures());
-    m_pctrlTextures->setChecked(m_pWing->textures());
-    m_pctrlWingColor->setColor(m_pWing->m_WingColor);
-    m_pctrlWingColor->setEnabled(m_pctrlColor->isChecked());
+    m_prbColor->setChecked(!m_pWing->textures());
+    m_prbTextures->setChecked(m_pWing->textures());
+    m_pcbWingColor->setColor(m_pWing->m_WingColor);
+    m_pcbWingColor->setEnabled(m_prbColor->isChecked());
 
-    m_pctrlWingTable->setFont(Settings::s_TableFont);
+    m_ptvWingSections->setFont(Settings::s_TableFont);
 
     m_pWingModel = new QStandardItemModel;
     m_pWingModel->setRowCount(30);//temporary
@@ -472,16 +461,16 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
     m_pWingModel->setHeaderData(8, Qt::Horizontal, QObject::tr("Y-panels"));
     m_pWingModel->setHeaderData(9, Qt::Horizontal, QObject::tr("Y-dist"));
 
-    m_pctrlWingTable->setModel(m_pWingModel);
+    m_ptvWingSections->setModel(m_pWingModel);
 
 
     QItemSelectionModel *selectionModel = new QItemSelectionModel(m_pWingModel);
-    m_pctrlWingTable->setSelectionModel(selectionModel);
+    m_ptvWingSections->setSelectionModel(selectionModel);
     connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
 
 
     m_pWingDelegate = new WingDelegate(this);
-    m_pctrlWingTable->setItemDelegate(m_pWingDelegate);
+    m_ptvWingSections->setItemDelegate(m_pWingDelegate);
     connect(m_pWingDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
 
     m_precision = new int[10];
@@ -500,7 +489,7 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
 
     fillDataTable();
     setWingData();
-    m_pctrlWingTable->selectRow(m_iSection);
+    m_ptvWingSections->selectRow(m_iSection);
     setCurrentSection(m_iSection);
     return true;
 }
@@ -549,7 +538,7 @@ void GL3dWingDlg::keyPressEvent(QKeyEvent *pEvent)
 
 void GL3dWingDlg::onFoilNames()
 {
-    m_pglWingView->m_bFoilNames = m_pctrlFoilNames->isChecked();
+    m_pglWingView->m_bFoilNames = m_pchFoilNames->isChecked();
     m_pglWingView->update();
 }
 
@@ -557,7 +546,7 @@ void GL3dWingDlg::onFoilNames()
 
 void GL3dWingDlg::onShowMasses()
 {
-    m_pglWingView->m_bShowMasses = m_pctrlShowMasses->isChecked();
+    m_pglWingView->m_bShowMasses = m_pchShowMasses->isChecked();
     m_pglWingView->update();
 }
 
@@ -571,7 +560,7 @@ void GL3dWingDlg::onDescriptionChanged()
 void GL3dWingDlg::onCellChanged(QWidget *)
 {
     m_bChanged = true;
-    m_pglWingView->m_bResetglWing = true;
+    m_pglWingView->resetglWing();
     readParams();
     setWingData();
     m_pglWingView->update();
@@ -588,7 +577,7 @@ void GL3dWingDlg::onDeleteSection()
         QMessageBox::warning(this, tr("Warning"),tr("The first section cannot be deleted"));
         return;
     }
-    m_pctrlWingTable->closePersistentEditor(m_pctrlWingTable->currentIndex());
+    m_ptvWingSections->closePersistentEditor(m_ptvWingSections->currentIndex());
 
     int ny, size;
 
@@ -622,7 +611,7 @@ void GL3dWingDlg::onDeleteSection()
     computeGeometry();
     setWingData();
     m_bChanged = true;
-    m_pglWingView->m_bResetglWing = true;
+    m_pglWingView->resetglWing();
     m_pglWingView->update();
 }
 
@@ -696,17 +685,15 @@ void GL3dWingDlg::onInsertBefore()
 
 
     fillDataTable();
-    m_pctrlWingTable->closePersistentEditor(m_pctrlWingTable->currentIndex());
+    m_ptvWingSections->closePersistentEditor(m_ptvWingSections->currentIndex());
     computeGeometry();
     setWingData();
 
     m_bChanged = true;
-    m_pglWingView->m_bResetglSectionHighlight = true;
-    m_pglWingView->m_bResetglWing = true;
+    m_pglWingView->resetglHighlight();
+    m_pglWingView->resetglWing();
     m_pglWingView->update();
 }
-
-
 
 
 void GL3dWingDlg::onInsertAfter()
@@ -749,12 +736,12 @@ void GL3dWingDlg::onInsertAfter()
     //    m_pWing->m_bVLMAutoMesh = true;
 
     fillDataTable();
-    m_pctrlWingTable->closePersistentEditor(m_pctrlWingTable->currentIndex());
+    m_ptvWingSections->closePersistentEditor(m_ptvWingSections->currentIndex());
 
     computeGeometry();
     setWingData();
     m_bChanged = true;
-    m_pglWingView->m_bResetglWing = true;
+    m_pglWingView->resetglWing();
     m_pglWingView->update();
 }
 
@@ -778,7 +765,7 @@ void GL3dWingDlg::onResetSection()
         setWingData();
         computeGeometry();
         m_bChanged = true;
-        m_pglWingView->m_bResetglWing = true;
+        m_pglWingView->resetglWing();
         m_pglWingView->update();
     }
 }
@@ -822,28 +809,28 @@ void GL3dWingDlg::onOK()
 
 void GL3dWingDlg::onAxes()
 {
-    m_pglWingView->m_bAxes = m_pctrlAxes->isChecked();
+    m_pglWingView->m_bAxes = m_pchAxes->isChecked();
     m_pglWingView->update();
 }
 
 
 void GL3dWingDlg::onSurfaces()
 {
-    m_pglWingView->m_bSurfaces = m_pctrlSurfaces->isChecked();
+    m_pglWingView->m_bSurfaces = m_pchSurfaces->isChecked();
     m_pglWingView->update();
 }
 
 
 void GL3dWingDlg::onOutline()
 {
-    m_pglWingView->m_bOutline = m_pctrlOutline->isChecked();
+    m_pglWingView->m_bOutline = m_pchOutline->isChecked();
     m_pglWingView->update();
 }
 
 
 void GL3dWingDlg::onPanels()
 {
-    m_pglWingView->m_bVLMPanels = m_pctrlPanels->isChecked();
+    m_pglWingView->m_bVLMPanels = m_pchPanels->isChecked();
     m_pglWingView->update();
 }
 
@@ -857,7 +844,7 @@ void GL3dWingDlg::onResetMesh()
     setWingData();
     computeGeometry();
     m_bChanged = true;
-    m_pglWingView->m_bResetglWing = true;
+    m_pglWingView->resetglWing();
     m_pglWingView->update();
 }
 
@@ -888,8 +875,8 @@ void GL3dWingDlg::onScaleWing()
 
         fillDataTable();
         m_bChanged = true;
-        m_pglWingView->m_bResetglWing = true;
-        m_pglWingView->m_bResetglSectionHighlight = true;
+        m_pglWingView->resetglWing();
+        m_pglWingView->resetglHighlight();
         computeGeometry();
         m_pglWingView->update();
     }
@@ -898,23 +885,23 @@ void GL3dWingDlg::onScaleWing()
 
 void GL3dWingDlg::onSide()
 {
-    m_bRightSide = m_pctrlRightSide->isChecked();
+    m_bRightSide = m_prbRightSide->isChecked();
     fillDataTable();
 
     m_bChanged = true;
-    m_pglWingView->m_bResetglSectionHighlight = true;
+    m_pglWingView->resetglHighlight();
     m_pglWingView->update();
 }
 
 
 void GL3dWingDlg::onSymetric()
 {
-    if(m_pctrlSymetric->isChecked())
+    if(m_pchSymetric->isChecked())
     {
         m_pWing->m_bSymetric  = true;
         m_bRightSide          = true;
-        m_pctrlLeftSide->setEnabled(false);
-        m_pctrlRightSide->setChecked(true);
+        m_prbLeftSide->setEnabled(false);
+        m_prbRightSide->setChecked(true);
         for(int i=0; i<m_pWing->NWingSection(); i++)
         {
             m_pWing->setLeftFoilName(i, m_pWing->rightFoilName(i));
@@ -923,23 +910,23 @@ void GL3dWingDlg::onSymetric()
     else
     {
         m_pWing->m_bSymetric    = false;
-        m_pctrlLeftSide->setEnabled(true);
+        m_prbLeftSide->setEnabled(true);
     }
 
     m_bChanged = true;
     computeGeometry();
-    m_pglWingView->m_bResetglWing             = true;
-    m_pglWingView->m_bResetglSectionHighlight = true;
+    m_pglWingView->resetglWing();
+    m_pglWingView->resetglHighlight();
     m_pglWingView->update();
 }
 
 
 void GL3dWingDlg::onTextures()
 {    
-    if(m_pWing) m_pWing->m_bTextures = m_pctrlTextures->isChecked();
+    if(m_pWing) m_pWing->m_bTextures = m_prbTextures->isChecked();
     m_bDescriptionChanged = true;
-    m_pctrlWingColor->setEnabled(m_pctrlColor->isChecked());
-    m_pglWingView->m_bResetglWing = true;
+    m_pcbWingColor->setEnabled(m_prbColor->isChecked());
+    m_pglWingView->resetglWing();
     m_pglWingView->update();
 }
 
@@ -962,8 +949,8 @@ void GL3dWingDlg::onWingColor()
         m_bDescriptionChanged = true;
     }
 
-    m_pctrlWingColor->setColor(m_pWing->wingColor());
-    m_pglWingView->m_bResetglWing = true;
+    m_pcbWingColor->setColor(m_pWing->wingColor());
+    m_pglWingView->resetglWing();
     m_pglWingView->update();
 }
 
@@ -971,7 +958,7 @@ void GL3dWingDlg::onWingColor()
 
 void GL3dWingDlg::readParams()
 {
-    m_pWing->m_WingName = m_pctrlWingName->text();
+    m_pWing->m_WingName = m_pleWingName->text();
     QString strange = m_pctrlWingDescription->toPlainText();
     if(strange == tr("Wing Description")) strange="";
     m_pWing->m_WingDescription = strange;
@@ -1116,32 +1103,31 @@ void GL3dWingDlg::setCurrentSection(int section)
     m_iSection = section;
     if(m_iSection <0 || m_iSection>m_pWing->NWingSection())
     {
-        m_pctrlInsertAfter->setEnabled(false);
-        m_pctrlInsertBefore->setEnabled(false);
-        m_pctrlDeleteSection->setEnabled(false);
+        m_ppbInsertAfter->setEnabled(false);
+        m_ppbInsertBefore->setEnabled(false);
+        m_ppbDeleteSection->setEnabled(false);
     }
     else
     {
-        m_pctrlInsertAfter->setEnabled(true);
-        m_pctrlInsertBefore->setEnabled(true);
-        m_pctrlDeleteSection->setEnabled(true);
+        m_ppbInsertAfter->setEnabled(true);
+        m_ppbInsertBefore->setEnabled(true);
+        m_ppbDeleteSection->setEnabled(true);
 
         QString str;
         str = tr("Insert after section") +" %1";
         str = QString(str).arg(m_iSection+1);
-        m_pctrlInsertAfter->setText(str);
+        m_ppbInsertAfter->setText(str);
 
         str = tr("Insert before section") +" %1";
         str = QString(str).arg(m_iSection+1);
-        m_pctrlInsertBefore->setText(str);
+        m_ppbInsertBefore->setText(str);
 
         str = tr("Delete section") +" %1";
         str = QString(str).arg(m_iSection+1);
-        m_pctrlDeleteSection->setText(str);
+        m_ppbDeleteSection->setText(str);
     }
-    m_pglWingView->m_bResetglSectionHighlight = true;
+    m_pglWingView->resetglHighlight();
 }
-
 
 
 void GL3dWingDlg::setWingData()
@@ -1152,16 +1138,16 @@ void GL3dWingDlg::setWingData()
     QString str;
 
     str = QString("%1").arg(m_pWing->m_PlanformArea*Units::m2toUnit(),7,'f',2);
-    m_pctrlWingArea->setText(str);
+    m_plabWingArea->setText(str);
 
     str = QString("%1").arg(m_pWing->m_PlanformSpan*Units::mtoUnit(),5,'f',2);
-    m_pctrlWingSpan->setText(str);
+    m_plabWingSpan->setText(str);
 
     str = QString("%1").arg(m_pWing->m_ProjectedArea*Units::m2toUnit(),7,'f',2);
-    m_pctrlProjectedArea->setText(str);
+    m_plabProjectedArea->setText(str);
 
     str = QString("%1").arg(m_pWing->m_ProjectedSpan*Units::mtoUnit(),5,'f',2);
-    m_pctrlProjectedSpan->setText(str);
+    m_plabProjectedSpan->setText(str);
 
     str = QString("%1").arg(m_pWing->m_GChord*Units::mtoUnit(),5,'f',2);
     m_pctrlGeomChord->setText(str);
@@ -1180,12 +1166,11 @@ void GL3dWingDlg::setWingData()
     m_pctrlSweep->setText(str);
 
     str = QString("%1").arg(m_pWing->VLMPanelTotal(true));
-    m_pctrlVLMPanels->setText(str);
+    m_plabVLMPanels->setText(str);
 
     str = QString("%1").arg(m_pWing->VLMPanelTotal(false));
-    m_pctrl3DPanels->setText(str);
+    m_plab3DPanels->setText(str);
 }
-
 
 
 void GL3dWingDlg::setupLayout()
@@ -1214,25 +1199,25 @@ void GL3dWingDlg::setupLayout()
 
     /*_____________Start Top Layout Here____________*/
 
-    m_pctrlLeftSideSplitter = new QSplitter(Qt::Vertical, this);
+    m_pspLeftSide = new QSplitter(Qt::Vertical, this);
     {
         QWidget *pNameWidget = new QWidget(this);
         {
             QHBoxLayout *pNameLayout = new QHBoxLayout;
             {
-                m_pctrlWingName     = new QLineEdit(tr("WingName"));
-                pNameLayout->addWidget(m_pctrlWingName);
+                m_pleWingName     = new QLineEdit(tr("WingName"));
+                pNameLayout->addWidget(m_pleWingName);
                 QHBoxLayout *pStyleLayout = new QHBoxLayout;
                 {
-                    m_pctrlColor    = new QRadioButton(tr("Color"));
-                    m_pctrlTextures = new QRadioButton(tr("Textures"));
-                    m_pctrlWingColor    = new ColorButton;
-                    m_pctrlWingColor->setSizePolicy(szPolicyMaximum);
+                    m_prbColor    = new QRadioButton(tr("Color"));
+                    m_prbTextures = new QRadioButton(tr("Textures"));
+                    m_pcbWingColor    = new ColorButton;
+                    m_pcbWingColor->setSizePolicy(szPolicyMaximum);
 
-                    pStyleLayout->addWidget(m_pctrlTextures);
-                    pStyleLayout->addWidget(m_pctrlColor);
+                    pStyleLayout->addWidget(m_prbTextures);
+                    pStyleLayout->addWidget(m_prbColor);
 
-                    pStyleLayout->addWidget(m_pctrlWingColor);
+                    pStyleLayout->addWidget(m_pcbWingColor);
                 }
                 pNameLayout->addLayout(pStyleLayout);
 
@@ -1244,70 +1229,69 @@ void GL3dWingDlg::setupLayout()
         {
             QHBoxLayout *pSymLayout = new QHBoxLayout;
             {
-                m_pctrlSymetric     = new QCheckBox(tr("Symetric"));
-                m_pctrlRightSide    = new QRadioButton(tr("Right Side"));
-                m_pctrlLeftSide     = new QRadioButton(tr("Left Side"));
-                m_pctrlInsertBefore   = new QPushButton("Insert Before");
-                m_pctrlInsertAfter    = new QPushButton("Insert After");
-                m_pctrlDeleteSection  = new QPushButton("Delete Section");
+                m_pchSymetric     = new QCheckBox(tr("Symetric"));
+                m_prbRightSide    = new QRadioButton(tr("Right Side"));
+                m_prbLeftSide     = new QRadioButton(tr("Left Side"));
+                m_ppbInsertBefore   = new QPushButton("Insert Before");
+                m_ppbInsertAfter    = new QPushButton("Insert After");
+                m_ppbDeleteSection  = new QPushButton("Delete Section");
 
-                pSymLayout->addWidget(m_pctrlSymetric);
+                pSymLayout->addWidget(m_pchSymetric);
                 pSymLayout->addStretch();
-                pSymLayout->addWidget(m_pctrlRightSide);
-                pSymLayout->addWidget(m_pctrlLeftSide);
+                pSymLayout->addWidget(m_prbRightSide);
+                pSymLayout->addWidget(m_prbLeftSide);
                 pSymLayout->addStretch();
-                pSymLayout->addWidget(m_pctrlInsertBefore);
-                pSymLayout->addWidget(m_pctrlInsertAfter);
-                pSymLayout->addWidget(m_pctrlDeleteSection);
+                pSymLayout->addWidget(m_ppbInsertBefore);
+                pSymLayout->addWidget(m_ppbInsertAfter);
+                pSymLayout->addWidget(m_ppbDeleteSection);
             }
             pSymWidget->setLayout(pSymLayout);
         }
 
-        m_pctrlWingTable = new QTableView(this);
-        m_pctrlWingTable->setWindowTitle(QObject::tr("Wing definition"));
-        m_pctrlWingTable->setWordWrap(false);
-        m_pctrlWingTable->setSizePolicy(szPolicyMaximum);
-        m_pctrlWingTable->setSelectionMode(QAbstractItemView::SingleSelection);
-        m_pctrlWingTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-        m_pctrlWingTable->setEditTriggers(QAbstractItemView::CurrentChanged |
+        m_ptvWingSections = new QTableView(this);
+        m_ptvWingSections->setWindowTitle(QObject::tr("Wing definition"));
+        m_ptvWingSections->setWordWrap(false);
+        m_ptvWingSections->setSizePolicy(szPolicyMaximum);
+        m_ptvWingSections->setSelectionMode(QAbstractItemView::SingleSelection);
+        m_ptvWingSections->setSelectionBehavior(QAbstractItemView::SelectRows);
+        m_ptvWingSections->setEditTriggers(QAbstractItemView::CurrentChanged |
                                           QAbstractItemView::DoubleClicked |
                                           QAbstractItemView::SelectedClicked |
                                           QAbstractItemView::EditKeyPressed |
                                           QAbstractItemView::AnyKeyPressed);
-        QHeaderView *HorizontalHeader = m_pctrlWingTable->horizontalHeader();
-        HorizontalHeader->setStretchLastSection(true);
+        m_ptvWingSections->horizontalHeader()->setStretchLastSection(true);
 
 
         pNameWidget->sizePolicy().setVerticalStretch(1);
         pSymWidget->sizePolicy().setVerticalStretch(1);
-        m_pctrlWingTable->sizePolicy().setVerticalStretch(2);
+        m_ptvWingSections->sizePolicy().setVerticalStretch(2);
         m_pglWingView->sizePolicy().setVerticalStretch(10);
-        m_pctrlLeftSideSplitter->addWidget(pNameWidget);
-        m_pctrlLeftSideSplitter->addWidget(pSymWidget);
-        m_pctrlLeftSideSplitter->addWidget(m_pctrlWingTable);
-        m_pctrlLeftSideSplitter->addWidget(m_pglWingView);
-        m_pctrlLeftSideSplitter->setStretchFactor(0,1);
-        m_pctrlLeftSideSplitter->setStretchFactor(1,1);
-        m_pctrlLeftSideSplitter->setStretchFactor(2,9);
-        m_pctrlLeftSideSplitter->setStretchFactor(3,9);
+        m_pspLeftSide->addWidget(pNameWidget);
+        m_pspLeftSide->addWidget(pSymWidget);
+        m_pspLeftSide->addWidget(m_ptvWingSections);
+        m_pspLeftSide->addWidget(m_pglWingView);
+        m_pspLeftSide->setStretchFactor(0,1);
+        m_pspLeftSide->setStretchFactor(1,1);
+        m_pspLeftSide->setStretchFactor(2,9);
+        m_pspLeftSide->setStretchFactor(3,9);
     }
 
     QWidget *pDataWidget = new QWidget(this);
     {
         QGridLayout *pDataLayout = new QGridLayout;
         {
-            m_pctrlLength1    = new QLabel("mm", this);
-            m_pctrlLength2    = new QLabel("mm", this);
-            m_pctrlLength3    = new QLabel("mm", this);
-            m_pctrlLength4    = new QLabel("mm", this);
-            m_pctrlAreaUnit1  = new QLabel("mm2", this);
-            m_pctrlAreaUnit2  = new QLabel("mm2", this);
-            m_pctrlLength1->setAlignment(Qt::AlignLeft);
-            m_pctrlLength2->setAlignment(Qt::AlignLeft);
-            m_pctrlLength3->setAlignment(Qt::AlignLeft);
-            m_pctrlLength4->setAlignment(Qt::AlignLeft);
-            m_pctrlAreaUnit1->setAlignment(Qt::AlignLeft);
-            m_pctrlAreaUnit2->setAlignment(Qt::AlignLeft);
+            QLabel *m_plabLength1    = new QLabel(Units::lengthUnitLabel(), this);
+            QLabel *m_plabLength2    = new QLabel(Units::lengthUnitLabel(), this);
+            QLabel *m_plabLength3    = new QLabel(Units::lengthUnitLabel(), this);
+            QLabel *m_plabLength4    = new QLabel(Units::lengthUnitLabel(), this);
+            QLabel *m_plabAreaUnit1  = new QLabel(Units::areaUnitLabel(),   this);
+            QLabel *m_plabAreaUnit2  = new QLabel(Units::areaUnitLabel(),   this);
+            m_plabLength1->setAlignment(  Qt::AlignLeft);
+            m_plabLength2->setAlignment(  Qt::AlignLeft);
+            m_plabLength3->setAlignment(  Qt::AlignLeft);
+            m_plabLength4->setAlignment(  Qt::AlignLeft);
+            m_plabAreaUnit1->setAlignment(Qt::AlignLeft);
+            m_plabAreaUnit2->setAlignment(Qt::AlignLeft);
 
             QLabel *lab1 = new QLabel(tr("Wing Span"));
             QLabel *lab2 = new QLabel(tr("Area"));
@@ -1327,29 +1311,29 @@ void GL3dWingDlg::setupLayout()
             pDataLayout->addWidget(lab4,4,1);
             pDataLayout->addWidget(lab13,13,1);
             pDataLayout->addWidget(lab14,14,1);
-            m_pctrlWingSpan      = new QLabel("2000.00");
-            m_pctrlWingArea      = new QLabel("30.0");
-            m_pctrlProjectedArea = new QLabel("25.0");
-            m_pctrlProjectedSpan = new QLabel("1900.0");;
-            m_pctrlVLMPanels     = new QLabel("500");
-            m_pctrl3DPanels      = new QLabel("1000");
-            m_pctrlWingSpan->setAlignment(Qt::AlignRight);
-            m_pctrlWingArea->setAlignment(Qt::AlignRight);
-            m_pctrlProjectedSpan->setAlignment(Qt::AlignRight);
-            m_pctrlProjectedArea->setAlignment(Qt::AlignRight);
-            m_pctrlVLMPanels->setAlignment(Qt::AlignRight);
-            m_pctrl3DPanels->setAlignment(Qt::AlignRight);
-            pDataLayout->addWidget(m_pctrlWingSpan,   1,2);
-            pDataLayout->addWidget(m_pctrlWingArea,   2,2);
-            pDataLayout->addWidget(m_pctrlProjectedSpan,   3,2);
-            pDataLayout->addWidget(m_pctrlProjectedArea,   4,2);
-            pDataLayout->addWidget(m_pctrlVLMPanels, 13,2);
-            pDataLayout->addWidget(m_pctrl3DPanels,  14,2);
+            m_plabWingSpan      = new QLabel("2000.00");
+            m_plabWingArea      = new QLabel("30.0");
+            m_plabProjectedArea = new QLabel("25.0");
+            m_plabProjectedSpan = new QLabel("1900.0");;
+            m_plabVLMPanels     = new QLabel("500");
+            m_plab3DPanels      = new QLabel("1000");
+            m_plabWingSpan->setAlignment(Qt::AlignRight);
+            m_plabWingArea->setAlignment(Qt::AlignRight);
+            m_plabProjectedSpan->setAlignment(Qt::AlignRight);
+            m_plabProjectedArea->setAlignment(Qt::AlignRight);
+            m_plabVLMPanels->setAlignment(Qt::AlignRight);
+            m_plab3DPanels->setAlignment(Qt::AlignRight);
+            pDataLayout->addWidget(m_plabWingSpan,   1,2);
+            pDataLayout->addWidget(m_plabWingArea,   2,2);
+            pDataLayout->addWidget(m_plabProjectedSpan,   3,2);
+            pDataLayout->addWidget(m_plabProjectedArea,   4,2);
+            pDataLayout->addWidget(m_plabVLMPanels, 13,2);
+            pDataLayout->addWidget(m_plab3DPanels,  14,2);
 
-            pDataLayout->addWidget(m_pctrlLength1,1,3);
-            pDataLayout->addWidget(m_pctrlAreaUnit1,2,3);
-            pDataLayout->addWidget(m_pctrlLength2,3,3);
-            pDataLayout->addWidget(m_pctrlAreaUnit2,4,3);
+            pDataLayout->addWidget(m_plabLength1,1,3);
+            pDataLayout->addWidget(m_plabAreaUnit1,2,3);
+            pDataLayout->addWidget(m_plabLength2,3,3);
+            pDataLayout->addWidget(m_plabAreaUnit2,4,3);
 
             QLabel *lab20 = new QLabel(tr("Mean Geom. Chord"), this);
             QLabel *lab21 = new QLabel(tr("Mean Aero Chord"), this);
@@ -1388,8 +1372,8 @@ void GL3dWingDlg::setupLayout()
             pDataLayout->addWidget(m_pctrlTaperRatio,  10,2);
             pDataLayout->addWidget(m_pctrlSweep,       11,2);
             pDataLayout->addWidget(m_pctrlNFlaps,      12,2);
-            pDataLayout->addWidget(m_pctrlLength3, 6, 3);
-            pDataLayout->addWidget(m_pctrlLength4, 7, 3);
+            pDataLayout->addWidget(m_plabLength3, 6, 3);
+            pDataLayout->addWidget(m_plabLength4, 7, 3);
             QLabel *lab30 = new QLabel(QChar(0260));
             lab30->setAlignment(Qt::AlignLeft);
             pDataLayout->addWidget(lab30, 11, 3);
@@ -1415,62 +1399,62 @@ void GL3dWingDlg::setupLayout()
         {
             QGridLayout *ThreeDParams = new QGridLayout;
             {
-                m_pctrlAxes       = new QCheckBox(tr("Axes"), this);
-                m_pctrlSurfaces   = new QCheckBox(tr("Surfaces"), this);
-                m_pctrlOutline    = new QCheckBox(tr("Outline"), this);
-                m_pctrlPanels     = new QCheckBox(tr("Panels"), this);
-                m_pctrlFoilNames  = new QCheckBox(tr("Foil Names"), this);
-                m_pctrlShowMasses = new QCheckBox(tr("Masses"), this);
-                m_pctrlAxes->setSizePolicy(szPolicyMinimum);
-                m_pctrlSurfaces->setSizePolicy(szPolicyMinimum);
-                m_pctrlOutline->setSizePolicy(szPolicyMinimum);
-                m_pctrlPanels->setSizePolicy(szPolicyMinimum);
-                ThreeDParams->addWidget(m_pctrlAxes, 1,1);
-                ThreeDParams->addWidget(m_pctrlPanels, 1,2);
-                ThreeDParams->addWidget(m_pctrlSurfaces, 2,1);
-                ThreeDParams->addWidget(m_pctrlOutline, 2,2);
-                ThreeDParams->addWidget(m_pctrlFoilNames, 3,1);
-                ThreeDParams->addWidget(m_pctrlShowMasses, 3,2);
+                m_pchAxes       = new QCheckBox(tr("Axes"), this);
+                m_pchSurfaces   = new QCheckBox(tr("Surfaces"), this);
+                m_pchOutline    = new QCheckBox(tr("Outline"), this);
+                m_pchPanels     = new QCheckBox(tr("Panels"), this);
+                m_pchFoilNames  = new QCheckBox(tr("Foil Names"), this);
+                m_pchShowMasses = new QCheckBox(tr("Masses"), this);
+                m_pchAxes->setSizePolicy(szPolicyMinimum);
+                m_pchSurfaces->setSizePolicy(szPolicyMinimum);
+                m_pchOutline->setSizePolicy(szPolicyMinimum);
+                m_pchPanels->setSizePolicy(szPolicyMinimum);
+                ThreeDParams->addWidget(m_pchAxes, 1,1);
+                ThreeDParams->addWidget(m_pchPanels, 1,2);
+                ThreeDParams->addWidget(m_pchSurfaces, 2,1);
+                ThreeDParams->addWidget(m_pchOutline, 2,2);
+                ThreeDParams->addWidget(m_pchFoilNames, 3,1);
+                ThreeDParams->addWidget(m_pchShowMasses, 3,2);
             }
 
             QVBoxLayout *pThreeDViewLayout = new QVBoxLayout;
             {
                 QHBoxLayout *pAxisViewLayout = new QHBoxLayout;
                 {
-                    m_pctrlX          = new QToolButton;
-                    m_pctrlY          = new QToolButton;
-                    m_pctrlZ          = new QToolButton;
-                    m_pctrlIso        = new QToolButton;
-                    m_pctrlFlip       = new QToolButton;
+                    m_ptbX          = new QToolButton;
+                    m_ptbY          = new QToolButton;
+                    m_ptbZ          = new QToolButton;
+                    m_ptbIso        = new QToolButton;
+                    m_ptbFlip       = new QToolButton;
                     int iconSize =32;
-                    if(m_pctrlX->iconSize().height()<=iconSize)
+                    if(m_ptbX->iconSize().height()<=iconSize)
                     {
-                        m_pctrlX->setIconSize(QSize(iconSize,iconSize));
-                        m_pctrlY->setIconSize(QSize(iconSize,iconSize));
-                        m_pctrlZ->setIconSize(QSize(iconSize,iconSize));
-                        m_pctrlIso->setIconSize(QSize(iconSize,iconSize));
-                        m_pctrlFlip->setIconSize(QSize(iconSize,iconSize));
+                        m_ptbX->setIconSize(QSize(iconSize,iconSize));
+                        m_ptbY->setIconSize(QSize(iconSize,iconSize));
+                        m_ptbZ->setIconSize(QSize(iconSize,iconSize));
+                        m_ptbIso->setIconSize(QSize(iconSize,iconSize));
+                        m_ptbFlip->setIconSize(QSize(iconSize,iconSize));
                     }
-                    m_pXView    = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
-                    m_pYView    = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
-                    m_pZView    = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
-                    m_pIsoView  = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
-                    m_pFlipView = new QAction(QIcon(":/images/OnFlipView.png"), tr("Flip View"), this);
+                    m_pXView    = new QAction(QIcon(":/resources/images/OnXView.png"), tr("X View"), this);
+                    m_pYView    = new QAction(QIcon(":/resources/images/OnYView.png"), tr("Y View"), this);
+                    m_pZView    = new QAction(QIcon(":/resources/images/OnZView.png"), tr("Z View"), this);
+                    m_pIsoView  = new QAction(QIcon(":/resources/images/OnIsoView.png"), tr("Iso View"), this);
+                    m_pFlipView = new QAction(QIcon(":/resources/images/OnFlipView.png"), tr("Flip View"), this);
                     m_pXView->setCheckable(true);
                     m_pYView->setCheckable(true);
                     m_pZView->setCheckable(true);
                     m_pIsoView->setCheckable(true);
 
-                    m_pctrlX->setDefaultAction(m_pXView);
-                    m_pctrlY->setDefaultAction(m_pYView);
-                    m_pctrlZ->setDefaultAction(m_pZView);
-                    m_pctrlIso->setDefaultAction(m_pIsoView);
-                    m_pctrlFlip->setDefaultAction(m_pFlipView);
-                    pAxisViewLayout->addWidget(m_pctrlX);
-                    pAxisViewLayout->addWidget(m_pctrlY);
-                    pAxisViewLayout->addWidget(m_pctrlZ);
-                    pAxisViewLayout->addWidget(m_pctrlIso);
-                    pAxisViewLayout->addWidget(m_pctrlFlip);
+                    m_ptbX->setDefaultAction(m_pXView);
+                    m_ptbY->setDefaultAction(m_pYView);
+                    m_ptbZ->setDefaultAction(m_pZView);
+                    m_ptbIso->setDefaultAction(m_pIsoView);
+                    m_ptbFlip->setDefaultAction(m_pFlipView);
+                    pAxisViewLayout->addWidget(m_ptbX);
+                    pAxisViewLayout->addWidget(m_ptbY);
+                    pAxisViewLayout->addWidget(m_ptbZ);
+                    pAxisViewLayout->addWidget(m_ptbIso);
+                    pAxisViewLayout->addWidget(m_ptbFlip);
                 }
 
                 m_pctrlReset = new QPushButton(tr("Reset scale"));
@@ -1538,16 +1522,16 @@ void GL3dWingDlg::setupLayout()
         }
     }
 
-    m_pctrlHSplitter = new QSplitter(Qt::Horizontal, this);
+    m_pspHorizontal = new QSplitter(Qt::Horizontal, this);
     {
-        m_pctrlHSplitter->addWidget(m_pctrlLeftSideSplitter);
-        m_pctrlHSplitter->addWidget(pRightSideWidget);
-        m_pctrlLeftSideSplitter->sizePolicy().setHorizontalStretch(4);
+        m_pspHorizontal->addWidget(m_pspLeftSide);
+        m_pspHorizontal->addWidget(pRightSideWidget);
+        m_pspLeftSide->sizePolicy().setHorizontalStretch(4);
         pRightSideWidget->sizePolicy().setHorizontalStretch(1);
     }
 
     QHBoxLayout *pMainLayout = new QHBoxLayout;
-    pMainLayout->addWidget(m_pctrlHSplitter);
+    pMainLayout->addWidget(m_pspHorizontal);
 
     setLayout(pMainLayout);
 }
@@ -1557,12 +1541,12 @@ void GL3dWingDlg::showEvent(QShowEvent *)
 {
     restoreGeometry(s_WindowGeometry);
     if(s_HSplitterSizes.length()>0)
-        m_pctrlHSplitter->restoreState(s_HSplitterSizes);
+        m_pspHorizontal->restoreState(s_HSplitterSizes);
     if(s_LeftSplitterSizes.length()>0)
-        m_pctrlLeftSideSplitter->restoreState(s_LeftSplitterSizes);
+        m_pspLeftSide->restoreState(s_LeftSplitterSizes);
 
     m_bChanged = false;
-    m_pglWingView->m_bResetglWing = true;
+    m_pglWingView->resetglWing();
 
     m_pglWingView->update();
 
@@ -1572,8 +1556,8 @@ void GL3dWingDlg::showEvent(QShowEvent *)
 
 void GL3dWingDlg::hideEvent(QHideEvent *)
 {
-    s_HSplitterSizes  = m_pctrlHSplitter->saveState();
-    s_LeftSplitterSizes  = m_pctrlLeftSideSplitter->saveState();
+    s_HSplitterSizes  = m_pspHorizontal->saveState();
+    s_LeftSplitterSizes  = m_pspLeftSide->saveState();
 
     s_WindowGeometry = saveGeometry();
 }
@@ -1581,21 +1565,21 @@ void GL3dWingDlg::hideEvent(QHideEvent *)
 
 void GL3dWingDlg::resizeEvent(QResizeEvent *)
 {
-    int w = m_pctrlWingTable->width();
+    int w = m_ptvWingSections->width();
     w = int(double(w) *93.0/100.0);
     int wFoil  = w/5;
     int wCols  = w/11;
 
-    m_pctrlWingTable->setColumnWidth(0, wCols);
-    m_pctrlWingTable->setColumnWidth(1, wCols);
-    m_pctrlWingTable->setColumnWidth(2, wCols);
-    m_pctrlWingTable->setColumnWidth(3, wCols);
-    m_pctrlWingTable->setColumnWidth(4, wCols);
-    m_pctrlWingTable->setColumnWidth(5, wFoil);
-    m_pctrlWingTable->setColumnWidth(6, wCols);
-    m_pctrlWingTable->setColumnWidth(7, wCols);
-    m_pctrlWingTable->setColumnWidth(8, wCols);
-    m_pctrlWingTable->setColumnWidth(9, wCols);
+    m_ptvWingSections->setColumnWidth(0, wCols);
+    m_ptvWingSections->setColumnWidth(1, wCols);
+    m_ptvWingSections->setColumnWidth(2, wCols);
+    m_ptvWingSections->setColumnWidth(3, wCols);
+    m_ptvWingSections->setColumnWidth(4, wCols);
+    m_ptvWingSections->setColumnWidth(5, wFoil);
+    m_ptvWingSections->setColumnWidth(6, wCols);
+    m_ptvWingSections->setColumnWidth(7, wCols);
+    m_ptvWingSections->setColumnWidth(8, wCols);
+    m_ptvWingSections->setColumnWidth(9, wCols);
 
     if(m_pWing)    m_pglWingView->set3DScale(m_pWing->planformSpan());
     m_pglWingView->update();
@@ -1702,7 +1686,7 @@ void GL3dWingDlg::onImportWingFromXML()
     setWingData();
     m_bChanged = true;
 
-    m_pglWingView->m_bResetglWing = true;
+    m_pglWingView->resetglWing();
     m_pglWingView->update();
 }
 
@@ -1751,7 +1735,7 @@ void GL3dWingDlg::onImportWing()
     readParams();
     setWingData();
     m_bChanged = true;
-    m_pglWingView->m_bResetglWing = true;
+    m_pglWingView->resetglWing();
     m_pglWingView->update();
 }
 

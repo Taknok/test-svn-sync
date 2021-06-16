@@ -27,10 +27,10 @@
 #include <QShowEvent>
 
 #include "gllightdlg.h"
-#include <misc/text/doubleedit.h>
-#include <misc/exponentialslider.h>
-#include <misc/options/units.h>
-#include <viewwidgets/glwidgets/gl3dview.h>
+#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/exponentialslider.h>
+#include <xflcore/units.h>
+#include <xfl3d/gl3dview.h>
 
 
 Light GLLightDlg::s_Light;

@@ -25,9 +25,9 @@
 
 #include "afoil.h"
 #include "gridsettingsdlg.h"
-#include <misc/line/linepickerdlg.h>
-#include <misc/line/linebtn.h>
-#include <misc/text/doubleedit.h>
+#include <xflwidgets/line/linepickerdlg.h>
+#include <xflwidgets/line/linebtn.h>
+#include <xflwidgets/text/doubleedit.h>
 
 
 GridSettingsDlg::GridSettingsDlg(QWidget *pParent): QDialog(pParent)

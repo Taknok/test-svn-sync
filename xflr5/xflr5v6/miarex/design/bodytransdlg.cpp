@@ -26,10 +26,10 @@
 #include <QVBoxLayout>
 
 #include "bodytransdlg.h"
-#include <misc/options/units.h>
+#include <xflcore/units.h>
 #include <xflcore/xflcore.h>
-#include <misc/text/intedit.h>
-#include <misc/text/doubleedit.h>
+#include <xflwidgets/text/intedit.h>
+#include <xflwidgets/text/doubleedit.h>
 
 
 BodyTransDlg::BodyTransDlg(QWidget *pParent): QDialog(pParent)

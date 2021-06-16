@@ -29,8 +29,8 @@
 #include "gl3dbodydlg.h"
 #include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/body.h>
-#include <misc/line/linepickerdlg.h>
-#include <misc/text/doubleedit.h>
+#include <xflwidgets/line/linepickerdlg.h>
+#include <xflwidgets/text/doubleedit.h>
 
 
 BodyScaleDlg::BodyScaleDlg(QWidget *pParent ): QDialog(pParent)

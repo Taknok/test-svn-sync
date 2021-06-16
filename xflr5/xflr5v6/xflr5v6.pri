@@ -1,21 +1,14 @@
 
 SOURCES += \
-    $$PWD/xdirect/analysis/batchabstractdlg.cpp \
-    $$PWD/xdirect/analysis/batchgraphdlg.cpp \
     design/afoil.cpp \
     design/afoiltabledlg.cpp \
     design/foiltabledelegate.cpp \
     design/gridsettingsdlg.cpp \
     design/lecircledlg.cpp \
     design/splinectrlsdlg.cpp \
-    glcontextinfo/opengldlg.cpp \
     globals/main.cpp \
     globals/mainframe.cpp \
     globals/xflr5app.cpp \
-    graph/curve.cpp \
-    graph/graph.cpp \
-    graph/graph_globals.cpp \
-    graph/graphdlg.cpp \
     gui_objects/spline5.cpp \
     gui_objects/splinefoil.cpp \
     miarex/analysis/aerodatadlg.cpp \
@@ -55,14 +48,8 @@ SOURCES += \
     miarex/view/targetcurvedlg.cpp \
     miarex/view/w3dprefsdlg.cpp \
     misc/aboutq5.cpp \
-    misc/color/colorbutton.cpp \
     misc/editplrdlg.cpp \
-    misc/exponentialslider.cpp \
     misc/lengthunitdlg.cpp \
-    misc/line/linebtn.cpp \
-    misc/line/linecbbox.cpp \
-    misc/line/linedelegate.cpp \
-    misc/line/linepickerdlg.cpp \
     misc/moddlg.cpp \
     misc/newnamedlg.cpp \
     misc/objectpropsdlg.cpp \
@@ -70,43 +57,22 @@ SOURCES += \
     misc/options/preferencesdlg.cpp \
     misc/options/saveoptions.cpp \
     misc/options/settings.cpp \
-    misc/options/units.cpp \
     misc/polarfilterdlg.cpp \
     misc/popup.cpp \
     misc/renamedlg.cpp \
     misc/stlexportdialog.cpp \
-    misc/text/doubleedit.cpp \
-    misc/text/floateditdelegate.cpp \
-    misc/text/intedit.cpp \
-    misc/text/mintextedit.cpp \
-    misc/text/numedit.cpp \
-    misc/text/textclrbtn.cpp \
     misc/updater.cpp \
-    misc/voidwidget.cpp \
-    script/logwt.cpp \
-    script/xflscriptexec.cpp \
-    script/xflscriptreader.cpp \
-    viewwidgets/glwidgets/arcball.cpp \
-    viewwidgets/glwidgets/gl3dbodyview.cpp \
-    viewwidgets/glwidgets/gl3dmiarexview.cpp \
-    viewwidgets/glwidgets/gl3dplaneview.cpp \
-    viewwidgets/glwidgets/gl3dtestview.cpp \
-    viewwidgets/glwidgets/gl3dview.cpp \
-    viewwidgets/glwidgets/gl3dwingview.cpp \
-    viewwidgets/graphwidgets/graphtilewt.cpp \
-    viewwidgets/graphwidgets/graphwt.cpp \
-    viewwidgets/graphwidgets/legendwt.cpp \
-    viewwidgets/graphwidgets/miarextilewt.cpp \
-    viewwidgets/graphwidgets/xdirecttilewt.cpp \
-    viewwidgets/inverseviewwt.cpp \
-    viewwidgets/oppointwt.cpp \
-    viewwidgets/twodwidgets/bodyframewt.cpp \
-    viewwidgets/twodwidgets/bodylinewt.cpp \
-    viewwidgets/twodwidgets/foildesignwt.cpp \
-    viewwidgets/twodwidgets/foilwt.cpp \
-    viewwidgets/twodwidgets/section2dwt.cpp \
-    viewwidgets/wingwt.cpp \
+    twodwidgets/bodyframewt.cpp \
+    twodwidgets/bodylinewt.cpp \
+    twodwidgets/foildesignwt.cpp \
+    twodwidgets/foilwt.cpp \
+    twodwidgets/inverseviewwt.cpp \
+    twodwidgets/oppointwt.cpp \
+    twodwidgets/section2dwt.cpp \
+    twodwidgets/wingwt.cpp \
+    xdirect/analysis/batchabstractdlg.cpp \
     xdirect/analysis/batchctrldlg.cpp \
+    xdirect/analysis/batchgraphdlg.cpp \
     xdirect/analysis/batchthreaddlg.cpp \
     xdirect/analysis/foilpolardlg.cpp \
     xdirect/analysis/relistdlg.cpp \
@@ -134,13 +100,31 @@ SOURCES += \
     xdirect/xdirectstyledlg.cpp \
     xdirect/xml/xmlpolarreader.cpp \
     xdirect/xml/xmlpolarwriter.cpp \
+    xfl3d/arcball.cpp \
+    xfl3d/gl3dbodyview.cpp \
+    xfl3d/gl3dmiarexview.cpp \
+    xfl3d/gl3dplaneview.cpp \
+    xfl3d/gl3dtestview.cpp \
+    xfl3d/gl3dview.cpp \
+    xfl3d/gl3dwingview.cpp \
+    xfl3d/opengldlg.cpp \
     xflanalysis/analysis3d_globals.cpp \
     xflanalysis/matrix.cpp \
     xflanalysis/plane_analysis/lltanalysis.cpp \
     xflanalysis/plane_analysis/panelanalysis.cpp \
     xflanalysis/plane_analysis/planetask.cpp \
     xflcore/trace.cpp \
+    xflcore/units.cpp \
     xflcore/xflcore.cpp \
+    xflgraph/containers/graphtilewt.cpp \
+    xflgraph/containers/graphwt.cpp \
+    xflgraph/containers/legendwt.cpp \
+    xflgraph/containers/miarextilewt.cpp \
+    xflgraph/containers/xdirecttilewt.cpp \
+    xflgraph/controls/graphdlg.cpp \
+    xflgraph/curve.cpp \
+    xflgraph/graph.cpp \
+    xflgraph/graph_globals.cpp \
     xflobjects/objects2d/blxfoil.cpp \
     xflobjects/objects2d/foil.cpp \
     xflobjects/objects2d/opppoint.cpp \
@@ -160,6 +144,22 @@ SOURCES += \
     xflobjects/objects3d/wingopp.cpp \
     xflobjects/objects3d/wpolar.cpp \
     xflobjects/objects_global.cpp \
+    xflscript/logwt.cpp \
+    xflscript/xflscriptexec.cpp \
+    xflscript/xflscriptreader.cpp \
+    xflwidgets/color/colorbutton.cpp \
+    xflwidgets/exponentialslider.cpp \
+    xflwidgets/line/linebtn.cpp \
+    xflwidgets/line/linecbbox.cpp \
+    xflwidgets/line/linedelegate.cpp \
+    xflwidgets/line/linepickerdlg.cpp \
+    xflwidgets/text/doubleedit.cpp \
+    xflwidgets/text/floateditdelegate.cpp \
+    xflwidgets/text/intedit.cpp \
+    xflwidgets/text/mintextedit.cpp \
+    xflwidgets/text/numedit.cpp \
+    xflwidgets/text/textclrbtn.cpp \
+    xflwidgets/voidwidget.cpp \
     xinverse/foilselectiondlg.cpp \
     xinverse/inverseoptionsdlg.cpp \
     xinverse/pertdlg.cpp \
@@ -167,21 +167,14 @@ SOURCES += \
 
 
 HEADERS += \
-    $$PWD/xdirect/analysis/batchabstractdlg.h \
-    $$PWD/xdirect/analysis/batchgraphdlg.h \
     design/afoil.h \
     design/afoiltabledlg.h \
     design/foiltabledelegate.h \
     design/gridsettingsdlg.h \
     design/lecircledlg.h \
     design/splinectrlsdlg.h \
-    glcontextinfo/opengldlg.h \
     globals/mainframe.h \
     globals/xflr5app.h \
-    graph/curve.h \
-    graph/graph.h \
-    graph/graph_globals.h \
-    graph/graphdlg.h \
     gui_objects/spline5.h \
     gui_objects/splinefoil.h \
     miarex/analysis/aerodatadlg.h \
@@ -221,14 +214,8 @@ HEADERS += \
     miarex/view/targetcurvedlg.h \
     miarex/view/w3dprefsdlg.h \
     misc/aboutq5.h \
-    misc/color/colorbutton.h \
     misc/editplrdlg.h \
-    misc/exponentialslider.h \
     misc/lengthunitdlg.h \
-    misc/line/linebtn.h \
-    misc/line/linecbbox.h \
-    misc/line/linedelegate.h \
-    misc/line/linepickerdlg.h \
     misc/moddlg.h \
     misc/newnamedlg.h \
     misc/objectpropsdlg.h \
@@ -236,43 +223,22 @@ HEADERS += \
     misc/options/preferencesdlg.h \
     misc/options/saveoptions.h \
     misc/options/settings.h \
-    misc/options/units.h \
     misc/polarfilterdlg.h \
     misc/popup.h \
     misc/renamedlg.h \
     misc/stlexportdialog.h \
-    misc/text/doubleedit.h \
-    misc/text/floateditdelegate.h \
-    misc/text/intedit.h \
-    misc/text/mintextedit.h \
-    misc/text/numedit.h \
-    misc/text/textclrbtn.h \
     misc/updater.h \
-    misc/voidwidget.h \
-    script/logwt.h \
-    script/xflscriptexec.h \
-    script/xflscriptreader.h \
-    viewwidgets/glwidgets/arcball.h \
-    viewwidgets/glwidgets/gl3dbodyview.h \
-    viewwidgets/glwidgets/gl3dmiarexview.h \
-    viewwidgets/glwidgets/gl3dplaneview.h \
-    viewwidgets/glwidgets/gl3dtestview.h \
-    viewwidgets/glwidgets/gl3dview.h \
-    viewwidgets/glwidgets/gl3dwingview.h \
-    viewwidgets/graphwidgets/graphtilewt.h \
-    viewwidgets/graphwidgets/graphwt.h \
-    viewwidgets/graphwidgets/legendwt.h \
-    viewwidgets/graphwidgets/miarextilewt.h \
-    viewwidgets/graphwidgets/xdirecttilewt.h \
-    viewwidgets/inverseviewwt.h \
-    viewwidgets/oppointwt.h \
-    viewwidgets/twodwidgets/bodyframewt.h \
-    viewwidgets/twodwidgets/bodylinewt.h \
-    viewwidgets/twodwidgets/foildesignwt.h \
-    viewwidgets/twodwidgets/foilwt.h \
-    viewwidgets/twodwidgets/section2dwt.h \
-    viewwidgets/wingwt.h \
+    twodwidgets/bodyframewt.h \
+    twodwidgets/bodylinewt.h \
+    twodwidgets/foildesignwt.h \
+    twodwidgets/foilwt.h \
+    twodwidgets/inverseviewwt.h \
+    twodwidgets/oppointwt.h \
+    twodwidgets/section2dwt.h \
+    twodwidgets/wingwt.h \
+    xdirect/analysis/batchabstractdlg.h \
     xdirect/analysis/batchctrldlg.h \
+    xdirect/analysis/batchgraphdlg.h \
     xdirect/analysis/batchthreaddlg.h \
     xdirect/analysis/foilpolardlg.h \
     xdirect/analysis/relistdlg.h \
@@ -302,6 +268,14 @@ HEADERS += \
     xdirect/xdirectstyledlg.h \
     xdirect/xml/xmlpolarreader.h \
     xdirect/xml/xmlpolarwriter.h \
+    xfl3d/arcball.h \
+    xfl3d/gl3dbodyview.h \
+    xfl3d/gl3dmiarexview.h \
+    xfl3d/gl3dplaneview.h \
+    xfl3d/gl3dtestview.h \
+    xfl3d/gl3dview.h \
+    xfl3d/gl3dwingview.h \
+    xfl3d/opengldlg.h \
     xflanalysis/analysis3d_globals.h \
     xflanalysis/analysis3d_params.h \
     xflanalysis/matrix.h \
@@ -315,8 +289,18 @@ HEADERS += \
     xflcore/gui_params.h \
     xflcore/ls2.h \
     xflcore/trace.h \
+    xflcore/units.h \
     xflcore/xflcore.h \
     xflcore/xflevents.h \
+    xflgraph/containers/graphtilewt.h \
+    xflgraph/containers/graphwt.h \
+    xflgraph/containers/legendwt.h \
+    xflgraph/containers/miarextilewt.h \
+    xflgraph/containers/xdirecttilewt.h \
+    xflgraph/controls/graphdlg.h \
+    xflgraph/curve.h \
+    xflgraph/graph.h \
+    xflgraph/graph_globals.h \
     xflobjects/objects2d/blxfoil.h \
     xflobjects/objects2d/foil.h \
     xflobjects/objects2d/oppoint.h \
@@ -339,6 +323,23 @@ HEADERS += \
     xflobjects/objects3d/wpolar.h \
     xflobjects/objects_global.h \
     xflobjects/xflobject.h \
+    xflscript/logwt.h \
+    xflscript/xflscriptexec.h \
+    xflscript/xflscriptreader.h \
+    xflwidgets/color/colorbutton.h \
+    xflwidgets/exponentialslider.h \
+    xflwidgets/line/linebtn.h \
+    xflwidgets/line/linecbbox.h \
+    xflwidgets/line/linedelegate.h \
+    xflwidgets/line/linepickerdlg.h \
+    xflwidgets/text/doubleedit.h \
+    xflwidgets/text/floateditdelegate.h \
+    xflwidgets/text/fontstruct.h \
+    xflwidgets/text/intedit.h \
+    xflwidgets/text/mintextedit.h \
+    xflwidgets/text/numedit.h \
+    xflwidgets/text/textclrbtn.h \
+    xflwidgets/voidwidget.h \
     xinverse/foilselectiondlg.h \
     xinverse/inverseoptionsdlg.h \
     xinverse/pertdlg.h \
@@ -348,7 +349,25 @@ HEADERS += \
 RESOURCES += \
     scripts.qrc \
     images.qrc \
-    shaders.qrc \
-    textures.qrc
+    textures.qrc \
+    xfl3d/shaders.qrc \
+
+DISTFILES += \
+    shaders/gradient_fragmentshader.glsl \
+    shaders/gradient_fragmentshader_120.glsl \
+    shaders/gradient_vertexshader.glsl \
+    shaders/gradient_vertexshader_120.glsl \
+    shaders/line_fragmentshader.glsl \
+    shaders/line_fragmentshader_120.glsl \
+    shaders/line_vertexshader.glsl \
+    shaders/line_vertexshader_120.glsl \
+    shaders/surface_fragmentshader.glsl \
+    shaders/surface_fragmentshader_120.glsl \
+    shaders/surface_vertexshader.glsl \
+    shaders/surface_vertexshader_120.glsl \
+    shaders/texture_fragmentshader.glsl \
+    shaders/texture_fragmentshader_120.glsl \
+    shaders/texture_vertexshader.glsl \
+    shaders/texture_vertexshader_120.glsl
 
 

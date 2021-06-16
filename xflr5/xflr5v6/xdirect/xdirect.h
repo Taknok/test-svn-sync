@@ -37,10 +37,10 @@
 #include <xflobjects/objects2d/polar.h>
 #include <xflobjects/objects2d/foil.h>
 #include <xdirect/analysis/xfoilanalysisdlg.h>
-#include <viewwidgets/oppointwt.h>
+#include <twodwidgets/oppointwt.h>
 #include <xflcore/gui_enums.h>
 #include <xflobjects/objects2d/oppoint.h>
-#include <graph/graph.h>
+#include <xflgraph/graph.h>
 #include <xflcore/ls2.h>
 
 #include <xfoil.h>

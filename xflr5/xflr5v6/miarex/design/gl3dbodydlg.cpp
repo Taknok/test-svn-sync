@@ -32,8 +32,6 @@
 
 
 
-#include <viewwidgets/glwidgets/gl3dbodyview.h>
-#include <xflcore/xflcore.h>
 #include <miarex/design/bodygriddlg.h>
 #include <miarex/design/bodyscaledlg.h>
 #include <miarex/design/bodytabledelegate.h>
@@ -44,16 +42,18 @@
 #include <miarex/mgt/xmlplanewriter.h>
 #include <miarex/view/w3dprefsdlg.h>
 #include <misc/lengthunitdlg.h>
-#include <misc/color/colorbutton.h>
-#include <misc/line/linepickerdlg.h>
-#include <misc/options/units.h>
 #include <misc/options/settings.h>
-#include <misc/text/doubleedit.h>
+#include <xflcore/units.h>
+#include <twodwidgets/bodyframewt.h>
+#include <twodwidgets/bodylinewt.h>
+#include <xfl3d/arcball.h>
+#include <xfl3d/gl3dbodyview.h>
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/body.h>
 #include <xflobjects/objects3d/plane.h>
-#include <viewwidgets/twodwidgets/bodyframewt.h>
-#include <viewwidgets/twodwidgets/bodylinewt.h>
-#include <viewwidgets/glwidgets/arcball.h>
+#include <xflwidgets/color/colorbutton.h>
+#include <xflwidgets/line/linepickerdlg.h>
+#include <xflwidgets/text/doubleedit.h>
 
 QByteArray GL3dBodyDlg::m_VerticalSplitterSizes;
 QByteArray GL3dBodyDlg::m_HorizontalSplitterSizes;
@@ -99,11 +99,11 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
     m_pGrid             = new QAction(tr("Grid Setup"), this);
     m_pResetScales      = new QAction(tr("Reset Scales")+("\t(R)"), this);
 
-    m_pUndo= new QAction(QIcon(":/images/OnUndo.png"), tr("Undo"), this);
+    m_pUndo= new QAction(QIcon(":/resources/images/OnUndo.png"), tr("Undo"), this);
     m_pUndo->setStatusTip(tr("Cancels the last modification"));
     m_pUndo->setShortcut(QKeySequence::Undo);
 
-    m_pRedo = new QAction(QIcon(":/images/OnRedo.png"), tr("Redo"), this);
+    m_pRedo = new QAction(QIcon(":/resources/images/OnRedo.png"), tr("Redo"), this);
     m_pRedo->setStatusTip(tr("Restores the last cancelled modification"));
     m_pRedo->setShortcut(QKeySequence::Redo);
 
@@ -1259,11 +1259,11 @@ void GL3dBodyDlg::setupLayout()
                 m_pctrlIso->setIconSize(QSize(32,32));
                 m_pctrlFlip->setIconSize(QSize(32,32));
             }
-            m_pXView    = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
-            m_pYView    = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
-            m_pZView    = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
-            m_pIsoView  = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
-            m_pFlipView = new QAction(QIcon(":/images/OnFlipView.png"), tr("Flip View"), this);
+            m_pXView    = new QAction(QIcon(":/resources/images/OnXView.png"), tr("X View"), this);
+            m_pYView    = new QAction(QIcon(":/resources/images/OnYView.png"), tr("Y View"), this);
+            m_pZView    = new QAction(QIcon(":/resources/images/OnZView.png"), tr("Z View"), this);
+            m_pIsoView  = new QAction(QIcon(":/resources/images/OnIsoView.png"), tr("Iso View"), this);
+            m_pFlipView = new QAction(QIcon(":/resources/images/OnFlipView.png"), tr("Flip View"), this);
             m_pXView->setCheckable(true);
             m_pYView->setCheckable(true);
             m_pZView->setCheckable(true);
@@ -1293,8 +1293,8 @@ void GL3dBodyDlg::setupLayout()
 
         QHBoxLayout *pActionButtonsLayout = new QHBoxLayout;
         {
-            m_pctrlUndo = new QPushButton(QIcon(":/images/OnUndo.png"), tr("Undo"));
-            m_pctrlRedo = new QPushButton(QIcon(":/images/OnRedo.png"), tr("Redo"));
+            m_pctrlUndo = new QPushButton(QIcon(":/resources/images/OnUndo.png"), tr("Undo"));
+            m_pctrlRedo = new QPushButton(QIcon(":/resources/images/OnRedo.png"), tr("Redo"));
 
             m_pctrlMenuButton = new QPushButton(tr("Other"));
 

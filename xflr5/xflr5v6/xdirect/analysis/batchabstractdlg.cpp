@@ -38,8 +38,8 @@
 #include <xflcore/xflcore.h>
 #include <xflcore/gui_params.h>
 #include <misc/options/settings.h>
-#include <misc/text/doubleedit.h>
-#include <misc/text/intedit.h>
+#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/text/intedit.h>
 #include <xdirect/analysis/xfoiltask.h>
 #include <xdirect/objects2d.h>
 #include <xdirect/xdirect.h>

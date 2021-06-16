@@ -25,9 +25,9 @@
 
 #include "xinverse.h"
 #include "inverseoptionsdlg.h"
-#include <misc/line/linepickerdlg.h>
+#include <xflwidgets/line/linepickerdlg.h>
 #include <xflobjects/objects2d/foil.h>
-#include <misc/line/linebtn.h>
+#include <xflwidgets/line/linebtn.h>
 
 
 InverseOptionsDlg::InverseOptionsDlg(QWidget *pParent) : QDialog(pParent)

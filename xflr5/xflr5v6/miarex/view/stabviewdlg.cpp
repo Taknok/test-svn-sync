@@ -34,15 +34,15 @@
 #include <xflcore/xflcore.h>
 #include <misc/options/settings.h>
 #include <misc/newnamedlg.h>
-#include <misc/options/units.h>
+#include <xflcore/units.h>
 #include <miarex/miarex.h>
-#include <viewwidgets/glwidgets/gl3dmiarexview.h>
+#include <xfl3d/gl3dmiarexview.h>
 #include <xflobjects/objects_global.h>
 #include <xflobjects/objects3d/wpolar.h>
 
-#include <misc/text/doubleedit.h>
-#include <misc/text/floateditdelegate.h>
-#include <graph/curve.h>
+#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/text/floateditdelegate.h>
+#include <xflgraph/curve.h>
 
 Miarex *StabViewDlg::s_pMiarex;
 

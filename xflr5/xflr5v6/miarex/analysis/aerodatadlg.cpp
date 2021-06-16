@@ -28,8 +28,8 @@
 #include <cmath>
 
 #include "aerodatadlg.h"
-#include <misc/options/units.h>
-#include <misc/text/doubleedit.h>
+#include <xflcore/units.h>
+#include <xflwidgets/text/doubleedit.h>
 
 // International Standard Atmosphere
 
@@ -54,15 +54,15 @@ AeroDataDlg::AeroDataDlg(QWidget *parent) : QDialog(parent)
 
     setupLayout();
 
-    if(s_bCelsius)    m_pctrlTemperature->setValue(s_Temperature-STANDARDTEMPERATURE+15);
+    if(s_bCelsius)    m_pdeTemperature->setValue(s_Temperature-STANDARDTEMPERATURE+15);
     else
     {
         double temp = s_Temperature-STANDARDTEMPERATURE+15;
-        m_pctrlTemperature->setValue(temp*9.0/5.0 + 32.0);
+        m_pdeTemperature->setValue(temp*9.0/5.0 + 32.0);
     }
 
 
-    m_pctrlAltitude->setValue(s_Altitude);
+    m_pdeAltitude->setValue(s_Altitude);
 
     updateResults();
 }
@@ -160,28 +160,28 @@ void AeroDataDlg::setupLayout()
         pDynamicViscLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         pSpeedOfSoundLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-        m_pctrlTemperature = new DoubleEdit(s_Temperature, 1, this);
-        m_pctrlAltitude    = new DoubleEdit(s_Altitude, 1, this);
-        connect(m_pctrlTemperature, SIGNAL(editingFinished()), this, SLOT(updateResults()));
-        connect(m_pctrlAltitude,    SIGNAL(editingFinished()), this, SLOT(updateResults()));
+        m_pdeTemperature = new DoubleEdit(s_Temperature, 1, this);
+        m_pdeAltitude    = new DoubleEdit(s_Altitude, 1, this);
+        connect(m_pdeTemperature, SIGNAL(editingFinished()), this, SLOT(updateResults()));
+        connect(m_pdeAltitude,    SIGNAL(editingFinished()), this, SLOT(updateResults()));
 
-        m_pctrlAirPressure        = new QLabel("1000.0");
-        m_pctrlAirDensity         = new QLabel("1.225");
-        m_pctrlDynamicViscosity   = new QLabel("1.5e-5");
-        m_pctrlKinematicViscosity = new QLabel("1.5e-5");
-        m_pctrlSpeedOfSound       = new QLabel("300");
-        m_pctrlAirPressure->setAlignment(Qt::AlignRight| Qt::AlignVCenter);
-        m_pctrlAirDensity->setAlignment(Qt::AlignRight| Qt::AlignVCenter);
-        m_pctrlDynamicViscosity->setAlignment(Qt::AlignRight| Qt::AlignVCenter);
-        m_pctrlKinematicViscosity->setAlignment(Qt::AlignRight| Qt::AlignVCenter);
-        m_pctrlSpeedOfSound->setAlignment(Qt::AlignRight| Qt::AlignVCenter);
+        m_plabAirPressure        = new QLabel("1000.0");
+        m_plabAirDensity         = new QLabel("1.225");
+        m_plabDynamicViscosity   = new QLabel("1.5e-5");
+        m_plabKinematicViscosity = new QLabel("1.5e-5");
+        m_plabSpeedOfSound       = new QLabel("300");
+        m_plabAirPressure->setAlignment(Qt::AlignRight| Qt::AlignVCenter);
+        m_plabAirDensity->setAlignment(Qt::AlignRight| Qt::AlignVCenter);
+        m_plabDynamicViscosity->setAlignment(Qt::AlignRight| Qt::AlignVCenter);
+        m_plabKinematicViscosity->setAlignment(Qt::AlignRight| Qt::AlignVCenter);
+        m_plabSpeedOfSound->setAlignment(Qt::AlignRight| Qt::AlignVCenter);
 
-        m_pctrlTempUnit = new QComboBox;
-        m_pctrlTempUnit->addItem(QString::fromUtf8("  °C"));
-        m_pctrlTempUnit->addItem(QString::fromUtf8("  °F"));
-        if(s_bCelsius) m_pctrlTempUnit->setCurrentIndex(0);
-        else           m_pctrlTempUnit->setCurrentIndex(1);
-        connect(m_pctrlTempUnit, SIGNAL(currentIndexChanged(int)), this, SLOT(OnTempUnit()));
+        m_pcbTempUnit = new QComboBox;
+        m_pcbTempUnit->addItem(QString::fromUtf8("  °C"));
+        m_pcbTempUnit->addItem(QString::fromUtf8("  °F"));
+        if(s_bCelsius) m_pcbTempUnit->setCurrentIndex(0);
+        else           m_pcbTempUnit->setCurrentIndex(1);
+        connect(m_pcbTempUnit, SIGNAL(currentIndexChanged(int)), this, SLOT(onTempUnit()));
 
         QLabel * pAltitudeUnitLabel = new QLabel("m");
         QLabel * pPressureUnitLabel = new QLabel("Pa");
@@ -204,15 +204,15 @@ void AeroDataDlg::setupLayout()
         pDataLayout->addWidget(pKinematicViscLabel, 7, 1);
         pDataLayout->addWidget(pSpeedOfSoundLabel,  8, 1);
 
-        pDataLayout->addWidget(m_pctrlTemperature,        1, 2);
-        pDataLayout->addWidget(m_pctrlAltitude,           2, 2);
-        pDataLayout->addWidget(m_pctrlAirPressure,        4, 2);
-        pDataLayout->addWidget(m_pctrlAirDensity,         5, 2);
-        pDataLayout->addWidget(m_pctrlDynamicViscosity,   6, 2);
-        pDataLayout->addWidget(m_pctrlKinematicViscosity, 7, 2);
-        pDataLayout->addWidget(m_pctrlSpeedOfSound,       8, 2);
+        pDataLayout->addWidget(m_pdeTemperature,        1, 2);
+        pDataLayout->addWidget(m_pdeAltitude,           2, 2);
+        pDataLayout->addWidget(m_plabAirPressure,        4, 2);
+        pDataLayout->addWidget(m_plabAirDensity,         5, 2);
+        pDataLayout->addWidget(m_plabDynamicViscosity,   6, 2);
+        pDataLayout->addWidget(m_plabKinematicViscosity, 7, 2);
+        pDataLayout->addWidget(m_plabSpeedOfSound,       8, 2);
 
-        pDataLayout->addWidget(m_pctrlTempUnit,     1, 3);
+        pDataLayout->addWidget(m_pcbTempUnit,     1, 3);
         pDataLayout->addWidget(pAltitudeUnitLabel, 2, 3);
         pDataLayout->addWidget(pPressureUnitLabel, 4, 3);
         pDataLayout->addWidget(pDensUnitLabel,     5, 3);
@@ -223,19 +223,10 @@ void AeroDataDlg::setupLayout()
         pDataLayout->setColumnStretch(3,1);
     }
 
-    QHBoxLayout *pCommandButtons = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     {
-        m_pOKButton = new QPushButton(tr("OK"));
-        m_pCancelButton = new QPushButton(tr("Cancel"));
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(m_pOKButton);
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(m_pCancelButton);
-        pCommandButtons->addStretch(1);
-        connect(m_pOKButton,     SIGNAL(clicked()), this, SLOT(accept()));
-        connect(m_pCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
-
 
     QVBoxLayout * pMainLayout = new QVBoxLayout();
     {
@@ -245,11 +236,18 @@ void AeroDataDlg::setupLayout()
         pMainLayout->addLayout(pDataLayout);
         pMainLayout->addStretch();
         pMainLayout->addSpacing(17);
-        pMainLayout->addLayout(pCommandButtons);
+        pMainLayout->addWidget(m_pButtonBox);
         pMainLayout->addStretch();
     }
 
     setLayout(pMainLayout);
+}
+
+
+void AeroDataDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)     == pButton)  accept();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
 }
 
 
@@ -261,15 +259,10 @@ void AeroDataDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!m_pOKButton->hasFocus() && !m_pCancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
                 //                updateResults();
-                m_pOKButton->setFocus();
-                return;
-            }
-            else
-            {
-                accept();
+                m_pButtonBox->setFocus();
                 return;
             }
             break;
@@ -288,43 +281,43 @@ void AeroDataDlg::keyPressEvent(QKeyEvent *event)
 void AeroDataDlg::updateResults()
 {
 
-    if(m_pctrlTempUnit->currentIndex()==0)
+    if(m_pcbTempUnit->currentIndex()==0)
     {
-        s_Temperature = m_pctrlTemperature->value()+STANDARDTEMPERATURE-15;
+        s_Temperature = m_pdeTemperature->value()+STANDARDTEMPERATURE-15;
     }
     else
     {
         // convert first to Celsius : Deduct 32, then multiply by 5, then divide by 9
-        s_Temperature = (m_pctrlTemperature->value()-32.0)*5.0/9.0;
+        s_Temperature = (m_pdeTemperature->value()-32.0)*5.0/9.0;
         s_Temperature += STANDARDTEMPERATURE-15;
     }
 
-    s_Altitude = m_pctrlAltitude->value();
-    m_pctrlAirPressure->setText(QString("%1").arg(AirPressure(s_Altitude)));
+    s_Altitude = m_pdeAltitude->value();
+    m_plabAirPressure->setText(QString("%1").arg(AirPressure(s_Altitude)));
 
     double density = AirDensity(s_Altitude, s_Temperature);
     double dynViscosity = DynamicViscosity(s_Altitude, s_Temperature);
 
-    m_pctrlAirDensity->setText(QString("%1").arg(density));
-    m_pctrlDynamicViscosity->setText(QString("%1").arg(dynViscosity, 7, 'e', 2));
-    m_pctrlKinematicViscosity->setText(QString("%1").arg(dynViscosity/density, 7, 'e', 2));
+    m_plabAirDensity->setText(QString("%1").arg(density));
+    m_plabDynamicViscosity->setText(QString("%1").arg(dynViscosity, 7, 'e', 2));
+    m_plabKinematicViscosity->setText(QString("%1").arg(dynViscosity/density, 7, 'e', 2));
 
-    m_pctrlSpeedOfSound->setText(QString("%1").arg(SpeedOfSound(s_Temperature), 7, 'f', 1));
+    m_plabSpeedOfSound->setText(QString("%1").arg(SpeedOfSound(s_Temperature), 7, 'f', 1));
 }
 
 
 
-void AeroDataDlg::OnTempUnit()
+void AeroDataDlg::onTempUnit()
 {
-    s_bCelsius = m_pctrlTempUnit->currentIndex()==0;
+    s_bCelsius = m_pcbTempUnit->currentIndex()==0;
 
     if(s_bCelsius)
     {
-        m_pctrlTemperature->setValue(s_Temperature-STANDARDTEMPERATURE+15);
+        m_pdeTemperature->setValue(s_Temperature-STANDARDTEMPERATURE+15);
     }
     else
     {
-        m_pctrlTemperature->setValue( (s_Temperature-STANDARDTEMPERATURE+15)*9.0/5.0+32);
+        m_pdeTemperature->setValue( (s_Temperature-STANDARDTEMPERATURE+15)*9.0/5.0+32);
     }
 }
 
