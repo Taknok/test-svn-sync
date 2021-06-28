@@ -1,5 +1,6 @@
 
 SOURCES += \
+    $$PWD/miarex/view/gl3dmiarexview.cpp \
     design/afoil.cpp \
     design/afoiltabledlg.cpp \
     design/foiltabledelegate.cpp \
@@ -102,7 +103,6 @@ SOURCES += \
     xdirect/xml/xmlpolarwriter.cpp \
     xfl3d/arcball.cpp \
     xfl3d/gl3dbodyview.cpp \
-    xfl3d/gl3dmiarexview.cpp \
     xfl3d/gl3dplaneview.cpp \
     xfl3d/gl3dtestview.cpp \
     xfl3d/gl3dview.cpp \
@@ -167,6 +167,7 @@ SOURCES += \
 
 
 HEADERS += \
+    $$PWD/miarex/view/gl3dmiarexview.h \
     design/afoil.h \
     design/afoiltabledlg.h \
     design/foiltabledelegate.h \
@@ -270,7 +271,6 @@ HEADERS += \
     xdirect/xml/xmlpolarwriter.h \
     xfl3d/arcball.h \
     xfl3d/gl3dbodyview.h \
-    xfl3d/gl3dmiarexview.h \
     xfl3d/gl3dplaneview.h \
     xfl3d/gl3dtestview.h \
     xfl3d/gl3dview.h \

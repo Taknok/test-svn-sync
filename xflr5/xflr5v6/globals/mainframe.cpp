@@ -50,6 +50,7 @@
 #include <miarex/mgt/planetabledelegate.h>
 #include <miarex/miarex.h>
 #include <miarex/objects3d.h>
+#include <miarex/view/gl3dmiarexview.h>
 #include <miarex/view/gl3dscales.h>
 #include <miarex/view/stabviewdlg.h>
 #include <miarex/view/w3dprefsdlg.h>
@@ -60,15 +61,11 @@
 #include <misc/options/preferencesdlg.h>
 #include <misc/options/saveoptions.h>
 #include <misc/options/settings.h>
-#include <xflcore/units.h>
 #include <misc/popup.h>
 #include <misc/renamedlg.h>
 #include <misc/updater.h>
-#include <xflscript/logwt.h>
-#include <xflscript/xflscriptexec.h>
-#include <xflscript/xflscriptreader.h>
-#include <twodwidgets/inverseviewwt.h>
 #include <twodwidgets/foildesignwt.h>
+#include <twodwidgets/inverseviewwt.h>
 #include <twodwidgets/wingwt.h>
 #include <xdirect/analysis/batchgraphdlg.h>
 #include <xdirect/analysis/batchthreaddlg.h>
@@ -85,9 +82,9 @@
 #include <xdirect/mgt/managefoilsdlg.h>
 #include <xdirect/objects2d.h>
 #include <xdirect/xdirect.h>
-#include <xfl3d/gl3dmiarexview.h>
 #include <xfl3d/opengldlg.h>
 #include <xflcore/trace.h>
+#include <xflcore/units.h>
 #include <xflcore/xflcore.h>
 #include <xflgraph/containers/graphwt.h>
 #include <xflgraph/containers/legendwt.h>
@@ -98,6 +95,9 @@
 #include <xflobjects/objects2d/polar.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/wing.h>
+#include <xflscript/logwt.h>
+#include <xflscript/xflscriptexec.h>
+#include <xflscript/xflscriptreader.h>
 #include <xflwidgets/line/linepickerdlg.h>
 #include <xinverse/xinverse.h>
 

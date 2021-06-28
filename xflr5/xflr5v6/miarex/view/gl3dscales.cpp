@@ -26,13 +26,13 @@
 
 #include "gl3dscales.h"
 #include <miarex/miarex.h>
-#include <xflcore/units.h>
-#include <xflwidgets/exponentialslider.h>
-#include <xflwidgets/text/intedit.h>
-#include <xflwidgets/text/doubleedit.h>
-#include <xflcore/xflcore.h>
+#include <miarex/view/gl3dmiarexview.h>
 #include <misc/options/settings.h>
-#include <xfl3d/gl3dmiarexview.h>
+#include <xflcore/units.h>
+#include <xflcore/xflcore.h>
+#include <xflwidgets/exponentialslider.h>
+#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/text/intedit.h>
 
 
 Miarex *GL3DScales::s_pMiarex;

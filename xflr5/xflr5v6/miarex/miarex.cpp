@@ -33,11 +33,7 @@
 
 #include "miarex.h"
 
-#include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
-#include <xflcore/trace.h>
-#include <xflgraph/curve.h>
-#include <xflgraph/graph.h>
 #include <miarex/analysis/aerodatadlg.h>
 #include <miarex/analysis/editpolardefdlg.h>
 #include <miarex/analysis/panelanalysisdlg.h>
@@ -58,30 +54,29 @@
 #include <miarex/mgt/xmlwpolarreader.h>
 #include <miarex/mgt/xmlwpolarwriter.h>
 #include <miarex/objects3d.h>
+#include <miarex/view/gl3dmiarexview.h>
 #include <miarex/view/gllightdlg.h>
 #include <miarex/view/stabviewdlg.h>
 #include <miarex/view/targetcurvedlg.h>
 #include <miarex/view/w3dprefsdlg.h>
 #include <misc/editplrdlg.h>
-#include <xflwidgets/line/linebtn.h>
-#include <xflwidgets/line/linecbbox.h>
-#include <xflwidgets/line/linedelegate.h>
 #include <misc/moddlg.h>
 #include <misc/objectpropsdlg.h>
 #include <misc/options/settings.h>
-#include <xflcore/units.h>
 #include <misc/polarfilterdlg.h>
 #include <misc/renamedlg.h>
 #include <misc/stlexportdialog.h>
-#include <xflwidgets/text/doubleedit.h>
-#include <xflwidgets/text/mintextedit.h>
-#include <xfl3d/gl3dmiarexview.h>
-#include <xflgraph/containers/graphtilewt.h>
-#include <xflgraph/containers/graphwt.h>
-#include <xflgraph/containers/miarextilewt.h>
 #include <twodwidgets/wingwt.h>
 #include <xdirect/objects2d.h>
 #include <xflanalysis/matrix.h>
+#include <xflcore/trace.h>
+#include <xflcore/units.h>
+#include <xflcore/xflcore.h>
+#include <xflgraph/containers/graphtilewt.h>
+#include <xflgraph/containers/graphwt.h>
+#include <xflgraph/containers/miarextilewt.h>
+#include <xflgraph/curve.h>
+#include <xflgraph/graph.h>
 #include <xflobjects/objects3d/body.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/planeopp.h>
@@ -91,6 +86,11 @@
 #include <xflobjects/objects3d/wingopp.h>
 #include <xflobjects/objects3d/wpolar.h>
 #include <xflobjects/objects_global.h>
+#include <xflwidgets/line/linebtn.h>
+#include <xflwidgets/line/linecbbox.h>
+#include <xflwidgets/line/linedelegate.h>
+#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/text/mintextedit.h>
 
 #ifdef Q_OS_WIN
 #include <windows.h> // for Sleep
