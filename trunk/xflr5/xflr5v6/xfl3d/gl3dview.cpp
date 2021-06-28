@@ -1398,8 +1398,8 @@ void gl3dView::initializeGL()
     glMakeArcPoint();
 
     //setup the shader to paint lines
-    QString vsrc = m_bUse120StyleShaders ? ":/shaders/line_vertexshader_120.glsl" : ":/shaders/line_vertexshader.glsl";
-    QString fsrc = m_bUse120StyleShaders ? ":/shaders/line_fragmentshader_120.glsl" : ":/shaders/line_fragmentshader.glsl";
+    QString vsrc = m_bUse120StyleShaders ? ":/shaders/line/line_VS_120.glsl" : ":/shaders/line/line_VS.glsl";
+    QString fsrc = m_bUse120StyleShaders ? ":/shaders/line/line_FS_120.glsl" : ":/shaders/line/line_FS.glsl";
 
     m_ShaderProgramLine.addShaderFromSourceFile(QOpenGLShader::Vertex, (vsrc));
     if(m_ShaderProgramLine.log().length()) Trace("Line vertex shader log:"+m_ShaderProgramLine.log());
@@ -1417,8 +1417,8 @@ void gl3dView::initializeGL()
 
 
     //setup the shader to paint the Cp and other gradients
-    vsrc = m_bUse120StyleShaders ? ":/shaders/gradient_vertexshader_120.glsl" : ":/shaders/gradient_vertexshader.glsl";
-    fsrc = m_bUse120StyleShaders ? ":/shaders/gradient_fragmentshader_120.glsl" : ":/shaders/gradient_fragmentshader.glsl";
+    vsrc = m_bUse120StyleShaders ? ":/shaders/gradient/gradient_VS_120.glsl" : ":/shaders/gradient/gradient_VS.glsl";
+    fsrc = m_bUse120StyleShaders ? ":/shaders/gradient/gradient_FS_120.glsl" : ":/shaders/gradient/gradient_FS.glsl";
     m_ShaderProgramGradient.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
     if(m_ShaderProgramGradient.log().length()) Trace("Gradient vertex shader log:"+m_ShaderProgramGradient.log());
 
@@ -1434,8 +1434,8 @@ void gl3dView::initializeGL()
 
 
     //setup the shader to paint colored surfaces
-    vsrc = m_bUse120StyleShaders ? ":/shaders/surface_vertexshader_120.glsl" : ":/shaders/surface_vertexshader.glsl";
-    fsrc = m_bUse120StyleShaders ? ":/shaders/surface_fragmentshader_120.glsl" : ":/shaders/surface_fragmentshader.glsl";
+    vsrc = m_bUse120StyleShaders ? ":/shaders/surface/surface_VS_120.glsl" : ":/shaders/surface/surface_VS.glsl";
+    fsrc = m_bUse120StyleShaders ? ":/shaders/surface/surface_FS_120.glsl" : ":/shaders/surface/surface_FS.glsl";
     m_ShaderProgramSurface.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
     if(m_ShaderProgramSurface.log().length()) Trace("Surface vertex shader log:"+m_ShaderProgramSurface.log());
 
@@ -1466,8 +1466,8 @@ void gl3dView::initializeGL()
     m_ShaderProgramSurface.release();
 
     //setup the shader to paint textured surfaces
-    vsrc = m_bUse120StyleShaders ? ":/shaders/texture_vertexshader_120.glsl" : ":/shaders/texture_vertexshader.glsl";
-    fsrc = m_bUse120StyleShaders ? ":/shaders/texture_fragmentshader_120.glsl" : ":/shaders/texture_fragmentshader.glsl";
+    vsrc = m_bUse120StyleShaders ? ":/shaders/texture/texture_VS_120.glsl" : ":/shaders/texture/texture_VS.glsl";
+    fsrc = m_bUse120StyleShaders ? ":/shaders/texture/texture_FS_120.glsl" : ":/shaders/texture/texture_FS.glsl";
     m_ShaderProgramTexture.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
     if(m_ShaderProgramTexture.log().length()) Trace("Texture vertex shader log:"+m_ShaderProgramTexture.log());
 

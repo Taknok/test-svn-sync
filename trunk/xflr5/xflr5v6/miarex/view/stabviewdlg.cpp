@@ -31,18 +31,18 @@
 
 
 #include "stabviewdlg.h"
-#include <xflcore/xflcore.h>
-#include <misc/options/settings.h>
-#include <misc/newnamedlg.h>
-#include <xflcore/units.h>
-#include <miarex/miarex.h>
-#include <xfl3d/gl3dmiarexview.h>
-#include <xflobjects/objects_global.h>
-#include <xflobjects/objects3d/wpolar.h>
 
+#include <miarex/miarex.h>
+#include <miarex/view/gl3dmiarexview.h>
+#include <misc/newnamedlg.h>
+#include <misc/options/settings.h>
+#include <xflcore/units.h>
+#include <xflcore/xflcore.h>
+#include <xflgraph/curve.h>
+#include <xflobjects/objects3d/wpolar.h>
+#include <xflobjects/objects_global.h>
 #include <xflwidgets/text/doubleedit.h>
 #include <xflwidgets/text/floateditdelegate.h>
-#include <xflgraph/curve.h>
 
 Miarex *StabViewDlg::s_pMiarex;
 
