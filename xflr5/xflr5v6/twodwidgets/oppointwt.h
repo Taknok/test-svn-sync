@@ -24,7 +24,7 @@
 #include <QWidget>
 
 #include <xflgraph/graph.h>
-#include <xflobjects/objects3d/vector3d.h>
+#include <xflgeom/geom3d/vector3d.h>
 #include <xflobjects/objects2d/oppoint.h>
 #include <xflcore/ls2.h>
 

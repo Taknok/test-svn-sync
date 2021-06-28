@@ -34,7 +34,7 @@
 #include <QVarLengthArray>
 
 #include <xflobjects/objects3d/panel.h>
-#include <xflobjects/objects3d/nurbssurface.h>
+#include <xflgeom/geom3d/nurbssurface.h>
 #include <xflobjects/objects3d/pointmass.h>
 
 

@@ -30,7 +30,7 @@
 #include <QObject>
 #include <QVector>
 
-#include <xflobjects/objects3d/vector3d.h>
+#include <xflgeom/geom3d/vector3d.h>
 #include <xflobjects/objects3d/panel.h>
 #include <xflanalysis/analysis3d_params.h>
 

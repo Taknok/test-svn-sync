@@ -26,7 +26,7 @@
 #pragma once
 
 #include <QVarLengthArray>
-#include <xflobjects/objects3d/vector3d.h>
+#include <xflgeom/geom3d/vector3d.h>
 #include <xflobjects/objects3d/panel.h>
 #include <xflobjects/objects3d/wingsection.h>
 #include <xflobjects/objects2d/foil.h>

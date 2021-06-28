@@ -34,8 +34,8 @@
 #include <QFile>
 #include <QVector>
 #include <QTextStream>
-#include <xflobjects/objects2d/spline.h>
-#include <xflobjects/objects3d/vector3d.h>
+#include <xflgeom/geom2d/spline.h>
+#include <xflgeom/geom3d/vector3d.h>
 
 
 

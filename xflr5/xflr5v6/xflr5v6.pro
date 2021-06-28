@@ -130,9 +130,16 @@ LIBS += -L../XFoil-lib -lXFoil
 
 
 include(xflr5v6.pri)
+include(xfl3d/xfl3d.pri)
+include(xflcore/xflcore.pri)
+include(xflgeom/xflgeom.pri)
+include(xflgraph/xflgraph.pri)
+include(xflobjects/xflobjects.pri)
+include(xflscript/xflscript.pri)
+include(xflwidgets/xflwidgets.pri)
+include(xflanalysis/xflanalysis.pri)
 
-HEADERS += \
-    xflcore/constants.h \
-    xflcore/xflevents.h
+
+
 
 

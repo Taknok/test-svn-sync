@@ -39,7 +39,7 @@
 #include <QOpenGLBuffer>
 #include <QDialogButtonBox>
 
-#include <xflobjects/objects3d/vector3d.h>
+#include <xflgeom/geom3d/vector3d.h>
 
 class gl3dWingView;
 class DoubleEdit;

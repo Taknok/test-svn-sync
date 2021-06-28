@@ -25,7 +25,7 @@
 #include <QMenu>
 #include <QPixmap>
 
-#include <xflobjects/objects3d/vector3d.h>
+#include <xflgeom/geom3d/vector3d.h>
 #include <xflcore/ls2.h>
 
 /**

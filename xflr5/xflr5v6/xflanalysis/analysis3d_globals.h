@@ -28,7 +28,7 @@
 #define ENGINE_GLOBALS_H
 
 
-#include <xflobjects/objects3d/vector3d.h>
+#include <xflgeom/geom3d/vector3d.h>
 #include <xflobjects/objects2d/foil.h>
 
 

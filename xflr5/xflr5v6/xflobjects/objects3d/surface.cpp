@@ -24,8 +24,8 @@
 #include "surface.h"
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects3d/body.h>
-#include <xflobjects/objects3d/quaternion.h>
-#include <xflobjects/objects3d/vector3d.h>
+#include <xflgeom/geom3d/quaternion.h>
+#include <xflgeom/geom3d/vector3d.h>
 #include <xflobjects/objects3d/wingsection.h>
 
 Vector3d *Surface::s_pNode;

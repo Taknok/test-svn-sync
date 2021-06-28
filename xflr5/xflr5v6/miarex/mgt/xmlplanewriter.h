@@ -25,7 +25,7 @@
 #include <QXmlStreamWriter>
 #include <QFile>
 
-#include <xflobjects/objects3d/vector3d.h>
+#include <xflgeom/geom3d/vector3d.h>
 
 class Plane;
 class Wing;
