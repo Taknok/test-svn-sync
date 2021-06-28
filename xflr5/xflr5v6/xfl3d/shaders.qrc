@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shaders/gradient/gradient_FS.glsl</file>
+        <file>shaders/gradient/gradient_FS_120.glsl</file>
+        <file>shaders/gradient/gradient_VS.glsl</file>
+        <file>shaders/gradient/gradient_VS_120.glsl</file>
+        <file>shaders/texture/texture_FS.glsl</file>
+        <file>shaders/texture/texture_FS_120.glsl</file>
+        <file>shaders/texture/texture_VS.glsl</file>
+        <file>shaders/texture/texture_VS_120.glsl</file>
+        <file>shaders/line/line_FS.glsl</file>
+        <file>shaders/line/line_FS_120.glsl</file>
+        <file>shaders/line/line_VS.glsl</file>
+        <file>shaders/line/line_VS_120.glsl</file>
+        <file>shaders/surface/surface_FS.glsl</file>
+        <file>shaders/surface/surface_FS_120.glsl</file>
+        <file>shaders/surface/surface_VS.glsl</file>
+        <file>shaders/surface/surface_VS_120.glsl</file>
+    </qresource>
+</RCC>
