@@ -24,7 +24,7 @@
 #include <QRandomGenerator>
 
 #include "foil.h"
-#include <xflobjects/objects2d/spline.h>
+#include <xflgeom/geom2d/spline.h>
 #include <xflobjects/objects2d/polar.h>
 #include <xflcore/constants.h>
 

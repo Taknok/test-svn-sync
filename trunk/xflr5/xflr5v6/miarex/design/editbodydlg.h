@@ -35,7 +35,7 @@
 #include <QCheckBox>
 #include <QDialogButtonBox>
 
-#include <xflobjects/objects3d/vector3d.h>
+#include <xflgeom/geom3d/vector3d.h>
 #include <xflcore/core_enums.h>
 
 class gl3dBodyView;

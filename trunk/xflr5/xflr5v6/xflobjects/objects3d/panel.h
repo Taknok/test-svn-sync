@@ -35,8 +35,8 @@
 
 
 
-#include "quaternion.h"
-#include <xflobjects/objects3d/vector3d.h>
+#include <xflgeom/geom3d/quaternion.h>
+#include <xflgeom/geom3d/vector3d.h>
 
 /**
  * enumeration used to identify the type of surface on which the panel lies.

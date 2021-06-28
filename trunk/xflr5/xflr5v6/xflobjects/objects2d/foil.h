@@ -33,7 +33,7 @@
 #include <QTextStream>
 #include <QColor>
 
-#include <xflobjects/objects3d/vector3d.h>
+#include <xflgeom/geom3d/vector3d.h>
 #include <xflobjects/xflobject.h>
 #include <xfoil_params.h>
 #include <xflcore/ls2.h>

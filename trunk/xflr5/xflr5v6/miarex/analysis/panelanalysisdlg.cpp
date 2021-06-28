@@ -44,7 +44,7 @@
 #include <misc/options/settings.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/wpolar.h>
-#include <xflobjects/objects3d/vector3d.h>
+#include <xflgeom/geom3d/vector3d.h>
 
 QByteArray PanelAnalysisDlg::s_Geometry;
 

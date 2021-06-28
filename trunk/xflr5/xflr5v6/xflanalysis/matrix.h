@@ -23,7 +23,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include <xflobjects/objects3d/vector3d.h>
+#include <xflgeom/geom3d/vector3d.h>
 #include <complex>
 
 using namespace std;
