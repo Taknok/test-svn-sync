@@ -29,16 +29,17 @@
 
 #include <QDebug>
 
-#include "./ctrltabledelegate.h"
 #include "aerodatadlg.h"
 #include "stabpolardlg.h"
-#include <xflcore/xflcore.h>
 #include <miarex/miarex.h>
-#include <xflcore/units.h>
 #include <misc/options/settings.h>
-#include <xflwidgets/text/doubleedit.h>
+#include <xflcore/units.h>
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/wpolar.h>
+#include <xflobjects/objects_global.h>
+#include <xflwidgets/customwts/ctrltabledelegate.h>
+#include <xflwidgets/customwts/doubleedit.h>
 
 WPolar StabPolarDlg::s_StabWPolar;
 QByteArray StabPolarDlg::s_Geometry;
@@ -63,7 +64,7 @@ StabPolarDlg::StabPolarDlg(QWidget *pParent) : QDialog(pParent)
     m_pAngleControlModel = nullptr;
 
 
-    s_StabWPolar.setPolarType(Xfl::STABILITYPOLAR);
+    s_StabWPolar.setPolarType(xfl::STABILITYPOLAR);
     s_StabWPolar.setVLM1(false);
 
     setupLayout();
@@ -74,8 +75,6 @@ StabPolarDlg::StabPolarDlg(QWidget *pParent) : QDialog(pParent)
 
 StabPolarDlg::~StabPolarDlg()
 {
-    delete [] m_anglePrecision;
-    delete [] m_massPrecision;
     delete m_pMassCtrlDelegate;
     delete m_pAngleCtrlDelegate;
     delete m_pDragCtrlDelegate;
@@ -368,9 +367,9 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
         s_StabWPolar.duplicateSpec(pWPolar);
     }
 
-    m_pctrlArea1->setChecked(s_StabWPolar.referenceDim()==Xfl::PLANFORMREFDIM);
-    m_pctrlArea2->setChecked(s_StabWPolar.referenceDim()==Xfl::PROJECTEDREFDIM);
-    m_pctrlArea3->setChecked(s_StabWPolar.referenceDim()==Xfl::MANUALREFDIM);
+    m_pctrlArea1->setChecked(s_StabWPolar.referenceDim()==xfl::PLANFORMREFDIM);
+    m_pctrlArea2->setChecked(s_StabWPolar.referenceDim()==xfl::PROJECTEDREFDIM);
+    m_pctrlArea3->setChecked(s_StabWPolar.referenceDim()==xfl::MANUALREFDIM);
 
     if(m_pctrlArea1->isChecked())
     {
@@ -397,7 +396,7 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     if(m_pPlane->isWing()) m_pctrlAnalysisControls->setCurrentIndex(0);
     else
     {
-        s_StabWPolar.setAnalysisMethod(Xfl::PANEL4METHOD);
+        s_StabWPolar.setAnalysisMethod(xfl::PANEL4METHOD);
         m_pctrlAnalysisControls->setCurrentIndex(1);
     }
 
@@ -419,9 +418,9 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     m_pctrlBeta->setValue(s_StabWPolar.m_BetaSpec);
     m_pctrlPhi->setValue(s_StabWPolar.m_BankAngle);
 
-    if(s_StabWPolar.analysisMethod()==Xfl::LLTMETHOD)
+    if(s_StabWPolar.analysisMethod()==xfl::LLTMETHOD)
     {
-        s_StabWPolar.setAnalysisMethod(Xfl::PANEL4METHOD);
+        s_StabWPolar.setAnalysisMethod(xfl::PANEL4METHOD);
         s_StabWPolar.setThinSurfaces(true);
     }
 
@@ -430,8 +429,8 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     {
         m_pctrlPanelMethod->setChecked(false);
 
-        m_pctrlWingMethod2->setChecked(s_StabWPolar.analysisMethod()==Xfl::VLMMETHOD);
-        m_pctrlWingMethod3->setChecked(s_StabWPolar.analysisMethod()==Xfl::PANEL4METHOD);
+        m_pctrlWingMethod2->setChecked(s_StabWPolar.analysisMethod()==xfl::VLMMETHOD);
+        m_pctrlWingMethod3->setChecked(s_StabWPolar.analysisMethod()==xfl::PANEL4METHOD);
     }
 
     m_pctrlViscous->setChecked(s_StabWPolar.bViscous());
@@ -493,21 +492,21 @@ void StabPolarDlg::onArea()
 {
     if(m_pctrlArea1->isChecked())
     {
-        s_StabWPolar.setReferenceDim(Xfl::PLANFORMREFDIM);
+        s_StabWPolar.setReferenceDim(xfl::PLANFORMREFDIM);
         m_pctrlRefArea->setValue(m_pPlane->planformArea()*Units::m2toUnit());
         m_pctrlRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
         m_pctrlRefSpan->setValue(m_pPlane->planformSpan()*Units::mtoUnit());
     }
     else if(m_pctrlArea2->isChecked())
     {
-        s_StabWPolar.setReferenceDim(Xfl::PROJECTEDREFDIM);
+        s_StabWPolar.setReferenceDim(xfl::PROJECTEDREFDIM);
         m_pctrlRefArea->setValue(m_pPlane->projectedArea()*Units::m2toUnit());
         m_pctrlRefSpan->setValue(m_pPlane->projectedSpan()*Units::mtoUnit());
         m_pctrlRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
     }
     else if(m_pctrlArea3->isChecked())
     {
-        s_StabWPolar.setReferenceDim(Xfl::MANUALREFDIM);
+        s_StabWPolar.setReferenceDim(xfl::MANUALREFDIM);
         //        m_pctrlRefArea->SetValue(s_WPolar.referenceArea()Length*Units::m2toUnit());
         //        m_pctrlRefSpan->SetValue(s_WPolar.referenceSpanLength()*Units::mtoUnit());
         //        m_pctrlRefChord->SetValue(s_WPolar.m_referenceChordLength*Units::mtoUnit());
@@ -710,19 +709,19 @@ void StabPolarDlg::readData()
 
     if(m_pctrlArea1->isChecked())
     {
-        s_StabWPolar.setReferenceDim(Xfl::PLANFORMREFDIM);
+        s_StabWPolar.setReferenceDim(xfl::PLANFORMREFDIM);
         s_StabWPolar.setReferenceArea(m_pPlane->planformArea());
         s_StabWPolar.setReferenceSpanLength(m_pPlane->planformSpan());
     }
     else if(m_pctrlArea2->isChecked())
     {
-        s_StabWPolar.setReferenceDim(Xfl::PROJECTEDREFDIM);
+        s_StabWPolar.setReferenceDim(xfl::PROJECTEDREFDIM);
         s_StabWPolar.setReferenceArea(m_pPlane->projectedArea());
         s_StabWPolar.setReferenceSpanLength(m_pPlane->projectedSpan());
     }
     else if(m_pctrlArea3->isChecked())
     {
-        s_StabWPolar.setReferenceDim(Xfl::MANUALREFDIM);
+        s_StabWPolar.setReferenceDim(xfl::MANUALREFDIM);
         s_StabWPolar.setReferenceArea(m_pctrlRefArea->value() /Units::m2toUnit());
         s_StabWPolar.setReferenceSpanLength(m_pctrlRefSpan->value() /Units::mtoUnit());
     }
@@ -956,14 +955,10 @@ void StabPolarDlg::setupLayout()
 
         m_pMassCtrlDelegate = new CtrlTableDelegate(this);
         m_pInertiaControlTable->setItemDelegate(m_pMassCtrlDelegate);
-        m_pMassCtrlDelegate->m_pCtrlModel = m_pInertiaControlModel;
+//        m_pMassCtrlDelegate->m_pCtrlModel = m_pInertiaControlModel;
 
-        m_massPrecision = new int[3];
-        m_massPrecision[0]  = 2;
-        m_massPrecision[1]  = 3;
-        m_massPrecision[2]  = 3;
-
-        m_pMassCtrlDelegate->m_Precision = m_massPrecision;
+        m_massPrecision = {2,3,3};
+        m_pMassCtrlDelegate->setPrecision(m_massPrecision);
 
         pMassControlPageLayout->addWidget(m_pctrlAutoPlaneInertia);
         pMassControlPageLayout->addWidget(m_pInertiaControlTable);
@@ -994,13 +989,11 @@ void StabPolarDlg::setupLayout()
 
         m_pAngleCtrlDelegate = new CtrlTableDelegate(this);
         m_pAngleControlTable->setItemDelegate(m_pAngleCtrlDelegate);
-        m_pAngleCtrlDelegate->m_pCtrlModel = m_pAngleControlModel;
+//        m_pAngleCtrlDelegate->m_pCtrlModel = m_pAngleControlModel;
 
-        m_anglePrecision = new int[2];
-        m_anglePrecision[0]  = 1;
-        m_anglePrecision[1]  = 2;
+        m_anglePrecision = {1,2};
 
-        m_pAngleCtrlDelegate->m_Precision = m_anglePrecision;
+        m_pAngleCtrlDelegate->setPrecision(m_anglePrecision);
 
 
         QLabel* SignLabel = new QLabel(tr("Note: + sign means trailing edge down"));
@@ -1088,14 +1081,11 @@ void StabPolarDlg::setupLayout()
 
         m_pDragCtrlDelegate = new CtrlTableDelegate(this);
         m_pExtraDragControlTable->setItemDelegate(m_pDragCtrlDelegate);
-        m_pDragCtrlDelegate->m_pCtrlModel = m_pExtraDragControlModel;
+//        m_pDragCtrlDelegate->m_pCtrlModel = m_pExtraDragControlModel;
 
-        m_anglePrecision = new int[3];
-        m_anglePrecision[0]  = 0;
-        m_anglePrecision[1]  = 3;
-        m_anglePrecision[2]  = 5;
+        m_anglePrecision = {0,3,5};
 
-        m_pDragCtrlDelegate->m_Precision = m_anglePrecision;
+        m_pDragCtrlDelegate->setPrecision(m_anglePrecision);
 
         QLabel* pExtraLabel = new QLabel(QString::fromUtf8("D = 1/2 rho V² ( S (CD_induced+CD_Visc) + S_Extra1.CD_Extra1 + ... + S_ExtraN.Cd_ExtraN)"));
 
@@ -1234,12 +1224,12 @@ void StabPolarDlg::onMethod()
     if (m_pctrlWingMethod2->isChecked())
     {
         s_StabWPolar.setThinSurfaces(true);
-        s_StabWPolar.setAnalysisMethod(Xfl::VLMMETHOD);
+        s_StabWPolar.setAnalysisMethod(xfl::VLMMETHOD);
     }
     else if (m_pctrlWingMethod3->isChecked())
     {
         s_StabWPolar.setThinSurfaces(false);
-        s_StabWPolar.setAnalysisMethod(Xfl::PANEL4METHOD);
+        s_StabWPolar.setAnalysisMethod(xfl::PANEL4METHOD);
     }
 
     setWPolarName();

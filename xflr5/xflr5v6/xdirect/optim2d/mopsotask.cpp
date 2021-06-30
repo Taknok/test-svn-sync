@@ -110,14 +110,14 @@ void MOPSOTask::onSwarm()
         return;
     }
 
-    m_Status = Xfl::RUNNING;
+    m_Status = xfl::RUNNING;
     m_Iter=0;
 
     do
     {
         onIteration();
     }
-    while(m_Status==Xfl::RUNNING);
+    while(m_Status==xfl::RUNNING);
 }
 
 
@@ -175,13 +175,13 @@ void MOPSOTask::onIteration()
 
     postIterEvent(iBest0);
 
-    if(m_Iter>=s_MaxIter || bIsConverged || m_Status==Xfl::CANCELLED)
+    if(m_Iter>=s_MaxIter || bIsConverged || m_Status==xfl::CANCELLED)
     {
         if     (bIsConverged)             outputMsg("   ---Converged---\n");
-        else if(m_Status==Xfl::CANCELLED) outputMsg("The task has been cancelled\n");
+        else if(m_Status==xfl::CANCELLED) outputMsg("The task has been cancelled\n");
         else if(m_Iter>=s_MaxIter)        outputMsg("The maximum number of iterations has been reached\n");
 
-        m_Status = Xfl::FINISHED;
+        m_Status = xfl::FINISHED;
 
         postPSOEvent(iBest0); // tell the GUI that the task is done
 

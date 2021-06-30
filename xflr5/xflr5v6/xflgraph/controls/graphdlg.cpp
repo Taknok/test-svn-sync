@@ -31,12 +31,12 @@
 #include <xflgraph/graph.h>
 #include <xflgraph/controls/graphdlg.h>
 #include <miarex/miarex.h>
-#include <xflwidgets/color/colorbutton.h>
+#include <xflwidgets/color/colorbtn.h>
 #include <xflwidgets/line/linebtn.h>
 #include <xflwidgets/line/linepickerdlg.h>
-#include <xflwidgets/text/doubleedit.h>
-#include <xflwidgets/text/intedit.h>
-#include <xflwidgets/text/textclrbtn.h>
+#include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/intedit.h>
+#include <xflwidgets/color/textclrbtn.h>
 #include <xflobjects/objects2d/polar.h>
 #include <xflobjects/objects3d/wpolar.h>
 
@@ -66,33 +66,30 @@ GraphDlg::GraphDlg(QWidget *pParent): QDialog(pParent)
 
 void GraphDlg::connectSignals()
 {
-    connect(m_ptcbTitleClr, SIGNAL(clickedTB()),  this, SLOT(onTitleColor()));
-    connect(m_ptcbLabelClr, SIGNAL(clickedTB()),  this, SLOT(onLabelColor()));
+    connect(m_ptcbTitleClr,     SIGNAL(clickedTB()),          SLOT(onTitleColor()));
+    connect(m_ptcbLabelClr,     SIGNAL(clickedTB()),          SLOT(onLabelColor()));
 
-    connect(m_ppbTitleButton, SIGNAL(clicked()),  this, SLOT(onTitleFont()));
-    connect(m_ppbLabelButton, SIGNAL(clicked()),  this, SLOT(onLabelFont()));
+    connect(m_ppbTitleButton,   SIGNAL(clicked()),            SLOT(onTitleFont()));
+    connect(m_ppbLabelButton,   SIGNAL(clicked()),            SLOT(onLabelFont()));
 
-    connect(m_pchXAuto, SIGNAL(clicked()), this, SLOT(onAutoX()));
-    connect(m_pchYAuto, SIGNAL(clicked()), this, SLOT(onAutoY()));
-    connect(m_pchYInverted, SIGNAL(clicked()), this, SLOT(onYInverted()));
+    connect(m_pchXAuto,         SIGNAL(clicked()),            SLOT(onAutoX()));
+    connect(m_pchYAuto,         SIGNAL(clicked()),            SLOT(onAutoY()));
+    connect(m_pchYInverted,     SIGNAL(clicked()),            SLOT(onYInverted()));
 
-    connect(m_pchXMajGridShow, SIGNAL(stateChanged(int)), this, SLOT(onXMajGridShow(int)));
-    connect(m_pchYMajGridShow, SIGNAL(stateChanged(int)), this, SLOT(onYMajGridShow(int)));
-    connect(m_pchXMinGridShow, SIGNAL(stateChanged(int)), this, SLOT(onXMinGridShow(int)));
-    connect(m_pchYMinGridShow, SIGNAL(stateChanged(int)), this, SLOT(onYMinGridShow(int)));
+    connect(m_pchXMajGridShow,  SIGNAL(stateChanged(int)),    SLOT(onXMajGridShow(int)));
+    connect(m_pchYMajGridShow,  SIGNAL(stateChanged(int)),    SLOT(onYMajGridShow(int)));
+    connect(m_pchXMinGridShow,  SIGNAL(stateChanged(int)),    SLOT(onXMinGridShow(int)));
+    connect(m_pchYMinGridShow,  SIGNAL(stateChanged(int)),    SLOT(onYMinGridShow(int)));
 
-    connect(m_plbAxisStyle, SIGNAL(clickedLB()), this, SLOT(onAxisStyle()));
-    connect(m_plbXMajGridStyle, SIGNAL(clickedLB()), this, SLOT(onXMajGridStyle()));
-    connect(m_plbYMajGridStyle, SIGNAL(clickedLB()), this, SLOT(onYMajGridStyle()));
-    connect(m_plbXMinGridStyle, SIGNAL(clickedLB()), this, SLOT(onXMinGridStyle()));
-    connect(m_plbYMinGridStyle, SIGNAL(clickedLB()), this, SLOT(onYMinGridStyle()));
+    connect(m_plbAxisStyle,     SIGNAL(clickedLB(LineStyle)), SLOT(onAxisStyle()));
+    connect(m_plbXMajGridStyle, SIGNAL(clickedLB(LineStyle)), SLOT(onXMajGridStyle()));
+    connect(m_plbYMajGridStyle, SIGNAL(clickedLB(LineStyle)), SLOT(onYMajGridStyle()));
+    connect(m_plbXMinGridStyle, SIGNAL(clickedLB(LineStyle)), SLOT(onXMinGridStyle()));
+    connect(m_plbYMinGridStyle, SIGNAL(clickedLB(LineStyle)), SLOT(onYMinGridStyle()));
 
-    connect(m_pchAutoXMinUnit, SIGNAL(clicked()), this, SLOT(onAutoMinGrid()));
-    connect(m_pchAutoYMinUnit, SIGNAL(clicked()), this, SLOT(onAutoMinGrid()));
-
-    connect(m_pchGraphBorder, SIGNAL(stateChanged(int)), this, SLOT(onGraphBorder(int)));
-    connect(m_pcbGraphBack, SIGNAL(clicked()), this, SLOT(onGraphBackColor()));
-    connect(m_plbBorderStyle, SIGNAL(clicked()), this, SLOT(onBorderStyle()));
+    connect(m_pchGraphBorder,   SIGNAL(stateChanged(int)),    SLOT(onGraphBorder(int)));
+    connect(m_pcbGraphBack,     SIGNAL(clicked()),            SLOT(onGraphBackColor()));
+    connect(m_plbBorderStyle,   SIGNAL(clicked()),            SLOT(onBorderStyle()));
 
     /*    connect(m_pctrlXSel, SIGNAL(itemActivated ( QListWidgetItem*)), SLOT(OnVariableChanged()));
     connect(m_pctrlYSel, SIGNAL(itemActivated ( QListWidgetItem*)), SLOT(OnVariableChanged()));
@@ -248,19 +245,6 @@ void GraphDlg::onActivePage(int index)
 }
 
 
-void GraphDlg::onAutoMinGrid()
-{
-    bool bAuto;
-    bAuto = m_pchAutoXMinUnit->isChecked();
-    m_pGraph->setAutoXMinUnit(bAuto);
-    m_pdeXMinorUnit->setEnabled(!bAuto);
-
-    bAuto = m_pchAutoYMinUnit->isChecked();
-    m_pGraph->setAutoYMinUnit(bAuto);
-    m_pdeYMinorUnit->setEnabled(!bAuto);
-}
-
-
 void GraphDlg::onAutoX()
 {
     bool bAuto = m_pchXAuto->checkState() == Qt::Checked;
@@ -286,14 +270,12 @@ void GraphDlg::onAutoY()
 void GraphDlg::onAxisStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0, m_pGraph->axisStyle(), m_pGraph->axisWidth(), m_pGraph->axisColor(), false, false);
+    dlg.initDialog(m_pGraph->grid().xAxisStyle(), false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_pGraph->setAxisStyle(dlg.theStyle());
-        m_plbAxisStyle->setStipple(dlg.lineStipple());
-        m_plbAxisStyle->setWidth(dlg.lineWidth());
-        m_plbAxisStyle->setColor(dlg.lineColor());
+        m_pGraph->grid().setXAxisStyle(dlg.theStyle());
+        m_plbAxisStyle->setTheStyle(dlg.theStyle());
         setApplied(false);
     }
 }
@@ -303,18 +285,12 @@ void GraphDlg::onBorderStyle()
 {
     LinePickerDlg dlg(this);
 
-    QColor color;
-    int s = m_pGraph->borderStyle();
-    int w = m_pGraph->borderWidth();
-    color = m_pGraph->borderColor();
-    dlg.initDialog(0,s,w,color, false, false);
+    dlg.initDialog(m_pGraph->borderStyle(), false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
         m_pGraph->setBorderStyle(dlg.theStyle());
-        m_plbBorderStyle->setStipple(dlg.lineStipple());
-        m_plbBorderStyle->setWidth(dlg.lineWidth());
-        m_plbBorderStyle->setColor(dlg.lineColor());
+        m_plbBorderStyle->setTheStyle(dlg.theStyle());
         setApplied(false);
     }
 }
@@ -405,27 +381,7 @@ void GraphDlg::applyChanges()
     m_pGraph->setY0(m_pdeYOrigin->value());
     m_pGraph->setYUnit(m_pdeYUnit->value());
 
-    double MinUnit;
-    if(!m_pchAutoXMinUnit->isChecked())
-    {
-        MinUnit = m_pdeXMinorUnit->value();
-        m_pGraph->setXMinorUnit(MinUnit);
-        m_pGraph->setAutoXMinUnit(false);
-    }
-    else
-        m_pGraph->setAutoXMinUnit(true);
-
-    if(!m_pchAutoYMinUnit->isChecked())
-    {
-        MinUnit = m_pdeYMinorUnit->value();
-        m_pGraph->setYMinorUnit(MinUnit);
-        m_pGraph->setAutoYMinUnit(false);
-    }
-    else
-        m_pGraph->setAutoYMinUnit(true);
-
     m_pGraph->setMargin(m_pieMargin->value());
-
 }
 
 
@@ -487,18 +443,12 @@ void GraphDlg::onMargin()
 void GraphDlg::onXMajGridStyle()
 {
     LinePickerDlg dlg(this);
-    int s,w;
-    QColor color;
-    bool bShow;
-    m_pGraph->bXMajGrid(bShow,color,s,w);
-    dlg.initDialog(0,s,w,color, false, false);
+    dlg.initDialog(m_pGraph->grid().xMajStyle(), false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_pGraph->setXMajGrid(bShow, dlg.lineColor(), dlg.lineStipple(), dlg.lineWidth());
-        m_plbXMajGridStyle->setStipple(dlg.lineStipple());
-        m_plbXMajGridStyle->setWidth(dlg.lineWidth());
-        m_plbXMajGridStyle->setColor(dlg.lineColor());
+        m_pGraph->grid().setXMajStyle(dlg.theStyle());
+        m_plbXMajGridStyle->setTheStyle(dlg.theStyle());
         setApplied(false);
     }
 }
@@ -506,28 +456,34 @@ void GraphDlg::onXMajGridStyle()
 void GraphDlg::onXMinGridStyle()
 {
     LinePickerDlg dlg(this);
-    int s,w;
-    QColor color;
-    bool bShow, bAuto;
-    double unit;
-    m_pGraph->bXMinGrid(bShow, bAuto,color,s,w,unit);
-    dlg.initDialog(0,s,w,color, false, false);
+    dlg.initDialog(m_pGraph->grid().xMinStyle(), false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_pGraph->setXMinGrid(bShow, bAuto, dlg.lineColor(), dlg.lineStipple(), dlg.lineWidth(),unit);
-        m_plbXMinGridStyle->setStipple(dlg.lineStipple());
-        m_plbXMinGridStyle->setWidth(dlg.lineWidth());
-        m_plbXMinGridStyle->setColor(dlg.lineColor());
+        m_pGraph->grid().setXMinStyle(dlg.theStyle());
+        m_plbXMinGridStyle->setTheStyle(dlg.theStyle());
         setApplied(false);
     }
 }
 
 
+void GraphDlg::onYMinGridStyle()
+{
+    LinePickerDlg dlg(this);
+    dlg.initDialog(m_pGraph->grid().yMinStyle(0), false, false);
+
+    if(QDialog::Accepted==dlg.exec())
+    {
+        m_pGraph->grid().setYMinStyle(0, dlg.theStyle());
+        m_plbYMinGridStyle->setTheStyle(dlg.theStyle());
+        setApplied(false);
+    }
+}
+
 void GraphDlg::onXMajGridShow(int state)
 {
     bool bShow = (state==Qt::Checked);
-    m_pGraph->setXMajGrid(bShow);
+    m_pGraph->showXMajGrid(bShow);
     m_plbXMajGridStyle->setEnabled(bShow);
     setApplied(false);
 }
@@ -536,10 +492,8 @@ void GraphDlg::onXMajGridShow(int state)
 void GraphDlg::onXMinGridShow(int state)
 {
     bool bShow = (state==Qt::Checked);
-    m_pGraph->setXMinGrid(bShow);
+    m_pGraph->showXMinGrid(bShow);
     m_plbXMinGridStyle->setEnabled(bShow);
-    m_pchAutoXMinUnit->setEnabled(bShow);
-    m_pdeXMinorUnit->setEnabled(bShow && !m_pGraph->bAutoXMin());
 
     setApplied(false);
 }
@@ -555,26 +509,22 @@ void GraphDlg::onYInverted()
 void GraphDlg::onYMajGridShow(int state)
 {
     bool bShow = (state==Qt::Checked);
-    m_pGraph->setYMajGrid(bShow);
+    m_pGraph->grid().showYMajGrid(0, bShow);
     m_plbYMajGridStyle->setEnabled(bShow);
     setApplied(false);
 }
 
+
 void GraphDlg::onYMajGridStyle()
 {
     LinePickerDlg dlg(this);
-    int s,w;
-    QColor color;
-    bool bShow;
-    m_pGraph->yMajGrid(bShow,color,s,w);
-    dlg.initDialog(0,s,w,color, false, false);
+
+    dlg.initDialog(m_pGraph->grid().yMajStyle(0), false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_pGraph->setYMajGrid(bShow, dlg.lineColor(), dlg.lineStipple(), dlg.lineWidth());
-        m_plbYMajGridStyle->setStipple(dlg.lineStipple());
-        m_plbYMajGridStyle->setWidth(dlg.lineWidth());
-        m_plbYMajGridStyle->setColor(dlg.lineColor());
+        m_pGraph->grid().setYMajStyle(0, dlg.theStyle());
+        m_plbYMajGridStyle->setTheStyle(dlg.theStyle());
     }
 }
 
@@ -582,33 +532,10 @@ void GraphDlg::onYMajGridStyle()
 void GraphDlg::onYMinGridShow(int state)
 {
     bool bShow = (state==Qt::Checked);
-    m_pGraph->setYMinGrid(bShow);
+    m_pGraph->showYMinGrid(0, bShow);
     m_plbYMinGridStyle->setEnabled(bShow);
-    m_pchAutoYMinUnit->setEnabled(bShow);
-    m_pdeYMinorUnit->setEnabled(bShow && !m_pGraph->bAutoYMin());
 
     setApplied(false);
-}
-
-
-void GraphDlg::onYMinGridStyle()
-{
-    LinePickerDlg dlg(this);
-    int s,w;
-    QColor color;
-    bool bShow, bAuto;
-    double unit;
-    m_pGraph->bYMinGrid(bShow, bAuto,color,s,w,unit);
-    dlg.initDialog(0,s,w,color, false, false);
-
-    if(QDialog::Accepted==dlg.exec())
-    {
-        m_pGraph->setYMinGrid(bShow, bAuto, dlg.lineColor(), dlg.lineStipple(), dlg.lineWidth(),unit);
-        m_plbYMinGridStyle->setStipple(dlg.lineStipple());
-        m_plbYMinGridStyle->setWidth(dlg.lineWidth());
-        m_plbYMinGridStyle->setColor(dlg.lineColor());
-        setApplied(false);
-    }
 }
 
 
@@ -657,55 +584,22 @@ void GraphDlg::setControls()
     m_ppbTitleButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
     m_ppbTitleButton->setFont(font);
 
-    bool bState, bAuto;
-    QColor color;
-    int style, width;
-    double unit;
+    m_pchXMajGridShow->setChecked(m_pGraph->bXMajGrid());
+    m_plbXMajGridStyle->setTheStyle(m_pGraph->grid().xMajStyle());
 
-    m_pGraph->bXMajGrid(bState, color, style, width);
-    m_pchXMajGridShow->setChecked(bState);
-    m_plbXMajGridStyle->setColor(color);
-    m_plbXMajGridStyle->setStipple(style);
-    m_plbXMajGridStyle->setWidth(width);
-    m_plbXMajGridStyle->setEnabled(bState);
+    m_pchXMinGridShow->setChecked(m_pGraph->bXMinGrid());
+    m_plbXMinGridStyle->setTheStyle(m_pGraph->grid().xMinStyle());
 
-    m_pGraph->bXMinGrid(bState, bAuto,color, style, width, unit);
-    m_pchXMinGridShow->setChecked(bState);
-    m_plbXMinGridStyle->setColor(color);
-    m_plbXMinGridStyle->setStipple(style);
-    m_plbXMinGridStyle->setWidth(width);
-    m_plbXMinGridStyle->setEnabled(bState);
-    m_pdeXMinorUnit->setValue(unit);
-    m_pchAutoXMinUnit->setChecked(bAuto);
-    m_pchAutoXMinUnit->setEnabled(bState);
-    m_pdeXMinorUnit->setEnabled(!bAuto && bState);
+    m_pchYMajGridShow->setChecked(m_pGraph->bYMajGrid(0));
+    m_plbYMajGridStyle->setTheStyle(m_pGraph->grid().yMajStyle(0));
 
-    m_pGraph->yMajGrid(bState, color, style, width);
-    m_pchYMajGridShow->setChecked(bState);
-    m_plbYMajGridStyle->setColor(color);
-    m_plbYMajGridStyle->setStipple(style);
-    m_plbYMajGridStyle->setWidth(width);
-    m_plbYMajGridStyle->setEnabled(bState);
+    m_pchYMinGridShow->setChecked(m_pGraph->bYMinGrid(0));
+    m_plbYMinGridStyle->setTheStyle(m_pGraph->grid().yMinStyle(0));
 
-    m_pGraph->bYMinGrid(bState, bAuto,color, style, width, unit);
-    m_pchYMinGridShow->setChecked(bState);
-    m_plbYMinGridStyle->setColor(color);
-    m_plbYMinGridStyle->setStipple(style);
-    m_plbYMinGridStyle->setWidth(width);
-    m_plbYMinGridStyle->setEnabled(bState);
-    m_pdeYMinorUnit->setValue(unit);
-    m_pchAutoYMinUnit->setChecked(bAuto);
-    m_pchAutoYMinUnit->setEnabled(bState);
-    m_pdeYMinorUnit->setEnabled(!bAuto && bState);
-
-    m_plbAxisStyle->setColor(m_pGraph->axisColor());
-    m_plbAxisStyle->setStipple(m_pGraph->axisStyle());
-    m_plbAxisStyle->setWidth(m_pGraph->axisWidth());
+    m_plbAxisStyle->setTheStyle(m_pGraph->grid().xAxisStyle());
 
     m_pchGraphBorder->setChecked(m_pGraph->hasBorder());
-    m_plbBorderStyle->setColor(m_pGraph->borderColor());
-    m_plbBorderStyle->setStipple(m_pGraph->borderStyle());
-    m_plbBorderStyle->setWidth(m_pGraph->borderWidth());
+    m_plbBorderStyle->setTheStyle(m_pGraph->borderStyle());
 
     m_pcbGraphBack->setColor(m_pGraph->backgroundColor());
 
@@ -814,7 +708,7 @@ void GraphDlg::setupLayout()
                 GraphBackLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
                 m_pchGraphBorder = new QCheckBox(tr("Graph Border"));
 
-                m_pcbGraphBack = new ColorButton;
+                m_pcbGraphBack = new ColorBtn;
                 m_pcbGraphBack->setMinimumWidth(100);
                 m_plbBorderStyle = new LineBtn(this);
                 m_plbBorderStyle->setMinimumWidth(100);
@@ -919,8 +813,6 @@ void GraphDlg::setupLayout()
         m_pchYMajGridShow = new QCheckBox(tr("Y Major Grid"));
         m_pchXMinGridShow = new QCheckBox(tr("X Minor Grid"));
         m_pchYMinGridShow = new QCheckBox(tr("Y Minor Grid"));
-        m_pchAutoXMinUnit = new QCheckBox(tr("Auto Unit"));
-        m_pchAutoYMinUnit = new QCheckBox(tr("Auto Unit"));
 
         m_plbAxisStyle = new LineBtn(this);
 
@@ -928,9 +820,6 @@ void GraphDlg::setupLayout()
         m_plbYMajGridStyle = new LineBtn(this);
         m_plbXMinGridStyle = new LineBtn(this);
         m_plbYMinGridStyle = new LineBtn(this);
-
-        m_pdeXMinorUnit = new DoubleEdit;
-        m_pdeYMinorUnit = new DoubleEdit;
 
         pAxisDataLayout->addWidget(AxisStyleLabel,1,1);
         pAxisDataLayout->addWidget(m_pchXMajGridShow,2,1);
@@ -943,11 +832,6 @@ void GraphDlg::setupLayout()
         pAxisDataLayout->addWidget(m_plbYMajGridStyle,3,2);
         pAxisDataLayout->addWidget(m_plbXMinGridStyle,4,2);
         pAxisDataLayout->addWidget(m_plbYMinGridStyle,5,2);
-
-        pAxisDataLayout->addWidget(m_pchAutoXMinUnit,4,3);
-        pAxisDataLayout->addWidget(m_pchAutoYMinUnit,5,3);
-        pAxisDataLayout->addWidget(m_pdeXMinorUnit,4,4);
-        pAxisDataLayout->addWidget(m_pdeYMinorUnit,5,4);
     }
     m_pGridPage->setLayout(pAxisDataLayout);
     //________End Axis Page______________________

@@ -28,8 +28,8 @@
 #include "bodytransdlg.h"
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
-#include <xflwidgets/text/intedit.h>
-#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/customwts/intedit.h>
+#include <xflwidgets/customwts/doubleedit.h>
 
 
 BodyTransDlg::BodyTransDlg(QWidget *pParent): QDialog(pParent)

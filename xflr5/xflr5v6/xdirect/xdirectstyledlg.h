@@ -24,7 +24,7 @@
 #include <QDialog>
 #include <QKeyEvent>
 
-#include <xflcore/ls2.h>
+#include <xflcore/linestyle.h>
 
 
 class LineBtn;
@@ -53,9 +53,9 @@ class XDirectStyleDlg : public QDialog
         LineBtn *m_plbBL, *m_plbPressure, *m_plbNeutral;
         QPushButton *m_ppbOKButton;
 
-        LS2 m_FoilStyle;
-        LS2 m_BLStyle;
-        LS2 m_PressureStyle;
-        LS2 m_NeutralStyle;
+        LineStyle m_FoilStyle;
+        LineStyle m_BLStyle;
+        LineStyle m_PressureStyle;
+        LineStyle m_NeutralStyle;
 };
 

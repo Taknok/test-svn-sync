@@ -38,10 +38,9 @@
 #include <xflobjects/objects2d/foil.h>
 #include <xdirect/analysis/xfoilanalysisdlg.h>
 #include <twodwidgets/oppointwt.h>
-#include <xflcore/gui_enums.h>
+#include <xflcore/core_enums.h>
 #include <xflobjects/objects2d/oppoint.h>
 #include <xflgraph/graph.h>
-#include <xflcore/ls2.h>
 
 #include <xfoil.h>
 
@@ -51,9 +50,10 @@ class LineDelegate;
 class MainFrame; // to shut the compiler up
 class DoubleEdit;
 class MinTextEdit;
+class LinePickerWt;
 
 /**
-* @class QXDirect
+* @class XDirect
 * @brief This class is the general interface for Foil direct analysis.
 * This is the handling class for the QXDirect right toolbar.
 * It provides the methods to modify the foil geometry, define the Polar analysis, perform the analysis, and post-process the results.
@@ -81,7 +81,7 @@ class XDirect : public QWidget
         XDirect(QWidget *parent = nullptr);
         ~XDirect();
 
-        void setView(Xfl::enumGraphView eView);
+        void setView(xfl::enumGraphView eView);
 
         bool bPolarView() const {return m_bPolarView;}
         Graph *CpGraph() {return &m_CpGraph;}
@@ -121,10 +121,7 @@ class XDirect : public QWidget
         void onCpGraph();
         void onCpi();
         void onCurOppOnly();
-        void onCurveColor();
-        void onCurvePoints(int index);
-        void onCurveStyle(int index);
-        void onCurveWidth(int index);
+        void onCurveStyle(LineStyle ls);
         void onDefinePolar();
         void onDelCurOpp();
         void onDeleteCurFoil();
@@ -137,7 +134,7 @@ class XDirect : public QWidget
         void onEditCurPolar();
         void onExportAllFoilPolars();
         void onExportAllPolarsTxt();
-        void onExportAllPolarsTxt(QString DirName, Xfl::enumTextFileType);
+        void onExportAllPolarsTxt(QString DirName, xfl::enumTextFileType);
         void onExportBLData();
         void onExportCurFoil();
         void onExportCurOpp();
@@ -218,7 +215,7 @@ class XDirect : public QWidget
         void setGraphTitles(Graph* pGraph);
         void setupLayout();
         void stopAnimate();
-        void updateCurveStyle();
+        void updateCurveStyle(const LineStyle &ls);
 
         QVector<double> * getVariable(Polar *pPolar, int iVar);
 
@@ -256,10 +253,7 @@ class XDirect : public QWidget
 
         QCheckBox *m_pchShowCurve, *m_pchAlignChildren;
 
-        LineCbBox *m_plcbCurveStyle, *m_plcbCurveWidth, *m_plcbPointStyle;
-        LineBtn *m_plbCurveColor;
-
-        LineDelegate *m_pStyleDelegate, *m_pWidthDelegate, *m_pPointDelegate;
+        LinePickerWt *m_pLinePicker;
 
         static MainFrame *s_pMainFrame;  /**< a static pointer to the instance of the application's MainFrame object */
 
@@ -287,7 +281,7 @@ class XDirect : public QWidget
         int m_posAnimate;          /**< the current aoa in the animation */
 
         int m_iPlrGraph;           /**< defines whch polar graph is selected if m_iPlrView=1 */
-        Xfl::enumGraphView m_iPlrView;  /**< defines the number of graphs to be displayed in the polar view */
+        xfl::enumGraphView m_iPlrView;  /**< defines the number of graphs to be displayed in the polar view */
         int m_FoilYPos;            /**< y position for the foil display, in pixels from the bottom of the screen */
 
         double m_fFoilScale;        /**< the scale for foil display*/
@@ -300,7 +294,7 @@ class XDirect : public QWidget
         Graph m_CpGraph;           /**< the Cp graph for the OpPoint view */
         QVector<Graph*> m_PlrGraph;  /**< the array of pointer to the 5 Polar graphs */
 
-        LS2 m_LineStyle;      /**< the style of the lines displayed in the comboboxes*/
+        LineStyle m_LineStyle;      /**< the style of the lines displayed in the comboboxes*/
 
         XFoil m_XFoil;                /**< the unique instance of the XFoil object */
 

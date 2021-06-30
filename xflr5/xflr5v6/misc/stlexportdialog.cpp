@@ -27,7 +27,7 @@
 #include <QPushButton>
 
 #include "stlexportdialog.h"
-#include <xflwidgets/text/intedit.h>
+#include <xflwidgets/customwts/intedit.h>
 #include <xflobjects/objects3d/plane.h>
 
 bool STLExportDlg::s_bBinary = true;

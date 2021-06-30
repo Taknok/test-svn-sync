@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef GL3DWINGDLG_H
-#define GL3DWINGDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QCheckBox>
@@ -43,7 +42,7 @@
 
 class gl3dWingView;
 class DoubleEdit;
-class ColorButton;
+class ColorBtn;
 class Wing;
 class WingDelegate;
 class Panel;
@@ -63,160 +62,159 @@ class GL3dWingDlg: public QDialog
     friend class PlaneDlg;
     friend class WingDelegate;
 
-public:
-    GL3dWingDlg(QWidget *pParent=nullptr);
-    ~GL3dWingDlg();
+    public:
+        GL3dWingDlg(QWidget *pParent=nullptr);
+        ~GL3dWingDlg();
 
-    bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
-    void glMake3DObjects();
-    void glMakeSectionHighlight(QOpenGLBuffer &vbo, int &nStrips, int &stripSize);
-    int iSection() const {return m_iSection;}
+        bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
+        void glMake3DObjects();
+        void glMakeSectionHighlight(QOpenGLBuffer &vbo, int &nStrips, int &stripSize);
+        int iSection() const {return m_iSection;}
 
-    static void loadSettings(QSettings &settings);
-    static void saveSettings(QSettings &settings);
-
-
-private slots:
-    void onAxes();
-    void onCheckViewIcons();
-    void onSurfaces();
-    void onOutline();
-    void onPanels();
-    void onFoilNames();
-    void onShowMasses();
-
-    void onOK();
-    void onDescriptionChanged();
-    void onCellChanged(QWidget *);
-    void onItemClicked(const QModelIndex &index);
-    void onWingColor();
-    void onTextures();
-    void onSide();
-    void onSymetric();
-    void onInsertBefore();
-    void onInsertAfter();
-    void onDeleteSection();
-    void onResetSection();
-    void onResetMesh();
-    void onScaleWing();
-    void onInertia();
-    void onImportWing();
-    void onExportWing();
-    void onImportWingFromXML();
-    void onExportWingToXML();
-    void onButton(QAbstractButton *pButton);
-
-private:
-    void accept();
-    void reject();
-
-    void keyPressEvent(QKeyEvent *pEvent);
-    void resizeEvent(QResizeEvent *pEvent);
-    void showEvent(QShowEvent *pEvent);
-    void hideEvent(QHideEvent *pEvent);
-    void contextMenuEvent(QContextMenuEvent *pEvent);
-
-    bool checkWing();
-    void createXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFoilB, double *xPointA, double *xPointB, int &NXLead, int &NXFlap);
-    void computeGeometry();
-
-    void setWingData();
-    void fillDataTable();
-    void fillTableRow(int row);
-    void readParams();
-    void readSectionData(int sel);
-    void setCurrentSection(int section);
-    void setScale();
-    int VLMGetPanelTotal();
-    bool VLMSetAutoMesh(int total=0);
-
-    bool initDialog(Wing *pWing);
-    void connectSignals();
-    void setupLayout();
+        static void loadSettings(QSettings &settings);
+        static void saveSettings(QSettings &settings);
 
 
-private:
+    private slots:
+        void onAxes();
+        void onCheckViewIcons();
+        void onSurfaces();
+        void onOutline();
+        void onPanels();
+        void onFoilNames();
+        void onShowMasses();
 
-    static QByteArray s_WindowGeometry;
+        void onOK();
+        void onDescriptionChanged();
+        void onCellChanged(QWidget *);
+        void onItemClicked(const QModelIndex &index);
+        void onWingColor();
+        void onTextures();
+        void onSide();
+        void onSymetric();
+        void onInsertBefore();
+        void onInsertAfter();
+        void onDeleteSection();
+        void onResetSection();
+        void onResetMesh();
+        void onScaleWing();
+        void onInertia();
+        void onImportWing();
+        void onExportWing();
+        void onImportWingFromXML();
+        void onExportWingToXML();
+        void onButton(QAbstractButton *pButton);
 
-    static bool s_bOutline;
-    static bool s_bSurfaces;
-    static bool s_bVLMPanels;
-    static bool s_bAxes;
-    static bool s_bShowMasses;
-    static bool s_bFoilNames;
+    private:
+        void accept() override;
+        void reject() override;
 
-    gl3dWingView *m_pglWingView;              /**< a pointer to the openGL 3.0 widget where 3d calculations and rendering are performed */
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void resizeEvent(QResizeEvent *pEvent) override;
+        void showEvent(QShowEvent *pEvent) override;
+        void hideEvent(QHideEvent *pEvent) override;
+        void contextMenuEvent(QContextMenuEvent *pEvent) override;
 
-    QLineEdit *m_pleWingName;
-    QTextEdit *m_pctrlWingDescription;
-    QCheckBox *m_pchSymetric;
-    QRadioButton *m_prbLeftSide, *m_prbRightSide;
-    ColorButton *m_pcbWingColor;
-    QPushButton *m_pctrlResetMesh;
-    QPushButton *m_ppbInsertBefore, *m_ppbInsertAfter, *m_ppbDeleteSection;
-    QLabel *m_plabWingSpan, *m_plabWingArea, *m_pctrlMAC, *m_pctrlGeomChord;
-    QLabel *m_pctrlAspectRatio, *m_pctrlTaperRatio, *m_pctrlSweep, *m_pctrlNFlaps;
-    QLabel *m_plabVLMPanels, *m_plab3DPanels;
-    QLabel *m_plabProjectedArea, *m_plabProjectedSpan;
+        bool checkWing();
+        void createXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFoilB, double *xPointA, double *xPointB, int &NXLead, int &NXFlap);
+        void computeGeometry();
 
-    QTableView *m_ptvWingSections;
-    QStandardItemModel *m_pWingModel;
-    WingDelegate *m_pWingDelegate;
+        void setWingData();
+        void fillDataTable();
+        void fillTableRow(int row);
+        void readParams();
+        void readSectionData(int sel);
+        void setCurrentSection(int section);
+        void setScale();
+        int VLMGetPanelTotal();
+        bool VLMSetAutoMesh(int total=0);
 
-    QDialogButtonBox *m_pButtonBox;
-
-    QCheckBox *m_pchAxes, *m_pchSurfaces, *m_pchOutline, *m_pchPanels, *m_pchFoilNames;
-    QCheckBox *m_pchShowMasses;
-    QPushButton *m_pctrlReset;
-    QRadioButton *m_prbColor, *m_prbTextures;
-
-    QToolButton *m_ptbX, *m_ptbY, *m_ptbZ, *m_ptbIso, *m_ptbFlip;
-    QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
-
-    QAction *m_pScaleWing, *m_pInertia;
-    QAction *m_pExportWingAct, *m_pImportWingAct;
-    QAction *m_pExportWingXml, *m_pImportWingXml;
-
-    QAction *m_pResetScales;
-
-
-    QMenu *m_pContextMenu;
-    QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteSection, *m_pResetSection;
-
-    QWidget *m_pctrlControlsWidget;
-    QSplitter *m_pspLeftSide;
-    QSplitter *m_pspHorizontal;
-
-    static QByteArray s_LeftSplitterSizes;
-    static QByteArray s_HSplitterSizes;
-
-
-    Wing *m_pWing;
-
-    bool m_bAcceptName;
-    bool m_bRightSide;
-    bool m_bChanged, m_bDescriptionChanged;
-    bool m_bTrans;
-    bool m_bStored;
-    bool m_bEnableName;
+        bool initDialog(Wing *pWing);
+        void connectSignals();
+        void setupLayout();
 
 
-    int m_iSection;
+    private:
+
+        static QByteArray s_WindowGeometry;
+
+        static bool s_bOutline;
+        static bool s_bSurfaces;
+        static bool s_bVLMPanels;
+        static bool s_bAxes;
+        static bool s_bShowMasses;
+        static bool s_bFoilNames;
+
+        gl3dWingView *m_pglWingView;              /**< a pointer to the openGL 3.0 widget where 3d calculations and rendering are performed */
+
+        QLineEdit *m_pleWingName;
+        QTextEdit *m_pctrlWingDescription;
+        QCheckBox *m_pchSymetric;
+        QRadioButton *m_prbLeftSide, *m_prbRightSide;
+        ColorBtn *m_pcbWingColor;
+        QPushButton *m_pctrlResetMesh;
+        QPushButton *m_ppbInsertBefore, *m_ppbInsertAfter, *m_ppbDeleteSection;
+        QLabel *m_plabWingSpan, *m_plabWingArea, *m_pctrlMAC, *m_pctrlGeomChord;
+        QLabel *m_pctrlAspectRatio, *m_pctrlTaperRatio, *m_pctrlSweep, *m_pctrlNFlaps;
+        QLabel *m_plabVLMPanels, *m_plab3DPanels;
+        QLabel *m_plabProjectedArea, *m_plabProjectedSpan;
+
+        QTableView *m_ptvWingSections;
+        QStandardItemModel *m_pWingModel;
+        WingDelegate *m_pWingDelegate;
+
+        QDialogButtonBox *m_pButtonBox;
+
+        QCheckBox *m_pchAxes, *m_pchSurfaces, *m_pchOutline, *m_pchPanels, *m_pchFoilNames;
+        QCheckBox *m_pchShowMasses;
+        QPushButton *m_pctrlReset;
+        QRadioButton *m_prbColor, *m_prbTextures;
+
+        QToolButton *m_ptbX, *m_ptbY, *m_ptbZ, *m_ptbIso, *m_ptbFlip;
+        QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
+
+        QAction *m_pScaleWing, *m_pInertia;
+        QAction *m_pExportWingAct, *m_pImportWingAct;
+        QAction *m_pExportWingXml, *m_pImportWingXml;
+
+        QAction *m_pResetScales;
 
 
-    QPoint m_MousePos;
-    QPoint m_ptPopUp;
-    QPoint m_LastPoint;
+        QMenu *m_pContextMenu;
+        QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteSection, *m_pResetSection;
+
+        QWidget *m_pctrlControlsWidget;
+        QSplitter *m_pspLeftSide;
+        QSplitter *m_pspHorizontal;
+
+        static QByteArray s_LeftSplitterSizes;
+        static QByteArray s_HSplitterSizes;
 
 
-    Vector3d m_RealPopUp;
+        Wing *m_pWing;
 
-    Panel *m_pPanel;
-    Vector3d *m_pNode;
+        bool m_bAcceptName;
+        bool m_bRightSide;
+        bool m_bChanged, m_bDescriptionChanged;
+        bool m_bTrans;
+        bool m_bStored;
+        bool m_bEnableName;
 
 
-    int  *m_precision;
+        int m_iSection;
+
+
+        QPoint m_MousePos;
+        QPoint m_ptPopUp;
+        QPoint m_LastPoint;
+
+
+        Vector3d m_RealPopUp;
+
+        Panel *m_pPanel;
+        Vector3d *m_pNode;
+
+
+        int  *m_precision;
 };
 
-#endif // GL3DWINGDLG_H

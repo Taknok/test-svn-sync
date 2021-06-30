@@ -94,8 +94,8 @@ gl3dMiarexView::~gl3dMiarexView()
 void gl3dMiarexView::glRenderView()
 {
     if(!isVisible()) return;
-    if(s_pMainFrame->m_iApp!=Xfl::MIAREX) return;
-    if(s_pMiarex->m_iView!=Xfl::W3DVIEW) return;
+    if(s_pMainFrame->m_iApp!=xfl::MIAREX) return;
+    if(s_pMiarex->m_iView!=xfl::W3DVIEW) return;
 
     WPolar const*pWPolar = s_pMiarex->curWPolar();
     PlaneOpp const *pPOpp = s_pMiarex->curPOpp();
@@ -104,7 +104,7 @@ void gl3dMiarexView::glRenderView()
 
     if(pWPolar && pWPolar->isStabilityPolar())
     {
-        if(pPOpp && pPOpp->polarType()==Xfl::STABILITYPOLAR)
+        if(pPOpp && pPOpp->polarType()==xfl::STABILITYPOLAR)
         {
             QString strong = QString(tr("Time =")+"%1s").arg(s_pMiarex->m_ModeTime,6,'f',3);
             glRenderText(10, 15, strong, Settings::s_TextColor);
@@ -172,11 +172,11 @@ void gl3dMiarexView::glRenderView()
 
         if(pPOpp)
         {
-            if(s_pMiarex->m_b3DCp && pPOpp->analysisMethod()>=Xfl::VLMMETHOD)
+            if(s_pMiarex->m_b3DCp && pPOpp->analysisMethod()>=xfl::VLMMETHOD)
             {
                 paintPanelCp(s_pMiarex->matSize());
             }
-            if(s_pMiarex->m_bPanelForce && pPOpp->analysisMethod()>=Xfl::VLMMETHOD)
+            if(s_pMiarex->m_bPanelForce && pPOpp->analysisMethod()>=xfl::VLMMETHOD)
             {
                 paintPanelForces(s_pMiarex->matSize());
             }
@@ -237,11 +237,11 @@ void gl3dMiarexView::glRenderView()
                 }
             }
 
-            if (s_pMiarex->m_b3DCp && pPOpp && pPOpp->analysisMethod()>=Xfl::VLMMETHOD)
+            if (s_pMiarex->m_b3DCp && pPOpp && pPOpp->analysisMethod()>=xfl::VLMMETHOD)
             {
                 //                paintCpLegendClr();
             }
-            else if (s_pMiarex->m_bPanelForce && pPOpp && pPOpp->analysisMethod()>=Xfl::VLMMETHOD)
+            else if (s_pMiarex->m_bPanelForce && pPOpp && pPOpp->analysisMethod()>=xfl::VLMMETHOD)
             {
                 //                paintCpLegendClr();
             }
@@ -261,9 +261,9 @@ void gl3dMiarexView::contextMenuEvent(QContextMenuEvent * pEvent)
     m_bArcball = false;
     update();
 
-    if (s_pMiarex->m_iView==Xfl::W3DVIEW)
+    if (s_pMiarex->m_iView==xfl::W3DVIEW)
     {
-        if(s_pMiarex->m_pCurWPolar && s_pMiarex->m_pCurWPolar->polarType()==Xfl::STABILITYPOLAR)
+        if(s_pMiarex->m_pCurWPolar && s_pMiarex->m_pCurWPolar->polarType()==xfl::STABILITYPOLAR)
             s_pMainFrame->m_pW3DStabCtxMenu->exec(ScreenPt);
         else s_pMainFrame->m_pW3DCtxMenu->exec(ScreenPt);
     }
@@ -365,16 +365,16 @@ void gl3dMiarexView::glMakeCpLegendClr()
         pColorVertexArray[iv++] = Right1;
         pColorVertexArray[iv++] = ZPos+2*fi;
         pColorVertexArray[iv++] = 0.0;
-        pColorVertexArray[iv++] = GLGetRed(color);
-        pColorVertexArray[iv++] = GLGetGreen(color);
-        pColorVertexArray[iv++] = GLGetBlue(color);
+        pColorVertexArray[iv++] = xfl::GLGetRed(color);
+        pColorVertexArray[iv++] = xfl::GLGetGreen(color);
+        pColorVertexArray[iv++] = xfl::GLGetBlue(color);
 
         pColorVertexArray[iv++] = Right2;
         pColorVertexArray[iv++] = ZPos+2*fi;
         pColorVertexArray[iv++] = 0.0;
-        pColorVertexArray[iv++] = GLGetRed(color);
-        pColorVertexArray[iv++] = GLGetGreen(color);
-        pColorVertexArray[iv++] = GLGetBlue(color);
+        pColorVertexArray[iv++] = xfl::GLGetRed(color);
+        pColorVertexArray[iv++] = xfl::GLGetGreen(color);
+        pColorVertexArray[iv++] = xfl::GLGetBlue(color);
     }
     Q_ASSERT(iv==bufferSize);
 
@@ -391,8 +391,8 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
 {
 
     if(!isVisible()) return false;
-    if(s_pMainFrame->m_iApp!=Xfl::MIAREX) return false;
-    if(s_pMiarex->m_iView!=Xfl::W3DVIEW) return false;
+    if(s_pMainFrame->m_iApp!=xfl::MIAREX) return false;
+    if(s_pMiarex->m_iView!=xfl::W3DVIEW) return false;
     if(!pPOpp || !pWPolar || pWPolar->isLLTMethod()) return false;
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -619,8 +619,8 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
 void gl3dMiarexView::glMakeSurfVelocities(Panel const*pPanel, WPolar const *pWPolar, PlaneOpp const *pPOpp, int nPanels)
 {
     if(!isVisible()) return;
-    if(s_pMainFrame->m_iApp!=Xfl::MIAREX) return;
-    if(s_pMiarex->m_iView!=Xfl::W3DVIEW) return;
+    if(s_pMainFrame->m_iApp!=xfl::MIAREX) return;
+    if(s_pMiarex->m_iView!=xfl::W3DVIEW) return;
     if(!pWPolar || !pPOpp || pPOpp->isLLTMethod() || !pPanel)
         return;
 
@@ -654,7 +654,7 @@ void gl3dMiarexView::glMakeSurfVelocities(Panel const*pPanel, WPolar const *pWPo
     {
         VT.set(pPOpp->m_QInf,0.0,0.0);
 
-        if(pWPolar->analysisMethod()==Xfl::PANEL4METHOD)
+        if(pWPolar->analysisMethod()==xfl::PANEL4METHOD)
         {
             if(pPanel[p].m_Pos==MIDSURFACE) C.copy(pPanel[p].CtrlPt);
             else                            C.copy(pPanel[p].CollPt);
@@ -2004,9 +2004,9 @@ void gl3dMiarexView::glMakePanelForces(int nPanels, Panel const *pPanel, WPolar 
         //scale force for display
         force *= float(s_LiftScale) *coef;
 
-        float r = GLGetRed(color);
-        float g= GLGetGreen(color);
-        float b= GLGetBlue(color);
+        float r = xfl::GLGetRed(color);
+        float g= xfl::GLGetGreen(color);
+        float b= xfl::GLGetBlue(color);
 
         if(pPanel->m_Pos==MIDSURFACE) O = pPanel[p].CtrlPt;
         else                          O = pPanel[p].CollPt;
@@ -2278,9 +2278,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         if(pPOpp)
         {
             color = (float(pPOpp->m_dCp[p])-lmin)/range;
-            nodeVertexArray[iv++] = GLGetRed(color);
-            nodeVertexArray[iv++] = GLGetGreen(color);
-            nodeVertexArray[iv++] = GLGetBlue(color);
+            nodeVertexArray[iv++] = xfl::GLGetRed(color);
+            nodeVertexArray[iv++] = xfl::GLGetGreen(color);
+            nodeVertexArray[iv++] = xfl::GLGetBlue(color);
         }
         else
         {
@@ -2295,9 +2295,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         if(pPOpp)
         {
             color = (float(pPOpp->m_dCp[p])-lmin)/range;
-            nodeVertexArray[iv++] = GLGetRed(color);
-            nodeVertexArray[iv++] = GLGetGreen(color);
-            nodeVertexArray[iv++] = GLGetBlue(color);
+            nodeVertexArray[iv++] = xfl::GLGetRed(color);
+            nodeVertexArray[iv++] = xfl::GLGetGreen(color);
+            nodeVertexArray[iv++] = xfl::GLGetBlue(color);
         }
         else
         {
@@ -2312,9 +2312,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         if(pPOpp)
         {
             color = (float(pPOpp->m_dCp[p])-lmin)/range;
-            nodeVertexArray[iv++] = GLGetRed(color);
-            nodeVertexArray[iv++] = GLGetGreen(color);
-            nodeVertexArray[iv++] = GLGetBlue(color);
+            nodeVertexArray[iv++] = xfl::GLGetRed(color);
+            nodeVertexArray[iv++] = xfl::GLGetGreen(color);
+            nodeVertexArray[iv++] = xfl::GLGetBlue(color);
         }
         else
         {
@@ -2331,9 +2331,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         if(pPOpp)
         {
             color = (float(pPOpp->m_dCp[p])-lmin)/range;
-            nodeVertexArray[iv++] = GLGetRed(color);
-            nodeVertexArray[iv++] = GLGetGreen(color);
-            nodeVertexArray[iv++] = GLGetBlue(color);
+            nodeVertexArray[iv++] = xfl::GLGetRed(color);
+            nodeVertexArray[iv++] = xfl::GLGetGreen(color);
+            nodeVertexArray[iv++] = xfl::GLGetBlue(color);
         }
         else
         {
@@ -2348,9 +2348,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         if(pPOpp)
         {
             color = (float(pPOpp->m_dCp[p])-lmin)/range;
-            nodeVertexArray[iv++] = GLGetRed(color);
-            nodeVertexArray[iv++] = GLGetGreen(color);
-            nodeVertexArray[iv++] = GLGetBlue(color);
+            nodeVertexArray[iv++] = xfl::GLGetRed(color);
+            nodeVertexArray[iv++] = xfl::GLGetGreen(color);
+            nodeVertexArray[iv++] = xfl::GLGetBlue(color);
         }
         else
         {
@@ -2365,9 +2365,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         if(pPOpp)
         {
             color = (float(pPOpp->m_dCp[p])-lmin)/range;
-            nodeVertexArray[iv++] = GLGetRed(color);
-            nodeVertexArray[iv++] = GLGetGreen(color);
-            nodeVertexArray[iv++] = GLGetBlue(color);
+            nodeVertexArray[iv++] = xfl::GLGetRed(color);
+            nodeVertexArray[iv++] = xfl::GLGetGreen(color);
+            nodeVertexArray[iv++] = xfl::GLGetBlue(color);
         }
         else
         {
@@ -2504,14 +2504,14 @@ void gl3dMiarexView::glMake3dObjects()
 
     if(s_bResetglPanelCp || s_bResetglOpp)
     {
-        if(pCurWPolar && pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD)
+        if(pCurWPolar && pCurWPolar->analysisMethod()!=xfl::LLTMETHOD)
             glMakePanels(m_vboPanelCp, theTask.m_MatSize, theTask.m_nNodes, theTask.m_Node, theTask.m_Panel, pCurPOpp);
         s_bResetglPanelCp = false;
     }
 
 
     if((s_bResetglPanelForce || s_bResetglOpp)
-            && pCurWPolar && pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD)
+            && pCurWPolar && pCurWPolar->analysisMethod()!=xfl::LLTMETHOD)
     {
         if (pCurPlane && pCurPOpp)
         {
@@ -2590,7 +2590,7 @@ void gl3dMiarexView::glMake3dObjects()
         m_bStream = false; //Disable temporarily during calculation
         m_bStreamlinesDone = false; // don't render until the vbo is built
         //no need to recalculate if not showing
-        if(pCurPlane && pCurPOpp && pCurPOpp->analysisMethod()>=Xfl::VLMMETHOD)
+        if(pCurPlane && pCurPOpp && pCurPOpp->analysisMethod()>=xfl::VLMMETHOD)
         {
             Wing const *pWingList[MAXWINGS];
             for(int iw=0; iw<MAXWINGS;iw++) pWingList[iw]=pCurPlane->wing(iw);
@@ -2618,7 +2618,7 @@ void gl3dMiarexView::glMake3dObjects()
 
         m_bSurfVelocities = false;
 
-        if(pCurPlane && pCurPOpp && pCurPOpp->analysisMethod()>=Xfl::VLMMETHOD)
+        if(pCurPlane && pCurPOpp && pCurPOpp->analysisMethod()>=xfl::VLMMETHOD)
         {
             glMakeSurfVelocities(theTask.m_Panel, pCurWPolar, pCurPOpp, theTask.m_MatSize);
         }

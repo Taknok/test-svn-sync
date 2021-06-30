@@ -103,39 +103,39 @@ void XmlWPolarReader::readWPolar(WPolar *pWPolar, double lengthunit, double area
         }
         else if (name().toString().compare(QString("type"),Qt::CaseInsensitive) ==0)
         {
-            pWPolar->setPolarType(WPolarType(readElementText()));
+            pWPolar->setPolarType(xfl::WPolarType(readElementText()));
         }
         else if (name().toString().compare(QString("method"), Qt::CaseInsensitive)==0)
         {
-            pWPolar->setAnalysisMethod(analysisMethod(readElementText()));
+            pWPolar->setAnalysisMethod(xfl::analysisMethod(readElementText()));
         }
-        else if (name().compare(QString("Ignore_Body_Panels"),         Qt::CaseInsensitive)==0)
+        else if (name().compare(QString("Ignore_Body_Panels"), Qt::CaseInsensitive)==0)
         {
-            pWPolar->setIgnoreBodyPanels(stringToBool(readElementText()));
+            pWPolar->setIgnoreBodyPanels(xfl::stringToBool(readElementText()));
         }
-        else if (name().compare(QString("Use_VLM1"),         Qt::CaseInsensitive)==0)
+        else if (name().compare(QString("Use_VLM1"), Qt::CaseInsensitive)==0)
         {
-            pWPolar->setVLM1(stringToBool(readElementText()));
+            pWPolar->setVLM1(xfl::stringToBool(readElementText()));
         }
-        else if (name().compare(QString("Viscous_Analysis"),         Qt::CaseInsensitive)==0)
+        else if (name().compare(QString("Viscous_Analysis"), Qt::CaseInsensitive)==0)
         {
-            pWPolar->setViscous(stringToBool(readElementText()));
+            pWPolar->setViscous(xfl::stringToBool(readElementText()));
         }
         else if (name().compare(QString("Thin_Surfaces"),         Qt::CaseInsensitive)==0)
         {
-            pWPolar->setThinSurfaces(stringToBool(readElementText()));
+            pWPolar->setThinSurfaces(xfl::stringToBool(readElementText()));
         }
         else if (name().compare(QString("Wake_Rollup"),         Qt::CaseInsensitive)==0)
         {
-            pWPolar->setWakeRollUp(stringToBool(readElementText()));
+            pWPolar->setWakeRollUp(xfl::stringToBool(readElementText()));
         }
         else if (name().compare(QString("Tilted_Analysis"),         Qt::CaseInsensitive)==0)
         {
-            pWPolar->setTilted(stringToBool(readElementText()));
+            pWPolar->setTilted(xfl::stringToBool(readElementText()));
         }
         else if (name().compare(QString("Ground_Effect"),         Qt::CaseInsensitive)==0)
         {
-            pWPolar->setGroundEffect(stringToBool(readElementText()));
+            pWPolar->setGroundEffect(xfl::stringToBool(readElementText()));
         }
         else if (name().compare(QString("Ground_Height"),         Qt::CaseInsensitive)==0)
         {
@@ -167,7 +167,7 @@ void XmlWPolarReader::readWPolar(WPolar *pWPolar, double lengthunit, double area
         }
         else if (name().compare(QString("Reference_Dimensions"), Qt::CaseInsensitive)==0)
         {
-            pWPolar->setReferenceDim(referenceDimension(readElementText()));
+            pWPolar->setReferenceDim(xfl::referenceDimension(readElementText()));
         }
         else if (name().compare(QString("Reference_Area"), Qt::CaseInsensitive)==0)
         {
@@ -224,7 +224,7 @@ void XmlWPolarReader::readWPolar(WPolar *pWPolar, double lengthunit, double area
         }
         else if (name().compare(QString("Use_Plane_Inertia"), Qt::CaseInsensitive)==0)
         {
-            pWPolar->setAutoInertia(stringToBool(readElementText()));
+            pWPolar->setAutoInertia(xfl::stringToBool(readElementText()));
         }
         else if (name().compare(QString("Inertia_Value"),         Qt::CaseInsensitive)==0)
         {

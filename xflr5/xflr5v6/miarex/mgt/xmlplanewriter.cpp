@@ -217,8 +217,8 @@ void XMLPlaneWriter::writeBody(Body *pBody, Vector3d position, double lengthUnit
                          .arg(position.y*lengthUnit, 11,'g',5)
                          .arg(position.z*lengthUnit, 11,'g',5));
 
-        writeTextElement("Type", pBody->bodyType()==Xfl::BODYPANELTYPE ? "FLATPANELS" : "NURBS");
-        if(pBody->bodyType()==Xfl::BODYSPLINETYPE && pSurface)
+        writeTextElement("Type", pBody->bodyType()==xfl::BODYPANELTYPE ? "FLATPANELS" : "NURBS");
+        if(pBody->bodyType()==xfl::BODYSPLINETYPE && pSurface)
         {
             writeTextElement("x_degree", QString ("%1").arg(pSurface->uDegree()));
             writeTextElement("hoop_degree", QString ("%1").arg(pSurface->vDegree()));
@@ -251,7 +251,7 @@ void XMLPlaneWriter::writeBody(Body *pBody, Vector3d position, double lengthUnit
             Frame *pFrame = pBody->splineSurface()->frameAt(iFrame);
             writeStartElement("frame");
             {
-                if(pBody->bodyType()==Xfl::BODYPANELTYPE)
+                if(pBody->bodyType()==xfl::BODYPANELTYPE)
                 {
                     writeTextElement("x_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));
                     //                    writeTextElement("h_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));

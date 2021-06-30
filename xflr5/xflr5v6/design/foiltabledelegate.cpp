@@ -27,9 +27,8 @@
 #include <xflobjects/objects2d/foil.h>
 #include <xdirect/objects2d.h>
 #include <xflcore/xflcore.h>
-#include <xflgraph/graph_globals.h>
 #include <misc/options/settings.h>
-#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/customwts/doubleedit.h>
 
 
 
@@ -122,20 +121,21 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
         if(m_pAFoil)
         {
             QColor color;
-            int pointStyle, lineStyle, lineWidth;
-
+            int lineWidth(1);
+            Line::enumLineStipple lineStyle(Line::SOLID);
+            Line::enumPointStyle pointStyle(Line::NOSYMBOL);
 
             if(index.row()==0)
             {
                 color = m_pAFoil->m_pSF->color();
-                pointStyle = m_pAFoil->m_pSF->pointStyle1();
+                pointStyle = m_pAFoil->m_pSF->pointStyle();
                 lineStyle = m_pAFoil->m_pSF->lineStipple();
                 lineWidth = m_pAFoil->m_pSF->lineWidth();
             }
             else
             {
                 Foil *pFoil = Objects2d::foilAt(index.row()-1);
-                color = colour(pFoil);
+                color = pFoil->color();
                 pointStyle = pFoil->pointStyle();
                 lineStyle = pFoil->lineStipple();
                 lineWidth = pFoil->lineWidth();
@@ -146,7 +146,7 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
             painter->save();
 
             QPen LinePen(color);
-            LinePen.setStyle(getStyle(lineStyle));
+            LinePen.setStyle(xfl::getStyle(lineStyle));
             LinePen.setWidth(lineWidth);
             painter->setPen(LinePen);
             painter->drawLine(r.left()+5, r.top()+r.height()/2, r.right()-5, r.top()+r.height()/2);
@@ -157,7 +157,7 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
             if (option.state & QStyle::State_Selected) backColor = option.palette.highlight().color();
             else                                       backColor = option.palette.base().color();
 
-            drawPoint(*painter, pointStyle, backColor, r.center());
+            xfl::drawSymbol(*painter, pointStyle, backColor, color, r.center());
 
             painter->restore();
         }

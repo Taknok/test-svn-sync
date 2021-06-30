@@ -139,7 +139,7 @@ bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthunit, double massunit
             newwing.clearPointMasses();
             newwing.clearSurfaces();
             newwing.clearWingSections();
-            newwing.setWingType(Xfl::OTHERWING);
+            newwing.setWingType(xfl::OTHERWING);
             newwing.m_Section.clear();
 
             Vector3d pos;
@@ -148,40 +148,40 @@ bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthunit, double massunit
 
 
             int iWing = 0;
-            if(newwing.wingType()==Xfl::OTHERWING)
+            if(newwing.wingType()==xfl::OTHERWING)
             {
                 if(newwing.isFin())
                 {
-                    newwing.setWingType(Xfl::FIN);
+                    newwing.setWingType(xfl::FIN);
                     pPlane->setFin(true);
                     iWing = 3;
                 }
                 else if(iw==0)
                 {
-                    newwing.setWingType(Xfl::MAINWING);
+                    newwing.setWingType(xfl::MAINWING);
                     iWing = 0;
                 }
                 else if(iw==1)
                 {
-                    newwing.setWingType(Xfl::ELEVATOR);
+                    newwing.setWingType(xfl::ELEVATOR);
                     pPlane->setElevator(true);
                     iWing = 2;
                 }
             }
             else
             {
-                if(newwing.wingType()==Xfl::MAINWING) iWing = 0;
-                else if(newwing.wingType()==Xfl::SECONDWING)
+                if(newwing.wingType()==xfl::MAINWING) iWing = 0;
+                else if(newwing.wingType()==xfl::SECONDWING)
                 {
                     iWing = 1;
                     pPlane->setSecondWing(true);
                 }
-                else if(newwing.wingType()==Xfl::ELEVATOR)
+                else if(newwing.wingType()==xfl::ELEVATOR)
                 {
                     iWing = 2;
                     pPlane->setElevator(true);
                 }
-                else if(newwing.wingType()==Xfl::FIN)
+                else if(newwing.wingType()==xfl::FIN)
                 {
                     iWing = 3;
                     pPlane->setFin(true);
@@ -216,12 +216,12 @@ bool XMLPlaneReader::readWing(Wing &newwing, Vector3d &position, double &tiltang
         }
         else if (name().compare(QString("type"),            Qt::CaseInsensitive)==0)
         {
-            newwing.setWingType(wingType(readElementText()));
+            newwing.setWingType(xfl::wingType(readElementText()));
             if(m_pPlane)
             {
-                if     (newwing.wingType()==Xfl::ELEVATOR)   m_pPlane->setElevator(true);
-                else if(newwing.wingType()==Xfl::SECONDWING) m_pPlane->setSecondWing(true);
-                else if(newwing.wingType()==Xfl::FIN)        m_pPlane->setFin(true);
+                if     (newwing.wingType()==xfl::ELEVATOR)   m_pPlane->setElevator(true);
+                else if(newwing.wingType()==xfl::SECONDWING) m_pPlane->setSecondWing(true);
+                else if(newwing.wingType()==xfl::FIN)        m_pPlane->setFin(true);
             }
         }
         else if (name().compare(QString("color"),           Qt::CaseInsensitive)==0)
@@ -303,12 +303,12 @@ bool XMLPlaneReader::readWing(Wing &newwing, Vector3d &position, double &tiltang
                         else if (name().compare(QString("x_panel_distribution"), Qt::CaseInsensitive)==0)
                         {
                             QString strPanelDist = readElementText();
-                            pWingSec->m_XPanelDist = distributionType(strPanelDist);
+                            pWingSec->m_XPanelDist = xfl::distributionType(strPanelDist);
                         }
                         else if (name().compare(QString("y_panel_distribution"), Qt::CaseInsensitive)==0)
                         {
                             QString strPanelDist = readElementText();
-                            pWingSec->m_YPanelDist = distributionType(strPanelDist);
+                            pWingSec->m_YPanelDist = xfl::distributionType(strPanelDist);
                         }
                         else if (name().compare(QString("Chord"), Qt::CaseInsensitive)==0)
                         {
@@ -427,8 +427,8 @@ bool XMLPlaneReader::readBody(Body *pBody, Vector3d &position, double lengthUnit
         }
         else if (name().compare(QString("type"), Qt::CaseInsensitive)==0)
         {
-            if(readElementText().compare(QString("NURBS"), Qt::CaseInsensitive)==0) pBody->bodyType()=Xfl::BODYSPLINETYPE;
-            else                                                           pBody->bodyType()=Xfl::BODYPANELTYPE;
+            if(readElementText().compare(QString("NURBS"), Qt::CaseInsensitive)==0) pBody->bodyType()=xfl::BODYSPLINETYPE;
+            else                                                           pBody->bodyType()=xfl::BODYPANELTYPE;
         }
         else if (name().compare(QString("x_degree"),    Qt::CaseInsensitive)==0) pBody->splineSurface()->setuDegree(readElementText().toInt());
         else if (name().compare(QString("hoop_degree"), Qt::CaseInsensitive)==0) pBody->splineSurface()->setvDegree(readElementText().toInt());

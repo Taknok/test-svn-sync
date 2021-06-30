@@ -32,7 +32,7 @@
 
 class DoubleEdit;
 class IntEdit;
-class ColorButton;
+class ColorBtn;
 class LineBtn;
 class TextClrBtn;
 
@@ -66,7 +66,6 @@ class GraphDlg : public QDialog
         void onRestoreParams();
         void onAutoX();
         void onAutoY();
-        void onAutoMinGrid();
         void onAxisStyle();
         void onMargin();
         void onXMajGridStyle();
@@ -116,12 +115,10 @@ class GraphDlg : public QDialog
         DoubleEdit *m_pdeYMin, *m_pdeYMax, *m_pdeYOrigin, *m_pdeYUnit;
 
         QCheckBox *m_pchXMajGridShow, *m_pchYMajGridShow, *m_pchXMinGridShow, *m_pchYMinGridShow;
-        QCheckBox *m_pchAutoXMinUnit, *m_pchAutoYMinUnit;
         LineBtn *m_plbAxisStyle, *m_plbXMajGridStyle, *m_plbYMajGridStyle, *m_plbXMinGridStyle, *m_plbYMinGridStyle;
-        DoubleEdit *m_pdeXMinorUnit, *m_pdeYMinorUnit;
 
         QCheckBox *m_pchGraphBorder;
-        ColorButton *m_pcbGraphBack;
+        ColorBtn *m_pcbGraphBack;
         LineBtn *m_plbBorderStyle;
         IntEdit *m_pieMargin;
 

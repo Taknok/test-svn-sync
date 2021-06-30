@@ -32,8 +32,8 @@
 #include "splinectrlsdlg.h"
 #include <gui_objects/splinefoil.h>
 #include <misc/options/settings.h>
-#include <xflwidgets/text/intedit.h>
-#include <xflwidgets/text/floateditdelegate.h>
+#include <xflwidgets/customwts/intedit.h>
+#include <xflwidgets/customwts/floateditdelegate.h>
 
 AFoil *SplineCtrlsDlg::s_pAFoil = nullptr;
 
@@ -111,8 +111,8 @@ void SplineCtrlsDlg::initDialog()
     m_pUpperFloatDelegate->setPrecision(precision);
     m_pLowerFloatDelegate->setPrecision(precision);
 
-    connect(m_pUpperFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onUpdate()));
-    connect(m_pLowerFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onUpdate()));
+    connect(m_pUpperFloatDelegate, SIGNAL(closeEditor(QWidget*)), SLOT(onUpdate()));
+    connect(m_pLowerFloatDelegate, SIGNAL(closeEditor(QWidget*)), SLOT(onUpdate()));
 
     fillPointLists();
     setControls();
@@ -241,7 +241,7 @@ void SplineCtrlsDlg::setupLayout()
 
 void SplineCtrlsDlg::onButton(QAbstractButton *pButton)
 {
-    if (     m_pButtonBox->button(QDialogButtonBox::Ok)     == pButton)  onOK();
+    if      (m_pButtonBox->button(QDialogButtonBox::Ok)     == pButton)  onOK();
     else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
 }
 

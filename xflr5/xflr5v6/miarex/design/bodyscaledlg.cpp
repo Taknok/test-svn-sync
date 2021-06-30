@@ -30,7 +30,7 @@
 #include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/body.h>
 #include <xflwidgets/line/linepickerdlg.h>
-#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/customwts/doubleedit.h>
 
 
 BodyScaleDlg::BodyScaleDlg(QWidget *pParent ): QDialog(pParent)

@@ -27,7 +27,7 @@
 
 #include <xfoil.h>
 #include <xflobjects/objects2d/foil.h>
-#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/customwts/doubleedit.h>
 
 
 XFoil *InterpolateFoilsDlg::s_pXFoil;

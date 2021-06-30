@@ -184,12 +184,12 @@ void BatchThreadDlg::startAnalysis()
 
                 if(!s_bFromList)
                 {
-                    pAnalysis->pPolar = Objects2d::createPolar(pFoil, Xfl::FIXEDSPEEDPOLAR, s_ReMin + iRe *s_ReInc,
+                    pAnalysis->pPolar = Objects2d::createPolar(pFoil, xfl::FIXEDSPEEDPOLAR, s_ReMin + iRe *s_ReInc,
                                                                s_Mach, s_ACrit, s_XTop, s_XBot);
                 }
                 else
                 {
-                    pAnalysis->pPolar = Objects2d::createPolar(pFoil, Xfl::FIXEDSPEEDPOLAR,
+                    pAnalysis->pPolar = Objects2d::createPolar(pFoil, xfl::FIXEDSPEEDPOLAR,
                                                                XDirect::s_ReList[iRe], XDirect::s_MachList[iRe], XDirect::s_NCritList[iRe],
                                                                s_XTop, s_XBot);
                 }

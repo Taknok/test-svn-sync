@@ -29,22 +29,22 @@
 #include "inverseoptionsdlg.h"
 #include "pertdlg.h"
 #include "xinverse.h"
-#include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
-#include <xflgraph/curve.h>
-#include <xflgraph/graph_globals.h>
-#include <xflgraph/controls/graphdlg.h>
 #include <misc/options/settings.h>
 #include <misc/renamedlg.h>
-#include <xflwidgets/text/doubleedit.h>
-#include <xflwidgets/text/intedit.h>
-#include <xflwidgets/text/mintextedit.h>
 #include <twodwidgets/inverseviewwt.h>
 #include <xdirect/objects2d.h>
 #include <xdirect/xdirect.h>
 #include <xflanalysis/analysis3d_params.h>
 #include <xflcore/constants.h>
+#include <xflcore/xflcore.h>
+#include <xflgraph/controls/graphdlg.h>
+#include <xflgraph/curve.h>
 #include <xflobjects/objects2d/foil.h>
+#include <xflobjects/objects_global.h>
+#include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/intedit.h>
+#include <xflwidgets/customwts/mintextedit.h>
 #include <xfoil.h>
 
 MainFrame *XInverse::s_pMainFrame;
@@ -1545,11 +1545,11 @@ void XInverse::onInverseStyles()
 
     m_pQCurve->setStipple(m_pRefFoil->lineStipple());
     m_pQCurve->setWidth(m_pRefFoil->lineWidth());
-    m_pQCurve->setColor(colour(m_pRefFoil));
+    m_pQCurve->setColor(m_pRefFoil->color());
 
     m_pMCurve->setStipple(m_pModFoil->lineStipple());
     m_pMCurve->setWidth(m_pModFoil->lineWidth());
-    m_pMCurve->setColor(colour(m_pModFoil));
+    m_pMCurve->setColor(m_pModFoil->color());
 
     updateView();
 }
@@ -2003,8 +2003,8 @@ void XInverse::paintFoil(QPainter &painter)
 
     if(m_bRefFoil && m_bLoaded)
     {
-        QPen FoilPen(colour(m_pRefFoil));
-        FoilPen.setStyle(getStyle(m_pRefFoil->lineStipple()));
+        QPen FoilPen(m_pRefFoil->color());
+        FoilPen.setStyle(xfl::getStyle(m_pRefFoil->lineStipple()));
         FoilPen.setWidth(m_pRefFoil->lineWidth());
         painter.setPen(FoilPen);
 
@@ -2016,8 +2016,8 @@ void XInverse::paintFoil(QPainter &painter)
 
     if(m_bModFoil && m_bLoaded)
     {
-        QPen ModPen(colour(m_pModFoil));
-        ModPen.setStyle(getStyle(m_pModFoil->lineStipple()));
+        QPen ModPen(m_pModFoil->color());
+        ModPen.setStyle(xfl::getStyle(m_pModFoil->lineStipple()));
         ModPen.setWidth(m_pModFoil->lineWidth());
         painter.setPen(ModPen);
 
@@ -2029,8 +2029,8 @@ void XInverse::paintFoil(QPainter &painter)
 
     if(m_pOverlayFoil)
     {
-        QPen ModPen(colour(m_pOverlayFoil));
-        ModPen.setStyle(getStyle(m_pOverlayFoil->lineStipple()));
+        QPen ModPen(m_pOverlayFoil->color());
+        ModPen.setStyle(xfl::getStyle(m_pOverlayFoil->lineStipple()));
         ModPen.setWidth(m_pOverlayFoil->lineWidth());
         painter.setPen(ModPen);
 
@@ -2042,12 +2042,12 @@ void XInverse::paintFoil(QPainter &painter)
 
     if (m_pRefFoil->pointStyle()>0)
     {
-        QPen CtrlPen(colour(m_pRefFoil));
-        CtrlPen.setStyle(getStyle(m_pRefFoil->lineStipple()));
+        QPen CtrlPen(m_pRefFoil->color());
+        CtrlPen.setStyle(xfl::getStyle(m_pRefFoil->lineStipple()));
         CtrlPen.setWidth(m_pRefFoil->lineWidth());
         painter.setPen(CtrlPen);
 
-        drawPoints(painter, m_pRefFoil, -alpha, 1.0,  1.0, m_ptOffset, Settings::s_BackgroundColor);
+        drawFoilPoints(painter, m_pRefFoil, -alpha, 1.0,  1.0, m_ptOffset, Settings::s_BackgroundColor);
     }
 
     painter.setFont(Settings::s_TextFont);
@@ -2308,10 +2308,10 @@ bool XInverse::setParams()
         m_pctrlStackedInv->setCurrentIndex(1);
     }
 
-    m_pQCurve->setColor(colour(m_pRefFoil));
+    m_pQCurve->setColor(m_pRefFoil->color());
     m_pQCurve->setStipple(m_pRefFoil->lineStipple());
     m_pQCurve->setWidth(m_pRefFoil->lineWidth());
-    m_pMCurve->setColor(colour(m_pModFoil));
+    m_pMCurve->setColor(m_pModFoil->color());
     m_pMCurve->setStipple(m_pModFoil->lineStipple());
     m_pMCurve->setWidth(m_pModFoil->lineWidth());
     m_pQCurve->setName(tr("Q - Reference"));

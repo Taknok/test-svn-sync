@@ -23,7 +23,6 @@
 #include <QPolygon>
 
 #include <xflcore/xflcore.h>
-#include <xflgraph/graph_globals.h>
 #include "spline5.h"
 
 
@@ -33,7 +32,7 @@
 */
 Spline5::Spline5() :Spline()
 {
-    m_theStyle.m_PointStyle = Line::NOSYMBOL; //no points to start with
+    m_theStyle.m_Symbol = Line::NOSYMBOL; //no points to start with
     m_theStyle.m_Stipple = Line::SOLID;
     m_theStyle.m_Width = 2;
     m_theStyle.m_bIsVisible    = true;
@@ -127,7 +126,7 @@ void Spline5::drawSpline(QPainter & painter, double const &scalex, double const 
     QPen SplinePen;
 
     SplinePen.setColor(m_theStyle.m_Color);
-    SplinePen.setStyle(getStyle(m_theStyle.m_Stipple));
+    SplinePen.setStyle(xfl::getStyle(m_theStyle.m_Stipple));
     SplinePen.setWidth(m_theStyle.m_Width);
     painter.setPen(SplinePen);
 

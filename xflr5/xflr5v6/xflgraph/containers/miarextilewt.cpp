@@ -33,8 +33,8 @@ MiarexTileWidget::MiarexTileWidget(QWidget *pParent) : GraphTileWidget(pParent)
         m_GraphWidget.append(new GraphWt(this));
     }
 
-    m_xflr5App = Xfl::MIAREX;
-    m_MiarexView = Xfl::WPOLARVIEW;
+    m_xflr5App = xfl::MIAREX;
+    m_MiarexView = xfl::WPOLARVIEW;
 
     m_pLegendWidget = new LegendWt(this);
     m_pLegendWidget->setMiarexView(m_MiarexView);
@@ -102,7 +102,7 @@ void MiarexTileWidget::adjustLayout()
 
     if(m_nGraphWidgets==1)
     {
-        if(m_MiarexView==Xfl::WOPPVIEW)
+        if(m_MiarexView==xfl::WOPPVIEW)
         {
             for(int igw=0; igw<m_GraphWidget.count(); igw++)
             {
@@ -198,7 +198,7 @@ void MiarexTileWidget::adjustLayout()
 
 
 
-void MiarexTileWidget::setMiarexGraphList(Xfl::enumMiarexViews miarexView, QVector<Graph*>pGraphList,
+void MiarexTileWidget::setMiarexGraphList(xfl::enumMiarexViews miarexView, QVector<Graph*>pGraphList,
                                           int nGraphs, int iGraphWidget, Qt::Orientation orientation)
 {
     m_nGraphWidgets = qMin(nGraphs,MAXGRAPHS);
@@ -206,15 +206,15 @@ void MiarexTileWidget::setMiarexGraphList(Xfl::enumMiarexViews miarexView, QVect
     else
     {
         //restore the previously selected graph
-        if(miarexView==Xfl::WOPPVIEW)            m_iActiveGraphWidget = m_iPOppIndex;
-        else if(miarexView==Xfl::WPOLARVIEW)     m_iActiveGraphWidget = m_iWPolarIndex;
-        else if (miarexView==Xfl::STABPOLARVIEW) m_iActiveGraphWidget = m_iStabPolarIndex;
-        else if (miarexView==Xfl::STABTIMEVIEW)  m_iActiveGraphWidget = m_iStabTimeIndex;
+        if(miarexView==xfl::WOPPVIEW)            m_iActiveGraphWidget = m_iPOppIndex;
+        else if(miarexView==xfl::WPOLARVIEW)     m_iActiveGraphWidget = m_iWPolarIndex;
+        else if (miarexView==xfl::STABPOLARVIEW) m_iActiveGraphWidget = m_iStabPolarIndex;
+        else if (miarexView==xfl::STABTIMEVIEW)  m_iActiveGraphWidget = m_iStabTimeIndex;
     }
     m_MiarexView = miarexView;
     m_pLegendWidget->setMiarexView(m_MiarexView);
 
-    if(miarexView==Xfl::WOPPVIEW) m_pWingWidget->setWingGraph(m_GraphWidget.at(0)->graph());
+    if(miarexView==xfl::WOPPVIEW) m_pWingWidget->setWingGraph(m_GraphWidget.at(0)->graph());
 
     for(int ig=0; ig<qMin(MAXGRAPHS, pGraphList.count()); ig++)
         m_GraphWidget.at(ig)->setGraph(pGraphList.at(ig));
@@ -234,7 +234,7 @@ void MiarexTileWidget::onSplitterMoved(int pos, int index)
 {
     Q_UNUSED(pos);
     Q_UNUSED(index);
-    if(m_MiarexView==Xfl::WOPPVIEW)
+    if(m_MiarexView==xfl::WOPPVIEW)
     {
         m_pWingWidget->setWingScale();
         //        update();

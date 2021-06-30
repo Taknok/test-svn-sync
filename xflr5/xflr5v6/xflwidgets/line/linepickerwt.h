@@ -21,9 +21,7 @@
 
 #pragma once
 
-#include <QDialog>
 #include <QCheckBox>
-#include <QDialogButtonBox>
 
 #include <xflcore/linestyle.h>
 
@@ -31,19 +29,20 @@
 class LineBtn;
 class LineCbBox;
 class LineDelegate;
-class LinePickerWt;
 
-class LinePickerDlg : public QDialog
+class LinePickerWt : public QWidget
 {
     Q_OBJECT
-
     public:
-        LinePickerDlg(QWidget *pParent);
+        LinePickerWt(QWidget *pParent=nullptr);
 
-        void initDialog(bool bFlowDownEnable);
-        void initDialog(LineStyle const &ls, bool bAcceptPointStyle, bool bFlowDownEnable);
-        void initDialog(Line::enumPointStyle pointStyle, Line::enumLineStipple linestipple, int lineWidth, QColor const&lineColor, bool bAcceptPointStyle, bool bFlowDownEnable);
-        void keyPressEvent(QKeyEvent *event) override;
+        void enableBoxes(bool bEnable);
+        void fillBoxes();
+
+        void setPointStyle(int pointStyle);
+        void setLineStipple(int lineStyle);
+        void setLineWidth(int width);
+        void setLineColor(QColor color);
 
         LineStyle const &ls2()      const {return m_LineStyle;}
         LineStyle const &theStyle() const {return m_LineStyle;}
@@ -58,42 +57,29 @@ class LinePickerDlg : public QDialog
             m_LineStyle.m_Symbol = pointstyle;
         }
 
-        Line::enumLineStipple lineStipple2()  const {return m_LineStyle.m_Stipple;}
-        Line::enumPointStyle  pointStyle2()   const {return m_LineStyle.m_Symbol;}
-
-        int pointStyle()   const {return m_LineStyle.m_Symbol;}
-        int lineStipple()  const {return m_LineStyle.m_Stipple;}
-        int lineWidth()    const {return m_LineStyle.m_Width;}
-        QColor lineColor() const {return m_LineStyle.m_Color;}
-
-        void setPointStyle(int pointStyle);
-        void setLineStipple(int lineStyle);
-        void setLineWidth(int width);
-        void setLineColor(QColor color);
-
-        void fillBoxes();
-        void setupLayout();
-
-        bool bFlowDownStyle() const {return m_pchFlowDownStyle->isChecked();}
-
-    private slots:
-        void onLineStyle(LineStyle ls);
-        void onButton(QAbstractButton *pButton);
-
-        void accept() override;
-        void reject() override;
 
     private:
+        void setupLayout();
+        void connectSignals();
 
-        LineStyle m_LineStyle;
+    private slots:
+        void onPointStyle(int val);
+        void onLineStyle(int val);
+        void onLineWidth(int val);
+        void onLineColor();
 
-        LinePickerWt *m_pLinePicker;
+    signals:
+        void styleChanged(LineStyle) const;
+
+    private:
+        LineBtn *m_plbLineColor;
+        LineCbBox *m_plcbPointStyle, *m_plcbLineWidth, *m_plcbLineStyle;
         QCheckBox *m_pchFlowDownStyle;
-
-        QDialogButtonBox *m_pButtonBox;
-
 
         bool m_bAcceptPointStyle;
 
+        LineStyle m_LineStyle;
+        LineDelegate *m_pPointStyleDelegate, *m_pLineStyleDelegate, *m_pLineWidthDelegate;
 };
+
 

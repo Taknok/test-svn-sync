@@ -22,7 +22,7 @@
 #pragma once
 
 #include <QColor>
-#include <xflcore/ls2.h>
+#include <xflcore/linestyle.h>
 
 
 
@@ -53,28 +53,28 @@ class XflObject
         bool isVisible() const {return m_theStyle.m_bIsVisible;}
         void setVisible(bool bVisible) {m_theStyle.m_bIsVisible = bVisible;}
 
-        Line::enumPointStyle pointStyle() const {return m_theStyle.m_PointStyle;}
-        void setPointStyle(Line::enumPointStyle iPointStyle) {m_theStyle.m_PointStyle=iPointStyle;}
+        Line::enumPointStyle pointStyle() const {return m_theStyle.m_Symbol;}
+        void setPointStyle(Line::enumPointStyle iPointStyle) {m_theStyle.m_Symbol=iPointStyle;}
 
-        void setTheStyle(LS2 const &ls) {m_theStyle=ls;}
+        void setTheStyle(LineStyle const &ls) {m_theStyle=ls;}
 
         void setTheStyle(Line::enumLineStipple stipple, int w, const QColor &clr, Line::enumPointStyle pointstyle)
         {
-            m_theStyle.setStipple(stipple);
+            m_theStyle.m_Stipple = stipple;
             m_theStyle.m_Width = w;
             m_theStyle.m_Color = clr;
-            m_theStyle.setPointStyle(pointstyle);
+            m_theStyle.m_Symbol = pointstyle;
         }
-        LS2 const &theStyle() const {return m_theStyle;}
-        LS2 &theStyle() {return m_theStyle;}
+        LineStyle const &theStyle() const {return m_theStyle;}
+        LineStyle &theStyle() {return m_theStyle;}
 
         int width() const {return m_theStyle.m_Width;}
-        int pointStyle1() const {return m_theStyle.m_PointStyle;}
-        Line::enumPointStyle pointStyle2() const {return m_theStyle.m_PointStyle;}
+        int pointStyle1() const {return m_theStyle.m_Symbol;}
+        Line::enumPointStyle pointStyle2() const {return m_theStyle.m_Symbol;}
 
 
-        void setPointStyle(int n) {m_theStyle.setPointStyle(n);}
-        void setPointStyle2(Line::enumPointStyle pts) {m_theStyle.m_PointStyle=pts;}
+        void setPointStyle(int n) {m_theStyle.m_Symbol = LineStyle::convertSymbol(n);}
+        void setPointStyle2(Line::enumPointStyle pts) {m_theStyle.m_Symbol=pts;}
 
         QColor const &color() const {return m_theStyle.m_Color;}
         void setColor(QColor const &clr) {m_theStyle.m_Color=clr;}
@@ -86,13 +86,13 @@ class XflObject
         int alphaChannel() const {return m_theStyle.m_Color.alpha();}
         Line::enumLineStipple polarStyle() const     {return m_theStyle.m_Stipple;}
 
-        void setStipple(int n) {m_theStyle.setStipple(n);} // conversion
+        void setStipple(int n) {m_theStyle.m_Stipple = LineStyle::convertLineStyle(n);} // conversion
         void setStipple2(Line::enumLineStipple s) {m_theStyle.m_Stipple=s;}
         void setWidth(int w) {m_theStyle.m_Width=w;}
 
 
     protected:
-        LS2 m_theStyle;
+        LineStyle m_theStyle;
         QString m_Name;
 
 };

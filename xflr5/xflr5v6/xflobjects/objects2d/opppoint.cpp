@@ -66,7 +66,7 @@ OpPoint::OpPoint()
 //    memset(y,  0, sizeof(y));
 
     m_theStyle.m_bIsVisible = true;
-    m_theStyle.m_PointStyle = Line::NOSYMBOL;
+    m_theStyle.m_Symbol = Line::NOSYMBOL;
     m_theStyle.m_Stipple = Line::SOLID;
     m_theStyle.m_Width = 1;
 

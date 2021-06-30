@@ -136,7 +136,7 @@ class BatchAbstractDlg : public QDialog
         static double s_XTop;            /**< the point of forced transition on the upper surface */
         static double s_XBot;            /**< the point of forced transition on the lower surface */
 
-        static Xfl::enumPolarType s_PolarType;  /**< the type of analysis to perform */
+        static xfl::enumPolarType s_PolarType;  /**< the type of analysis to perform */
 
         static double s_ReMin;             /**< the min Re for a range analysis */
         static double s_ReMax;             /**< the max Re for a range analysis */

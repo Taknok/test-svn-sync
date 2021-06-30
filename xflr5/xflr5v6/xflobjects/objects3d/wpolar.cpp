@@ -32,7 +32,7 @@
  */
 WPolar::WPolar()
 {
-    m_theStyle.m_PointStyle = Line::NOSYMBOL; //no points to start with
+    m_theStyle.m_Symbol = Line::NOSYMBOL; //no points to start with
     m_theStyle.m_Stipple = Line::SOLID;
     m_theStyle.m_Width = 2;
     m_theStyle.m_bIsVisible    = true;
@@ -49,7 +49,7 @@ WPolar::WPolar()
     m_bViscous      = true;
     m_bGround       = false;
     //    m_bDirichlet    = true;
-    m_BoundaryCondition = Xfl::DIRICHLET;
+    m_BoundaryCondition = xfl::DIRICHLET;
     m_bIgnoreBodyPanels = false;
     m_bRelaxWake = false;
 
@@ -57,9 +57,9 @@ WPolar::WPolar()
     m_TotalWakeLength = 100.0;
     m_WakePanelFactor =   1.1;
 
-    m_AnalysisMethod = Xfl::LLTMETHOD;
-    m_WPolarType     = Xfl::FIXEDSPEEDPOLAR;
-    m_ReferenceDim   = Xfl::PROJECTEDREFDIM;
+    m_AnalysisMethod = xfl::LLTMETHOD;
+    m_WPolarType     = xfl::FIXEDSPEEDPOLAR;
+    m_ReferenceDim   = xfl::PROJECTEDREFDIM;
 
     m_BankAngle = 0.0;
     m_AlphaSpec = 0.0;
@@ -285,7 +285,7 @@ void WPolar::addPlaneOpPoint(PlaneOpp *pPOpp)
     {
         for (i=0; i<size; i++)
         {
-            if(m_WPolarType<Xfl::FIXEDAOAPOLAR)
+            if(m_WPolarType<xfl::FIXEDAOAPOLAR)
             {
                 if (qAbs(pPOpp->alpha()-m_Alpha[i]) < 0.001)
                 {
@@ -300,7 +300,7 @@ void WPolar::addPlaneOpPoint(PlaneOpp *pPOpp)
                     break;
                 }
             }
-            else if(m_WPolarType==Xfl::FIXEDAOAPOLAR)
+            else if(m_WPolarType==xfl::FIXEDAOAPOLAR)
             {
                 // type 4, sort by speed
                 if (qAbs(pPOpp->m_QInf - m_QInfinite[i]) < 0.001)
@@ -318,7 +318,7 @@ void WPolar::addPlaneOpPoint(PlaneOpp *pPOpp)
                     break;
                 }
             }
-            else if(m_WPolarType==Xfl::BETAPOLAR)
+            else if(m_WPolarType==xfl::BETAPOLAR)
             {
                 // type 5, sort by sideslip angle
                 if (qAbs(pPOpp->m_Beta - m_Beta[i]) < 0.001)
@@ -336,7 +336,7 @@ void WPolar::addPlaneOpPoint(PlaneOpp *pPOpp)
                     break;
                 }
             }
-            else if(m_WPolarType==Xfl::STABILITYPOLAR)
+            else if(m_WPolarType==xfl::STABILITYPOLAR)
             {
                 // Control or stability analysis, sort by control value
                 if (qAbs(pPOpp->m_Ctrl - m_Ctrl[i])<0.001)
@@ -490,7 +490,7 @@ void WPolar::duplicateSpec(const WPolar *pWPolar)
     m_QInfSpec      = pWPolar->m_QInfSpec;
     m_AlphaSpec     = pWPolar->m_AlphaSpec;
 
-    if(pWPolar->polarType()==Xfl::BETAPOLAR) m_BetaSpec = 0.0;
+    if(pWPolar->polarType()==xfl::BETAPOLAR) m_BetaSpec = 0.0;
     else                                m_BetaSpec = pWPolar->m_BetaSpec;
 
     m_theStyle = pWPolar->theStyle();
@@ -1060,14 +1060,14 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
         readCOLORREF(ar, r,g,b);
 
         ar>>k;
-        if(k==1)      m_AnalysisMethod=Xfl::LLTMETHOD;
-        else if(k==2) m_AnalysisMethod=Xfl::VLMMETHOD;
-        else if(k==3) m_AnalysisMethod=Xfl::PANEL4METHOD;
-        else if(k==4) m_AnalysisMethod=Xfl::VLMMETHOD;
+        if(k==1)      m_AnalysisMethod=xfl::LLTMETHOD;
+        else if(k==2) m_AnalysisMethod=xfl::VLMMETHOD;
+        else if(k==3) m_AnalysisMethod=xfl::PANEL4METHOD;
+        else if(k==4) m_AnalysisMethod=xfl::VLMMETHOD;
 
-        if(m_AnalysisMethod==Xfl::VLMMETHOD)
+        if(m_AnalysisMethod==xfl::VLMMETHOD)
         {
-            m_AnalysisMethod=Xfl::PANEL4METHOD;
+            m_AnalysisMethod=xfl::PANEL4METHOD;
             m_bThinSurfaces = true;
         }
 
@@ -1094,7 +1094,7 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
             ar >> n;
             if (n!=0 && n!=1) return false;
             //            if(n) m_bDirichlet = false; else m_bDirichlet = true;
-            m_BoundaryCondition = n ? Xfl::DIRICHLET : Xfl::NEUMANN;
+            m_BoundaryCondition = n ? xfl::DIRICHLET : xfl::NEUMANN;
         }
         if(m_PolarFormat>=1009)
         {
@@ -1137,11 +1137,11 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
         ar >> n; m_theStyle.setPointStyle(n);
 
         ar >>k;
-        if(k==1)      m_WPolarType = Xfl::FIXEDSPEEDPOLAR;
-        else if(k==2) m_WPolarType = Xfl::FIXEDLIFTPOLAR;
-        else if(k==4) m_WPolarType = Xfl::FIXEDAOAPOLAR;
-        else if(k==6) m_WPolarType = Xfl::STABILITYPOLAR; // former control polars
-        else if(k==7) m_WPolarType = Xfl::STABILITYPOLAR;
+        if(k==1)      m_WPolarType = xfl::FIXEDSPEEDPOLAR;
+        else if(k==2) m_WPolarType = xfl::FIXEDLIFTPOLAR;
+        else if(k==4) m_WPolarType = xfl::FIXEDAOAPOLAR;
+        else if(k==6) m_WPolarType = xfl::STABILITYPOLAR; // former control polars
+        else if(k==7) m_WPolarType = xfl::STABILITYPOLAR;
         else return false;
 
 
@@ -1170,10 +1170,10 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 
         k=0;
         if(m_PolarFormat>=1016) ar >> k;
-        if(k==1)      m_ReferenceDim = Xfl::PLANFORMREFDIM;
-        else if(k==2) m_ReferenceDim = Xfl::PROJECTEDREFDIM;
-        else if(k==3) m_ReferenceDim = Xfl::MANUALREFDIM;
-        else          m_ReferenceDim = Xfl::PLANFORMREFDIM;
+        if(k==1)      m_ReferenceDim = xfl::PLANFORMREFDIM;
+        else if(k==2) m_ReferenceDim = xfl::PROJECTEDREFDIM;
+        else if(k==3) m_ReferenceDim = xfl::MANUALREFDIM;
+        else          m_ReferenceDim = xfl::PLANFORMREFDIM;
 
         ar >> n;
         if (n<0 || n> 100000) return false;
@@ -1217,7 +1217,7 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
             if (m_PolarFormat>=1022) ar >> XNP;
             else                     XNP = 0.0;
 
-            if(m_WPolarType!=Xfl::FIXEDAOAPOLAR)
+            if(m_WPolarType!=xfl::FIXEDAOAPOLAR)
             {
                 for (j=0; j<dataSize(); j++)
                 {
@@ -1413,24 +1413,24 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 
         m_theStyle.serializeXfl(ar, bIsStoring);
 
-        if     (m_AnalysisMethod==Xfl::LLTMETHOD)    ar<<1;
-        else if(m_AnalysisMethod==Xfl::VLMMETHOD)    ar<<2;
-        else if(m_AnalysisMethod==Xfl::PANEL4METHOD) ar<<3;
-        else if(m_AnalysisMethod==Xfl::TRILINMETHOD) ar<<4;
-        else if(m_AnalysisMethod==Xfl::TRIUNIMETHOD) ar<<5;
+        if     (m_AnalysisMethod==xfl::LLTMETHOD)    ar<<1;
+        else if(m_AnalysisMethod==xfl::VLMMETHOD)    ar<<2;
+        else if(m_AnalysisMethod==xfl::PANEL4METHOD) ar<<3;
+        else if(m_AnalysisMethod==xfl::TRILINMETHOD) ar<<4;
+        else if(m_AnalysisMethod==xfl::TRIUNIMETHOD) ar<<5;
         else                                           ar<<0;
 
-        if     (m_WPolarType==Xfl::FIXEDSPEEDPOLAR) ar<<1;
-        else if(m_WPolarType==Xfl::FIXEDLIFTPOLAR)  ar<<2;
-        else if(m_WPolarType==Xfl::FIXEDAOAPOLAR)   ar<<4;
-        else if(m_WPolarType==Xfl::BETAPOLAR)       ar<<5;
-        else if(m_WPolarType==Xfl::STABILITYPOLAR)  ar<<7;
+        if     (m_WPolarType==xfl::FIXEDSPEEDPOLAR) ar<<1;
+        else if(m_WPolarType==xfl::FIXEDLIFTPOLAR)  ar<<2;
+        else if(m_WPolarType==xfl::FIXEDAOAPOLAR)   ar<<4;
+        else if(m_WPolarType==xfl::BETAPOLAR)       ar<<5;
+        else if(m_WPolarType==xfl::STABILITYPOLAR)  ar<<7;
         else ar << 0;
 
         ar << m_bVLM1;
         ar << m_bThinSurfaces;
         ar << m_bTiltedGeom;
-        ar << (m_BoundaryCondition==Xfl::DIRICHLET);
+        ar << (m_BoundaryCondition==xfl::DIRICHLET);
         ar << m_bViscous;
         ar << m_bIgnoreBodyPanels;
 
@@ -1439,9 +1439,9 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 
         ar << m_Density << m_Viscosity;
 
-        if     (m_ReferenceDim == Xfl::PLANFORMREFDIM)  ar << 1;
-        else if(m_ReferenceDim == Xfl::PROJECTEDREFDIM) ar << 2;
-        else if(m_ReferenceDim == Xfl::MANUALREFDIM)    ar << 3;
+        if     (m_ReferenceDim == xfl::PLANFORMREFDIM)  ar << 1;
+        else if(m_ReferenceDim == xfl::PROJECTEDREFDIM) ar << 2;
+        else if(m_ReferenceDim == xfl::MANUALREFDIM)    ar << 3;
 
         ar << m_bAutoInertia;
         ar << m_Mass;
@@ -1481,7 +1481,7 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 
         // space allocation for the future storage of more data, without need to change the format
         for (int i=0; i<19; i++) ar << k;
-        ar << k; //m_PointStyle;
+        ar << k; //m_Symbol;
         for (int i=0; i<35; i++) ar << 0.0;
         for (int ix=0; ix<MAXEXTRADRAG; ix++) ar << m_ExtraDragArea[ix];
         for (int ix=0; ix<MAXEXTRADRAG; ix++) ar << m_ExtraDragCoef[ix];
@@ -1515,24 +1515,24 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
             m_theStyle.serializeXfl(ar, bIsStoring);
 
         ar >> n;
-        if     (n==1) m_AnalysisMethod=Xfl::LLTMETHOD;
-        else if(n==2) m_AnalysisMethod=Xfl::VLMMETHOD;
-        else if(n==3) m_AnalysisMethod=Xfl::PANEL4METHOD;
-        else if(n==4) m_AnalysisMethod=Xfl::TRILINMETHOD;
-        else if(n==5) m_AnalysisMethod=Xfl::TRIUNIMETHOD;
+        if     (n==1) m_AnalysisMethod=xfl::LLTMETHOD;
+        else if(n==2) m_AnalysisMethod=xfl::VLMMETHOD;
+        else if(n==3) m_AnalysisMethod=xfl::PANEL4METHOD;
+        else if(n==4) m_AnalysisMethod=xfl::TRILINMETHOD;
+        else if(n==5) m_AnalysisMethod=xfl::TRIUNIMETHOD;
 
         ar >> n;
-        if     (n==1) m_WPolarType=Xfl::FIXEDSPEEDPOLAR;
-        else if(n==2) m_WPolarType=Xfl::FIXEDLIFTPOLAR;
-        else if(n==4) m_WPolarType=Xfl::FIXEDAOAPOLAR;
-        else if(n==5) m_WPolarType=Xfl::BETAPOLAR;
-        else if(n==7) m_WPolarType=Xfl::STABILITYPOLAR;
+        if     (n==1) m_WPolarType=xfl::FIXEDSPEEDPOLAR;
+        else if(n==2) m_WPolarType=xfl::FIXEDLIFTPOLAR;
+        else if(n==4) m_WPolarType=xfl::FIXEDAOAPOLAR;
+        else if(n==5) m_WPolarType=xfl::BETAPOLAR;
+        else if(n==7) m_WPolarType=xfl::STABILITYPOLAR;
 
         ar >> m_bVLM1;
         ar >> m_bThinSurfaces;
         ar >> m_bTiltedGeom;
         ar >> boolean;
-        m_BoundaryCondition = boolean ? Xfl::DIRICHLET : Xfl::NEUMANN;
+        m_BoundaryCondition = boolean ? xfl::DIRICHLET : xfl::NEUMANN;
         ar >> m_bViscous;
         ar >> m_bIgnoreBodyPanels;
 
@@ -1542,10 +1542,10 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
         ar >> m_Density >> m_Viscosity;
 
         ar >> k;
-        if(k==1)      m_ReferenceDim = Xfl::PLANFORMREFDIM;
-        else if(k==2) m_ReferenceDim = Xfl::PROJECTEDREFDIM;
-        else if(k==3) m_ReferenceDim = Xfl::MANUALREFDIM;
-        else          m_ReferenceDim = Xfl::PLANFORMREFDIM;
+        if(k==1)      m_ReferenceDim = xfl::PLANFORMREFDIM;
+        else if(k==2) m_ReferenceDim = xfl::PROJECTEDREFDIM;
+        else if(k==3) m_ReferenceDim = xfl::MANUALREFDIM;
+        else          m_ReferenceDim = xfl::PLANFORMREFDIM;
 
         ar >> m_bAutoInertia;
         ar >> m_Mass;
@@ -1606,7 +1606,7 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 
     // space allocation
     for (int i=0; i<19; i++) ar >> k;
-    ar >>k; // m_PointStyle;
+    ar >>k; // m_Symbol;
 
     for (int i=0; i<35; i++) ar >> dble;
     for (int ix=0; ix<MAXEXTRADRAG; ix++) ar>> m_ExtraDragArea[ix];

@@ -114,7 +114,7 @@ public:
 
     Wing *wing(int iw);
     Wing const *wingAt(int iw) const;
-    Wing *wing(Xfl::enumWingType wingType);
+    Wing *wing(xfl::enumWingType wingType);
 
     /** Returns a pointer to the Plane's main wing. Never NULL, a Plane always has a main Wing. */
     Wing *wing()  {return m_Wing;}

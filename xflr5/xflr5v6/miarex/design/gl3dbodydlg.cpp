@@ -32,9 +32,7 @@
 
 
 
-#include <miarex/design/bodygriddlg.h>
 #include <miarex/design/bodyscaledlg.h>
-#include <miarex/design/bodytabledelegate.h>
 #include <miarex/design/bodytransdlg.h>
 #include <miarex/design/gl3dbodydlg.h>
 #include <miarex/design/inertiadlg.h>
@@ -43,17 +41,18 @@
 #include <miarex/view/w3dprefsdlg.h>
 #include <misc/lengthunitdlg.h>
 #include <misc/options/settings.h>
-#include <xflcore/units.h>
 #include <twodwidgets/bodyframewt.h>
 #include <twodwidgets/bodylinewt.h>
 #include <xfl3d/arcball.h>
 #include <xfl3d/gl3dbodyview.h>
+#include <xflcore/units.h>
 #include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/body.h>
 #include <xflobjects/objects3d/plane.h>
-#include <xflwidgets/color/colorbutton.h>
+#include <xflwidgets/color/colorbtn.h>
+#include <xflwidgets/customwts/bodytabledelegate.h>
+#include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/line/linepickerdlg.h>
-#include <xflwidgets/text/doubleedit.h>
 
 QByteArray GL3dBodyDlg::m_VerticalSplitterSizes;
 QByteArray GL3dBodyDlg::m_HorizontalSplitterSizes;
@@ -78,10 +77,8 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
     setWindowFlags(Qt::Window);
     setMouseTracking(true);
 
-    m_pBodyGridDlg = new BodyGridDlg(this);
+
     m_pBody = nullptr;
-    m_pPointPrecision = nullptr;
-    m_pFramePrecision = nullptr;
 
     m_pPointDelegate = nullptr;
     m_pFrameDelegate = nullptr;
@@ -96,7 +93,6 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
     m_bEnableName = true;
 
     m_pScaleBody        = new QAction(tr("Scale"), this);
-    m_pGrid             = new QAction(tr("Grid Setup"), this);
     m_pResetScales      = new QAction(tr("Reset Scales")+("\t(R)"), this);
 
     m_pUndo= new QAction(QIcon(":/resources/images/OnUndo.png"), tr("Undo"), this);
@@ -135,53 +131,52 @@ void GL3dBodyDlg::connectSignals()
 
     connect(m_pScaleBody,        SIGNAL(triggered()), this, SLOT(onScaleBody()));
     connect(m_pResetScales,      SIGNAL(triggered()), this, SLOT(onResetScales()));
-    connect(m_pGrid,             SIGNAL(triggered()), this, SLOT(onGrid()));
 
-    connect(m_pctrlReset,      SIGNAL(clicked()), this, SLOT(onResetScales()));
+    connect(m_ppbReset,      SIGNAL(clicked()), this, SLOT(onResetScales()));
 
-    connect(m_pctrlAxes,       SIGNAL(clicked(bool)), &m_gl3dBodyview, SLOT(onAxes(bool)));
-    connect(m_pctrlPanels,     SIGNAL(clicked(bool)), &m_gl3dBodyview, SLOT(onPanels(bool)));
-    connect(m_pctrlSurfaces,   SIGNAL(clicked(bool)), &m_gl3dBodyview, SLOT(onSurfaces(bool)));
-    connect(m_pctrlOutline,    SIGNAL(clicked(bool)), &m_gl3dBodyview, SLOT(onOutline(bool)));
-    connect(m_pctrlShowMasses, SIGNAL(clicked(bool)), &m_gl3dBodyview, SLOT(onShowMasses(bool)));
+    connect(m_pchAxes,       SIGNAL(clicked(bool)), &m_gl3dBodyview, SLOT(onAxes(bool)));
+    connect(m_pchPanels,     SIGNAL(clicked(bool)), &m_gl3dBodyview, SLOT(onPanels(bool)));
+    connect(m_pchSurfaces,   SIGNAL(clicked(bool)), &m_gl3dBodyview, SLOT(onSurfaces(bool)));
+    connect(m_pchOutline,    SIGNAL(clicked(bool)), &m_gl3dBodyview, SLOT(onOutline(bool)));
+    connect(m_pchShowMasses, SIGNAL(clicked(bool)), &m_gl3dBodyview, SLOT(onShowMasses(bool)));
 
-    connect(m_pctrlIso,        SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DIso()));
-    connect(m_pctrlX,          SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DFront()));
-    connect(m_pctrlY,          SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DLeft()));
-    connect(m_pctrlZ,          SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DTop()));
-    connect(m_pctrlFlip,       SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DFlip()));
+    connect(m_ptbIso,        SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DIso()));
+    connect(m_ptbX,          SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DFront()));
+    connect(m_ptbY,          SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DLeft()));
+    connect(m_ptbZ,          SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DTop()));
+    connect(m_ptbFlip,       SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DFlip()));
 
     connect(&m_gl3dBodyview, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
 
     //    connect(m_pctrlEdgeWeight, SIGNAL(sliderReleased()), this, SLOT(onEdgeWeight()));
-    connect(m_pctrlPanelBunch, SIGNAL(sliderMoved(int)), this, SLOT(onNURBSPanels()));
+    connect(m_pslPanelBunch, SIGNAL(sliderMoved(int)), this, SLOT(onNURBSPanels()));
 
-    connect(m_pctrlFlatPanels, SIGNAL(clicked()), this, SLOT(onLineType()));
-    connect(m_pctrlBSplines,   SIGNAL(clicked()), this, SLOT(onLineType()));
-    connect(m_pctrlBodyColor,  SIGNAL(clicked()), this, SLOT(onBodyColor()));
+    connect(m_prbFlatPanels, SIGNAL(clicked()), this, SLOT(onLineType()));
+    connect(m_prbBSplines,   SIGNAL(clicked()), this, SLOT(onLineType()));
+    connect(m_pcbBodyColor,  SIGNAL(clicked()), this, SLOT(onBodyColor()));
 
-    connect(m_pctrlBodyName,   SIGNAL(editingFinished()), this, SLOT(onBodyName()));
-    connect(m_pctrlTextures,   SIGNAL(clicked()), this, SLOT(onTextures()));
-    connect(m_pctrlColor,      SIGNAL(clicked()), this, SLOT(onTextures()));
+    connect(m_pleBodyName,     SIGNAL(editingFinished()), this, SLOT(onBodyName()));
+    connect(m_prbTextures,   SIGNAL(clicked()), this, SLOT(onTextures()));
+    connect(m_prbColor,      SIGNAL(clicked()), this, SLOT(onTextures()));
 
-    connect(m_pctrlNHoopPanels,SIGNAL(editingFinished()), this, SLOT(onNURBSPanels()));
-    connect(m_pctrlNXPanels,   SIGNAL(editingFinished()), this, SLOT(onNURBSPanels()));
-    connect(m_pctrlXDegree,    SIGNAL(activated(int)), this, SLOT(onSelChangeXDegree(int)));
-    connect(m_pctrlHoopDegree, SIGNAL(activated(int)), this, SLOT(onSelChangeHoopDegree(int)));
+    connect(m_pdeNHoopPanels,  SIGNAL(editingFinished()), this, SLOT(onNURBSPanels()));
+    connect(m_pdeNXPanels,     SIGNAL(editingFinished()), this, SLOT(onNURBSPanels()));
+    connect(m_pcbXDegree,      SIGNAL(activated(int)), this, SLOT(onSelChangeXDegree(int)));
+    connect(m_pcbHoopDegree,   SIGNAL(activated(int)), this, SLOT(onSelChangeHoopDegree(int)));
 
-    connect(m_pctrlUndo, SIGNAL(clicked()),this, SLOT(onUndo()));
-    connect(m_pctrlRedo, SIGNAL(clicked()),this, SLOT(onRedo()));
+    connect(m_ppbUndo,       SIGNAL(clicked()),this, SLOT(onUndo()));
+    connect(m_ppbRedo,       SIGNAL(clicked()),this, SLOT(onRedo()));
 
     connect(m_pSelectionModelFrame, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onFrameItemClicked(QModelIndex)));
     connect(m_pFrameDelegate,       SIGNAL(closeEditor(QWidget *)), this, SLOT(onFrameCellChanged(QWidget *)));
     connect(m_pSelectionModelPoint, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onPointItemClicked(QModelIndex)));
     connect(m_pPointDelegate,       SIGNAL(closeEditor(QWidget *)), this, SLOT(onPointCellChanged(QWidget *)));
 
-    connect(m_pBodyLineWidget, SIGNAL(frameSelChanged()), this, SLOT(onFrameClicked()));
-    connect(m_pFrameWidget,    SIGNAL(pointSelChanged()), this, SLOT(onPointClicked()));
+    connect(m_pBodyLineWt, SIGNAL(frameSelChanged()), this, SLOT(onFrameClicked()));
+    connect(m_pFrameWt,    SIGNAL(pointSelChanged()), this, SLOT(onPointClicked()));
 
-    connect(m_pBodyLineWidget, SIGNAL(objectModified()), this, SLOT(onUpdateBody()));
-    connect(m_pFrameWidget,    SIGNAL(objectModified()), this, SLOT(onUpdateBody()));
+    connect(m_pBodyLineWt, SIGNAL(objectModified()), this, SLOT(onUpdateBody()));
+    connect(m_pFrameWt,    SIGNAL(objectModified()), this, SLOT(onUpdateBody()));
 }
 
 
@@ -209,11 +204,8 @@ void GL3dBodyDlg::setTableUnits()
 GL3dBodyDlg::~GL3dBodyDlg()
 {
     clearStack(-1);
-    delete m_pBodyGridDlg;
-    if(m_pFramePrecision) delete [] m_pFramePrecision;
     if(m_pFrameDelegate)  delete m_pFrameDelegate;
 
-    if(m_pPointPrecision) delete [] m_pPointPrecision;
     if(m_pPointDelegate)  delete m_pPointDelegate;
     delete m_pFrameModel;
     delete m_pPointModel;
@@ -392,10 +384,10 @@ void GL3dBodyDlg::keyPressEvent(QKeyEvent *pEvent)
 
 void GL3dBodyDlg::setViewControls()
 {
-    m_pctrlX->setChecked(false);
-    m_pctrlY->setChecked(false);
-    m_pctrlZ->setChecked(false);
-    m_pctrlIso->setChecked(false);
+    m_ptbX->setChecked(false);
+    m_ptbY->setChecked(false);
+    m_ptbZ->setChecked(false);
+    m_ptbIso->setChecked(false);
 }
 
 
@@ -403,15 +395,15 @@ void GL3dBodyDlg::onBodyName()
 {
     if(m_pBody)
     {
-        m_pBody->m_BodyName = m_pctrlBodyName->text();
-        m_pBody->m_BodyDescription = m_pctrlBodyDescription->toPlainText();
+        m_pBody->m_BodyName = m_pleBodyName->text();
+        m_pBody->m_BodyDescription = m_pteBodyDescription->toPlainText();
     }
 }
 
 
 void GL3dBodyDlg::onTextures()
 {
-    if(m_pBody) m_pBody->m_bTextures = m_pctrlTextures->isChecked();
+    if(m_pBody) m_pBody->m_bTextures = m_prbTextures->isChecked();
     m_gl3dBodyview.resetGLBody();
     setControls();
     updateView();
@@ -434,7 +426,7 @@ void GL3dBodyDlg::onBodyColor()
         m_pBody->setBodyColor(clr);
         m_gl3dBodyview.resetGLBody();
 
-        m_pctrlBodyColor->setColor(clr);
+        m_pcbBodyColor->setColor(clr);
         update();
     }
 }
@@ -445,10 +437,10 @@ void GL3dBodyDlg::onBodyColor()
  */
 void GL3dBodyDlg::onCheckViewIcons()
 {
-    m_pctrlIso->setChecked(false);
-    m_pctrlX->setChecked(false);
-    m_pctrlY->setChecked(false);
-    m_pctrlZ->setChecked(false);
+    m_ptbIso->setChecked(false);
+    m_ptbX->setChecked(false);
+    m_ptbY->setChecked(false);
+    m_ptbZ->setChecked(false);
 }
 
 
@@ -728,35 +720,24 @@ void GL3dBodyDlg::onFrameCellChanged(QWidget *)
 }
 
 
-void GL3dBodyDlg::onGrid()
-{
-    m_pBodyGridDlg->initDialog();
-    m_pBodyGridDlg->exec();
-
-    updateView();
-}
-
-
-
-
 void GL3dBodyDlg::onLineType()
 {
     m_bChanged = true;
-    if(m_pctrlFlatPanels->isChecked())
+    if(m_prbFlatPanels->isChecked())
     {
-        m_pBody->m_LineType = Xfl::BODYPANELTYPE;
-        m_pctrlNXPanels->setEnabled(false);
-        m_pctrlNHoopPanels->setEnabled(false);
-        m_pctrlXDegree->setEnabled(false);
-        m_pctrlHoopDegree->setEnabled(false);
+        m_pBody->m_LineType = xfl::BODYPANELTYPE;
+        m_pdeNXPanels->setEnabled(false);
+        m_pdeNHoopPanels->setEnabled(false);
+        m_pcbXDegree->setEnabled(false);
+        m_pcbHoopDegree->setEnabled(false);
     }
     else
     {
-        m_pBody->m_LineType = Xfl::BODYSPLINETYPE;
-        m_pctrlNXPanels->setEnabled(true);
-        m_pctrlNHoopPanels->setEnabled(true);
-        m_pctrlXDegree->setEnabled(true);
-        m_pctrlHoopDegree->setEnabled(true);
+        m_pBody->m_LineType = xfl::BODYSPLINETYPE;
+        m_pdeNXPanels->setEnabled(true);
+        m_pdeNHoopPanels->setEnabled(true);
+        m_pcbXDegree->setEnabled(true);
+        m_pcbHoopDegree->setEnabled(true);
     }
     m_gl3dBodyview.resetGLBody();
 
@@ -798,8 +779,8 @@ void GL3dBodyDlg::onPointItemClicked(const QModelIndex &index)
 void GL3dBodyDlg::onResetScales()
 {
     m_gl3dBodyview.on3DReset();
-    m_pBodyLineWidget->onResetScales();
-    m_pFrameWidget->onResetScales();
+    m_pBodyLineWt->onResetScales();
+    m_pFrameWt->onResetScales();
     updateView();
 }
 
@@ -859,7 +840,7 @@ void GL3dBodyDlg::onSelChangeXDegree(int sel)
         QString strange = tr("The degree must be less than the number of Frames");
         QMessageBox::warning(this, QObject::tr("Warning"), strange);
         deg=m_pBody->nurbs().frameCount();
-        m_pctrlXDegree->setCurrentIndex(m_pBody->nurbs().frameCount()-2);
+        m_pcbXDegree->setCurrentIndex(m_pBody->nurbs().frameCount()-2);
     }
 
     m_pBody->m_SplineSurface.setuDegree(deg);
@@ -885,7 +866,7 @@ void GL3dBodyDlg::onSelChangeHoopDegree(int sel)
         QString strange = tr("The degree must be less than the number of side lines");
         QMessageBox::warning(this, QObject::tr("Warning"), strange);
         deg=m_pBody->nurbs().framePointCount();
-        m_pctrlHoopDegree->setCurrentIndex(m_pBody->nurbs().framePointCount()-2);
+        m_pcbHoopDegree->setCurrentIndex(m_pBody->nurbs().framePointCount()-2);
     }
 
     m_pBody->m_SplineSurface.setvDegree(deg);
@@ -918,10 +899,10 @@ void GL3dBodyDlg::onNURBSPanels()
     m_bChanged = true;
     takePicture();
 
-    m_pBody->m_Bunch = m_pctrlPanelBunch->sliderPosition()/100.0;
+    m_pBody->m_Bunch = m_pslPanelBunch->sliderPosition()/100.0;
 
-    m_pBody->m_nhPanels = int(m_pctrlNHoopPanels->value());
-    m_pBody->m_nxPanels = int(m_pctrlNXPanels->value());
+    m_pBody->m_nhPanels = int(m_pdeNHoopPanels->value());
+    m_pBody->m_nxPanels = int(m_pdeNXPanels->value());
     m_pBody->setPanelPos();
 
     m_gl3dBodyview.resetGLBody();
@@ -994,8 +975,8 @@ void GL3dBodyDlg::accept()
 {
     if(m_pBody)
     {
-        m_pBody->bodyDescription() = m_pctrlBodyDescription->toPlainText();
-        QColor clr = m_pctrlBodyColor->color();
+        m_pBody->bodyDescription() = m_pteBodyDescription->toPlainText();
+        QColor clr = m_pcbBodyColor->color();
         m_pBody->setBodyColor(clr);
     }
 
@@ -1021,7 +1002,7 @@ void GL3dBodyDlg::reject()
 
     if(m_bChanged)
     {
-        m_pBody->m_BodyName = m_pctrlBodyName->text();
+        m_pBody->m_BodyName = m_pleBodyName->text();
 
         int res = QMessageBox::question(this, tr("Body Dlg Exit"), tr("Save the Body ?"), QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
         if (QMessageBox::No == res)
@@ -1063,7 +1044,6 @@ bool GL3dBodyDlg::loadSettings(QSettings &settings)
         m_LeftSplitterSizes = settings.value("LeftSplitterSizes").toByteArray();
     }
     settings.endGroup();
-    BodyGridDlg::loadSettings(settings);
     return true;
 }
 
@@ -1080,7 +1060,6 @@ bool GL3dBodyDlg::saveSettings(QSettings &settings)
 
     }
     settings.endGroup();
-    BodyGridDlg::saveSettings(settings);
     return true;
 }
 
@@ -1088,47 +1067,47 @@ bool GL3dBodyDlg::saveSettings(QSettings &settings)
 
 void GL3dBodyDlg::setControls()
 {
-    m_pctrlBodyName->setEnabled(m_bEnableName);
+    m_pleBodyName->setEnabled(m_bEnableName);
 
-    m_pctrlBodyColor->setEnabled(m_pctrlColor->isChecked());
+    m_pcbBodyColor->setEnabled(m_prbColor->isChecked());
 
-    m_pctrlOutline->setChecked(m_gl3dBodyview.m_bOutline);
-    m_pctrlPanels->setChecked(m_gl3dBodyview.m_bVLMPanels);
-    m_pctrlAxes->setChecked(m_gl3dBodyview.m_bAxes);
-    m_pctrlShowMasses->setChecked(m_gl3dBodyview.m_bShowMasses);
-    m_pctrlSurfaces->setChecked(m_gl3dBodyview.m_bSurfaces);
+    m_pchOutline->setChecked(m_gl3dBodyview.m_bOutline);
+    m_pchPanels->setChecked(m_gl3dBodyview.m_bVLMPanels);
+    m_pchAxes->setChecked(m_gl3dBodyview.m_bAxes);
+    m_pchShowMasses->setChecked(m_gl3dBodyview.m_bShowMasses);
+    m_pchSurfaces->setChecked(m_gl3dBodyview.m_bSurfaces);
 
 
-    m_pctrlUndo->setEnabled(m_StackPos>0);
-    m_pctrlRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
+    m_ppbUndo->setEnabled(m_StackPos>0);
+    m_ppbRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
 
     //    m_pctrlEdgeWeight->setSliderPosition((int)((m_pBody->m_SplineSurface.m_EdgeWeightu-1.0)*100.0));
 
-    if(m_pBody && m_pBody->m_LineType==Xfl::BODYPANELTYPE)
+    if(m_pBody && m_pBody->m_LineType==xfl::BODYPANELTYPE)
     {
-        m_pctrlNXPanels->setEnabled(false);
-        m_pctrlNHoopPanels->setEnabled(false);
-        m_pctrlXDegree->setEnabled(false);
-        m_pctrlHoopDegree->setEnabled(false);
+        m_pdeNXPanels->setEnabled(false);
+        m_pdeNHoopPanels->setEnabled(false);
+        m_pcbXDegree->setEnabled(false);
+        m_pcbHoopDegree->setEnabled(false);
     }
-    else if(m_pBody && m_pBody->m_LineType==Xfl::BODYSPLINETYPE)
+    else if(m_pBody && m_pBody->m_LineType==xfl::BODYSPLINETYPE)
     {
-        m_pctrlNXPanels->setEnabled(true);
-        m_pctrlNHoopPanels->setEnabled(true);
-        m_pctrlXDegree->setEnabled(true);
-        m_pctrlHoopDegree->setEnabled(true);
+        m_pdeNXPanels->setEnabled(true);
+        m_pdeNHoopPanels->setEnabled(true);
+        m_pcbXDegree->setEnabled(true);
+        m_pcbHoopDegree->setEnabled(true);
     }
 
     if(m_pBody)
     {
-        m_pctrlPanelBunch->setSliderPosition(int(m_pBody->m_Bunch*100.0));
-        m_pctrlBodyColor->setColor(m_pBody->m_BodyColor);
+        m_pslPanelBunch->setSliderPosition(int(m_pBody->m_Bunch*100.0));
+        m_pcbBodyColor->setColor(m_pBody->m_BodyColor);
 
-        m_pctrlNXPanels->setValue(m_pBody->m_nxPanels);
-        m_pctrlNHoopPanels->setValue(m_pBody->m_nhPanels);
+        m_pdeNXPanels->setValue(m_pBody->m_nxPanels);
+        m_pdeNHoopPanels->setValue(m_pBody->m_nhPanels);
 
-        m_pctrlXDegree->setCurrentIndex(m_pBody->m_SplineSurface.uDegree()-1);
-        m_pctrlHoopDegree->setCurrentIndex(m_pBody->m_SplineSurface.vDegree()-1);
+        m_pcbXDegree->setCurrentIndex(m_pBody->m_SplineSurface.uDegree()-1);
+        m_pcbHoopDegree->setCurrentIndex(m_pBody->m_SplineSurface.vDegree()-1);
     }
 }
 
@@ -1143,6 +1122,9 @@ bool GL3dBodyDlg::initDialog(Body *pBody)
     m_gl3dBodyview.setBody(pBody);
     m_gl3dBodyview.setScale(pBody->length());
 
+    m_pBodyLineWt->setUnitFactor(Units::mtoUnit());
+    m_pFrameWt->setUnitFactor(Units::mtoUnit());
+
     return setBody(pBody);
 }
 
@@ -1151,14 +1133,14 @@ bool GL3dBodyDlg::setBody(Body *pBody)
 {
     if(pBody) m_pBody = pBody;
 
-    m_pctrlColor->setChecked(!m_pBody->hasTextures());
-    m_pctrlTextures->setChecked(m_pBody->hasTextures());
+    m_prbColor->setChecked(!m_pBody->hasTextures());
+    m_prbTextures->setChecked(m_pBody->hasTextures());
 
-    m_pctrlFlatPanels->setChecked(m_pBody->m_LineType==Xfl::BODYPANELTYPE);
-    m_pctrlBSplines->setChecked(m_pBody->m_LineType==Xfl::BODYSPLINETYPE);
+    m_prbFlatPanels->setChecked(m_pBody->m_LineType==xfl::BODYPANELTYPE);
+    m_prbBSplines->setChecked(m_pBody->m_LineType==xfl::BODYSPLINETYPE);
 
-    m_pBodyLineWidget->setBody(m_pBody);
-    m_pFrameWidget->setBody(m_pBody);
+    m_pBodyLineWt->setBody(m_pBody);
+    m_pFrameWt->setBody(m_pBody);
 
     m_pFrame = m_pBody->activeFrame();
 
@@ -1166,7 +1148,7 @@ bool GL3dBodyDlg::setBody(Body *pBody)
     fillFrameDataTable();
     fillPointDataTable();
 
-    m_pctrlBodyName->setText(m_pBody->m_BodyName);
+    m_pleBodyName->setText(m_pBody->m_BodyName);
 
     takePicture();
 
@@ -1228,36 +1210,36 @@ void GL3dBodyDlg::setupLayout()
     {
         QGridLayout *pThreeDParamsLayout = new QGridLayout;
         {
-            m_pctrlAxes       = new QCheckBox(tr("Axes"));
-            m_pctrlSurfaces   = new QCheckBox(tr("Surfaces"));
-            m_pctrlOutline    = new QCheckBox(tr("Outline"));
-            m_pctrlPanels     = new QCheckBox(tr("Panels"));
-            m_pctrlShowMasses = new QCheckBox(tr("Masses"));
-            m_pctrlAxes->setSizePolicy(szPolicyMinimum);
-            m_pctrlSurfaces->setSizePolicy(szPolicyMinimum);
-            m_pctrlOutline->setSizePolicy(szPolicyMinimum);
-            m_pctrlPanels->setSizePolicy(szPolicyMinimum);
-            pThreeDParamsLayout->addWidget(m_pctrlAxes, 1,1);
-            pThreeDParamsLayout->addWidget(m_pctrlPanels, 1,2);
-            pThreeDParamsLayout->addWidget(m_pctrlSurfaces, 2,1);
-            pThreeDParamsLayout->addWidget(m_pctrlOutline, 2,2);
-            pThreeDParamsLayout->addWidget(m_pctrlShowMasses, 2,3);
+            m_pchAxes       = new QCheckBox(tr("Axes"));
+            m_pchSurfaces   = new QCheckBox(tr("Surfaces"));
+            m_pchOutline    = new QCheckBox(tr("Outline"));
+            m_pchPanels     = new QCheckBox(tr("Panels"));
+            m_pchShowMasses = new QCheckBox(tr("Masses"));
+            m_pchAxes->setSizePolicy(szPolicyMinimum);
+            m_pchSurfaces->setSizePolicy(szPolicyMinimum);
+            m_pchOutline->setSizePolicy(szPolicyMinimum);
+            m_pchPanels->setSizePolicy(szPolicyMinimum);
+            pThreeDParamsLayout->addWidget(m_pchAxes, 1,1);
+            pThreeDParamsLayout->addWidget(m_pchPanels, 1,2);
+            pThreeDParamsLayout->addWidget(m_pchSurfaces, 2,1);
+            pThreeDParamsLayout->addWidget(m_pchOutline, 2,2);
+            pThreeDParamsLayout->addWidget(m_pchShowMasses, 2,3);
         }
 
         QHBoxLayout *pAxisViewLayout = new QHBoxLayout;
         {
-            m_pctrlX          = new QToolButton;
-            m_pctrlY          = new QToolButton;
-            m_pctrlZ          = new QToolButton;
-            m_pctrlIso        = new QToolButton;
-            m_pctrlFlip       = new QToolButton;
-            if(m_pctrlX->iconSize().height()<=48)
+            m_ptbX          = new QToolButton;
+            m_ptbY          = new QToolButton;
+            m_ptbZ          = new QToolButton;
+            m_ptbIso        = new QToolButton;
+            m_ptbFlip       = new QToolButton;
+            if(m_ptbX->iconSize().height()<=48)
             {
-                m_pctrlX->setIconSize(QSize(32,32));
-                m_pctrlY->setIconSize(QSize(32,32));
-                m_pctrlZ->setIconSize(QSize(32,32));
-                m_pctrlIso->setIconSize(QSize(32,32));
-                m_pctrlFlip->setIconSize(QSize(32,32));
+                m_ptbX->setIconSize(QSize(32,32));
+                m_ptbY->setIconSize(QSize(32,32));
+                m_ptbZ->setIconSize(QSize(32,32));
+                m_ptbIso->setIconSize(QSize(32,32));
+                m_ptbFlip->setIconSize(QSize(32,32));
             }
             m_pXView    = new QAction(QIcon(":/resources/images/OnXView.png"), tr("X View"), this);
             m_pYView    = new QAction(QIcon(":/resources/images/OnYView.png"), tr("Y View"), this);
@@ -1269,39 +1251,37 @@ void GL3dBodyDlg::setupLayout()
             m_pZView->setCheckable(true);
             m_pIsoView->setCheckable(true);
 
-            m_pctrlX->setDefaultAction(m_pXView);
-            m_pctrlY->setDefaultAction(m_pYView);
-            m_pctrlZ->setDefaultAction(m_pZView);
-            m_pctrlIso->setDefaultAction(m_pIsoView);
-            m_pctrlFlip->setDefaultAction(m_pFlipView);
+            m_ptbX->setDefaultAction(m_pXView);
+            m_ptbY->setDefaultAction(m_pYView);
+            m_ptbZ->setDefaultAction(m_pZView);
+            m_ptbIso->setDefaultAction(m_pIsoView);
+            m_ptbFlip->setDefaultAction(m_pFlipView);
 
-            pAxisViewLayout->addWidget(m_pctrlX);
-            pAxisViewLayout->addWidget(m_pctrlY);
-            pAxisViewLayout->addWidget(m_pctrlZ);
-            pAxisViewLayout->addWidget(m_pctrlIso);
-            pAxisViewLayout->addWidget(m_pctrlFlip);
+            pAxisViewLayout->addWidget(m_ptbX);
+            pAxisViewLayout->addWidget(m_ptbY);
+            pAxisViewLayout->addWidget(m_ptbZ);
+            pAxisViewLayout->addWidget(m_ptbIso);
+            pAxisViewLayout->addWidget(m_ptbFlip);
         }
 
         QHBoxLayout* pThreeDViewLayout = new QHBoxLayout;
         {
-            m_pctrlReset      = new QPushButton(tr("Reset Scale"));
-            m_pctrlReset->setSizePolicy(szPolicyMinimum);
+            m_ppbReset      = new QPushButton(tr("Reset Scale"));
+            m_ppbReset->setSizePolicy(szPolicyMinimum);
 
-            pThreeDViewLayout->addWidget(m_pctrlReset);
+            pThreeDViewLayout->addWidget(m_ppbReset);
         }
 
 
         QHBoxLayout *pActionButtonsLayout = new QHBoxLayout;
         {
-            m_pctrlUndo = new QPushButton(QIcon(":/resources/images/OnUndo.png"), tr("Undo"));
-            m_pctrlRedo = new QPushButton(QIcon(":/resources/images/OnRedo.png"), tr("Redo"));
+            m_ppbUndo = new QPushButton(QIcon(":/resources/images/OnUndo.png"), tr("Undo"));
+            m_ppbRedo = new QPushButton(QIcon(":/resources/images/OnRedo.png"), tr("Redo"));
 
-            m_pctrlMenuButton = new QPushButton(tr("Other"));
+            m_ppbMenuButton = new QPushButton(tr("Other"));
 
             BodyMenu = new QMenu(tr("Actions..."),this);
 
-            BodyMenu->addAction(m_pGrid);
-            BodyMenu->addSeparator();
             BodyMenu->addAction(m_pImportBodyDef);
             BodyMenu->addAction(m_pExportBodyDef);
             BodyMenu->addSeparator();
@@ -1315,11 +1295,11 @@ void GL3dBodyDlg::setupLayout()
             BodyMenu->addAction(m_pTranslateBody);
             BodyMenu->addAction(m_pScaleBody);
             BodyMenu->addSeparator();
-            m_pctrlMenuButton->setMenu(BodyMenu);
+            m_ppbMenuButton->setMenu(BodyMenu);
 
-            pActionButtonsLayout->addWidget(m_pctrlUndo);
-            pActionButtonsLayout->addWidget(m_pctrlRedo);
-            pActionButtonsLayout->addWidget(m_pctrlMenuButton);
+            pActionButtonsLayout->addWidget(m_ppbUndo);
+            pActionButtonsLayout->addWidget(m_ppbRedo);
+            pActionButtonsLayout->addWidget(m_ppbMenuButton);
         }
 
 
@@ -1341,34 +1321,34 @@ void GL3dBodyDlg::setupLayout()
 
     QVBoxLayout *pBodyParamsLayout = new QVBoxLayout;
     {
-        m_pctrlBodyName = new QLineEdit(tr("BodyName"));
+        m_pleBodyName = new QLineEdit(tr("BodyName"));
 
         QGroupBox *pStyleBox = new QGroupBox(tr("Style"));
         {
             QHBoxLayout *pStyleLayout = new QHBoxLayout;
             {
-                m_pctrlTextures = new QRadioButton(tr("Textures"));
-                m_pctrlColor    = new QRadioButton(tr("Color"));
-                pStyleLayout->addWidget(m_pctrlTextures);
-                pStyleLayout->addWidget(m_pctrlColor);
+                m_prbTextures = new QRadioButton(tr("Textures"));
+                m_prbColor    = new QRadioButton(tr("Color"));
+                pStyleLayout->addWidget(m_prbTextures);
+                pStyleLayout->addWidget(m_prbColor);
 
-                m_pctrlBodyColor = new ColorButton(this);
-                m_pctrlBodyColor->setSizePolicy(szPolicyMinimum);
+                m_pcbBodyColor = new ColorBtn(this);
+                m_pcbBodyColor->setSizePolicy(szPolicyMinimum);
                 pStyleLayout->addStretch();
-                pStyleLayout->addWidget(m_pctrlBodyColor);
+                pStyleLayout->addWidget(m_pcbBodyColor);
             }
             pStyleBox->setLayout(pStyleLayout);
         }
         QLabel *BodyDes = new QLabel(tr("Description:"));
 
-        m_pctrlBodyDescription = new QTextEdit();
-        m_pctrlBodyDescription->setToolTip(tr("Enter here a short description for the body"));
-        pBodyParamsLayout->setStretchFactor(m_pctrlBodyDescription,1);
+        m_pteBodyDescription = new QTextEdit();
+        m_pteBodyDescription->setToolTip(tr("Enter here a short description for the body"));
+        pBodyParamsLayout->setStretchFactor(m_pteBodyDescription,1);
 
-        pBodyParamsLayout->addWidget(m_pctrlBodyName);
+        pBodyParamsLayout->addWidget(m_pleBodyName);
         pBodyParamsLayout->addWidget(pStyleBox);
         pBodyParamsLayout->addWidget(BodyDes);
-        pBodyParamsLayout->addWidget(m_pctrlBodyDescription);
+        pBodyParamsLayout->addWidget(m_pteBodyDescription);
         pBodyParamsLayout->addStretch(1);
     }
 
@@ -1379,12 +1359,12 @@ void GL3dBodyDlg::setupLayout()
         {
             QHBoxLayout *pBodyTypeLayout = new QHBoxLayout;
             {
-                m_pctrlFlatPanels = new QRadioButton(tr("Flat Panels"));
-                m_pctrlBSplines   = new QRadioButton(tr("BSplines"));
-                m_pctrlFlatPanels->setSizePolicy(szPolicyMinimum);
-                m_pctrlBSplines->setSizePolicy(szPolicyMinimum);
-                pBodyTypeLayout->addWidget(m_pctrlFlatPanels);
-                pBodyTypeLayout->addWidget(m_pctrlBSplines);
+                m_prbFlatPanels = new QRadioButton(tr("Flat Panels"));
+                m_prbBSplines   = new QRadioButton(tr("BSplines"));
+                m_prbFlatPanels->setSizePolicy(szPolicyMinimum);
+                m_prbBSplines->setSizePolicy(szPolicyMinimum);
+                pBodyTypeLayout->addWidget(m_prbFlatPanels);
+                pBodyTypeLayout->addWidget(m_prbBSplines);
             }
             pBodyTypeBox->setLayout(pBodyTypeLayout);
         }
@@ -1397,10 +1377,10 @@ void GL3dBodyDlg::setupLayout()
             QLabel *lab4 = new QLabel(tr("Panels"));
             QLabel *labBunch = new QLabel(tr("Panel bunch"));
 
-            m_pctrlXDegree = new QComboBox;
-            m_pctrlHoopDegree = new QComboBox;
-            m_pctrlNXPanels = new DoubleEdit;
-            m_pctrlNHoopPanels = new DoubleEdit;
+            m_pcbXDegree = new QComboBox;
+            m_pcbHoopDegree = new QComboBox;
+            m_pdeNXPanels = new DoubleEdit;
+            m_pdeNHoopPanels = new DoubleEdit;
             /*            m_pctrlEdgeWeight = new QSlider(Qt::Horizontal);
             m_pctrlEdgeWeight->setMinimum(0);
             m_pctrlEdgeWeight->setMaximum(100);
@@ -1409,37 +1389,37 @@ void GL3dBodyDlg::setupLayout()
             m_pctrlEdgeWeight->setTickPosition(QSlider::TicksBelow);
             m_pctrlEdgeWeight->setSizePolicy(szPolicyMinimum);*/
 
-            m_pctrlPanelBunch= new QSlider(Qt::Horizontal);
-            m_pctrlPanelBunch->setMinimum(0    );
-            m_pctrlPanelBunch->setMaximum(100.0);
-            m_pctrlPanelBunch->setSliderPosition(0);
-            m_pctrlPanelBunch->setTickInterval(10);
-            m_pctrlPanelBunch->setTickPosition(QSlider::TicksBelow);
-            m_pctrlPanelBunch->setSizePolicy(szPolicyMinimum);
+            m_pslPanelBunch= new QSlider(Qt::Horizontal);
+            m_pslPanelBunch->setMinimum(0    );
+            m_pslPanelBunch->setMaximum(100.0);
+            m_pslPanelBunch->setSliderPosition(0);
+            m_pslPanelBunch->setTickInterval(10);
+            m_pslPanelBunch->setTickPosition(QSlider::TicksBelow);
+            m_pslPanelBunch->setSizePolicy(szPolicyMinimum);
 
 
             lab1->setSizePolicy(szPolicyMinimum);
             lab2->setSizePolicy(szPolicyMinimum);
             lab3->setSizePolicy(szPolicyMinimum);
             lab4->setSizePolicy(szPolicyMinimum);
-            m_pctrlXDegree->setSizePolicy(szPolicyMinimum);
-            m_pctrlHoopDegree->setSizePolicy(szPolicyMinimum);
-            m_pctrlNXPanels->setSizePolicy(szPolicyMinimum);
-            m_pctrlNHoopPanels->setSizePolicy(szPolicyMinimum);
-            m_pctrlNXPanels->setDigits(0);
-            m_pctrlNHoopPanels->setDigits(0);
+            m_pcbXDegree->setSizePolicy(szPolicyMinimum);
+            m_pcbHoopDegree->setSizePolicy(szPolicyMinimum);
+            m_pdeNXPanels->setSizePolicy(szPolicyMinimum);
+            m_pdeNHoopPanels->setSizePolicy(szPolicyMinimum);
+            m_pdeNXPanels->setDigits(0);
+            m_pdeNHoopPanels->setDigits(0);
             pSplineParams->addWidget(lab1,1,2, Qt::AlignCenter);
             pSplineParams->addWidget(lab2,1,3, Qt::AlignCenter);
             pSplineParams->addWidget(lab3,2,1, Qt::AlignRight);
             pSplineParams->addWidget(lab4,3,1, Qt::AlignRight);
-            pSplineParams->addWidget(m_pctrlXDegree,2,2);
-            pSplineParams->addWidget(m_pctrlHoopDegree,2,3);
-            pSplineParams->addWidget(m_pctrlNXPanels,3,2);
-            pSplineParams->addWidget(m_pctrlNHoopPanels,3,3);
+            pSplineParams->addWidget(m_pcbXDegree,2,2);
+            pSplineParams->addWidget(m_pcbHoopDegree,2,3);
+            pSplineParams->addWidget(m_pdeNXPanels,3,2);
+            pSplineParams->addWidget(m_pdeNHoopPanels,3,3);
             //            SplineParams->addWidget(labWeight,4,1);
             //            SplineParams->addWidget(m_pctrlEdgeWeight,4,2,1,2);
             pSplineParams->addWidget(labBunch,5,1);
-            pSplineParams->addWidget(m_pctrlPanelBunch,5,2,1,2);
+            pSplineParams->addWidget(m_pslPanelBunch,5,2,1,2);
         }
 
         pBodySettingsLayout->addWidget(pBodyTypeBox);
@@ -1490,7 +1470,7 @@ void GL3dBodyDlg::setupLayout()
         pFramePointLayout->addWidget(m_pctrlPointTable);
     }
 
-    m_pctrlControlsWidget = new QWidget;
+    m_pwtControls = new QWidget;
     {
         QHBoxLayout *pAllControls = new QHBoxLayout;
         {
@@ -1504,7 +1484,7 @@ void GL3dBodyDlg::setupLayout()
             pAllControls->addStretch(1);
             pAllControls->addLayout(pControlsLayout);
         }
-        m_pctrlControlsWidget->setLayout(pAllControls);
+        m_pwtControls->setLayout(pAllControls);
     }
 
 
@@ -1512,22 +1492,22 @@ void GL3dBodyDlg::setupLayout()
     {
         m_pLeftSplitter = new QSplitter(Qt::Vertical, this);
         {
-            m_pBodyLineWidget = new BodyLineWt(this);
-            m_pBodyLineWidget->setSizePolicy(szPolicyMaximum);
-            m_pBodyLineWidget->sizePolicy().setVerticalStretch(2);
+            m_pBodyLineWt = new BodyLineWt(this);
+            m_pBodyLineWt->setSizePolicy(szPolicyMaximum);
+            m_pBodyLineWt->sizePolicy().setVerticalStretch(2);
 
-            m_pLeftSplitter->addWidget(m_pBodyLineWidget);
+            m_pLeftSplitter->addWidget(m_pBodyLineWt);
             m_pLeftSplitter->addWidget(&m_gl3dBodyview);
         }
-        m_pFrameWidget = new BodyFrameWt(this);
+        m_pFrameWt = new BodyFrameWt(this);
         m_pHorizontalSplitter->addWidget(m_pLeftSplitter);
-        m_pHorizontalSplitter->addWidget(m_pFrameWidget);
+        m_pHorizontalSplitter->addWidget(m_pFrameWt);
     }
 
     m_pVerticalSplitter = new QSplitter(Qt::Vertical, this);
     {
         m_pVerticalSplitter->addWidget(m_pHorizontalSplitter);
-        m_pVerticalSplitter->addWidget(m_pctrlControlsWidget);
+        m_pVerticalSplitter->addWidget(m_pwtControls);
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
@@ -1539,8 +1519,8 @@ void GL3dBodyDlg::setupLayout()
     for (int i=1; i<6; i++)
     {
         str = QString("%1").arg(i);
-        m_pctrlXDegree->addItem(str);
-        m_pctrlHoopDegree->addItem(str);
+        m_pcbXDegree->addItem(str);
+        m_pcbHoopDegree->addItem(str);
     }
 
     //Setup Frame table
@@ -1557,10 +1537,7 @@ void GL3dBodyDlg::setupLayout()
 
     m_pFrameDelegate = new BodyTableDelegate(this);
     m_pctrlFrameTable->setItemDelegate(m_pFrameDelegate);
-    m_pFramePrecision = new int[2];
-    m_pFramePrecision[0] = 3;//five digits for x and y coordinates
-    m_pFramePrecision[1] = 0;
-    m_pFrameDelegate->setPointer(m_pFramePrecision);
+    m_pFrameDelegate->setPrecision({3,0});
 
     //Setup Point Table
     m_pctrlPointTable->horizontalHeader()->setStretchLastSection(true);
@@ -1574,11 +1551,7 @@ void GL3dBodyDlg::setupLayout()
 
     m_pPointDelegate = new BodyTableDelegate;
     m_pctrlPointTable->setItemDelegate(m_pPointDelegate);
-    m_pPointPrecision = new int[3];
-    m_pPointPrecision[0] = 3;//five digits for x and y coordinates
-    m_pPointPrecision[1] = 3;
-    m_pPointPrecision[2] = 0;
-    m_pPointDelegate->setPointer(m_pPointPrecision);
+    m_pPointDelegate->setPrecision({3,3,0});
 }
 
 
@@ -1688,8 +1661,8 @@ void GL3dBodyDlg::takePicture()
 
     // the new current position is the top of the stack
     m_StackPos = m_UndoStack.size()-1;
-    m_pctrlUndo->setEnabled(m_StackPos>0);
-    m_pctrlRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
+    m_ppbUndo->setEnabled(m_StackPos>0);
+    m_ppbRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
 }
 
 
@@ -1699,14 +1672,14 @@ void GL3dBodyDlg::onUndo()
     {
         m_StackPos--;
         setPicture();
-        m_pctrlRedo->setEnabled(true);
+        m_ppbRedo->setEnabled(true);
     }
     else
     {
         //nothing to restore
     }
-    m_pctrlUndo->setEnabled(m_StackPos>0);
-    m_pctrlRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
+    m_ppbUndo->setEnabled(m_StackPos>0);
+    m_ppbRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
 }
 
 
@@ -1717,16 +1690,16 @@ void GL3dBodyDlg::onRedo()
         m_StackPos++;
         setPicture();
     }
-    m_pctrlUndo->setEnabled(m_StackPos>0);
-    m_pctrlRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
+    m_ppbUndo->setEnabled(m_StackPos>0);
+    m_ppbRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
 }
 
 
 void GL3dBodyDlg::updateView()
 {
     if(isVisible()) m_gl3dBodyview.update();
-    m_pFrameWidget->update();
-    m_pBodyLineWidget->update();
+    m_pFrameWt->update();
+    m_pBodyLineWt->update();
 }
 
 

@@ -1,6 +1,6 @@
 /****************************************************************************
 
-    Global functions
+    Core functions
 
     Copyright (C) 2008-2017 Andre Deperrois
 
@@ -31,94 +31,148 @@
 #include <QColor>
 #include <QFile>
 #include <QPainter>
+#include <QTextStream>
+#include <QStandardItem>
+#include <QNetworkReply>
+#include <QThread>
 
 
+#include <xflcore/linestyle.h>
 #include <xflcore/core_enums.h>
 
 
 using namespace std;
 
-class Foil;
-class Polar;
-class OpPoint;
-class Plane;
-class WPolar;
 
-void findFiles(const QString &startDir, QStringList filters, bool bRecursive, QStringList &filepathnames);
-bool findFile(QString const &filename, QString const &startDir, QStringList filters, bool bRecursive, QString &filePathName);
+namespace xfl
+{
+    extern bool g_bLocalize;
 
-int readValues(QString line, double &x, double &y, double &z);
-
-void ExpFormat(double &f, int &exp);
-void ReynoldsFormat(QString &str, double f);
+    extern int s_SymbolSize;
 
 
-float GLGetRed(float tau);
-float GLGetGreen(float tau);
-float GLGetBlue(float tau);
+    QString versionName(bool bFull);
 
 
-QColor randomColor(bool bLightColor);
+    float GLGetRed(float tau);
+    float GLGetGreen(float tau);
+    float GLGetBlue(float tau);
 
 
-Xfl::enumPanelDistribution distributionType(QString const &strDist);
-QString distributionType(Xfl::enumPanelDistribution dist);
-
-Xfl::enumBodyLineType bodyPanelType(QString const &strPanelType);
-QString bodyPanelType(Xfl::enumBodyLineType panelType);
+    QColor randomColor(bool bLightColor);
+    inline QString colorNameARGB(QColor const &colour) {return QString::asprintf("rgba(%d,%d,%3d,%g)", colour.red(), colour.green(), colour.blue(), colour.alphaF());}
 
 
-Xfl::enumPolarType polarType(QString const &strPolarType);
-QString polarType(Xfl::enumPolarType polarType);
+    xfl::enumPanelDistribution distributionType(QString const &strDist);
+    QString distributionType(xfl::enumPanelDistribution dist);
 
-Xfl::enumPolarType WPolarType(QString const &strPolarType);
-QString WPolarType(Xfl::enumPolarType polarType);
-
-
-Xfl::enumAnalysisMethod analysisMethod(QString const &strAnalysisMethod);
-QString analysisMethod(Xfl::enumAnalysisMethod analysisMethod);
+    xfl::enumBodyLineType bodyPanelType(QString const &strPanelType);
+    QString bodyPanelType(xfl::enumBodyLineType panelType);
 
 
-Xfl::enumBC boundaryCondition(QString const &strBC);
-QString boundaryCondition(Xfl::enumBC boundaryCondition);
+    xfl::enumPolarType polarType(QString const &strPolarType);
+    QString polarType(xfl::enumPolarType polarType);
 
-Foil *readFoilFile(QFile &xFoilFile);
-Foil *readPolarFile(QFile &plrFile, QVector<Polar*> &polarList);
-
-void drawFoil(QPainter &painter, const Foil *pFoil, double alpha, double scalex, double scaley, QPointF const &Offset);
-void drawMidLine(QPainter &painter, Foil const*pFoil, double scalex, double scaley, QPointF const &Offset);
-void drawPoints(QPainter &painter, Foil const*pFoil, double alpha, double scalex, double scaley, QPointF const &Offset, QColor const &backColor);
-void drawPoint(QPainter &painter, int pointStyle, QColor const &bkColor, QPoint const &pt);
-
-bool stringToBool(QString str);
-QString referenceDimension(Xfl::enumRefDimension refDimension);
-Xfl::enumRefDimension referenceDimension(QString const &strRefDimension);
-
-Xfl::enumWingType wingType(QString const &strWingType);
-QString wingType(Xfl::enumWingType wingType);
-
-void setAutoWPolarName(WPolar * pWPolar, Plane *pPlane);
+    xfl::enumPolarType WPolarType(QString const &strPolarType);
+    QString WPolarType(xfl::enumPolarType polarType);
 
 
-void ReynoldsFormat(QString &str, double f);
+    xfl::enumAnalysisMethod analysisMethod(QString const &strAnalysisMethod);
+    QString analysisMethod(xfl::enumAnalysisMethod analysisMethod);
 
-QColor getColor(int r, int g, int b, int a=255);
-QColor colour(const OpPoint *pOpp);
-QColor colour(const Polar *pPolar);
-QColor colour(const Foil *pFoil);
-void setRandomFoilColor(Foil *pFoil, bool bLightTheme);
+
+    xfl::enumBC boundaryCondition(QString const &strBC);
+    QString boundaryCondition(xfl::enumBC boundaryCondition);
+
+
+    QString referenceDimension(xfl::enumRefDimension refDimension);
+    xfl::enumRefDimension referenceDimension(QString const &strRefDimension);
+
+    xfl::enumWingType wingType(QString const &strWingType);
+    QString wingType(xfl::enumWingType wingType);
 
 
 
-
-void readString(QDataStream &ar, QString &strong);
-void writeString(QDataStream &ar, QString const &strong);
-void readColor(QDataStream &ar, int &r, int &g, int &b);
-void writeColor(QDataStream &ar, int r, int g, int b);
-
-void readColor(QDataStream &ar, int &r, int &g, int &b, int &a);
-void writeColor(QDataStream &ar, int r, int g, int b, int a);
+    void ReynoldsFormat(QString &str, double f);
 
 
-bool serializeFoil(Foil*pFoil, QDataStream &ar, bool bIsStoring);
-bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring);
+
+    void readColor(QDataStream &ar, int &r, int &g, int &b);
+    void writeColor(QDataStream &ar, int r, int g, int b);
+
+    void readColor(QDataStream &ar, int &r, int &g, int &b, int &a);
+    void writeColor(QDataStream &ar, int r, int g, int b, int a);
+
+
+
+    int readValues(const QString &theline, double &x, double &y, double &z);
+    void readFloat(QDataStream &inStream, float &f);
+    void writeFloat(QDataStream &outStream, float f);
+    bool readAVLString(QTextStream &in, int &Line, QString &strong);
+
+    void drawSymbol(QPainter &painter, Line::enumPointStyle pointStyle, QColor const &bkColor, QColor const &linecolor, QPoint const &pt);
+    void drawSymbol(QPainter &painter, Line::enumPointStyle pointStyle, QColor const &bkColor, QColor const &linecolor, QPointF const &pt);
+    void drawSymbol(QPainter &painter, Line::enumPointStyle pointStyle, QColor const &bkColor, QColor const &linecolor, double x, double y);
+
+//    Qt::PenStyle getStyle(int s);
+
+    inline Qt::PenStyle getStyle(Line::enumLineStipple s)
+    {
+         switch(s)
+         {
+             default:
+             case Line::SOLID:      return Qt::SolidLine;
+             case Line::DASH:       return Qt::DashLine;
+             case Line::DOT:        return Qt::DotLine;
+             case Line::DASHDOT:    return Qt::DashDotLine;
+             case Line::DASHDOTDOT: return Qt::DashDotDotLine;
+             case Line::NOLINE:     return Qt::NoPen;
+         }
+    }
+
+
+    void expFormat(double &f, int &exp);
+    void ReynoldsFormat(QString &str, double f);
+
+    QStringList findFiles(const QString &startDir, const QStringList &filters, bool bRecursive);
+    bool findFile(QString const &filename, QString const &startDir, const QStringList &filters, bool bRecursive, QString &filePathName);
+
+    void printDouble(QString msg, double d0, double d1=-2.0e50, double d2=-2.0e50, double d3=-2.0e50, double d4=-2.0e50, double d5=-2.0e50, double d6=-2.0e50, double d7=-2.0e50, double d8=-2.0e50, double d9=-2.0e50);
+    void printDouble(double d0, double d1=-2.0e50, double d2=-2.0e50, double d3=-2.0e50, double d4=-2.0e50, double d5=-2.0e50, double d6=-2.0e50, double d7=-2.0e50, double d8=-2.0e50, double d9=-2.0e50);
+
+    void writeCString(QDataStream &ar, QString const &strong);
+    void readCString(QDataStream &ar, QString &strong);
+
+    void readString(QDataStream &ar, QString &strong);
+    void writeString(QDataStream &ar, QString const &strong);
+
+
+    bool stringToBool(QString str);
+    QString boolToString(bool b);
+
+    // dummy function arguments used to create a QSettings xml file for the license
+    bool readXmlFile(QIODevice &device, QSettings::SettingsMap &map); // dummy argument function
+    bool writeXmlFile(QIODevice &device, const QSettings::SettingsMap &map); // dummy argument function
+
+    void listSysInfo(QString &info);
+
+    void getNetworkError(QNetworkReply::NetworkError neterror, QString &errorstring);
+
+
+    QList<QStandardItem *> prepareRow(const QString &first, const QString &second=QString(), const QString &third=QString(),  const QString &fourth=QString());
+    QList<QStandardItem *> prepareBoolRow(const QString &first, const QString &second, const bool &third);
+    QList<QStandardItem *> prepareIntRow(const QString &first, const QString &second, const int &third);
+    QList<QStandardItem *> prepareDoubleRow(const QString &first, const QString &second, const double &third,  const QString &fourth);
+    QList<QStandardItem *> prepareDoubleRow(const QString &second, const double &value1, const double &value2, const QString &fourth);
+
+    void drawSymbol(QPainter &painter, Line::enumPointStyle pointStyle, QColor const &bkColor, QColor const &linecolor, QPoint const &pt);
+    void drawSymbol(QPainter &painter, Line::enumPointStyle pointStyle, QColor const &bkColor, QColor const &linecolor, QPointF const &pt);
+    void drawSymbol(QPainter &painter, Line::enumPointStyle pointStyle, QColor const &bkColor, QColor const &linecolor, double x, double y);
+
+    inline void setSymbolSize(int s) {s_SymbolSize=s;}
+    inline int symbolSize() {return s_SymbolSize;}
+
+    inline void setLocalized(bool bLocal) {g_bLocalize=bLocal;}
+    inline bool isLocalized() {return g_bLocalize;}
+
+}

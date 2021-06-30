@@ -70,6 +70,7 @@ gl3dView::gl3dView(QWidget *pParent) : QOpenGLWidget(pParent)
     memset(ab_old, 0, 16*sizeof(float));
     m_iTransitionInc = 0;
 
+    m_bShowLight = false;
     m_bArcball = m_bCrossPoint = false;
 
     m_bUse120StyleShaders = true;
@@ -1602,7 +1603,7 @@ void gl3dView::paintGL3()
 
     if(m_bArcball) paintArcBall();
 
-    if(s_pMainFrame->m_glLightDlg.isVisible())
+    if(m_bShowLight)
     {
         Vector3d lightPos(double(GLLightDlg::s_Light.m_X), double(GLLightDlg::s_Light.m_Y), double(GLLightDlg::s_Light.m_Z));
         double radius = double(GLLightDlg::s_Light.m_Z+2.0f)/73.0;
@@ -2702,16 +2703,16 @@ void gl3dView::glMakeWingGeometry(int iWing, Wing const *pWing, Body const *pBod
         planeName = s_pMiarex->m_pCurPlane->planeName();
         switch(pWing->wingType())
         {
-            case Xfl::MAINWING:
+            case xfl::MAINWING:
                 textureName = "wing_";
                 break;
-            case Xfl::SECONDWING:
+            case xfl::SECONDWING:
                 textureName = "wing2_";
                 break;
-            case Xfl::ELEVATOR:
+            case xfl::ELEVATOR:
                 textureName = "elevator_";
                 break;
-            case Xfl::FIN:
+            case xfl::FIN:
                 textureName = "fin_";
                 break;
             default:

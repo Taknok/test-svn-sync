@@ -237,7 +237,6 @@ void LLTAnalysisDlg::analyze()
     m_pIterGraph->deleteCurves();
     m_pIterGraph->resetLimits();
     m_pIterGraph->setXMax(double(LLTAnalysis::s_IterLim));
-    m_pIterGraph->setYMinGrid(false, true, QColor(100,100,100), 2, 1, 4);
 
     Curve *pCurve = m_pIterGraph->addCurve();
     m_pTheTask->m_ptheLLTAnalysis->setCurvePointers(&pCurve->m_x, &pCurve->m_y);

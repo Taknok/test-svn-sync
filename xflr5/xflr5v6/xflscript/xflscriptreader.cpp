@@ -97,7 +97,7 @@ bool XFLScriptReader::readMetaData()
     {
         if(name().compare(QString("make_project_file"), Qt::CaseInsensitive)==0)
         {
-            m_bMakeProjectFile = stringToBool(readElementText());
+            m_bMakeProjectFile = xfl::stringToBool(readElementText());
         }
         else if(name().compare(QString("project_file_name"), Qt::CaseInsensitive)==0)
         {
@@ -148,7 +148,7 @@ bool XFLScriptReader::readDirectoryData()
         }
         else if(name().compare(QString("recursive_scan"), Qt::CaseInsensitive)==0)
         {
-            m_bRecursiveDirScan = stringToBool(readElementText().trimmed());
+            m_bRecursiveDirScan = xfl::stringToBool(readElementText().trimmed());
         }
         else
             skipCurrentElement();
@@ -216,7 +216,7 @@ bool XFLScriptReader::readThreadingOptions()
         //level 2
         if(name().compare(QString("Allow_Multithreading"), Qt::CaseInsensitive)==0)
         {
-            m_bMultiThreading = stringToBool(readElementText());
+            m_bMultiThreading = xfl::stringToBool(readElementText());
         }
         else if(name().compare(QString("Thread_Priority"), Qt::CaseInsensitive)==0)
         {
@@ -248,7 +248,7 @@ bool XFLScriptReader::readFoilAnalysisFiles()
         //level 2
         if(name().compare(QString("Process_All_Files"), Qt::CaseInsensitive)==0)
         {
-            m_bRunAllFoilAnalyses = stringToBool(readElementText().trimmed());
+            m_bRunAllFoilAnalyses = xfl::stringToBool(readElementText().trimmed());
         }
         else if(name().compare(QString("Analysis_File_Name"), Qt::CaseInsensitive)==0)
         {
@@ -289,11 +289,11 @@ bool XFLScriptReader::readFoilAnalysisRange()
         }
         else if(name().compare(QString("Spec_Alpha"), Qt::CaseInsensitive)==0)
         {
-            m_bAlphaSpec  = stringToBool(readElementText().trimmed());
+            m_bAlphaSpec  = xfl::stringToBool(readElementText().trimmed());
         }
         else if(name().compare(QString("From_Zero"), Qt::CaseInsensitive)==0)
         {
-            m_bFromZero  = stringToBool(readElementText().trimmed());
+            m_bFromZero  = xfl::stringToBool(readElementText().trimmed());
         }
         else
             skipCurrentElement();
@@ -312,7 +312,7 @@ bool XFLScriptReader::readFoilAnalysisOptions()
         }
         else if(name().compare(QString("Repanel_Foils"), Qt::CaseInsensitive)==0)
         {
-            m_bRepanelFoils  = stringToBool(readElementText());
+            m_bRepanelFoils  = xfl::stringToBool(readElementText());
         }
         else if(name().compare(QString("Foil_Panels"), Qt::CaseInsensitive)==0)
         {
@@ -332,15 +332,15 @@ bool XFLScriptReader::readFoilAnalysisOutput()
         //level 2
         if(name().compare(QString("make_polars_bin_file"), Qt::CaseInsensitive)==0)
         {
-            m_bOutputPolarsBin = stringToBool(readElementText());
+            m_bOutputPolarsBin = xfl::stringToBool(readElementText());
         }
         else if(name().compare(QString("make_polars_text_file"), Qt::CaseInsensitive)==0)
         {
-            m_bOutputPolarsText = stringToBool(readElementText());
+            m_bOutputPolarsText = xfl::stringToBool(readElementText());
         }
         else if(name().compare(QString("make_oppoints"), Qt::CaseInsensitive)==0)
         {
-            m_bMakeOpps = stringToBool(readElementText());
+            m_bMakeOpps = xfl::stringToBool(readElementText());
         }
         else
             skipCurrentElement();
@@ -355,7 +355,7 @@ bool XFLScriptReader::readBatchAnalysisData()
     {
         if(name().compare(QString("Polar_Type"), Qt::CaseInsensitive)==0)
         {
-            m_PolarType  = polarType(readElementText());
+            m_PolarType  = xfl::polarType(readElementText());
         }
         else if(name().compare(QString("Forced_Top_Transition"), Qt::CaseInsensitive)==0)
         {

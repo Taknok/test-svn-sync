@@ -22,14 +22,13 @@
 
 #include <cmath>
 
-#include <xflgraph/graph.h>
-#include <xflgraph/curve.h>
-#include <xflgraph/graph_globals.h>
-
-
 #include <QPainter>
 #include <QFontMetrics>
 #include <QTextStream>
+
+#include <xflgraph/graph.h>
+#include <xflgraph/curve.h>
+#include <xflcore/xflcore.h>
 
 #define MININTERVAL  0.000000001
 
@@ -63,8 +62,6 @@ Graph::Graph()
     yunit        = 0.1;
     xo           = 0.0;
     yo           = 0.0;
-    m_XMinorUnit = 0.01;
-    m_YMinorUnit = 0.01;
 
     m_scalex     = 0.1;
     m_scaley     = 0.1;
@@ -77,27 +74,17 @@ Graph::Graph()
     exp_y = 0;
 
     m_bYInverted  = false;
+
     m_bAutoX        = true;
     m_bAutoY        = true;
-    m_bXAutoMinGrid = true;
-    m_bYAutoMinGrid = true;
+
     m_BorderStyle.m_bIsVisible = true;
 
     m_ptoffset.rx() = 0;
     m_ptoffset.ry() = 0;
 
-    m_AxisStyle.m_Stipple   = Line::SOLID;
-    m_AxisStyle.m_Width   = 1;
     m_BorderStyle.m_Stipple = Line::SOLID;
     m_BorderStyle.m_Width = 2;
-    m_XMajStyle   = 0;
-    m_XMajWidth   = 1;
-    m_XMinStyle   = 1;
-    m_XMinWidth   = 1;
-    m_YMajStyle   = 0;
-    m_YMajWidth   = 1;
-    m_YMinStyle   = 1;
-    m_YMinWidth   = 1;
 
     m_iMargin = 41;
 
@@ -130,7 +117,7 @@ void Graph::drawGraph(QPainter &painter)
     if(m_BorderStyle.m_bIsVisible) color = m_BorderStyle.m_Color;
     else                           color = m_BkColor;
     QPen BorderPen(color);
-    BorderPen.setStyle(getStyle(m_BorderStyle.m_Stipple));
+    BorderPen.setStyle(xfl::getStyle(m_BorderStyle.m_Stipple));
     BorderPen.setWidth(m_BorderStyle.m_Width);
 
     painter.setPen(BorderPen);
@@ -142,10 +129,10 @@ void Graph::drawGraph(QPainter &painter)
 
     painter.setBackgroundMode(Qt::TransparentMode);
 
-    if(m_bXMinGrid) drawXMinGrid(painter);
-    if(m_bYMinGrid) drawYMinGrid(painter);
-    if(m_bXMajGrid) drawXMajGrid(painter);
-    if(m_bYMajGrid) drawYMajGrid(painter);
+    if(m_Grid.bXMajGrid())  drawXMajGrid(painter);
+    if(m_Grid.bYMajGrid(0)) drawYMajGrid(painter);
+    if(m_Grid.bXMinGrid())  drawXMinGrid(painter);
+    if(m_Grid.bYMinGrid(0)) drawYMinGrid(painter);
 
     drawAxes(painter);
 
@@ -178,14 +165,14 @@ void Graph::drawCurve(int nIndex, QPainter &painter)
     painter.setBrush(FillBrush);
 
     QPen CurvePen(pCurve->color());
-    CurvePen.setStyle(getStyle(pCurve->style()));
+    CurvePen.setStyle(xfl::getStyle(pCurve->stipple()));
     CurvePen.setWidth(std::max(pCurve->width(), 1));
     painter.setPen(CurvePen);
 
     Min.setX(int(xmin/m_scalex) +m_ptoffset.x());
-    Min.setY(int(ymin/scaley) +m_ptoffset.y());
+    Min.setY(int(ymin/scaley)   +m_ptoffset.y());
     Max.setX(int(xmax/m_scalex) +m_ptoffset.x());
-    Max.setY(int(ymax/scaley) +m_ptoffset.y());
+    Max.setY(int(ymax/scaley)   +m_ptoffset.y());
     rViewRect.setTopLeft(Min);
     rViewRect.setBottomRight(Max);
 
@@ -198,9 +185,11 @@ void Graph::drawCurve(int nIndex, QPainter &painter)
         }
         if(pCurve->width()>=1) painter.drawPolyline(polycurve);
 
+        CurvePen.setStyle(Qt::SolidLine);
+        painter.setPen(CurvePen);
         for (int i=0; i<polycurve.size(); i++)
         {
-            drawPoint(painter, pCurve->pointStyle(), {int(polycurve.at(i).x()), int(polycurve.at(i).y())}, m_BkColor);
+            xfl::drawSymbol(painter, pCurve->pointStyle(), m_BkColor, pCurve->color(), polycurve.at(i).x(), polycurve.at(i).y());
         }
     }
 
@@ -230,9 +219,9 @@ void Graph::drawAxes(QPainter &painter)
     double scaley = m_scaley;
     painter.save();
 
-    AxesPen.setColor(m_AxisStyle.m_Color);
-    AxesPen.setStyle(getStyle(m_AxisStyle.m_Stipple));
-    AxesPen.setWidth(m_AxisStyle.m_Width);
+    AxesPen.setColor(m_Grid.xAxisColor());
+    AxesPen.setStyle(xfl::getStyle(m_Grid.xAxisStipple()));
+    AxesPen.setWidth(m_Grid.xAxisWidth());
     painter.setPen(AxesPen);
 
     //vertical axis
@@ -312,10 +301,10 @@ void Graph::drawXTicks(QPainter &painter)
     int yExpOff = height/2;
 
 
-    QPen LabelPen(m_AxisStyle.m_Color);
+    QPen LabelPen(m_Grid.xAxisColor());
 
-    LabelPen.setStyle(getStyle(m_AxisStyle.m_Stipple));
-    LabelPen.setWidth(m_AxisStyle.m_Width);
+    LabelPen.setStyle(xfl::getStyle(m_Grid.xAxisStipple()));
+    LabelPen.setWidth(m_Grid.xAxisWidth());
     painter.setPen(LabelPen);
     double xt = xo-(xo-xmin);//one tick at the origin
     int nx = int((xo-xmin)/xunit);
@@ -394,9 +383,9 @@ void Graph::drawYTicks(QPainter &painter)
 
     int TickSize = 5;
 
-    QPen LabelPen(m_AxisStyle.m_Color);
-    LabelPen.setStyle(getStyle(m_AxisStyle.m_Stipple));
-    LabelPen.setWidth(m_AxisStyle.m_Width);
+    QPen LabelPen(m_Grid.yAxisColor());
+    LabelPen.setStyle(xfl::getStyle(m_Grid.yAxisStipple()));
+    LabelPen.setWidth(m_Grid.yAxisWidth());
 
     double xp=0;
     if(xo>=xmin && xo<=xmax) xp = xo;
@@ -479,10 +468,9 @@ void Graph::drawXMajGrid(QPainter &painter)
     painter.save();
     int YMin, YMax;
 
-    QPen GridPen(m_XMajClr);
-
-    GridPen.setStyle(getStyle(m_XMajStyle));
-    GridPen.setWidth(m_XMajWidth);
+    QPen GridPen(m_Grid.xMajColor());
+    GridPen.setStyle(xfl::getStyle(m_Grid.xMajStipple()));
+    GridPen.setWidth(m_Grid.xMajWidth());
     painter.setPen(GridPen);
 
     YMin = int(ymin/scaley) + m_ptoffset.y();
@@ -509,14 +497,12 @@ void Graph::drawYMajGrid(QPainter &painter)
     if(fabs(ymax-ymin)/yunit>30.0) return;
 
     painter.save();
-    int width=1;
-    if(m_YMajWidth<=1) width = 1;
 
-    QPen GridPen(m_YMajClr);
-
-    GridPen.setStyle(getStyle(m_YMajStyle));
-    GridPen.setWidth(width);
+    QPen GridPen(m_Grid.yMajColor(0));
+    GridPen.setStyle(xfl::getStyle(m_Grid.yMajStipple(0)));
+    GridPen.setWidth(m_Grid.yMajWidth(0));
     painter.setPen(GridPen);
+
 
     double yt = yo-int((yo-ymin)*1.0001/yunit)*yunit;//one tick at the origin
 
@@ -538,21 +524,22 @@ void Graph::drawXMinGrid(QPainter &painter)
 {
     double scaley = m_scaley;
     if(fabs(xunit)<0.00000001) return;
-    if(fabs(m_XMinorUnit)<0.00000001) return;
+//    if(fabs(m_XMinorUnit)<0.00000001) return;
     if(fabs(xmax-xmin)/xunit>30.0) return;
-    if(fabs(xmax-xmin)/m_XMinorUnit>100.0) return;
-    int YMin, YMax;
+//    if(fabs(xmax-xmin)/m_XMinorUnit>100.0) return;
+    int YMin(0), YMax(0);
 
     painter.save();
-    QPen GridPen(m_XMinClr);
-    GridPen.setStyle(getStyle(m_XMinStyle));
-    GridPen.setWidth(m_XMinWidth);
+    QPen GridPen(m_Grid.xMinColor());
+    GridPen.setStyle(xfl::getStyle(m_Grid.xMinStipple()));
+    GridPen.setWidth(m_Grid.xMinWidth());
     painter.setPen(GridPen);
 
 
     YMin = int(ymin/scaley)+ m_ptoffset.y();
     YMax = int(ymax/scaley)+ m_ptoffset.y();
 
+    double m_XMinorUnit = xunit/5.0;
     double xDelta = m_XMinorUnit;
     double xt = xo-int((xo-xmin)*1.0001/xDelta)*xDelta;//one tick at the origin
 
@@ -572,14 +559,16 @@ void Graph::drawYMinGrid(QPainter &painter)
 {
     double scaley = m_scaley;
     if(fabs(yunit)<0.00000001) return;
-    if(fabs(m_YMinorUnit)<0.00000001) return;
+//    if(fabs(m_YMinorUnit)<0.00000001) return;
     if(fabs(ymax-ymin)/yunit>30.0) return;
-    if(fabs(ymax-ymin)/m_YMinorUnit>100.0) return;
+//    if(fabs(ymax-ymin)/m_YMinorUnit>100.0) return;
+
+    double m_YMinorUnit = xunit/5.0;
 
     painter.save();
-    QPen GridPen(m_YMinClr);
-    GridPen.setStyle(getStyle(m_YMinStyle));
-    GridPen.setWidth(m_YMinWidth);
+    QPen GridPen(m_Grid.yMinColor(0));
+    GridPen.setStyle(xfl::getStyle(m_Grid.yMinStipple(0)));
+    GridPen.setWidth(m_Grid.yMinWidth(0));
     painter.setPen(GridPen);
 
     double yDelta = m_YMinorUnit;
@@ -632,7 +621,7 @@ void Graph::drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QCol
             {
 
                 LegendPen.setColor(pCurve->color());
-                LegendPen.setStyle(getStyle(pCurve->style()));
+                LegendPen.setStyle(xfl::getStyle(pCurve->stipple()));
                 LegendPen.setWidth(pCurve->width());
 
                 painter.setPen(LegendPen);
@@ -644,7 +633,7 @@ void Graph::drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QCol
                     int x1 = Place.x() + int(LegendSize/2);
                     int y1 = Place.y() + int(ypos*npos+ ypos/3);
 
-                    drawPoint(painter, pCurve->pointStyle(), QPoint(x1, y1), m_BkColor);
+                    xfl::drawSymbol(painter, pCurve->pointStyle(), m_BkColor, pCurve->color(), QPoint(x1, y1));
                 }
 
                 painter.setPen(TextPen);
@@ -746,14 +735,10 @@ void Graph::saveSettings(QSettings &settings)
 {
     QFont lgft;
     QColor clr;
-    int s,w;
-    bool ba, bs;
-    double f;
 
     settings.beginGroup(m_GraphName);
     {
         //read variables
-        m_AxisStyle.saveSettings(settings,"AxisStyle");
         m_BorderStyle.saveSettings(settings,"BorderStyle");
 
         clr = titleColor();
@@ -774,50 +759,15 @@ void Graph::saveSettings(QSettings &settings)
         settings.setValue("LabelFontItalic", lgft.italic());
         settings.setValue("LabelFontBold", lgft.bold());
 
-        settings.setValue("bAutoX",  m_bAutoX);
         settings.setValue("XOrigin", xo);
         settings.setValue("XMin",    xmin);
         settings.setValue("XMax",    xmax);
         settings.setValue("XUnit",   xunit);
 
-        settings.setValue("bAutoY",  m_bAutoY);
         settings.setValue("YOrigin", yo);
         settings.setValue("YMin",    ymin);
         settings.setValue("YMax",    ymax);
         settings.setValue("YUnit",   yunit);
-
-        bXMajGrid(bs,clr,s,w);
-        settings.setValue("XMajGridColor", clr);
-        settings.setValue("XMajGridShow",bs);
-        settings.setValue("XMajGridStyle",s);
-        settings.setValue("XMajGridWidth",w);
-
-        yMajGrid(bs,clr,s,w);
-        settings.setValue("YMajGridColor", clr);
-        settings.setValue("YMajGridShow",bs);
-        settings.setValue("YMajGridStyle",s);
-        settings.setValue("YMajGridWidth",w);
-
-        bXMinGrid(bs,ba,clr,s,w,f);
-        settings.setValue("XMinGridColor", clr);
-        settings.setValue("XMinGridAuto",ba);
-        settings.setValue("XMinGridShow",bs);
-        settings.setValue("XMinGridStyle",s);
-        settings.setValue("XMinGridWidth",w);
-        settings.setValue("XMinGridUnit",f);
-
-        bYMinGrid(bs,ba,clr,s,w,f);
-        settings.setValue("YMinGridColor", clr);
-        settings.setValue("YMinGridAuto",ba);
-        settings.setValue("YMinGridShow",bs);
-        settings.setValue("YMinGridStyle",s);
-        settings.setValue("YMinGridWidth",w);
-        settings.setValue("YMinGridUnit",f);
-
-        clr = borderColor();
-        s   = borderStyle();
-        w   = borderWidth();
-
 
         clr = backgroundColor();
         settings.setValue("BackgroundColor", clr);
@@ -828,6 +778,10 @@ void Graph::saveSettings(QSettings &settings)
 
         settings.setValue("XVariable", m_X);
         settings.setValue("YVariable", m_Y);
+
+        settings.setValue("bAutoX",  m_bAutoX);
+        settings.setValue("bAutoY",  m_bAutoY);
+        m_Grid.saveSettings(settings);
     }
     settings.endGroup();
 }
@@ -836,16 +790,12 @@ void Graph::saveSettings(QSettings &settings)
 void Graph::loadSettings(QSettings &settings)
 {
     QFont lgft;
-    bool bs, ba;
-    int s,w;
 
-    double f;
     QColor clr;
 
     settings.beginGroup(m_GraphName);
     {
         //read variables
-        m_AxisStyle.loadSettings(settings,"AxisStyle");
         m_BorderStyle.loadSettings(settings,"BorderStyle");
 
 
@@ -868,46 +818,16 @@ void Graph::loadSettings(QSettings &settings)
         lgft.setBold(settings.value("LabelFontBold", false).toBool());
         setLabelFont(lgft);
 
-        m_bAutoX = settings.value("bAutoX", true).toBool();
         xo       = settings.value("XOrigin", 0.0).toDouble();
         xmin     = settings.value("XMin",    0.0).toDouble();
         xmax     = settings.value("XMax",    1.0).toDouble();
         xunit    = settings.value("XUnit",   0.2).toDouble();
 
-        m_bAutoY = settings.value("bAutoY", true).toBool();
         yo       = settings.value("YOrigin", 0.0).toDouble();
         ymin     = settings.value("YMin",    0.0).toDouble();
         ymax     = settings.value("YMax",    1.0).toDouble();
         yunit    = settings.value("YUnit",   0.2).toDouble();
 
-
-        clr  = settings.value("XMajGridColor", QColor(90,90,90)).value<QColor>();
-        bs = settings.value("XMajGridShow",true).toBool();
-        s  = settings.value("XMajGridStyle",1).toInt();
-        w  = settings.value("XMajGridWidth",1).toInt();
-        setXMajGrid(bs,clr,s,w);
-
-        clr  = settings.value("YMajGridColor", QColor(90,90,90)).value<QColor>();
-        bs = settings.value("YMajGridShow",true).toBool();
-        s  = settings.value("YMajGridStyle",1).toInt();
-        w  = settings.value("YMajGridWidth",1).toInt();
-        setYMajGrid(bs,clr,s,w);
-
-        clr  = settings.value("XMinGridColor", QColor(90,90,90)).value<QColor>();
-        ba = settings.value("XMinGridAuto",true).toBool();
-        bs = settings.value("XMinGridShow",false).toBool();
-        s  = settings.value("XMinGridStyle",2).toInt();
-        w  = settings.value("XMinGridWidth",1).toInt();
-        f  = settings.value("XMinGridUnit", 0.01).toDouble();
-        setXMinGrid(bs,ba,clr,s,w,f);
-
-        clr  = settings.value("YMinGridColor", QColor(90,90,90)).value<QColor>();
-        ba = settings.value("YMinGridAuto",true).toBool();
-        bs = settings.value("YMinGridShow",false).toBool();
-        s  = settings.value("YMinGridStyle",2).toInt();
-        w  = settings.value("YMinGridWidth",1).toInt();
-        f  = settings.value("YMinGridUnit",0.01).toDouble();
-        setYMinGrid(bs,ba,clr,s,w,f);
 
         clr  = settings.value("BackgroundColor", QColor(15,19,20)).value<QColor>();
         setBkColor(clr);
@@ -918,6 +838,11 @@ void Graph::loadSettings(QSettings &settings)
 
         m_X  = settings.value("XVariable",0).toInt();
         m_Y  = settings.value("YVariable",0).toInt();
+
+        m_bAutoX = settings.value("bAutoX", true).toBool();
+        m_bAutoY = settings.value("bAutoY", true).toBool();
+
+        m_Grid.loadSettings(settings);
     }
     settings.endGroup();
 }
@@ -1005,36 +930,21 @@ void Graph::copySettings(Graph *pGraph, bool bScales)
         m_scaley        = pGraph->m_scaley;
     }
 
-    m_AxisStyle     = pGraph->m_AxisStyle;
+
     m_BorderStyle   = pGraph->m_BorderStyle;
 
     m_BkColor       = pGraph->m_BkColor;
     m_LabelColor    = pGraph->m_LabelColor;
     m_TitleColor    = pGraph->m_TitleColor;
-    m_XMajClr       = pGraph->m_XMajClr;
-    m_XMajStyle     = pGraph->m_XMajStyle;
-    m_XMajWidth     = pGraph->m_XMajWidth;
-    m_XMinClr       = pGraph->m_XMinClr;
-    m_XMinStyle     = pGraph->m_XMinStyle;
-    m_XMinWidth     = pGraph->m_XMinWidth;
-    m_YMajClr       = pGraph->m_YMajClr;
-    m_YMajStyle     = pGraph->m_YMajStyle;
-    m_YMajWidth     = pGraph->m_YMajWidth;
-    m_YMinClr       = pGraph->m_YMinClr;
-    m_YMinStyle     = pGraph->m_YMinStyle;
-    m_YMinWidth     = pGraph->m_YMinWidth;
+
+    m_bYInverted    = pGraph->m_bYInverted;
+
+    m_iMargin       = pGraph->m_iMargin;
 
     m_bAutoX        = pGraph->m_bAutoX;
     m_bAutoY        = pGraph->m_bAutoY;
-    m_bXAutoMinGrid = pGraph->m_bXAutoMinGrid;
-    m_bYAutoMinGrid = pGraph->m_bYAutoMinGrid;
-    m_bYInverted    = pGraph->m_bYInverted;
-    m_bXMajGrid     = pGraph->m_bXMajGrid;
-    m_bXMinGrid     = pGraph->m_bXMinGrid;
-    m_bYMajGrid     = pGraph->m_bYMajGrid;
-    m_bYMinGrid     = pGraph->m_bYMinGrid;
 
-    m_iMargin       = pGraph->m_iMargin;
+    m_Grid          = pGraph->m_Grid;
 }
 
 
@@ -1135,149 +1045,6 @@ Curve* Graph::curve(QString const &CurveTitle)
 }
 
 
-bool Graph::bInverted() const
-{
-    return m_bYInverted;
-}
-
-
-
-void Graph::graphName(QString &GraphName)
-{
-    GraphName = m_GraphName;
-}
-
-
-double Graph::xOrigin() const
-{
-    return xo;
-}
-
-
-bool Graph::bXMajGrid() const
-{
-    return m_bXMajGrid;
-}
-
-
-void Graph::bXMajGrid(bool &bstate, QColor &clr, int &style, int &width)
-{
-    bstate = m_bXMajGrid;
-    clr   = m_XMajClr;
-    style = m_XMajStyle;
-    width = m_XMajWidth;
-}
-
-
-bool Graph::bXMinGrid() const
-{
-    return m_bXMinGrid;
-}
-
-void Graph::bXMinGrid(bool &state, bool &bAuto, QColor &clr, int &style, int &width, double &unit)
-{
-    state = m_bXMinGrid;
-    bAuto = m_bXAutoMinGrid;
-    clr   = m_XMinClr;
-    style = m_XMinStyle;
-    width = m_XMinWidth;
-    unit  = m_XMinorUnit;
-}
-
-double Graph::xMin() const
-{
-    return xmin;
-}
-
-double Graph::xMax() const
-{
-    return xmax;
-}
-
-
-double Graph::xScale() const
-{
-    return m_scalex;
-}
-
-
-double Graph::xUnit() const
-{
-    return xunit;
-}
-
-
-int Graph::xVariable() const
-{
-    return m_X;
-}
-
-
-
-bool Graph::yMajGrid() const
-{
-    return m_bYMajGrid;
-}
-
-void Graph::yMajGrid(bool &state, QColor &clr, int &style, int &width)
-{
-    state = m_bYMajGrid;
-    clr   = m_YMajClr;
-    style = m_YMajStyle;
-    width = m_YMajWidth;
-}
-
-
-bool Graph::bYMinGrid() const
-{
-    return m_bYMinGrid;
-}
-
-
-void Graph::bYMinGrid(bool &state, bool &bAuto, QColor &clr, int &style, int &width, double &unit)
-{
-    state = m_bYMinGrid;
-    bAuto = m_bYAutoMinGrid;
-    clr   = m_YMinClr;
-    style = m_YMinStyle;
-    width = m_YMinWidth;
-    unit  = m_YMinorUnit;
-}
-
-
-double Graph::yOrigin() const
-{
-    return yo;
-}
-
-double Graph::yMin() const
-{
-    return ymin;
-}
-
-double Graph::yMax() const
-{
-    return ymax;
-}
-
-double Graph::yUnit() const
-{
-    return yunit;
-}
-
-
-double Graph::yScale() const
-{
-    return m_scaley;
-}
-
-
-int Graph::yVariable() const
-{
-    return m_Y;
-}
-
-
 bool Graph::initializeGraph(int width, int height)
 {
     if(width>0 && height>0)
@@ -1293,9 +1060,6 @@ bool Graph::initializeGraph(int width, int height)
 
     setXScale();
     setYScale();
-
-    if(m_bXAutoMinGrid) m_XMinorUnit = xunit/5.0;
-    if(m_bYAutoMinGrid) m_YMinorUnit = yunit/5.0;
 
     return true;
 }
@@ -1422,13 +1186,6 @@ void Graph::setAutoY(bool bAuto)
 }
 
 
-void Graph::setAutoXMinUnit(bool bAuto)
-{
-    m_bXAutoMinGrid = bAuto;
-    if(bAuto) m_XMinorUnit = xunit/5.0;
-}
-
-
 void Graph::setAutoXUnit()
 {
     //    xunit = 100.0*m_scalex;
@@ -1451,12 +1208,6 @@ void Graph::setAutoXUnit()
         xunit = 5.0*pow(10.0,exp_x);
 }
 
-
-void Graph::setAutoYMinUnit(bool bAuto)
-{
-    m_bYAutoMinGrid = bAuto;
-    if(bAuto) m_YMinorUnit = yunit/5.0;
-}
 
 
 void Graph::setAutoYUnit()
@@ -1488,57 +1239,24 @@ void Graph::setGraphDefaults(bool bDark)
         m_BkColor = QColor(0,9,13);
         m_BorderStyle.m_Color = QColor(200,200,200);
 
-        setAxisColor(QColor(200,200,200));
+        m_Grid.setDefaults();
         setTitleColor(QColor(255,255,255));
         setLabelColor(QColor(255,255,255));
-
-        m_XMajClr   = QColor(90,90,90);
-        m_YMajClr   = QColor(90,90,90);
-
-        m_XMinClr   = QColor(50,50,50);
-        m_YMinClr   = QColor(50,50,50);
     }
     else
     {
         m_BkColor = QColor(255,255,255);
         m_BorderStyle.m_Color = QColor(55,55,55);
 
-        setAxisColor(QColor(55,55,55));
         setTitleColor(QColor(0,0,0));
         setLabelColor(QColor(0,0,0));
 
-        m_XMajClr   = QColor(165,165,165);
-        m_YMajClr   = QColor(165,165,165);
-
-        m_XMinClr   = QColor(205,205,205);
-        m_YMinClr   = QColor(205,205,205);
     }
 
     m_BorderStyle.m_Stipple = Line::SOLID;
     m_BorderStyle.m_Width = 3;
 
-    m_AxisStyle.m_Stipple = Line::SOLID;
-    m_AxisStyle.m_Width = 1;
-
     m_bYInverted = false;
-
-    m_bXMajGrid = true;
-    m_bYMajGrid = true;
-    m_bXMinGrid = false;
-    m_bYMinGrid = false;
-
-    m_XMajStyle = 1;
-    m_YMajStyle = 1;
-    m_XMajWidth = 1;
-    m_YMajWidth = 1;
-
-    m_XMinStyle = 1;
-    m_YMinStyle = 1;
-    m_XMinWidth = 1;
-    m_YMinWidth = 1;
-
-    m_XMinorUnit = 0.1;
-    m_YMinorUnit = 0.1;
 }
 
 
@@ -1580,66 +1298,23 @@ void Graph::setWindow(double x1, double x2, double y1, double y2)
     ymax = y2;
 }
 
-void Graph::setX0(double f){
-    xo = f;
-}
-
-
 
 void Graph::setXMajGrid(bool const &state, QColor const &clr, int const &style, int const &width)
 {
-    m_bXMajGrid = state;
-    m_XMajClr   = clr;
-    m_XMajStyle = style;
-    m_XMajWidth = width;
+    m_Grid.setXMajStyle({state, LineStyle::convertLineStyle(style), width, clr, Line::NOSYMBOL});
 }
 
 
-void Graph::setXMajGrid(bool const &bGrid)
+void Graph::setYMajGrid(bool const &state, QColor const &clr, int const &style, int const &width)
 {
-    m_bXMajGrid = bGrid;
-}
-
-void Graph::setXMinGrid(bool const &bGrid)
-{
-    m_bXMinGrid = bGrid;
-}
-
-
-
-void Graph::setXMax(double f)
-{
-    xmax = f;
-}
-
-
-void Graph::setXMin(double f)
-{
-    xmin = f;
-}
-
-void Graph::setXMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit)
-{
-    m_bXMinGrid = state;
-    m_bXAutoMinGrid = bAuto;
-    m_XMinClr   = clr;
-    m_XMinStyle = style;
-    m_XMinWidth = width;
-    if(unit>0.0) m_XMinorUnit  = unit;
-}
-
-
-
-void Graph::setXMinorUnit(double f)
-{
-    m_XMinorUnit = f;
+    m_Grid.setYMajStyle(0, {state, LineStyle::convertLineStyle(style), width, clr, Line::NOSYMBOL});
 }
 
 
 bool Graph::setXScale()
 {
-    Curve *pCurve;
-    int nc;
+    Curve *pCurve(nullptr);
+    int nc(0);
 
     if(m_bAutoX)
     {
@@ -1774,11 +1449,6 @@ void Graph::setXVariable(int const & X)
 void Graph::setYMin(double f)
 {
     ymin = f;
-}
-
-void Graph::setYMinorUnit(double f)
-{
-    m_YMinorUnit = f;
 }
 
 
@@ -1934,36 +1604,6 @@ bool Graph::setYScale()
     return true;
 }
 
-void Graph::setYMajGrid(bool const &state, QColor const &clr, int const &style, int const &width)
-{
-    m_bYMajGrid = state;
-    m_YMajClr   = clr;
-    m_YMajStyle = style;
-    m_YMajWidth = width;
-}
-
-
-void Graph::setYMajGrid(bool const &bGrid)
-{
-    m_bYMajGrid = bGrid;
-}
-
-
-void Graph::setYMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit)
-{
-    m_bYMinGrid = state;
-    m_bYAutoMinGrid = bAuto;
-    m_YMinClr   = clr;
-    m_YMinStyle = style;
-    m_YMinWidth = width;
-    if(unit>0.0) m_YMinorUnit  = unit;
-}
-
-
-void Graph::setYMinGrid(bool const &bGrid)
-{
-    m_bYMinGrid = bGrid;
-}
 
 
 void Graph::setYVariable(int const & Y)

@@ -27,6 +27,13 @@
 
 #include <QDataStream>
 #include <QTextStream>
+#include <QPainter>
+#include <QFile>
+
+class Foil;
+class Polar;
+class WPolar;
+class Plane;
 
 void readCString(QDataStream &ar, QString &strong);
 void writeCString(QDataStream &ar, QString const &strong);
@@ -46,3 +53,14 @@ void modeProperties(std::complex<double> lambda, double &omegaN, double &omega1,
 bool Intersect(Vector3d const &LA, Vector3d const &LB, Vector3d const &TA, Vector3d const &TB, Vector3d const &Normal,
                       Vector3d const &A,  Vector3d const &U,  Vector3d &I, double &dist);
 
+Foil *readFoilFile(QFile &xFoilFile);
+Foil *readPolarFile(QFile &plrFile, QVector<Polar*> &polarList);
+
+void drawFoil(QPainter &painter, const Foil *pFoil, double alpha, double scalex, double scaley, QPointF const &Offset);
+void drawMidLine(QPainter &painter, Foil const*pFoil, double scalex, double scaley, QPointF const &Offset);
+void drawFoilPoints(QPainter &painter, Foil const*pFoil, double alpha, double scalex, double scaley, QPointF const &Offset, QColor const &backColor);
+
+void setAutoWPolarName(WPolar * pWPolar, Plane *pPlane);
+void setRandomFoilColor(Foil *pFoil, bool bLightTheme);
+bool serializeFoil(Foil*pFoil, QDataStream &ar, bool bIsStoring);
+bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring);

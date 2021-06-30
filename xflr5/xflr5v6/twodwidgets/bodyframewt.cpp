@@ -32,8 +32,7 @@
 
 bool BodyFrameWt::s_bCurFrameOnly = false;
 
-BodyFrameWt::BodyFrameWt(QWidget *pParent, Body *pBody)
-    :Section2dWidget(pParent)
+BodyFrameWt::BodyFrameWt(QWidget *pParent, Body *pBody) : Section2dWt(pParent)
 {
     m_pBody = pBody;
 
@@ -117,7 +116,7 @@ void BodyFrameWt::drawFrameLines()
 
     QPolygonF rightPolyline, leftPolyline;
 
-    if(m_pBody->m_LineType ==Xfl::BODYSPLINETYPE)
+    if(m_pBody->m_LineType ==xfl::BODYSPLINETYPE)
     {
         if(m_pBody->activeFrame())
         {
@@ -162,7 +161,7 @@ void BodyFrameWt::drawFrameLines()
                 rightPolyline.clear();
                 leftPolyline.clear();
 
-                if(m_pBody->m_LineType ==Xfl::BODYSPLINETYPE)
+                if(m_pBody->m_LineType ==xfl::BODYSPLINETYPE)
                 {
                     u = m_pBody->getu(m_pBody->frame(j)->m_Position.x);
 

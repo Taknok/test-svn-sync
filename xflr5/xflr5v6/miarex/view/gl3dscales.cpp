@@ -30,9 +30,9 @@
 #include <misc/options/settings.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
-#include <xflwidgets/exponentialslider.h>
-#include <xflwidgets/text/doubleedit.h>
-#include <xflwidgets/text/intedit.h>
+#include <xflwidgets/customwts/exponentialslider.h>
+#include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/intedit.h>
 
 
 Miarex *GL3DScales::s_pMiarex;

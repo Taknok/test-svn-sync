@@ -39,7 +39,7 @@ Body::Body()
 
     m_iActiveFrame =  1;
     m_iHighlightFrame   = -1;
-    m_LineType     =  Xfl::BODYSPLINETYPE;
+    m_LineType     =  xfl::BODYSPLINETYPE;
 
     m_nxPanels = 19;
     m_nhPanels = 11;
@@ -279,7 +279,7 @@ Vector3d Body::leadingPoint() const
 double Body::getSectionArcLength(double x) const
 {
     //NURBS only
-    if(m_LineType==Xfl::BODYPANELTYPE) return 0.0;
+    if(m_LineType==xfl::BODYPANELTYPE) return 0.0;
     // aproximate arc length, used for inertia estimations
     double length = 0.0;
     double ux = getu(x);
@@ -574,11 +574,11 @@ int Body::insertFrame(Vector3d Real)
  */
 bool Body::intersect(Vector3d A, Vector3d B, Vector3d &I, bool bRight) const
 {
-    if(m_LineType==Xfl::BODYPANELTYPE)
+    if(m_LineType==xfl::BODYPANELTYPE)
     {
         return intersectFlatPanels(A,B,I);
     }
-    else if (m_LineType==Xfl::BODYSPLINETYPE)
+    else if (m_LineType==xfl::BODYSPLINETYPE)
     {
         return intersectNURBS(A,B,I, bRight);
     }
@@ -1132,7 +1132,7 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
     CoG.set(0.0, 0.0, 0.0);
     CoGIxx = CoGIyy = CoGIzz = CoGIxz = 0.0;
 
-    if(m_LineType==Xfl::BODYPANELTYPE)
+    if(m_LineType==xfl::BODYPANELTYPE)
     {
         // we use the panel division
         //first get the wetted area
@@ -1263,7 +1263,7 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
             }
         }
     }
-    else if(m_LineType==Xfl::BODYSPLINETYPE)
+    else if(m_LineType==xfl::BODYSPLINETYPE)
     {
         int NSections = 20;//why not ?
         xpos = framePosition(0);
@@ -1385,8 +1385,8 @@ bool Body::exportBodyDefinition(QTextStream &outStream, double mtoUnit) const
 
     outStream << (m_BodyName+"\n\n");
     outStream << ("BODYTYPE\n");
-    if(m_LineType==Xfl::BODYPANELTYPE)  outStream << (" 1        # Flat Panels (1) or NURBS (2)\n\n");
-    if(m_LineType==Xfl::BODYSPLINETYPE) outStream << (" 2        # Flat Panels (1) or NURBS (2)\n\n");
+    if(m_LineType==xfl::BODYPANELTYPE)  outStream << (" 1        # Flat Panels (1) or NURBS (2)\n\n");
+    if(m_LineType==xfl::BODYSPLINETYPE) outStream << (" 2        # Flat Panels (1) or NURBS (2)\n\n");
 
     outStream << ("OFFSET\n");
     outStream << ("0.0     0.0     0.0     #Total body offset (Y-coord is ignored)\n\n");
@@ -1504,8 +1504,8 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
         readCOLORREF(ar, r,g,b);
         m_BodyColor = QColor(r,g,b);
         ar >> k;
-        if(k==1) m_LineType = Xfl::BODYPANELTYPE;
-        else     m_LineType = Xfl::BODYSPLINETYPE;
+        if(k==1) m_LineType = xfl::BODYPANELTYPE;
+        else     m_LineType = xfl::BODYSPLINETYPE;
         ar >> NSideLines;
         ar >> nStations;
         ar >> k; //m_iRes
@@ -1626,7 +1626,7 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 
         writeQColor(ar, m_BodyColor.red(), m_BodyColor.green(), m_BodyColor.blue(), m_BodyColor.alpha());
 
-        if(m_LineType==Xfl::BODYPANELTYPE) ar << 1;
+        if(m_LineType==xfl::BODYPANELTYPE) ar << 1;
         else                                 ar << 2;
 
         ar << 0;
@@ -1673,8 +1673,8 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
         m_BodyColor = QColor(r,g,b,a);
 
         ar >> k;
-        if(k==1) m_LineType = Xfl::BODYPANELTYPE;
-        else     m_LineType = Xfl::BODYSPLINETYPE;
+        if(k==1) m_LineType = xfl::BODYPANELTYPE;
+        else     m_LineType = xfl::BODYSPLINETYPE;
 
         ar >> k; //m_iRes
         ar >> m_nxPanels >> m_nhPanels;
@@ -1851,8 +1851,8 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
 
             if(bOK)
             {
-                if(res==1) m_LineType = Xfl::BODYPANELTYPE;
-                else       m_LineType = Xfl::BODYSPLINETYPE;
+                if(res==1) m_LineType = xfl::BODYPANELTYPE;
+                else       m_LineType = xfl::BODYSPLINETYPE;
             }
         }
         else if (strong.indexOf("OFFSET") >=0)
@@ -1985,7 +1985,7 @@ void Body::exportSTLBinary(QDataStream &outStream, int nXPanels, int nHoopPanels
     QString strong =     "binary STL file                                                                ";
     writeCString(outStream, strong);
 
-    if(m_LineType==Xfl::BODYSPLINETYPE) exportSTLBinarySplines(outStream, nXPanels, nHoopPanels, unit);
+    if(m_LineType==xfl::BODYSPLINETYPE) exportSTLBinarySplines(outStream, nXPanels, nHoopPanels, unit);
     else                                  exportSTLBinaryFlatPanels(outStream, unit);
 
 }

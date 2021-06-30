@@ -68,12 +68,12 @@ class OptimTask : public QObject
 
         void listPopulation() const;
 
-        void setAnalysisStatus(Xfl::enumAnalysisStatus status) {m_Status=status;}
-        void cancelAnalyis() {m_Status = Xfl::CANCELLED;}
-        bool isCancelled() const {return m_Status==Xfl::CANCELLED;}
-        bool isRunning()   const {return m_Status==Xfl::RUNNING;}
-        bool isPending()   const {return m_Status==Xfl::PENDING;}
-        bool isFinished()  const {return m_Status==Xfl::FINISHED || m_Status==Xfl::CANCELLED;}
+        void setAnalysisStatus(xfl::enumAnalysisStatus status) {m_Status=status;}
+        void cancelAnalyis() {m_Status = xfl::CANCELLED;}
+        bool isCancelled() const {return m_Status==xfl::CANCELLED;}
+        bool isRunning()   const {return m_Status==xfl::RUNNING;}
+        bool isPending()   const {return m_Status==xfl::PENDING;}
+        bool isFinished()  const {return m_Status==xfl::FINISHED || m_Status==xfl::CANCELLED;}
 
         static void setMultithreaded(bool b) {s_bMultiThreaded=b;}
 
@@ -98,7 +98,7 @@ class OptimTask : public QObject
 
         int m_Iter;
         QObject *m_pParent;
-        Xfl::enumAnalysisStatus m_Status;
+        xfl::enumAnalysisStatus m_Status;
 
         // size = dim
         QVector<OptVariable> m_Variable;

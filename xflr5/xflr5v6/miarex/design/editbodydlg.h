@@ -43,7 +43,7 @@ class Body;
 class BodyLineWt;
 class BodyFrameWt;
 class EditObjectDelegate;
-class Section2dWidget;
+class Section2dWt;
 class PointMass;
 class Frame;
 
@@ -164,7 +164,7 @@ private:
     bool m_bChanged;
 
 
-    Xfl::enumWingType m_enumActiveWingType;
+    xfl::enumWingType m_enumActiveWingType;
     int m_iActivePointMass;
 };
 

@@ -29,7 +29,7 @@
 
 #include "aerodatadlg.h"
 #include <xflcore/units.h>
-#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/customwts/doubleedit.h>
 
 // International Standard Atmosphere
 

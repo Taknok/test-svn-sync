@@ -31,7 +31,6 @@
 
 #include <globals/mainframe.h>
 #include <misc/editplrdlg.h>
-#include <misc/objectpropsdlg.h>
 #include <misc/options/settings.h>
 #include <misc/polarfilterdlg.h>
 #include <misc/renamedlg.h>
@@ -60,13 +59,14 @@
 #include <xflgraph/controls/graphdlg.h>
 #include <xflgraph/curve.h>
 #include <xflobjects/objects_global.h>
+#include <xflwidgets/customdlg/objectpropsdlg.h>
+#include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/mintextedit.h>
 #include <xflwidgets/line/linebtn.h>
 #include <xflwidgets/line/linecbbox.h>
 #include <xflwidgets/line/linedelegate.h>
-#include <xflwidgets/text/doubleedit.h>
-#include <xflwidgets/text/mintextedit.h>
+#include <xflwidgets/line/linepickerwt.h>
 #include <xinverse/foilselectiondlg.h>
-
 
 QVector<double> XDirect::s_ReList;
 QVector<double> XDirect::s_MachList;
@@ -132,7 +132,7 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
 
     m_bPolarView      = true;
     m_iPlrGraph = 0;
-    m_iPlrView  = Xfl::ALLGRAPHS;
+    m_iPlrView  = xfl::ALLGRAPHS;
     m_FoilYPos  = 150;
 
     m_posAnimate = 0;
@@ -200,7 +200,6 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
     s_ReList[9]  =  500000.0;
     s_ReList[10] = 1000000.0;
     s_ReList[11] = 3000000.0;
-
 }
 
 
@@ -304,27 +303,24 @@ void XDirect::connectSignals()
 {
     connect(this, SIGNAL(projectModified()), s_pMainFrame, SLOT(onProjectModified()));
 
-    connect(m_prbSpec1,      SIGNAL(clicked()),          SLOT(onSpec()));
-    connect(m_prbSpec2,      SIGNAL(clicked()),          SLOT(onSpec()));
-    connect(m_prbSpec3,      SIGNAL(clicked()),          SLOT(onSpec()));
-    connect(m_ppbAnalyze,    SIGNAL(clicked()),          SLOT(onAnalyze()));
-    connect(m_pdeAlphaMin,   SIGNAL(editingFinished()),  SLOT(onInputChanged()));
-    connect(m_pdeAlphaMax,   SIGNAL(editingFinished()),  SLOT(onInputChanged()));
-    connect(m_pdeAlphaDelta, SIGNAL(editingFinished()),  SLOT(onInputChanged()));
-    connect(m_plcbCurveStyle, SIGNAL(activated(int)),     SLOT(onCurveStyle(int)));
-    connect(m_plcbCurveWidth, SIGNAL(activated(int)),     SLOT(onCurveWidth(int)));
-    connect(m_plcbPointStyle, SIGNAL(activated(int)),     SLOT(onCurvePoints(int)));
-    connect(m_plbCurveColor, SIGNAL(clickedLB()),        SLOT(onCurveColor()));
-    connect(m_pchSequence,   SIGNAL(clicked()),          SLOT(onSequence()));
-    connect(m_pchViscous,    SIGNAL(clicked()),          SLOT(onViscous()));
-    connect(m_pchStoreOpp,   SIGNAL(clicked()),          SLOT(onStoreOpp()));
+    connect(m_prbSpec1,       SIGNAL(clicked()),            SLOT(onSpec()));
+    connect(m_prbSpec2,       SIGNAL(clicked()),            SLOT(onSpec()));
+    connect(m_prbSpec3,       SIGNAL(clicked()),            SLOT(onSpec()));
+    connect(m_ppbAnalyze,     SIGNAL(clicked()),            SLOT(onAnalyze()));
+    connect(m_pdeAlphaMin,    SIGNAL(editingFinished()),    SLOT(onInputChanged()));
+    connect(m_pdeAlphaMax,    SIGNAL(editingFinished()),    SLOT(onInputChanged()));
+    connect(m_pdeAlphaDelta,  SIGNAL(editingFinished()),    SLOT(onInputChanged()));
+    connect(m_pchSequence,    SIGNAL(clicked()),            SLOT(onSequence()));
+    connect(m_pchViscous,     SIGNAL(clicked()),            SLOT(onViscous()));
+    connect(m_pchStoreOpp,    SIGNAL(clicked()),            SLOT(onStoreOpp()));
+    connect(m_pLinePicker,    SIGNAL(styleChanged(LineStyle)),  SLOT(onCurveStyle(LineStyle)));
 
     connect(m_pchShowCurve,     SIGNAL(clicked()),  SLOT(onShowCurve()));
     connect(m_pchAlignChildren, SIGNAL(clicked(bool)),  s_pMainFrame, SLOT(onAlignChildrenStyle(bool)));
 
     connect(m_pchAnimate,      SIGNAL(clicked(bool)),    SLOT(onAnimate(bool)));
     connect(m_pslAnimateSpeed, SIGNAL(sliderMoved(int)), SLOT(onAnimateSpeed(int)));
-    connect(m_pAnimateTimer,     SIGNAL(timeout()),        SLOT(onAnimateSingle()));
+    connect(m_pAnimateTimer,   SIGNAL(timeout()),        SLOT(onAnimateSingle()));
 
 
     connect(m_pchShowBL,       SIGNAL(clicked(bool)), s_pMainFrame->m_pXDirectTileWidget->opPointWidget(), SLOT(onShowBL(bool)));
@@ -383,7 +379,7 @@ void XDirect::createOppCurves(OpPoint *pOpp)
             pCurve1    = m_CpGraph.addCurve();
 
             //                pCurve1->setPoints(pOpp->pointStyle());
-            LS2 ls(pOpp->theStyle());
+            LineStyle ls(pOpp->theStyle());
             pCurve1->setLineStyle(ls);
             pCurve1->setName(pOpp->opPointName());
 
@@ -394,7 +390,7 @@ void XDirect::createOppCurves(OpPoint *pOpp)
                 Curve *pCpi = m_CpGraph.addCurve();
                 pCpi->setPointStyle(pOpPoint->pointStyle());
                 pCpi->setStipple(1);
-                pCpi->setColor(colour(pOpPoint).darker(150));
+                pCpi->setColor(pOpPoint->color().darker(150));
                 pCpi->setWidth(pOpPoint->lineWidth());
                 str= QString("-Re=%1-Alpha=%2_Inviscid").arg(pOpPoint->Reynolds(),8,'f',0).arg(pOpPoint->aoa(),5,'f',2);
                 str = pOpPoint->foilName()+str;
@@ -425,10 +421,10 @@ void XDirect::createPolarCurves()
 
         if (pPolar->isVisible() && pPolar->m_Alpha.size()>0)
         {
-            if ((pPolar->polarType()==Xfl::FIXEDSPEEDPOLAR  && m_bType1) ||
-                    (pPolar->polarType()==Xfl::FIXEDLIFTPOLAR   && m_bType2) ||
-                    (pPolar->polarType()==Xfl::RUBBERCHORDPOLAR && m_bType3) ||
-                    (pPolar->polarType()==Xfl::FIXEDAOAPOLAR    && m_bType4))
+            if ((pPolar->polarType()==xfl::FIXEDSPEEDPOLAR      && m_bType1) ||
+                    (pPolar->polarType()==xfl::FIXEDLIFTPOLAR   && m_bType2) ||
+                    (pPolar->polarType()==xfl::RUBBERCHORDPOLAR && m_bType3) ||
+                    (pPolar->polarType()==xfl::FIXEDAOAPOLAR    && m_bType4))
             {
 
                 Curve* pCurve[MAXPOLARGRAPHS];
@@ -437,7 +433,7 @@ void XDirect::createPolarCurves()
                 for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
                 {
                     pCurve[ig] = m_PlrGraph[ig]->addCurve();
-                    pCurve[ig]->setLineStyle(pPolar->polarStyle(), pPolar->lineWidth(), colour(pPolar), pPolar->pointStyle(), pPolar->isVisible());
+                    pCurve[ig]->setLineStyle(pPolar->theStyle());
 
                     fillPolarCurve(pCurve[ig], pPolar, m_PlrGraph[ig]->xVariable(), m_PlrGraph[ig]->yVariable());
                     pCurve[ig]->setName(pPolar->polarName());
@@ -446,7 +442,7 @@ void XDirect::createPolarCurves()
                     else                                    pTr2Curve = nullptr;
                     if(pTr2Curve)
                     {
-                        pTr2Curve->setLineStyle(pPolar->polarStyle(), pPolar->polarWidth(), colour(pPolar), pPolar->pointStyle(), pPolar->isVisible());
+                        pTr2Curve->setLineStyle(pPolar->polarStyle(), pPolar->polarWidth(), pPolar->color(), pPolar->pointStyle(), pPolar->isVisible());
                         fillPolarCurve(pTr2Curve, pPolar, m_PlrGraph[ig]->xVariable(), 7);
 
                         str = pPolar->polarName() + " / Xtr1";
@@ -467,69 +463,12 @@ void XDirect::createPolarCurves()
 */
 void XDirect::fillComboBoxes(bool bEnable)
 {
-    m_plbCurveColor->setEnabled(bEnable);
-    m_plcbCurveStyle->setEnabled(bEnable);
-    m_plcbCurveWidth->setEnabled(bEnable);
-    m_plcbPointStyle->setEnabled(bEnable);
-
     m_pchShowCurve->setEnabled(bEnable);
     m_pchAlignChildren->setEnabled(bEnable);
 
-    int LineWidth[5];
-    int LineStyle[5];
-    int PointStyle[5];
-
-    for (int i=0; i<5;i++)
-    {
-        LineStyle[i] = m_LineStyle.m_Stipple;
-        LineWidth[i]  = m_LineStyle.m_Width;
-        PointStyle[i] = m_LineStyle.m_PointStyle;
-    }
-    m_pStyleDelegate->setLineWidth(LineWidth); // the same selected width for all styles
-    m_pStyleDelegate->setPointStyle(PointStyle); // the same selected width for all styles
-    m_pStyleDelegate->setLineColor(m_LineStyle.m_Color);
-
-    m_pWidthDelegate->setLineStyle(LineStyle); //the same selected style for all widths
-    m_pWidthDelegate->setPointStyle(PointStyle); // the same selected width for all styles
-    m_pWidthDelegate->setLineColor(m_LineStyle.m_Color);
-
-    m_pPointDelegate->setLineStyle(LineStyle); //the same selected style for all widths
-    m_pPointDelegate->setLineWidth(LineWidth); // the same selected width for all styles
-    for (int i=0; i<5;i++) PointStyle[i]=i;
-    m_pPointDelegate->setPointStyle(PointStyle);
-    m_pPointDelegate->setLineColor(m_LineStyle.m_Color);
-
-    if(bEnable)
-    {
-        m_plcbCurveStyle->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_plcbCurveWidth->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_plcbPointStyle->setLine(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_plbCurveColor->setColor(m_LineStyle.m_Color);
-        m_plbCurveColor->setStipple(m_LineStyle.m_Stipple);
-        m_plbCurveColor->setWidth(m_LineStyle.m_Width);
-        m_plbCurveColor->setPointStyle(m_LineStyle.m_PointStyle);
-    }
-    else
-    {
-        m_plcbCurveStyle->setLine( 0, 1, QColor(100,100,100), 0);
-        m_plcbCurveWidth->setLine( 0, 1, QColor(100,100,100), 0);
-        m_plcbPointStyle->setLine(0, 1, QColor(100,100,100), 0);
-        m_plbCurveColor->setColor(QColor(100,100,100));
-        m_plbCurveColor->setStipple(0);
-        m_plbCurveColor->setWidth(1);
-        m_plbCurveColor->setPointStyle(0);
-    }
-
-
-
-    m_plcbCurveStyle->update();
-    m_plcbCurveWidth->update();
-    m_plcbPointStyle->update();
-    m_plbCurveColor->update();
-
-    m_plcbCurveStyle->setCurrentIndex(m_LineStyle.m_Stipple);
-    m_plcbCurveWidth->setCurrentIndex(m_LineStyle.m_Width-1);
-    m_plcbPointStyle->setCurrentIndex(m_LineStyle.m_PointStyle);
+    m_pLinePicker->setTheStyle(m_LineStyle);
+    m_pLinePicker->fillBoxes();
+    m_pLinePicker->enableBoxes(bEnable);
 }
 
 
@@ -542,7 +481,7 @@ void XDirect::fillComboBoxes(bool bEnable)
  */
 void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bInviscid)
 {
-    Foil *pOpFoil = Objects2d::foil(pOpp->foilName());
+    Foil const*pOpFoil = Objects2d::foil(pOpp->foilName());
 
     m_CpGraph.resetLimits();
     m_CpGraph.setAuto(true);
@@ -1245,16 +1184,16 @@ void XDirect::loadSettings(QSettings &settings)
         switch(settings.value("PlrView").toInt())
         {
             case 1:
-                m_iPlrView = Xfl::ONEGRAPH;
+                m_iPlrView = xfl::ONEGRAPH;
                 break;
             case 2:
-                m_iPlrView = Xfl::TWOGRAPHS;
+                m_iPlrView = xfl::TWOGRAPHS;
                 break;
             case 4:
-                m_iPlrView = Xfl::FOURGRAPHS;
+                m_iPlrView = xfl::FOURGRAPHS;
                 break;
             default:
-                m_iPlrView = Xfl::ALLGRAPHS;
+                m_iPlrView = xfl::ALLGRAPHS;
                 break;
         }
 
@@ -1424,7 +1363,7 @@ void XDirect::onAnimateSingle()
             setCurOpp(pOpPoint);
 
             //select current OpPoint in Combobox
-            if(m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR) str = QString("%1").arg(m_pCurOpp->m_Alpha,8,'f',2);
+            if(m_pCurPolar->polarType()!=xfl::FIXEDAOAPOLAR) str = QString("%1").arg(m_pCurOpp->m_Alpha,8,'f',2);
             else                                                     str = QString("%1").arg(m_pCurOpp->Reynolds(),8,'f',2);
             indexCbBox = s_pMainFrame->m_pcbOpPoint->findText(str);
             if(indexCbBox>=0) s_pMainFrame->m_pcbOpPoint->setCurrentIndex(indexCbBox);
@@ -1667,45 +1606,13 @@ void XDirect::onCurOppOnly()
 
 
 /**
- * The user has changed the color of the current curve
- */
-void XDirect::onCurveColor()
-{
-    QColor Color = QColorDialog::getColor(m_LineStyle.m_Color);
-    if(Color.isValid()) m_LineStyle.m_Color = Color;
-
-    fillComboBoxes();
-    updateCurveStyle();
-}
-
-
-/**
  * The user has changed the style of the current curve
  */
-void XDirect::onCurveStyle(int index)
+void XDirect::onCurveStyle(LineStyle ls)
 {
-    m_LineStyle.setStipple(index);
+    m_LineStyle = ls;
     fillComboBoxes();
-    updateCurveStyle();
-}
-
-
-/**
- * The user has changed the width of the current curve
- */
-void XDirect::onCurveWidth(int index)
-{
-    m_LineStyle.m_Width = index+1;
-    fillComboBoxes();
-    updateCurveStyle();
-}
-
-
-void XDirect::onCurvePoints(int index)
-{
-    m_LineStyle.setPointStyle(index);
-    fillComboBoxes();
-    updateCurveStyle();
+    updateCurveStyle(ls);
 }
 
 
@@ -1731,7 +1638,7 @@ void XDirect::onDefinePolar()
         }
         else
         {
-            QColor clr = randomColor(!Settings::isLightTheme());
+            QColor clr = xfl::randomColor(!Settings::isLightTheme());
             m_pCurPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
         }
 
@@ -1794,7 +1701,7 @@ void XDirect::onDelCurOpp()
     if (!pOpPoint) return;
     QString strong,str;
     strong = tr("Are you sure you want to delete the Operating Point\n");
-    if(m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR) str = QString("Alpha = %1").arg(pOpPoint->aoa(),0,'f',2);
+    if(m_pCurPolar->polarType()!=xfl::FIXEDAOAPOLAR) str = QString("Alpha = %1").arg(pOpPoint->aoa(),0,'f',2);
     else                                                     str = QString("Reynolds = %1").arg(pOpPoint->Reynolds(),0,'f',0);
     strong += str;
     strong += "  ?";
@@ -2114,7 +2021,7 @@ void XDirect::onEditCurPolar()
     EditPlrDlg epDlg(s_pMainFrame);
     epDlg.initDialog(this, m_pCurPolar, nullptr, nullptr);
 
-    LS2 style(m_pCurPolar->theStyle());
+    LineStyle style(m_pCurPolar->theStyle());
 
     m_pCurPolar->setPointStyle(Line::LITTLECIRCLE);
 
@@ -2132,7 +2039,7 @@ void XDirect::onEditCurPolar()
     m_pCurPolar->setStipple(style.m_Stipple);
     m_pCurPolar->setWidth(style.m_Width);
     m_pCurPolar->setColor(style.m_Color.red(), style.m_Color.green(), style.m_Color.blue());
-    m_pCurPolar->setPointStyle(style.m_PointStyle);
+    m_pCurPolar->setPointStyle(style.m_Symbol);
     m_pCurPolar->setVisible(style.m_bIsVisible);
     m_bResetCurves = true;
     updateView();
@@ -2157,7 +2064,7 @@ void XDirect::onExportBLData()
     double que = 0.5*m_XFoil.QInf()*m_XFoil.QInf();
     double qrf = m_XFoil.QInf();
     int nside1, nside2, ibl;
-    Xfl::enumTextFileType type = Xfl::TXT;
+    xfl::enumTextFileType type = xfl::TXT;
 
     fileName = m_pCurFoil->name();
     fileName.replace("/", " ");
@@ -2171,7 +2078,7 @@ void XDirect::onExportBLData()
     if(pos>0) Settings::s_LastDirName = fileName.left(pos);
 
     pos  = fileName.lastIndexOf(".csv");
-    if(pos>0) type = Xfl::CSV;
+    if(pos>0) type = xfl::CSV;
 
     QFile destFile(fileName);
 
@@ -2184,7 +2091,7 @@ void XDirect::onExportBLData()
     strong = m_pCurFoil->name()+ "\n";
     out << (strong);
 
-    if(type==Xfl::TXT)
+    if(type==xfl::TXT)
         strong = QString("Alpha = %1,  Re = %2,  Ma= %3,  ACrit=%4\n\n")
                 .arg(m_pCurOpp->aoa(), 5, 'f',1)
                 .arg(m_pCurOpp->Reynolds(), 8, 'f',0)
@@ -2241,12 +2148,12 @@ void XDirect::onExportBLData()
     }
 
     out << tr("\nTop Side\n");
-    if(type==Xfl::TXT) OutString = QString(tr("    x         Hk     Ue/Vinf      Cf        Cd     A/A0       D*       Theta      CTq\n"));
+    if(type==xfl::TXT) OutString = QString(tr("    x         Hk     Ue/Vinf      Cf        Cd     A/A0       D*       Theta      CTq\n"));
     else                 OutString = QString(tr("x,Hk,Ue/Vinf,Cf,Cd,A/A0,D*,Theta,CTq\n"));
     out << (OutString);
     for (ibl=2; ibl<nside1; ibl++)
     {
-        if(type==Xfl::TXT)
+        if(type==xfl::TXT)
             OutString = QString("%1  %2  %3  %4 %5 %6  %7  %8  %9\n")
                     .arg(xBL[ibl][1],8,'f',5)
                     .arg(m_pCurOpp->blx.Hk[ibl][1],8,'f',5)
@@ -2271,12 +2178,12 @@ void XDirect::onExportBLData()
         out << (OutString);
     }
     out << tr("\n\nBottom Side\n");
-    if(type==Xfl::TXT) OutString = QString(tr("    x         Hk     Ue/Vinf      Cf        Cd     A/A0       D*       Theta      CTq\n"));
+    if(type==xfl::TXT) OutString = QString(tr("    x         Hk     Ue/Vinf      Cf        Cd     A/A0       D*       Theta      CTq\n"));
     else        OutString = QString(tr("x,Hk,Ue/Vinf,Cf,Cd,A/A0,D*,Theta,CTq\n"));
     out << (OutString);
     for (ibl=2; ibl<nside2; ibl++)
     {
-        if(type==Xfl::TXT)
+        if(type==xfl::TXT)
             OutString = QString("%1  %2  %3  %4 %5 %6  %7  %8  %9\n")
                     .arg(xBL[ibl][2],8,'f',5)
                     .arg(m_pCurOpp->blx.Hk[ibl][2],8,'f',5)
@@ -2317,7 +2224,7 @@ void XDirect::onExportAllPolarsTxt()
 }
 
 
-void XDirect::onExportAllPolarsTxt(QString DirName, Xfl::enumTextFileType exporttype)
+void XDirect::onExportAllPolarsTxt(QString DirName, xfl::enumTextFileType exporttype)
 {
     QString FileName;
     QFile XFile;
@@ -2327,7 +2234,7 @@ void XDirect::onExportAllPolarsTxt(QString DirName, Xfl::enumTextFileType export
     {
         Polar *pPolar = m_poaPolar->at(l);
         FileName = DirName + "/" + pPolar->foilName() + "_" + pPolar->polarName();
-        if(Settings::s_ExportFileType==Xfl::TXT) FileName += ".txt";
+        if(Settings::s_ExportFileType==xfl::TXT) FileName += ".txt";
         else                                       FileName += ".csv";
 
         XFile.setFileName(FileName);
@@ -2465,7 +2372,7 @@ void XDirect::onExportCurOpp()
     QString FileName;
 
     QString filter;
-    if(Settings::s_ExportFileType==Xfl::TXT) filter = "Text File (*.txt)";
+    if(Settings::s_ExportFileType==xfl::TXT) filter = "Text File (*.txt)";
     else                                       filter = "Comma Separated Values (*.csv)";
 
     FileName = QFileDialog::getSaveFileName(this, tr("Export OpPoint"),
@@ -2477,8 +2384,8 @@ void XDirect::onExportCurOpp()
     int pos = FileName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = FileName.left(pos);
     pos = FileName.lastIndexOf(".csv");
-    if (pos>0) Settings::s_ExportFileType = Xfl::CSV;
-    else       Settings::s_ExportFileType = Xfl::TXT;
+    if (pos>0) Settings::s_ExportFileType = xfl::CSV;
+    else       Settings::s_ExportFileType = xfl::TXT;
 
     QFile XFile(FileName);
 
@@ -2506,7 +2413,7 @@ void XDirect::onExportPolarOpps()
     QString FileName;
 
     QString filter;
-    if(Settings::s_ExportFileType==Xfl::TXT) filter = "Text File (*.txt)";
+    if(Settings::s_ExportFileType==xfl::TXT) filter = "Text File (*.txt)";
     else                                       filter = "Comma Separated Values (*.csv)";
 
     FileName = QFileDialog::getSaveFileName(this, tr("Export OpPoint"),
@@ -2520,8 +2427,8 @@ void XDirect::onExportPolarOpps()
     int pos = FileName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = FileName.left(pos);
     pos = FileName.lastIndexOf(".csv");
-    if (pos>0) Settings::s_ExportFileType = Xfl::CSV;
-    else       Settings::s_ExportFileType = Xfl::TXT;
+    if (pos>0) Settings::s_ExportFileType = xfl::CSV;
+    else       Settings::s_ExportFileType = xfl::TXT;
 
     QFile XFile(FileName);
 
@@ -2543,7 +2450,7 @@ void XDirect::onExportPolarOpps()
         pOpPoint = m_poaOpp->at(i);
         if(pOpPoint->foilName() == m_pCurPolar->foilName() && pOpPoint->polarName() == m_pCurPolar->polarName() )
         {
-            if(Settings::s_ExportFileType==Xfl::TXT)
+            if(Settings::s_ExportFileType==xfl::TXT)
                 strong = QString("Reynolds = %1   Mach = %2  NCrit = %3\n")
                         .arg(pOpPoint->Reynolds(), 7, 'f', 0)
                         .arg(pOpPoint->m_Mach, 4,'f',0)
@@ -2559,7 +2466,7 @@ void XDirect::onExportPolarOpps()
             else        Header = QString("Alpha,Cd,Cl,Cm,XTr1,XTr2,TEHMom,Cpmn\n");
             out<<Header;
 
-            if(Settings::s_ExportFileType==Xfl::TXT)
+            if(Settings::s_ExportFileType==xfl::TXT)
                 strong = QString("%1   %2   %3   %4   %5   %6   %7  %8\n")
                         .arg(pOpPoint->aoa(),7,'f',3)
                         .arg(pOpPoint->Cd,9,'f',3)
@@ -2581,14 +2488,14 @@ void XDirect::onExportPolarOpps()
                         .arg(pOpPoint->Cpmn,7,'f',4);
 
             out<<strong;
-            if(Settings::s_ExportFileType==Xfl::TXT) out<< " Cpi          Cpv\n-----------------\n";
+            if(Settings::s_ExportFileType==xfl::TXT) out<< " Cpi          Cpv\n-----------------\n";
             else                                       out << "Cpi,Cpv\n";
 
             for (j=0; j<pOpPoint->n; j++)
             {
                 if(pOpPoint->m_bViscResults)
                 {
-                    if(Settings::s_ExportFileType==Xfl::TXT) strong = QString("%1   %2\n").arg(pOpPoint->Cpi[j], 7,'f',4).arg(pOpPoint->Cpv[j], 7, 'f',4);
+                    if(Settings::s_ExportFileType==xfl::TXT) strong = QString("%1   %2\n").arg(pOpPoint->Cpi[j], 7,'f',4).arg(pOpPoint->Cpv[j], 7, 'f',4);
                     else                                       strong = QString("%1,%2\n").arg(pOpPoint->Cpi[j], 7,'f',4).arg(pOpPoint->Cpv[j], 7, 'f',4);
                 }
                 else
@@ -2616,7 +2523,7 @@ void XDirect::onExportCurPolar()
 
     QString FileName, filter;
 
-    if(Settings::s_ExportFileType==Xfl::TXT) filter = "Text File (*.txt)";
+    if(Settings::s_ExportFileType==xfl::TXT) filter = "Text File (*.txt)";
     else                                       filter = "Comma Separated Values (*.csv)";
 
     FileName = m_pCurPolar->polarName();
@@ -2630,8 +2537,8 @@ void XDirect::onExportCurPolar()
     int pos = FileName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = FileName.left(pos);
     pos = FileName.lastIndexOf(".csv");
-    if (pos>0) Settings::s_ExportFileType = Xfl::CSV;
-    else       Settings::s_ExportFileType = Xfl::TXT;
+    if (pos>0) Settings::s_ExportFileType = xfl::CSV;
+    else       Settings::s_ExportFileType = xfl::TXT;
 
     QFile XFile(FileName);
 
@@ -2950,10 +2857,10 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
         return nullptr;
     }
-    if     (pPolar->ReType() ==1 && pPolar->MaType() ==1) pPolar->setPolarType(Xfl::FIXEDSPEEDPOLAR);
-    else if(pPolar->ReType() ==2 && pPolar->MaType() ==2) pPolar->setPolarType(Xfl::FIXEDLIFTPOLAR);
-    else if(pPolar->ReType() ==3 && pPolar->MaType() ==1) pPolar->setPolarType(Xfl::RUBBERCHORDPOLAR);
-    else                                                  pPolar->setPolarType(Xfl::FIXEDSPEEDPOLAR);
+    if     (pPolar->ReType() ==1 && pPolar->MaType() ==1) pPolar->setPolarType(xfl::FIXEDSPEEDPOLAR);
+    else if(pPolar->ReType() ==2 && pPolar->MaType() ==2) pPolar->setPolarType(xfl::FIXEDLIFTPOLAR);
+    else if(pPolar->ReType() ==3 && pPolar->MaType() ==1) pPolar->setPolarType(xfl::RUBBERCHORDPOLAR);
+    else                                                  pPolar->setPolarType(xfl::FIXEDSPEEDPOLAR);
 
 
     ReadAVLString(in, Line, strong);
@@ -3097,8 +3004,8 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     }
     else
     {
-        QColor clr = randomColor(!Settings::isLightTheme());
-        pPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+        QColor clr = xfl::randomColor(!Settings::isLightTheme());
+        pPolar->setColor(clr);
     }
 
     Objects2d::addPolar(pPolar);
@@ -4056,7 +3963,7 @@ void XDirect::readParams()
     double Alpha=0, AlphaMax=0, AlphaDelta=0;
     double Cl=0, ClMax=0, ClDelta=0;
     double Reynolds=0, ReynoldsMax=0, ReynoldsDelta=0;
-    if(m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
+    if(m_pCurPolar->polarType()!=xfl::FIXEDAOAPOLAR)
     {
         if(s_bAlpha)
         {
@@ -4119,13 +4026,13 @@ void XDirect::saveSettings(QSettings &settings)
 
         switch(m_iPlrView)
         {
-            case Xfl::ONEGRAPH:
+            case xfl::ONEGRAPH:
                 settings.setValue("PlrView", 1);
                 break;
-            case Xfl::TWOGRAPHS:
+            case xfl::TWOGRAPHS:
                 settings.setValue("PlrView", 2);
                 break;
-            case Xfl::FOURGRAPHS:
+            case xfl::FOURGRAPHS:
                 settings.setValue("PlrView", 4);
                 break;
             default:
@@ -4186,7 +4093,7 @@ void XDirect::setAnalysisParams()
 
     if(m_pCurPolar)
     {
-        if(m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
+        if(m_pCurPolar->polarType()!=xfl::FIXEDAOAPOLAR)
         {
             m_pdeAlphaMin->setDigits(3);
             m_pdeAlphaMax->setDigits(3);
@@ -4219,7 +4126,7 @@ void XDirect::setAnalysisParams()
     setOpPointSequence();
     if(m_pCurPolar)
     {
-        if(m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
+        if(m_pCurPolar->polarType()!=xfl::FIXEDAOAPOLAR)
         {
 
         }
@@ -4244,10 +4151,7 @@ void XDirect::setCurveParams()
         {
             if(m_pCurPolar->isVisible())  m_pchShowCurve->setChecked(true);  else  m_pchShowCurve->setChecked(false);
 
-            m_LineStyle.m_Color = colour(m_pCurPolar);
-            m_LineStyle.m_Stipple = m_pCurPolar->polarStyle();
-            m_LineStyle.m_Width = m_pCurPolar->lineWidth();
-            m_LineStyle.m_PointStyle = m_pCurPolar->pointStyle();
+            m_LineStyle = m_pCurPolar->theStyle();
             fillComboBoxes();
         }
         else
@@ -4274,7 +4178,7 @@ void XDirect::setCurveParams()
 
 
 /**
- * Initializes QXDirect with the data of the input Foil object.
+ * Initializes XDirect with the data of the input Foil object.
  * If no Foil is proposed in input,sets the first stock Foil in alphabetical order.
  * Sets the first Polar object belonging to this Foil, if any.
  * Sets the first OpPoint object belonging to this Polar, if any.
@@ -4422,7 +4326,7 @@ Polar * XDirect::setPolar(Polar *pPolar)
 
 
 /**
- * Initializes QXDirect with the OpPoint with the specified aoa.
+ * Initializes XDirect with the OpPoint with the specified aoa.
  * If the OpPoint cannot be found for the active Foil and Polar, a stock OpPoint associated to the current foil and polar will be set.
  * @param Alpha the aoa of the OpPoint to ser
  * @return a pointer to the OpPoint object which has been set.
@@ -4514,7 +4418,7 @@ void XDirect::setOpPointSequence()
     }
 
 
-    if(m_pCurPolar && m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
+    if(m_pCurPolar && m_pCurPolar->polarType()!=xfl::FIXEDAOAPOLAR)
     {
         if(m_prbSpec3->isChecked())
         {
@@ -4538,7 +4442,7 @@ void XDirect::setOpPointSequence()
         m_prbSpec2->setEnabled(true);
         m_prbSpec3->setEnabled(false);
     }
-    else if(m_pCurPolar && m_pCurPolar->polarType()==Xfl::FIXEDAOAPOLAR)
+    else if(m_pCurPolar && m_pCurPolar->polarType()==xfl::FIXEDAOAPOLAR)
     {
         m_prbSpec3->setChecked(true);
         s_bAlpha = true;        // no choice with type 4 polars
@@ -4711,7 +4615,7 @@ void XDirect::setupLayout()
 
     QGroupBox *pCurveBox = new QGroupBox(tr("Graph Curve Settings"));
     {
-        QVBoxLayout *pCurveGroup = new QVBoxLayout;
+        QVBoxLayout *pPickerLayout = new QVBoxLayout;
         {
             QHBoxLayout *pCurveDisplay = new QHBoxLayout;
             {
@@ -4725,52 +4629,13 @@ void XDirect::setupLayout()
                 pCurveDisplay->addWidget(m_pchAlignChildren);
             }
 
-            m_plcbCurveStyle = new LineCbBox(this);
-            m_plcbCurveWidth = new LineCbBox(this);
-            m_plcbPointStyle = new LineCbBox(this);
-            m_plcbPointStyle->showPoints(true);
-            m_plbCurveColor = new LineBtn(this);
-            m_plbCurveColor->setMinimumHeight(m_plcbCurveStyle->minimumSizeHint().height());
+            m_pLinePicker = new LinePickerWt(this);
 
-            for (int i=0; i<5; i++)
-            {
-                m_plcbCurveStyle->addItem("item");
-                m_plcbCurveWidth->addItem("item");
-                m_plcbPointStyle->addItem("item");
-            }
-
-            m_pStyleDelegate = new LineDelegate(m_plcbCurveStyle);
-            m_pWidthDelegate = new LineDelegate(m_plcbCurveWidth);
-            m_pPointDelegate = new LineDelegate(m_plcbPointStyle);
-            m_plcbCurveStyle->setItemDelegate(m_pStyleDelegate);
-            m_plcbCurveWidth->setItemDelegate(m_pWidthDelegate);
-            m_plcbPointStyle->setItemDelegate(m_pPointDelegate);
-
-            QGridLayout *CurveStyleLayout = new QGridLayout;
-            QLabel *lab200 = new QLabel(tr("Style"));
-            QLabel *lab201 = new QLabel(tr("Width"));
-            QLabel *lab202 = new QLabel(tr("Color"));
-            QLabel *lab203 = new QLabel(tr("Points"));
-            lab200->setAlignment(Qt::AlignRight |Qt::AlignVCenter);
-            lab201->setAlignment(Qt::AlignRight |Qt::AlignVCenter);
-            lab202->setAlignment(Qt::AlignRight |Qt::AlignVCenter);
-            CurveStyleLayout->addWidget(lab203,1,1);
-            CurveStyleLayout->addWidget(lab200,2,1);
-            CurveStyleLayout->addWidget(lab201,3,1);
-            CurveStyleLayout->addWidget(lab202,4,1);
-            CurveStyleLayout->addWidget(m_plcbPointStyle,1,2);
-            CurveStyleLayout->addWidget(m_plcbCurveStyle,2,2);
-            CurveStyleLayout->addWidget(m_plcbCurveWidth,3,2);
-            CurveStyleLayout->addWidget(m_plbCurveColor,4,2);
-            CurveStyleLayout->setColumnStretch(2,5);
-
-            pCurveGroup->addLayout(pCurveDisplay);
-            pCurveGroup->addLayout(CurveStyleLayout);
-            //            pCurveGroup->addStretch(1);
+            pPickerLayout->addLayout(pCurveDisplay);
+            pPickerLayout->addWidget(m_pLinePicker);
         }
-        pCurveBox->setLayout(pCurveGroup);
+        pCurveBox->setLayout(pPickerLayout);
     }
-
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
@@ -4779,17 +4644,11 @@ void XDirect::setupLayout()
         m_pswMiddleControls->addWidget(pPolarPropsFrame);
 
         pMainLayout->addWidget(pAnalysisBox);
-        //        pMainLayout->addStretch(1);
         pMainLayout->addWidget(m_pswMiddleControls);
-        //        pMainLayout->addStretch(1);
         pMainLayout->addWidget(pCurveBox);
-        //        pMainLayout->addStretch(1);
     }
 
     setLayout(pMainLayout);
-
-    setAttribute(Qt::WA_AlwaysShowToolTips);
-
     setSizePolicy(szPolicyExpanding);
 }
 
@@ -4812,14 +4671,15 @@ void XDirect::stopAnimate()
 /**
  * Updates the curve's style based on the selection in the comboboxes.
  */
-void XDirect::updateCurveStyle()
+void XDirect::updateCurveStyle(LineStyle const &ls)
 {
+    m_LineStyle = ls;
     if(m_bPolarView && m_pCurPolar)
     {
         m_pCurPolar->setColor(m_LineStyle.m_Color.red(), m_LineStyle.m_Color.green(), m_LineStyle.m_Color.blue());
         m_pCurPolar->setStipple(m_LineStyle.m_Stipple);
         m_pCurPolar->setWidth(m_LineStyle.m_Width);
-        m_pCurPolar->setPointStyle(m_LineStyle.m_PointStyle);
+        m_pCurPolar->setPointStyle(m_LineStyle.m_Symbol);
 
         if(Settings::isAlignedChildrenStyle())
         {
@@ -4944,7 +4804,7 @@ void XDirect::renameFoil(Foil *pFoil)
 }
 
 
-void XDirect::setView(Xfl::enumGraphView eView)
+void XDirect::setView(xfl::enumGraphView eView)
 {
     if (m_bPolarView)
     {
@@ -4959,16 +4819,17 @@ void XDirect::setGraphTiles()
     {
         switch(m_iPlrView)
         {
-            case Xfl::ONEGRAPH:
+            case xfl::ONEGRAPH:
                 s_pMainFrame->m_pXDirectTileWidget->setGraphList(m_PlrGraph, 1, 0);
                 break;
-            case Xfl::TWOGRAPHS:
+            case xfl::TWOGRAPHS:
                 s_pMainFrame->m_pXDirectTileWidget->setGraphList(m_PlrGraph, 2, 0);
                 break;
-            case Xfl::FOURGRAPHS:
+            case xfl::FOURGRAPHS:
                 s_pMainFrame->m_pXDirectTileWidget->setGraphList(m_PlrGraph, 4, 0);
                 break;
-            case Xfl::ALLGRAPHS:
+            default:
+            case xfl::ALLGRAPHS:
                 s_pMainFrame->m_pXDirectTileWidget->setGraphList(m_PlrGraph, m_PlrGraph.count(), 0);
                 break;
         }

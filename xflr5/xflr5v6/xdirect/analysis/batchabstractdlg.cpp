@@ -38,8 +38,8 @@
 #include <xflcore/xflcore.h>
 #include <xflcore/gui_params.h>
 #include <misc/options/settings.h>
-#include <xflwidgets/text/doubleedit.h>
-#include <xflwidgets/text/intedit.h>
+#include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/intedit.h>
 #include <xdirect/analysis/xfoiltask.h>
 #include <xdirect/objects2d.h>
 #include <xdirect/xdirect.h>
@@ -64,7 +64,7 @@ double BatchAbstractDlg::s_ClInc     = 0.1;
 bool BatchAbstractDlg::s_bFromList = false;
 bool BatchAbstractDlg::s_bInitBL   = false;
 
-Xfl::enumPolarType BatchAbstractDlg::s_PolarType = Xfl::FIXEDSPEEDPOLAR;
+xfl::enumPolarType BatchAbstractDlg::s_PolarType = xfl::FIXEDSPEEDPOLAR;
 
 double BatchAbstractDlg::s_Mach    = 0.0;
 double BatchAbstractDlg::s_ACrit  = 9.0;
@@ -395,7 +395,7 @@ void BatchAbstractDlg::initDialog()
     m_pteTextOutput->clear();
     m_pteTextOutput->setFont(Settings::s_TableFont);
 
-    s_PolarType = Xfl::FIXEDSPEEDPOLAR; //no choice...
+    s_PolarType = xfl::FIXEDSPEEDPOLAR; //no choice...
 
     m_prbFoil1->setChecked(s_bCurrentFoil);
     m_prbFoil2->setChecked(!s_bCurrentFoil);
@@ -451,7 +451,7 @@ void BatchAbstractDlg::initDialog()
  */
 void BatchAbstractDlg::onAcl()
 {
-    if(s_PolarType==Xfl::FIXEDAOAPOLAR) return;
+    if(s_PolarType==xfl::FIXEDAOAPOLAR) return;
     s_bAlpha = m_prbAlpha->isChecked();
     if(s_bAlpha)
     {
@@ -612,7 +612,7 @@ void BatchAbstractDlg::readParams()
 {
    s_bAlpha = m_prbAlpha->isChecked();
 
-    if(s_PolarType!=Xfl::FIXEDAOAPOLAR)
+    if(s_PolarType!=xfl::FIXEDAOAPOLAR)
     {
         s_ReInc = m_pdeReDelta->value();
         s_ReMax = m_pdeReMax->value();

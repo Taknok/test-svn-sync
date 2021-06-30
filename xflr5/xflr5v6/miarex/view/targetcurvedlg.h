@@ -23,7 +23,7 @@
 #define TARGETCURVEDLG_H
 
 #include <QDialog>
-#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/customwts/doubleedit.h>
 #include <QRadioButton>
 #include <QCheckBox>
 

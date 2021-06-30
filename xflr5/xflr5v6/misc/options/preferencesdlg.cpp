@@ -30,14 +30,13 @@
 
 #include "preferencesdlg.h"
 #include <globals/mainframe.h>
-#include <xflwidgets/color/colorbutton.h>
-#include <xflcore/units.h>
-#include <misc/options/settings.h>
 #include <misc/options/languagewt.h>
 #include <misc/options/saveoptions.h>
-#include <xflwidgets/text/intedit.h>
-#include <xflwidgets/text/textclrbtn.h>
-#include <misc/updater.h>
+#include <misc/options/settings.h>
+#include <xflcore/units.h>
+#include <xflwidgets/color/colorbtn.h>
+#include <xflwidgets/color/textclrbtn.h>
+#include <xflwidgets/customwts/intedit.h>
 
 PreferencesDlg::PreferencesDlg(QWidget *pParent) : QDialog(pParent)
 {
@@ -134,7 +133,6 @@ void PreferencesDlg::onPage(int iRow)
 
 void PreferencesDlg::onClose()
 {
-    Updater::setAutoCheck(m_pchUpdateCheck->isChecked());
     m_pSaveOptionsWt->onOK();
 //    m_pLanguageWt->readLanguage();
     accept();

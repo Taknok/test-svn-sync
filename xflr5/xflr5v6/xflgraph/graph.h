@@ -30,13 +30,14 @@
 #include <QVector>
 #include <QFont>
 
-#include <xflcore/ls2.h>
+#include <xflcore/linestyle.h>
+#include <xflwidgets/view/grid.h>
 
 class Curve;
 
 #define MAXTIMEGRAPHS  4  /**< The max number of graphs available for display in the stability time view. */
-#define MAXWINGGRAPHS  5  /**< The max number of graphs available for display in QXDirect. */
-#define MAXPOLARGRAPHS 5  /**< The max number of graphs available for display in QXDirect. */
+#define MAXWINGGRAPHS  5  /**< The max number of graphs available for display in XDirect. */
+#define MAXPOLARGRAPHS 5  /**< The max number of graphs available for display in XDirect. */
 #define MAXGRAPHS      6  /**< The max number of graphs available for display at one time. */
 
 namespace GRAPH
@@ -49,254 +50,257 @@ class MainFrame;
 class Graph
 {
     friend class GraphWidget;
+    friend class GraphDlg;
 
-public:
-    void drawGraph(QRect const & rect, QPainter &painter);
-    void drawGraph(QPainter &painter);
-    void drawAxes(QPainter &painter);
-    void drawCurve(int nIndex, QPainter &painter);
-    void drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QColor &LegendColor, QColor &backColor);
-    void drawTitles(QPainter &painter);
-    void drawXMinGrid(QPainter &painter);
-    void drawYMinGrid(QPainter &painter);
-    void drawXMajGrid(QPainter &painter);
-    void drawYMajGrid(QPainter &painter);
-    void drawXTicks(QPainter &painter);
-    void drawYTicks(QPainter &painter);
+    public:
+        void drawGraph(QRect const & rect, QPainter &painter);
+        void drawGraph(QPainter &painter);
+        void drawAxes(QPainter &painter);
+        void drawCurve(int nIndex, QPainter &painter);
+        void drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QColor &LegendColor, QColor &backColor);
+        void drawTitles(QPainter &painter);
+        void drawXMinGrid(QPainter &painter);
+        void drawYMinGrid(QPainter &painter);
+        void drawXMajGrid(QPainter &painter);
+        void drawYMajGrid(QPainter &painter);
+        void drawXTicks(QPainter &painter);
+        void drawYTicks(QPainter &painter);
 
-    void expFormat(double &f, int &exp) const;
-    void exportToFile(QFile &XFile, bool bCSV);
+        void expFormat(double &f, int &exp) const;
+        void exportToFile(QFile &XFile, bool bCSV);
 
-    void loadSettings(QSettings &settings);
-    void saveSettings(QSettings &settings);
+        void loadSettings(QSettings &settings);
+        void saveSettings(QSettings &settings);
 
-    QPoint offset() const {return m_ptoffset;}
+        QPoint offset() const {return m_ptoffset;}
 
-    QFont const &labelFont() const {return m_LabelFont;}
-    QFont const &titleFont() const {return m_TitleFont;}
-    void getLabelFont(QFont &labelFont) const {labelFont = m_LabelFont;}
-    void getTitleFont(QFont &titleFont) const {titleFont = m_TitleFont;}
-    void setLabelFont(QFont &font) {m_LabelFont = font;}
-    void setTitleFont(QFont &font) {m_TitleFont = font;}
+        QFont const &labelFont() const {return m_LabelFont;}
+        QFont const &titleFont() const {return m_TitleFont;}
+        void getLabelFont(QFont &labelFont) const {labelFont = m_LabelFont;}
+        void getTitleFont(QFont &titleFont) const {titleFont = m_TitleFont;}
+        void setLabelFont(QFont &font) {m_LabelFont = font;}
+        void setTitleFont(QFont &font) {m_TitleFont = font;}
 
-    void highlight(QPainter &painter, Curve *pCurve, int ref);
-    static void setOppHighlighting(bool bHighLight){s_bHighlightPoint = bHighLight;}
-    static bool isHighLighting(){return s_bHighlightPoint;}
+        void highlight(QPainter &painter, Curve *pCurve, int ref);
+        static void setOppHighlighting(bool bHighLight){s_bHighlightPoint = bHighLight;}
+        static bool isHighLighting(){return s_bHighlightPoint;}
 
-    void setGraphType(GRAPH::enumGraphType type) {m_GraphType=type;}
-    GRAPH::enumGraphType graphType() const {return m_GraphType;}
-    bool bAutoX() const {return m_bAutoX;}
-    bool bAutoY() const {return m_bAutoY;}
-    bool bAutoXMin() const {return m_bXAutoMinGrid;}
-    bool bAutoYMin() const {return m_bYAutoMinGrid;}
-    bool hasBorder() const {return m_BorderStyle.m_bIsVisible;}
-    bool bInverted() const;
-    bool isInDrawRect(int const &x, int const &y);
-    bool isInDrawRect(QPointF const &pt);
-    bool isInDrawRect(QPoint const &pt);
-    bool initializeGraph(int width=0, int height=0);
+        void setGraphType(GRAPH::enumGraphType type) {m_GraphType=type;}
+        GRAPH::enumGraphType graphType() const {return m_GraphType;}
 
-    double clientTox(int x) const;
-    double clientToy(int y) const;
+        bool bAutoX() const {return m_bAutoX;}
+        bool bAutoY() const {return m_bAutoY;}
 
-    double clientTox(double x) const;
-    double clientToy(double y) const;
+        Grid const &grid()      const {return m_Grid;}
+        Grid &grid()            {return m_Grid;}
+        bool bXMajGrid()        const {return m_Grid.bXMajGrid();}
+        bool bXMinGrid()        const {return m_Grid.bXMinGrid();}
+        bool bYMajGrid(int iy)  const {return m_Grid.bYMajGrid(iy);}
+        bool bYMinGrid(int iy)  const {return m_Grid.bYMinGrid(iy);}
+        bool bAutoXMin()        const {return m_Grid.bXAutoMinGrid();}
+        bool bAutoYMin(int iy)  const {return m_Grid.bYAutoMinGrid(iy);}
+        void showXMajGrid(bool bShow) {m_Grid.showXMajGrid(bShow);}
+        void showXMinGrid(bool bShow) {m_Grid.showXMinGrid(bShow);}
+        void showYMajGrid(int iy, bool bShow) {m_Grid.showYMajGrid(iy, bShow);}
+        void showYMinGrid(int iy, bool bShow) {m_Grid.showYMinGrid(iy, bShow);}
+        LineStyle const &xMajGridStyle()       const {return m_Grid.xMajStyle();}
+        LineStyle const &yMajGridStyle(int iy) const {return m_Grid.yMajStyle(iy);}
+        LineStyle const &xMinGridStyle()       const {return m_Grid.xMinStyle();}
+        LineStyle const &yMinGridStyle(int iy) const {return m_Grid.yMinStyle(iy);}
 
-    int xToClient(double x) const;
-    int yToClient(double y) const;
+        bool hasBorder() const {return m_BorderStyle.m_bIsVisible;}
 
+        bool isInDrawRect(int const &x, int const &y);
+        bool isInDrawRect(QPointF const &pt);
+        bool isInDrawRect(QPoint const &pt);
+        bool initializeGraph(int width=0, int height=0);
 
-    void copySettings(Graph* pGraph, bool bScales=true);
-    void deselectPoint();
-    Curve * getCurvePoint(const int &xClt, const int &yClt, int &nSel);
-    Curve * getClosestPoint(double const &x, double const &y, double &xSel, double &ySel, int &nSel);
-    void resetLimits();
-    void resetCurves();
-    void scaleAxes(double zoom);
-    void scaleXAxis(double zoom);
-    void scaleYAxis(double zoom);
-    void setAutoXMinUnit(bool bAuto);
-    void setAutoYMinUnit(bool bAuto);
-    void setAutoXUnit();
-    void setAutoYUnit();
-    void setAxisStyle(const LS2 &ls2) {m_AxisStyle = ls2;}
-    void setBkColor(QColor cr){m_BkColor = cr;}
-//    void setBorderColor(QColor crBorder){m_BorderStyle.m_Color = crBorder;}
-    void setBorder(bool bBorder) {m_BorderStyle.m_bIsVisible = bBorder;}
-//    void setBorderStipple(int s) {m_BorderStyle.setStipple(s);}
-//    void setBorderWidth(int w) {m_BorderStyle.m_Width = w;}
-    void setBorderStyle(LS2 const &ls2) {m_BorderStyle=ls2;}
-    void setDrawRect(QRect Rect) {m_rCltRect = Rect;}
-    void setMargin(int m);
-    void setInverted(bool bInverted);
-    void setScaleType(int scaleType){ m_AutoScaleType = scaleType;}
+        double clientTox(int x) const;
+        double clientToy(int y) const;
 
-    void setXTitle(const QString &str);
-    void setYTitle(const QString &str);
-    void setX0(double f);
-    void setXMax(double f);
-    void setXMin(double f);
-    void setXMinorUnit(double f);
-    void setXUnit(double f);
-    void setY0(double f);
-    void setYMax(double f);
-    void setYMin(double f);
-    void setYMinorUnit(double f);
-    void setYUnit(double f);
-    void setXMajGrid(bool const &state, QColor const &clr, int const &style, int const &width);
-    void setYMajGrid(bool const &state, QColor const &clr, int const &style, int const &width);
-    void setXMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit = -1.0);
-    void setYMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit = -1.0);
-    void setAuto(bool bAuto);
-    void setAutoX(bool bAuto);
-    void setAutoY(bool bAuto);
-    void setAxisColor(QColor crColor){m_AxisStyle.m_Color = crColor;}
-    void setAxisStyle(int nStyle){m_AxisStyle.setStipple(nStyle);}
-    void setAxisWidth(int Width){m_AxisStyle.m_Width = Width;}
-    void setTitleColor(QColor const &crColor) {m_TitleColor = crColor;}
-    void setLabelColor(QColor const &crColor);
-    void setWindow(double x1, double x2, double y1, double y2);
+        double clientTox(double x) const;
+        double clientToy(double y) const;
 
-    QColor const &axisColor()  const {return m_AxisStyle.m_Color;}
-    QColor const &titleColor() const {return m_TitleColor;}
-    QColor const &labelColor() const {return m_LabelColor;}
-
-    int margin() const {return m_iMargin;}
-    int axisStyle() const {return m_AxisStyle.m_Stipple;}
-    int axisWidth() const {return m_AxisStyle.m_Width;}
-    int scaleType() const {return m_AutoScaleType;}
-    int xVariable() const;
-    int yVariable() const;
-    void setVariables(int const & X, int const & Y);
-    void setXVariable(int const & X);
-    void setYVariable(int const & Y);
-    double xOrigin() const;
-    double xMin() const;
-    double xMax() const;
-    double xUnit() const;
-    double yOrigin() const;
-    double yMin() const;
-    double yMax() const;
-    double yUnit() const;
-    double xScale() const;
-    double yScale() const;
-
-    bool bXMajGrid() const;
-    bool yMajGrid() const;
-    bool bXMinGrid() const;
-    bool bYMinGrid() const;
-    bool selectPoint(QString const &CurveName, int sel);
-    bool setXScale();
-    bool setYScale();
-
-    void setXMajGrid(bool const &bGrid);
-    void setYMajGrid(bool const &bGrid);
-    void setXMinGrid(bool const &bGrid);
-    void setYMinGrid(bool const &bGrid);
-    void bXMajGrid(bool &bstate, QColor &clr, int &style, int &width);
-    void yMajGrid(bool &bstate, QColor &clr, int &style, int &width);
-    void bXMinGrid(bool &bstate, bool &bAuto, QColor &clr, int &style, int &width, double &unit);
-    void bYMinGrid(bool &bstate, bool &bAuto, QColor &clr, int &style, int &width, double &unit);
-    QString xTitle() const {return m_XTitle;}
-    QString yTitle() const {return m_YTitle;}
-
-    QRect *clientRect() {return &m_rCltRect;}
-
-    void setGraphDefaults(bool bDark=true);
-    void setGraphName(QString const &GraphName) {m_GraphName = GraphName;}
-    void graphName(QString &GraphName);
-
-    QString const &graphName() const{return m_GraphName;}
-    Curve* curve(int nIndex);
-    Curve const* curveAt(int nIndex) const;
-    Curve* curve(QString const &CurveTitle);
-    Curve* addCurve();
-    Curve* addCurve(QString const &name);
-    Curve* addCurve(Curve *pCurve);
-    void deleteCurve(int index);
-    void deleteCurve(Curve *pCurve);
-    void deleteCurve(QString CurveTitle);
-    void deleteCurves();
-    void resetXLimits();
-    void resetYLimits();
-
-    int curveCount() const {return m_oaCurves.size();}
-    QVector<Curve*> *getCurves() {return &m_oaCurves;}
-
-    QPointF toClient(double x, double y) const {return QPointF(xToClient(x), yToClient(y));}
+        int xToClient(double x) const;
+        int yToClient(double y) const;
 
 
-    QColor backgroundColor() const {return m_BkColor;}
-    QColor borderColor() const {return m_BorderStyle.m_Color;}
-    int borderStyle() const {return m_BorderStyle.m_Stipple;}
-    int borderWidth() const {return m_BorderStyle.m_Width;}
+        void copySettings(Graph* pGraph, bool bScales=true);
+        void deselectPoint();
+        Curve * getCurvePoint(const int &xClt, const int &yClt, int &nSel);
+        Curve * getClosestPoint(double const &x, double const &y, double &xSel, double &ySel, int &nSel);
+        void resetLimits();
+        void resetCurves();
+        void scaleAxes(double zoom);
+        void scaleXAxis(double zoom);
+        void scaleYAxis(double zoom);
+
+        void setAutoXUnit();
+        void setAutoYUnit();
+
+        void setBkColor(QColor cr){m_BkColor = cr;}
+    //    void setBorderColor(QColor crBorder){m_BorderStyle.m_Color = crBorder;}
+        void setBorder(bool bBorder) {m_BorderStyle.m_bIsVisible = bBorder;}
+    //    void setBorderStipple(int s) {m_BorderStyle.setStipple(s);}
+    //    void setBorderWidth(int w) {m_BorderStyle.m_Width = w;}
+        void setBorderStyle(LineStyle const &ls2) {m_BorderStyle=ls2;}
+        void setDrawRect(QRect Rect) {m_rCltRect = Rect;}
+        void setMargin(int m);
+        void setInverted(bool bInverted);
+        void setScaleType(int scaleType){ m_AutoScaleType = scaleType;}
+
+        void setX0(double f){    xo = f;}
+
+        void setXMax(double f) {xmax = f;}
+        void setXMin(double f) {xmin = f;}
+
+        void setXTitle(const QString &str);
+        void setYTitle(const QString &str);
+
+        void setXUnit(double f);
+        void setY0(double f);
+        void setYMax(double f);
+        void setYMin(double f);
+        void setYMinorUnit(double f);
+        void setYUnit(double f);
+
+        void setXMajGrid(bool const &state, QColor const &clr, int const &style, int const &width);
+        void setYMajGrid(bool const &state, QColor const &clr, int const &style, int const &width);
 
 
-    Graph();
-    virtual ~Graph();
+        void setAuto(bool bAuto);
+        void setAutoX(bool bAuto);
+        void setAutoY(bool bAuto);
 
-    static QColor s_CurveColors[10];
-
-private:
-
-    QString m_GraphName;        /** The graph's name, used for little else than to identify it in the settings file */
-
-    int m_AutoScaleType;
-
-    QRect m_rCltRect;         //in screen coordinates
-
-    bool m_bXMajGrid, m_bXMinGrid;
-    bool m_bYMajGrid, m_bYMinGrid;
-
-    bool m_bXAutoMinGrid, m_bYAutoMinGrid;
-
-    bool m_bYInverted;
-    bool m_bAutoX, m_bAutoY;
+        void setTitleColor(QColor const &crColor) {m_TitleColor = crColor;}
+        void setLabelColor(QColor const &crColor);
+        void setWindow(double x1, double x2, double y1, double y2);
 
 
-    LS2 m_AxisStyle;
-    LS2 m_BorderStyle;
+        QColor const &titleColor() const {return m_TitleColor;}
+        QColor const &labelColor() const {return m_LabelColor;}
 
-    int m_XMajStyle, m_YMajStyle;
-    int m_XMajWidth, m_YMajWidth;
-    QColor m_XMajClr,   m_YMajClr;
-    int m_XMinStyle, m_YMinStyle;
-    int m_XMinWidth, m_YMinWidth;
-    QColor m_XMinClr,   m_YMinClr;
-    double m_XMinorUnit,m_YMinorUnit;
+        bool bInverted() const{    return m_bYInverted;}
 
-    QString m_XTitle;
-    QString m_YTitle;
-    QVector<Curve*> m_oaCurves;
-
-    QPoint m_ptoffset; //in screen coordinates, w.r.t. the client area
-
-    int exp_x, exp_y;
-    double xo, yo;
-    double xunit, yunit;
-    double xmin, ymin, xmax, ymax;
-    double Cxmin, Cxmax, Cymin, Cymax;
-    double m_scalex, m_scaley;
-    double m_h, m_w; //graph width and height
-    int m_iMargin;
-
-    QColor m_TitleColor;
-    QColor m_LabelColor;
-
-    QColor m_BkColor;
+        double xOrigin() const{    return xo;}
 
 
+        double xMin()    const {return xmin;}
+        double xMax()    const {return xmax;}
+        double xScale()  const {return m_scalex;}
+        double xUnit()   const {return xunit;}
+        int xVariable()  const {return m_X;}
+        double yOrigin() const {return yo;}
+        double yMin()    const {return ymin;}
+        double yMax()    const {return ymax;}
+        double yUnit()   const {return yunit;}
+        double yScale()  const {return m_scaley;}
+        int yVariable()  const {return m_Y;}
 
-    int m_X, m_Y; //index of X and Y variables
+        int margin() const {return m_iMargin;}
+
+        int scaleType() const {return m_AutoScaleType;}
+
+        void setVariables(int const & X, int const & Y);
+        void setXVariable(int const & X);
+        void setYVariable(int const & Y);
 
 
+        bool bYMajGrid() const;
+        bool bYMinGrid() const;
+        bool selectPoint(QString const &CurveName, int sel);
+        bool setXScale();
+        bool setYScale();
 
-private:
-    QFont m_TitleFont;
-    QFont m_LabelFont;
-    GRAPH::enumGraphType m_GraphType;
 
-    static bool s_bHighlightPoint;       /**< true if the active OpPoint should be highlighted on the polar curve. */
+        QString xTitle() const {return m_XTitle;}
+        QString yTitle() const {return m_YTitle;}
+
+        QRect *clientRect() {return &m_rCltRect;}
+
+        void setGraphDefaults(bool bDark=true);
+        void setGraphName(QString const &GraphName) {m_GraphName = GraphName;}
+
+        void graphName(QString &GraphName){ GraphName = m_GraphName;}
+        QString const &graphName() const{return m_GraphName;}
+        Curve* curve(int nIndex);
+        Curve const* curveAt(int nIndex) const;
+        Curve* curve(QString const &CurveTitle);
+        Curve* addCurve();
+        Curve* addCurve(QString const &name);
+        Curve* addCurve(Curve *pCurve);
+        void deleteCurve(int index);
+        void deleteCurve(Curve *pCurve);
+        void deleteCurve(QString CurveTitle);
+        void deleteCurves();
+        void resetXLimits();
+        void resetYLimits();
+
+        int curveCount() const {return m_oaCurves.size();}
+        QVector<Curve*> *getCurves() {return &m_oaCurves;}
+
+        QPointF toClient(double x, double y) const {return QPointF(xToClient(x), yToClient(y));}
+
+
+        QColor backgroundColor() const {return m_BkColor;}
+        QColor borderColor() const {return m_BorderStyle.m_Color;}
+        LineStyle borderStyle() const {return m_BorderStyle;}
+        int borderStipple() const {return m_BorderStyle.m_Stipple;}
+        int borderWidth() const {return m_BorderStyle.m_Width;}
+
+
+        Graph();
+        virtual ~Graph();
+
+        static QColor s_CurveColors[10];
+
+    private:
+
+        QString m_GraphName;        /** The graph's name, used for little else than to identify it in the settings file */
+
+        int m_AutoScaleType;
+
+        QRect m_rCltRect;         //in screen coordinates
+
+
+        bool m_bAutoX, m_bAutoY;
+        bool m_bYInverted;
+
+
+        LineStyle m_BorderStyle;
+
+        Grid m_Grid;
+
+        QString m_XTitle;
+        QString m_YTitle;
+        QVector<Curve*> m_oaCurves;
+
+        QPoint m_ptoffset; //in screen coordinates, w.r.t. the client area
+
+        int exp_x, exp_y;
+        double xo, yo;
+        double xunit, yunit;
+        double xmin, ymin, xmax, ymax;
+        double Cxmin, Cxmax, Cymin, Cymax;
+        double m_scalex, m_scaley;
+        double m_h, m_w; //graph width and height
+        int m_iMargin;
+
+        QColor m_TitleColor;
+        QColor m_LabelColor;
+
+        QColor m_BkColor;
+
+
+        int m_X, m_Y; //index of X and Y variables
+
+
+    private:
+        QFont m_TitleFont;
+        QFont m_LabelFont;
+        GRAPH::enumGraphType m_GraphType;
+
+        static bool s_bHighlightPoint;       /**< true if the active OpPoint should be highlighted on the polar curve. */
 
 };
 

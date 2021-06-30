@@ -42,9 +42,9 @@ void WingSelDlg::setupLayout()
     {
         m_pctrlBody = new QCheckBox(tr("BODY"));
         pWingLayout->addWidget(m_pctrlBody);
-        for(int iw=Xfl::MAINWING; iw!=Xfl::OTHERWING; iw++)
+        for(int iw=xfl::MAINWING; iw!=xfl::OTHERWING; iw++)
         {
-            Xfl::enumWingType wType = Xfl::enumWingType(iw);
+            xfl::enumWingType wType = xfl::enumWingType(iw);
             m_pctrlWing[iw] = new QCheckBox(wingType(wType));
             pWingLayout->addWidget(m_pctrlWing[iw]);
         }

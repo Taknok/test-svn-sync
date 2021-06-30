@@ -22,7 +22,7 @@
 #pragma once
 
 #include <QWidget>
-#include <xflcore/gui_enums.h>
+#include <xflcore/core_enums.h>
 
 class MainFrame;
 class Miarex;
@@ -54,7 +54,7 @@ class LegendWt : public QWidget
         static Miarex *s_pMiarex;      /**< a void pointer to the instance of the QMiarex object. */
         static XDirect *s_pXDirect;     /**< a void pointer to the instance of the QXDirect object. */
 
-        void setMiarexView(Xfl::enumMiarexViews eMiarexView);
+        void setMiarexView(xfl::enumMiarexViews eMiarexView);
 
     private:
         void drawWPolarLegend(QPainter &painter, QPointF place, int bottom);
@@ -67,7 +67,7 @@ class LegendWt : public QWidget
     private:
         Graph const *m_pGraph;
 
-        Xfl::enumMiarexViews m_MiarexView;
+        xfl::enumMiarexViews m_MiarexView;
         QPointF m_LegendPosition;
         QPointF m_PointDown;
         bool m_bTrans;

@@ -93,7 +93,7 @@ private:
     bool m_bRecursiveDirScan;
     bool m_bcsvPolarOutput;
 
-    Xfl::enumPolarType m_PolarType;
+    xfl::enumPolarType m_PolarType;
 
     QThread::Priority m_ThreadPriority;
 };

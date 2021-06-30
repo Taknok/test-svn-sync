@@ -31,15 +31,15 @@
 Plane::Plane()
 {
     m_Wing[0].m_WingName   = QObject::tr("Wing");
-    m_Wing[0].setWingType(Xfl::MAINWING);
+    m_Wing[0].setWingType(xfl::MAINWING);
     m_Wing[0].computeGeometry();
 
     m_Wing[1].m_WingName   = QObject::tr("2nd Wing");
-    m_Wing[1].setWingType(Xfl::SECONDWING);
+    m_Wing[1].setWingType(xfl::SECONDWING);
     m_Wing[1].computeGeometry();
 
     m_Wing[2].m_WingName    = QObject::tr("Elevator");
-    m_Wing[2].setWingType(Xfl::ELEVATOR);
+    m_Wing[2].setWingType(xfl::ELEVATOR);
     m_Wing[2].m_bIsFin      = false;
     m_Wing[2].m_Section[0]->m_Chord = 0.100;
     m_Wing[2].m_Section[1]->m_Chord = 0.080;
@@ -51,12 +51,12 @@ Plane::Plane()
     m_Wing[2].m_Section[1]->m_Offset   = 0.020;
     m_Wing[2].m_Section[0]->m_NXPanels = 7;
     m_Wing[2].m_Section[1]->m_NYPanels = 7;
-    m_Wing[2].m_Section[0]->m_XPanelDist = Xfl::SINE;
-    m_Wing[2].m_Section[0]->m_YPanelDist = Xfl::UNIFORM;
+    m_Wing[2].m_Section[0]->m_XPanelDist = xfl::SINE;
+    m_Wing[2].m_Section[0]->m_YPanelDist = xfl::UNIFORM;
     m_Wing[2].computeGeometry();
 
     m_Wing[3].m_WingName    = QObject::tr("Fin");
-    m_Wing[3].setWingType(Xfl::FIN);
+    m_Wing[3].setWingType(xfl::FIN);
     m_Wing[3].m_bIsFin      = true;
     m_Wing[3].m_Section[0]->m_Chord      = 0.100;
     m_Wing[3].m_Section[1]->m_Chord      = 0.060;
@@ -68,8 +68,8 @@ Plane::Plane()
     m_Wing[3].m_Section[1]->m_Offset     = 0.040;
     m_Wing[3].m_Section[0]->m_NXPanels   = 7;
     m_Wing[3].m_Section[0]->m_NYPanels   = 7;
-    m_Wing[3].m_Section[0]->m_XPanelDist = Xfl::UNIFORM;
-    m_Wing[3].m_Section[0]->m_YPanelDist = Xfl::COSINE;
+    m_Wing[3].m_Section[0]->m_XPanelDist = xfl::UNIFORM;
+    m_Wing[3].m_Section[0]->m_YPanelDist = xfl::COSINE;
 
     m_Wing[3].computeGeometry();
 
@@ -537,17 +537,17 @@ int Plane::VLMPanelTotal()
  *  @param iw the index of the wing
  *  @return a pointer to the wing, or NULL if none;
  */
-Wing *Plane::wing(Xfl::enumWingType wingType)
+Wing *Plane::wing(xfl::enumWingType wingType)
 {
     switch(wingType)
     {
-        case Xfl::MAINWING:
+        case xfl::MAINWING:
             return wing();
-        case Xfl::SECONDWING:
+        case xfl::SECONDWING:
             return wing2();
-        case Xfl::ELEVATOR:
+        case xfl::ELEVATOR:
             return stab();
-        case Xfl::FIN:
+        case xfl::FIN:
             return fin();
         default:
             return nullptr;
@@ -839,10 +839,10 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
         m_Wing[2].serializeWingXFL(ar, bIsStoring);
         m_Wing[3].serializeWingXFL(ar, bIsStoring);
 
-        m_Wing[0].setWingType(Xfl::MAINWING);
-        m_Wing[1].setWingType(Xfl::SECONDWING);
-        m_Wing[2].setWingType(Xfl::ELEVATOR);
-        m_Wing[3].setWingType(Xfl::FIN);
+        m_Wing[0].setWingType(xfl::MAINWING);
+        m_Wing[1].setWingType(xfl::SECONDWING);
+        m_Wing[2].setWingType(xfl::ELEVATOR);
+        m_Wing[3].setWingType(xfl::FIN);
 
         bool bl;
         ar >> m_bBiplane>> m_bStab >>m_bFin >> m_bDoubleFin >> m_bSymFin >> bl; // m_bDoubleSymFin;

@@ -373,7 +373,6 @@ void GraphWt::onGraphSettings()
                 if(grDlg.bVariableChanged())
                 {
                     m_pGraph->setAuto(true);
-                    m_pGraph->setAutoYMinUnit(true);
                 }
                 break;
             }
@@ -382,7 +381,6 @@ void GraphWt::onGraphSettings()
                 if(grDlg.bVariableChanged())
                 {
                     m_pGraph->setAutoY(true);
-                    m_pGraph->setAutoYMinUnit(true);
                 }
                 break;
 
@@ -400,7 +398,6 @@ void GraphWt::onGraphSettings()
                 if(grDlg.bVariableChanged())
                 {
                     m_pGraph->setAuto(true);
-                    m_pGraph->setAutoYMinUnit(true);
                 }
                 break;
             }

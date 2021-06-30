@@ -36,8 +36,8 @@
 #include <xflcore/xflcore.h>
 #include <xflcore/units.h>
 #include <misc/options/settings.h>
-#include <xflwidgets/text/doubleedit.h>
-#include <xflwidgets/text/floateditdelegate.h>
+#include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/floateditdelegate.h>
 #include <xflobjects/objects3d/plane.h>
 
 QByteArray InertiaDlg::s_Geometry;

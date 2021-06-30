@@ -26,7 +26,6 @@
 #include "wingwt.h"
 #include <xflcore/xflcore.h>
 #include <xflgraph/graph.h>
-#include <xflgraph/graph_globals.h>
 #include <miarex/miarex.h>
 #include <miarex/objects3d.h>
 #include <miarex/view/w3dprefsdlg.h>
@@ -194,7 +193,7 @@ void WingWidget::paintWing(QPainter &painter, QPointF ORef, double scale)
 
     painter.save();
     QPen WingPen(W3dPrefsDlg::s_OutlineStyle.m_Color);
-    WingPen.setStyle(getStyle(W3dPrefsDlg::s_OutlineStyle.m_Stipple));
+    WingPen.setStyle(xfl::getStyle(W3dPrefsDlg::s_OutlineStyle.m_Stipple));
     WingPen.setWidth(W3dPrefsDlg::s_OutlineStyle.m_Width);
 
     painter.setPen(WingPen);
@@ -306,7 +305,7 @@ void WingWidget::paintXCP(QPainter & painter, QPointF ORef, double scale)
     QPointF From, To;
 
     int nStart=0;
-    if(s_pMiarex->m_pCurPOpp->analysisMethod()==Xfl::LLTMETHOD) nStart = 1; else nStart = 0;
+    if(s_pMiarex->m_pCurPOpp->analysisMethod()==xfl::LLTMETHOD) nStart = 1; else nStart = 0;
 
     QPointF O(ORef);
     QPointF offset;
@@ -320,7 +319,7 @@ void WingWidget::paintXCP(QPainter & painter, QPointF ORef, double scale)
 
     QPen XCPPen(W3dPrefsDlg::s_XCPStyle.m_Color);
     XCPPen.setWidth(W3dPrefsDlg::s_XCPStyle.m_Width);
-    XCPPen.setStyle(getStyle(W3dPrefsDlg::s_XCPStyle.m_Stipple));
+    XCPPen.setStyle(xfl::getStyle(W3dPrefsDlg::s_XCPStyle.m_Stipple));
     painter.setPen(XCPPen);
 
     PlaneOpp const *pPOpp = s_pMiarex->curPOpp();
@@ -375,7 +374,7 @@ void WingWidget::paintXTr(QPainter & painter, QPointF ORef, double scale)
 
     double y;
     int m,nStart;
-    if(s_pMiarex->m_pCurPOpp->analysisMethod()==Xfl::LLTMETHOD) nStart = 1; else nStart = 0;
+    if(s_pMiarex->m_pCurPOpp->analysisMethod()==xfl::LLTMETHOD) nStart = 1; else nStart = 0;
 
     QPointF O(ORef);
     QPointF offset, From, To;
@@ -391,7 +390,7 @@ void WingWidget::paintXTr(QPainter & painter, QPointF ORef, double scale)
     O.ry() = offset.y();
 
     QPen TopPen(W3dPrefsDlg::s_TopStyle.m_Color);
-    TopPen.setStyle(getStyle(W3dPrefsDlg::s_TopStyle.m_Stipple));
+    TopPen.setStyle(xfl::getStyle(W3dPrefsDlg::s_TopStyle.m_Stipple));
     TopPen.setWidth(W3dPrefsDlg::s_TopStyle.m_Width);
     painter.setPen(TopPen);
 
@@ -421,7 +420,7 @@ void WingWidget::paintXTr(QPainter & painter, QPointF ORef, double scale)
 
 
     QPen BotPen(W3dPrefsDlg::s_BotStyle.m_Color);
-    BotPen.setStyle(getStyle(W3dPrefsDlg::s_BotStyle.m_Stipple));
+    BotPen.setStyle(xfl::getStyle(W3dPrefsDlg::s_BotStyle.m_Stipple));
     BotPen.setWidth(W3dPrefsDlg::s_BotStyle.m_Width);
 
     painter.setPen(BotPen);

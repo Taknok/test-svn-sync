@@ -26,7 +26,7 @@
 #include <xflgraph/graph.h>
 #include <xflgeom/geom3d/vector3d.h>
 #include <xflobjects/objects2d/oppoint.h>
-#include <xflcore/ls2.h>
+#include <xflcore/linestyle.h>
 
 
 class OpPointWidget : public QWidget
@@ -90,9 +90,9 @@ class OpPointWidget : public QWidget
         double m_fScale, m_fYScale;
         QPointF m_FoilOffset;
 
-        LS2 m_BLStyle;             /**< the index of the style used to draw the boundary layer */
-        LS2 m_PressureStyle;       /**< the index of the style used to draw the pressure arrows*/
-        LS2 m_NeutralStyle;        /**< the index of the style used to draw the neutral line */
+        LineStyle m_BLStyle;             /**< the index of the style used to draw the boundary layer */
+        LineStyle m_PressureStyle;       /**< the index of the style used to draw the pressure arrows*/
+        LineStyle m_NeutralStyle;        /**< the index of the style used to draw the neutral line */
 
         bool m_bTransFoil;
         bool m_bTransGraph;
