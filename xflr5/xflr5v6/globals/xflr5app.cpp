@@ -74,22 +74,26 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
     int k=0;
     settings.beginGroup("MainFrame");
     {
-        k = settings.value("FrameGeometryx").toInt(&bOK);
-        if(bOK) a = k;
-        k = settings.value("FrameGeometryy").toInt(&bOK);
-        if(bOK) b = k;
-        k = settings.value("SizeWidth").toInt(&bOK);
-        if(bOK) c = k;
-        k = settings.value("SizeHeight").toInt(&bOK);
-        if(bOK) d = k;
+        int SettingsFormat = settings.value("SettingsFormat").toInt();
+        if(SettingsFormat == SETTINGSFORMAT)
+        {
+            k = settings.value("FrameGeometryx").toInt(&bOK);
+            if(bOK) a = k;
+            k = settings.value("FrameGeometryy").toInt(&bOK);
+            if(bOK) b = k;
+            k = settings.value("SizeWidth").toInt(&bOK);
+            if(bOK) c = k;
+            k = settings.value("SizeHeight").toInt(&bOK);
+            if(bOK) d = k;
 
-        bMaximized = settings.value("SizeMaximized").toBool();
+            bMaximized = settings.value("SizeMaximized").toBool();
 
-        str = settings.value("LanguageFilePath").toString();
-        if(str.length()) LanguagePath = str;
+            str = settings.value("LanguageFilePath").toString();
+            if(str.length()) LanguagePath = str;
 
-        str = settings.value("StyleName").toString();
-        if(str.length()) StyleName = str;
+            str = settings.value("StyleName").toString();
+            if(str.length()) StyleName = str;
+        }
     }
     settings.endGroup();
 

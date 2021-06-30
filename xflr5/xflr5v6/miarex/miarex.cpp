@@ -936,10 +936,7 @@ void Miarex::createWPolarCurves()
             {
                 pCurve[ig] = m_WPlrGraph[ig]->addCurve();
                 fillWPlrCurve(pCurve[ig], pWPolar, m_WPlrGraph[ig]->xVariable(), m_WPlrGraph[ig]->yVariable());
-                pCurve[ig]->setPointStyle(pWPolar->pointStyle1());
-                pCurve[ig]->setStipple(pWPolar->lineStipple());
-                pCurve[ig]->setColor(pWPolar->color());
-                pCurve[ig]->setWidth(pWPolar->lineWidth());
+                pCurve[ig]->setLineStyle(pWPolar->theStyle());
                 pCurve[ig]->setName(pWPolar->polarName());
             }
         }
