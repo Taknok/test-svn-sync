@@ -1,7 +1,7 @@
 /****************************************************************************
 
     FontStruct Class
-    Copyright (C) 2020 Andre Deperrois
+    Copyright (C) Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
