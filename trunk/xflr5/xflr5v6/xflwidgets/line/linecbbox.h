@@ -1,48 +1,36 @@
 /****************************************************************************
 
-    LineCbBox Class
-    Copyright (C) 2009-2019 Andre Deperrois
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    xflr5 v6
+    Copyright (C) Andre Deperrois
+    GNU General Public License v3
 
 *****************************************************************************/
+
 
 
 #pragma once
 
 #include <QComboBox>
-#include <xflcore/ls2.h>
+#include <xflcore/linestyle.h>
 
-
+class LineDelegate;
 
 class LineCbBox : public QComboBox
 {
     public:
-        LineCbBox(QWidget *pParent=nullptr);
+        LineCbBox(int nItem, QWidget *pParent=nullptr);
 
         QSize sizeHint() const override;
         void paintEvent (QPaintEvent *pEvent) override;
 
-        void setLine(int const &style, int const &width, QColor const &color, const int &pointStyle);
-        void setLine(LS2 const &lineStyle);
-        void showPoints(bool bShow){m_bShowPoints=bShow;}
+        void setLine(Line::enumLineStipple style, int width, QColor color, Line::enumPointStyle pointStyle);
+        void setLine(const LineStyle &ls);
 
-        bool points() const {return m_bShowPoints; }
+        bool points() const {return m_LineStyle.m_Symbol!=Line::NOSYMBOL;}
 
     private:
-        LS2 m_LineStyle;
-        bool m_bShowPoints;
+        LineStyle m_LineStyle;
+
 };
+
 

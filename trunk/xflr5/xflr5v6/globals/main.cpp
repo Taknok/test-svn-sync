@@ -2,7 +2,7 @@
 
     XFLR5 Application
 
-    Copyright (C) 2008-2019 Andre Deperrois techwinder@users.sourceforge.net
+    Copyright (C) Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

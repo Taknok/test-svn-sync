@@ -26,7 +26,7 @@
 class Foil;
 class SplineFoil;
 
-class FoilWt : public Section2dWidget
+class FoilWt : public Section2dWt
 {
 public:
     FoilWt(QWidget *pParent=nullptr);

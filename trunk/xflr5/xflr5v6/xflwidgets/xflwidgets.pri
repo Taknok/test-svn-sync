@@ -1,35 +1,108 @@
-
-
 HEADERS += \
-    xflwidgets/color/colorbutton.h \
-    xflwidgets/exponentialslider.h \
+    $$PWD/customdlg/gridsettingsdlg.h \
+    $$PWD/customwts/floateditdelegate.h \
+    $$PWD/customwts/mintextedit.h \
+    $$PWD/line/linepickerdlg.h \
+    $$PWD/line/linepickerwt.h \
+    $$PWD/voidwidget.h \
+    xflwidgets/color/colorbtn.h \
+    xflwidgets/color/colorgraddlg.h \
+    xflwidgets/color/colormenubtn.h \
+    xflwidgets/color/colorpicker.h \
+    xflwidgets/color/textclrbtn.h \
+    xflwidgets/customdlg/doublevaluedlg.h \
+    xflwidgets/customdlg/helpimgdlg.h \
+    xflwidgets/customdlg/intvaluedlg.h \
+    xflwidgets/customdlg/intvaluesdlg.h \
+    xflwidgets/customdlg/logmessagedlg.h \
+    xflwidgets/customdlg/moddlg.h \
+    xflwidgets/customdlg/newnamedlg.h \
+    xflwidgets/customdlg/objectpropsdlg.h \
+    xflwidgets/customdlg/separatorsdlg.h \
+    xflwidgets/customdlg/stringvaluedlg.h \
+    xflwidgets/customdlg/xfldialog.h \
+    xflwidgets/customwts/actiondelegate.h \
+    xflwidgets/customwts/actionitemmodel.h \
+    xflwidgets/customwts/bodytabledelegate.h \
+    xflwidgets/customwts/cptableview.h \
+    xflwidgets/customwts/crosscheckbox.h \
+    xflwidgets/customwts/ctrltabledelegate.h \
+    xflwidgets/customwts/curveactiondelegate.h \
+    xflwidgets/customwts/doubleedit.h \
+    xflwidgets/customwts/exponentialslider.h \
+    xflwidgets/customwts/gridcontrol.h \
+    xflwidgets/customwts/intedit.h \
+    xflwidgets/customwts/numedit.h \
+    xflwidgets/customwts/plaintextoutput.h \
+    xflwidgets/customwts/popup.h \
+    xflwidgets/customwts/xfltreeview.h \
+    xflwidgets/line/legendbtn.h \
+    xflwidgets/line/lineaction.h \
     xflwidgets/line/linebtn.h \
     xflwidgets/line/linecbbox.h \
     xflwidgets/line/linedelegate.h \
-    xflwidgets/line/linepickerdlg.h \
-    xflwidgets/text/doubleedit.h \
-    xflwidgets/text/floateditdelegate.h \
-    xflwidgets/text/fontstruct.h \
-    xflwidgets/text/intedit.h \
-    xflwidgets/text/mintextedit.h \
-    xflwidgets/text/numedit.h \
-    xflwidgets/text/textclrbtn.h \
-    xflwidgets/voidwidget.h \
-
+    xflwidgets/line/linemenu.h \
+    xflwidgets/line/linepicker.h \
+    xflwidgets/mvc/expandabletreeview.h \
+    xflwidgets/mvc/objecttreedelegate.h \
+    xflwidgets/mvc/objecttreeitem.h \
+    xflwidgets/mvc/objecttreemodel.h \
+    xflwidgets/view/grid.h \
+    xflwidgets/wt_globals.h \
 
 
 SOURCES += \
-    xflwidgets/color/colorbutton.cpp \
-    xflwidgets/exponentialslider.cpp \
+    $$PWD/customdlg/gridsettingsdlg.cpp \
+    $$PWD/customwts/floateditdelegate.cpp \
+    $$PWD/customwts/mintextedit.cpp \
+    $$PWD/line/linepickerdlg.cpp \
+    $$PWD/line/linepickerwt.cpp \
+    $$PWD/voidwidget.cpp \
+    xflwidgets/color/colorbtn.cpp \
+    xflwidgets/color/colorgraddlg.cpp \
+    xflwidgets/color/colormenubtn.cpp \
+    xflwidgets/color/colorpicker.cpp \
+    xflwidgets/color/textclrbtn.cpp \
+    xflwidgets/customdlg/doublevaluedlg.cpp \
+    xflwidgets/customdlg/helpimgdlg.cpp \
+    xflwidgets/customdlg/intvaluedlg.cpp \
+    xflwidgets/customdlg/intvaluesdlg.cpp \
+    xflwidgets/customdlg/logmessagedlg.cpp \
+    xflwidgets/customdlg/moddlg.cpp \
+    xflwidgets/customdlg/newnamedlg.cpp \
+    xflwidgets/customdlg/objectpropsdlg.cpp \
+    xflwidgets/customdlg/separatorsdlg.cpp \
+    xflwidgets/customdlg/stringvaluedlg.cpp \
+    xflwidgets/customdlg/xfldialog.cpp \
+    xflwidgets/customwts/actiondelegate.cpp \
+    xflwidgets/customwts/actionitemmodel.cpp \
+    xflwidgets/customwts/bodytabledelegate.cpp \
+    xflwidgets/customwts/cptableview.cpp \
+    xflwidgets/customwts/crosscheckbox.cpp \
+    xflwidgets/customwts/ctrltabledelegate.cpp \
+    xflwidgets/customwts/curveactiondelegate.cpp \
+    xflwidgets/customwts/doubleedit.cpp \
+    xflwidgets/customwts/exponentialslider.cpp \
+    xflwidgets/customwts/gridcontrol.cpp \
+    xflwidgets/customwts/intedit.cpp \
+    xflwidgets/customwts/numedit.cpp \
+    xflwidgets/customwts/plaintextoutput.cpp \
+    xflwidgets/customwts/popup.cpp \
+    xflwidgets/customwts/xfltreeview.cpp \
+    xflwidgets/line/legendbtn.cpp \
+    xflwidgets/line/lineaction.cpp \
     xflwidgets/line/linebtn.cpp \
     xflwidgets/line/linecbbox.cpp \
     xflwidgets/line/linedelegate.cpp \
-    xflwidgets/line/linepickerdlg.cpp \
-    xflwidgets/text/doubleedit.cpp \
-    xflwidgets/text/floateditdelegate.cpp \
-    xflwidgets/text/intedit.cpp \
-    xflwidgets/text/mintextedit.cpp \
-    xflwidgets/text/numedit.cpp \
-    xflwidgets/text/textclrbtn.cpp \
-    xflwidgets/voidwidget.cpp \
+    xflwidgets/line/linemenu.cpp \
+    xflwidgets/line/linepicker.cpp \
+    xflwidgets/mvc/expandabletreeview.cpp \
+    xflwidgets/mvc/objecttreedelegate.cpp \
+    xflwidgets/mvc/objecttreeitem.cpp \
+    xflwidgets/mvc/objecttreemodel.cpp \
+    xflwidgets/view/grid.cpp \
+    xflwidgets/wt_globals.cpp \
 
+
+RESOURCES += \
+    xflwidgets/textfiles.qrc

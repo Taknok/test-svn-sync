@@ -30,7 +30,7 @@
 */
 Spline::Spline()
 {
-    m_theStyle.m_PointStyle = Line::NOSYMBOL; //no points to start with
+    m_theStyle.m_Symbol = Line::NOSYMBOL; //no points to start with
     m_theStyle.m_Stipple = Line::SOLID;
     m_theStyle.m_Width = 2;
     m_theStyle.m_bIsVisible    = true;

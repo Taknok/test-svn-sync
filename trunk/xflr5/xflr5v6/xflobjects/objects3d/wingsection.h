@@ -47,8 +47,8 @@ public:
     {
         m_NXPanels   = 0;
         m_NYPanels   = 0;
-        m_XPanelDist = Xfl::COSINE;
-        m_YPanelDist = Xfl::COSINE;
+        m_XPanelDist = xfl::COSINE;
+        m_YPanelDist = xfl::COSINE;
 
         m_Chord     = 0.0;
         m_Length    = 0.0;
@@ -69,8 +69,8 @@ public:
 
     int m_NXPanels;         /**< VLM Panels along chord, for each Wing Panel */
     int m_NYPanels;         /**< VLM Panels along span, for each Wing Panel */
-    Xfl::enumPanelDistribution m_XPanelDist;       /**< VLM Panel distribution type, for each Wing Panel */
-    Xfl::enumPanelDistribution m_YPanelDist;       /**< VLM Panel distribution type, for each Wing Panel */
+    xfl::enumPanelDistribution m_XPanelDist;       /**< VLM Panel distribution type, for each Wing Panel */
+    xfl::enumPanelDistribution m_YPanelDist;       /**< VLM Panel distribution type, for each Wing Panel */
 
     double m_Chord;         /**< Chord length at each panel side */
     double m_Length;        /**< the length of each panel */

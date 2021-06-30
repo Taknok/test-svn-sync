@@ -24,7 +24,6 @@
 #pragma once
 
 #include <QApplication>
-#include <globals/mainframe.h>
 
 
 class XFLR5App : public QApplication

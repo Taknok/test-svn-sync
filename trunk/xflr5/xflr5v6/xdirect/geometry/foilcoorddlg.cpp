@@ -26,7 +26,7 @@
 
 #include "foilcoorddlg.h"
 #include <misc/options/settings.h>
-#include <xflwidgets/text/floateditdelegate.h>
+#include <xflwidgets/customwts/floateditdelegate.h>
 #include <xflobjects/objects2d/foil.h>
 
 

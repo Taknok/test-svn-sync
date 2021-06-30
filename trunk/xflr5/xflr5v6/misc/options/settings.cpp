@@ -34,10 +34,10 @@
 #include <globals/mainframe.h>
 #include <miarex/miarex.h>
 #include <xdirect/xdirect.h>
-#include <xinverse/xinverse.h>
+#include <twodwidgets/section2dwt.h>
 #include <xflgraph/controls/graphdlg.h>
-#include <xflwidgets/text/textclrbtn.h>
-#include <xflwidgets/color/colorbutton.h>
+#include <xflwidgets/color/textclrbtn.h>
+#include <xflwidgets/color/colorbtn.h>
 
 
 bool Settings::s_bStyleSheets = true;
@@ -50,7 +50,7 @@ QColor Settings::s_BackgroundColor = QColor(3, 9, 9);
 QColor Settings::s_TextColor=QColor(221,221,221);
 bool Settings::s_bReverseZoom = false;
 Graph Settings::s_RefGraph;
-Xfl::enumTextFileType Settings::s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
+xfl::enumTextFileType Settings::s_ExportFileType;
 QString Settings::s_LastDirName = QDir::homePath();
 QString Settings::s_xmlDirName = QDir::homePath();
 QString Settings::s_plrDirName = QDir::homePath();
@@ -81,16 +81,16 @@ Settings::Settings(QWidget *pParent) : QWidget(pParent)
 
     setupLayout();
 
-    connect(m_pctrlStyles,             SIGNAL(activated(const QString &)), SLOT(onStyleChanged(const QString &)));
+    connect(m_pcbStyles,             SIGNAL(activated(const QString &)), SLOT(onStyleChanged(const QString &)));
 
-    connect(m_pctrlBackColor,          SIGNAL(clicked()),                  SLOT(onBackgroundColor2d()));
-    connect(m_pctrlGraphSettings,      SIGNAL(clicked()),                  SLOT(onGraphSettings()));
-    connect(m_pctrlTextClr,            SIGNAL(clickedTB()),                SLOT(onTextColor()));
-    connect(m_pctrlTextFont,           SIGNAL(clicked()),                  SLOT(onTextFont()));
-    connect(m_pctrlTableFont,          SIGNAL(clicked()),                  SLOT(onTableFont()));
+    connect(m_pcbBackColor,          SIGNAL(clicked()),                  SLOT(onBackgroundColor2d()));
+    connect(m_ppbGraphSettings,      SIGNAL(clicked()),                  SLOT(onGraphSettings()));
+    connect(m_ptcbTextClr,            SIGNAL(clickedTB()),                SLOT(onTextColor()));
+    connect(m_ppbTextFont,           SIGNAL(clicked()),                  SLOT(onTextFont()));
+    connect(m_ppbTableFont,          SIGNAL(clicked()),                  SLOT(onTableFont()));
 
-    connect(m_pctrlReverseZoom,        SIGNAL(clicked()),                  SLOT(onReverseZoom()));
-    connect(m_pctrlAlignChildrenStyle, SIGNAL(clicked()),                  SLOT(onAlignChildrenStyle()));
+    connect(m_pchReverseZoom,        SIGNAL(clicked()),                  SLOT(onReverseZoom()));
+    connect(m_pchAlignChildrenStyle, SIGNAL(clicked()),                  SLOT(onAlignChildrenStyle()));
 }
 
 
@@ -101,20 +101,21 @@ void Settings::setDefaultFonts()
     //    for (int i=0; i<fontFamiliyList.count(); i++) qDebug()<<fontFamiliyList.at(i);
 
     QFont generalFont(QFontDatabase::systemFont(QFontDatabase::GeneralFont));
-    QFont fixedFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+    QFont fixedfont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
     QFont titleFont(QFontDatabase::systemFont(QFontDatabase::TitleFont));
     QFont smallestReadableFont(QFontDatabase::systemFont(QFontDatabase::SmallestReadableFont));
 
-    s_TextFont = QFont(fixedFont);
-    s_TableFont = QFont(fixedFont);
+    s_TextFont = QFont(fixedfont);
+    s_TableFont = QFont(fixedfont);
 
-    //    qDebug()<<"done"<<s_TextFont.family()<<s_TextFont.pointSize();
-    //    qDebug()<<"______";
+
+//    Section2dWt::setFontStruct(fixedfont);
 }
+
 
 void Settings::setupLayout()
 {
-    m_pctrlStyles = new QComboBox;
+    m_pcbStyles = new QComboBox;
 
     QRegExp regExp("Q(.*)Style");
     QString defaultStyle = QApplication::style()->metaObject()->className();
@@ -125,8 +126,8 @@ void Settings::setupLayout()
     else if (regExp.exactMatch(defaultStyle))
         defaultStyle = regExp.cap(1);
 
-    m_pctrlStyles->addItems(QStyleFactory::keys());
-    m_pctrlStyles->setCurrentIndex(m_pctrlStyles->findText(defaultStyle));
+    m_pcbStyles->addItems(QStyleFactory::keys());
+    m_pcbStyles->setCurrentIndex(m_pcbStyles->findText(defaultStyle));
 
     // add custom style sheets
     QString fileName = "*.qss";
@@ -136,13 +137,13 @@ void Settings::setupLayout()
         QString styleSheetName = filesList.at(is);
         int len = styleSheetName.length();
         styleSheetName = styleSheetName.left(len-4);
-        m_pctrlStyles->addItem(styleSheetName);
+        m_pcbStyles->addItem(styleSheetName);
     }
 
     QGroupBox *pWidgetStyleBox = new QGroupBox(tr("Widget Style"));
     {
         QHBoxLayout *pWidgetStyleLayout = new QHBoxLayout;
-        pWidgetStyleLayout->addWidget(m_pctrlStyles);
+        pWidgetStyleLayout->addWidget(m_pcbStyles);
         pWidgetStyleBox->setLayout(pWidgetStyleLayout);
     }
 
@@ -167,8 +168,8 @@ void Settings::setupLayout()
             {
                 QHBoxLayout *pBackLayout = new QHBoxLayout;
                 {
-                    m_pctrlBackColor      = new ColorButton(this);
-                    pBackLayout->addWidget(m_pctrlBackColor);
+                    m_pcbBackColor      = new ColorBtn(this);
+                    pBackLayout->addWidget(m_pcbBackColor);
                 }
                 pBackBox->setLayout(pBackLayout);
             }
@@ -178,18 +179,18 @@ void Settings::setupLayout()
                 QGridLayout *pMainFontLayout = new QGridLayout;
                 {
                     QLabel *labMain = new QLabel(tr("Main display font"));
-                    m_pctrlTextFont = new QPushButton;
-                    m_pctrlTextClr  = new TextClrBtn(this);
+                    m_ppbTextFont = new QPushButton;
+                    m_ptcbTextClr  = new TextClrBtn(this);
 
                     pMainFontLayout->addWidget(labMain,1,1);
-                    pMainFontLayout->addWidget(m_pctrlTextFont,1,2);
-                    pMainFontLayout->addWidget(m_pctrlTextClr,1,3);
+                    pMainFontLayout->addWidget(m_ppbTextFont,1,2);
+                    pMainFontLayout->addWidget(m_ptcbTextClr,1,3);
 
                     QLabel *labTable = new QLabel(tr("Table font"));
-                    m_pctrlTableFont = new QPushButton;
+                    m_ppbTableFont = new QPushButton;
 
                     pMainFontLayout->addWidget(labTable,2,1);
-                    pMainFontLayout->addWidget(m_pctrlTableFont,2,2);
+                    pMainFontLayout->addWidget(m_ppbTableFont,2,2);
                 }
                 pFontBox->setLayout(pMainFontLayout);
             }
@@ -198,9 +199,9 @@ void Settings::setupLayout()
             {
                 QVBoxLayout *pGraphLayout = new QVBoxLayout;
                 {
-                    m_pctrlGraphSettings  = new QPushButton(tr("All Graph Settings"));
-                    m_pctrlGraphSettings->setMinimumWidth(120);
-                    pGraphLayout->addWidget(m_pctrlGraphSettings);
+                    m_ppbGraphSettings  = new QPushButton(tr("All Graph Settings"));
+                    m_ppbGraphSettings->setMinimumWidth(120);
+                    pGraphLayout->addWidget(m_ppbGraphSettings);
                 }
                 pGraphBox->setLayout(pGraphLayout);
             }
@@ -216,18 +217,18 @@ void Settings::setupLayout()
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        m_pctrlReverseZoom = new QCheckBox(tr("Reverse zoom direction using mouse wheel"));
-        m_pctrlAlignChildrenStyle = new QCheckBox(tr("Flow down changes made to the style of objects to their children"));
+        m_pchReverseZoom = new QCheckBox(tr("Reverse zoom direction using mouse wheel"));
+        m_pchAlignChildrenStyle = new QCheckBox(tr("Flow down changes made to the style of objects to their children"));
         QString tip = tr("If activated:\n"
                          "all changes made to the style of the polar objects will flow down to the operating points\n"
                          "all changes made to the style of the foil objects will flow down to the polars and to the operating points");
-        m_pctrlAlignChildrenStyle->setToolTip(tip);
+        m_pchAlignChildrenStyle->setToolTip(tip);
         pMainLayout->addStretch(1);
         pMainLayout->addWidget(pWidgetStyleBox);
         pMainLayout->addStretch(1);
         pMainLayout->addWidget(pThemeBox);
-        pMainLayout->addWidget(m_pctrlReverseZoom);
-        pMainLayout->addWidget(m_pctrlAlignChildrenStyle);
+        pMainLayout->addWidget(m_pchReverseZoom);
+        pMainLayout->addWidget(m_pchAlignChildrenStyle);
         pMainLayout->addSpacing(20);
         pMainLayout->addStretch(1);
     }
@@ -243,28 +244,28 @@ void Settings::initWidget()
 
     m_MemGraph.copySettings(&s_RefGraph);
 
-    m_pctrlBackColor->setColor(s_BackgroundColor);
+    m_pcbBackColor->setColor(s_BackgroundColor);
 
-    m_pctrlTextClr->setTextColor(s_TextColor);
-    m_pctrlTextClr->setBackgroundColor(s_BackgroundColor);
+    m_ptcbTextClr->setTextColor(s_TextColor);
+    m_ptcbTextClr->setBackgroundColor(s_BackgroundColor);
 
     QString textFontName = s_TextFont.family() + QString(" %1").arg(s_TextFont.pointSize());
-    m_pctrlTextFont->setText(textFontName);
-    m_pctrlTextFont->setFont(s_TextFont);
-    m_pctrlTextClr->setFont(s_TextFont);
-    m_pctrlTextClr->setText(QObject::tr("Text color"));
+    m_ppbTextFont->setText(textFontName);
+    m_ppbTextFont->setFont(s_TextFont);
+    m_ptcbTextClr->setFont(s_TextFont);
+    m_ptcbTextClr->setText(QObject::tr("Text color"));
 
     QString tableFontName = s_TableFont.family() + QString(" %1").arg(s_TableFont.pointSize());
-    m_pctrlTableFont->setText(tableFontName);
-    m_pctrlTableFont->setFont(s_TableFont);
+    m_ppbTableFont->setText(tableFontName);
+    m_ppbTableFont->setFont(s_TableFont);
 
-    if(m_pctrlStyles->findText(s_StyleName)>=0)
-        m_pctrlStyles->setCurrentIndex(m_pctrlStyles->findText(s_StyleName));
-    else if(m_pctrlStyles->findText(s_StyleSheetName)>=0)
-        m_pctrlStyles->setCurrentIndex(m_pctrlStyles->findText(s_StyleSheetName));
+    if(m_pcbStyles->findText(s_StyleName)>=0)
+        m_pcbStyles->setCurrentIndex(m_pcbStyles->findText(s_StyleName));
+    else if(m_pcbStyles->findText(s_StyleSheetName)>=0)
+        m_pcbStyles->setCurrentIndex(m_pcbStyles->findText(s_StyleSheetName));
 
-    m_pctrlReverseZoom->setChecked(s_bReverseZoom);
-    m_pctrlAlignChildrenStyle->setChecked(s_bAlignChildrenStyle);
+    m_pchReverseZoom->setChecked(s_bReverseZoom);
+    m_pchAlignChildrenStyle->setChecked(s_bAlignChildrenStyle);
 }
 
 
@@ -304,9 +305,9 @@ void Settings::onBackgroundColor2d()
     QColor Color = QColorDialog::getColor(s_BackgroundColor);
     if(Color.isValid()) s_BackgroundColor = Color;
 
-    m_pctrlBackColor->setColor(s_BackgroundColor);
+    m_pcbBackColor->setColor(s_BackgroundColor);
 
-    m_pctrlTextClr->setBackgroundColor(s_BackgroundColor);
+    m_ptcbTextClr->setBackgroundColor(s_BackgroundColor);
 }
 
 
@@ -329,7 +330,7 @@ void Settings::onTextColor()
 {
     QColor Color = QColorDialog::getColor(s_TextColor);
     if(Color.isValid()) s_TextColor = Color;
-    m_pctrlTextClr->setTextColor(s_TextColor);
+    m_ptcbTextClr->setTextColor(s_TextColor);
 }
 
 
@@ -345,9 +346,9 @@ void Settings::onTextFont()
     if (bOK)
     {
         s_TextFont = TextFont;
-        m_pctrlTextFont->setText(s_TextFont.family());
-        m_pctrlTextFont->setFont(s_TextFont);
-        m_pctrlTextClr->setFont(s_TextFont);
+        m_ppbTextFont->setText(s_TextFont.family());
+        m_ppbTextFont->setFont(s_TextFont);
+        m_ptcbTextClr->setFont(s_TextFont);
     }
 }
 
@@ -363,8 +364,8 @@ void Settings::onTableFont()
     if (bOK)
     {
         s_TableFont = TableFont;
-        m_pctrlTableFont->setText(s_TableFont.family());
-        m_pctrlTableFont->setFont(s_TableFont);
+        m_ppbTableFont->setText(s_TableFont.family());
+        m_ppbTableFont->setFont(s_TableFont);
     }
 }
 
@@ -455,13 +456,13 @@ void Settings::loadSettings(QSettings &settings)
 
 void Settings::onReverseZoom()
 {
-    s_bReverseZoom = m_pctrlReverseZoom->isChecked();
+    s_bReverseZoom = m_pchReverseZoom->isChecked();
 }
 
 
 void Settings::onAlignChildrenStyle()
 {
-    s_bAlignChildrenStyle = m_pctrlAlignChildrenStyle->isChecked();
+    s_bAlignChildrenStyle = m_pchAlignChildrenStyle->isChecked();
 }
 
 
@@ -488,9 +489,9 @@ void Settings::onTheme()
     {
         return;
     }
-    m_pctrlBackColor->setColor(s_BackgroundColor);
-    m_pctrlTextClr->setBackgroundColor(s_BackgroundColor);
-    m_pctrlTextClr->setTextColor(s_TextColor);
+    m_pcbBackColor->setColor(s_BackgroundColor);
+    m_ptcbTextClr->setBackgroundColor(s_BackgroundColor);
+    m_ptcbTextClr->setTextColor(s_TextColor);
 }
 
 

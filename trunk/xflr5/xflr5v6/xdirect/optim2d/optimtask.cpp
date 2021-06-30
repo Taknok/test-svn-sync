@@ -32,7 +32,7 @@ bool OptimTask::s_bMultiThreaded    = true;
 OptimTask::OptimTask()
 {
     m_Iter = 0;
-    m_Status = Xfl::PENDING;
+    m_Status = xfl::PENDING;
 }
 
 

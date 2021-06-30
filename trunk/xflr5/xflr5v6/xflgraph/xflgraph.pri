@@ -9,7 +9,6 @@ HEADERS += \
     xflgraph/controls/graphdlg.h \
     xflgraph/curve.h \
     xflgraph/graph.h \
-    xflgraph/graph_globals.h \
 
 
 
@@ -22,7 +21,6 @@ SOURCES += \
     xflgraph/controls/graphdlg.cpp \
     xflgraph/curve.cpp \
     xflgraph/graph.cpp \
-    xflgraph/graph_globals.cpp \
 
 
 

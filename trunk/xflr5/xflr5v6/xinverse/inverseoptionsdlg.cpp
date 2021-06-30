@@ -138,7 +138,7 @@ void InverseOptionsDlg::onSplineStyle()
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_plbSpline->setTheStyle(dlg.lineStipple(),dlg.lineWidth(),dlg.lineColor(),0);
+        m_plbSpline->setTheStyle(dlg.theStyle());
         m_pXInverse->m_Spline.setTheStyle(dlg.theStyle());
     }
 }
@@ -151,7 +151,7 @@ void InverseOptionsDlg::onReflectedStyle()
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_plbReflected->setTheStyle(dlg.lineStipple(),dlg.lineWidth(),dlg.lineColor(),0);
+        m_plbReflected->setTheStyle(dlg.theStyle());
         m_pXInverse->m_ReflectedStyle = dlg.ls2();
     }
 }

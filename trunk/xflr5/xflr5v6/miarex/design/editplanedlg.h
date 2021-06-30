@@ -162,7 +162,7 @@ private:
     static bool s_bFoilNames;
 
     enumObjectType m_enumActiveObject;
-    Xfl::enumWingType m_enumActiveWingType;
+    xfl::enumWingType m_enumActiveWingType;
     int m_iActiveSection, m_iActiveFrame, m_iActivePointMass;
 };
 

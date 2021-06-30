@@ -32,12 +32,12 @@
 #include <QLabel>
 #include <QSettings>
 
-#include <xflcore/gui_enums.h>
+#include <xflcore/core_enums.h>
 #include <xflgraph/graph.h>
 
 class MainFrame;
 class TextClrBtn;
-class ColorButton;
+class ColorBtn;
 
 // first name space
 namespace SETTINGS
@@ -98,15 +98,15 @@ private slots:
 private:
     void setupLayout();
 
-    ColorButton *m_pctrlBackColor;
-    TextClrBtn *m_pctrlTextClr;
-    QPushButton *m_pctrlTextFont, *m_pctrlTableFont;
-    QPushButton *m_pctrlGraphSettings;
+    ColorBtn *m_pcbBackColor;
+    TextClrBtn *m_ptcbTextClr;
+    QPushButton *m_ppbTextFont, *m_ppbTableFont;
+    QPushButton *m_ppbGraphSettings;
 
-    QCheckBox *m_pctrlReverseZoom;
-    QCheckBox *m_pctrlAlignChildrenStyle;
+    QCheckBox *m_pchReverseZoom;
+    QCheckBox *m_pchAlignChildrenStyle;
 
-    QComboBox *m_pctrlStyles;
+    QComboBox *m_pcbStyles;
 
     QRadioButton *m_prbDark, *m_prbLight, *m_prbCustom;
 
@@ -122,7 +122,7 @@ public:
     static QColor s_TextColor;
     static bool s_bStyleSheets;
     static bool s_bReverseZoom;
-    static Xfl::enumTextFileType s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
+    static xfl::enumTextFileType s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
     static Graph s_RefGraph;//Reference setttings
     static QString s_LastDirName, s_xmlDirName, s_plrDirName;
     static QStringList s_colorList;

@@ -39,7 +39,7 @@
 #include <miarex/objects3d.h>
 #include <xflcore/units.h>
 #include <misc/options/settings.h>
-#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/customwts/doubleedit.h>
 #include <xflobjects/objects3d/plane.h>
 
 QByteArray PlaneDlg::s_Geometry;

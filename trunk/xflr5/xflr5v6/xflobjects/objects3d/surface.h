@@ -214,8 +214,8 @@ private :
     QVector<double> m_xPointA;        /**< the chordwise relative position of the VLM panel left corner points at side A */
     QVector<double> m_xPointB;        /**< the chordwise relative position of the VLM panel right corner points at side B */
 
-    Xfl::enumPanelDistribution m_XDistType;            /**< the type of distribution along the Surface's x axis */
-    Xfl::enumPanelDistribution m_YDistType;            /**< the type of distribution along the Surface's y axis */
+    xfl::enumPanelDistribution m_XDistType;            /**< the type of distribution along the Surface's x axis */
+    xfl::enumPanelDistribution m_YDistType;            /**< the type of distribution along the Surface's y axis */
     int m_NXLead;               /**< the number of panels upstream of the flap, i.e. between the leading edge and the hinge */
     int m_NXFlap;               /**< the number of panels on the flap, i.e. between the hinge and the trailing edge */
     int m_NElements;            /**< the number of panel elements constructer on this Surface. */

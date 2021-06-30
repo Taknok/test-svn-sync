@@ -37,10 +37,10 @@
 #include <miarex/mgt/xmlplanewriter.h>
 #include <miarex/objects3d.h>
 #include <miarex/view/w3dprefsdlg.h>
-#include <xflwidgets/color/colorbutton.h>
+#include <xflwidgets/color/colorbtn.h>
 #include <xflcore/units.h>
 #include <misc/options/settings.h>
-#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/customwts/doubleedit.h>
 #include <xdirect/objects2d.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/surface.h>
@@ -374,18 +374,18 @@ void GL3dWingDlg::fillTableRow(int row)
         ind = m_pWingModel->index(row, 6, QModelIndex());
         m_pWingModel->setData(ind, m_pWing->NXPanels(row));
 
-        if(m_pWing->XPanelDist(row)==Xfl::UNIFORM)       strong = tr("Uniform");
-        else if(m_pWing->XPanelDist(row)==Xfl::COSINE)   strong = tr("Cosine");
+        if(m_pWing->XPanelDist(row)==xfl::UNIFORM)       strong = tr("Uniform");
+        else if(m_pWing->XPanelDist(row)==xfl::COSINE)   strong = tr("Cosine");
         ind = m_pWingModel->index(row, 7, QModelIndex());
         m_pWingModel->setData(ind, strong);
 
         ind = m_pWingModel->index(row, 8, QModelIndex());
         m_pWingModel->setData(ind, m_pWing->NYPanels(row));
 
-        if(m_pWing->YPanelDist(row)==Xfl::UNIFORM)            strong = tr("Uniform");
-        else if(m_pWing->YPanelDist(row)==Xfl::COSINE)        strong = tr("Cosine");
-        else if(m_pWing->YPanelDist(row)==Xfl::SINE)          strong = tr("Sine");
-        else if(m_pWing->YPanelDist(row)== Xfl::INVERSESINE)  strong = tr("-Sine");
+        if(m_pWing->YPanelDist(row)==xfl::UNIFORM)            strong = tr("Uniform");
+        else if(m_pWing->YPanelDist(row)==xfl::COSINE)        strong = tr("Cosine");
+        else if(m_pWing->YPanelDist(row)==xfl::SINE)          strong = tr("Sine");
+        else if(m_pWing->YPanelDist(row)== xfl::INVERSESINE)  strong = tr("-Sine");
         ind = m_pWingModel->index(row, 9, QModelIndex());
         m_pWingModel->setData(ind, strong);
     }
@@ -1037,10 +1037,10 @@ void GL3dWingDlg::readSectionData(int sel)
     pItem = m_pWingModel->item(sel,7);
     strong =pItem->text();
     strong.replace(" ","");
-    if     (strong==tr("Uniform"))   m_pWing->setXPanelDist(sel, Xfl::UNIFORM);
-    else if(strong==tr("Cosine"))    m_pWing->setXPanelDist(sel, Xfl::COSINE);
-    else if(strong==tr("Sine"))      m_pWing->setXPanelDist(sel, Xfl::SINE);
-    else if(strong==tr("-Sine"))     m_pWing->setXPanelDist(sel, Xfl::INVERSESINE);
+    if     (strong==tr("Uniform"))   m_pWing->setXPanelDist(sel, xfl::UNIFORM);
+    else if(strong==tr("Cosine"))    m_pWing->setXPanelDist(sel, xfl::COSINE);
+    else if(strong==tr("Sine"))      m_pWing->setXPanelDist(sel, xfl::SINE);
+    else if(strong==tr("-Sine"))     m_pWing->setXPanelDist(sel, xfl::INVERSESINE);
 
     pItem = m_pWingModel->item(sel,8);
     strong =pItem->text();
@@ -1052,10 +1052,10 @@ void GL3dWingDlg::readSectionData(int sel)
     strong =pItem->text();
     strong.replace(" ","");
 
-    if     (strong==tr("Uniform"))   m_pWing->setYPanelDist(sel, Xfl::UNIFORM);
-    else if(strong==tr("Cosine"))    m_pWing->setYPanelDist(sel, Xfl::COSINE);
-    else if(strong==tr("Sine"))      m_pWing->setYPanelDist(sel, Xfl::SINE);
-    else if(strong==tr("-Sine"))     m_pWing->setYPanelDist(sel, Xfl::INVERSESINE);
+    if     (strong==tr("Uniform"))   m_pWing->setYPanelDist(sel, xfl::UNIFORM);
+    else if(strong==tr("Cosine"))    m_pWing->setYPanelDist(sel, xfl::COSINE);
+    else if(strong==tr("Sine"))      m_pWing->setYPanelDist(sel, xfl::SINE);
+    else if(strong==tr("-Sine"))     m_pWing->setYPanelDist(sel, xfl::INVERSESINE);
 }
 
 
@@ -1209,9 +1209,9 @@ void GL3dWingDlg::setupLayout()
                 pNameLayout->addWidget(m_pleWingName);
                 QHBoxLayout *pStyleLayout = new QHBoxLayout;
                 {
-                    m_prbColor    = new QRadioButton(tr("Color"));
-                    m_prbTextures = new QRadioButton(tr("Textures"));
-                    m_pcbWingColor    = new ColorButton;
+                    m_prbColor     = new QRadioButton(tr("Color"));
+                    m_prbTextures  = new QRadioButton(tr("Textures"));
+                    m_pcbWingColor = new ColorBtn;
                     m_pcbWingColor->setSizePolicy(szPolicyMaximum);
 
                     pStyleLayout->addWidget(m_prbTextures);

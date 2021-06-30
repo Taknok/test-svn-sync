@@ -26,7 +26,7 @@
 #include <QLabel>
 
 
-#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/customwts/doubleedit.h>
 #include <xflobjects/objects2d/foil.h>
 
 XFoil *LEDlg::s_pXFoil;

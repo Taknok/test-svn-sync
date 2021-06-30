@@ -161,7 +161,7 @@ void Objects3d::insertPOpp(PlaneOpp *pPOpp)
         {
             if (pPOpp->polarName() == pOldPOpp->polarName())
             {
-                if(pPOpp->polarType()<Xfl::FIXEDAOAPOLAR)
+                if(pPOpp->polarType()<xfl::FIXEDAOAPOLAR)
                 {
                     if(qAbs(pPOpp->alpha() - pOldPOpp->alpha())<0.005)
                     {
@@ -180,7 +180,7 @@ void Objects3d::insertPOpp(PlaneOpp *pPOpp)
                         i = s_oaPOpp.size();// to break
                     }
                 }
-                else if (pPOpp->polarType()==Xfl::FIXEDAOAPOLAR)
+                else if (pPOpp->polarType()==xfl::FIXEDAOAPOLAR)
                 {
                     if(qAbs(pPOpp->m_QInf - pOldPOpp->m_QInf)<0.1)
                     {
@@ -199,7 +199,7 @@ void Objects3d::insertPOpp(PlaneOpp *pPOpp)
                         i = s_oaPOpp.size();// to break
                     }
                 }
-                else if (pPOpp->polarType()==Xfl::BETAPOLAR)
+                else if (pPOpp->polarType()==xfl::BETAPOLAR)
                 {
                     if(qAbs(pPOpp->beta() - pOldPOpp->beta())<0.01)
                     {
@@ -218,7 +218,7 @@ void Objects3d::insertPOpp(PlaneOpp *pPOpp)
                         i = s_oaPOpp.size();// to break
                     }
                 }
-                else if(pPOpp->polarType()==Xfl::STABILITYPOLAR)
+                else if(pPOpp->polarType()==xfl::STABILITYPOLAR)
                 {
                     if(qAbs(pPOpp->ctrl() - pOldPOpp->ctrl())<0.001)
                     {
@@ -443,10 +443,10 @@ PlaneOpp * Objects3d::getPlaneOpp(Plane *pPlane, WPolar* pWPolar, double x)
         pPOpp = s_oaPOpp.at(i);
         if ((pPOpp->planeName() == pPlane->planeName()) && (pPOpp->polarName() == pWPolar->polarName()))
         {
-            if     (pWPolar->polarType()< Xfl::FIXEDAOAPOLAR  && qAbs(pPOpp->alpha() - x)<0.005)   return pPOpp;
-            else if(pWPolar->polarType()==Xfl::FIXEDAOAPOLAR  && qAbs(pPOpp->QInf() - x) <0.005)   return pPOpp;
-            else if(pWPolar->polarType()==Xfl::BETAPOLAR      && qAbs(pPOpp->beta() - x) <0.005)   return pPOpp;
-            else if(pWPolar->polarType()==Xfl::STABILITYPOLAR && qAbs(pPOpp->ctrl() - x) <0.005)   return pPOpp;
+            if     (pWPolar->polarType()< xfl::FIXEDAOAPOLAR  && qAbs(pPOpp->alpha() - x)<0.005)   return pPOpp;
+            else if(pWPolar->polarType()==xfl::FIXEDAOAPOLAR  && qAbs(pPOpp->QInf() - x) <0.005)   return pPOpp;
+            else if(pWPolar->polarType()==xfl::BETAPOLAR      && qAbs(pPOpp->beta() - x) <0.005)   return pPOpp;
+            else if(pWPolar->polarType()==xfl::STABILITYPOLAR && qAbs(pPOpp->ctrl() - x) <0.005)   return pPOpp;
         }
     }
     return nullptr;

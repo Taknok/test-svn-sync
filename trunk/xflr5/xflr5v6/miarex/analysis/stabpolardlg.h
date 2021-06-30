@@ -147,7 +147,7 @@ private:
     QLabel *m_pctrlRho, *m_pctrlNu;
     QLabel *m_pctrlDensityUnit, *m_pctrlViscosityUnit;
 
-    int  *m_anglePrecision, *m_massPrecision;
+    QVector<int> m_anglePrecision, m_massPrecision;
 
     static WPolar s_StabWPolar;
 

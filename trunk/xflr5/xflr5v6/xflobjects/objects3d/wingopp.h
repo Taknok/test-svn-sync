@@ -105,7 +105,7 @@ public:
     int m_NStation;        /**< the number of stations along the span */
     int m_nFlaps;        /**< the number of trailing edge flaps */
 
-    Xfl::enumAnalysisMethod m_AnalysisMethod;   /**< defines by which type of method (LLT, VLM, PANEL), this WingOpp was calculated */
+    xfl::enumAnalysisMethod m_AnalysisMethod;   /**< defines by which type of method (LLT, VLM, PANEL), this WingOpp was calculated */
 
     double *m_dCp;                           /**< a pointer to the array of pressure coefficient for each panel */
     double *m_dG;                            /**< a pointer to the array of vortice or doublet strengths */

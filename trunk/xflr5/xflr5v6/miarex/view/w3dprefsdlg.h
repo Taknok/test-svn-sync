@@ -27,10 +27,10 @@
 #include <QCheckBox>
 #include <QSettings>
 
-#include <xflcore/ls2.h>
+#include <xflcore/linestyle.h>
 
 class LineBtn;
-class ColorButton;
+class ColorBtn;
 class IntEdit;
 
 class W3dPrefsDlg : public QDialog
@@ -77,7 +77,7 @@ private:
     LineBtn *m_plbLift, *m_plbMoments, *m_plbInducedDrag, *m_plbViscousDrag, *m_plbDownwash;
     LineBtn *m_plbStreamLines, *m_plbWakePanels;
 
-    ColorButton *m_pcbMassColor;
+    ColorBtn *m_pcbMassColor;
 
     QCheckBox *m_pchAnimateTransitions, *m_pchAutoAdjustScale;
     QCheckBox *m_pchEnableClipPlane;
@@ -87,19 +87,19 @@ public:
     static double s_MassRadius;
     static QColor s_MassColor;
 
-    static LS2 s_3DAxisStyle;
-    static LS2 s_VLMStyle;
-    static LS2 s_OutlineStyle;
-    static LS2 s_XCPStyle;
-    static LS2 s_MomentStyle;
-    static LS2 s_IDragStyle;
-    static LS2 s_VDragStyle;
-    static LS2 s_TopStyle;
-    static LS2 s_BotStyle;
-    static LS2 s_DownwashStyle;
-    static LS2 s_StreamStyle;
-    static LS2 s_WakeStyle;
-    static LS2 s_CpStyle;
+    static LineStyle s_3DAxisStyle;
+    static LineStyle s_VLMStyle;
+    static LineStyle s_OutlineStyle;
+    static LineStyle s_XCPStyle;
+    static LineStyle s_MomentStyle;
+    static LineStyle s_IDragStyle;
+    static LineStyle s_VDragStyle;
+    static LineStyle s_TopStyle;
+    static LineStyle s_BotStyle;
+    static LineStyle s_DownwashStyle;
+    static LineStyle s_StreamStyle;
+    static LineStyle s_WakeStyle;
+    static LineStyle s_CpStyle;
 
 
     static bool s_bWakePanels;

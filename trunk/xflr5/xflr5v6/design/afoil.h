@@ -166,7 +166,6 @@ class AFoil : public QWidget
         QVector<SplineFoil> m_UndoStack;    /**< the stack of incremental modifications to the SplineFoil;
                                              we can't use the QStack though, because we need to access
                                              any point in the case of multiple undo operations >*/
-
 };
 
 

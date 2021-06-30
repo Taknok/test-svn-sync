@@ -1,7 +1,7 @@
 /****************************************************************************
 
     VoidWidget Class
-    Copyright (C) 2016 Andre Deperrois 
+    Copyright (C) Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,13 +30,13 @@ VoidWidget::VoidWidget(QWidget *parent) : QWidget(parent)
 }
 
 
-void VoidWidget::paintEvent ( QPaintEvent * event )
+void VoidWidget::paintEvent (QPaintEvent * pEvent )
 {
     QPainter painter(this);
 //    painter.setBackgroundMode(Qt::TransparentMode);
     painter.fillRect(rect(), Settings::backgroundColor());
 
-    event->accept();
+    pEvent->accept();
 }
 
 

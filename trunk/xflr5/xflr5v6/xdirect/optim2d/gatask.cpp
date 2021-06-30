@@ -153,7 +153,7 @@ void GATask::onIteration()
         outputMsg(QString::asprintf("The winner is particle %d\n", m_iBest));
         outputMsg(QString::asprintf("Residual error = %7.3g\n", m_Error));
 
-        m_Status = Xfl::FINISHED;
+        m_Status = xfl::FINISHED;
 
         postOptEndEvent(); // tell the GUI that the task is done
 

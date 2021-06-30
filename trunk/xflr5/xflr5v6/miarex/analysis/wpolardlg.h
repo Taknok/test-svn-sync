@@ -145,9 +145,6 @@ private:
 
     QDialogButtonBox *m_pButtonBox;
 
-
-    int  *m_anglePrecision, *m_massPrecision;
-
     QTableView *m_pExtraDragControlTable;
     QStandardItemModel *m_pExtraDragControlModel;
     CtrlTableDelegate *m_pCtrlDelegate;

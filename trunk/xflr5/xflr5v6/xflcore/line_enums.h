@@ -1,8 +1,8 @@
 /****************************************************************************
 
-    PopUp Class
+    Line_enums functions
 
-    Copyright (C) 2019 Andre Deperrois
+    Copyright (C) 2008-2019 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,37 +20,19 @@
 
 *****************************************************************************/
 
+
 #pragma once
 
-#include <QWidget>
-#include <QLabel>
-
-
-
-class PopUp : public QWidget
+namespace Line
 {
-    Q_OBJECT
+    /** @enum The different applications available to the user */
+    typedef enum {SOLID, DASH, DOT, DASHDOT, DASHDOTDOT, NOLINE} 	enumLineStipple;
 
-    public:
-        PopUp(QWidget *pParent=nullptr);
-        PopUp(QString const &message, QWidget *pParent);
-        void appendTextMessage(QString const &text);
-        void setTextMessage(QString const &text);
+    /**< @enum The different image formats usable to export screen captures*/
+    typedef enum {NOSYMBOL,
+                  LITTLECIRCLE,   BIGCIRCLE, LITTLESQUARE, BIGSQUARE, TRIANGLE, TRIANGLE_INV,
+                  LITTLECIRCLE_F, BIGCIRCLE_F, LITTLESQUARE_F, BIGSQUARE_F, TRIANGLE_F, TRIANGLE_INV_F,
+                  LITTLECROSS, BIGCROSS}	enumPointStyle;
+}
 
-        void setRed();
-        void setGreen();
-        void setFont(QFont const &fnt);
-
-    protected:
-        void showEvent(QShowEvent *);
-        void mousePressEvent(QMouseEvent *event);
-
-    private:
-        void setupLayout();
-
-
-    private:
-        QLabel *m_pMessage;
-
-};
 

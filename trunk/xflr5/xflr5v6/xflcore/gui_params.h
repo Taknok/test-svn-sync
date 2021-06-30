@@ -20,8 +20,3 @@
 #define MAXRECENTFILES         8  /**< Defines the maximum number of file names in the recent file list */
 #define SETTINGSFORMAT     53773  /**< A random number which defines the format of the settings file */
 
-
-
-#define QUESTION (BB || !BB) /**< Shakespeare */
-#define NOWIND NOFUN         /**< techwinder */
-

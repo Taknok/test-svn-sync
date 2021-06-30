@@ -29,8 +29,6 @@
 #include <QDebug>
 
 #include "xflscriptexec.h"
-#include <xflcore/xflcore.h>
-#include <xflcore/gui_params.h>
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlwpolarreader.h>
 #include <misc/options/settings.h>
@@ -38,7 +36,10 @@
 #include <xdirect/objects2d.h>
 #include <xdirect/xml/xmlpolarreader.h>
 #include <xflanalysis/plane_analysis/planetask.h>
+#include <xflcore/gui_params.h>
+#include <xflcore/xflcore.h>
 #include <xflcore/xflevents.h>
+#include <xflobjects/objects_global.h>
 
 QString XflScriptExec::s_VersionName;
 
@@ -76,7 +77,7 @@ void XflScriptExec::makeFoilAnalysisList()
     QStringList xmlanalyseslist = m_Reader.m_PolarList;
     if(m_Reader.bRunAllAnalyses())
     {
-        findFiles(m_Reader.xmlAnalysisDirPath(), filters, false, xmlanalyseslist);
+        xmlanalyseslist = xfl::findFiles(m_Reader.xmlAnalysisDirPath(), filters, false);
     }
 
     for(int ip=0; ip<m_oaFoil.count(); ip++)
@@ -103,15 +104,15 @@ void XflScriptExec::makeFoilAnalysisList()
                 FoilAnalysis FoilAnalysis;
                 switch(pPolar->polarType())
                 {
-                    case Xfl::FIXEDSPEEDPOLAR:
-                    case Xfl::FIXEDLIFTPOLAR:
+                    case xfl::FIXEDSPEEDPOLAR:
+                    case xfl::FIXEDLIFTPOLAR:
                     {
                         FoilAnalysis.vMin = m_Reader.m_aoaMin;
                         FoilAnalysis.vMax = m_Reader.m_aoaMax;
                         FoilAnalysis.vInc = m_Reader.m_aoaInc;
                         break;
                     }
-                    case Xfl::FIXEDAOAPOLAR:
+                    case xfl::FIXEDAOAPOLAR:
                     {
                         FoilAnalysis.vMin = m_Reader.m_ReMin;
                         FoilAnalysis.vMax = m_Reader.m_ReMax;
@@ -143,8 +144,8 @@ void XflScriptExec::makeFoilAnalysisList()
             FoilAnalysis FoilAnalysis;
             switch(m_Reader.m_PolarType)
             {
-                case Xfl::FIXEDSPEEDPOLAR:
-                case Xfl::FIXEDLIFTPOLAR:
+                case xfl::FIXEDSPEEDPOLAR:
+                case xfl::FIXEDLIFTPOLAR:
                 {
                     pPolar = Objects2d::createPolar(pFoil, m_Reader.m_PolarType, m_Reader.m_Reynolds.at(ip), m_Reader.m_Mach.at(ip),
                                                            m_Reader.m_NCrit.at(ip), m_Reader.m_XtrTop, m_Reader.m_XtrBot);
@@ -154,7 +155,7 @@ void XflScriptExec::makeFoilAnalysisList()
                     FoilAnalysis.vInc = m_Reader.m_aoaInc;
                     break;
                 }
-                case Xfl::FIXEDAOAPOLAR:
+                case xfl::FIXEDAOAPOLAR:
                 {
                     pPolar = Objects2d::createPolar(pFoil, m_Reader.m_PolarType, m_Reader.m_Alpha.at(ip), m_Reader.m_Mach.at(ip),
                                                            m_Reader.m_NCrit.at(ip), m_Reader.m_XtrTop, m_Reader.m_XtrBot);
@@ -193,7 +194,7 @@ bool XflScriptExec::makeFoils()
         QFile datFile;
         QString datPathName;
 
-        if (!findFile(m_Reader.m_FoilList.at(ifo), m_Reader.datFoilDirPath(), filters, true, datPathName))
+        if (!xfl::findFile(m_Reader.m_FoilList.at(ifo), m_Reader.datFoilDirPath(), filters, true, datPathName))
         {
             QString strange = "   ...failed to find the file "+m_Reader.m_FoilList.at(ifo);
             traceLog(strange+"\n");
@@ -490,7 +491,7 @@ void XflScriptExec::startXFoilTaskThread()
     //initiate the task
 
     pXFoilTask->initializeTask(Analysis, true, true, false);
-    if(Analysis.pPolar->polarType()<Xfl::FIXEDAOAPOLAR)
+    if(Analysis.pPolar->polarType()<xfl::FIXEDAOAPOLAR)
         pXFoilTask->setSequence(true, Analysis.vMin, Analysis.vMax, Analysis.vInc);
     else if(Analysis.pPolar->isFixedaoaPolar())
         pXFoilTask->setReRange(Analysis.vMin, Analysis.vMax, Analysis.vInc);

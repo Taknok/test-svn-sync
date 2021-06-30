@@ -78,7 +78,7 @@ Wing::Wing()
     m_bWingOut      = false;
 
     m_WingName        = QObject::tr("Wing Name");
-    m_WingType        = Xfl::MAINWING;
+    m_WingType        = xfl::MAINWING;
     m_WingDescription = "";
 
     QColor clr;
@@ -120,8 +120,8 @@ Wing::Wing()
 
     m_nFlaps =  0;
     clearWingSections();
-    appendWingSection(.180, .0, 0.0, 0.0, 0.000, 13, 19, Xfl::COSINE, Xfl::INVERSESINE, "", "");
-    appendWingSection(.110, .0, 1.0, 0.0, 0.070, 13, 5,  Xfl::COSINE,     Xfl::UNIFORM, "", "");
+    appendWingSection(.180, .0, 0.0, 0.0, 0.000, 13, 19, xfl::COSINE, xfl::INVERSESINE, "", "");
+    appendWingSection(.110, .0, 1.0, 0.0, 0.070, 13, 5,  xfl::COSINE,     xfl::UNIFORM, "", "");
 
     computeGeometry();
 
@@ -130,7 +130,7 @@ Wing::Wing()
     {
         length += Length(is);
         setYPosition(is, length);
-        setXPanelDist(is,  Xfl::COSINE);
+        setXPanelDist(is,  xfl::COSINE);
     }
 }
 
@@ -191,8 +191,8 @@ bool Wing::importDefinition(QString path_to_file, QString errorMessage)
     int nx;
     int ny;
     int px, py;
-    Xfl::enumPanelDistribution x_pan_dist;
-    Xfl::enumPanelDistribution y_pan_dist;
+    xfl::enumPanelDistribution x_pan_dist;
+    xfl::enumPanelDistribution y_pan_dist;
     char right_buff[512];
     char left_buff[512];
 
@@ -216,15 +216,15 @@ bool Wing::importDefinition(QString path_to_file, QString errorMessage)
 
                 infile >> px >> py;
 
-                if(px ==2)         x_pan_dist  = Xfl::INVERSESINE;
-                else if(px ==  1)  x_pan_dist  = Xfl::COSINE;
-                else if(px == -2)  x_pan_dist  = Xfl::SINE;
-                else               x_pan_dist  = Xfl::UNIFORM;
+                if(px ==2)         x_pan_dist  = xfl::INVERSESINE;
+                else if(px ==  1)  x_pan_dist  = xfl::COSINE;
+                else if(px == -2)  x_pan_dist  = xfl::SINE;
+                else               x_pan_dist  = xfl::UNIFORM;
 
-                if(py ==2)         y_pan_dist  = Xfl::INVERSESINE;
-                else if(py ==  1)  y_pan_dist  = Xfl::COSINE;
-                else if(py == -2)  y_pan_dist  = Xfl::SINE;
-                else               y_pan_dist  = Xfl::UNIFORM;
+                if(py ==2)         y_pan_dist  = xfl::INVERSESINE;
+                else if(py ==  1)  y_pan_dist  = xfl::COSINE;
+                else if(py == -2)  y_pan_dist  = xfl::SINE;
+                else               y_pan_dist  = xfl::UNIFORM;
 
                 infile >> right_buff >> left_buff;
 
@@ -257,7 +257,7 @@ bool Wing::importDefinition(QString path_to_file, QString errorMessage)
         {
             length += Length(is);
             setYPosition(is, length);
-            setXPanelDist(is,  Xfl::COSINE);
+            setXPanelDist(is,  xfl::COSINE);
         }
     }
     catch (std::iostream::failure e)
@@ -299,13 +299,13 @@ bool Wing::exportDefinition(QString path_to_file, QString errorMessage)
 
                 switch(XPanelDist(is))
                 {
-                    case Xfl::COSINE:
+                    case xfl::COSINE:
                         out_file <<  1;
                         break;
-                    case Xfl::SINE:
+                    case xfl::SINE:
                         out_file <<  2;
                         break;
-                    case Xfl::INVERSESINE:
+                    case xfl::INVERSESINE:
                         out_file << -2;
                         break;
                     default:
@@ -317,13 +317,13 @@ bool Wing::exportDefinition(QString path_to_file, QString errorMessage)
 
                 switch(YPanelDist(is))
                 {
-                    case Xfl::COSINE:
+                    case xfl::COSINE:
                         out_file <<  1;
                         break;
-                    case Xfl::SINE:
+                    case xfl::SINE:
                         out_file <<  2;
                         break;
-                    case Xfl::INVERSESINE:
+                    case xfl::INVERSESINE:
                         out_file << -2;
                         break;
                     default:
@@ -769,10 +769,10 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
 
             //AVL coding + invert XFLR5::SINE and -sine for left wing
             pSurf->m_XDistType = XPanelDist(jss);
-            if(YPanelDist(jss) == Xfl::SINE)              pSurf->m_YDistType = Xfl::INVERSESINE;
-            else if(YPanelDist(jss) ==  Xfl::COSINE)      pSurf->m_YDistType =  Xfl::COSINE;
-            else if(YPanelDist(jss) == Xfl::INVERSESINE)  pSurf->m_YDistType =  Xfl::SINE;
-            else                                            pSurf->m_YDistType =  Xfl::UNIFORM;
+            if(YPanelDist(jss) == xfl::SINE)              pSurf->m_YDistType = xfl::INVERSESINE;
+            else if(YPanelDist(jss) ==  xfl::COSINE)      pSurf->m_YDistType =  xfl::COSINE;
+            else if(YPanelDist(jss) == xfl::INVERSESINE)  pSurf->m_YDistType =  xfl::SINE;
+            else                                            pSurf->m_YDistType =  xfl::UNIFORM;
 
             pSurf->createXPoints();
             pSurf->setFlap();
@@ -2001,13 +2001,13 @@ int Wing::NYPanels(const int &iSection) const  {return m_Section[iSection]->m_NY
 *@param iSection the index of the section
 *@return the type of distribution of chordwise panels - always XFLR5::COSINE type
 */
-Xfl::enumPanelDistribution Wing::XPanelDist(const int &iSection) const {return m_Section[iSection]->m_XPanelDist;}
+xfl::enumPanelDistribution Wing::XPanelDist(const int &iSection) const {return m_Section[iSection]->m_XPanelDist;}
 
 /** Returns the type of distribution of spanwise panels at a span section identified by its index
 *@param iSection the index of the section
 *@return the type of distribution of spanwise panels
 */
-Xfl::enumPanelDistribution Wing::YPanelDist(const int &iSection) const {return m_Section[iSection]->m_YPanelDist;}
+xfl::enumPanelDistribution Wing::YPanelDist(const int &iSection) const {return m_Section[iSection]->m_YPanelDist;}
 
 /**
  * Returns the name of the foil on the right side of a span section
@@ -2062,7 +2062,7 @@ bool Wing::appendWingSection()
  * Appends a new section at the tip of the wing, with values specified as input parameters
  */
 bool Wing::appendWingSection(double Chord, double Twist, double Pos, double Dihedral, double Offset,
-                             int NXPanels, int NYPanels, Xfl::enumPanelDistribution XPanelDist, Xfl::enumPanelDistribution YPanelDist,
+                             int NXPanels, int NYPanels, xfl::enumPanelDistribution XPanelDist, xfl::enumPanelDistribution YPanelDist,
                              QString RightFoilName, QString LeftFoilName)
 {
     WingSection *pWS = new WingSection();
@@ -2384,20 +2384,20 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             for(int is=0; is<=NPanel; is++)
             {
                 ar >> k;
-                if     (k==1)  setXPanelDist(is, Xfl::COSINE);
-                else if(k==2)  setXPanelDist(is, Xfl::SINE);
-                else if(k==-2) setXPanelDist(is, Xfl::INVERSESINE);
-                else           setXPanelDist(is, Xfl::UNIFORM);  //case 0
+                if     (k==1)  setXPanelDist(is, xfl::COSINE);
+                else if(k==2)  setXPanelDist(is, xfl::SINE);
+                else if(k==-2) setXPanelDist(is, xfl::INVERSESINE);
+                else           setXPanelDist(is, xfl::UNIFORM);  //case 0
             }
         }
 
         for (int is=0; is<=NPanel; is++)
         {
             ar >> k;
-            if     (k==1)  setYPanelDist(is, Xfl::COSINE);
-            else if(k==2)  setYPanelDist(is, Xfl::SINE);
-            else if(k==-2) setYPanelDist(is, Xfl::INVERSESINE);
-            else           setYPanelDist(is, Xfl::UNIFORM);  //case 0
+            if     (k==1)  setYPanelDist(is, xfl::COSINE);
+            else if(k==2)  setYPanelDist(is, xfl::SINE);
+            else if(k==-2) setYPanelDist(is, xfl::INVERSESINE);
+            else           setYPanelDist(is, xfl::UNIFORM);  //case 0
         }
 
         if(ArchiveFormat>=1006)
@@ -2469,7 +2469,7 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
     int ArchiveFormat=0;// identifies the format of the file
     double dble=0, dm=0, px=0, py=0, pz=0;
     double chord=0, twist=0, pos=0, dihedral=0, offset=0;
-    Xfl::enumPanelDistribution xDist, yDist;
+    xfl::enumPanelDistribution xDist, yDist;
 
     if(bIsStoring)
     {
@@ -2497,13 +2497,13 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 
             switch(XPanelDist(is))
             {
-                case Xfl::COSINE:
+                case xfl::COSINE:
                     ar <<  1;
                     break;
-                case Xfl::SINE:
+                case xfl::SINE:
                     ar <<  2;
                     break;
-                case Xfl::INVERSESINE:
+                case xfl::INVERSESINE:
                     ar << -2;
                     break;
                 default:
@@ -2513,13 +2513,13 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 
             switch(YPanelDist(is))
             {
-                case Xfl::COSINE:
+                case xfl::COSINE:
                     ar <<  1;
                     break;
-                case Xfl::SINE:
+                case xfl::SINE:
                     ar <<  2;
                     break;
-                case Xfl::INVERSESINE:
+                case xfl::INVERSESINE:
                     ar << -2;
                     break;
                 default:
@@ -2541,19 +2541,19 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
         // space allocation for the future storage of more data, without need to change the format
         for (int i=1; i<19; i++) ar << 0;
         switch (wingType()) {
-            case Xfl::MAINWING:
+            case xfl::MAINWING:
                 ar<<0;
                 break;
-            case Xfl::SECONDWING:
+            case xfl::SECONDWING:
                 ar<<1;
                 break;
-            case Xfl::ELEVATOR:
+            case xfl::ELEVATOR:
                 ar<<2;
                 break;
-            case Xfl::FIN:
+            case xfl::FIN:
                 ar<<3;
                 break;
-            case Xfl::OTHERWING:
+            case xfl::OTHERWING:
                 ar<<4;
                 break;
         }
@@ -2591,16 +2591,16 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
             ar >> ny;
 
             ar >> k;
-            if(k==1)       xDist = Xfl::COSINE;
-            else if(k== 2) xDist = Xfl::SINE;
-            else if(k==-2) xDist = Xfl::INVERSESINE;
-            else           xDist = Xfl::UNIFORM;
+            if(k==1)       xDist = xfl::COSINE;
+            else if(k== 2) xDist = xfl::SINE;
+            else if(k==-2) xDist = xfl::INVERSESINE;
+            else           xDist = xfl::UNIFORM;
 
             ar >> k;
-            if(k==1)       yDist = Xfl::COSINE;
-            else if(k== 2) yDist = Xfl::SINE;
-            else if(k==-2) yDist = Xfl::INVERSESINE;
-            else           yDist = Xfl::UNIFORM;
+            if(k==1)       yDist = xfl::COSINE;
+            else if(k== 2) yDist = xfl::SINE;
+            else if(k==-2) yDist = xfl::INVERSESINE;
+            else           yDist = xfl::UNIFORM;
 
             appendWingSection(chord, twist, pos, dihedral, offset, nx, ny, xDist, yDist, rightfoil, leftfoil);
         }
@@ -2621,19 +2621,19 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
         ar >>k;
         switch (k) {
             case 0:
-                m_WingType=Xfl::MAINWING;
+                m_WingType=xfl::MAINWING;
                 break;
             case 1:
-                m_WingType=Xfl::SECONDWING;
+                m_WingType=xfl::SECONDWING;
                 break;
             case 2:
-                m_WingType=Xfl::ELEVATOR;
+                m_WingType=xfl::ELEVATOR;
                 break;
             case 3:
-                m_WingType=Xfl::FIN;
+                m_WingType=xfl::FIN;
                 break;
             case 4:
-                m_WingType=Xfl::OTHERWING;
+                m_WingType=xfl::OTHERWING;
                 break;
             default:
                 break;
@@ -3407,7 +3407,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
     for (int i = 0; i<s_poaPolar->size(); i++)
     {
         pPolar = s_poaPolar->at(i);
-        if((pPolar->polarType()== Xfl::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->name()))
+        if((pPolar->polarType()== xfl::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->name()))
         {
             n++;
             if(n>=2) break;
@@ -3426,7 +3426,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
     for (int i=0; i<nPolars; i++)
     {
         pPolar = s_poaPolar->at(i);
-        if((pPolar->polarType()==Xfl::FIXEDSPEEDPOLAR) && (pPolar->foilName()==pFoil->name()) && pPolar->m_Cl.size()>0)
+        if((pPolar->polarType()==xfl::FIXEDSPEEDPOLAR) && (pPolar->foilName()==pFoil->name()) && pPolar->m_Cl.size()>0)
         {
             // we have found the first type 1 polar for this foil
             if (Re < pPolar->Reynolds())
@@ -3466,7 +3466,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
     for (int i=0; i< nPolars; i++)
     {
         pPolar = s_poaPolar->at(i);
-        if((pPolar->polarType()== Xfl::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->name())  && pPolar->m_Cl.size()>0)
+        if((pPolar->polarType()== xfl::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->name())  && pPolar->m_Cl.size()>0)
         {
             // we have found the first type 1 polar for this foil
             pPolar->getClLimits(Clmin, Clmax);

@@ -77,17 +77,17 @@ class WPolar : public XflObject
         bool serializeWPlrWPA(QDataStream &ar, bool bIsStoring);
         bool serializeWPlrXFL(QDataStream &ar, bool bIsStoring);
 
-        Xfl::enumPolarType polarType()           const {return m_WPolarType;}       /**< returns the type of the polar as an index in the enumeration. */
-        Xfl::enumAnalysisMethod analysisMethod() const {return m_AnalysisMethod;}   /**< returns the analysis method of the polar as an index in the enumeration. */
-        void setPolarType(Xfl::enumPolarType type) {m_WPolarType=type;}
-        void setAnalysisMethod(Xfl::enumAnalysisMethod method) {m_AnalysisMethod=method;}
+        xfl::enumPolarType polarType()           const {return m_WPolarType;}       /**< returns the type of the polar as an index in the enumeration. */
+        xfl::enumAnalysisMethod analysisMethod() const {return m_AnalysisMethod;}   /**< returns the analysis method of the polar as an index in the enumeration. */
+        void setPolarType(xfl::enumPolarType type) {m_WPolarType=type;}
+        void setAnalysisMethod(xfl::enumAnalysisMethod method) {m_AnalysisMethod=method;}
 
-        bool isLLTMethod()         const {return m_AnalysisMethod==Xfl::LLTMETHOD;}
-        bool isVLMMethod()         const {return m_AnalysisMethod==Xfl::VLMMETHOD;}
-        bool isPanel4Method()      const {return m_AnalysisMethod==Xfl::PANEL4METHOD;}
+        bool isLLTMethod()         const {return m_AnalysisMethod==xfl::LLTMETHOD;}
+        bool isVLMMethod()         const {return m_AnalysisMethod==xfl::VLMMETHOD;}
+        bool isPanel4Method()      const {return m_AnalysisMethod==xfl::PANEL4METHOD;}
         bool isQuadMethod()        const {return isPanel4Method() || isVLMMethod();}
-        bool isTriCstMethod()      const {return m_AnalysisMethod==Xfl::TRIUNIMETHOD;}
-        bool isTriLinearMethod()   const {return m_AnalysisMethod==Xfl::TRILINMETHOD;}
+        bool isTriCstMethod()      const {return m_AnalysisMethod==xfl::TRIUNIMETHOD;}
+        bool isTriLinearMethod()   const {return m_AnalysisMethod==xfl::TRILINMETHOD;}
         bool isTriangleMethod()    const {return isTriCstMethod() || isTriLinearMethod();}
 
         QString const &polarName() const {return m_Name;}       /**< returns the polar's name as a QString object. */
@@ -100,11 +100,11 @@ class WPolar : public XflObject
         void setDensity(double f) {m_Density=f;}
         void setViscosity(double f) {m_Viscosity=f;}
 
-        bool isFixedSpeedPolar() const    {return m_WPolarType==Xfl::FIXEDSPEEDPOLAR;}      /**< returns true if the polar is of the FIXEDSPEEDPOLAR type, false otherwise >*/
-        bool isFixedLiftPolar()  const    {return m_WPolarType==Xfl::FIXEDLIFTPOLAR;}       /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/
-        bool isFixedaoaPolar()   const    {return m_WPolarType==Xfl::FIXEDAOAPOLAR;}        /**< returns true if the polar is of the FIXEDAOAPOLAR type, false otherwise >*/
-        bool isStabilityPolar()  const    {return m_WPolarType==Xfl::STABILITYPOLAR;}       /**< returns true if the polar is of the STABILITYPOLAR type, false otherwise >*/
-        bool isBetaPolar()       const    {return m_WPolarType==Xfl::BETAPOLAR;}            /**< returns true if the polar is of the BETAPOLAR type, false otherwise >*/
+        bool isFixedSpeedPolar() const    {return m_WPolarType==xfl::FIXEDSPEEDPOLAR;}      /**< returns true if the polar is of the FIXEDSPEEDPOLAR type, false otherwise >*/
+        bool isFixedLiftPolar()  const    {return m_WPolarType==xfl::FIXEDLIFTPOLAR;}       /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/
+        bool isFixedaoaPolar()   const    {return m_WPolarType==xfl::FIXEDAOAPOLAR;}        /**< returns true if the polar is of the FIXEDAOAPOLAR type, false otherwise >*/
+        bool isStabilityPolar()  const    {return m_WPolarType==xfl::STABILITYPOLAR;}       /**< returns true if the polar is of the STABILITYPOLAR type, false otherwise >*/
+        bool isBetaPolar()       const    {return m_WPolarType==xfl::BETAPOLAR;}            /**< returns true if the polar is of the BETAPOLAR type, false otherwise >*/
 
         bool bThinSurfaces()     const {return m_bThinSurfaces;}  /**< returns true if the analysis if using thin surfaces, i.e. VLM, false if 3D Panels for the Wing objects. */
         bool bWakeRollUp()       const {return m_bWakeRollUp;}
@@ -114,7 +114,7 @@ class WPolar : public XflObject
         bool bViscous()          const {return m_bViscous;}
         bool bVLM1()             const {return m_bVLM1;}
         bool bAutoInertia()      const {return m_bAutoInertia;}
-        bool bDirichlet()        const {return m_BoundaryCondition==Xfl::DIRICHLET;}
+        bool bDirichlet()        const {return m_BoundaryCondition==xfl::DIRICHLET;}
 
         void setThinSurfaces(bool b)     {m_bThinSurfaces=b;}
         void setTilted(bool b)           {m_bTiltedGeom=b;}
@@ -128,14 +128,14 @@ class WPolar : public XflObject
         int polarFormat() const {return m_PolarFormat;}
         void setPolarFormat(int fmt) {m_PolarFormat=fmt;}
 
-        Xfl::enumBC const &boundaryCondition() const {return m_BoundaryCondition;}
-        void setBoundaryCondition(Xfl::enumBC bc) {m_BoundaryCondition=bc;}
+        xfl::enumBC const &boundaryCondition() const {return m_BoundaryCondition;}
+        void setBoundaryCondition(xfl::enumBC bc) {m_BoundaryCondition=bc;}
 
-        Xfl::enumRefDimension referenceDim() const {return m_ReferenceDim;}
+        xfl::enumRefDimension referenceDim() const {return m_ReferenceDim;}
         double referenceArea()  const {return m_referenceArea;}
         double referenceSpanLength()  const {return m_referenceSpanLength;}
         double referenceChordLength() const {return m_referenceChordLength;}
-        void setReferenceDim(Xfl::enumRefDimension dim) {m_ReferenceDim=dim;}
+        void setReferenceDim(xfl::enumRefDimension dim) {m_ReferenceDim=dim;}
         void setReferenceArea(double a) {m_referenceArea=a;}
         void setReferenceSpanLength(double l) {m_referenceSpanLength=l;}
         void setReferenceChordLength(double c) {m_referenceChordLength=c;}
@@ -184,8 +184,8 @@ class WPolar : public XflObject
         bool     m_bWakeRollUp;        /**< true if wake roll-up  should be taken into account in the analysis */
         int      m_PolarFormat;        /**< the identification number which references the format used to serialize the data */
 
-        Xfl::enumBC m_BoundaryCondition;
-        Xfl::enumRefDimension  m_ReferenceDim;        /**< Describes the origin of the refernce area : 1 if planform area, else projected area */
+        xfl::enumBC m_BoundaryCondition;
+        xfl::enumRefDimension  m_ReferenceDim;        /**< Describes the origin of the refernce area : 1 if planform area, else projected area */
 
         QString  m_PlaneName;          /**< the name of the parent wing or plane */
 
@@ -198,8 +198,8 @@ class WPolar : public XflObject
         double        m_Density;              /**< The fluid's density */
         double        m_Mass;                 /**< The mass for type 2 and type 7 polars */
 
-        Xfl::enumAnalysisMethod m_AnalysisMethod;  /**< The method used for the analysis. May be one of the following types : LLTMETHOD, VLMMETHOD, PANELMETHOD */
-        Xfl::enumPolarType      m_WPolarType;      /**< The type of analysis. May be one of the following types :FIXEDSPEEDPOLAR, FIXEDLIFTPOLAR, FIXEDAOAPOLAR, STABILITYPOLAR */
+        xfl::enumAnalysisMethod m_AnalysisMethod;  /**< The method used for the analysis. May be one of the following types : LLTMETHOD, VLMMETHOD, PANELMETHOD */
+        xfl::enumPolarType      m_WPolarType;      /**< The type of analysis. May be one of the following types :FIXEDSPEEDPOLAR, FIXEDLIFTPOLAR, FIXEDAOAPOLAR, STABILITYPOLAR */
 
     public:
         bool     m_bRelaxWake;         /**< true if wake relaxation is implemented */

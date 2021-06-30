@@ -30,7 +30,7 @@
 #include <xdirect/analysis/xfoiltask.h>
 #include <xdirect/objects2d.h>
 #include <xdirect/xdirect.h>
-#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/customwts/doubleedit.h>
 
 double BatchCtrlDlg::s_XHinge     = 0.7;
 double BatchCtrlDlg::s_YHinge     = 0.5;
@@ -299,10 +299,10 @@ void BatchCtrlDlg::startAnalyses()
         {
             Polar *pPolar = nullptr;
             if(!s_bFromList)
-                pPolar = Objects2d::createPolar(pFoil, Xfl::FIXEDSPEEDPOLAR, s_ReMin + iRe *s_ReInc,
+                pPolar = Objects2d::createPolar(pFoil, xfl::FIXEDSPEEDPOLAR, s_ReMin + iRe *s_ReInc,
                                                 s_Mach, s_ACrit, s_XTop, s_XBot);
             else
-                pPolar = Objects2d::createPolar(pFoil, Xfl::FIXEDSPEEDPOLAR, XDirect::s_ReList[iRe],
+                pPolar = Objects2d::createPolar(pFoil, xfl::FIXEDSPEEDPOLAR, XDirect::s_ReList[iRe],
                                                 XDirect::s_MachList[iRe], XDirect::s_NCritList[iRe], s_XTop, s_XBot);
 
             //initiate the task

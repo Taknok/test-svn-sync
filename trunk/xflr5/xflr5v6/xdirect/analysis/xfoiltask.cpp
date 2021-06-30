@@ -76,7 +76,7 @@ void XFoilTask::run()
         return;
     }
 
-    if(m_pPolar->polarType()!=Xfl::FIXEDAOAPOLAR) alphaSequence();
+    if(m_pPolar->polarType()!=xfl::FIXEDAOAPOLAR) alphaSequence();
     else                                          ReSequence();
 
     m_bIsFinished = true;

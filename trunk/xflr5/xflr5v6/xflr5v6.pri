@@ -3,7 +3,6 @@ SOURCES += \
     design/afoil.cpp \
     design/afoiltabledlg.cpp \
     design/foiltabledelegate.cpp \
-    design/gridsettingsdlg.cpp \
     design/lecircledlg.cpp \
     design/splinectrlsdlg.cpp \
     globals/main.cpp \
@@ -12,16 +11,13 @@ SOURCES += \
     gui_objects/spline5.cpp \
     gui_objects/splinefoil.cpp \
     miarex/analysis/aerodatadlg.cpp \
-    miarex/analysis/ctrltabledelegate.cpp \
     miarex/analysis/editpolardefdlg.cpp \
     miarex/analysis/lltanalysisdlg.cpp \
     miarex/analysis/panelanalysisdlg.cpp \
     miarex/analysis/stabpolardlg.cpp \
     miarex/analysis/wadvanceddlg.cpp \
     miarex/analysis/wpolardlg.cpp \
-    miarex/design/bodygriddlg.cpp \
     miarex/design/bodyscaledlg.cpp \
-    miarex/design/bodytabledelegate.cpp \
     miarex/design/bodytransdlg.cpp \
     miarex/design/editbodydlg.cpp \
     miarex/design/editobjectdelegate.cpp \
@@ -51,18 +47,13 @@ SOURCES += \
     misc/aboutq5.cpp \
     misc/editplrdlg.cpp \
     misc/lengthunitdlg.cpp \
-    misc/moddlg.cpp \
-    misc/newnamedlg.cpp \
-    misc/objectpropsdlg.cpp \
     misc/options/languagewt.cpp \
     misc/options/preferencesdlg.cpp \
     misc/options/saveoptions.cpp \
     misc/options/settings.cpp \
     misc/polarfilterdlg.cpp \
-    misc/popup.cpp \
     misc/renamedlg.cpp \
     misc/stlexportdialog.cpp \
-    misc/updater.cpp \
     twodwidgets/bodyframewt.cpp \
     twodwidgets/bodylinewt.cpp \
     twodwidgets/foildesignwt.cpp \
@@ -111,7 +102,6 @@ HEADERS += \
     design/afoil.h \
     design/afoiltabledlg.h \
     design/foiltabledelegate.h \
-    design/gridsettingsdlg.h \
     design/lecircledlg.h \
     design/splinectrlsdlg.h \
     globals/mainframe.h \
@@ -119,16 +109,13 @@ HEADERS += \
     gui_objects/spline5.h \
     gui_objects/splinefoil.h \
     miarex/analysis/aerodatadlg.h \
-    miarex/analysis/ctrltabledelegate.h \
     miarex/analysis/editpolardefdlg.h \
     miarex/analysis/lltanalysisdlg.h \
     miarex/analysis/panelanalysisdlg.h \
     miarex/analysis/stabpolardlg.h \
     miarex/analysis/wadvanceddlg.h \
     miarex/analysis/wpolardlg.h \
-    miarex/design/bodygriddlg.h \
     miarex/design/bodyscaledlg.h \
-    miarex/design/bodytabledelegate.h \
     miarex/design/bodytransdlg.h \
     miarex/design/editbodydlg.h \
     miarex/design/editobjectdelegate.h \
@@ -158,18 +145,13 @@ HEADERS += \
     misc/aboutq5.h \
     misc/editplrdlg.h \
     misc/lengthunitdlg.h \
-    misc/moddlg.h \
-    misc/newnamedlg.h \
-    misc/objectpropsdlg.h \
     misc/options/languagewt.h \
     misc/options/preferencesdlg.h \
     misc/options/saveoptions.h \
     misc/options/settings.h \
     misc/polarfilterdlg.h \
-    misc/popup.h \
     misc/renamedlg.h \
     misc/stlexportdialog.h \
-    misc/updater.h \
     twodwidgets/bodyframewt.h \
     twodwidgets/bodylinewt.h \
     twodwidgets/foildesignwt.h \

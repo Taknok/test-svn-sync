@@ -25,9 +25,9 @@
 #include "pertdlg.h"
 #include <misc/options/settings.h>
 
-#include <xflwidgets/text/floateditdelegate.h>
+#include <xflwidgets/customwts/floateditdelegate.h>
 #include <xflobjects/objects2d/foil.h>
-#include <xflwidgets/text/doubleedit.h>
+#include <xflwidgets/customwts/doubleedit.h>
 
 
 PertDlg::PertDlg(QWidget *pParent) : QDialog(pParent)

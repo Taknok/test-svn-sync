@@ -32,8 +32,8 @@
 #include <xflgraph/curve.h>
 #include <xflgraph/graph.h>
 #include <misc/options/settings.h>
-#include <xflwidgets/text/doubleedit.h>
-#include <xflwidgets/text/intedit.h>
+#include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/intedit.h>
 #include <xflgraph/containers/graphwt.h>
 #include <xdirect/analysis/xfoiltask.h>
 #include <xdirect/objects2d.h>
@@ -241,7 +241,7 @@ void BatchGraphDlg::alphaLoop()
         str = QString("Alpha = %1\n").arg(alphadeg,0,'f',2);
         outputMsg(str);
 
-        Polar *pCurPolar = Objects2d::createPolar(m_pCurFoil, Xfl::FIXEDAOAPOLAR, alphadeg, s_Mach, s_ACrit, s_XTop, s_XBot);
+        Polar *pCurPolar = Objects2d::createPolar(m_pCurFoil, xfl::FIXEDAOAPOLAR, alphadeg, s_Mach, s_ACrit, s_XTop, s_XBot);
 
         if(!pCurPolar) return;
 
@@ -307,7 +307,7 @@ void BatchGraphDlg::initDialog()
 
     if(s_ReMin<=0.0) s_ReMin = qAbs(s_ReInc);
 
-    if(s_PolarType!=Xfl::FIXEDAOAPOLAR)
+    if(s_PolarType!=xfl::FIXEDAOAPOLAR)
     {
         m_pdeReMin->setDigits(0);
         m_pdeReMax->setDigits(0);
@@ -353,10 +353,10 @@ void BatchGraphDlg::initDialog()
     else         m_prbCl->setChecked(true);
     onAcl();
 
-    if     (s_PolarType==Xfl::FIXEDSPEEDPOLAR)  m_rbtype1->setChecked(true);
-    else if(s_PolarType==Xfl::FIXEDLIFTPOLAR)   m_rbtype2->setChecked(true);
-    else if(s_PolarType==Xfl::RUBBERCHORDPOLAR) m_rbtype3->setChecked(true);
-    else if(s_PolarType==Xfl::FIXEDAOAPOLAR)    m_rbtype4->setChecked(true);
+    if     (s_PolarType==xfl::FIXEDSPEEDPOLAR)  m_rbtype1->setChecked(true);
+    else if(s_PolarType==xfl::FIXEDLIFTPOLAR)   m_rbtype2->setChecked(true);
+    else if(s_PolarType==xfl::RUBBERCHORDPOLAR) m_rbtype3->setChecked(true);
+    else if(s_PolarType==xfl::FIXEDAOAPOLAR)    m_rbtype4->setChecked(true);
     onPolarType();
 
 
@@ -390,21 +390,21 @@ void BatchGraphDlg::onPolarType()
         m_plabReType->setText(tr("Reynolds ="));
         m_plabMaType->setText(tr("Mach ="));
         m_ppbEditList->setEnabled(true);
-        s_PolarType = Xfl::FIXEDSPEEDPOLAR;
+        s_PolarType = xfl::FIXEDSPEEDPOLAR;
     }
     else if(m_rbtype2->isChecked())
     {
         m_plabReType->setText(tr("Re.sqrt(Cl) ="));
         m_plabMaType->setText(tr("Ma.sqrt(Cl) ="));
         m_ppbEditList->setEnabled(true);
-        s_PolarType = Xfl::FIXEDLIFTPOLAR;
+        s_PolarType = xfl::FIXEDLIFTPOLAR;
     }
     else if(m_rbtype3->isChecked())
     {
         m_plabReType->setText(tr("Re.Cl ="));
         m_plabMaType->setText(tr("Mach ="));
         m_ppbEditList->setEnabled(true);
-        s_PolarType = Xfl::RUBBERCHORDPOLAR;
+        s_PolarType = xfl::RUBBERCHORDPOLAR;
     }
     else if(m_rbtype4->isChecked())
     {
@@ -412,10 +412,10 @@ void BatchGraphDlg::onPolarType()
         m_plabMaType->setText(tr("Mach ="));
         m_ppbEditList->setEnabled(false);
         m_prbAlpha->setChecked(true);
-        s_PolarType = Xfl::FIXEDAOAPOLAR;
+        s_PolarType = xfl::FIXEDAOAPOLAR;
     }
 
-    if(s_PolarType!=Xfl::FIXEDAOAPOLAR)
+    if(s_PolarType!=xfl::FIXEDAOAPOLAR)
     {
         m_pdeReMin->setDigits(0);
         m_pdeReMax->setDigits(0);
@@ -535,7 +535,7 @@ void BatchGraphDlg::readParams()
 {
     BatchAbstractDlg::readParams();
 
-    if(s_PolarType==Xfl::FIXEDAOAPOLAR)
+    if(s_PolarType==xfl::FIXEDAOAPOLAR)
     {
         m_SpInc = m_pdeReDelta->value();
         m_SpMax = m_pdeReMax->value();
@@ -589,7 +589,7 @@ void BatchGraphDlg::ReLoop()
         str = QString("Re=%1   Ma=%2   Nc=%3\n").arg(Reynolds,8,'f',0).arg(Mach,5,'f',3).arg(NCrit,5,'f',2);
         outputMsg(str);
 
-        Polar *pCurPolar = Objects2d::createPolar(m_pCurFoil, Xfl::FIXEDSPEEDPOLAR, Reynolds, s_Mach, s_ACrit, s_XTop, s_XBot);
+        Polar *pCurPolar = Objects2d::createPolar(m_pCurFoil, xfl::FIXEDSPEEDPOLAR, Reynolds, s_Mach, s_ACrit, s_XTop, s_XBot);
         if(!pCurPolar) return;
 
         m_pXFoilTask->initializeXFoilTask(m_pCurFoil, pCurPolar, XDirect::s_bViscous, s_bInitBL, s_bFromZero);
@@ -661,7 +661,7 @@ void BatchGraphDlg::analyze()
 
     if(s_bCurrentFoil)
     {
-        if(s_PolarType!=Xfl::FIXEDAOAPOLAR) ReLoop();
+        if(s_PolarType!=xfl::FIXEDAOAPOLAR) ReLoop();
         else                                  alphaLoop();
     }
     else
@@ -672,7 +672,7 @@ void BatchGraphDlg::analyze()
 
             strong = tr("Analyzing ")+m_pCurFoil->name()+("\n");
             outputMsg(strong);
-            if(s_PolarType!=Xfl::FIXEDAOAPOLAR) ReLoop();
+            if(s_PolarType!=xfl::FIXEDAOAPOLAR) ReLoop();
             else                                  alphaLoop();
             strong = "\n\n";
             outputMsg(strong);

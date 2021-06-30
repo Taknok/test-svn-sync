@@ -20,8 +20,7 @@
 *****************************************************************************/
 
 
-#ifndef GLLIGHTDLG_H
-#define GLLIGHTDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QCheckBox>
@@ -55,62 +54,63 @@ class GLLightDlg : public QDialog
     friend class Miarex;
     friend class gl3dView;
 
-public:
-    GLLightDlg(QWidget *pParent=nullptr);
-    void apply();
-    void readParams(void);
-    void setDefaults();
-    void setModelSize(double span);
-    void setParams(void);
-    void setgl3dView(gl3dView*pglView) {m_pglView = pglView;}
-
-    QSize minimumSizeHint() const;
-    QSize sizeHint() const;
-
-    static bool loadSettings(QSettings &settings);
-    static bool saveSettings(QSettings &settings);
-
-    static bool isLightOn() {return s_Light.m_bIsLightOn;}
-    static void setLightOn(bool bLight) {s_Light.m_bIsLightOn = bLight;}
-
-private:
-    void connectSignals();
-    void setupLayout();
-    void showEvent(QShowEvent *pEvent);
-    void setEnabled();
-    void setLabels();
-
-private slots:
-    void onChanged();
-    void onDefaults();
-    void onLight();
-
-private:
-    QSlider *m_pctrlRed, *m_pctrlGreen, *m_pctrlBlue;
-    QSlider  *m_pctrlMatShininess;
-    ExponentialSlider *m_pctrlLightAmbient, *m_pctrlLightDiffuse, *m_pctrlLightSpecular;
-    ExponentialSlider *m_pctrlXLight, *m_pctrlYLight, *m_pctrlZLight;
-
-    QCheckBox *m_pctrlLight;
-    QLabel *m_pctrlLightAmbientLabel, *m_pctrlLightDiffuseLabel, *m_pctrlLightSpecularLabel;
-    QLabel *m_pctrlposXValue, *m_pctrlposYValue, *m_pctrlposZValue;
-    QLabel *m_pctrlLightRed, *m_pctrlLightGreen, *m_pctrlLightBlue;
-    QLabel *m_pctrlMatShininessLabel;
-
-    QPushButton *m_pctrlDefaults, *m_pctrlClose;
-
-    DoubleEdit *m_pctrlConstantAttenuation , *m_pctrlLinearAttenuation , *m_pctrlQuadAttenuation ;
+    public:
+        GLLightDlg(QWidget *pParent=nullptr);
+        void apply();
+        void readParams(void);
+        void setDefaults();
+        void setModelSize(double span);
+        void setParams(void);
+        void setgl3dView(gl3dView*pglView) {m_pglView = pglView;}
 
 
-private:
-    gl3dView *m_pglView;
+        static bool loadSettings(QSettings &settings);
+        static bool saveSettings(QSettings &settings);
 
-    static Light s_Light;
-    static Attenuation s_Attenuation;
-    static int s_iShininess;
-    float m_ModelSize;
+        static bool isLightOn() {return s_Light.m_bIsLightOn;}
+        static void setLightOn(bool bLight) {s_Light.m_bIsLightOn = bLight;}
+
+    private:
+        void connectSignals();
+        void setupLayout();
+        void showEvent(QShowEvent *pEvent) override;
+        void hideEvent(QHideEvent *pEvent) override;
+        QSize minimumSizeHint() const override {return QSize(300, 350);}
+        QSize sizeHint() const override{return QSize(400, 400);}
+        void setEnabled();
+        void setLabels();
+
+    private slots:
+        void onChanged();
+        void onDefaults();
+        void onLight();
+
+    private:
+        QSlider *m_pslRed, *m_pslGreen, *m_pslBlue;
+        QSlider  *m_pslMatShininess;
+        ExponentialSlider *m_peslLightAmbient, *m_peslLightDiffuse, *m_peslLightSpecular;
+        ExponentialSlider *m_prslXLight, *m_peslYLight, *m_peslZLight;
+
+        QCheckBox *m_plabLight;
+        QLabel *m_plabLightAmbient, *m_plabLightDiffuse, *m_plabLightSpecular;
+        QLabel *m_plabPosXValue, *m_plabPosYValue, *m_plabPosZValue;
+        QLabel *m_pctrlLightRed, *m_plabLightGreen, *m_plabLightBlue;
+        QLabel *m_plabMatShininess;
+
+        QPushButton *m_ppbDefaults, *m_ppbClose;
+
+        DoubleEdit *m_pdeConstantAttenuation , *m_pdeLinearAttenuation , *m_pdeQuadAttenuation;
+
+
+    private:
+        gl3dView *m_pglView;
+
+        static Light s_Light;
+        static Attenuation s_Attenuation;
+        static int s_iShininess;
+        float m_ModelSize;
 
 };
 
-#endif // GLLIGHTDLG_H
+
 

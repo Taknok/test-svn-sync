@@ -23,7 +23,6 @@
 
 #include <xflgraph/curve.h>
 #include <xflgraph/graph.h>
-#include <xflgraph/graph_globals.h>
 
 /**
  * The public constructor
@@ -32,7 +31,7 @@ Curve::Curve()
 {
     m_theStyle.m_Color = QColor(255,0,0);
     m_theStyle.m_bIsVisible = true;
-    m_theStyle.m_PointStyle = Line::NOSYMBOL;
+    m_theStyle.m_Symbol = Line::NOSYMBOL;
     m_theStyle.m_Width = 1;
     m_theStyle.m_Stipple = Line::SOLID;
     m_iSelected = -1;
@@ -220,16 +219,6 @@ double Curve::yMax() const
         for(int i=0; i<size();i++)
             yMax = qMax(yMax, m_y.at(i));
     return yMax;
-}
-
-
-void Curve::setLineStyle(int Style, int Width, QColor color, int PointStyle, bool bVisible)
-{
-    m_theStyle.setStipple(Style);
-    m_theStyle.m_Width = Width;
-    m_theStyle.m_Color = color;
-    m_theStyle.setPointStyle(PointStyle);
-    m_theStyle.m_bIsVisible = bVisible;
 }
 
 

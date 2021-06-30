@@ -26,18 +26,15 @@
 #include <QAction>
 
 
-
-#include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
-#include <xflgraph/graph.h>
-#include <xflgraph/graph_globals.h>
-#include <xflgraph/controls/graphdlg.h>
 #include <misc/options/settings.h>
 #include <xdirect/xdirect.h>
 #include <xdirect/xdirectstyledlg.h>
 #include <xflcore/constants.h>
-
-
+#include <xflcore/xflcore.h>
+#include <xflgraph/controls/graphdlg.h>
+#include <xflgraph/graph.h>
+#include <xflobjects/objects_global.h>
 
 
 MainFrame *OpPointWidget::s_pMainFrame = nullptr;
@@ -430,7 +427,7 @@ void OpPointWidget::wheelEvent(QWheelEvent *pEvent)
 */
 void OpPointWidget::paintEvent(QPaintEvent *pEvent)
 {
-    if(s_pMainFrame->m_iApp == Xfl::XFOILANALYSIS)
+    if(s_pMainFrame->m_iApp == xfl::XFOILANALYSIS)
     {
         QPainter painter(this);
         painter.save();
@@ -506,7 +503,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
     if(m_bNeutralLine)
     {
         QPen NeutralPen(m_NeutralStyle.m_Color);
-        NeutralPen.setStyle(getStyle(m_NeutralStyle.m_Stipple));
+        NeutralPen.setStyle(xfl::getStyle(m_NeutralStyle.m_Stipple));
         NeutralPen.setWidth(m_NeutralStyle.m_Width);
         painter.setPen(NeutralPen);
         painter.drawLine(rect().left(),  int(m_FoilOffset.y()),
@@ -535,7 +532,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
     drawFoil(painter, XDirect::curFoil(), -Alpha, m_fScale, m_fScale*m_fYScale, m_FoilOffset);
     if(XDirect::curFoil()->pointStyle()>0)
-        drawPoints(painter, XDirect::curFoil(), -Alpha, m_fScale,m_fScale*m_fYScale, m_FoilOffset, Settings::s_BackgroundColor);
+        drawFoilPoints(painter, XDirect::curFoil(), -Alpha, m_fScale,m_fScale*m_fYScale, m_FoilOffset, Settings::s_BackgroundColor);
 
 
 /*    if(m_bShowPanels)
@@ -624,8 +621,8 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
         if(XDirect::curOpp()->m_bTEFlap) Back++;
         if(XDirect::curOpp()->m_bLEFlap) Back++;
         if(XDirect::curOpp()->m_bViscResults && qAbs(XDirect::curOpp()->Cd)>0.0) Back++;
-        if(XDirect::curPolar()->polarType()==Xfl::FIXEDLIFTPOLAR) Back++;
-        if(XDirect::curPolar()->polarType()!=Xfl::FIXEDSPEEDPOLAR && XDirect::curPolar()->polarType()!=Xfl::FIXEDAOAPOLAR) Back++;
+        if(XDirect::curPolar()->polarType()==xfl::FIXEDLIFTPOLAR) Back++;
+        if(XDirect::curPolar()->polarType()!=xfl::FIXEDSPEEDPOLAR && XDirect::curPolar()->polarType()!=xfl::FIXEDAOAPOLAR) Back++;
     }
 
     int dwidth = fm.horizontalAdvance(tr("TE Hinge Moment/span = 0123456789"));
@@ -637,16 +634,16 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
     if(XDirect::curPolar())
     {
-        if(XDirect::curPolar()->polarType()==Xfl::FIXEDSPEEDPOLAR)       str1 = tr("Fixed speed polar");
-        else if(XDirect::curPolar()->polarType()==Xfl::FIXEDLIFTPOLAR)   str1 = tr("Fixed lift polar");
-        else if(XDirect::curPolar()->polarType()==Xfl::RUBBERCHORDPOLAR) str1 = tr("Rubber chord polar");
-        else if(XDirect::curPolar()->polarType()==Xfl::FIXEDAOAPOLAR)    str1 = tr("Fixed a.o.a. polar");
+        if(XDirect::curPolar()->polarType()==xfl::FIXEDSPEEDPOLAR)       str1 = tr("Fixed speed polar");
+        else if(XDirect::curPolar()->polarType()==xfl::FIXEDLIFTPOLAR)   str1 = tr("Fixed lift polar");
+        else if(XDirect::curPolar()->polarType()==xfl::RUBBERCHORDPOLAR) str1 = tr("Rubber chord polar");
+        else if(XDirect::curPolar()->polarType()==xfl::FIXEDAOAPOLAR)    str1 = tr("Fixed a.o.a. polar");
 
         painter.drawText(XPos,ZPos, dwidth, dD, Qt::AlignRight | Qt::AlignTop, str1);
         D += dD;
-        if(XDirect::curPolar()->polarType() ==Xfl::FIXEDSPEEDPOLAR)
+        if(XDirect::curPolar()->polarType() ==xfl::FIXEDSPEEDPOLAR)
         {
-            ReynoldsFormat(strong, XDirect::curPolar()->Reynolds());
+            xfl::ReynoldsFormat(strong, XDirect::curPolar()->Reynolds());
             strong ="Reynolds = " + strong;
             painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
             D += dD;
@@ -654,9 +651,9 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
             painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
             D += dD;
         }
-        else if(XDirect::curPolar()->polarType()==Xfl::FIXEDLIFTPOLAR)
+        else if(XDirect::curPolar()->polarType()==xfl::FIXEDLIFTPOLAR)
         {
-            ReynoldsFormat(strong, XDirect::curPolar()->Reynolds());
+            xfl::ReynoldsFormat(strong, XDirect::curPolar()->Reynolds());
             strong = tr("Re.sqrt(Cl) = ") + strong;
             painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
             D += dD;
@@ -665,9 +662,9 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
             painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
             D += dD;
         }
-        else if(XDirect::curPolar()->polarType()==Xfl::RUBBERCHORDPOLAR)
+        else if(XDirect::curPolar()->polarType()==xfl::RUBBERCHORDPOLAR)
         {
-            ReynoldsFormat(strong, XDirect::curPolar()->Reynolds());
+            xfl::ReynoldsFormat(strong, XDirect::curPolar()->Reynolds());
             strong = tr("Re.sqrt(Cl) = ") + strong;
             painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
             D += dD;
@@ -676,7 +673,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
             painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
             D += dD;
         }
-        else if(XDirect::curPolar()->polarType()==Xfl::FIXEDAOAPOLAR)
+        else if(XDirect::curPolar()->polarType()==xfl::FIXEDAOAPOLAR)
         {
             strong = QString("Alpha = %1 ").arg(XDirect::curPolar()->aoa(),10,'f',2)+QChar(0260);
             painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
@@ -699,20 +696,20 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
         if(XDirect::curOpp())
         {
-            if(XDirect::curPolar()->polarType()!=Xfl::FIXEDSPEEDPOLAR)
+            if(XDirect::curPolar()->polarType()!=xfl::FIXEDSPEEDPOLAR)
             {
-                ReynoldsFormat(Result, XDirect::curOpp()->Reynolds());
+                xfl::ReynoldsFormat(Result, XDirect::curOpp()->Reynolds());
                 Result = "Re = "+ Result;
                 painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
                 D += dD;
             }
-            if(XDirect::curPolar()->polarType()==Xfl::FIXEDLIFTPOLAR)
+            if(XDirect::curPolar()->polarType()==xfl::FIXEDLIFTPOLAR)
             {
                 Result = QString("Ma = %1").arg(XDirect::curOpp()->m_Mach, 9, 'f', 4);
                 painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
                 D += dD;
             }
-            if(XDirect::curPolar()->polarType()!=Xfl::FIXEDAOAPOLAR)
+            if(XDirect::curPolar()->polarType()!=xfl::FIXEDAOAPOLAR)
             {
                 Result = QString(tr("Alpha = %1")+QChar(0260)).arg(XDirect::curOpp()->m_Alpha, 8, 'f', 2);
                 painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
@@ -790,7 +787,7 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
     painter.save();
 
     QPen CpvPen(m_PressureStyle.m_Color);
-    CpvPen.setStyle(getStyle(m_PressureStyle.m_Stipple));
+    CpvPen.setStyle(xfl::getStyle(m_PressureStyle.m_Stipple));
     CpvPen.setWidth(m_PressureStyle.m_Width);
     painter.setPen(CpvPen);
 
@@ -869,7 +866,7 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
     }
     //last draw lift at XCP position
     QPen LiftPen(m_PressureStyle.m_Color);
-    LiftPen.setStyle(getStyle(m_PressureStyle.m_Stipple));
+    LiftPen.setStyle(xfl::getStyle(m_PressureStyle.m_Stipple));
     LiftPen.setWidth(m_PressureStyle.m_Width+1);
     painter.setPen(LiftPen);
 
@@ -926,7 +923,7 @@ void OpPointWidget::paintBL(QPainter &painter, OpPoint* pOpPoint, double scalex,
     offset = m_FoilOffset;
 
     QPen WakePen(m_BLStyle.m_Color);
-    WakePen.setStyle(getStyle(m_BLStyle.m_Stipple));
+    WakePen.setStyle(xfl::getStyle(m_BLStyle.m_Stipple));
     WakePen.setWidth(m_BLStyle.m_Width);
 
     painter.setPen(WakePen);

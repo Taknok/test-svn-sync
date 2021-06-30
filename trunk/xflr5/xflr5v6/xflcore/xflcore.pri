@@ -3,9 +3,10 @@
 HEADERS += \
     xflcore/constants.h \
     xflcore/core_enums.h \
-    xflcore/gui_enums.h \
+    xflcore/fontstruct.h \
     xflcore/gui_params.h \
-    xflcore/ls2.h \
+    xflcore/line_enums.h \
+    xflcore/linestyle.h \
     xflcore/trace.h \
     xflcore/units.h \
     xflcore/xflcore.h \

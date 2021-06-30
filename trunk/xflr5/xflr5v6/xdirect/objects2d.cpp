@@ -207,7 +207,7 @@ OpPoint* Objects2d::addOpPoint(Foil const *pFoil, Polar *pPolar, OpPoint *pOpPoi
     }
     else
     {
-        pOpPoint->setColor(randomColor(!Settings::isLightTheme()));
+        pOpPoint->setColor(xfl::randomColor(!Settings::isLightTheme()));
     }
 
     pOpPoint->setFoilName(pFoil->name());
@@ -220,7 +220,7 @@ OpPoint* Objects2d::addOpPoint(Foil const *pFoil, Polar *pPolar, OpPoint *pOpPoi
     }
 
     // Now insert the OpPoint in the current Polar object
-    if(pPolar->polarType()==Xfl::FIXEDLIFTPOLAR || pPolar->polarType()==Xfl::RUBBERCHORDPOLAR)
+    if(pPolar->polarType()==xfl::FIXEDLIFTPOLAR || pPolar->polarType()==xfl::RUBBERCHORDPOLAR)
     {
         if(pOpPoint && pOpPoint->Reynolds()<1.00e8)
         {
@@ -472,7 +472,7 @@ OpPoint *Objects2d::getOpp(Foil *pFoil, Polar *pPolar, double Alpha)
         {
             if (pOpPoint->polarName() == pPolar->polarName())
             {
-                if(pPolar->polarType() != Xfl::FIXEDAOAPOLAR)
+                if(pPolar->polarType() != xfl::FIXEDAOAPOLAR)
                 {
                     if(qAbs(pOpPoint->aoa() - Alpha) <0.001)
                     {
@@ -611,7 +611,7 @@ void Objects2d::addPolar(Polar *pPolar)
                 }
                 else if(pPolar->polarType() == pOldPlr->polarType())
                 {
-                    if (pPolar->polarType() != Xfl::FIXEDAOAPOLAR)
+                    if (pPolar->polarType() != xfl::FIXEDAOAPOLAR)
                     {
                         //sort by re Nbr
                         if(pPolar->Reynolds() < pOldPlr->Reynolds())
@@ -771,7 +771,7 @@ void Objects2d::setPolarChildrenStyle(Polar const *pPolar)
  * @param NCrit the transition parameter
  * @return a pointer to the created Polar object
  */
-Polar *Objects2d::createPolar(Foil *pFoil, Xfl::enumPolarType PolarType, double Spec, double Mach, double NCrit, double m_XTop, double m_XBot)
+Polar *Objects2d::createPolar(Foil *pFoil, xfl::enumPolarType PolarType, double Spec, double Mach, double NCrit, double m_XTop, double m_XBot)
 {
     if(!pFoil) return nullptr;
 
@@ -783,7 +783,7 @@ Polar *Objects2d::createPolar(Foil *pFoil, Xfl::enumPolarType PolarType, double 
     }
     else
     {
-        QColor clr = randomColor(!Settings::isLightTheme());
+        QColor clr = xfl::randomColor(!Settings::isLightTheme());
         pNewPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
     }
 
@@ -794,25 +794,25 @@ Polar *Objects2d::createPolar(Foil *pFoil, Xfl::enumPolarType PolarType, double 
     switch (pNewPolar->polarType())
     {
         default:
-        case Xfl::FIXEDSPEEDPOLAR:
+        case xfl::FIXEDSPEEDPOLAR:
             pNewPolar->setMaType(1);
             pNewPolar->setReType(1);
             break;
-        case Xfl::FIXEDLIFTPOLAR:
+        case xfl::FIXEDLIFTPOLAR:
             pNewPolar->setMaType(2);
             pNewPolar->setReType(2);
             break;
-        case Xfl::RUBBERCHORDPOLAR:
+        case xfl::RUBBERCHORDPOLAR:
             pNewPolar->setMaType(1);
             pNewPolar->setReType(3);
             break;
-        case Xfl::FIXEDAOAPOLAR:
+        case xfl::FIXEDAOAPOLAR:
             pNewPolar->setMaType(1);
             pNewPolar->setReType(1);
             break;
     }
 
-    if(PolarType!=Xfl::FIXEDAOAPOLAR)
+    if(PolarType!=xfl::FIXEDAOAPOLAR)
     {
         pNewPolar->setReynolds(Spec);
     }

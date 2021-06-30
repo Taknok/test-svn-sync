@@ -21,9 +21,16 @@
 
 #pragma once
 
-// first name space
-namespace Xfl
+
+namespace xfl
 {
+    /** @enum The different applications available to the user */
+    typedef enum {NOAPP, XFOILANALYSIS, DIRECTDESIGN, INVERSEDESIGN, MIAREX}    enumApp;
+    /** This enumeration defines the options for the active view.
+     *
+     *May be the operaring point view, the polar view, the 3D view, the Cp view, or the stability view*/
+    typedef enum {WOPPVIEW, WPOLARVIEW,  WCPVIEW, W3DVIEW, STABTIMEVIEW, STABPOLARVIEW, OTHERVIEW} enumMiarexViews;
+
     /** @enum The different types of analysis methods for 3D calculations of wings and planes. */
     typedef enum {LLTMETHOD, VLMMETHOD, PANEL4METHOD, TRILINMETHOD, TRIUNIMETHOD} enumAnalysisMethod;
 
@@ -47,5 +54,36 @@ namespace Xfl
 
     /** @enum The status of the 3d analysis */
     typedef enum {PENDING, RUNNING, CANCELLED, FINISHED} enumAnalysisStatus;
-}
 
+    /** @enum The different formats usable to export data to text format files*/
+    typedef enum {TXT, CSV}	enumTextFileType;
+
+    /** @enum The different line stymes */
+    typedef enum {SOLID, DASH, DOT, DASHDOT, DASHDOTDOT, NOLINE} enumLineStyle;
+
+    /**< @enum The different symbols on a curve*/
+    typedef enum {NOSYMBOL, LITTLECIRCLE, BIGCIRCLE, LITTLESQUARE, BIGSQUARE, TRIANGLE, CROSS} enumPointStyle;
+
+    /**< @enum The different image formats usable to export screen captures*/
+    typedef enum {PNG, JPEG, BMP} enumImageFormat;
+
+    /** @enum The different number of graphs in the polar view */
+    typedef enum {ONEGRAPH, TWOGRAPHS, FOURGRAPHS, ALLGRAPHS, NOGRAPH} enumGraphView;
+
+    /** This enumeration defines the options for the active Foil analysis view. */
+    typedef enum {DESIGNVIEW, OPPVIEW, POLARVIEW, BLVIEW, PROFILEVIEW} enumXDirectViews;
+
+    /** @enum The different objects selectable in the PlaneTreeView */
+    typedef enum {NOOBJECT, PLANE, WPOLAR, PLANEOPP, STABILITYMODE} enumPlaneSelectionType;
+
+    /** @enum The different objects selectable in the FoilTreeView */
+    typedef enum {NONE, FOIL, POLAR, OPPOINT} enumFoilSelectionType;
+
+    /** @enum< 0 = initial conditions, 1=forced response, 2=modal response */
+    typedef enum {INITIALCONDITIONS, FORCEDRESPONSE, MODALRESPONSE} enumStabTimeResponse;
+
+    /** used for GUI conversions to/from strings */
+    typedef enum {BOOLVALUE, INTEGER, DOUBLEVALUE, STRING, PANELDISTRIBUTION, FOILNAME, BODYTYPE, FUSEDRAG,
+                  POLARTYPE, ANALYSISMETHOD, REFDIMENSIONS, WINGTYPE, BOUNDARYCONDITION} enumDataType;
+
+}

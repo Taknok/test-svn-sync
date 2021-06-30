@@ -27,11 +27,11 @@
 class VoidWidget : public QWidget
 {
     Q_OBJECT
-public:
-    explicit VoidWidget(QWidget *parent = nullptr);
+    public:
+        explicit VoidWidget(QWidget *parent = nullptr);
 
-protected:
-    void paintEvent ( QPaintEvent * event );
+    protected:
+        void paintEvent (QPaintEvent * pEvent) override;
 };
 
 #endif // VOIDWIDGET_H

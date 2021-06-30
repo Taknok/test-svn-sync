@@ -32,8 +32,8 @@
 
 #include <xflcore/xflcore.h>
 #include <xflgraph/curve.h>
-#include <xflwidgets/text/doubleedit.h>
-#include <xflwidgets/text/intedit.h>
+#include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/intedit.h>
 #include <xflgraph/containers/graphwt.h>
 #include <twodwidgets/foilwt.h>
 #include <xdirect/analysis/xfoiltask.h>
@@ -602,7 +602,7 @@ void Optim2d::onStoreBestFoil()
         iter++;
     }
     pNewFoil->setName(name);
-    pNewFoil->setColor(randomColor(true));
+    pNewFoil->setColor(xfl::randomColor(true));
     Objects2d::insertThisFoil(pNewFoil); // overwrites existing
     outputText("Saved the foil with name: "+name+"\n");
     m_bSaved = true;
@@ -678,7 +678,7 @@ void Optim2d::onMakeSwarm(bool bShow)
     // debug helper
     if(bShow)
     {
-        QColor clr = randomColor(true);
+        QColor clr = xfl::randomColor(true);
         if(s_bPSO)
         {
             for (int isw=0; isw<m_pPSOTask->swarmSize(); isw++)
@@ -742,7 +742,7 @@ void Optim2d::makePSOSwarm()
     pPSOTask2d->makeSwarm();
     pPSOTask2d->clearPareto();   // current Pareto may be obsolete if target values have changed since swarm creationli
     pPSOTask2d->makeParetoFront();
-    pPSOTask2d->setAnalysisStatus(Xfl::PENDING);// not started yet
+    pPSOTask2d->setAnalysisStatus(xfl::PENDING);// not started yet
 
     m_pPSOTask = pPSOTask2d;
     updateParetoGraph();
@@ -768,7 +768,7 @@ void Optim2d::makeGAGen()
 
     //make the swarm
     m_pGATask->makeSwarm();
-    m_pGATask->setAnalysisStatus(Xfl::PENDING);// not started yet
+    m_pGATask->setAnalysisStatus(xfl::PENDING);// not started yet
 }
 
 
@@ -801,11 +801,11 @@ void Optim2d::onOptimize()
 
         if(m_pPSOTask->isRunning())
         {
-            m_pPSOTask->setAnalysisStatus(Xfl::CANCELLED);
+            m_pPSOTask->setAnalysisStatus(xfl::CANCELLED);
             // m_ppbSwarm->setText("Swarm"); done when the finish event is received
             return;
         }
-        m_pPSOTask->setAnalysisStatus(Xfl::RUNNING);
+        m_pPSOTask->setAnalysisStatus(xfl::RUNNING);
 
 
         QString strange("Optimizing for: ");
@@ -826,7 +826,7 @@ void Optim2d::onOptimize()
             pCurve->clear();
         }
 
-        m_pPSOTask->setAnalysisStatus(Xfl::RUNNING);
+        m_pPSOTask->setAnalysisStatus(xfl::RUNNING);
         m_pPSOTask->restartIterations();
         m_pPSOTask->clearPareto();  // current Pareto may be obsolete if target values have changed since swarm creation
         m_pPSOTask->makeParetoFront();
@@ -850,11 +850,11 @@ void Optim2d::onOptimize()
 
         if(m_pGATask->isRunning())
         {
-            m_pGATask->setAnalysisStatus(Xfl::CANCELLED);
+            m_pGATask->setAnalysisStatus(xfl::CANCELLED);
             // m_ppbSwarm->setText("Swarm"); done when the finish event is received
             return;
         }
-        m_pGATask->setAnalysisStatus(Xfl::RUNNING);
+        m_pGATask->setAnalysisStatus(xfl::RUNNING);
         m_pGATask->restartIterations();
 
         disconnect(&m_Timer, nullptr, nullptr, nullptr);

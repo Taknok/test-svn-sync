@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef BODYDLG_H
-#define BODYDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QCheckBox>
@@ -40,7 +39,7 @@
 
 #include <xfl3d/gl3dbodyview.h>
 
-class ColorButton;
+class ColorBtn;
 class DoubleEdit;
 class BodyTableDelegate;
 class BodyGridDlg;
@@ -62,170 +61,161 @@ class GL3dBodyDlg : public QDialog
     friend class PlaneDlg;
     friend class gl3dBodyView;
 
-public:
-    GL3dBodyDlg(QWidget *pParent=nullptr);
-    ~GL3dBodyDlg();
+    public:
+        GL3dBodyDlg(QWidget *pParent=nullptr);
+        ~GL3dBodyDlg();
 
-private slots:
-    void onBodyColor();
-    void onBodyInertia();
-    void onBodyName();
-    void onButton(QAbstractButton *pButton);
-    void onCheckViewIcons();
-    void onEdgeWeight();
-    void onExportBodyDef();
-    void onExportBodyGeom();
-    void onExportBodyXML();
-    void onFrameCellChanged(QWidget *);
-    void onFrameClicked();
-    void onFrameItemClicked(const QModelIndex &index);
-    void onGrid();
-    void onImportBodyDef() ;
-    void onImportBodyXML();
-    void onLineType();
-    void onNURBSPanels();
-    void onPointCellChanged(QWidget *);
-    void onPointClicked();
-    void onPointItemClicked(const QModelIndex &index);
-    void onRedo();
-    void onResetScales();
-    void onScaleBody();
-    void onSelChangeHoopDegree(int sel);
-    void onSelChangeXDegree(int sel);
-    void onTextures();
-    void onTranslateBody();
-    void onUndo();
-    void onUpdateBody();
+    private slots:
+        void onBodyColor();
+        void onBodyInertia();
+        void onBodyName();
+        void onButton(QAbstractButton *pButton);
+        void onCheckViewIcons();
+        void onEdgeWeight();
+        void onExportBodyDef();
+        void onExportBodyGeom();
+        void onExportBodyXML();
+        void onFrameCellChanged(QWidget *);
+        void onFrameClicked();
+        void onFrameItemClicked(const QModelIndex &index);
 
-private:
-    void keyPressEvent(QKeyEvent *pEvent);
-    void resizeEvent(QResizeEvent *pEvent);
-    void showEvent(QShowEvent *pEvent);
-    void hideEvent(QHideEvent *pEvent);
-    void accept();
-    void reject();
+        void onImportBodyDef() ;
+        void onImportBodyXML();
+        void onLineType();
+        void onNURBSPanels();
+        void onPointCellChanged(QWidget *);
+        void onPointClicked();
+        void onPointItemClicked(const QModelIndex &index);
+        void onRedo();
+        void onResetScales();
+        void onScaleBody();
+        void onSelChangeHoopDegree(int sel);
+        void onSelChangeXDegree(int sel);
+        void onTextures();
+        void onTranslateBody();
+        void onUndo();
+        void onUpdateBody();
 
-    void blockSignalling(bool bBlock);
-    void connectSignals();
+    private:
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void resizeEvent(QResizeEvent *pEvent) override;
+        void showEvent(QShowEvent *pEvent) override;
+        void hideEvent(QHideEvent *pEvent) override;
+        void accept() override;
+        void reject() override;
 
-    void fillFrameTableRow(int row);
-    void fillFrameDataTable();
-    void fillFrameCell(int iItem, int iSubItem);
-    void readFrameSectionData(int sel);
+        void blockSignalling(bool bBlock);
+        void connectSignals();
 
-    void fillPointCell(int iItem, int iSubItem);
-    void fillPointTableRow(int row);
-    void fillPointDataTable();
-    void readPointSectionData(int sel);
+        void fillFrameTableRow(int row);
+        void fillFrameDataTable();
+        void fillFrameCell(int iItem, int iSubItem);
+        void readFrameSectionData(int sel);
 
-    void setFrame(int iFrame);
-    void setFrame(Frame *pFrame);
+        void fillPointCell(int iItem, int iSubItem);
+        void fillPointTableRow(int row);
+        void fillPointDataTable();
+        void readPointSectionData(int sel);
 
-    void setupLayout();
-    void setViewControls();
-    void setTableUnits();
+        void setFrame(int iFrame);
+        void setFrame(Frame *pFrame);
 
-    void setControls();
-    void updateView();
+        void setupLayout();
+        void setViewControls();
+        void setTableUnits();
 
-    bool initDialog(Body *pBody);
-    static bool loadSettings(QSettings &settings);
-    static bool saveSettings(QSettings &settings);
+        void setControls();
+        void updateView();
 
-    void resizeTables();
+        bool initDialog(Body *pBody);
+        static bool loadSettings(QSettings &settings);
+        static bool saveSettings(QSettings &settings);
 
-private:
-    bool setBody(Body *pBody=nullptr);
+        void resizeTables();
 
-    void clearStack(int pos=0);
-    void setPicture();
-    void takePicture();
+    private:
+        bool setBody(Body *pBody=nullptr);
 
-
-
-private:
-    gl3dBodyView m_gl3dBodyview;
-    BodyLineWt *m_pBodyLineWidget;
-    BodyFrameWt *m_pFrameWidget;
-
-    static QByteArray s_WindowGeometry;
-
-    static bool s_bOutline;
-    static bool s_bSurfaces;
-    static bool s_bVLMPanels;
-    static bool s_bAxes;
-    static bool s_bShowMasses;
-    static bool s_bFoilNames;
+        void clearStack(int pos=0);
+        void setPicture();
+        void takePicture();
 
 
-    QWidget *m_pctrlControlsWidget;
 
-    QSplitter *m_pLeftSplitter, *m_pHorizontalSplitter, *m_pVerticalSplitter;
-    static QByteArray m_VerticalSplitterSizes, m_HorizontalSplitterSizes, m_LeftSplitterSizes;
+    private:
+        gl3dBodyView m_gl3dBodyview;
+        BodyLineWt *m_pBodyLineWt;
+        BodyFrameWt *m_pFrameWt;
 
-    QCheckBox *m_pctrlAxes, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels, *m_pctrlShowMasses;
-    QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
-    QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso, *m_pctrlFlip;
-    QPushButton *m_pctrlReset;
-    QPushButton *m_pctrlUndo, *m_pctrlRedo;
+        static QByteArray s_WindowGeometry;
 
-    QDialogButtonBox *m_pButtonBox;
-
-    QSlider *m_pctrlEdgeWeight;
-    QSlider *m_pctrlPanelBunch;
-
-    QLineEdit *m_pctrlBodyName;
-    QTextEdit *m_pctrlBodyDescription;
-
-    QRadioButton *m_pctrlFlatPanels, *m_pctrlBSplines;
-    ColorButton *m_pctrlBodyColor;
-    QRadioButton *m_pctrlColor, *m_pctrlTextures;
-    DoubleEdit *m_pctrlNXPanels, *m_pctrlNHoopPanels;
-    QComboBox *m_pctrlXDegree, *m_pctrlHoopDegree;
-    QPushButton *m_pctrlMenuButton;
-    QMenu *BodyMenu;
-
-    QTableView *m_pctrlFrameTable, *m_pctrlPointTable;
-    QStandardItemModel *m_pFrameModel, *m_pPointModel;
-    BodyTableDelegate *m_pFrameDelegate, *m_pPointDelegate;
-    QItemSelectionModel *m_pSelectionModelPoint, *m_pSelectionModelFrame;
-
-    QAction *m_pScaleBody;
-    QAction *m_pResetScales;
-    QAction *m_pUndo, *m_pRedo;
-    QAction *m_pExportBodyDef, *m_pImportBodyDef, *m_pExportBodyGeom, *m_pTranslateBody, *m_pBodyInertia;// *m_pSetupLight;
-    QAction *m_pExportBodyXML, *m_pImportBodyXML;
-    QAction *m_pGrid;
+        static bool s_bOutline;
+        static bool s_bSurfaces;
+        static bool s_bVLMPanels;
+        static bool s_bAxes;
+        static bool s_bShowMasses;
+        static bool s_bFoilNames;
 
 
-    int *m_pPointPrecision;  /**< the array of digit numbers for each column of the Point table >*/
-    int *m_pFramePrecision;  /**< the array of digit numbers for each column of the Frame table >*/
+        QWidget *m_pwtControls;
 
+        QSplitter *m_pLeftSplitter, *m_pHorizontalSplitter, *m_pVerticalSplitter;
+        static QByteArray m_VerticalSplitterSizes, m_HorizontalSplitterSizes, m_LeftSplitterSizes;
 
-    int m_StackPos;                /**< the current position on the Undo stack */
-    QVector<Body*> m_UndoStack;      /**< the stack of incremental modifications to the SplineFoil;
+        QCheckBox *m_pchAxes, *m_pchSurfaces, *m_pchOutline, *m_pchPanels, *m_pchShowMasses;
+        QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
+        QToolButton *m_ptbX, *m_ptbY, *m_ptbZ, *m_ptbIso, *m_ptbFlip;
+        QPushButton *m_ppbReset;
+        QPushButton *m_ppbUndo, *m_ppbRedo;
+
+        QDialogButtonBox *m_pButtonBox;
+
+        QSlider *m_pslEdgeWeight;
+        QSlider *m_pslPanelBunch;
+
+        QLineEdit *m_pleBodyName;
+        QTextEdit *m_pteBodyDescription;
+
+        QRadioButton *m_prbFlatPanels, *m_prbBSplines;
+        ColorBtn *m_pcbBodyColor;
+        QRadioButton *m_prbColor, *m_prbTextures;
+        DoubleEdit *m_pdeNXPanels, *m_pdeNHoopPanels;
+        QComboBox *m_pcbXDegree, *m_pcbHoopDegree;
+        QPushButton *m_ppbMenuButton;
+        QMenu *BodyMenu;
+
+        QTableView *m_pctrlFrameTable, *m_pctrlPointTable;
+        QStandardItemModel *m_pFrameModel, *m_pPointModel;
+        BodyTableDelegate *m_pFrameDelegate, *m_pPointDelegate;
+        QItemSelectionModel *m_pSelectionModelPoint, *m_pSelectionModelFrame;
+
+        QAction *m_pScaleBody;
+        QAction *m_pResetScales;
+        QAction *m_pUndo, *m_pRedo;
+        QAction *m_pExportBodyDef, *m_pImportBodyDef, *m_pExportBodyGeom, *m_pTranslateBody, *m_pBodyInertia;// *m_pSetupLight;
+        QAction *m_pExportBodyXML, *m_pImportBodyXML;
+
+        int m_StackPos;                /**< the current position on the Undo stack */
+        QVector<Body*> m_UndoStack;      /**< the stack of incremental modifications to the SplineFoil;
                                      we can't use the QStack though, because we need to access
                                      any point in the case of multiple undo operations */
 
-    //    bool m_bStored;
-    bool m_bResetFrame;
+        //    bool m_bStored;
+        bool m_bResetFrame;
 
-    bool m_bChanged;
-
-
-    Frame *m_pFrame;
-    Body *m_pBody;
-
-    BodyGridDlg *m_pBodyGridDlg;
+        bool m_bChanged;
 
 
-    bool m_bEnableName;
+        Frame *m_pFrame;
+        Body *m_pBody;
 
-    Vector3d m_RealPopUp;
-    QPoint m_ptPopUp;
 
-    //    QRect m_rCltRect;
+        bool m_bEnableName;
+
+        Vector3d m_RealPopUp;
+        QPoint m_ptPopUp;
+
+        //    QRect m_rCltRect;
 
 };
 
-#endif // BodyDlg_H

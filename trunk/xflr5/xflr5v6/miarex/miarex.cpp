@@ -60,8 +60,8 @@
 #include <miarex/view/targetcurvedlg.h>
 #include <miarex/view/w3dprefsdlg.h>
 #include <misc/editplrdlg.h>
-#include <misc/moddlg.h>
-#include <misc/objectpropsdlg.h>
+#include <xflwidgets/customdlg/moddlg.h>
+#include <xflwidgets/customdlg/objectpropsdlg.h>
 #include <misc/options/settings.h>
 #include <misc/polarfilterdlg.h>
 #include <misc/renamedlg.h>
@@ -89,8 +89,9 @@
 #include <xflwidgets/line/linebtn.h>
 #include <xflwidgets/line/linecbbox.h>
 #include <xflwidgets/line/linedelegate.h>
-#include <xflwidgets/text/doubleedit.h>
-#include <xflwidgets/text/mintextedit.h>
+#include <xflwidgets/line/linepickerwt.h>
+#include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/mintextedit.h>
 
 #ifdef Q_OS_WIN
 #include <windows.h> // for Sleep
@@ -183,7 +184,7 @@ Miarex::Miarex(QWidget *parent) : QWidget(parent)
 
     m_LineStyle.m_Stipple = Line::SOLID;
     m_LineStyle.m_Width = 1;
-    m_LineStyle.m_PointStyle  = Line::NOSYMBOL;
+    m_LineStyle.m_Symbol  = Line::NOSYMBOL;
     m_LineStyle.m_Color = QColor(127, 255, 70);
     m_bCurveVisible = true;
 
@@ -244,10 +245,6 @@ Miarex::Miarex(QWidget *parent) : QWidget(parent)
         m_WingGraph[ig]->setXMax( 1.0);
         m_WingGraph[ig]->setYMin(0.000);
         m_WingGraph[ig]->setYMax(0.001);
-        m_WingGraph[ig]->setXMajGrid(true, QColor(120,120,120),2,1);
-        m_WingGraph[ig]->setXMinGrid(false, true, QColor(80,80,80),2, 1, 100.0);
-        m_WingGraph[ig]->setYMajGrid(true, QColor(120,120,120),2,1);
-        m_WingGraph[ig]->setYMinGrid(false, true, QColor(80,80,80),2, 1, 0.1);
         m_WingGraph[ig]->setScaleType(1);
         m_WingGraph[ig]->setMargin(50);
         m_WingGraph[ig]->setYVariable(ig);
@@ -366,14 +363,14 @@ Miarex::Miarex(QWidget *parent) : QWidget(parent)
     m_CpLineStyle.m_Color = QColor(255,100,150);
     m_CpLineStyle.m_Stipple = Line::SOLID;
     m_CpLineStyle.m_Width = 1;
-    m_CpLineStyle.m_PointStyle = Line::NOSYMBOL;
+    m_CpLineStyle.m_Symbol = Line::NOSYMBOL;
     m_bShowCp       = true;
 
-    m_iView          = Xfl::WOPPVIEW;
-    m_iWingView      = Xfl::ONEGRAPH;
-    m_iWPlrView      = Xfl::FOURGRAPHS;
-    m_iRootLocusView = Xfl::ONEGRAPH;
-    m_iStabTimeView  = Xfl::FOURGRAPHS;
+    m_iView          = xfl::WOPPVIEW;
+    m_iWingView      = xfl::ONEGRAPH;
+    m_iWPlrView      = xfl::FOURGRAPHS;
+    m_iRootLocusView = xfl::ONEGRAPH;
+    m_iStabTimeView  = xfl::FOURGRAPHS;
 
     m_CpGraph.setGraphName(tr("Cp Graph"));
 
@@ -431,17 +428,14 @@ void Miarex::connectSignals()
 {
     connect(this, SIGNAL(projectModified()), s_pMainFrame, SLOT(onProjectModified()));
 
-    connect(m_pchSequence,    SIGNAL(clicked()),      SLOT(onSequence()));
-    connect(m_pchStoreWOpp,   SIGNAL(clicked()),      SLOT(onStoreWOpp()));
-    connect(m_pchInitLLTCalc, SIGNAL(clicked()),      SLOT(onInitLLTCalc()));
-    connect(m_ppbAnalyze,     SIGNAL(clicked()),      SLOT(onAnalyze()));
-    connect(m_plcbCurveStyle,  SIGNAL(activated(int)), SLOT(onCurveStyle(int)));
-    connect(m_plcbCurveWidth,  SIGNAL(activated(int)), SLOT(onCurveWidth(int)));
-    connect(m_plcbCurvePoints, SIGNAL(activated(int)), SLOT(onCurvePoints(int)));
-    connect(m_pclbCurveColor,  SIGNAL(clickedLB()),    SLOT(onCurveColor()));
+    connect(m_pchSequence,     SIGNAL(clicked()),            SLOT(onSequence()));
+    connect(m_pchStoreWOpp,    SIGNAL(clicked()),            SLOT(onStoreWOpp()));
+    connect(m_pchInitLLTCalc,  SIGNAL(clicked()),            SLOT(onInitLLTCalc()));
+    connect(m_ppbAnalyze,      SIGNAL(clicked()),            SLOT(onAnalyze()));
+    connect(m_pLinePicker,     SIGNAL(styleChanged(LineStyle)),  SLOT(onCurveStyle(LineStyle)));
 
     connect(m_pchShowCurve,     SIGNAL(clicked()), SLOT(onShowCurve()));
-    connect(m_pctrlAlignChildren, SIGNAL(clicked(bool)), s_pMainFrame, SLOT(onAlignChildrenStyle(bool)));
+    connect(m_pchAlignChildren, SIGNAL(clicked(bool)), s_pMainFrame, SLOT(onAlignChildrenStyle(bool)));
 
     connect(m_pchPanelForce,  SIGNAL(clicked()), SLOT(onPanelForce()));
     connect(m_pchLift,        SIGNAL(clicked()), SLOT(onShowLift()));
@@ -456,8 +450,8 @@ void Miarex::connectSignals()
 
     connect(m_pchWOppAnimate,      SIGNAL(clicked()),        SLOT(onAnimateWOpp()));
     connect(m_pslAnimateWOppSpeed, SIGNAL(sliderMoved(int)), SLOT(onAnimateWOppSpeed(int)));
-    connect(m_pTimerWOpp,            SIGNAL(timeout()),        SLOT(onAnimateWOppSingle()));
-    connect(m_pTimerMode,            SIGNAL(timeout()),        SLOT(onAnimateModeSingle()));
+    connect(m_pTimerWOpp,          SIGNAL(timeout()),        SLOT(onAnimateWOppSingle()));
+    connect(m_pTimerMode,          SIGNAL(timeout()),        SLOT(onAnimateModeSingle()));
 
     connect(m_pchSurfaces,  SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onSurfaces(bool)));
     connect(m_pchOutline,   SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onOutline(bool)));
@@ -510,17 +504,17 @@ void Miarex::setControls()
 {
     blockSignals(true);
 
-    if(m_iView==Xfl::W3DVIEW) m_pswBottomControls->setCurrentIndex(1);
+    if(m_iView==xfl::W3DVIEW) m_pswBottomControls->setCurrentIndex(1);
     else                        m_pswBottomControls->setCurrentIndex(0);
 
-    if(m_iView==Xfl::WPOLARVIEW)     m_pswMiddleControls->setCurrentIndex(1);
-    else if(m_iView==Xfl::WCPVIEW)   m_pswMiddleControls->setCurrentIndex(2);
-    else if(m_iView==Xfl::STABTIMEVIEW || m_iView==Xfl::STABPOLARVIEW) m_pswMiddleControls->setCurrentIndex(1);
+    if(m_iView==xfl::WPOLARVIEW)     m_pswMiddleControls->setCurrentIndex(1);
+    else if(m_iView==xfl::WCPVIEW)   m_pswMiddleControls->setCurrentIndex(2);
+    else if(m_iView==xfl::STABTIMEVIEW || m_iView==xfl::STABPOLARVIEW) m_pswMiddleControls->setCurrentIndex(1);
     else                                                                   m_pswMiddleControls->setCurrentIndex(0);
 
-    if (m_iView==Xfl::W3DVIEW && (m_pCurWPolar && m_pCurWPolar->isStabilityPolar()))
+    if (m_iView==xfl::W3DVIEW && (m_pCurWPolar && m_pCurWPolar->isStabilityPolar()))
         s_pMainFrame->m_pctrlStabViewWidget->show();
-    else if (m_iView==Xfl::STABTIMEVIEW || m_iView==Xfl::STABPOLARVIEW)
+    else if (m_iView==xfl::STABTIMEVIEW || m_iView==xfl::STABPOLARVIEW)
         s_pMainFrame->m_pctrlStabViewWidget->show();
     else s_pMainFrame->m_pctrlStabViewWidget->hide();
 
@@ -539,7 +533,7 @@ void Miarex::setControls()
         m_pmtePolarProps->clear();
     }
 
-    m_pchInitLLTCalc->setEnabled(m_pCurWPolar && m_pCurWPolar->analysisMethod()==Xfl::LLTMETHOD);
+    m_pchInitLLTCalc->setEnabled(m_pCurWPolar && m_pCurWPolar->analysisMethod()==xfl::LLTMETHOD);
 
 /*    s_pMainFrame->m_pWOppAct->setChecked(m_iView==XFLR5::WOPPVIEW);
     s_pMainFrame->m_pWPolarAct->setChecked(m_iView==XFLR5::WPOLARVIEW);
@@ -565,34 +559,34 @@ void Miarex::setControls()
 
     m_pchStoreWOpp->setEnabled(m_pCurWPolar);
 
-    s_pMainFrame->m_pShowCurWOppOnly->setEnabled(m_iView==Xfl::WOPPVIEW);
-    s_pMainFrame->m_pShowAllWOpps->setEnabled(m_iView==Xfl::WOPPVIEW);
-    s_pMainFrame->m_pHideAllWOpps->setEnabled(m_iView==Xfl::WOPPVIEW);
-    s_pMainFrame->m_pShowTargetCurve->setEnabled(m_iView==Xfl::WOPPVIEW);
-    s_pMainFrame->m_pShowXCmRefLocation->setEnabled(m_iView==Xfl::WOPPVIEW);
-    s_pMainFrame->m_pShowWing2Curve->setEnabled(pWing(1) && (m_iView==Xfl::WOPPVIEW || m_iView==Xfl::WCPVIEW));
-    s_pMainFrame->m_pShowStabCurve->setEnabled( pWing(2) && (m_iView==Xfl::WOPPVIEW || m_iView==Xfl::WCPVIEW));
-    s_pMainFrame->m_pShowFinCurve->setEnabled(  pWing(3) && (m_iView==Xfl::WOPPVIEW || m_iView==Xfl::WCPVIEW));
-    s_pMainFrame->m_pShowAllWPlrOpps->setEnabled(m_iView==Xfl::WOPPVIEW);
-    s_pMainFrame->m_pHideAllWPlrOpps->setEnabled(m_iView==Xfl::WOPPVIEW);
-    s_pMainFrame->m_pShowPlaneWPlrsOnly->setEnabled(m_iView==Xfl::WPOLARVIEW);
-    s_pMainFrame->m_pShowPlaneWPlrs->setEnabled(m_iView==Xfl::WPOLARVIEW);
-    s_pMainFrame->m_pHidePlaneWPlrs->setEnabled(m_iView==Xfl::WPOLARVIEW);
-    s_pMainFrame->m_pShowPlaneWOpps->setEnabled(m_iView==Xfl::WOPPVIEW);
-    s_pMainFrame->m_pHidePlaneWOpps->setEnabled(m_iView==Xfl::WOPPVIEW);
+    s_pMainFrame->m_pShowCurWOppOnly->setEnabled(m_iView==xfl::WOPPVIEW);
+    s_pMainFrame->m_pShowAllWOpps->setEnabled(m_iView==xfl::WOPPVIEW);
+    s_pMainFrame->m_pHideAllWOpps->setEnabled(m_iView==xfl::WOPPVIEW);
+    s_pMainFrame->m_pShowTargetCurve->setEnabled(m_iView==xfl::WOPPVIEW);
+    s_pMainFrame->m_pShowXCmRefLocation->setEnabled(m_iView==xfl::WOPPVIEW);
+    s_pMainFrame->m_pShowWing2Curve->setEnabled(pWing(1) && (m_iView==xfl::WOPPVIEW || m_iView==xfl::WCPVIEW));
+    s_pMainFrame->m_pShowStabCurve->setEnabled( pWing(2) && (m_iView==xfl::WOPPVIEW || m_iView==xfl::WCPVIEW));
+    s_pMainFrame->m_pShowFinCurve->setEnabled(  pWing(3) && (m_iView==xfl::WOPPVIEW || m_iView==xfl::WCPVIEW));
+    s_pMainFrame->m_pShowAllWPlrOpps->setEnabled(m_iView==xfl::WOPPVIEW);
+    s_pMainFrame->m_pHideAllWPlrOpps->setEnabled(m_iView==xfl::WOPPVIEW);
+    s_pMainFrame->m_pShowPlaneWPlrsOnly->setEnabled(m_iView==xfl::WPOLARVIEW);
+    s_pMainFrame->m_pShowPlaneWPlrs->setEnabled(m_iView==xfl::WPOLARVIEW);
+    s_pMainFrame->m_pHidePlaneWPlrs->setEnabled(m_iView==xfl::WPOLARVIEW);
+    s_pMainFrame->m_pShowPlaneWOpps->setEnabled(m_iView==xfl::WOPPVIEW);
+    s_pMainFrame->m_pHidePlaneWOpps->setEnabled(m_iView==xfl::WOPPVIEW);
 
-    m_pchLift->setEnabled( (m_iView==Xfl::WOPPVIEW||m_iView==Xfl::W3DVIEW) && m_pCurPOpp);
-    m_pchTrans->setEnabled((m_iView==Xfl::WOPPVIEW||m_iView==Xfl::W3DVIEW) && m_pCurPOpp);
-    m_pchWOppAnimate->setEnabled((m_iView==Xfl::WOPPVIEW||m_iView==Xfl::W3DVIEW) && m_pCurPOpp && m_pCurPOpp->polarType()!=Xfl::STABILITYPOLAR);
-    m_pslAnimateWOppSpeed->setEnabled((m_iView==Xfl::WOPPVIEW||m_iView==Xfl::W3DVIEW) && m_pCurPOpp && m_pchWOppAnimate->isChecked());
-    m_pchIDrag->setEnabled(     m_iView==Xfl::W3DVIEW && m_pCurPOpp);
-    m_pchVDrag->setEnabled(     m_iView==Xfl::W3DVIEW && m_pCurPOpp);
-    m_pchDownwash->setEnabled(  m_iView==Xfl::W3DVIEW && m_pCurPOpp);
-    m_pchMoment->setEnabled(    m_iView==Xfl::W3DVIEW && m_pCurPOpp);
-    m_pchPanelForce->setEnabled(m_iView==Xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD);
-    m_pchCp->setEnabled(        m_iView==Xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD);
-    m_pchStream->setEnabled(    m_iView==Xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD);
-    m_pchSurfVel->setEnabled(   m_iView==Xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD);
+    m_pchLift->setEnabled( (m_iView==xfl::WOPPVIEW||m_iView==xfl::W3DVIEW) && m_pCurPOpp);
+    m_pchTrans->setEnabled((m_iView==xfl::WOPPVIEW||m_iView==xfl::W3DVIEW) && m_pCurPOpp);
+    m_pchWOppAnimate->setEnabled((m_iView==xfl::WOPPVIEW||m_iView==xfl::W3DVIEW) && m_pCurPOpp && m_pCurPOpp->polarType()!=xfl::STABILITYPOLAR);
+    m_pslAnimateWOppSpeed->setEnabled((m_iView==xfl::WOPPVIEW||m_iView==xfl::W3DVIEW) && m_pCurPOpp && m_pchWOppAnimate->isChecked());
+    m_pchIDrag->setEnabled(     m_iView==xfl::W3DVIEW && m_pCurPOpp);
+    m_pchVDrag->setEnabled(     m_iView==xfl::W3DVIEW && m_pCurPOpp);
+    m_pchDownwash->setEnabled(  m_iView==xfl::W3DVIEW && m_pCurPOpp);
+    m_pchMoment->setEnabled(    m_iView==xfl::W3DVIEW && m_pCurPOpp);
+    m_pchPanelForce->setEnabled(m_iView==xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=xfl::LLTMETHOD);
+    m_pchCp->setEnabled(        m_iView==xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=xfl::LLTMETHOD);
+    m_pchStream->setEnabled(    m_iView==xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=xfl::LLTMETHOD);
+    m_pchSurfVel->setEnabled(   m_iView==xfl::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=xfl::LLTMETHOD);
 
     m_pchFoilNames->setChecked(m_pgl3dMiarexView->m_bFoilNames);
     m_pchMasses->setChecked(m_pgl3dMiarexView->m_bShowMasses);
@@ -666,7 +660,7 @@ void Miarex::setControls()
 
     setCurveParams();
 
-    m_pctrlAlignChildren->setChecked(Settings::isAlignedChildrenStyle());
+    m_pchAlignChildren->setChecked(Settings::isAlignedChildrenStyle());
 
     blockSignals(false);
 }
@@ -708,7 +702,7 @@ void Miarex::createCpCurves()
     QString str2, str3;
 
     if(!m_pCurPOpp || !m_pCurWPolar) return;
-    if(m_pCurWPolar->analysisMethod()==Xfl::LLTMETHOD)
+    if(m_pCurWPolar->analysisMethod()==xfl::LLTMETHOD)
     {
         s_pMainFrame->statusBar()->showMessage(tr("Cp Curves are only available for VLM and panel methods"));
         return;
@@ -782,7 +776,7 @@ void Miarex::createCpCurves()
                     pCurve->setColor(m_CpLineStyle.m_Color);
                     pCurve->setStipple(m_CpLineStyle.m_Stipple);
                     pCurve->setWidth(m_CpLineStyle.m_Width);
-                    pCurve->setPointStyle(m_CpLineStyle.m_PointStyle);
+                    pCurve->setPointStyle(m_CpLineStyle.m_Symbol);
 
                     pCurve->setName(POppTitle(m_pCurPOpp)+str3);
 
@@ -841,7 +835,7 @@ void Miarex::createWOppCurves()
         double lift, maxlift = 0.0;
 
         int nStart;
-        if(m_pCurPOpp->analysisMethod()==Xfl::LLTMETHOD) nStart = 1;
+        if(m_pCurPOpp->analysisMethod()==xfl::LLTMETHOD) nStart = 1;
         else                                               nStart = 0;
         if(m_bMaxCL) maxlift = m_pCurPOpp->m_pWOpp[0]->maxLift();
         else
@@ -878,7 +872,7 @@ void Miarex::createWOppCurves()
     {
         double b2 = m_pCurPlane->span()/2.0;
         int nStart;
-        if(m_pCurPOpp->analysisMethod()==Xfl::LLTMETHOD) nStart = 1;
+        if(m_pCurPOpp->analysisMethod()==xfl::LLTMETHOD) nStart = 1;
         else                                               nStart = 0;
 
         double lift, maxlift, x, y;
@@ -931,11 +925,11 @@ void Miarex::createWPolarCurves()
     {
         pWPolar = Objects3d::polarAt(k);
         if (pWPolar->isVisible() && pWPolar->dataSize()>0 &&
-                ((m_bType1 && pWPolar->polarType()==Xfl::FIXEDSPEEDPOLAR) ||
-                 (m_bType2 && pWPolar->polarType()==Xfl::FIXEDLIFTPOLAR) ||
-                 (m_bType4 && pWPolar->polarType()==Xfl::FIXEDAOAPOLAR) ||
-                 (            pWPolar->polarType()==Xfl::BETAPOLAR) ||
-                 (m_bType7 && pWPolar->polarType()==Xfl::STABILITYPOLAR)))
+                ((m_bType1 && pWPolar->polarType()==xfl::FIXEDSPEEDPOLAR) ||
+                 (m_bType2 && pWPolar->polarType()==xfl::FIXEDLIFTPOLAR) ||
+                 (m_bType4 && pWPolar->polarType()==xfl::FIXEDAOAPOLAR) ||
+                 (            pWPolar->polarType()==xfl::BETAPOLAR) ||
+                 (m_bType7 && pWPolar->polarType()==xfl::STABILITYPOLAR)))
         {
 
             for(int ig=0; ig<m_WPlrGraph.count(); ig++)
@@ -959,7 +953,7 @@ void Miarex::createWPolarCurves()
 */
 void Miarex::createStabilityCurves()
 {
-    if(m_iView==Xfl::STABTIMEVIEW)
+    if(m_iView==xfl::STABTIMEVIEW)
     {
         if(m_StabilityResponseType==1)  createStabRungeKuttaCurves();
         else                            createStabTimeCurves();
@@ -1113,7 +1107,7 @@ void Miarex::createStabRungeKuttaCurves()
     //We need a WOpp
     if(!m_pCurPOpp) return;//nothing to plot
     //Check that the current polar is of the stability type
-    if(!m_pCurWPolar || m_pCurWPolar->polarType()!=Xfl::STABILITYPOLAR) return;
+    if(!m_pCurWPolar || m_pCurWPolar->polarType()!=xfl::STABILITYPOLAR) return;
 
     if(m_bLongitudinal)
     {
@@ -1312,70 +1306,12 @@ void Miarex::createStabRLCurves()
  */
 void Miarex::fillComboBoxes(bool bEnable)
 {
-    m_pclbCurveColor->setEnabled(bEnable);
-    m_plcbCurveStyle->setEnabled(bEnable);
-    m_plcbCurveWidth->setEnabled(bEnable);
-    m_plcbCurvePoints->setEnabled(bEnable);
     m_pchShowCurve->setEnabled(bEnable);
-    m_pctrlAlignChildren->setEnabled(bEnable);
+    m_pchAlignChildren->setEnabled(bEnable);
 
-    int LineStyle[]  = {0,0,0,0,0};
-    int LineWidth[]  = {0,0,0,0,0};
-    int LinePoints[] = {0,0,0,0,0};
-
-    for (int i=0; i<5;i++)
-    {
-        LineWidth[i] = m_LineStyle.m_Width;
-        LineStyle[i] = m_LineStyle.m_Stipple;
-        LinePoints[i] = m_LineStyle.m_PointStyle;
-    }
-
-    m_pStyleDelegate->setLineWidth(LineWidth); // the same selected width for all styles
-    m_pStyleDelegate->setLineColor(m_LineStyle.m_Color);
-    //    else        m_pStyleDelegate->setLineColor(QColor(100,100,100));
-    m_pStyleDelegate->setPointStyle(LinePoints);
-
-    m_pWidthDelegate->setLineStyle(LineStyle); //the same selected style for all widths
-    m_pWidthDelegate->setLineColor(m_LineStyle.m_Color);
-    //    else        m_pPointDelegate->setLineColor(QColor(100,100,100));
-    m_pWidthDelegate->setPointStyle(LinePoints);
-
-    m_pPointDelegate->setLineStyle(LineStyle);
-    m_pPointDelegate->setLineWidth(LineWidth);
-    for (int i=0; i<5;i++) LinePoints[i]=i;
-    m_pPointDelegate->setPointStyle(LinePoints);
-    m_pPointDelegate->setLineColor(m_LineStyle.m_Color);
-    //    else        m_pPointDelegate->setLineColor(QColor(100,100,100));
-
-
-    if(bEnable)
-    {
-        m_plcbCurveStyle->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_plcbCurveWidth->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_plcbCurvePoints->setLine(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_pclbCurveColor->setColor(m_LineStyle.m_Color);
-        m_pclbCurveColor->setStipple(m_LineStyle.m_Stipple);
-        m_pclbCurveColor->setWidth(m_LineStyle.m_Width);
-    }
-    else
-    {
-        m_plcbCurveStyle->setLine( 0, 1, QColor(100,100,100), 0);
-        m_plcbCurveWidth->setLine( 0, 1, QColor(100,100,100), 0);
-        m_plcbCurvePoints->setLine(0, 1, QColor(100,100,100), 0);
-        m_pclbCurveColor->setColor(QColor(100,100,100));
-        m_pclbCurveColor->setStipple(0);
-        m_pclbCurveColor->setWidth(1);
-    }
-
-
-    m_plcbCurveStyle->update();
-    m_plcbCurveWidth->update();
-    m_plcbCurvePoints->update();
-    m_pclbCurveColor->update();
-
-    m_plcbCurveStyle->setCurrentIndex(m_LineStyle.m_Stipple);
-    m_plcbCurveWidth->setCurrentIndex(m_LineStyle.m_Width-1);
-    m_plcbCurvePoints->setCurrentIndex(m_LineStyle.m_PointStyle);
+    m_pLinePicker->setTheStyle(m_LineStyle);
+    m_pLinePicker->fillBoxes();
+    m_pLinePicker->enableBoxes(bEnable);
 }
 
 
@@ -1392,7 +1328,7 @@ void Miarex::fillWOppCurve(WingOpp const *pWOpp, Graph *pGraph, Curve *pCurve)
     int Var = pGraph->yVariable();
     int nStart=0;
 
-    if(pWOpp->m_AnalysisMethod==Xfl::LLTMETHOD) nStart = 1;
+    if(pWOpp->m_AnalysisMethod==xfl::LLTMETHOD) nStart = 1;
     else nStart = 0;
 
     switch(Var)
@@ -1744,7 +1680,7 @@ void Miarex::keyPressEvent(QKeyEvent *pEvent)
         }*/
         case Qt::Key_H:
         {
-            if((m_iView==Xfl::WPOLARVIEW || m_iView==Xfl::STABPOLARVIEW) && pEvent->modifiers().testFlag(Qt::ControlModifier))
+            if((m_iView==xfl::WPOLARVIEW || m_iView==xfl::STABPOLARVIEW) && pEvent->modifiers().testFlag(Qt::ControlModifier))
             {
                 s_pMainFrame->onHighlightOperatingPoint();
             }
@@ -1954,36 +1890,36 @@ bool Miarex::loadSettings(QSettings &settings)
         m_CpLineStyle.loadSettings(settings,"CpStyle");
 
         int k = settings.value("iView").toInt();
-        if(k==0)      m_iView = Xfl::WOPPVIEW;
-        else if(k==1) m_iView = Xfl::WPOLARVIEW;
-        else if(k==2) m_iView = Xfl::W3DVIEW;
-        else if(k==3) m_iView = Xfl::WCPVIEW;
-        else if(k==4) m_iView = Xfl::STABTIMEVIEW;
-        else if(k==5) m_iView = Xfl::STABPOLARVIEW;
+        if(k==0)      m_iView = xfl::WOPPVIEW;
+        else if(k==1) m_iView = xfl::WPOLARVIEW;
+        else if(k==2) m_iView = xfl::W3DVIEW;
+        else if(k==3) m_iView = xfl::WCPVIEW;
+        else if(k==4) m_iView = xfl::STABTIMEVIEW;
+        else if(k==5) m_iView = xfl::STABPOLARVIEW;
 
         k = settings.value("iWingView").toInt();
-        if(k==0)      m_iWingView  = Xfl::ALLGRAPHS;
-        else if(k==1) m_iWingView  = Xfl::ONEGRAPH;
-        else if(k==2) m_iWingView  = Xfl::TWOGRAPHS;
-        else if(k==4) m_iWingView  = Xfl::FOURGRAPHS;
+        if(k==0)      m_iWingView  = xfl::ALLGRAPHS;
+        else if(k==1) m_iWingView  = xfl::ONEGRAPH;
+        else if(k==2) m_iWingView  = xfl::TWOGRAPHS;
+        else if(k==4) m_iWingView  = xfl::FOURGRAPHS;
 
         k = settings.value("iWPlrView").toInt();
-        if(k==0)      m_iWPlrView  = Xfl::ALLGRAPHS;
-        else if(k==1) m_iWPlrView  = Xfl::ONEGRAPH;
-        else if(k==2) m_iWPlrView  = Xfl::TWOGRAPHS;
-        else if(k==4) m_iWPlrView  = Xfl::FOURGRAPHS;
+        if(k==0)      m_iWPlrView  = xfl::ALLGRAPHS;
+        else if(k==1) m_iWPlrView  = xfl::ONEGRAPH;
+        else if(k==2) m_iWPlrView  = xfl::TWOGRAPHS;
+        else if(k==4) m_iWPlrView  = xfl::FOURGRAPHS;
 
         k = settings.value("iRootLocusView").toInt();
-        if(k==0)      m_iRootLocusView  = Xfl::ALLGRAPHS;
-        else if(k==1) m_iRootLocusView  = Xfl::ONEGRAPH;
-        else if(k==2) m_iRootLocusView  = Xfl::TWOGRAPHS;
-        else if(k==4) m_iRootLocusView  = Xfl::FOURGRAPHS;
+        if(k==0)      m_iRootLocusView  = xfl::ALLGRAPHS;
+        else if(k==1) m_iRootLocusView  = xfl::ONEGRAPH;
+        else if(k==2) m_iRootLocusView  = xfl::TWOGRAPHS;
+        else if(k==4) m_iRootLocusView  = xfl::FOURGRAPHS;
 
         k = settings.value("iStabTimeView").toInt();
-        if(k==0)      m_iStabTimeView  = Xfl::ALLGRAPHS;
-        else if(k==1) m_iStabTimeView  = Xfl::ONEGRAPH;
-        else if(k==2) m_iStabTimeView  = Xfl::TWOGRAPHS;
-        else if(k==4) m_iStabTimeView  = Xfl::FOURGRAPHS;
+        if(k==0)      m_iStabTimeView  = xfl::ALLGRAPHS;
+        else if(k==1) m_iStabTimeView  = xfl::ONEGRAPH;
+        else if(k==2) m_iStabTimeView  = xfl::TWOGRAPHS;
+        else if(k==4) m_iStabTimeView  = xfl::FOURGRAPHS;
 
         m_LLTMaxIterations         = settings.value("Iter").toInt();
         //        GL3dBodyDlg::s_NHoopPoints  = settings.value("NHoopPoints").toInt();
@@ -2108,25 +2044,25 @@ void Miarex::on3DView()
 {
     if(!MainFrame::hasOpenGL())
     {
-        m_iView = Xfl::WPOLARVIEW;
+        m_iView = xfl::WPOLARVIEW;
         updateView();
         return;
     }
 
     m_bResetTextLegend = true;
 
-    if(m_iView==Xfl::W3DVIEW)
+    if(m_iView==xfl::W3DVIEW)
     {
         setControls();
         updateView();
-        if(m_pCurWPolar && m_pCurWPolar->polarType()==Xfl::STABILITYPOLAR)
+        if(m_pCurWPolar && m_pCurWPolar->polarType()==xfl::STABILITYPOLAR)
         {
             s_pMainFrame->m_pctrlStabViewWidget->show();
         }
         return;
     }
 
-    m_iView = Xfl::W3DVIEW;
+    m_iView = xfl::W3DVIEW;
     setControls();
 
     s_pMainFrame->setMainFrameCentralWidget();
@@ -2221,25 +2157,25 @@ void Miarex::onAnalyze()
     // make sure that the latest parameters are loaded
     onReadAnalysisData();
 
-    if(m_pCurWPolar->polarType()==Xfl::FIXEDAOAPOLAR)
+    if(m_pCurWPolar->polarType()==xfl::FIXEDAOAPOLAR)
     {
         V0     = m_QInfMin;
         VMax   = m_QInfMax;
         VDelta = m_QInfDelta;
     }
-    else if(m_pCurWPolar->polarType()==Xfl::STABILITYPOLAR)
+    else if(m_pCurWPolar->polarType()==xfl::STABILITYPOLAR)
     {
         V0     = m_ControlMin;
         VMax   = m_ControlMax;
         VDelta = m_ControlDelta;
     }
-    else if(m_pCurWPolar->polarType()==Xfl::BETAPOLAR)
+    else if(m_pCurWPolar->polarType()==xfl::BETAPOLAR)
     {
         V0     = m_BetaMin;
         VMax   = m_BetaMax;
         VDelta = m_BetaDelta;
     }
-    else if(m_pCurWPolar->polarType() <Xfl::FIXEDAOAPOLAR)
+    else if(m_pCurWPolar->polarType() <xfl::FIXEDAOAPOLAR)
     {
         V0     = m_AlphaMin;
         VMax   = m_AlphaMax;
@@ -2282,7 +2218,7 @@ void Miarex::onAnalyze()
     s_pMainFrame->m_pcbPlanePolar->setEnabled(false);
     s_pMainFrame->m_pcbPlaneOpp->setEnabled(false);
 
-    if(m_pCurWPolar->analysisMethod()==Xfl::LLTMETHOD)
+    if(m_pCurWPolar->analysisMethod()==xfl::LLTMETHOD)
     {
         LLTAnalyze(V0, VMax, VDelta, m_bSequence, m_bInitLLTCalc);
     }
@@ -2316,7 +2252,7 @@ void Miarex::onAnalyze()
 void Miarex::onAnimateWOpp()
 {
     m_pslAnimateWOppSpeed->setEnabled(m_pchWOppAnimate->isChecked());
-    if(!m_pCurPlane || !m_pCurWPolar || m_iView==Xfl::WPOLARVIEW)
+    if(!m_pCurPlane || !m_pCurWPolar || m_iView==xfl::WPOLARVIEW)
     {
         m_bAnimateWOpp = false;
         return;
@@ -2365,12 +2301,12 @@ void Miarex::onAnimateModeSingle(bool bStep)
     double *vabs, *phi;
     StabViewDlg *pStabView = s_pMainFrame->m_pStabView;
 
-    if(m_iView!=Xfl::W3DVIEW)
+    if(m_iView!=xfl::W3DVIEW)
     {
         m_pTimerMode->stop();
         return; //nothing to animate
     }
-    if(!m_pCurPlane || !m_pCurWPolar || m_pCurWPolar->polarType()!=Xfl::STABILITYPOLAR || !m_pCurPOpp)
+    if(!m_pCurPlane || !m_pCurWPolar || m_pCurWPolar->polarType()!=xfl::STABILITYPOLAR || !m_pCurPOpp)
     {
         m_pTimerMode->stop();
         return; //nothing to animate
@@ -2460,7 +2396,7 @@ void Miarex::onAnimateWOppSingle()
     PlaneOpp *pPOpp;
 
     //KickIdle
-    if(m_iView!=Xfl::W3DVIEW && m_iView !=Xfl::WOPPVIEW) return; //nothing to animate
+    if(m_iView!=xfl::W3DVIEW && m_iView !=xfl::WOPPVIEW) return; //nothing to animate
     if(!m_pCurPlane || !m_pCurWPolar) return;
 
     if(m_pCurPlane)    size = Objects3d::planeOppCount();
@@ -2497,13 +2433,13 @@ void Miarex::onAnimateWOppSingle()
             m_pCurPOpp = pPOpp;
             m_bCurPOppOnly = true;
 
-            if (m_iView==Xfl::WOPPVIEW)
+            if (m_iView==xfl::WOPPVIEW)
             {
                 m_bResetTextLegend = true;
                 s_bResetCurves = true;
                 updateView();
             }
-            else if (m_iView==Xfl::W3DVIEW)
+            else if (m_iView==xfl::W3DVIEW)
             {
                 m_bResetTextLegend = true;
                 gl3dMiarexView::s_bResetglOpp      = true;
@@ -2665,13 +2601,13 @@ void Miarex::onCpView()
 {
     if (m_bAnimateWOpp) stopAnimate();
 
-    if(m_iView==Xfl::WCPVIEW)
+    if(m_iView==xfl::WCPVIEW)
     {
         setControls();
         updateView();
         return;
     }
-    m_iView=Xfl::WCPVIEW;
+    m_iView=xfl::WCPVIEW;
 
     setGraphTiles();
     s_pMainFrame->setMainFrameCentralWidget();
@@ -2681,7 +2617,6 @@ void Miarex::onCpView()
     setControls();
     updateView();
 }
-
 
 
 /**
@@ -2697,55 +2632,11 @@ void Miarex::onCurWOppOnly()
 
 
 /**
-* The user has requested a change to the color of the active curve.
-* The curve may be for a polar curve or for an oppoint.
-* Changes the style and modifies the content of the comboboxes
-*/
-void Miarex::onCurveColor()
+ * The user has changed the style of the current curve
+ */
+void Miarex::onCurveStyle(LineStyle ls)
 {
-    QColor Color = QColorDialog::getColor(m_LineStyle.m_Color);
-    if(Color.isValid()) m_LineStyle.m_Color = Color;
-    fillComboBoxes();
-
-    updateCurve();
-}
-
-
-/**
-* The user has requested a change to the style of the active curve.
-* The curve may be for a polar curve or for an oppoint.
-* Changes the style and modifies the content of the comboboxes
-*/
-void Miarex::onCurveStyle(int index)
-{
-    m_LineStyle.setStipple(index);
-    fillComboBoxes();
-    updateCurve();
-}
-
-
-
-/**
-* The user has requested a change to the width of the active curve.
-* The curve may be for a polar curve or for an oppoint.
-* Changes the style and modifies the content of the comboboxes
-*/
-void Miarex::onCurveWidth(int index)
-{
-    m_LineStyle.m_Width = index+1;
-    fillComboBoxes();
-    updateCurve();
-}
-
-
-/**
-* The user has requested a change to the point style of the active curve.
-* The curve may be for a polar curve or for an oppoint.
-* Changes the style and modifies the content of the comboboxes
-*/
-void Miarex::onCurvePoints(int index)
-{
-    m_LineStyle.setPointStyle(index);
+    m_LineStyle = ls;
     fillComboBoxes();
     updateCurve();
 }
@@ -2792,12 +2683,12 @@ void Miarex::onDefineStabPolar()
         pNewStabPolar->setVLM1(false);
 
 
-        if(m_bDirichlet) pNewStabPolar->setBoundaryCondition(Xfl::DIRICHLET);
-        else             pNewStabPolar->setBoundaryCondition(Xfl::NEUMANN);
+        if(m_bDirichlet) pNewStabPolar->setBoundaryCondition(xfl::DIRICHLET);
+        else             pNewStabPolar->setBoundaryCondition(xfl::NEUMANN);
 
         pNewStabPolar->setTilted(false);
         pNewStabPolar->setWakeRollUp(false);
-        pNewStabPolar->setAnalysisMethod(Xfl::PANEL4METHOD);
+        pNewStabPolar->setAnalysisMethod(xfl::PANEL4METHOD);
         pNewStabPolar->setGroundEffect(false);
         pNewStabPolar->m_AlphaSpec       = 0.0;
         pNewStabPolar->m_Height          = 0.0;
@@ -2843,14 +2734,14 @@ void Miarex::onDefineWPolar()
         pNewWPolar->setPlaneName(m_pCurPlane->planeName());
         pNewWPolar->setPolarName(wpDlg.s_WPolar.polarName());
 
-        if(pNewWPolar->referenceDim()==Xfl::PLANFORMREFDIM)
+        if(pNewWPolar->referenceDim()==xfl::PLANFORMREFDIM)
         {
             pNewWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
             double area = m_pCurPlane->planformArea();
             if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->m_PlanformArea;
             pNewWPolar->setReferenceArea(area);
         }
-        else if(pNewWPolar->referenceDim()==Xfl::PROJECTEDREFDIM)
+        else if(pNewWPolar->referenceDim()==xfl::PROJECTEDREFDIM)
         {
             pNewWPolar->setReferenceSpanLength(m_pCurPlane->projectedSpan());
             double area = m_pCurPlane->projectedArea();
@@ -2858,8 +2749,8 @@ void Miarex::onDefineWPolar()
             pNewWPolar->setReferenceArea(area);
         }
 
-        if(m_bDirichlet) pNewWPolar->setBoundaryCondition(Xfl::DIRICHLET);
-        else             pNewWPolar->setBoundaryCondition(Xfl::NEUMANN);
+        if(m_bDirichlet) pNewWPolar->setBoundaryCondition(xfl::DIRICHLET);
+        else             pNewWPolar->setBoundaryCondition(xfl::NEUMANN);
 
 
         QColor clr = MainFrame::getColor(4);
@@ -2914,14 +2805,14 @@ void Miarex::onDefineWPolarObject()
         //Then add WPolar to array
         emit projectModified();
 
-        if(pNewWPolar->referenceDim()==Xfl::PLANFORMREFDIM)
+        if(pNewWPolar->referenceDim()==xfl::PLANFORMREFDIM)
         {
             pNewWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
             double area = m_pCurPlane->planformArea();
             if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->m_PlanformArea;
             pNewWPolar->setReferenceArea(area);
         }
-        else if(pNewWPolar->referenceDim()==Xfl::PROJECTEDREFDIM)
+        else if(pNewWPolar->referenceDim()==xfl::PROJECTEDREFDIM)
         {
             pNewWPolar->setReferenceSpanLength(m_pCurPlane->projectedSpan());
             double area = m_pCurPlane->projectedArea();
@@ -2969,7 +2860,7 @@ void Miarex::onEditCurWPolar()
 
     WPolar *pNewWPolar = new WPolar;
 
-    if(m_pCurWPolar->polarType()!=Xfl::STABILITYPOLAR)
+    if(m_pCurWPolar->polarType()!=xfl::STABILITYPOLAR)
     {
         WPolarDlg dlg(s_pMainFrame);
         dlg.initDialog(m_pCurPlane, m_pCurWPolar);
@@ -3408,7 +3299,7 @@ void Miarex::onEditCurBody()
 
     if(bUsed && glbDlg.m_bChanged)
     {
-        mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
+        mdDlg.setQuestion(tr("The modification will erase all results associated to this Plane.\nContinue ?"));
         mdDlg.initDialog();
         int Ans = mdDlg.exec();
 
@@ -3515,7 +3406,7 @@ void Miarex::onEditCurBodyObject()
 
     if(bUsed)
     {
-        mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
+        mdDlg.setQuestion(tr("The modification will erase all results associated to this Plane.\nContinue ?"));
         mdDlg.initDialog();
         int Ans = mdDlg.exec();
 
@@ -3606,7 +3497,7 @@ void Miarex::onEditCurObject()
         {
             if(bHasResults)
             {
-                mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
+                mdDlg.setQuestion(tr("The modification will erase all results associated to this Plane.\nContinue ?"));
                 mdDlg.initDialog();
                 int Ans = mdDlg.exec();
 
@@ -3714,7 +3605,7 @@ void Miarex::onEditCurPlane()
         {
             if(bHasResults)
             {
-                mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
+                mdDlg.setQuestion(tr("The modification will erase all results associated to this Plane.\nContinue ?"));
                 mdDlg.initDialog();
                 int Ans = mdDlg.exec();
 
@@ -3829,7 +3720,7 @@ void Miarex::onEditCurWing()
             if(bHasResults)
             {
                 ModDlg mdDlg(s_pMainFrame);
-                mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
+                mdDlg.setQuestion(tr("The modification will erase all results associated to this Plane.\nContinue ?"));
                 mdDlg.initDialog();
                 int Ans = mdDlg.exec();
 
@@ -3934,7 +3825,7 @@ void Miarex::onScaleWing()
             if(bHasResults)
             {
                 ModDlg mdDlg(s_pMainFrame);
-                mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
+                mdDlg.setQuestion(tr("The modification will erase all results associated to this Plane.\nContinue ?"));
                 mdDlg.initDialog();
                 int Ans = mdDlg.exec();
 
@@ -3992,9 +3883,9 @@ void Miarex::onExportCurPOpp()
     if(!m_pCurPOpp)return ;// is there anything to export ?
 
     int iStrip=0,j=0,k=0,l=0,p=0, coef=0;
-    Xfl::enumTextFileType exporttype;
+    xfl::enumTextFileType exporttype;
     QString filter;
-    if(Settings::s_ExportFileType==Xfl::TXT) filter = "Text File (*.txt)";
+    if(Settings::s_ExportFileType==xfl::TXT) filter = "Text File (*.txt)";
     else                                       filter = "Comma Separated Values (*.csv)";
 
     QString FileName, sep, str, strong, Format;
@@ -4014,8 +3905,8 @@ void Miarex::onExportCurPOpp()
     int pos = FileName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = FileName.left(pos);
     pos = FileName.lastIndexOf(".csv");
-    if (pos>0) Settings::s_ExportFileType = Xfl::CSV;
-    else       Settings::s_ExportFileType = Xfl::TXT;
+    if (pos>0) Settings::s_ExportFileType = xfl::CSV;
+    else       Settings::s_ExportFileType = xfl::TXT;
     exporttype = Settings::s_ExportFileType;
 
 
@@ -4025,7 +3916,7 @@ void Miarex::onExportCurPOpp()
 
     QTextStream out(&XFile);
 
-    if(exporttype==Xfl::TXT) sep = ""; else sep=",";
+    if(exporttype==xfl::TXT) sep = ""; else sep=",";
 
 
     out << VERSIONNAME;
@@ -4060,7 +3951,7 @@ void Miarex::onExportCurPOpp()
     strong = QString("Cy    = "+sep+"%1\n").arg(m_pCurPOpp->m_CY,11, 'f', 6);
     out << strong;
 
-    if(exporttype==Xfl::TXT) strong = QString(tr("Cd    = %1     ICd   = %2     PCd   = %3\n"))
+    if(exporttype==xfl::TXT) strong = QString(tr("Cd    = %1     ICd   = %2     PCd   = %3\n"))
             .arg(m_pCurPOpp->m_ICD+m_pCurPOpp->m_VCD,11, 'f', 6)
             .arg(m_pCurPOpp->m_ICD,11, 'f', 6)
             .arg(m_pCurPOpp->m_VCD,11, 'f', 6);
@@ -4075,15 +3966,15 @@ void Miarex::onExportCurPOpp()
     strong = QString(tr("Cm   =")+sep+" %1\n").arg(m_pCurPOpp->m_GCm, 11,'g',6);
     out << strong;
 
-    if(exporttype==Xfl::TXT) strong = QString(tr("ICn   = %1     PCn   = %2 \n")).arg(m_pCurPOpp->m_IYm, 11, 'f', 6).arg(m_pCurPOpp->m_GYm, 11, 'f', 6);
+    if(exporttype==xfl::TXT) strong = QString(tr("ICn   = %1     PCn   = %2 \n")).arg(m_pCurPOpp->m_IYm, 11, 'f', 6).arg(m_pCurPOpp->m_GYm, 11, 'f', 6);
     else                       strong = QString(tr("ICn=, %1,PCn=, %2\n")).arg(m_pCurPOpp->m_IYm, 11, 'f', 6).arg(m_pCurPOpp->m_GYm, 11, 'f', 6);
     out << strong;
 
-    if(exporttype==Xfl::TXT) strong = QString("XCP   = %1     YCP   = %2     ZCP   = %3  \n").arg(m_pCurPOpp->m_CP.x, 11, 'f', 6).arg(m_pCurPOpp->m_CP.y, 11, 'f', 6).arg(m_pCurPOpp->m_CP.z, 11, 'f', 6);
+    if(exporttype==xfl::TXT) strong = QString("XCP   = %1     YCP   = %2     ZCP   = %3  \n").arg(m_pCurPOpp->m_CP.x, 11, 'f', 6).arg(m_pCurPOpp->m_CP.y, 11, 'f', 6).arg(m_pCurPOpp->m_CP.z, 11, 'f', 6);
     else                       strong = QString("XCP=, %1, YCP=, %2, ZCP=, %3 \n").arg(m_pCurPOpp->m_CP.x, 11, 'f', 6).arg(m_pCurPOpp->m_CP.y, 11, 'f', 6).arg(m_pCurPOpp->m_CP.z, 11, 'f', 6);
     out << strong;
 
-    if(exporttype==Xfl::TXT) strong = QString("XNP   = %1\n").arg(m_pCurPOpp->m_XNP, 11, 'f', 6);
+    if(exporttype==xfl::TXT) strong = QString("XNP   = %1\n").arg(m_pCurPOpp->m_XNP, 11, 'f', 6);
     else                       strong = QString("XNP=, %1\n").arg(m_pCurPOpp->m_XNP, 11, 'f', 6);
     out << strong;
 
@@ -4091,10 +3982,10 @@ void Miarex::onExportCurPOpp()
     strong = QString(tr("Bending =")+sep+" %1\n\n").arg(m_pCurPOpp->m_pWOpp[0]->m_MaxBending, 11, 'f', 6);
     out << strong;
 
-    if(m_pCurWPolar->polarType()==Xfl::STABILITYPOLAR)
+    if(m_pCurWPolar->polarType()==xfl::STABILITYPOLAR)
     {
         //export non dimensional stability derivatives
-        if(exporttype==Xfl::TXT)
+        if(exporttype==xfl::TXT)
         {
             //            complex<double> c, angle;
             double u0 = m_pCurPOpp->m_QInf;
@@ -4200,12 +4091,12 @@ void Miarex::onExportCurPOpp()
                 out << strong;
             }
             out << ("\n");
-            bool bCSV = (exporttype != Xfl::TXT);
+            bool bCSV = (exporttype != xfl::TXT);
             m_pWOpp[iw]->exportWOpp(out, bCSV);
         }
     }
 
-    if(m_pCurPOpp->analysisMethod()>=Xfl::VLMMETHOD)
+    if(m_pCurPOpp->analysisMethod()>=xfl::VLMMETHOD)
     {
         if(m_pCurPOpp) out << tr("Main Wing Cp Coefficients\n");
         else           out << tr("Wing Cp Coefficients\n");
@@ -4215,10 +4106,10 @@ void Miarex::onExportCurPOpp()
         {
             coef = 2;
         }
-        if(exporttype==Xfl::TXT) out << tr(" Panel     CtrlPt.x        CtrlPt.y        CtrlPt.z       Nx      Ny       Nz        Area       Cp\n");
+        if(exporttype==xfl::TXT) out << tr(" Panel     CtrlPt.x        CtrlPt.y        CtrlPt.z       Nx      Ny       Nz        Area       Cp\n");
         else                       out << tr("Panel,CtrlPt.x,CtrlPt.y,CtrlPt.z,Nx,Ny,Nz,Area,Cp\n");
 
-        if(exporttype==Xfl::TXT) Format = "%1     %2     %3     %4     %5     %6     %7     %8     %9\n";
+        if(exporttype==xfl::TXT) Format = "%1     %2     %3     %4     %5     %6     %7     %8     %9\n";
         else                       Format = "%1, %2, %3, %4, %5, %6, %7, %8, %9\n";
 
 
@@ -4290,7 +4181,7 @@ void Miarex::onExportCurWPolar()
 
     QString FileName, filter;
 
-    if(Settings::s_ExportFileType==Xfl::TXT) filter = "Text File (*.txt)";
+    if(Settings::s_ExportFileType==xfl::TXT) filter = "Text File (*.txt)";
     else                                       filter = "Comma Separated Values (*.csv)";
 
     FileName = m_pCurWPolar->polarName();
@@ -4309,12 +4200,12 @@ void Miarex::onExportCurWPolar()
 
     if(filter.indexOf("*.txt")>0)
     {
-        Settings::s_ExportFileType = Xfl::TXT;
+        Settings::s_ExportFileType = xfl::TXT;
         if(FileName.indexOf(".txt")<0) FileName +=".txt";
     }
     else if(filter.indexOf("*.csv")>0)
     {
-        Settings::s_ExportFileType = Xfl::CSV;
+        Settings::s_ExportFileType = xfl::CSV;
         if(FileName.indexOf(".csv")<0) FileName +=".csv";
     }
 
@@ -4348,7 +4239,7 @@ void Miarex::onExportWPolars()
         fileName.replace("/", "_");
         fileName.replace(".", "_");
         fileName = DirName + "/" +fileName;
-        if(Settings::s_ExportFileType==Xfl::TXT) fileName += ".txt";
+        if(Settings::s_ExportFileType==xfl::TXT) fileName += ".txt";
         else                                       fileName += ".csv";
 
         XFile.setFileName(fileName);
@@ -4813,7 +4704,7 @@ void Miarex::onStabCurve()
  */
 void Miarex::onGL3DScale()
 {
-    if(m_iView != Xfl::W3DVIEW)
+    if(m_iView != xfl::W3DVIEW)
     {
         //        m_pctrl3DSettings->setChecked(false);
         return;
@@ -4930,7 +4821,7 @@ void Miarex::onHidePlaneWPolars()
         if (pWPolar->planeName() == PlaneName)
         {
             pWPolar->setVisible(false);
-            if(pWPolar->polarType()==Xfl::STABILITYPOLAR) pWPolar->setPointStyle2(Line::NOSYMBOL);
+            if(pWPolar->polarType()==xfl::STABILITYPOLAR) pWPolar->setPointStyle2(Line::NOSYMBOL);
         }
     }
 
@@ -5050,7 +4941,7 @@ void Miarex::onImportWPolars()
                     else bRead = false;
                 }
 
-                QColor clr = randomColor(!Settings::isLightTheme());
+                QColor clr = xfl::randomColor(!Settings::isLightTheme());
                 pWPolar->setColor(clr);
 
                 Objects3d::addWPolar(pWPolar);
@@ -5089,12 +4980,12 @@ void Miarex::onKeepCpSection()
     //    pNewCurve->setCurveName(pCurrentCurve->curveName());
     //    pNewCurve->setColor(pCurrentCurve->color());
 
-    m_CpLineStyle.m_Color = randomColor(!Settings::isLightTheme());
+    m_CpLineStyle.m_Color = xfl::randomColor(!Settings::isLightTheme());
     pCurrentCurve->setColor(m_CpLineStyle.m_Color);
 
     m_CpLineStyle.m_Stipple = Line::SOLID;
     m_CpLineStyle.m_Width = 1;
-    m_CpLineStyle.m_PointStyle = Line::NOSYMBOL;
+    m_CpLineStyle.m_Symbol = Line::NOSYMBOL;
     setCurveParams();
 
     createCpCurves();
@@ -5231,7 +5122,7 @@ void Miarex::onReadAnalysisData()
     m_bSequence = m_pchSequence->isChecked();
     m_bInitLLTCalc = m_pchInitLLTCalc->isChecked();
 
-    if(m_pCurWPolar && m_pCurWPolar->polarType()==Xfl::FIXEDAOAPOLAR)
+    if(m_pCurWPolar && m_pCurWPolar->polarType()==xfl::FIXEDAOAPOLAR)
     {
         m_QInfMin   = m_pdeAlphaMin->value()         /Units::mstoUnit();
         m_QInfMax   = m_pdeAlphaMax->value()         /Units::mstoUnit();
@@ -5242,7 +5133,7 @@ void Miarex::onReadAnalysisData()
             m_pdeAlphaDelta->setValue(1.0);
         }
     }
-    else if(m_pCurWPolar && m_pCurWPolar->polarType()==Xfl::BETAPOLAR)
+    else if(m_pCurWPolar && m_pCurWPolar->polarType()==xfl::BETAPOLAR)
     {
         m_BetaMin   = m_pdeAlphaMin->value();
         m_BetaMax   = m_pdeAlphaMax->value();
@@ -5253,7 +5144,7 @@ void Miarex::onReadAnalysisData()
             m_pdeAlphaDelta->setValue(0.01);
         }
     }
-    else if(m_pCurWPolar && m_pCurWPolar->polarType()==Xfl::STABILITYPOLAR)
+    else if(m_pCurWPolar && m_pCurWPolar->polarType()==xfl::STABILITYPOLAR)
     {
         m_ControlMin   = m_pdeAlphaMin->value();
         m_ControlMax   = m_pdeAlphaMax->value();
@@ -5463,7 +5354,7 @@ void Miarex::onResetCurWPolar()
     s_pMainFrame->updatePOppListBox();
     m_pCurPOpp = nullptr;
 
-    if(m_iView==Xfl::WPOLARVIEW)
+    if(m_iView==xfl::WPOLARVIEW)
     {
         if(m_pCurWPolar)
         {
@@ -5707,7 +5598,7 @@ void Miarex::onPanelForce()
         m_b3DCp =false;
         m_pchCp->setChecked(false);
     }
-    if(m_iView == Xfl::W3DVIEW)
+    if(m_iView == xfl::W3DVIEW)
     {
         if(!m_bAnimateWOpp) updateView();
     }
@@ -5720,7 +5611,7 @@ void Miarex::onPanelForce()
 void Miarex::onShowLift()
 {
     m_bXCP     = m_pchLift->isChecked();
-    if(m_iView==Xfl::WOPPVIEW || m_iView == Xfl::W3DVIEW)
+    if(m_iView==xfl::WOPPVIEW || m_iView == xfl::W3DVIEW)
     {
         if(!m_bAnimateWOpp) updateView();
     }
@@ -5734,7 +5625,7 @@ void Miarex::onShowIDrag()
 {
     m_bICd = m_pchIDrag->isChecked();
     gl3dMiarexView::s_bResetglDrag = true;
-    if(m_iView==Xfl::WOPPVIEW || m_iView == Xfl::W3DVIEW)
+    if(m_iView==xfl::WOPPVIEW || m_iView == xfl::W3DVIEW)
     {
         if(!m_bAnimateWOpp) updateView();
     }
@@ -5748,7 +5639,7 @@ void Miarex::onShowVDrag()
 {
     m_bVCd = m_pchVDrag->isChecked();
     gl3dMiarexView::s_bResetglDrag = true;
-    if(m_iView==Xfl::WOPPVIEW || m_iView == Xfl::W3DVIEW)
+    if(m_iView==xfl::WOPPVIEW || m_iView == xfl::W3DVIEW)
     {
         if(!m_bAnimateWOpp) updateView();
     }
@@ -5762,7 +5653,7 @@ void Miarex::onShowTransitions()
 {
     m_bXTop = m_pchTrans->isChecked();
     m_bXBot = m_pchTrans->isChecked();
-    if(m_iView==Xfl::WOPPVIEW || m_iView == Xfl::W3DVIEW)
+    if(m_iView==xfl::WOPPVIEW || m_iView == xfl::W3DVIEW)
     {
         if(!m_bAnimateWOpp) updateView();
     }
@@ -5779,7 +5670,6 @@ void Miarex::onShowCurve()
 }
 
 
-
 /**
  * The user has toggled the display of stability results between longitudinal and lateral directions
  */
@@ -5791,7 +5681,7 @@ void Miarex::onStabilityDirection()
 
     m_bLongitudinal = pStabView->m_pctrlLongDynamics->isChecked();
 
-    m_iRootLocusView = Xfl::ONEGRAPH;
+    m_iRootLocusView = xfl::ONEGRAPH;
 
     for(int ig=0; ig<MAXTIMEGRAPHS; ig++) m_TimeGraph[ig]->deleteCurves();
 
@@ -5822,7 +5712,7 @@ void Miarex::onStabilityDirection()
 void Miarex::onStabTimeView()
 {
     stopAnimate();
-    m_iView =  Xfl::STABTIMEVIEW;
+    m_iView =  xfl::STABTIMEVIEW;
     setGraphTiles();
 
     m_bResetTextLegend = true;
@@ -5845,7 +5735,7 @@ void Miarex::onStabTimeView()
 void Miarex::onRootLocusView()
 {
     stopAnimate();
-    m_iView = Xfl::STABPOLARVIEW;
+    m_iView = xfl::STABPOLARVIEW;
     m_bResetTextLegend = true;
 
     setGraphTiles();
@@ -5868,7 +5758,7 @@ void Miarex::onStreamlines()
     {
         //        m_bResetglStream = true;
     }
-    if(m_iView==Xfl::W3DVIEW) updateView();
+    if(m_iView==xfl::W3DVIEW) updateView();
     m_pgl3dMiarexView->setFocus();
 }
 
@@ -5900,7 +5790,7 @@ void Miarex::onSurfaceSpeeds()
     {
         //        m_bResetglStream = true;
     }
-    if(m_iView==Xfl::W3DVIEW) updateView();
+    if(m_iView==xfl::W3DVIEW) updateView();
     m_pgl3dMiarexView->setFocus();
 }
 
@@ -5911,10 +5801,12 @@ void Miarex::onSurfaceSpeeds()
  */
 void Miarex::onSetupLight()
 {
-    if(m_iView!=Xfl::W3DVIEW) return;
+    if(m_iView!=xfl::W3DVIEW) return;
 
-    s_pMainFrame->m_glLightDlg.setgl3dView(m_pgl3dMiarexView);
-    s_pMainFrame->m_glLightDlg.show();
+    GLLightDlg *pdlg = new GLLightDlg;
+    pdlg->setModelSize(m_pCurPlane->planformSpan());
+    pdlg->setgl3dView(m_pgl3dMiarexView);
+    pdlg->show();
 }
 
 
@@ -5983,7 +5875,7 @@ void Miarex::onPlaneInertia()
         if(bHasResults)
         {
             ModDlg mdDlg(s_pMainFrame);
-            mdDlg.m_Question = tr("The modification will erase all polar results associated to this Plane.\nContinue ?");
+            mdDlg.setQuestion(tr("The modification will erase all polar results associated to this Plane.\nContinue ?"));
             mdDlg.initDialog();
             int Ans = mdDlg.exec();
 
@@ -6059,14 +5951,14 @@ void Miarex::onWOppView()
 {
     m_bResetTextLegend = true;
 
-    if(m_iView==Xfl::WOPPVIEW)
+    if(m_iView==xfl::WOPPVIEW)
     {
         setControls();
         updateView();
         return;
     }
 
-    m_iView=Xfl::WOPPVIEW;
+    m_iView=xfl::WOPPVIEW;
     setGraphTiles();
 
     s_pMainFrame->setMainFrameCentralWidget();
@@ -6090,13 +5982,13 @@ void Miarex::onWPolarView()
 
     m_bResetTextLegend = true;
 
-    if(m_iView==Xfl::WPOLARVIEW)
+    if(m_iView==xfl::WPOLARVIEW)
     {
         setControls();
         updateView();
         return;
     }
-    m_iView=Xfl::WPOLARVIEW;
+    m_iView=xfl::WPOLARVIEW;
     setGraphTiles();
 
     //    if(!m_pCurWPlrGraph) m_pCurGraph = nullptr;
@@ -6264,7 +6156,7 @@ void Miarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
     QPen textPen(Settings::s_TextColor);
     painter.setPen(textPen);
     QFont font(Settings::s_TextFont);
-    if (m_iView == Xfl::W3DVIEW)
+    if (m_iView == xfl::W3DVIEW)
         ratio = m_pgl3dMiarexView->devicePixelRatio();
     margin *= ratio;
     font.setPointSize(int(float(Settings::s_TextFont.pointSize())*ratio));
@@ -6280,9 +6172,9 @@ void Miarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
     int RightPos = drawRect.right()-margin - dwidth;
     int ZPos     = drawRect.height()-13*dheight;
 
-    if(m_pCurPOpp && m_pCurPOpp->m_WPolarType==Xfl::STABILITYPOLAR) ZPos -= dheight;
+    if(m_pCurPOpp && m_pCurPOpp->m_WPolarType==xfl::STABILITYPOLAR) ZPos -= dheight;
     if(m_pCurPOpp && m_pCurPOpp->m_bOut)                              ZPos -= dheight;
-    if(m_pCurPOpp && m_pCurPOpp->analysisMethod()!=Xfl::LLTMETHOD && m_bShowFlapMoments)
+    if(m_pCurPOpp && m_pCurPOpp->analysisMethod()!=xfl::LLTMETHOD && m_bShowFlapMoments)
     {
         if(m_pCurPOpp->m_pWOpp[0]) ZPos -= dheight*m_pCurPOpp->m_pWOpp[0]->m_nFlaps;
         if(m_pCurPOpp->m_pWOpp[2]) ZPos -= dheight*m_pCurPOpp->m_pWOpp[2]->m_nFlaps;
@@ -6351,7 +6243,7 @@ void Miarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
     l = str.length();
     int c=8, d=3;
     if(l==1)  str+=" ";
-    if(m_pCurPOpp->m_WPolarType==Xfl::STABILITYPOLAR)
+    if(m_pCurPOpp->m_WPolarType==xfl::STABILITYPOLAR)
     {
         Result = QString("X_NP = %1 ").arg(m_pCurPOpp->m_XNP*Units::mtoUnit(), c,'f',d);
         Result += str;
@@ -6369,7 +6261,7 @@ void Miarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
     D+=dheight;
     painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
-    if(m_pCurPOpp->analysisMethod()!=Xfl::LLTMETHOD && m_bShowFlapMoments)
+    if(m_pCurPOpp->analysisMethod()!=xfl::LLTMETHOD && m_bShowFlapMoments)
     {
         if(m_pCurPOpp->m_pWOpp[0])
         {
@@ -6534,49 +6426,49 @@ bool Miarex::saveSettings(QSettings &settings)
 
         switch(m_iView)
         {
-            case Xfl::WOPPVIEW:
+            case xfl::WOPPVIEW:
             {
                 settings.setValue("iView", 0);
                 break;
             }
-            case Xfl::WPOLARVIEW:
+            case xfl::WPOLARVIEW:
             {
                 settings.setValue("iView", 1);
                 break;
             }
-            case Xfl::W3DVIEW:
+            case xfl::W3DVIEW:
             {
                 settings.setValue("iView", 2);
                 break;
             }
-            case Xfl::WCPVIEW:
+            case xfl::WCPVIEW:
             {
                 settings.setValue("iView", 3);
                 break;
             }
-            case Xfl::STABTIMEVIEW:
+            case xfl::STABTIMEVIEW:
             {
                 settings.setValue("iView", 4);
                 break;
             }
-            case Xfl::STABPOLARVIEW:
+            case xfl::STABPOLARVIEW:
             {
                 settings.setValue("iView", 5);
                 break;
             }
-            case Xfl::OTHERVIEW:
+            case xfl::OTHERVIEW:
                 break;
         }
 
         switch(m_iWingView)
         {
-            case Xfl::ONEGRAPH:
+            case xfl::ONEGRAPH:
                 settings.setValue("iWingView", 1);
                 break;
-            case Xfl::TWOGRAPHS:
+            case xfl::TWOGRAPHS:
                 settings.setValue("iWingView", 2);
                 break;
-            case Xfl::FOURGRAPHS:
+            case xfl::FOURGRAPHS:
                 settings.setValue("iWingView", 4);
                 break;
             default:
@@ -6587,13 +6479,13 @@ bool Miarex::saveSettings(QSettings &settings)
 
         switch(m_iWPlrView)
         {
-            case Xfl::ONEGRAPH:
+            case xfl::ONEGRAPH:
                 settings.setValue("iWPlrView", 1);
                 break;
-            case Xfl::TWOGRAPHS:
+            case xfl::TWOGRAPHS:
                 settings.setValue("iWPlrView", 2);
                 break;
-            case Xfl::FOURGRAPHS:
+            case xfl::FOURGRAPHS:
                 settings.setValue("iWPlrView", 4);
                 break;
             default:
@@ -6604,13 +6496,13 @@ bool Miarex::saveSettings(QSettings &settings)
 
         switch(m_iRootLocusView)
         {
-            case Xfl::ONEGRAPH:
+            case xfl::ONEGRAPH:
                 settings.setValue("iRootLocusView", 1);
                 break;
-            case Xfl::TWOGRAPHS:
+            case xfl::TWOGRAPHS:
                 settings.setValue("iRootLocusView", 2);
                 break;
-            case Xfl::FOURGRAPHS:
+            case xfl::FOURGRAPHS:
                 settings.setValue("iRootLocusView", 4);
                 break;
             default:
@@ -6619,13 +6511,13 @@ bool Miarex::saveSettings(QSettings &settings)
         }
         switch(m_iStabTimeView)
         {
-            case Xfl::ONEGRAPH:
+            case xfl::ONEGRAPH:
                 settings.setValue("iStabTimeView", 1);
                 break;
-            case Xfl::TWOGRAPHS:
+            case xfl::TWOGRAPHS:
                 settings.setValue("iStabTimeView", 2);
                 break;
-            case Xfl::FOURGRAPHS:
+            case xfl::FOURGRAPHS:
                 settings.setValue("iStabTimeView", 5);
                 break;
             default:
@@ -6763,25 +6655,25 @@ void Miarex::setAnalysisParams()
     m_pchInitLLTCalc->setChecked(m_bInitLLTCalc);
     m_pchStoreWOpp->setChecked(PlaneOpp::s_bStoreOpps);
 
-    if (!m_pCurWPolar || (m_pCurWPolar && m_pCurWPolar->polarType() < Xfl::FIXEDAOAPOLAR))
+    if (!m_pCurWPolar || (m_pCurWPolar && m_pCurWPolar->polarType() < xfl::FIXEDAOAPOLAR))
     {
         m_pdeAlphaMin->setValue(m_AlphaMin);
         m_pdeAlphaMax->setValue(m_AlphaMax);
         m_pdeAlphaDelta->setValue(m_AlphaDelta);
     }
-    else if(m_pCurWPolar  && m_pCurWPolar->polarType() == Xfl::FIXEDAOAPOLAR)
+    else if(m_pCurWPolar  && m_pCurWPolar->polarType() == xfl::FIXEDAOAPOLAR)
     {
         m_pdeAlphaMin->setValue(m_QInfMin*Units::mstoUnit());
         m_pdeAlphaMax->setValue(m_QInfMax*Units::mstoUnit());
         m_pdeAlphaDelta->setValue(m_QInfDelta*Units::mstoUnit());
     }
-    else if (m_pCurWPolar && m_pCurWPolar->polarType() == Xfl::BETAPOLAR)
+    else if (m_pCurWPolar && m_pCurWPolar->polarType() == xfl::BETAPOLAR)
     {
         m_pdeAlphaMin->setValue(m_BetaMin);
         m_pdeAlphaMax->setValue(m_BetaMax);
         m_pdeAlphaDelta->setValue(m_BetaDelta);
     }
-    else if (m_pCurWPolar && (m_pCurWPolar->polarType() == Xfl::STABILITYPOLAR))
+    else if (m_pCurWPolar && (m_pCurWPolar->polarType() == xfl::STABILITYPOLAR))
     {
         m_pdeAlphaMin->setValue(m_ControlMin);
         m_pdeAlphaMax->setValue(m_ControlMax);
@@ -6795,7 +6687,7 @@ void Miarex::setAnalysisParams()
  */
 void Miarex::setCurveParams()
 {
-    if(m_iView==Xfl::WPOLARVIEW || m_iView==Xfl::STABPOLARVIEW)
+    if(m_iView==xfl::WPOLARVIEW || m_iView==xfl::STABPOLARVIEW)
     {
         if(m_pCurWPolar)
         {
@@ -6809,21 +6701,21 @@ void Miarex::setCurveParams()
             fillComboBoxes(false);
         }
     }
-    else if(m_iView==Xfl::STABTIMEVIEW)
+    else if(m_iView==xfl::STABTIMEVIEW)
     {
         StabViewDlg *pStabView =s_pMainFrame->m_pStabView;
         if(pStabView->m_pCurve)
         {
             m_bCurveVisible     = pStabView->m_pCurve->isVisible();
             m_LineStyle.m_Color = pStabView->m_pCurve->color();
-            m_LineStyle.setStipple(pStabView->m_pCurve->style());
+            m_LineStyle.setStipple(pStabView->m_pCurve->stipple());
             m_LineStyle.m_Width = pStabView->m_pCurve->width();
             m_LineStyle.setPointStyle(pStabView->m_pCurve->pointStyle());
             m_pchShowCurve->setChecked(pStabView->m_pCurve->isVisible());
             fillComboBoxes();
         }
     }
-    else if(m_iView==Xfl::WOPPVIEW)
+    else if(m_iView==xfl::WOPPVIEW)
     {
         //set OpPoint params
         if(m_pCurPOpp)
@@ -6839,7 +6731,7 @@ void Miarex::setCurveParams()
             fillComboBoxes(false);
         }
     }
-    else if(m_iView==Xfl::WCPVIEW)
+    else if(m_iView==xfl::WCPVIEW)
     {
         //set Cp params
         if(m_pCurPOpp)
@@ -6860,7 +6752,7 @@ void Miarex::setCurveParams()
     }
 
 
-    if(m_pCurWPolar && m_pCurWPolar->polarType()==Xfl::FIXEDAOAPOLAR)
+    if(m_pCurWPolar && m_pCurWPolar->polarType()==xfl::FIXEDAOAPOLAR)
     {
         QString str;
         Units::getSpeedUnitLabel(str);
@@ -6874,7 +6766,7 @@ void Miarex::setCurveParams()
         fontSymbol.setPointSize(Settings::s_TextFont.pointSize()+2);
         m_plabParameterName->setFont(fontSymbol);
     }
-    else if(m_pCurWPolar && m_pCurWPolar->polarType()==Xfl::STABILITYPOLAR)
+    else if(m_pCurWPolar && m_pCurWPolar->polarType()==xfl::STABILITYPOLAR)
     {
         m_plabUnit1->setText("");
         m_plabUnit2->setText("");
@@ -6885,7 +6777,7 @@ void Miarex::setCurveParams()
         fontSymbol.setBold(true);
         m_plabParameterName->setFont(fontSymbol);
     }
-    else if(m_pCurWPolar && m_pCurWPolar->polarType()==Xfl::BETAPOLAR)
+    else if(m_pCurWPolar && m_pCurWPolar->polarType()==xfl::BETAPOLAR)
     {
         m_plabUnit1->setText(QChar(0260));
         m_plabUnit2->setText(QChar(0260));
@@ -6975,8 +6867,6 @@ void Miarex::setPlane(QString PlaneName)
     {
         setWPolar();
     }
-
-    s_pMainFrame->m_glLightDlg.setModelSize(m_pCurPlane->planformSpan());
 
     setScale();
     setWGraphScale();
@@ -7126,68 +7016,26 @@ void Miarex::setupLayout()
     //_______________________Curve params
     QGroupBox *pCurveBox = new QGroupBox(tr("Curve settings"));
     {
-        QHBoxLayout *pCheckLayout = new QHBoxLayout;
+        QVBoxLayout *pPickerLayout = new QVBoxLayout;
         {
-            m_pchShowCurve   = new QCheckBox(tr("Curve"));
-            m_pctrlAlignChildren = new QCheckBox(tr("Flow down style"));
-            QString tip = tr("If activated:\n"
-                             "all changes made to the style of the polar objects will flow down to the operating points\n"
-                             "all changes made to the style of the foil objects will flow down to the polars and to the operating points");
-            m_pctrlAlignChildren->setToolTip(tip);
-            pCheckLayout->addWidget(m_pchShowCurve);
-            pCheckLayout->addWidget(m_pctrlAlignChildren);
-        }
-
-        QVBoxLayout *pCurveGroupLayout = new QVBoxLayout;
-        {
-            m_plcbCurveStyle  = new LineCbBox(this);
-            m_plcbCurveWidth  = new LineCbBox(this);
-            m_plcbCurvePoints = new LineCbBox(this);
-            m_plcbCurvePoints->showPoints(true);
-            m_pclbCurveColor  = new LineBtn();
-
-            for (int i=0; i<5; i++)
+            QHBoxLayout *pCheckLayout = new QHBoxLayout;
             {
-                m_plcbCurveStyle->addItem(tr("item"));
-                m_plcbCurveWidth->addItem(tr("item"));
-                m_plcbCurvePoints->addItem(tr("item"));
+                m_pchShowCurve   = new QCheckBox(tr("Curve"));
+                m_pchAlignChildren = new QCheckBox(tr("Flow down style"));
+                QString tip = tr("If activated:\n"
+                                 "all changes made to the style of the polar objects will flow down to the operating points\n"
+                                 "all changes made to the style of the foil objects will flow down to the polars and to the operating points");
+                m_pchAlignChildren->setToolTip(tip);
+                pCheckLayout->addWidget(m_pchShowCurve);
+                pCheckLayout->addWidget(m_pchAlignChildren);
             }
 
-            m_pStyleDelegate = new LineDelegate(m_plcbCurveStyle);
-            m_pWidthDelegate = new LineDelegate(m_plcbCurveWidth);
-            m_pPointDelegate = new LineDelegate(m_plcbCurvePoints);
-            m_plcbCurveStyle->setItemDelegate(m_pStyleDelegate);
-            m_plcbCurveWidth->setItemDelegate(m_pWidthDelegate);
-            m_plcbCurvePoints->setItemDelegate(m_pPointDelegate);
+            m_pLinePicker = new LinePickerWt;
 
-            QGridLayout *pCurveStyleLayout = new QGridLayout;
-            {
-                QLabel *lab200 = new QLabel(tr("Style"));
-                QLabel *lab201 = new QLabel(tr("Width"));
-                QLabel *lab202 = new QLabel(tr("Color"));
-                QLabel *lab203 = new QLabel(tr("Points"));
-                lab200->setAlignment(Qt::AlignRight |Qt::AlignVCenter);
-                lab201->setAlignment(Qt::AlignRight |Qt::AlignVCenter);
-                lab202->setAlignment(Qt::AlignRight |Qt::AlignVCenter);
-                lab203->setAlignment(Qt::AlignRight |Qt::AlignVCenter);
-                pCurveStyleLayout->addWidget(lab203,1,1);
-                pCurveStyleLayout->addWidget(lab200,2,1);
-                pCurveStyleLayout->addWidget(lab201,3,1);
-                pCurveStyleLayout->addWidget(lab202,4,1);
-                pCurveStyleLayout->addWidget(m_plcbCurvePoints,1,2);
-                pCurveStyleLayout->addWidget(m_plcbCurveStyle,2,2);
-                pCurveStyleLayout->addWidget(m_plcbCurveWidth,3,2);
-                pCurveStyleLayout->addWidget(m_pclbCurveColor,4,2);
-
-                pCurveStyleLayout->setColumnStretch(2,5);
-            }
-
-            pCurveGroupLayout->addLayout(pCheckLayout);
-            pCurveGroupLayout->addLayout(pCurveStyleLayout);
-            //            pCurveGroupLayout->addStretch(1);
-            setCurveParams();
+            pPickerLayout->addLayout(pCheckLayout);
+            pPickerLayout->addWidget(m_pLinePicker);
         }
-        pCurveBox->setLayout(pCurveGroupLayout);
+        pCurveBox->setLayout(pPickerLayout);
     }
     //_______________________Cp Params
     QGroupBox *pCpBox = new QGroupBox(tr("Cp Sections"));
@@ -7481,7 +7329,7 @@ void Miarex::setWPolar(bool bCurrent, QString WPlrName)
     if(m_pCurPlane && m_pCurWPolar)
     {
         m_bCurveVisible = m_pCurWPolar->isVisible();
-        m_LineStyle.m_PointStyle  = m_pCurWPolar->pointStyle();
+        m_LineStyle.m_Symbol  = m_pCurWPolar->pointStyle();
 
         //make sure the polar is up to date with the latest plane data
         if(m_pCurWPolar->bAutoInertia())
@@ -7497,17 +7345,17 @@ void Miarex::setWPolar(bool bCurrent, QString WPlrName)
             }
         }
 
-        if(m_pCurWPolar->referenceDim()!=Xfl::MANUALREFDIM)
+        if(m_pCurWPolar->referenceDim()!=xfl::MANUALREFDIM)
         {
             // get the latest dimensions from the plane definition
             // should have been updated at the time when the plane was created or edited
             // just a safety precaution
-            if(m_pCurWPolar->referenceDim()==Xfl::PLANFORMREFDIM)
+            if(m_pCurWPolar->referenceDim()==xfl::PLANFORMREFDIM)
             {
                 m_pCurWPolar->setReferenceArea(m_pCurPlane->planformArea());
                 m_pCurWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
             }
-            else if(m_pCurWPolar->referenceDim()==Xfl::PROJECTEDREFDIM)
+            else if(m_pCurWPolar->referenceDim()==xfl::PROJECTEDREFDIM)
             {
                 m_pCurWPolar->setReferenceArea(m_pCurPlane->projectedArea());
                 m_pCurWPolar->setReferenceSpanLength(m_pCurPlane->projectedSpan());
@@ -7523,7 +7371,7 @@ void Miarex::setWPolar(bool bCurrent, QString WPlrName)
     setAnalysisParams();
     setCurveParams();
 
-    if(m_pCurWPolar && m_pCurWPolar->polarType()==Xfl::STABILITYPOLAR)
+    if(m_pCurWPolar && m_pCurWPolar->polarType()==xfl::STABILITYPOLAR)
     {
         StabViewDlg *pStabView = s_pMainFrame->m_pStabView;
         pStabView->setControls();
@@ -7704,25 +7552,25 @@ void Miarex::stopAnimate()
 void Miarex::updateCurve()
 {
     bool bCurveVisible = m_pchShowCurve->isChecked();
-    if(m_iView==Xfl::WPOLARVIEW && m_pCurWPolar)
+    if(m_iView==xfl::WPOLARVIEW && m_pCurWPolar)
     {
         m_pCurWPolar->setTheStyle(m_LineStyle);
         m_pCurWPolar->setVisible(bCurveVisible);
 
         if(Settings::isAlignedChildrenStyle()) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
     }
-    else if(m_iView==Xfl::STABTIMEVIEW && m_pCurWPolar)
+    else if(m_iView==xfl::STABTIMEVIEW && m_pCurWPolar)
     {
         StabViewDlg *pStabView = s_pMainFrame->m_pStabView;
-        pStabView->setTimeCurveStyle(m_LineStyle.m_Color, m_LineStyle.m_Stipple, m_LineStyle.m_Width, bCurveVisible, m_LineStyle.m_PointStyle);
+        pStabView->setTimeCurveStyle(m_LineStyle.m_Color, m_LineStyle.m_Stipple, m_LineStyle.m_Width, bCurveVisible, m_LineStyle.m_Symbol);
     }
-    else if(m_iView==Xfl::STABPOLARVIEW)
+    else if(m_iView==xfl::STABPOLARVIEW)
     {
         m_pCurWPolar->setTheStyle(m_LineStyle);
         m_pCurWPolar->setVisible(m_pchShowCurve->isChecked());
         if(Settings::isAlignedChildrenStyle()) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
     }
-    else if (m_iView==Xfl::WOPPVIEW)
+    else if (m_iView==xfl::WOPPVIEW)
     {
         if(m_pCurPOpp)
         {
@@ -7730,7 +7578,7 @@ void Miarex::updateCurve()
             m_pCurPOpp->setVisible(bCurveVisible);
         }
     }
-    else if (m_iView==Xfl::WCPVIEW && m_pCurPOpp)
+    else if (m_iView==xfl::WCPVIEW && m_pCurPOpp)
     {
         m_CpLineStyle  = m_LineStyle;
         m_bShowCp  = bCurveVisible;
@@ -7747,25 +7595,25 @@ void Miarex::updateCurve()
 */
 void Miarex::updateUnits()
 {
-    if(m_iView==Xfl::WPOLARVIEW)
+    if(m_iView==xfl::WPOLARVIEW)
     {
         for(int ig=0; ig<m_WPlrGraph.count(); ig++)
             setWGraphTitles(m_WPlrGraph[ig]);
     }
-    else if(m_iView==Xfl::STABTIMEVIEW || m_iView==Xfl::STABPOLARVIEW)
+    else if(m_iView==xfl::STABTIMEVIEW || m_iView==xfl::STABPOLARVIEW)
     {
         setStabGraphTitles();
     }
     else
     {
         if(!m_pCurPlane) return;
-        if (m_iView==Xfl::WOPPVIEW)
+        if (m_iView==xfl::WOPPVIEW)
         {
             onAdjustToWing();
         }
-        else if(m_iView==Xfl::WCPVIEW) createCpCurves();
-        else if(m_iView==Xfl::W3DVIEW) gl3dMiarexView::s_bResetglLegend = true;
-        else if(m_iView==Xfl::STABTIMEVIEW || m_iView==Xfl::STABPOLARVIEW) gl3dMiarexView::s_bResetglLegend = true;
+        else if(m_iView==xfl::WCPVIEW) createCpCurves();
+        else if(m_iView==xfl::W3DVIEW) gl3dMiarexView::s_bResetglLegend = true;
+        else if(m_iView==xfl::STABTIMEVIEW || m_iView==xfl::STABPOLARVIEW) gl3dMiarexView::s_bResetglLegend = true;
     }
     setCurveParams();
     s_bResetCurves = true;
@@ -7779,7 +7627,7 @@ void Miarex::updateUnits()
  */
 void Miarex::updateView()
 {
-    if(m_iView==Xfl::W3DVIEW)
+    if(m_iView==xfl::W3DVIEW)
     {
         m_pgl3dMiarexView->update();
     }
@@ -7787,24 +7635,24 @@ void Miarex::updateView()
     {
         if(s_bResetCurves)
         {
-            if (m_iView==Xfl::WPOLARVIEW)
+            if (m_iView==xfl::WPOLARVIEW)
             {
                 createWPolarCurves();
             }
-            else if (m_iView==Xfl::WOPPVIEW)
+            else if (m_iView==xfl::WOPPVIEW)
             {
                 createWOppCurves();
             }
-            else if (m_iView==Xfl::WCPVIEW)
+            else if (m_iView==xfl::WCPVIEW)
             {
                 createCpCurves();
             }
-            else if(m_iView==Xfl::STABTIMEVIEW)
+            else if(m_iView==xfl::STABTIMEVIEW)
             {
                 if(m_StabilityResponseType==1)  createStabRungeKuttaCurves();
                 else                            createStabTimeCurves();
             }
-            else if(m_iView==Xfl::STABPOLARVIEW)
+            else if(m_iView==xfl::STABPOLARVIEW)
             {
                 createStabRLCurves();
             }
@@ -7815,24 +7663,24 @@ void Miarex::updateView()
 }
 
 
-void Miarex::setView(Xfl::enumGraphView eView)
+void Miarex::setView(xfl::enumGraphView eView)
 {
     switch (m_iView)
     {
-        case Xfl::WOPPVIEW:
+        case xfl::WOPPVIEW:
         {
             m_iWingView = eView;
             break;
         }
-        case Xfl::WPOLARVIEW:
+        case xfl::WPOLARVIEW:
             m_iWPlrView = eView;
             break;
-        case Xfl::STABPOLARVIEW:
+        case xfl::STABPOLARVIEW:
         {
             m_iRootLocusView = eView;
             break;
         }
-        case Xfl::STABTIMEVIEW:
+        case xfl::STABTIMEVIEW:
         {
             m_iStabTimeView = eView;
             break;
@@ -7880,7 +7728,7 @@ void Miarex::onPlaneOppProperties()
  */
 void Miarex::paintCpLegendText(QPainter &painter)
 {
-    if (!m_b3DCp || !m_pCurPOpp || m_pCurPOpp->analysisMethod()<Xfl::VLMMETHOD) return;
+    if (!m_b3DCp || !m_pCurPOpp || m_pCurPOpp->analysisMethod()<xfl::VLMMETHOD) return;
 
     QString strong;
 
@@ -7941,7 +7789,7 @@ void Miarex::paintCpLegendText(QPainter &painter)
 void Miarex::paintPanelForceLegendText(QPainter &painter)
 {
     if(!m_pCurWPolar || !m_pCurPOpp) return;
-    if(!m_bPanelForce || m_pCurPOpp->analysisMethod()<Xfl::VLMMETHOD) return;
+    if(!m_bPanelForce || m_pCurPOpp->analysisMethod()<xfl::VLMMETHOD) return;
 
     QString strPressure, strong;
     int p, i;
@@ -8035,7 +7883,7 @@ void Miarex::drawColorGradient(QPainter &painter, QRect const & gradientRect)
     for (int i=0; i<MAXCPCOLORS; i++)
     {
         float fi = float(i)/float(MAXCPCOLORS-1);
-        QColor clr = QColor(int(GLGetRed(fi)*255.0f), int(GLGetGreen(fi)*255.0f), int(GLGetBlue(fi)*255.0f));
+        QColor clr = QColor(int(xfl::GLGetRed(fi)*255.0f), int(xfl::GLGetGreen(fi)*255.0f), int(xfl::GLGetBlue(fi)*255.0f));
         gradient.setColorAt(double(fi), clr);
     }
     painter.fillRect(gradientRect, gradient);
@@ -8083,13 +7931,13 @@ bool Miarex::setPlaneOpp(bool bCurrent, double x)
         m_pWOpp[0] = m_pWOpp[1] = m_pWOpp[2] = m_pWOpp[3] = nullptr;
     }
 
-    if(m_iView==Xfl::STABTIMEVIEW || m_iView==Xfl::STABPOLARVIEW)
+    if(m_iView==xfl::STABTIMEVIEW || m_iView==xfl::STABPOLARVIEW)
     {
         StabViewDlg *pStabView = s_pMainFrame->m_pStabView;
         pStabView->setControls();
         pStabView->setMode();
     }
-    else if(m_iView==Xfl::W3DVIEW)
+    else if(m_iView==xfl::W3DVIEW)
     {
         StabViewDlg *pStabView = s_pMainFrame->m_pStabView;
         pStabView->setControls();
@@ -8107,10 +7955,10 @@ bool Miarex::setPlaneOpp(bool bCurrent, double x)
     s_bResetCurves = true;
 
     if(!m_pCurPOpp) return false;
-    else if(m_iView==Xfl::WOPPVIEW)
+    else if(m_iView==xfl::WOPPVIEW)
     {
         m_bCurveVisible = m_pCurPOpp->isVisible();
-        m_LineStyle.m_PointStyle  = m_pCurPOpp->pointStyle();
+        m_LineStyle.m_Symbol  = m_pCurPOpp->pointStyle();
     }
 
     return true;
@@ -8160,7 +8008,7 @@ PlaneOpp* Miarex::setPlaneOppObject(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pC
             else                           m_pWOpp[iw] = nullptr;
         }*/
 
-        if(pWPolar->polarType()==Xfl::BETAPOLAR)
+        if(pWPolar->polarType()==xfl::BETAPOLAR)
         {
             //set sideslip
             //            Vector3d RefPoint(0.0, 0.0, 0.0);
@@ -8168,7 +8016,7 @@ PlaneOpp* Miarex::setPlaneOppObject(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pC
             // The yaw moment has the opposite convention...
             //            m_theTask.m_pthePanelAnalysis->rotateGeomZ(pPOpp->m_Beta, RefPoint, pWPolar->m_NXWakePanels);
         }
-        else if(pWPolar->polarType()==Xfl::STABILITYPOLAR)
+        else if(pWPolar->polarType()==xfl::STABILITYPOLAR)
         {
             //if we have a type 7 polar, set the panels in the control's position
             int nCtrls;
@@ -8187,14 +8035,14 @@ PlaneOpp* Miarex::setPlaneOppObject(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pC
 void Miarex::drawTextLegend()
 {
     QRect rect;
-    if(m_iView==Xfl::W3DVIEW)
+    if(m_iView==xfl::W3DVIEW)
     {
         QRect tempRect = m_pgl3dMiarexView->rect();
         float ratio = m_pgl3dMiarexView->devicePixelRatio();
         rect.moveTopLeft(tempRect.topLeft()*ratio);
         rect.setSize(tempRect.size()*double(ratio));
     }
-    else if(m_iView==Xfl::WOPPVIEW) rect = s_pMainFrame->m_pMiarexTileWidget->pWingWidget()->rect();
+    else if(m_iView==xfl::WOPPVIEW) rect = s_pMainFrame->m_pMiarexTileWidget->pWingWidget()->rect();
 
     if(!m_PixText.isNull())    m_PixText = m_PixText.scaled(rect.size());
     if(m_PixText.isNull()) return;
@@ -8207,7 +8055,7 @@ void Miarex::drawTextLegend()
     if(m_pCurPOpp)
     {
         paintPlaneOppLegend(paint, rect);
-        if(m_iView==Xfl::W3DVIEW)
+        if(m_iView==xfl::W3DVIEW)
         {
             if(m_b3DCp)            paintCpLegendText(paint);
             else if(m_bPanelForce) paintPanelForceLegendText(paint);
@@ -8264,40 +8112,42 @@ void Miarex::setGraphTiles()
 
     switch(m_iView)
     {
-        case Xfl::WPOLARVIEW:
+        case xfl::WPOLARVIEW:
         {
             switch(m_iWPlrView)
             {
-                case Xfl::ONEGRAPH:
+                case xfl::ONEGRAPH:
                     s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, 1);
                     break;
-                case Xfl::TWOGRAPHS:
+                case xfl::TWOGRAPHS:
                     s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, 2);
                     break;
-                case Xfl::FOURGRAPHS:
+                case xfl::FOURGRAPHS:
                     s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, 4);
                     break;
-                case Xfl::ALLGRAPHS:
+                default:
+                case xfl::ALLGRAPHS:
                     s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, MAXPOLARGRAPHS);
                     break;
             }
             break;
         }
 
-        case Xfl::WOPPVIEW:
+        case xfl::WOPPVIEW:
         {
             switch(m_iWingView)
             {
-                case Xfl::ONEGRAPH:
+                case xfl::ONEGRAPH:
                     s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, 1);
                     break;
-                case Xfl::TWOGRAPHS:
+                case xfl::TWOGRAPHS:
                     s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, 2);
                     break;
-                case Xfl::FOURGRAPHS:
+                case xfl::FOURGRAPHS:
                     s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, 4);
                     break;
-                case Xfl::ALLGRAPHS:
+                default:
+                case xfl::ALLGRAPHS:
                     s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, MAXWINGGRAPHS);
                     break;
             }
@@ -8305,7 +8155,7 @@ void Miarex::setGraphTiles()
         }
 
 
-        case Xfl::WCPVIEW:
+        case xfl::WCPVIEW:
         {
             QVector<Graph*> pGraphList;
             pGraphList.append(&m_CpGraph);
@@ -8313,9 +8163,9 @@ void Miarex::setGraphTiles()
             break;
         }
 
-        case Xfl::STABPOLARVIEW:
+        case xfl::STABPOLARVIEW:
         {
-            if(m_iRootLocusView==Xfl::TWOGRAPHS)
+            if(m_iRootLocusView==xfl::TWOGRAPHS)
             {
                 s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 2);
             }
@@ -8324,18 +8174,19 @@ void Miarex::setGraphTiles()
             break;
         }
 
-        case Xfl::STABTIMEVIEW:
+        case xfl::STABTIMEVIEW:
         {
             switch(m_iStabTimeView)
             {
-                case Xfl::ONEGRAPH:
+                case xfl::ONEGRAPH:
                     s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_TimeGraph, 1);
                     break;
-                case Xfl::TWOGRAPHS:
+                case xfl::TWOGRAPHS:
                     s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_TimeGraph, 2);
                     break;
-                case Xfl::FOURGRAPHS:
-                case Xfl::ALLGRAPHS:
+                case xfl::FOURGRAPHS:
+                default:
+                case xfl::ALLGRAPHS:
                     s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_TimeGraph, 4);
                     break;
             }
@@ -8792,24 +8643,24 @@ void Miarex::getPolarProperties(const WPolar *pWPolar, QString &polarProps, bool
 
     polarProps.clear();
 
-    if(pWPolar->polarType()==Xfl::FIXEDSPEEDPOLAR)     strong = "Type 1: "+QObject::tr("Fixed speed") +"\n";
-    else if(pWPolar->polarType()==Xfl::FIXEDLIFTPOLAR) strong = "Type 2: "+QObject::tr("Fixed lift") +"\n";
-    else if(pWPolar->polarType()==Xfl::FIXEDAOAPOLAR)  strong = "Type 4: "+QObject::tr("Fixed angle of attack") +"\n";
-    else if(pWPolar->polarType()==Xfl::STABILITYPOLAR) strong = "Type 7: "+QObject::tr("Stability analysis") +"\n";
-    else if(pWPolar->polarType()==Xfl::BETAPOLAR)      strong = "Type 5: "+QObject::tr("Sideslip analysis") +"\n";
+    if(pWPolar->polarType()==xfl::FIXEDSPEEDPOLAR)     strong = "Type 1: "+QObject::tr("Fixed speed") +"\n";
+    else if(pWPolar->polarType()==xfl::FIXEDLIFTPOLAR) strong = "Type 2: "+QObject::tr("Fixed lift") +"\n";
+    else if(pWPolar->polarType()==xfl::FIXEDAOAPOLAR)  strong = "Type 4: "+QObject::tr("Fixed angle of attack") +"\n";
+    else if(pWPolar->polarType()==xfl::STABILITYPOLAR) strong = "Type 7: "+QObject::tr("Stability analysis") +"\n";
+    else if(pWPolar->polarType()==xfl::BETAPOLAR)      strong = "Type 5: "+QObject::tr("Sideslip analysis") +"\n";
     polarProps += strong;
 
-    if(pWPolar->polarType()==Xfl::FIXEDSPEEDPOLAR)
+    if(pWPolar->polarType()==xfl::FIXEDSPEEDPOLAR)
     {
         strong  = QString(QObject::tr("VInf =")+"%1 ").arg(pWPolar->velocity()*Units::mstoUnit(),7,'g',2);
         polarProps += strong + speedunit+"\n";
     }
-    else if(pWPolar->polarType()==Xfl::FIXEDAOAPOLAR)
+    else if(pWPolar->polarType()==xfl::FIXEDAOAPOLAR)
     {
         strong  = QString(QObject::tr("Alpha =")+"%1").arg(pWPolar->Alpha(),7,'f',2);
         polarProps += strong +QChar(0260)+"\n";
     }
-    else if(pWPolar->polarType()==Xfl::BETAPOLAR)
+    else if(pWPolar->polarType()==xfl::BETAPOLAR)
     {
         strong  = QString(QObject::tr("Alpha =")+"%1").arg(pWPolar->Alpha(),7,'f',2);
         polarProps += strong +QChar(0260)+"\n";
@@ -8817,17 +8668,17 @@ void Miarex::getPolarProperties(const WPolar *pWPolar, QString &polarProps, bool
         polarProps += strong + speedunit+"\n";
     }
 
-    if(pWPolar->polarType() != Xfl::BETAPOLAR && qAbs(pWPolar->Beta())>PRECISION)
+    if(pWPolar->polarType() != xfl::BETAPOLAR && qAbs(pWPolar->Beta())>PRECISION)
     {
         strong  = QString(QObject::tr("Beta")+" = %1").arg(pWPolar->Beta(),7,'f',2);
         polarProps += strong +QChar(0260)+"\n";
     }
 
     //    PolarProperties += QObject::tr("Method")+" = ";
-    if(pWPolar->analysisMethod()==Xfl::LLTMETHOD)                                       polarProps +=QObject::tr("LLT");
-    else if(pWPolar->analysisMethod()==Xfl::PANEL4METHOD && !pWPolar->bThinSurfaces())   polarProps +=QObject::tr("3D-Panels");
-    else if(pWPolar->analysisMethod()==Xfl::PANEL4METHOD && pWPolar->bVLM1())            polarProps +=QObject::tr("3D-Panels/VLM1");
-    else if(pWPolar->analysisMethod()==Xfl::PANEL4METHOD && !pWPolar->bVLM1())           polarProps +=QObject::tr("3D-Panels/VLM2");
+    if(pWPolar->analysisMethod()==xfl::LLTMETHOD)                                       polarProps +=QObject::tr("LLT");
+    else if(pWPolar->analysisMethod()==xfl::PANEL4METHOD && !pWPolar->bThinSurfaces())   polarProps +=QObject::tr("3D-Panels");
+    else if(pWPolar->analysisMethod()==xfl::PANEL4METHOD && pWPolar->bVLM1())            polarProps +=QObject::tr("3D-Panels/VLM1");
+    else if(pWPolar->analysisMethod()==xfl::PANEL4METHOD && !pWPolar->bVLM1())           polarProps +=QObject::tr("3D-Panels/VLM2");
     polarProps +="\n";
 
 
@@ -8840,7 +8691,7 @@ void Miarex::getPolarProperties(const WPolar *pWPolar, QString &polarProps, bool
 
 
     //Angle controls
-    if(pWPolar->m_ControlGain.size()<pWPolar->m_nControls && pWPolar->polarType()==Xfl::STABILITYPOLAR && pPlane)
+    if(pWPolar->m_ControlGain.size()<pWPolar->m_nControls && pWPolar->polarType()==xfl::STABILITYPOLAR && pPlane)
     {
         int j;
         int iCtrl = 0;
@@ -8978,7 +8829,7 @@ void Miarex::getPolarProperties(const WPolar *pWPolar, QString &polarProps, bool
     }
     else polarProps +="\n";
 
-    if(pWPolar->polarType()==Xfl::STABILITYPOLAR)
+    if(pWPolar->polarType()==xfl::STABILITYPOLAR)
     {
         strong  = QString("Ixx = %1 ").arg(pWPolar->CoGIxx()*Units::mtoUnit()*Units::mtoUnit()*Units::kgtoUnit(),7,'g',4);
         polarProps += strong + inertiaunit;
@@ -9022,9 +8873,9 @@ void Miarex::getPolarProperties(const WPolar *pWPolar, QString &polarProps, bool
     }
 
 
-    if(pWPolar->analysisMethod() !=Xfl::LLTMETHOD)
+    if(pWPolar->analysisMethod() !=xfl::LLTMETHOD)
     {
-        if(pWPolar->boundaryCondition()==Xfl::DIRICHLET)  strong  = QObject::tr("B.C. = Dirichlet");
+        if(pWPolar->boundaryCondition()==xfl::DIRICHLET)  strong  = QObject::tr("B.C. = Dirichlet");
         else                                                strong  = QObject::tr("B.C. = Neumann");
         polarProps += strong +"\n";
     }
@@ -9041,8 +8892,8 @@ void Miarex::getPolarProperties(const WPolar *pWPolar, QString &polarProps, bool
         polarProps += "\n";
     }
 
-    if(pWPolar->referenceDim()==Xfl::PLANFORMREFDIM)       polarProps += QObject::tr("Ref. dimensions = ")+QObject::tr("Planform")+"\n";
-    else if(pWPolar->referenceDim()==Xfl::PROJECTEDREFDIM) polarProps += QObject::tr("Ref. dimensions = ")+QObject::tr("Projected")+"\n";
+    if(pWPolar->referenceDim()==xfl::PLANFORMREFDIM)       polarProps += QObject::tr("Ref. dimensions = ")+QObject::tr("Planform")+"\n";
+    else if(pWPolar->referenceDim()==xfl::PROJECTEDREFDIM) polarProps += QObject::tr("Ref. dimensions = ")+QObject::tr("Projected")+"\n";
 
     polarProps += QObject::tr("Ref. area  =") + QString("%1").arg(pWPolar->referenceArea()*Units::m2toUnit(),7,'f',3) + areaunit +"\n";
     polarProps += QObject::tr("Ref. span  =") + QString("%1").arg(pWPolar->referenceSpanLength()*Units::mtoUnit(),7,'f',3) +lenunit +"\n";
@@ -9094,11 +8945,11 @@ void Miarex::getPolarProperties(const WPolar *pWPolar, QString &polarProps, bool
  * @param FileType TXT if the data is separated by spaces, CSV for a comma separator
  * @param bDataOnly true if the analysis parameters should not be output
  */
-void Miarex::exportToTextStream(WPolar const *pWPolar, QTextStream &out, Xfl::enumTextFileType FileType, bool bDataOnly)
+void Miarex::exportToTextStream(WPolar const *pWPolar, QTextStream &out, xfl::enumTextFileType FileType, bool bDataOnly)
 {
     QString Header, strong, str;
 
-    if (FileType==Xfl::TXT)
+    if (FileType==xfl::TXT)
     {
         if(!bDataOnly)
         {
@@ -9115,12 +8966,12 @@ void Miarex::exportToTextStream(WPolar const *pWPolar, QTextStream &out, Xfl::en
             Units::getSpeedUnitLabel(str);
             str +="\n\n";
 
-            if(pWPolar->polarType()==Xfl::FIXEDSPEEDPOLAR)
+            if(pWPolar->polarType()==xfl::FIXEDSPEEDPOLAR)
             {
                 strong = QString("Freestream speed : %1 ").arg(pWPolar->velocity()*Units::mstoUnit(),7,'f',3);
                 strong +=str + "\n";
             }
-            else if(pWPolar->polarType()==Xfl::FIXEDAOAPOLAR)
+            else if(pWPolar->polarType()==xfl::FIXEDAOAPOLAR)
             {
                 strong = QString("Alpha = %1").arg(pWPolar->Alpha()) + QChar(0260) + "\n";
             }
@@ -9151,7 +9002,7 @@ void Miarex::exportToTextStream(WPolar const *pWPolar, QTextStream &out, Xfl::en
             out << strong;
         }
     }
-    else if (FileType==Xfl::CSV)
+    else if (FileType==xfl::CSV)
     {
         if(!bDataOnly)
         {
@@ -9209,7 +9060,7 @@ QString Miarex::POppTitle(PlaneOpp *pPOpp)
     QString strong;
 
     if(pPOpp->isLLTMethod()) strong ="LLT - ";
-    else if(pPOpp->analysisMethod()>=Xfl::VLMMETHOD)
+    else if(pPOpp->analysisMethod()>=xfl::VLMMETHOD)
     {
         if(pPOpp->m_bThinSurface)
         {
@@ -9220,7 +9071,7 @@ QString Miarex::POppTitle(PlaneOpp *pPOpp)
 
     strong +=" ";
 
-    if(pPOpp->polarType()==Xfl::STABILITYPOLAR)
+    if(pPOpp->polarType()==xfl::STABILITYPOLAR)
     {
         strong += QString("ctrl=%1-").arg(pPOpp->ctrl());
     }

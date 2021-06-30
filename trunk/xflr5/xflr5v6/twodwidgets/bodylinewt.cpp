@@ -32,7 +32,7 @@
 
 
 BodyLineWt::BodyLineWt(QWidget *pParent, Body *pBody)
-    :Section2dWidget(pParent)
+    :Section2dWt(pParent)
 {
     m_pBody = pBody;
     createActions();
@@ -93,7 +93,7 @@ void BodyLineWt::drawBodyLines()
         midLine.append(QPointF(m_pBody->frame(k)->m_Position.x*m_fScale + m_ptOffset.x(), zpos*-m_fScale + m_ptOffset.y()));
     }
 
-    if(m_pBody->m_LineType==Xfl::BODYPANELTYPE)
+    if(m_pBody->m_LineType==xfl::BODYPANELTYPE)
     {
         //Top Line
         for (int k=0; k<m_pBody->frameCount();k++)

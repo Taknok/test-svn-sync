@@ -132,9 +132,9 @@ public:
 
     NURBSSurface& nurbs() {return m_SplineSurface;}
 
-    Xfl::enumBodyLineType &bodyType(){return m_LineType;}
-    bool isFlatPanelType() const {return m_LineType==Xfl::BODYPANELTYPE;}
-    bool isSplineType()    const {return m_LineType==Xfl::BODYSPLINETYPE;}
+    xfl::enumBodyLineType &bodyType(){return m_LineType;}
+    bool isFlatPanelType() const {return m_LineType==xfl::BODYPANELTYPE;}
+    bool isSplineType()    const {return m_LineType==xfl::BODYSPLINETYPE;}
 
     NURBSSurface *splineSurface() {return &m_SplineSurface;}
 
@@ -164,7 +164,7 @@ public:
 
     NURBSSurface m_SplineSurface;             /**< the spline surface which defines the left (port) side of the body */
 
-    Xfl::enumBodyLineType m_LineType;              /**< the type of body surfaces 1=PANELS  2=NURBS */
+    xfl::enumBodyLineType m_LineType;              /**< the type of body surfaces 1=PANELS  2=NURBS */
 
     int m_iActiveFrame;                          /**< the currently selected Frame for display */
     int m_iHighlightFrame;                    /**< the currently selected Frame to highlight */

@@ -77,7 +77,7 @@ class Polar : public XflObject
         QString const &foilName() const {return m_FoilName;}
         QString const &polarName() const {return m_Name;}
 
-        void setPolarType(Xfl::enumPolarType type);
+        void setPolarType(xfl::enumPolarType type);
 
         void setFoilName(QString const &newFoilName) {m_FoilName = newFoilName;}
         void setPolarName(QString const &newPolarName) {m_Name = newPolarName;}
@@ -109,15 +109,15 @@ class Polar : public XflObject
         void setReType(int type) {m_ReType=type;}
         void setMaType(int type) {m_MaType=type;}
 
-        Xfl::enumPolarType polarType() const {return m_PolarType;}
+        xfl::enumPolarType polarType() const {return m_PolarType;}
 
-        bool isFixedSpeedPolar()  const {return m_PolarType==Xfl::FIXEDSPEEDPOLAR;}   /**< returns true if the polar is of the FIXEDSPEEDPOLAR type, false otherwise >*/
-        bool isFixedLiftPolar()   const {return m_PolarType==Xfl::FIXEDLIFTPOLAR;}    /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/
-        bool isFixedaoaPolar()    const {return m_PolarType==Xfl::FIXEDAOAPOLAR;}     /**< returns true if the polar is of the FIXEDAOAPOLAR type, false otherwise >*/
-        bool isRubberChordPolar() const {return m_PolarType==Xfl::RUBBERCHORDPOLAR;}
+        bool isFixedSpeedPolar()  const {return m_PolarType==xfl::FIXEDSPEEDPOLAR;}   /**< returns true if the polar is of the FIXEDSPEEDPOLAR type, false otherwise >*/
+        bool isFixedLiftPolar()   const {return m_PolarType==xfl::FIXEDLIFTPOLAR;}    /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/
+        bool isFixedaoaPolar()    const {return m_PolarType==xfl::FIXEDAOAPOLAR;}     /**< returns true if the polar is of the FIXEDAOAPOLAR type, false otherwise >*/
+        bool isRubberChordPolar() const {return m_PolarType==xfl::RUBBERCHORDPOLAR;}
 
 
-        static QString autoPolarName(Xfl::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec=0.0, double XTop=1.0, double XBot=1.0);
+        static QString autoPolarName(xfl::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec=0.0, double XTop=1.0, double XBot=1.0);
         static QString variableName(int iVar);
 
 
@@ -144,7 +144,7 @@ class Polar : public XflObject
         QString m_FoilName;                 /**< the name of the parent Foil to which this Polar object is attached */
 
         //Analysis specification
-        Xfl::enumPolarType m_PolarType;          /**< the Polar type */
+        xfl::enumPolarType m_PolarType;          /**< the Polar type */
         int m_ReType;                       /**< the type of Reynolds number input, cf. XFoil documentation */
         int m_MaType;                       /**< the type of Mach number input, cf. XFoil documentation */
         double m_ASpec;                     /**< the specified aoa in the case of Type 4 polars */

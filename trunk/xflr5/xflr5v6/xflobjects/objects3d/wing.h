@@ -148,7 +148,7 @@ class Wing
         void insertSection(int iSection);
         bool appendWingSection();
         bool appendWingSection(double Chord, double Twist, double Pos, double Dihedral, double Offset, int NXPanels, int NYPanels,
-                               Xfl::enumPanelDistribution XPanelDist, Xfl::enumPanelDistribution YPanelDist, QString RightFoilName, QString LeftFoilName);
+                               xfl::enumPanelDistribution XPanelDist, xfl::enumPanelDistribution YPanelDist, QString RightFoilName, QString LeftFoilName);
         void removeWingSection(int const iSection);
 
         void clearWingSections();
@@ -164,10 +164,10 @@ class Wing
 
     //    int NYPanels();
 
-        Xfl::enumPanelDistribution XPanelDist(const int &iSection) const;
-        Xfl::enumPanelDistribution YPanelDist(const int &iSection) const;
-        void setXPanelDist(int iSec, Xfl::enumPanelDistribution dist) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_XPanelDist = dist;}
-        void setYPanelDist(int iSec, Xfl::enumPanelDistribution dist) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_YPanelDist = dist;}
+        xfl::enumPanelDistribution XPanelDist(const int &iSection) const;
+        xfl::enumPanelDistribution YPanelDist(const int &iSection) const;
+        void setXPanelDist(int iSec, xfl::enumPanelDistribution dist) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_XPanelDist = dist;}
+        void setYPanelDist(int iSec, xfl::enumPanelDistribution dist) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_YPanelDist = dist;}
 
         bool isWingFoil(Foil const*pFoil) const;
         double rootChord()     const {return m_Section.first()->m_Chord;}
@@ -239,8 +239,8 @@ class Wing
         QColor const & wingColor() const {return m_WingColor;}
         void setWingColor(QColor const &colour) {m_WingColor= colour;}
 
-        Xfl::enumWingType const &wingType() const {return m_WingType;}
-        void setWingType(Xfl::enumWingType type) {m_WingType=type;}
+        xfl::enumWingType const &wingType() const {return m_WingType;}
+        void setWingType(xfl::enumWingType type) {m_WingType=type;}
 
         void getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU, double &rightU, int nPoints) const;
 
@@ -272,7 +272,7 @@ class Wing
         QString m_WingDescription;                 /**< a text field for the description of the Wing */
         QColor m_WingColor;                        /**< the Wing's display color */
 
-        Xfl::enumWingType m_WingType;  /** Defines the type of wing on the plane : main, second, elevator, fin, other */
+        xfl::enumWingType m_WingType;  /** Defines the type of wing on the plane : main, second, elevator, fin, other */
 
         static double s_MinPanelSize;      /**< wing minimum panel size ; panels of less length are ignored */
 

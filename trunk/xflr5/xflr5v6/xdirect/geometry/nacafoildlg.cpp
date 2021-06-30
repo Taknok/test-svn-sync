@@ -24,7 +24,7 @@
 #include <QGridLayout>
 #include <QFormLayout>
 #include <xflobjects/objects2d/foil.h>
-#include <xflwidgets/text/intedit.h>
+#include <xflwidgets/customwts/intedit.h>
 
 XFoil *NacaFoilDlg::s_pXFoil;
 int NacaFoilDlg::s_Digits = 0;

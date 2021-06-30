@@ -24,18 +24,16 @@
 
 
 #include "foilwt.h"
-#include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
-#include <xflgraph/graph_globals.h>
 #include <gui_objects/splinefoil.h>
 #include <misc/options/settings.h>
 #include <xdirect/xdirect.h>
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects2d/foil.h>
+#include <xflobjects/objects_global.h>
 
-FoilWt::FoilWt(QWidget *pParent) : Section2dWidget(pParent)
+FoilWt::FoilWt(QWidget *pParent) : Section2dWt(pParent)
 {
-    m_NeutralStyle.m_bIsVisible = true;
-
     m_pBufferFoil = nullptr;
     createContextMenu();
 }
@@ -111,21 +109,21 @@ void FoilWt::paintFoils(QPainter &painter)
         Foil const*pFoil = m_oaFoil.at(k);
         if (pFoil->isVisible())
         {
-            FoilPen.setStyle(getStyle(pFoil->lineStipple()));
+            FoilPen.setStyle(xfl::getStyle(pFoil->lineStipple()));
             FoilPen.setWidth(pFoil->lineWidth());
-            FoilPen.setColor(colour(pFoil));
+            FoilPen.setColor(pFoil->color());
             painter.setPen(FoilPen);
 
             drawFoil(painter, pFoil, 0.0, m_fScale, m_fScale*m_fScaleY,m_ptOffset);
             if (pFoil->bCenterLine())
             {
-                CenterPen.setColor(colour(pFoil));
+                CenterPen.setColor(pFoil->color());
                 CenterPen.setStyle(Qt::DashLine);
                 painter.setPen(CenterPen);
                 drawMidLine(painter, pFoil, m_fScale, m_fScale*m_fScaleY, m_ptOffset);
             }
 
-            drawPoints(painter, pFoil, 0.0, m_fScale,m_fScale*m_fScaleY, m_ptOffset, Settings::s_BackgroundColor);
+            drawFoilPoints(painter, pFoil, 0.0, m_fScale,m_fScale*m_fScaleY, m_ptOffset, Settings::s_BackgroundColor);
         }
     }
     if (m_pBufferFoil && m_pBufferFoil->isVisible())
@@ -134,15 +132,15 @@ void FoilWt::paintFoils(QPainter &painter)
 
         if (m_pBufferFoil->bCenterLine())
         {
-            CenterPen.setColor(colour(m_pBufferFoil));
+            CenterPen.setColor(m_pBufferFoil->color());
             CenterPen.setStyle(Qt::DashLine);
             painter.setPen(CenterPen);
             drawMidLine(painter, m_pBufferFoil, m_fScale, m_fScale*m_fScaleY, m_ptOffset);
         }
 
-        CtrlPen.setColor(colour(m_pBufferFoil));
+        CtrlPen.setColor(m_pBufferFoil->color());
         painter.setPen(CtrlPen);
-        drawPoints(painter, m_pBufferFoil, 0.0, m_fScale,m_fScale*m_fScaleY, m_ptOffset, Settings::s_BackgroundColor);
+        drawFoilPoints(painter, m_pBufferFoil, 0.0, m_fScale,m_fScale*m_fScaleY, m_ptOffset, Settings::s_BackgroundColor);
 
     }
     painter.restore();
@@ -194,16 +192,16 @@ void FoilWt::paintLegend(QPainter &painter)
                 strong = pRefFoil->name();
                 if(strong.length())
                 {
-                    LegendPen.setColor(colour(pRefFoil));
-                    LegendPen.setStyle(getStyle(pRefFoil->lineStipple()));
+                    LegendPen.setColor(pRefFoil->color());
+                    LegendPen.setStyle(xfl::getStyle(pRefFoil->lineStipple()));
                     LegendPen.setWidth(pRefFoil->lineWidth());
 
                     painter.setPen(LegendPen);
                     painter.drawLine(Place.x(), Place.y() + ypos*k, Place.x() + LegendSize, Place.y() + ypos*k);
 
-                    int x1 = Place.x() + int(0.5*LegendSize);
+                    double x1 = Place.x() + (0.5*LegendSize);
 
-                    drawPoint(painter, pRefFoil->pointStyle(), Settings::s_BackgroundColor, QPoint(x1, Place.y() + ypos*k));
+                    xfl::drawSymbol(painter, pRefFoil->pointStyle(), Settings::s_BackgroundColor, pRefFoil->color(), QPointF(x1, Place.y() + ypos*k));
                     painter.setPen(TextPen);
                     painter.drawText(Place.x() + LegendSize + fmw, Place.y() + ypos*k+delta, pRefFoil->name());
                     k++;

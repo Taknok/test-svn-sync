@@ -26,7 +26,7 @@
 
 class Body;
 
-class BodyLineWt : public Section2dWidget
+class BodyLineWt : public Section2dWt
 {
     Q_OBJECT
 

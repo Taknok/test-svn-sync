@@ -32,7 +32,7 @@
 Polar::Polar()
 {
     m_theStyle.m_bIsVisible = true;
-    m_theStyle.m_PointStyle = Line::NOSYMBOL;
+    m_theStyle.m_Symbol = Line::NOSYMBOL;
     m_theStyle.m_Stipple = Line::SOLID;
     m_theStyle.m_Width = 2;
 
@@ -41,7 +41,7 @@ Polar::Polar()
                               QRandomGenerator::global()->bounded(55)+150);
 
     m_ASpec = 0.0;
-    m_PolarType = Xfl::FIXEDSPEEDPOLAR;
+    m_PolarType = xfl::FIXEDSPEEDPOLAR;
     m_ReType = 1;
     m_MaType = 1;
     m_Reynolds = 100000.0;
@@ -93,7 +93,7 @@ void Polar::exportPolar(QTextStream &out, QString versionName, bool bCSV, bool b
         out << strong;
     }
 
-    if(m_PolarType!=Xfl::FIXEDAOAPOLAR)
+    if(m_PolarType!=xfl::FIXEDAOAPOLAR)
     {
         if(!bCSV) Header = ("  alpha     CL        CD       CDp       Cm    Top Xtr Bot Xtr   Cpmin    Chinge    XCp    \n");
         else      Header = ("alpha,CL,CD,CDp,Cm,Top Xtr,Bot Xtr,Cpmin,Chinge,XCp\n");
@@ -215,7 +215,7 @@ void Polar::addOpPointData(const OpPoint *pOpPoint)
     {
         for (int i=0; i<size; i++)
         {
-            if(m_PolarType<Xfl::FIXEDAOAPOLAR)
+            if(m_PolarType<xfl::FIXEDAOAPOLAR)
             {
                 if (qAbs(pOpPoint->aoa()-m_Alpha[i]) < 0.001)
                 {
@@ -230,7 +230,7 @@ void Polar::addOpPointData(const OpPoint *pOpPoint)
                     break;
                 }
             }
-            else if(m_PolarType==Xfl::FIXEDAOAPOLAR)
+            else if(m_PolarType==xfl::FIXEDAOAPOLAR)
             {
                 // type 4, sort by speed
                 if (qAbs(pOpPoint->Reynolds() - m_Re[i]) < 0.1)
@@ -283,14 +283,14 @@ void Polar::replaceOppDataAt(int pos, OpPoint const*pOpp)
     if (pOpp->Cl>=0.0) m_Cl32Cd[pos] =  pow( pOpp->Cl, 1.5)/ pOpp->Cd;
     else               m_Cl32Cd[pos] = -pow(-pOpp->Cl, 1.5)/ pOpp->Cd;
 
-    if(m_PolarType==Xfl::FIXEDSPEEDPOLAR)  m_Re[pos] =  pOpp->Reynolds();
-    else if (m_PolarType==Xfl::FIXEDLIFTPOLAR)
+    if(m_PolarType==xfl::FIXEDSPEEDPOLAR)  m_Re[pos] =  pOpp->Reynolds();
+    else if (m_PolarType==xfl::FIXEDLIFTPOLAR)
     {
 //    Bug    if(pOpp->Cl>0.0) m_Re[pos] =  pOpp->Reynolds()/ sqrt(pOpp->Cl);
         if(pOpp->Cl>0.0) m_Re[pos] =  pOpp->Reynolds();
         else             m_Re[pos] = 0.0;
     }
-    else if (m_PolarType==Xfl::RUBBERCHORDPOLAR)
+    else if (m_PolarType==xfl::RUBBERCHORDPOLAR)
     {
         if(pOpp->Cl>0.0) m_Re[pos] =  pOpp->Reynolds()/(pOpp->Cl);
         else             m_Re[pos] = 0.0;
@@ -320,20 +320,20 @@ void Polar::insertOppDataAt(int i, const OpPoint *pOpp)
     if (pOpp->Cl>=0.0) m_Cl32Cd.insert(i,pow( pOpp->Cl, 1.5) / pOpp->Cd);
     else               m_Cl32Cd.insert(i,-pow(-pOpp->Cl, 1.5)/ pOpp->Cd);
 
-    if(m_PolarType==Xfl::FIXEDSPEEDPOLAR)     m_Re.insert(i, pOpp->Reynolds());
-    else if (m_PolarType==Xfl::FIXEDLIFTPOLAR)
+    if(m_PolarType==xfl::FIXEDSPEEDPOLAR)     m_Re.insert(i, pOpp->Reynolds());
+    else if (m_PolarType==xfl::FIXEDLIFTPOLAR)
     {
 //      Bug  if(pOpp->Cl>0) m_Re.insert(i, pOpp->Reynolds()/sqrt(pOpp->Cl));
         if(pOpp->Cl>0.0) m_Re.insert(i, pOpp->Reynolds());
 //      Bug  else           m_Re[i] = 0.0;   -> exception when i doesn't exist in array
         else             m_Re.insert(i, 0.0);
     }
-    else if (m_PolarType==Xfl::RUBBERCHORDPOLAR)
+    else if (m_PolarType==xfl::RUBBERCHORDPOLAR)
     {
         if(pOpp->Cl>0.0) m_Re.insert(i, pOpp->Reynolds()/pOpp->Cl);
         else             m_Re.insert(i, 0.0);
     }
-    else if (m_PolarType==Xfl::FIXEDAOAPOLAR)
+    else if (m_PolarType==xfl::FIXEDAOAPOLAR)
     {
         m_Re.insert(i, pOpp->Reynolds());
     }
@@ -650,24 +650,24 @@ QString Polar::variableName(int iVar)
 }
 
 
-void Polar::setPolarType(Xfl::enumPolarType type)
+void Polar::setPolarType(xfl::enumPolarType type)
 {
     m_PolarType=type;
     switch (m_PolarType)
     {
-        case Xfl::FIXEDSPEEDPOLAR:
+        case xfl::FIXEDSPEEDPOLAR:
             m_MaType = 1;
             m_ReType = 1;
             break;
-        case Xfl::FIXEDLIFTPOLAR:
+        case xfl::FIXEDLIFTPOLAR:
             m_MaType = 2;
             m_ReType = 2;
             break;
-        case Xfl::RUBBERCHORDPOLAR:
+        case xfl::RUBBERCHORDPOLAR:
             m_MaType = 1;
             m_ReType = 3;
             break;
-        case Xfl::FIXEDAOAPOLAR:
+        case xfl::FIXEDAOAPOLAR:
             m_MaType = 1;
             m_ReType = 1;
             break;
@@ -695,28 +695,28 @@ void Polar::setAutoPolarName()
  * @param ASpec
  * @return
  */
-QString Polar::autoPolarName(Xfl::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec, double XTop, double XBot)
+QString Polar::autoPolarName(xfl::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec, double XTop, double XBot)
 {
     QString polarName;
     Re = Re/1.e6;
     switch(polarType)
     {
-        case Xfl::FIXEDSPEEDPOLAR:
+        case xfl::FIXEDSPEEDPOLAR:
         {
             polarName = QString("T1_Re%1_M%2").arg(Re,5,'f',3).arg(Mach,4,'f',2);
             break;
         }
-        case Xfl::FIXEDLIFTPOLAR:
+        case xfl::FIXEDLIFTPOLAR:
         {
             polarName = QString("T2_Re%1_M%2").arg(Re,5,'f',3).arg(Mach,4,'f',2);
             break;
         }
-        case Xfl::RUBBERCHORDPOLAR:
+        case xfl::RUBBERCHORDPOLAR:
         {
             polarName = QString("T3_Re%1_M%2").arg(Re,5,'f',3).arg(Mach,4,'f',2);
             break;
         }
-        case(Xfl::FIXEDAOAPOLAR):
+        case(xfl::FIXEDAOAPOLAR):
         {
             polarName = QString("T4_Al%1_M%2").arg(ASpec,5,'f',2).arg(Mach,4,'f',2);
             break;
@@ -763,40 +763,40 @@ void Polar::getPolarProperties(QString &polarProps) const
     polarProps.clear();
 
     int iPolarNumber = 0;
-    if (m_PolarType==Xfl::FIXEDSPEEDPOLAR)     iPolarNumber = 1;
-    else if (m_PolarType==Xfl::FIXEDLIFTPOLAR) iPolarNumber = 2;
-    else if (m_PolarType==Xfl::FIXEDAOAPOLAR)  iPolarNumber = 4;
-    else if (m_PolarType==Xfl::STABILITYPOLAR) iPolarNumber = 7;
-    else if (m_PolarType==Xfl::BETAPOLAR)      iPolarNumber = 5;
+    if (m_PolarType==xfl::FIXEDSPEEDPOLAR)     iPolarNumber = 1;
+    else if (m_PolarType==xfl::FIXEDLIFTPOLAR) iPolarNumber = 2;
+    else if (m_PolarType==xfl::FIXEDAOAPOLAR)  iPolarNumber = 4;
+    else if (m_PolarType==xfl::STABILITYPOLAR) iPolarNumber = 7;
+    else if (m_PolarType==xfl::BETAPOLAR)      iPolarNumber = 5;
     strong = QString(QObject::tr("Type")+" = %1").arg(iPolarNumber);
 
-    if(m_PolarType==Xfl::FIXEDSPEEDPOLAR)      strong += " ("+QObject::tr("Fixed speed") +")\n";
-    else if(m_PolarType==Xfl::FIXEDLIFTPOLAR) strong += " ("+QObject::tr("Fixed lift") +")\n";
-    else if(m_PolarType==Xfl::FIXEDAOAPOLAR) strong += " ("+QObject::tr("Fixed angle of attack") +")\n";
+    if(m_PolarType==xfl::FIXEDSPEEDPOLAR)      strong += " ("+QObject::tr("Fixed speed") +")\n";
+    else if(m_PolarType==xfl::FIXEDLIFTPOLAR) strong += " ("+QObject::tr("Fixed lift") +")\n";
+    else if(m_PolarType==xfl::FIXEDAOAPOLAR) strong += " ("+QObject::tr("Fixed angle of attack") +")\n";
     polarProps += strong;
 
-    if(m_PolarType==Xfl::FIXEDSPEEDPOLAR)
+    if(m_PolarType==xfl::FIXEDSPEEDPOLAR)
     {
         strong = QString(QObject::tr("Reynolds number")+" = %L1\n").arg(m_Reynolds,0,'f',0);
         polarProps += strong;
         strong = QString(QObject::tr("Mach number") + " = %L1\n").arg(m_Mach,5,'f',2);
         polarProps += strong;
     }
-    else if(m_PolarType==Xfl::FIXEDLIFTPOLAR)
+    else if(m_PolarType==xfl::FIXEDLIFTPOLAR)
     {
         strong = QString("Re.sqrt(Cl) = %L1\n").arg(m_Reynolds,0,'f',0);
         polarProps += strong;
         strong = QString("Ma.sqrt(Cl) = %L1\n").arg(m_Mach,5,'f',2);
         polarProps += strong;
     }
-    else if(m_PolarType==Xfl::RUBBERCHORDPOLAR)
+    else if(m_PolarType==xfl::RUBBERCHORDPOLAR)
     {
         strong = QString(QObject::tr("Re.Cl")+" = %L1\n").arg(m_Reynolds,0,'f',0);
         polarProps += strong;
         strong = QString(QObject::tr("Mach number") + " = %L1\n").arg(m_Mach,5,'f',2);
         polarProps += strong;
     }
-    else if(m_PolarType==Xfl::FIXEDAOAPOLAR)
+    else if(m_PolarType==xfl::FIXEDAOAPOLAR)
     {
         strong = QString(QObject::tr("Alpha")+" = %L1"+QChar(0260)+"\n").arg(m_ASpec,7,'f',2);
         polarProps += strong;

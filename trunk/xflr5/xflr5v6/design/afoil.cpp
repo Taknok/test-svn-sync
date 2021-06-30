@@ -33,27 +33,28 @@
 #include "afoiltabledlg.h"
 #include "splinectrlsdlg.h"
 #include "lecircledlg.h"
-#include <xflcore/xflcore.h>
+#include "foiltabledelegate.h"
 #include <globals/mainframe.h>
-#include <xdirect/xdirect.h>
+#include <gui_objects/splinefoil.h>
 #include <misc/options/settings.h>
-#include <xflwidgets/line/linepickerdlg.h>
 #include <misc/renamedlg.h>
-#include <xdirect/objects2d.h>
-#include <xdirect/geometry/nacafoildlg.h>
 #include <xdirect/geometry/cadddlg.h>
-#include <xdirect/geometry/twodpaneldlg.h>
-#include <xdirect/geometry/tegapdlg.h>
-#include <xdirect/geometry/ledlg.h>
 #include <xdirect/geometry/flapdlg.h>
 #include <xdirect/geometry/foilcoorddlg.h>
 #include <xdirect/geometry/foilgeomdlg.h>
 #include <xdirect/geometry/interpolatefoilsdlg.h>
-#include "foiltabledelegate.h"
-#include <xflobjects/objects2d/foil.h>
-#include <gui_objects/splinefoil.h>
-#include <xfoil.h>
+#include <xdirect/geometry/ledlg.h>
+#include <xdirect/geometry/nacafoildlg.h>
+#include <xdirect/geometry/tegapdlg.h>
+#include <xdirect/geometry/twodpaneldlg.h>
 #include <xdirect/objects2d.h>
+#include <xdirect/objects2d.h>
+#include <xdirect/xdirect.h>
+#include <xflcore/xflcore.h>
+#include <xflobjects/objects2d/foil.h>
+#include <xflobjects/objects_global.h>
+#include <xflwidgets/line/linepickerdlg.h>
+#include <xfoil.h>
 
 
 MainFrame *AFoil::s_pMainFrame = nullptr;
@@ -62,8 +63,7 @@ MainFrame *AFoil::s_pMainFrame = nullptr;
  * The public constructor
  * @param parent a pointer to the MainFrame window
  */
-AFoil::AFoil(QWidget *parent)
-    : QWidget(parent)
+AFoil::AFoil(QWidget *parent)  : QWidget(parent)
 {
     setAttribute(Qt::WA_DeleteOnClose);
 
@@ -353,17 +353,7 @@ void AFoil::loadSettings(QSettings &settings)
             if(settings.value(str+"_hidden", false).toBool()) m_ptvFoil->hideColumn(i);
         }
 
-        m_p2dWidget->m_bScale = settings.value("x-scale", false).toBool();
-        m_p2dWidget->m_NeutralStyle.loadSettings(settings, "NeutralLineStyle");
-
-        m_p2dWidget->m_XStyle.loadSettings(settings, "XGrid");
-        m_p2dWidget->m_YStyle.loadSettings(settings, "YGrid");
-        m_p2dWidget->m_XMinStyle.loadSettings(settings, "XMinGrid");
-        m_p2dWidget->m_YMinStyle.loadSettings(settings, "YMinGrid");
-        m_p2dWidget->m_XGridUnit = settings.value("XGridUnit", 0.05).toDouble();
-        m_p2dWidget->m_YGridUnit = settings.value("YGridUnit", 0.05).toDouble();
-        m_p2dWidget->m_XMinUnit  = settings.value("XMinGridUnit", 0.01).toDouble();
-        m_p2dWidget->m_YMinUnit  = settings.value("YMinGridUnit", 0.01).toDouble();
+        m_p2dWidget->m_Grid.loadSettings(settings);
     }
     settings.endGroup();
 }
@@ -1070,8 +1060,7 @@ void AFoil::onFoilStyle()
     else
     {
         LinePickerDlg dlg(this);
-        dlg.initDialog(XDirect::curFoil()->pointStyle(), XDirect::curFoil()->lineStipple(),
-                       XDirect::curFoil()->lineWidth(), colour(XDirect::curFoil()), true, true);
+        dlg.initDialog(XDirect::curFoil()->theStyle(), true, true);
 
         if(QDialog::Accepted==dlg.exec())
         {
@@ -1296,17 +1285,7 @@ void AFoil::saveSettings(QSettings &settings)
             settings.setValue(str+"_hidden", m_ptvFoil->isColumnHidden(i));
         }
 
-        settings.setValue("x-scale", m_p2dWidget->m_bScale);
-        m_p2dWidget->m_NeutralStyle.saveSettings(settings, "NeutralLineStyle");
-
-        m_p2dWidget->m_XStyle.saveSettings(settings, "XGrid");
-        m_p2dWidget->m_YStyle.saveSettings(settings, "YGrid");
-        m_p2dWidget->m_XMinStyle.saveSettings(settings, "XMinGrid");
-        m_p2dWidget->m_YMinStyle.saveSettings(settings, "YMinGrid");
-        settings.setValue("XGridUnit",    m_p2dWidget->m_XGridUnit);
-        settings.setValue("YGridUnit",    m_p2dWidget->m_YGridUnit);
-        settings.setValue("XMinGridUnit", m_p2dWidget->m_XMinUnit);
-        settings.setValue("YMinGridUnit", m_p2dWidget->m_YMinUnit);
+        m_p2dWidget->m_Grid.saveSettings(settings);
     }
     settings.endGroup();
 }

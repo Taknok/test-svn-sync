@@ -1,21 +1,8 @@
 /****************************************************************************
 
-    LineBtn Class
-    Copyright (C) 2013 Andre Deperrois 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    xflr5 v6
+    Copyright (C) Andre Deperrois
+    GNU General Public License v3
 
 *****************************************************************************/
 
@@ -25,7 +12,9 @@
 
 
 #include <QAbstractButton>
-#include <xflcore/ls2.h>
+
+#include <xflcore/linestyle.h>
+
 
 class LineBtn : public QAbstractButton
 {
@@ -33,30 +22,56 @@ class LineBtn : public QAbstractButton
 
     public:
         LineBtn(QWidget *parent = nullptr);
+        LineBtn(LineStyle ls, QWidget *parent = nullptr);
 
-        void setTheStyle(int lineStyle, int width, QColor const & color, int pointStyle);
-        void setTheStyle(LS2 const &ls) {m_LineStyle = ls;}
-        LS2 const &theStyle() const {return m_LineStyle;}
+        void setTheStyle(const LineStyle &ls);
+        void setTheStyle(Line::enumLineStipple style, int width, const QColor &color, Line::enumPointStyle pointstyle);
 
-        void setColor(QColor const & color);
-        void setStipple(int lineStyle);
+        void setColor(const QColor &color);
+        void setStipple(Line::enumLineStipple stipple);
         void setWidth(int width);
-        void setPointStyle(int pointStyle);
+        void setPointStyle(Line::enumPointStyle pointstyle);
 
-        QColor color()   const {return m_LineStyle.m_Color;}
-        int lineStyle()  const {return m_LineStyle.m_Stipple;}
-        int lineWidth()  const {return m_LineStyle.m_Width;}
-        int pointStyle() const {return m_LineStyle.m_PointStyle;}
+        bool isCurrent() const {return m_bIsCurrent;}
+        void setCurrent(bool bCurrent) {m_bIsCurrent=bCurrent;}
+
+        bool hasBackGround() const {return m_bHasBackGround;}
+        void setBackground(bool bBack) {m_bHasBackGround=bBack;}
+
+        LineStyle const &theLineStyle() const {return m_LineStyle;}
+
+        QColor btnColor() const {return m_LineStyle.m_Color;}
+        void setBtnColor(QColor clr) {m_LineStyle.m_Color=clr;}
+
+        Line::enumLineStipple btnStyle()      const {return m_LineStyle.m_Stipple;}
+        void setBtnStyle(Line::enumLineStipple iStyle) {m_LineStyle.m_Stipple = iStyle;}
+
+        int btnWidth()      const {return m_LineStyle.m_Width;}
+        void setBtnWidth(int iWidth) {m_LineStyle.m_Width=iWidth;}
+
+        Line::enumPointStyle btnPointStyle() const {return m_LineStyle.m_Symbol;}
+        void setBtnPointStyle(Line::enumPointStyle iSymbol) {m_LineStyle.m_Symbol=iSymbol;}
+
+        static void setBackgroundColor(QColor const &clr) {s_BackgroundColor=clr;}
 
     signals:
-        void clickedLB();
+        void clickedLB(LineStyle);
 
     public:
-        void mouseReleaseEvent(QMouseEvent *pEvent) override;
+        void mousePressEvent(QMouseEvent *event) override;
         void paintEvent(QPaintEvent *pEvent) override;
         QSize sizeHint() const override;
 
+        bool event(QEvent* pEvent) override;
+
+
     private:
-        LS2 m_LineStyle;
+        bool m_bIsCurrent;
+        bool m_bMouseHover;
+        bool m_bHasBackGround;
+        LineStyle m_LineStyle;
+
+        static QColor s_BackgroundColor;
 };
+
 

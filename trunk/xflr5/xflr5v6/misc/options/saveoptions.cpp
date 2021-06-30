@@ -27,7 +27,7 @@
 
 
 #include "saveoptions.h"
-#include <xflwidgets/text/intedit.h>
+#include <xflwidgets/customwts/intedit.h>
 #include "saveoptions.h"
 
 SaveOptions::SaveOptions(QWidget *parent) : QWidget(parent)
