@@ -3351,8 +3351,7 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
 bool MainFrame::loadSettings()
 {
     QPoint pt;
-    bool bFloat=false;
-    int SettingsFormat=0;
+    bool bFloat(false);
     QSize size;
 
 
@@ -3369,7 +3368,7 @@ bool MainFrame::loadSettings()
 
     settings.beginGroup("MainFrame");
     {
-        SettingsFormat = settings.value("SettingsFormat").toInt();
+        int SettingsFormat = settings.value("SettingsFormat").toInt();
         if(SettingsFormat != SETTINGSFORMAT) return false;
 
         Settings::s_StyleName = settings.value("StyleName","").toString();
