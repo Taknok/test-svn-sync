@@ -288,7 +288,7 @@ void W3dPrefsDlg::onOutline()
     LPdlg.initDialog(false);
     if (QDialog::Accepted == LPdlg.exec())
     {
-        s_OutlineStyle = LPdlg.ls2();
+        s_OutlineStyle = LPdlg.theStyle();
         m_plbOutline->setTheStyle(s_OutlineStyle);
     }
 }
@@ -301,7 +301,7 @@ void W3dPrefsDlg::on3DAxis()
 
     if (QDialog::Accepted == LPdlg.exec())
     {
-        s_3DAxisStyle = LPdlg.ls2();
+        s_3DAxisStyle = LPdlg.theStyle();
         m_plbAxis->setTheStyle(s_3DAxisStyle);
     }
 }
@@ -314,7 +314,7 @@ void W3dPrefsDlg::onTopTrans()
 
     if (QDialog::Accepted == LPdlg.exec())
     {
-        s_TopStyle = LPdlg.ls2();
+        s_TopStyle = LPdlg.theStyle();
         m_plbTopTrans->setTheStyle(s_TopStyle);
     }
 }
@@ -327,7 +327,7 @@ void W3dPrefsDlg::onBotTrans()
 
     if (QDialog::Accepted == LPdlg.exec())
     {
-        s_BotStyle = LPdlg.ls2();
+        s_BotStyle = LPdlg.theStyle();
         m_plbBotTrans->setTheStyle(s_BotStyle);
     }
 }
@@ -340,7 +340,7 @@ void W3dPrefsDlg::onIDrag()
 
     if (QDialog::Accepted == LPdlg.exec())
     {
-        s_IDragStyle = LPdlg.ls2();
+        s_IDragStyle = LPdlg.theStyle();
         m_plbInducedDrag->setTheStyle(s_IDragStyle);
     }
 }
@@ -353,7 +353,7 @@ void W3dPrefsDlg::onVDrag()
 
     if (QDialog::Accepted == LPdlg.exec())
     {
-        s_VDragStyle = LPdlg.ls2();
+        s_VDragStyle = LPdlg.theStyle();
         m_plbViscousDrag->setTheStyle(s_VDragStyle);
     }
 }
@@ -366,7 +366,7 @@ void W3dPrefsDlg::onXCP()
 
     if (QDialog::Accepted == LPdlg.exec())
     {
-        s_XCPStyle = LPdlg.ls2();
+        s_XCPStyle = LPdlg.theStyle();
         m_plbLift->setTheStyle(s_XCPStyle);
     }
 }
@@ -379,7 +379,7 @@ void W3dPrefsDlg::onMoments()
 
     if (QDialog::Accepted == LPdlg.exec())
     {
-        s_MomentStyle = LPdlg.ls2();
+        s_MomentStyle = LPdlg.theStyle();
         m_plbMoments->setTheStyle(s_MomentStyle);
     }
 }
@@ -392,7 +392,7 @@ void W3dPrefsDlg::onDownwash()
 
     if (QDialog::Accepted == LPdlg.exec())
     {
-        s_DownwashStyle = LPdlg.ls2();
+        s_DownwashStyle = LPdlg.theStyle();
         m_plbDownwash->setTheStyle(s_DownwashStyle);
     }
 }
@@ -405,7 +405,7 @@ void W3dPrefsDlg::onStreamLines()
 
     if (QDialog::Accepted == LPdlg.exec())
     {
-        s_StreamStyle = LPdlg.ls2();
+        s_StreamStyle = LPdlg.theStyle();
         m_plbStreamLines->setTheStyle(s_StreamStyle);
     }
 }
@@ -418,7 +418,7 @@ void W3dPrefsDlg::onWakePanels()
 
     if (QDialog::Accepted == LPdlg.exec())
     {
-        s_WakeStyle = LPdlg.ls2();
+        s_WakeStyle = LPdlg.theStyle();
         m_plbWakePanels->setTheStyle(s_WakeStyle);
     }
 }
@@ -431,7 +431,7 @@ void W3dPrefsDlg::onVLMMesh()
 
     if (QDialog::Accepted == LPdlg.exec())
     {
-        s_VLMStyle = LPdlg.ls2();
+        s_VLMStyle = LPdlg.theStyle();
         m_plbVLMMesh->setTheStyle(s_VLMStyle);
     }
     repaint();

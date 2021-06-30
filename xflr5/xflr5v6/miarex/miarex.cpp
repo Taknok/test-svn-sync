@@ -814,10 +814,7 @@ void Miarex::createWOppCurves()
                     for(int ic=0; ic<m_WingGraph.count(); ic++)
                     {
                         Curve *pWingCurve = m_WingGraph[ic]->addCurve();
-                        pWingCurve->setPointStyle(pPOpp->pointStyle1());
-                        pWingCurve->setStipple(pPOpp->lineStipple());
-                        pWingCurve->setColor(pPOpp->color());
-                        pWingCurve->setWidth(pPOpp->width());
+                        pWingCurve->setLineStyle(pPOpp->theStyle());
                         //only show the legend for the main wing
                         if(iw==0) pWingCurve->setName(POppTitle(pPOpp));
                         else      pWingCurve->setName("");
@@ -1271,10 +1268,7 @@ void Miarex::createStabRLCurves()
             {
                 pLongCurve[iCurve] = m_StabPlrGraph.at(0)->addCurve();
                 pLongCurve[iCurve]->setVisible(pWPolar->isVisible());
-                pLongCurve[iCurve]->setPointStyle(pWPolar->pointStyle1());
-                pLongCurve[iCurve]->setStipple(pWPolar->lineStipple());
-                pLongCurve[iCurve]->setColor(pWPolar->color());
-                pLongCurve[iCurve]->setWidth(pWPolar->lineWidth());
+                pLongCurve[iCurve]->setLineStyle(pWPolar->theStyle());
                 pLongCurve[iCurve]->setName(pWPolar->polarName()+QString("_Mode_%1").arg(iCurve));
                 fillStabCurve(pLongCurve[iCurve], pWPolar, iCurve);
             }
@@ -1284,10 +1278,7 @@ void Miarex::createStabRLCurves()
             {
                 pLatCurve[iCurve] = m_StabPlrGraph.at(1)->addCurve();
                 pLatCurve[iCurve]->setVisible(pWPolar->isVisible());
-                pLatCurve[iCurve]->setPointStyle(pWPolar->pointStyle1());
-                pLatCurve[iCurve]->setStipple(pWPolar->lineStipple());
-                pLatCurve[iCurve]->setColor(pWPolar->color());
-                pLatCurve[iCurve]->setWidth(pWPolar->lineWidth());
+                pLatCurve[iCurve]->setLineStyle(pWPolar->theStyle());
                 pLatCurve[iCurve]->setName(pWPolar->polarName()+QString("_Mode_%1").arg(iCurve));
                 fillStabCurve(pLatCurve[iCurve], pWPolar, iCurve+4);
             }
@@ -2972,8 +2963,8 @@ void Miarex::onEditCurWPolarPts()
     epDlg.initDialog(nullptr, nullptr, this, m_pCurWPolar);
 
 
-    Line::enumPointStyle ps = m_pCurWPolar->pointStyle2();
-    m_pCurWPolar->setPointStyle2(Line::LITTLECIRCLE);
+    Line::enumPointStyle ps = m_pCurWPolar->pointStyle();
+    m_pCurWPolar->setPointStyle(Line::LITTLECIRCLE);
 
     s_bResetCurves = true;
     updateView();
@@ -4818,7 +4809,7 @@ void Miarex::onHidePlaneWPolars()
         if (pWPolar->planeName() == PlaneName)
         {
             pWPolar->setVisible(false);
-            if(pWPolar->polarType()==xfl::STABILITYPOLAR) pWPolar->setPointStyle2(Line::NOSYMBOL);
+            if(pWPolar->polarType()==xfl::STABILITYPOLAR) pWPolar->setPointStyle(Line::NOSYMBOL);
         }
     }
 

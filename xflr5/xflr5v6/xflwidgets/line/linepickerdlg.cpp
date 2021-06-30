@@ -133,38 +133,6 @@ void LinePickerDlg::onLineStyle(LineStyle ls)
 }
 
 
-void LinePickerDlg::setLineColor(QColor color)
-{
-    m_LineStyle.m_Color = color;
-    fillBoxes();
-    repaint();
-}
-
-
-void LinePickerDlg::setPointStyle(int pointStyle)
-{
-    m_LineStyle.m_Symbol = LineStyle::convertPointStyle_old(pointStyle);
-    fillBoxes();
-    repaint();
-}
-
-
-void LinePickerDlg::setLineStipple(int lineStyle)
-{
-    m_LineStyle.m_Stipple = LineStyle::convertLineStyle(lineStyle);
-    fillBoxes();
-    repaint();
-}
-
-
-void LinePickerDlg::setLineWidth(int width)
-{
-
-    m_LineStyle.m_Width = width;
-    fillBoxes();
-    repaint();
-}
-
 
 void LinePickerDlg::setupLayout()
 {

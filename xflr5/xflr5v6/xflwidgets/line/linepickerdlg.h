@@ -45,8 +45,7 @@ class LinePickerDlg : public QDialog
         void initDialog(Line::enumPointStyle pointStyle, Line::enumLineStipple linestipple, int lineWidth, QColor const&lineColor, bool bAcceptPointStyle, bool bFlowDownEnable);
         void keyPressEvent(QKeyEvent *event) override;
 
-        LineStyle const &ls2()      const {return m_LineStyle;}
-        LineStyle const &theStyle() const {return m_LineStyle;}
+        LineStyle const &theStyle()      const {return m_LineStyle;}
 
         void setTheStyle(LineStyle const &ls) {m_LineStyle = ls;}
 
@@ -58,18 +57,6 @@ class LinePickerDlg : public QDialog
             m_LineStyle.m_Symbol = pointstyle;
         }
 
-        Line::enumLineStipple lineStipple2()  const {return m_LineStyle.m_Stipple;}
-        Line::enumPointStyle  pointStyle2()   const {return m_LineStyle.m_Symbol;}
-
-        int pointStyle()   const {return m_LineStyle.m_Symbol;}
-        int lineStipple()  const {return m_LineStyle.m_Stipple;}
-        int lineWidth()    const {return m_LineStyle.m_Width;}
-        QColor lineColor() const {return m_LineStyle.m_Color;}
-
-        void setPointStyle(int pointStyle);
-        void setLineStipple(int lineStyle);
-        void setLineWidth(int width);
-        void setLineColor(QColor color);
 
         void fillBoxes();
         void setupLayout();

@@ -1065,11 +1065,7 @@ void AFoil::onFoilStyle()
         if(QDialog::Accepted==dlg.exec())
         {
             emit projectModified();
-            XDirect::curFoil()->setPointStyle(dlg.pointStyle2());
-            XDirect::curFoil()->setLineStipple(dlg.lineStipple2());
-            XDirect::curFoil()->setLineWidth(dlg.lineWidth());
-            QColor clr = dlg.lineColor();
-            XDirect::curFoil()->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+            XDirect::curFoil()->setTheStyle(dlg.theStyle());
 
             if(Settings::isAlignedChildrenStyle())
                 Objects2d::setFoilChildrenStyle(XDirect::curFoil());

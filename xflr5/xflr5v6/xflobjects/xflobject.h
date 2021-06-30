@@ -69,12 +69,7 @@ class XflObject
         LineStyle &theStyle() {return m_theStyle;}
 
         int width() const {return m_theStyle.m_Width;}
-        int pointStyle1() const {return m_theStyle.m_Symbol;}
-        Line::enumPointStyle pointStyle2() const {return m_theStyle.m_Symbol;}
 
-
-        void setPointStyle(int n) {m_theStyle.m_Symbol = LineStyle::convertSymbol(n);}
-        void setPointStyle2(Line::enumPointStyle pts) {m_theStyle.m_Symbol=pts;}
 
         QColor const &color() const {return m_theStyle.m_Color;}
         void setColor(QColor const &clr) {m_theStyle.m_Color=clr;}
