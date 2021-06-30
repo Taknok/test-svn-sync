@@ -325,7 +325,7 @@ void LegendWt::drawPOppGraphLegend(QPainter &painter, QPointF place, double bott
         painter.drawLine(int(place.x() + 1.5*LegendSize), int(place.y() + 1.*ypos*ny),
                          int(place.x() + 2.5*LegendSize), int(place.y() + 1.*ypos*ny));
 
-        if(s_pMiarex->curPOpp()->pointStyle1()!=Line::NOSYMBOL)
+        if(s_pMiarex->curPOpp()->pointStyle()!=Line::NOSYMBOL)
         {
             x1 = place.x() + 2.0*LegendSize;
             y1 = place.y() + 1.*ypos*ny;

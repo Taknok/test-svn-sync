@@ -3691,10 +3691,7 @@ void MainFrame::onCurFoilStyle()
 
     if(QDialog::Accepted==dlg.exec())
     {
-        XDirect::curFoil()->setColor(dlg.lineColor().red(), dlg.lineColor().green(), dlg.lineColor().blue(), dlg.lineColor().alpha());
-        XDirect::curFoil()->setLineStipple(dlg.lineStipple2());
-        XDirect::curFoil()->setLineWidth(dlg.lineWidth());
-        XDirect::curFoil()->setPointStyle(dlg.pointStyle2());
+        XDirect::curFoil()->setTheStyle(dlg.theStyle());
 
         if(Settings::isAlignedChildrenStyle())
             Objects2d::setFoilChildrenStyle(XDirect::curFoil());

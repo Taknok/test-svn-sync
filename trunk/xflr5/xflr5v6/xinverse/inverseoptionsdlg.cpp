@@ -152,7 +152,7 @@ void InverseOptionsDlg::onReflectedStyle()
     if(QDialog::Accepted==dlg.exec())
     {
         m_plbReflected->setTheStyle(dlg.theStyle());
-        m_pXInverse->m_ReflectedStyle = dlg.ls2();
+        m_pXInverse->m_ReflectedStyle = dlg.theStyle();
     }
 }
 

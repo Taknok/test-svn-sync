@@ -1906,8 +1906,8 @@ void XDirect::onCadd()
     caDlg.m_pBufferFoil = pNewFoil;
     caDlg.m_pMemFoil    = pCurFoil;
     caDlg.initDialog();
-    int psState = pNewFoil->pointStyle();
-    if(psState==0) pNewFoil->setPointStyle(Line::LITTLECIRCLE);
+    Line::enumPointStyle psState = pNewFoil->pointStyle();
+    if(psState==Line::NOSYMBOL) pNewFoil->setPointStyle(Line::LITTLECIRCLE);
     updateView();
 
     if(QDialog::Accepted == caDlg.exec())
@@ -2563,7 +2563,7 @@ void XDirect::onFoilCoordinates()
     Foil *pCurFoil = curFoil();
     Foil *pNewFoil = new Foil;
     pNewFoil->copyFoil(pCurFoil);
-    pNewFoil->setPointStyle(1);
+    pNewFoil->setPointStyle(Line::LITTLECIRCLE);
     OpPoint* pOpPoint = m_pCurOpp;
     setCurOpp(nullptr);
     m_bResetCurves = true;
@@ -3340,8 +3340,8 @@ void XDirect::onRefinePanelsGlobally()
     TwoDPanelDlg tdpDlg(s_pMainFrame);
     tdpDlg.m_pBufferFoil = pNewFoil;
     tdpDlg.m_pMemFoil    = pCurFoil;
-    int psState = pNewFoil->pointStyle();
-    if(psState==0)    pNewFoil->setPointStyle(1);
+    Line::enumPointStyle psState = pNewFoil->pointStyle();
+    if(psState==Line::NOSYMBOL)    pNewFoil->setPointStyle(Line::LITTLECIRCLE);
 
     updateView();
 
