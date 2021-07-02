@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Panel Class
-    Copyright (C) 2006-2016 Andre Deperrois
+    Copyright (C) 2006-2016 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ void Panel::setPanelFrame(Vector3d const &LA, Vector3d const &LB, Vector3d const
     TALB.z = LB.z - TA.z;
 
     Normal = LATB * TALB;
-    Area = Normal.VAbs()/2.0;
+    Area = Normal.norm()/2.0;
     Normal.normalize();
 
     VA.x = LA.x*(1.0-s_VortexPos) + TA.x*s_VortexPos;
@@ -130,7 +130,7 @@ void Panel::setPanelFrame(Vector3d const &LA, Vector3d const &LB, Vector3d const
     Vortex.y = VB.y - VA.y;
     Vortex.z = VB.z - VA.z;
 
-    dl = Vortex.VAbs();
+    dl = Vortex.norm();
 
     VortexPos.x = (VA.x+VB.x)/2.0;
     VortexPos.y = (VA.y+VB.y)/2.0;
@@ -179,8 +179,8 @@ void Panel::setPanelFrame(Vector3d const &LA, Vector3d const &LB, Vector3d const
     smp.y  = (TB.y + TA.y) * 0.5 - CollPt.y;
     smp.z  = (TB.z + TA.z) * 0.5 - CollPt.z;
 
-    SMP = smp.VAbs();
-    SMQ = smq.VAbs();
+    SMP = smp.norm();
+    SMQ = smq.norm();
 
     Size = SMP + SMQ;
 
@@ -438,7 +438,7 @@ void Panel::rotateBC(Vector3d const &HA, Quaternion &Qt)
     WTest.x = VortexPos.x - HA.x;
     WTest.y = VortexPos.y - HA.y;
     WTest.z = VortexPos.z - HA.z;
-    Qt.Conjugate(WTest);
+    Qt.conjugate(WTest);
     VortexPos.x = WTest.x + HA.x;
     VortexPos.y = WTest.y + HA.y;
     VortexPos.z = WTest.z + HA.z;
@@ -446,7 +446,7 @@ void Panel::rotateBC(Vector3d const &HA, Quaternion &Qt)
     WTest.x = VA.x - HA.x;
     WTest.y = VA.y - HA.y;
     WTest.z = VA.z - HA.z;
-    Qt.Conjugate(WTest);
+    Qt.conjugate(WTest);
     VA.x = WTest.x + HA.x;
     VA.y = WTest.y + HA.y;
     VA.z = WTest.z + HA.z;
@@ -454,7 +454,7 @@ void Panel::rotateBC(Vector3d const &HA, Quaternion &Qt)
     WTest.x = VB.x - HA.x;
     WTest.y = VB.y - HA.y;
     WTest.z = VB.z - HA.z;
-    Qt.Conjugate(WTest);
+    Qt.conjugate(WTest);
     VB.x = WTest.x + HA.x;
     VB.y = WTest.y + HA.y;
     VB.z = WTest.z + HA.z;
@@ -462,7 +462,7 @@ void Panel::rotateBC(Vector3d const &HA, Quaternion &Qt)
     WTest.x = CtrlPt.x - HA.x;
     WTest.y = CtrlPt.y - HA.y;
     WTest.z = CtrlPt.z - HA.z;
-    Qt.Conjugate(WTest);
+    Qt.conjugate(WTest);
     CtrlPt.x = WTest.x + HA.x;
     CtrlPt.y = WTest.y + HA.y;
     CtrlPt.z = WTest.z + HA.z;
@@ -470,13 +470,13 @@ void Panel::rotateBC(Vector3d const &HA, Quaternion &Qt)
     WTest.x = CollPt.x - HA.x;
     WTest.y = CollPt.y - HA.y;
     WTest.z = CollPt.z - HA.z;
-    Qt.Conjugate(WTest);
+    Qt.conjugate(WTest);
     CollPt.x = WTest.x + HA.x;
     CollPt.y = WTest.y + HA.y;
     CollPt.z = WTest.z + HA.z;
 
-    Qt.Conjugate(Vortex);
-    Qt.Conjugate(Normal);
+    Qt.conjugate(Vortex);
+    Qt.conjugate(Normal);
 }
 
 

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     GraphWt Class
-        Copyright (C) 2008-2021 Andre Deperrois
+        Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,6 +35,9 @@
 #include <QPaintEvent>
 
 
+FontStruct GraphWt::s_TextFontStruct;
+QColor GraphWt::s_BackgroundColor = Qt::black;
+QColor GraphWt::s_TextColor = Qt::white;
 
 GraphWt::GraphWt(QWidget *pParent) : QWidget(pParent)
 {
@@ -98,16 +101,16 @@ void GraphWt::paintEvent(QPaintEvent *  pEvent )
         painter.restore();
     }
 
-    if(m_bDrawLegend) m_pGraph->drawLegend(painter, m_LegendOrigin, Settings::textFont(), Settings::textColor(), Settings::backgroundColor());
+    if(m_bDrawLegend) m_pGraph->drawLegend(painter, m_LegendOrigin, DisplayOptions::textFont(), DisplayOptions::textColor(), DisplayOptions::backgroundColor());
     if(hasFocus() && Settings::bMousePos())
     {
-        QPen textPen(Settings::textColor());
-        QFontMetrics fm(Settings::textFont());
+        QPen textPen(DisplayOptions::textColor());
+        QFontMetrics fm(DisplayOptions::textFont());
         painter.setBackgroundMode(Qt::TransparentMode);
 
         int fmheight  = fm.height();
 
-        painter.setFont(Settings::textFont());
+        painter.setFont(DisplayOptions::textFont());
         painter.setPen(textPen);
         painter.drawText(width()-14*fm.averageCharWidth(),  fmheight, QString("x = %1").arg(m_pGraph->clientTox(m_LastPoint.x()),9,'f',5));
         painter.drawText(width()-14*fm.averageCharWidth(),2*fmheight, QString("y = %1").arg(m_pGraph->clientToy(m_LastPoint.y()),9,'f',5));
@@ -283,12 +286,12 @@ void GraphWt::wheelEvent (QWheelEvent *pEvent)
 
     if(pEvent->angleDelta().y()>0)
     {
-        if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
+        if(!DisplayOptions::bReverseZoom()) zoomFactor = 1./1.06;
         else                          zoomFactor = 1.06;
     }
     else
     {
-        if(!Settings::s_bReverseZoom) zoomFactor = 1.06;
+        if(!DisplayOptions::bReverseZoom()) zoomFactor = 1.06;
         else                          zoomFactor = 1./1.06;
     }
 

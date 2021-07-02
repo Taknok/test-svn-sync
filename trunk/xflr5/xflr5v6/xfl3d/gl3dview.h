@@ -1,7 +1,7 @@
 /****************************************************************************
 
     gl3dView Class
-    Copyright (C) 2016-2019 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,44 +24,69 @@
 #pragma once
 
 
-
 #include <QOpenGLWidget>
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <QTimer>
+#include <QElapsedTimer>
 
+#include <xflcore/fontstruct.h>
 #include <xflcore/core_enums.h>
-#include <xfl3d/arcball.h>
-#include <xflanalysis/analysis3d_params.h>
+#include <xflcore/linestyle.h>
+#include <xfl3d/controls/arcball.h>
+#include <xfl3d/controls/light.h>
+
 
 #define PIf 3.141592654f
 
+
+#define DEPTHFACTOR 0.0f
+#define DEPTHUNITS 1.0f
+
 #define MAXCPCOLORS    21
 
-class Miarex;
-class MainFrame;
-class Plane;
-class Body;
-class Wing;
-class WingOpp;
-class WPolar;
-class PlaneOpp;
-class Panel;
-class GLLightDlg;
-class PointMass;
+/** generic shader locations; not all locations are necessary nor defined for each shader */
+struct ShaderLocations
+{
+    // Attribute data
+    int m_attrVertex{-1}, m_attrNormal{-1};
+    int m_attrColor{-1};
+    int m_attrm_UV{-1};
+    int m_attrUV{-1}; // vertex attribute array containing the texture's UV coordinates
+    int m_attrOffset{-1};
 
+    // Uniforms
+    int m_vmMatrix{-1}, m_pvmMatrix{-1};
+    int m_Scale{-1}; // only used if instancing is enabled
+
+    int m_Light{-1};
+    int m_UniColor{-1};
+    int m_ClipPlane{-1};
+
+    int m_TwoSided{-1};
+
+    int m_HasUniColor{-1};
+    int m_HasTexture{-1};    // uniform defining whether a texture is enabled or not
+    int m_IsInstanced{-1};
+
+    int m_Pattern{-1}, m_nPatterns{-1};
+    int m_Thickness{-1}, m_Viewport{-1};
+
+    int m_State{-1};
+    int m_Shape{-1};
+
+    int m_TexSampler{-1}; // the id of the sampler; defaults to 0
+};
+
+
+
+class GLLightDlg;
 
 
 class gl3dView : public QOpenGLWidget
 {
-    friend class MainFrame;
-    friend class Miarex;
-    friend class GL3dWingDlg;
-    friend class GL3dBodyDlg;
-    friend class EditBodyDlg;
-    friend class EditPlaneDlg;
     friend class GLLightDlg;
 
     Q_OBJECT
@@ -70,6 +95,19 @@ class gl3dView : public QOpenGLWidget
         ~gl3dView();
 
         void setLightVisible(bool bShow) {m_bShowLight=bShow;}
+
+        static void setFontStruct(FontStruct const & fntstruct) {s_glFontStruct=fntstruct;}
+        static void setTextColor(QColor const &textclr) {s_TextColor=textclr;}
+        static void setBackColor(QColor const &backclr) {s_BackgroundColor=backclr;}
+
+        static QColor textColor() {return s_TextColor;}
+        static QColor backColor() {return s_BackgroundColor;}
+
+        static bool isLightOn() {return s_Light.m_bIsLightOn;}
+        static void setLightOn(bool bLight) {s_Light.m_bIsLightOn = bLight;}
+
+        static bool bSpinAnimation() {return s_bSpinAnimation;}
+        static double spinDamping() {return s_SpinDamping;}
 
     signals:
         void viewModified();
@@ -88,23 +126,19 @@ class gl3dView : public QOpenGLWidget
         void mouseMoveEvent(QMouseEvent *pEvent) override;
         void mouseReleaseEvent(QMouseEvent *pEvent) override;
         void wheelEvent(QWheelEvent *pEvent) override;
-        QSize sizeHint() const override;
-        QSize minimumSizeHint() const override;
+        QSize sizeHint() const override {return QSize(913, 701);}
 
-    public slots:
-        void on3DIso();
-        void on3DFlip();
-        void on3DTop();
-        void on3DLeft();
-        void on3DFront();
-        virtual void on3DReset() = 0;
+    protected slots:
+        void on3dIso();
+        void on3dFlip();
+        void on3dTop();
+        void on3dLeft();
+        void on3dFront();
+        virtual void on3dReset() = 0;
         void onAxes(bool bChecked);
         void onClipPlane(int pos);
-        void onSurfaces(bool bChecked);
-        void onPanels(bool bChecked);
-        void onOutline(bool bChecked);
-        void onFoilNames(bool bChecked);
-        void onShowMasses(bool bChecked);
+
+        void onDynamicIncrement();
         void onResetIncrement();
         void onRotationIncrement();
         void onTranslationIncrement();
@@ -115,50 +149,53 @@ class gl3dView : public QOpenGLWidget
         bool bUsing120StyleShaders() const {return m_bUse120StyleShaders;}
 
     protected:
-        void getTextureFile(const QString &planeName, const QString &surfaceName, QImage & textureImage);
-        void glDrawMasses(const Plane *pPlane);
         void getGLError();
-        void glInverseMatrix();
-        void glMakeUnitSphere();
-        void glMakeArcPoint();
-        void glMakeArcBall();
-        void glMakeBody3DFlatPanels(const Body *pBody);
-        void glMakeBodySplines(Body const *pBody);
-        void glMakeWingGeometry(int iWing, Wing const *pWing, Body const *pBody);
-        void glMakeWingEditMesh(QOpenGLBuffer &vbo, const Wing *pWing);
-        void glMakeBodyFrameHighlight(Body const *pBody, Vector3d bodyPos, int iFrame);
-        void glMakeEditBodyMesh(Body *pBody, Vector3d BodyPosition);
-        void glRenderText(int x, int y, const QString & str, QColor textColor = QColor(Qt::white));
-        void glRenderText(double x, double y, double z, const QString & str, QColor textColor = QColor(Qt::white));
-        void glMakeAxis();
+        void glMakeUnitSphere(QOpenGLBuffer &vbo);
+        void glMakeArcPoint(ArcBall const&arcball);
+        void glMakeArcBall(ArcBall &arcball);
 
+        void glRenderText(Vector3d const &pos, const QString & str, const QColor &textcolor, bool bBackground=false, bool bBold=false) {glRenderText(pos.x, pos.y, pos.z, str, textcolor, bBackground, bBold);}
+        void glRenderText(int x, int y, const QString & str, const QColor &backclr, const QColor &textcolor = QColor(Qt::white), bool bBold=false);
+        void glRenderText(double x, double y, double z, const QString & str, const QColor &textcolor, bool bBackground=false, bool bBold=false);
+
+        void glMakeAxes();
+
+        void set3dRotationCenter(const QPoint &point);
+        virtual bool intersectTheObject(Vector3d const &AA,  Vector3d const &BB, Vector3d &I) = 0;
         virtual void glRenderView() = 0;
-        virtual void set3DRotationCenter(QPoint point) = 0;
         virtual void paintOverlay();
 
         void paintGL3();
-        void paintFoilNames(const Wing *pWing);
-        void paintMasses(double volumeMass, Vector3d pos, QString tag, const QVector<PointMass *> &ptMasses);
         void paintArcBall();
         void paintAxes();
-        void paintEditWingMesh(QOpenGLBuffer &vbo);
-        void paintSectionHighlight();
-        void paintBody(Body const *pBody);
-        void paintEditBodyMesh(Body const *pBody);
-        void paintWing(int iWing, const Wing *pWing);
-        void paintSphere(Vector3d place, double radius, QColor sphereColor, bool bLight=true);
-        void reset3DRotationCenter();
-        void set3DScale(double length=-1.0);
-        void setSpanStations(Plane const *pPlane, WPolar const *pWPolar, PlaneOpp const *pPOpp);
+        void paintSphere(const Vector3d &place, double radius, QColor sphereColor, bool bLight=true);
+        void paintTriangles3Vtx(QOpenGLBuffer &vbo, const QColor &backclr, bool bTwoSided, bool bLight);
+        void paintSegments(QOpenGLBuffer &vbo, LineStyle const &ls, bool bHigh = false);
+        void paintSegments(QOpenGLBuffer &vbo, const QColor &clr, int thickness, Line::enumLineStipple stip=Line::SOLID, bool bHigh=false);
+        void paintBox(double x, double y, double z, double dx, double dy, double dz, QColor const &clr, bool bLight);
+        void paintCube(double x, double y, double z, double side, QColor const &clr, bool bLight);
+
+        void reset3dRotationCenter();
+        void set3dScale(double length=-1.0);
         void startResetTimer(double length);
         void startRotationTimer();
         void startTranslationTimer(Vector3d PP);
-        void screenToViewport(QPoint const &point, Vector3d &real);
-        void viewportToScreen(Vector3d const &real, QPoint &point);
-        void viewportToWorld(Vector3d vp, Vector3d &w);
-        QVector4D worldToViewport(Vector3d v);
-        QPoint worldToScreen(Vector3d v);
-        QPoint worldToScreen(QVector4D v4);
+
+       void setViewportTranslation();
+       void startDynamicTimer();
+       void stopDynamicTimer();
+
+
+       void screenToViewport(QPoint const &point, int z, Vector3d &real) const;
+       void screenToViewport(QPoint const &point, Vector3d &real) const;
+       void screenToWorld(const QPoint &screenpt, int z, Vector3d &modelpt) const;
+       void viewportToScreen(Vector3d const &real, QPoint &point) const;
+       void viewportToWorld(Vector3d vp, Vector3d &w) const;
+
+       QVector4D worldToViewport(Vector3d v) const;
+       QPoint worldToScreen(const Vector3d &v, QVector4D &vScreen) const;
+       QPoint worldToScreen(const QVector4D &v4, QVector4D &vScreen) const;
+
 
     public:
         static void printFormat(QSurfaceFormat const &ctxFormat, QString &log);
@@ -168,94 +205,44 @@ class gl3dView : public QOpenGLWidget
 
     protected:
 
-        QOpenGLShaderProgram m_ShaderProgramLine,  m_ShaderProgramGradient;
-        QOpenGLShaderProgram m_ShaderProgramSurface, m_ShaderProgramTexture;
+        QOpenGLShaderProgram m_shadLine;
+        QOpenGLShaderProgram m_shadSurf;
 
-        QOpenGLBuffer m_vboArcBall, m_vboArcPoint, m_vboBody;
-        QOpenGLBuffer m_vboWingSurface[MAXWINGS], m_vboWingOutline[MAXWINGS];
-        QOpenGLBuffer m_vboEditWingMesh[MAXWINGS];
-        QOpenGLBuffer m_vboEditBodyMesh;
-        QOpenGLBuffer m_vboHighlight;
+        QOpenGLBuffer m_vboArcBall, m_vboArcPoint;
         QOpenGLBuffer m_vboSphere;
-        QOpenGLBuffer m_vboAxis;
+        QOpenGLBuffer m_vboAxes;
+        QOpenGLBuffer m_vboCube, m_vboCubeEdges;
 
-
-        QOpenGLTexture     *m_pLeftBodyTexture, *m_pRightBodyTexture;
-        QOpenGLTexture     *m_pWingTopLeftTexture[MAXWINGS], *m_pWingTopRightTexture[MAXWINGS], *m_pWingBotLeftTexture[MAXWINGS], *m_pWingBotRightTexture[MAXWINGS];
-
-        int m_VertexLocationGradient, m_ColorLocationGradient;
-        int m_pvmMatrixLocationGradient;
-
-        int m_VertexLocationLine, m_ColorLocationLine;
-        int m_pvmMatrixLocationLine, m_vMatrixLocationLine, m_mMatrixLocationLine;
-        int m_ClipPlaneLocationLine;
-
-        int m_VertexLocationSurface, m_NormalLocationSurface;
-        int m_LightLocationSurface, m_SurfaceLocationSurface, m_ColorLocationSurface;
-
-        int m_ClipPlaneLocationSurface;
-        int m_vMatrixLocationSurface, m_mMatrixLocationSurface, m_pvmMatrixLocationSurface;
-        int m_EyePosLocationSurface, m_LightPosLocationSurface;
-        int m_LightColorLocationSurface, m_LightAmbientLocationSurface, m_LightDiffuseLocationSurface, m_LightSpecularLocationSurface;
-        int m_AttenuationConstantSurface, m_AttenuationLinearSurface, m_AttenuationQuadraticSurface;
-        int m_MaterialShininessSurface;
-
-
-        int m_VertexLocationTexture, m_NormalLocationTexture, m_UVLocationTexture;
-        int m_LightLocationTexture;
-        int m_ClipPlaneLocationTexture;
-        int m_vMatrixLocationTexture, m_mMatrixLocationTexture, m_pvmMatrixLocationTexture;
-        int m_EyePosLocationTexture, m_LightPosLocationTexture;
-        int m_LightColorLocationTexture, m_LightAmbientLocationTexture, m_LightDiffuseLocationTexture, m_LightSpecularLocationTexture;
-        int m_AttenuationConstantTexture, m_AttenuationLinearTexture, m_AttenuationQuadraticTexture;
-        int m_MaterialShininessTexture;
+        ShaderLocations m_locSurf;
+        ShaderLocations m_locLine;
 
         bool m_bShowLight;
 
+        bool m_bAxes;                      /**< true if the axes are to be displayed in the 3D view*/
         bool m_bArcball;            //true if the arcball is to be displayed
         bool m_bCrossPoint;            //true if the control point on the arcball is to be displayed
         ArcBall m_ArcBall;
-        unsigned short *m_SphereIndicesArray, *m_WingMeshIndicesArray;
-        QVector<ushort> m_BodyIndicesArray;
-        QVector<ushort> m_WingIndicesArray[MAXWINGS];
 
-        double m_glScaled, m_glScaledRef;
-
-        static Miarex *s_pMiarex;     /**< A void pointer to the instance of the QMiarex widget.*/
-        static MainFrame *s_pMainFrame;  /**< A void pointer to the instance of the MainFrame widget.*/
-
-        bool m_bOutline;                   /**< true if the surface outlines are to be displayed in the 3D view*/
-        bool m_bSurfaces;                  /**< true if the surfaces are to be displayed in the 3D view*/
-        bool m_bVLMPanels;                 /**< true if the panels are to be displayed in the 3D view*/
-        bool m_bAxes;                      /**< true if the axes are to be displayed in the 3D view*/
-        bool m_bShowMasses;                /**< true if the point masses are to be displayed on the openGL 3D view */
-        bool m_bFoilNames;                 /**< true if the foil names are to be displayed on the openGL 3D view */
-
-
-        static GLLightDlg* s_pglLightDlg;
+        double m_glScalef, m_glScalefRef;
 
         QRectF m_GLViewRect;    /**< The OpenGl viewport.*/
 
-        QTimer *m_pTransitionTimer;
+        QTimer m_TransitionTimer;
 
         bool m_bTrans;
         bool m_bDragPoint;
 
 
         float m_ClipPlanePos;      /**< the z-position of the clip plane in viewport coordinates */
-        double MatIn[4][4], MatOut[4][4];
+        double m_MatOut[16];
 
         bool m_bUse120StyleShaders;
 
-        QMatrix4x4 m_orthoMatrix;
-        QMatrix4x4 m_pvmMatrix;
-        QMatrix4x4 m_viewMatrix;
-        QMatrix4x4 m_modelMatrix;
+        QMatrix4x4 m_matProj, m_matView, m_matModel;
 
-        QPoint m_ptPopUp;
-        QPoint m_LastPoint;
+        QPoint m_LastPoint, m_PressedPoint;
 
-        Vector3d m_transIncrement;
+        Vector3d m_TransIncrement;
         double m_glScaleIncrement;
 
         Vector3d m_RealPopUp;
@@ -264,25 +251,43 @@ class gl3dView : public QOpenGLWidget
 
         QPixmap m_PixTextOverlay;
 
-        int m_iBodyElems;
-        int m_iWingElems[MAXWINGS], m_iWingMeshElems;
-
-        int m_Ny[MAXWINGS];
-        int m_nHighlightLines, m_HighlightLineSize;
-
-        int m_iBodyMeshLines;
-        int m_iWingOutlinePoints[MAXWINGS];
-        int m_iMomentPoints;
-
-        float ab_old[16], ab_new[16];
         int m_iTransitionInc;
 
         QOpenGLVertexArrayObject m_vao; /** generic vao required for the core profile >3.x*/
 
+        bool m_bHasMouseMoved;
+        QElapsedTimer m_MoveTime;
+        QTimer m_DynTimer; // used when the user has set a dynamic rotation or translation using the mouse
+        Quaternion m_SpinInc;
+        Vector3d m_Trans;
+        bool m_bDynTranslation;
+        bool m_bDynRotation;
+        bool m_bDynScaling;
+        float m_ZoomFactor;
+        int m_iTimerInc;
+        Quaternion m_QuatStart, m_QuatEnd;
+
+        int ANIMATIONFRAMES;
+
+
+        static bool s_bSpinAnimation;
+        static double s_SpinDamping;
+
+        static int s_AnimationTime;
+        static bool s_bAnimateTransitions;  // ms
+
+        static QColor s_TextColor;
+        static QColor s_BackgroundColor;
+
+        static Light s_Light;
+        static FontStruct s_glFontStruct;
+
         static int s_OpenGLMajor;
         static int s_OpenGLMinor;
+
 };
 
+GLushort GLStipple(Line::enumLineStipple stipple);
 void GLLineStipple(int style);
 
 

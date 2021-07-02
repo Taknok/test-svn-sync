@@ -1,7 +1,7 @@
 /****************************************************************************
 
     gl3dMiarexView Class
-    Copyright (C) 2003-2019 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,12 +29,13 @@
 #include <miarex/miarex.h>
 #include <globals/mainframe.h>
 
-#include <misc/options/settings.h>
+
+#include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 #include <miarex/view/gl3dscales.h>
 #include <xflobjects/objects3d/surface.h>
 #include <xflobjects/objects3d/wpolar.h>
-#include <miarex/view/w3dprefsdlg.h>
+#include <xfl3d/controls/w3dprefsdlg.h>
 
 
 bool gl3dMiarexView::s_bResetglGeom = true;
@@ -61,7 +62,7 @@ double gl3dMiarexView::s_LegendMin = -1.0;
 double gl3dMiarexView::s_LegendMax =  1.0;
 
 
-gl3dMiarexView::gl3dMiarexView(QWidget *parent) : gl3dView(parent)
+gl3dMiarexView::gl3dMiarexView(QWidget *parent) : gl3dXflView(parent)
 {
     m_bStream             = false;
     m_bSurfVelocities     = false;
@@ -107,7 +108,7 @@ void gl3dMiarexView::glRenderView()
         if(pPOpp && pPOpp->polarType()==xfl::STABILITYPOLAR)
         {
             QString strong = QString(tr("Time =")+"%1s").arg(s_pMiarex->m_ModeTime,6,'f',3);
-            glRenderText(10, 15, strong, Settings::s_TextColor);
+            glRenderText(10, 15, strong, DisplayOptions::textColor());
         }
 
         modeMatrix.translate(float(s_pMiarex->m_ModeState[0]), float(s_pMiarex->m_ModeState[1]), float(s_pMiarex->m_ModeState[2]));
@@ -115,28 +116,25 @@ void gl3dMiarexView::glRenderView()
         modeMatrix.rotate(float(s_pMiarex->m_ModeState[4])*180.0f/PIf, 0.0, 1.0 ,0.0);
         modeMatrix.rotate(float(s_pMiarex->m_ModeState[5])*180.0f/PIf, 0.0, 0.0 ,1.0);
     }
-    m_modelMatrix = modeMatrix;
+    m_matModel = modeMatrix;
 
-    if(pPOpp)    m_modelMatrix.rotate(float(pPOpp->alpha()),0.0,1.0,0.0);
-    m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
-
+    if(pPOpp)    m_matModel.rotate(float(pPOpp->alpha()),0.0,1.0,0.0);
 
     //    if(W3dPrefsDlg::s_bEnableClipPlane) glEnable(GL_CLIP_PLANE0);
 
     if(s_pMiarex->m_pCurPlane)
     {
-        m_modelMatrix = modeMatrix;
+        m_matModel = modeMatrix;
 
         // We use the model matrix to apply alpha and beta rotations to the geometry.
         if(pPOpp)
         {
             //apply aoa rotation
-            m_modelMatrix.rotate(float(pPOpp->alpha()),0.0,1.0,0.0);
+            m_matModel.rotate(float(pPOpp->alpha()),0.0,1.0,0.0);
 
             /* CP position alredy includes the sideslip geometry, shond't be rotated by sideslip*/
             if(s_pMiarex->m_bXCP)
             {
-                m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
                 for(int iw=0; iw<MAXWINGS; iw++)
                 {
                     if(s_pMiarex->m_pCurPlane->wing(iw)) paintLift(iw);
@@ -145,15 +143,13 @@ void gl3dMiarexView::glRenderView()
 
             // apply sideslip
             if(fabs(pPOpp->beta())>PRECISION)
-                m_modelMatrix.rotate(float(pPOpp->beta()), 0.0, 0.0, 1.0);
+                m_matModel.rotate(float(pPOpp->beta()), 0.0, 0.0, 1.0);
         }
         else
         {
             if(pWPolar && fabs(pWPolar->Beta())>0.001)
-                m_modelMatrix.rotate(float(pWPolar->Beta()), 0.0, 0.0, 1.0);
+                m_matModel.rotate(float(pWPolar->Beta()), 0.0, 0.0, 1.0);
         }
-
-        m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
 
         if(m_bVLMPanels)
         {
@@ -161,8 +157,7 @@ void gl3dMiarexView::glRenderView()
             {
                 for(int iw=0; iw<MAXWINGS; iw++)
                 {
-                    Wing * pWing = s_pMiarex->m_pCurPlane->wing(iw);
-                    if(pWing)
+                    if(s_pMiarex->m_pCurPlane->wing(iw))
                         paintEditWingMesh(m_vboEditWingMesh[iw]);
                 }
                 paintEditBodyMesh(s_pMiarex->m_pCurPlane->body());
@@ -189,13 +184,14 @@ void gl3dMiarexView::glRenderView()
         if(pPOpp && m_bSurfVelocities && !pPOpp->isLLTMethod())
             paintSurfaceVelocities(s_pMiarex->matSize());
 
-        m_ShaderProgramLine.bind();
-        m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
-        m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
-        m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
-        m_ShaderProgramLine.release();
+        m_shadLine.bind();
+        {
+            m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
+            m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+        }
+        m_shadLine.release();
 
-        if(m_bShowMasses) glDrawMasses(s_pMiarex->m_pCurPlane);
+        if(m_bShowMasses) paintMasses(s_pMiarex->m_pCurPlane);
 
 
         for(int iw=0; iw<MAXWINGS; iw++)
@@ -270,7 +266,7 @@ void gl3dMiarexView::contextMenuEvent(QContextMenuEvent * pEvent)
 }
 
 
-void gl3dMiarexView::on3DReset()
+void gl3dMiarexView::on3dReset()
 {
     //    pMiarex->setScale();
     if(s_pMiarex->m_pCurPlane) startResetTimer(s_pMiarex->m_pCurPlane->span());
@@ -300,10 +296,7 @@ void gl3dMiarexView::resizeGL(int width, int height)
     if(!m_PixTextOverlay.isNull()) m_PixTextOverlay = m_PixTextOverlay.scaled(rect().size()*devicePixelRatio());
     if(!m_PixTextOverlay.isNull()) m_PixTextOverlay.fill(Qt::transparent);
 
-
     s_pMiarex->m_bResetTextLegend = true;
-    //    set3DScale();
-
 }
 
 
@@ -311,7 +304,6 @@ void gl3dMiarexView::paintOverlay()
 {
     QOpenGLPaintDevice device(size() * devicePixelRatio());
     QPainter painter(&device);
-
 
     if(!s_pMiarex->m_PixText.isNull()) painter.drawPixmap(0,0, s_pMiarex->m_PixText);
     if(!m_PixTextOverlay.isNull())
@@ -324,7 +316,7 @@ void gl3dMiarexView::paintOverlay()
 
 void gl3dMiarexView::glMakeCpLegendClr()
 {
-    QFont fnt(Settings::s_TextFont); //valgrind
+    QFont fnt(DisplayOptions::textFont()); //valgrind
     QFontMetrics fm(fnt);
     float fmw = float(fm.averageCharWidth());
 
@@ -667,7 +659,7 @@ void gl3dMiarexView::glMakeSurfVelocities(Panel const*pPanel, WPolar const *pWPo
             C.rotateY(RefPoint, pPOpp->alpha());
 
         }
-        length = float(VT.VAbs())*factor;
+        length = float(VT.norm())*factor;
         xe     = C.xf()+factor*VT.xf();
         ye     = C.yf()+factor*VT.yf();
         ze     = C.zf()+factor*VT.zf();
@@ -861,28 +853,34 @@ void gl3dMiarexView::paintDownwash(int iWing)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
-    m_ShaderProgramLine.bind();
-    m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_DownwashStyle.m_Color);
-    m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
-    m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
+    m_shadLine.bind();
+    {
+        m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
+        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_DownwashStyle.m_Color);
+        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_DownwashStyle.m_Stipple));
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_DownwashStyle.m_Width);
 
-    m_vboDownwash[iWing].bind();
-    glEnable(GL_DEPTH_TEST);
-    glEnable (GL_LINE_STIPPLE);
+        m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
+        m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+        m_vboDownwash[iWing].bind();
+        {
+            glEnable(GL_DEPTH_TEST);
+            glEnable (GL_LINE_STIPPLE);
 
-    GLLineStipple(W3dPrefsDlg::s_DownwashStyle.m_Stipple);
+            GLLineStipple(W3dPrefsDlg::s_DownwashStyle.m_Stipple);
 
-    glLineWidth(GLfloat(W3dPrefsDlg::s_DownwashStyle.m_Width));
+            glLineWidth(GLfloat(W3dPrefsDlg::s_DownwashStyle.m_Width));
 
-    m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3);
 
-    glDrawArrays(GL_LINES, 0, m_Ny[iWing]*6);
-    m_vboDownwash[iWing].release();
+            glDrawArrays(GL_LINES, 0, m_Ny[iWing]*6);
+        }
+        m_vboDownwash[iWing].release();
 
-    glDisable (GL_LINE_STIPPLE);
-    m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.release();
+        glDisable (GL_LINE_STIPPLE);
+        m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
+    }
+    m_shadLine.release();
 }
 
 
@@ -1247,35 +1245,43 @@ void gl3dMiarexView::paintLift(int iWing)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
-    m_ShaderProgramLine.bind();
-    m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_XCPStyle.m_Color);
-    m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
-    m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
-    m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
+    m_shadLine.bind();
+    {
+        m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
+        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_XCPStyle.m_Color);
+        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_XCPStyle.m_Stipple));
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_XCPStyle.m_Width);
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable (GL_LINE_STIPPLE);
+        m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
+        m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
 
-    GLLineStipple(W3dPrefsDlg::s_XCPStyle.m_Stipple);
+        glEnable(GL_DEPTH_TEST);
+        glEnable (GL_LINE_STIPPLE);
 
-    glLineWidth(GLfloat(W3dPrefsDlg::s_XCPStyle.m_Width));
+        GLLineStipple(W3dPrefsDlg::s_XCPStyle.m_Stipple);
 
-    m_vboLiftStrips[iWing].bind();
-    m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
-    glDrawArrays(GL_LINES, 0, m_Ny[iWing]*2);
-    glDrawArrays(GL_LINE_STRIP, m_Ny[iWing]*2, m_Ny[iWing]);
-    m_vboLiftStrips[iWing].release();
+        glLineWidth(GLfloat(W3dPrefsDlg::s_XCPStyle.m_Width));
 
-    m_vboLiftForce.bind();
-    glLineWidth(GLfloat(W3dPrefsDlg::s_XCPStyle.m_Width)*2.0f);
-    m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
-    glDrawArrays(GL_LINES, 0, 6);
-    m_vboLiftForce.release();
+        m_vboLiftStrips[iWing].bind();
+        {
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3);
+            glDrawArrays(GL_LINES, 0, m_Ny[iWing]*2);
+            glDrawArrays(GL_LINE_STRIP, m_Ny[iWing]*2, m_Ny[iWing]);
+        }
+        m_vboLiftStrips[iWing].release();
 
-    glDisable (GL_LINE_STIPPLE);
-    m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.release();
+        m_vboLiftForce.bind();
+        {
+            glLineWidth(GLfloat(W3dPrefsDlg::s_XCPStyle.m_Width)*2.0f);
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3);
+            glDrawArrays(GL_LINES, 0, 6);
+        }
+        m_vboLiftForce.release();
+
+        glDisable (GL_LINE_STIPPLE);
+        m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
+    }
+    m_shadLine.release();
 }
 
 
@@ -1283,28 +1289,34 @@ void gl3dMiarexView::paintMoments()
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
-    m_ShaderProgramLine.bind();
-    m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_MomentStyle.m_Color);
-    m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
-    m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
+    m_shadLine.bind();
+    {
+        m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
+        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_MomentStyle.m_Color);
+        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_MomentStyle.m_Stipple));
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_MomentStyle.m_Width);
+        m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
+        m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
 
-    m_vboMoments.bind();
-    glEnable(GL_DEPTH_TEST);
-    glEnable (GL_LINE_STIPPLE);
+        m_vboMoments.bind();
+        {
+            glEnable(GL_DEPTH_TEST);
+            glEnable (GL_LINE_STIPPLE);
 
-    GLLineStipple(W3dPrefsDlg::s_MomentStyle.m_Stipple);
+            GLLineStipple(W3dPrefsDlg::s_MomentStyle.m_Stipple);
 
-    glLineWidth(GLfloat(W3dPrefsDlg::s_MomentStyle.m_Width));
+            glLineWidth(GLfloat(W3dPrefsDlg::s_MomentStyle.m_Width));
 
-    m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3);
 
-    glDrawArrays(GL_LINES, 0, m_iMomentPoints);
-    m_vboMoments.release();
+            glDrawArrays(GL_LINES, 0, m_iMomentPoints);
+        }
+        m_vboMoments.release();
 
-    glDisable (GL_LINE_STIPPLE);
-    m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.release();
+        glDisable (GL_LINE_STIPPLE);
+        m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
+    }
+    m_shadLine.release();
 }
 
 
@@ -1678,99 +1690,106 @@ void gl3dMiarexView::paintDrag(int iWing)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
-    m_ShaderProgramLine.bind();
-    m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
-    m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable (GL_LINE_STIPPLE);
-
-    // Induced drag
-    if(s_pMiarex->m_bICd)
+    m_shadLine.bind();
     {
-        m_vboICd[iWing].bind();
-        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_IDragStyle.m_Color);
-        GLLineStipple(W3dPrefsDlg::s_IDragStyle.m_Stipple);
+        m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
+        m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
+        m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
 
-        glLineWidth(GLfloat(W3dPrefsDlg::s_IDragStyle.m_Width));
-        m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
+        glEnable(GL_DEPTH_TEST);
+        glEnable (GL_LINE_STIPPLE);
+
+        // Induced drag
+        if(s_pMiarex->m_bICd)
+        {
+            m_vboICd[iWing].bind();
+            {
+                m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_IDragStyle.m_Color);
+                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_IDragStyle.m_Stipple));
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_IDragStyle.m_Width);
+                GLLineStipple(W3dPrefsDlg::s_IDragStyle.m_Stipple);
+
+                glLineWidth(GLfloat(W3dPrefsDlg::s_IDragStyle.m_Width));
+                m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3);
 
 
-        glDrawArrays(GL_LINES, 0, m_Ny[iWing]*2);
-        glDrawArrays(GL_LINE_STRIP, m_Ny[iWing]*2, m_Ny[iWing]);
+                glDrawArrays(GL_LINES, 0, m_Ny[iWing]*2);
+                glDrawArrays(GL_LINE_STRIP, m_Ny[iWing]*2, m_Ny[iWing]);
+            }
+            m_vboICd[iWing].release();
+        }
 
-        m_vboICd[iWing].release();
+        //Viscous drag
+        if(s_pMiarex->m_bVCd)
+        {
+            m_vboVCd[iWing].bind();
+            {
+                m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_VDragStyle.m_Color);
+                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_VDragStyle.m_Stipple));
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_VDragStyle.m_Width);
+                GLLineStipple(W3dPrefsDlg::s_VDragStyle.m_Stipple);
+
+                glLineWidth(GLfloat(W3dPrefsDlg::s_VDragStyle.m_Width));
+
+                m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3);
+
+                glDrawArrays(GL_LINES, 0, m_Ny[iWing]*2);
+                glDrawArrays(GL_LINE_STRIP, 2*m_Ny[iWing], m_Ny[iWing]);
+            }
+            m_vboVCd[iWing].release();
+        }
+
+        glDisable (GL_LINE_STIPPLE);
+        m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
     }
-
-    //Viscous drag
-    if(s_pMiarex->m_bVCd)
-    {
-        m_vboVCd[iWing].bind();
-        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VDragStyle.m_Color);
-        GLLineStipple(W3dPrefsDlg::s_VDragStyle.m_Stipple);
-
-        glLineWidth(GLfloat(W3dPrefsDlg::s_VDragStyle.m_Width));
-
-        m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
-
-        glDrawArrays(GL_LINES, 0, m_Ny[iWing]*2);
-        glDrawArrays(GL_LINE_STRIP, 2*m_Ny[iWing], m_Ny[iWing]);
-        m_vboVCd[iWing].release();
-    }
-
-    glDisable (GL_LINE_STIPPLE);
-    m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.release();
+    m_shadLine.release();
 }
 
 
 void gl3dMiarexView::paintStreamLines()
 {
-qDebug("gl3dMiarexView::paintStreamLines");
-
     if(!m_bStreamlinesDone)
     {
-qDebug("gl3dMiarexView::paintStreamLines VBO not ready");
         return; // don't render until the vbo is ready
     }
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
     QMatrix4x4 idMatrix;
-    m_ShaderProgramLine.bind();
-    m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, idMatrix);
-    m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
-    m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_orthoMatrix * m_viewMatrix);
-qDebug("gl3dMiarexView::paintStreamLines binding VBO");
-
-    m_vboStreamLines.bind();
-    m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable (GL_LINE_STIPPLE);
-
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_StreamStyle.m_Color);
-
-    GLLineStipple(W3dPrefsDlg::s_StreamStyle.m_Stipple);
-
-    glLineWidth(GLfloat(W3dPrefsDlg::s_StreamStyle.m_Width));
-
-    int pos=0;
-
-qDebug("gl3dMiarexView::paintStreamLines Drawing arrays");
-    for(int il=0; il<m_NStreamLines; il++)
+    m_shadLine.bind();
     {
-        glDrawArrays(GL_LINE_STRIP, pos, GL3DScales::s_NX);
-        pos += GL3DScales::s_NX;
-    }
-qDebug("gl3dMiarexView::paintStreamLines done draw arrays");
+        m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
+        m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
 
-    glDisable (GL_LINE_STIPPLE);
-    m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
-    m_vboStreamLines.release();
-    m_ShaderProgramLine.release();
-qDebug("gl3dMiarexView::paintStreamLines released VBO");
+        m_vboStreamLines.bind();
+        {
+            m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
+
+            glEnable(GL_DEPTH_TEST);
+            glEnable (GL_LINE_STIPPLE);
+
+            m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_StreamStyle.m_Color);
+            m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_StreamStyle.m_Stipple));
+            m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_StreamStyle.m_Width);
+
+            GLLineStipple(W3dPrefsDlg::s_StreamStyle.m_Stipple);
+
+            glLineWidth(GLfloat(W3dPrefsDlg::s_StreamStyle.m_Width));
+
+            int pos=0;
+
+            for(int il=0; il<m_NStreamLines; il++)
+            {
+                glDrawArrays(GL_LINE_STRIP, pos, GL3DScales::s_NX);
+                pos += GL3DScales::s_NX;
+            }
+
+            glDisable (GL_LINE_STIPPLE);
+            m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
+        }
+        m_vboStreamLines.release();
+    }
+    m_shadLine.release();
 
 }
 
@@ -1779,41 +1798,47 @@ void gl3dMiarexView::paintTransitions(int iWing)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
-    m_ShaderProgramLine.bind();
-    m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
-    m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
-
-    m_vboTransitions[iWing].bind();
-    m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable (GL_LINE_STIPPLE);
-
-    if(s_pMiarex->m_bXTop)
+    m_shadLine.bind();
     {
-        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_TopStyle.m_Color);
-        GLLineStipple(W3dPrefsDlg::s_TopStyle.m_Stipple);
+        m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
+        m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
+        m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
 
-        glLineWidth(GLfloat(W3dPrefsDlg::s_TopStyle.m_Width));
-        glDrawArrays(GL_LINE_STRIP, 0, m_Ny[iWing]);
+        m_vboTransitions[iWing].bind();
+        {
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3);
+
+            glEnable(GL_DEPTH_TEST);
+            glEnable (GL_LINE_STIPPLE);
+
+            if(s_pMiarex->m_bXTop)
+            {
+                m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_TopStyle.m_Color);
+                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_TopStyle.m_Stipple));
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_TopStyle.m_Width);
+                GLLineStipple(W3dPrefsDlg::s_TopStyle.m_Stipple);
+
+                glLineWidth(GLfloat(W3dPrefsDlg::s_TopStyle.m_Width));
+                glDrawArrays(GL_LINE_STRIP, 0, m_Ny[iWing]);
+            }
+
+
+            if(s_pMiarex->m_bXBot)
+            {
+                m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_BotStyle.m_Color);
+                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_BotStyle.m_Stipple));
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_BotStyle.m_Width);
+                GLLineStipple(W3dPrefsDlg::s_BotStyle.m_Stipple);
+                glLineWidth(GLfloat(W3dPrefsDlg::s_BotStyle.m_Width));
+                glDrawArrays(GL_LINE_STRIP, m_Ny[iWing], m_Ny[iWing]);
+            }
+        }
+        m_vboTransitions[iWing].release();
+
+        glDisable (GL_LINE_STIPPLE);
+        m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
     }
-
-
-    if(s_pMiarex->m_bXBot)
-    {
-        m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_BotStyle.m_Color);
-        GLLineStipple(W3dPrefsDlg::s_BotStyle.m_Stipple);
-        glLineWidth(GLfloat(W3dPrefsDlg::s_BotStyle.m_Width));
-        glDrawArrays(GL_LINE_STRIP, m_Ny[iWing], m_Ny[iWing]);
-    }
-
-
-    m_vboTransitions[iWing].release();
-
-    glDisable (GL_LINE_STIPPLE);
-    m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.release();
+    m_shadLine.release();
 }
 
 
@@ -1824,49 +1849,29 @@ void gl3dMiarexView::paintSurfaceVelocities(int nPanels)
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
     QMatrix4x4 idMatrix;
-    m_ShaderProgramLine.bind();
-    m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, idMatrix);
-    m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
-    m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_orthoMatrix * m_viewMatrix);
+    m_shadLine.bind();
+    {
+        m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
+        m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+        m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj * m_matView);
 
-    m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_WakeStyle.m_Color);
-    m_vboSurfaceVelocities.bind();
-    m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
-
-
-    glLineWidth(W3dPrefsDlg::s_WakeStyle.m_Width);
-    glEnable(GL_DEPTH_TEST);
-    glDrawArrays(GL_LINES, 0, nPanels*3*2);
-
-    m_ShaderProgramLine.disableAttributeArray(m_ColorLocationLine);
-    m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
-    m_vboSurfaceVelocities.release();
-    m_ShaderProgramLine.release();
-}
+        m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
+        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_WakeStyle.m_Color);
+        m_vboSurfaceVelocities.bind();
+        {
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
 
 
-void gl3dMiarexView::paintCpLegendClr()
-{
-    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+            glLineWidth(W3dPrefsDlg::s_WakeStyle.m_Width);
+            glEnable(GL_DEPTH_TEST);
+            glDrawArrays(GL_LINES, 0, nPanels*3*2);
 
-    m_ShaderProgramGradient.bind();
-    m_ShaderProgramGradient.enableAttributeArray(m_VertexLocationGradient);
-    m_ShaderProgramGradient.enableAttributeArray(m_ColorLocationGradient);
-    m_ShaderProgramGradient.setUniformValue(m_pvmMatrixLocationGradient, m_orthoMatrix);
-    m_vboLegendColor.bind();
-    m_ShaderProgramGradient.setAttributeBuffer(m_VertexLocationGradient, GL_FLOAT, 0,                  3, 6 * sizeof(GLfloat));
-    m_ShaderProgramGradient.setAttributeBuffer(m_ColorLocationGradient,  GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
-
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    glPolygonOffset(1.0, 1.0);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, MAXCPCOLORS*2);
-    glDisable(GL_POLYGON_OFFSET_FILL);
-
-    m_ShaderProgramGradient.disableAttributeArray(m_ColorLocationGradient);
-    m_ShaderProgramGradient.disableAttributeArray(m_VertexLocationGradient);
-    m_vboLegendColor.release();
-    m_ShaderProgramGradient.release();
+            m_shadLine.disableAttributeArray(m_locLine.m_UniColor);
+            m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
+        }
+        m_vboSurfaceVelocities.release();
+    }
+    m_shadLine.release();
 }
 
 
@@ -1874,23 +1879,31 @@ void gl3dMiarexView::paintPanelCp(int nPanels)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
-    m_ShaderProgramGradient.bind();
-    m_ShaderProgramGradient.enableAttributeArray(m_VertexLocationGradient);
-    m_ShaderProgramGradient.enableAttributeArray(m_ColorLocationGradient);
-    m_ShaderProgramGradient.setUniformValue(m_pvmMatrixLocationGradient, m_pvmMatrix);
-    m_vboPanelCp.bind();
-    m_ShaderProgramGradient.setAttributeBuffer(m_VertexLocationGradient, GL_FLOAT, 0,                  3, 6 * sizeof(GLfloat));
-    m_ShaderProgramGradient.setAttributeBuffer(m_ColorLocationGradient,  GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
+    m_shadSurf.bind();
+    {        
+        m_shadSurf.setUniformValue(m_locSurf.m_Light, 0);
+        m_shadSurf.setUniformValue(m_locSurf.m_HasUniColor, 0); // using attribute buffer instead
+        m_shadSurf.setUniformValue(m_locSurf.m_HasTexture, 0);
+        m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix, m_matView*m_matModel);
+        m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+        m_shadSurf.enableAttributeArray(m_locSurf.m_attrVertex);
+        m_shadSurf.enableAttributeArray(m_locSurf.m_attrColor);
+        m_vboPanelCp.bind();
+        {
+            m_shadSurf.setAttributeBuffer(m_locSurf.m_attrVertex, GL_FLOAT, 0,                  3, 6 * sizeof(GLfloat));
+            m_shadSurf.setAttributeBuffer(m_locSurf.m_attrColor,  GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
 
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    glPolygonOffset(1.0, 1.0);
-    glDrawArrays(GL_TRIANGLES, 0, nPanels*2*3);
-    glDisable(GL_POLYGON_OFFSET_FILL);
+            glEnable(GL_POLYGON_OFFSET_FILL);
+            glPolygonOffset(DEPTHFACTOR, DEPTHUNITS);
+            glDrawArrays(GL_TRIANGLES, 0, nPanels*2*3);
+            glDisable(GL_POLYGON_OFFSET_FILL);
 
-    m_ShaderProgramGradient.disableAttributeArray(m_ColorLocationGradient);
-    m_ShaderProgramGradient.disableAttributeArray(m_VertexLocationGradient);
-    m_vboPanelCp.release();
-    m_ShaderProgramGradient.release();
+            m_shadSurf.disableAttributeArray(m_locSurf.m_attrColor);
+            m_shadSurf.disableAttributeArray(m_locSurf.m_attrVertex);
+        }
+        m_vboPanelCp.release();
+    }
+    m_shadSurf.release();
 }
 
 
@@ -1898,54 +1911,37 @@ void gl3dMiarexView::paintPanelForces(int nPanels)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
-    m_ShaderProgramGradient.bind();
-    m_ShaderProgramGradient.enableAttributeArray(m_VertexLocationGradient);
-    m_ShaderProgramGradient.enableAttributeArray(m_ColorLocationGradient);
-    m_ShaderProgramGradient.setUniformValue(m_pvmMatrixLocationGradient, m_pvmMatrix);
-    m_vboPanelForces.bind();
-    m_ShaderProgramGradient.setAttributeBuffer(m_VertexLocationGradient, GL_FLOAT, 0,                  3, 6 * sizeof(GLfloat));
-    m_ShaderProgramGradient.setAttributeBuffer(m_ColorLocationGradient,  GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
+    m_shadSurf.bind();
+    {
+        m_shadSurf.setUniformValue(m_locSurf.m_Light, 0);
+        m_shadSurf.setUniformValue(m_locSurf.m_HasUniColor, 0); // using attribute buffer instead
+        m_shadSurf.setUniformValue(m_locSurf.m_HasTexture, 0);
+        m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix, m_matView*m_matModel);
+        m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+        m_shadSurf.enableAttributeArray(m_locSurf.m_attrVertex);
+        m_shadSurf.enableAttributeArray(m_locSurf.m_attrColor);
+        m_vboPanelForces.bind();
+        {
+            m_shadSurf.setAttributeBuffer(m_locSurf.m_attrVertex, GL_FLOAT, 0,                  3, 6 * sizeof(GLfloat));
+            m_shadSurf.setAttributeBuffer(m_locSurf.m_attrColor,  GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
 
-    glLineWidth(W3dPrefsDlg::s_XCPStyle.m_Width);
-    glEnable(GL_DEPTH_TEST);
-    glDrawArrays(GL_LINES, 0, nPanels*3*2);
+            glLineWidth(W3dPrefsDlg::s_XCPStyle.m_Width);
+            glEnable(GL_DEPTH_TEST);
+            glDrawArrays(GL_LINES, 0, nPanels*3*2);
 
-    m_ShaderProgramGradient.disableAttributeArray(m_ColorLocationGradient);
-    m_ShaderProgramGradient.disableAttributeArray(m_VertexLocationGradient);
-    m_vboPanelForces.release();
-    m_ShaderProgramGradient.release();
+            m_shadSurf.disableAttributeArray(m_locSurf.m_attrVertex);
+            m_shadSurf.disableAttributeArray(m_locSurf.m_attrColor);
+        }
+        m_vboPanelForces.release();
+    }
+    m_shadSurf.release();
 }
 
 
-void gl3dMiarexView::set3DRotationCenter(QPoint point)
+bool gl3dMiarexView::intersectTheObject(Vector3d const &AA,  Vector3d const &BB, Vector3d &I)
 {
-    //adjusts the new rotation center after the user has picked a point on the screen
-    //finds the closest panel under the point,
-    //and changes the rotation vector and viewport translation
-    Vector3d I, A, B, AA, BB, PP;
-
-    screenToViewport(point, B);
-    B.z = -1.0;
-    A.set(B.x, B.y, +1.0);
-
-    viewportToWorld(A, AA);
-    viewportToWorld(B, BB);
-
-    m_transIncrement.set(BB.x-AA.x, BB.y-AA.y, BB.z-AA.z);
-    m_transIncrement.normalize();
-
-    bool bIntersect = false;
-
-    if(s_pMiarex->intersectObject(AA, m_transIncrement, I))
-    {
-        bIntersect = true;
-        PP.set(I);
-    }
-
-    if(bIntersect)
-    {
-        startTranslationTimer(PP);
-    }
+    Vector3d U = (BB-AA).normalized();
+    return s_pMiarex->intersectObject(AA, U, I);
 }
 
 
@@ -2028,9 +2024,9 @@ void gl3dMiarexView::glMakePanelForces(int nPanels, Panel const *pPanel, WPolar 
             Qt.set(double(cosa2), Omega.x, Omega.y, Omega.z);
         }
 
-        Qt.Conjugate(R,  P);
-        Qt.Conjugate(R1, P1);
-        Qt.Conjugate(R2, P2);
+        Qt.conjugate(R,  P);
+        Qt.conjugate(R1, P1);
+        Qt.conjugate(R2, P2);
 
         // Scale the pressure vector
         P  *= double(force);
@@ -2214,11 +2210,8 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
 {
     if(!pPanel || !pNode || !nPanels) return;
 
-    int pp=0;
-
-    float color=0;
-    float range=0;
-
+    float color(0);
+    float range(0);
 
     Vector3d TA,LA, TB, LB;
 
@@ -2227,7 +2220,7 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
     // find min and max Cp for scale set
     if(pPOpp)
     {
-        for (pp=0; pp< nPanels; pp++)
+        for (int pp=0; pp< nPanels; pp++)
         {
             lmin = std::min(lmin, float(pPOpp->m_dCp[pp]));
             lmax = std::max(lmax, float(pPOpp->m_dCp[pp]));
@@ -2244,8 +2237,6 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
             lmax = float(gl3dMiarexView::s_LegendMax);
         }
     }
-
-
     range = lmax - lmin;
 
     // unfortunately we can't just use nodes and colors, because the trailing edges are merged
@@ -2284,9 +2275,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         }
         else
         {
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.redF());
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.greenF());
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.blueF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().redF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().greenF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().blueF());
         }
 
         nodeVertexArray[iv++] = LA.xf();
@@ -2301,9 +2292,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         }
         else
         {
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.redF());
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.greenF());
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.blueF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().redF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().greenF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().blueF());
         }
 
         nodeVertexArray[iv++] = LB.xf();
@@ -2318,9 +2309,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         }
         else
         {
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.redF());
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.greenF());
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.blueF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().redF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().greenF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().blueF());
         }
 
         // write the second one
@@ -2337,9 +2328,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         }
         else
         {
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.redF());
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.greenF());
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.blueF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().redF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().greenF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().blueF());
         }
 
         nodeVertexArray[iv++] = TB.xf();
@@ -2354,9 +2345,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         }
         else
         {
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.redF());
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.greenF());
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.blueF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().redF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().greenF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().blueF());
          }
 
         nodeVertexArray[iv++] = TA.xf();
@@ -2371,9 +2362,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         }
         else
         {
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.redF());
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.greenF());
-            nodeVertexArray[iv++] = float(Settings::s_BackgroundColor.blueF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().redF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().greenF());
+            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().blueF());
          }
     }
 
@@ -2392,41 +2383,77 @@ void gl3dMiarexView::paintMesh(int nPanels)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
-    m_ShaderProgramLine.bind();
-    m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
-    m_vboMesh.bind();
-    m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 6 * sizeof(GLfloat));
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VLMStyle.m_Color);
-
-    m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
-    m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
-
-    glLineWidth(W3dPrefsDlg::s_VLMStyle.m_Width);
-    glEnable(GL_LINE_STIPPLE);
-    GLLineStipple(W3dPrefsDlg::s_VLMStyle.m_Stipple);
-    int pos = 0;
-    for(int p=0; p<nPanels*2; p++)
+    m_shadLine.bind();
     {
-        glDrawArrays(GL_LINE_STRIP, pos, 3);
-        pos +=3 ;
-    }
-    glDisable (GL_LINE_STIPPLE);
+        m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
+        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_VLMStyle.m_Color);
+        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_VLMStyle.m_Stipple));
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_VLMStyle.m_Width);
 
-    m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, Settings::s_BackgroundColor);
+        m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
+        m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+
+        m_vboMesh.bind();
+        {
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, 6 * sizeof(GLfloat));
+
+            glLineWidth(W3dPrefsDlg::s_VLMStyle.m_Width);
+            glEnable(GL_LINE_STIPPLE);
+            GLLineStipple(W3dPrefsDlg::s_VLMStyle.m_Stipple);
+            int pos = 0;
+            for(int p=0; p<nPanels*2; p++)
+            {
+                glDrawArrays(GL_LINE_STRIP, pos, 3);
+                pos +=3 ;
+            }
+            glDisable (GL_LINE_STIPPLE);
+
+            m_shadLine.setUniformValue(m_locLine.m_UniColor, DisplayOptions::backgroundColor());
+
+            if(!m_bSurfaces)
+            {
+                if(!s_pMiarex->m_pCurPOpp || !s_pMiarex->m_b3DCp)
+                {
+                    glEnable(GL_POLYGON_OFFSET_FILL);
+                    glPolygonOffset(DEPTHFACTOR, DEPTHUNITS);
+                    glDrawArrays(GL_TRIANGLES, 0, nPanels*2*3);
+                    glDisable(GL_POLYGON_OFFSET_FILL);
+                }
+            }
+            m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
+        }
+        m_vboMesh.release();
+    }
+    m_shadLine.release();
 
     if(!m_bSurfaces)
     {
-        if(!s_pMiarex->m_pCurPOpp || !s_pMiarex->m_b3DCp)
+        m_shadSurf.bind();
         {
-            glEnable(GL_POLYGON_OFFSET_FILL);
-            glPolygonOffset(1.0, 1.0);
-            glDrawArrays(GL_TRIANGLES, 0, nPanels*2*3);
-            glDisable(GL_POLYGON_OFFSET_FILL);
+            m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix, m_matView*m_matModel);
+            m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+            m_shadSurf.setUniformValue(m_locSurf.m_UniColor, DisplayOptions::backgroundColor());
+            m_shadSurf.setUniformValue(m_locSurf.m_HasUniColor, 1);
+
+            m_vboMesh.bind();
+            {
+                m_shadSurf.enableAttributeArray(m_locSurf.m_attrVertex);
+                m_shadSurf.setAttributeBuffer(m_locSurf.m_attrVertex, GL_FLOAT, 0, 3, 6 * sizeof(GLfloat));
+
+                if(!s_pMiarex->m_pCurPOpp || !s_pMiarex->m_b3DCp)
+                {
+                    glEnable(GL_POLYGON_OFFSET_FILL);
+                    glPolygonOffset(DEPTHFACTOR, DEPTHUNITS);
+                    glDrawArrays(GL_TRIANGLES, 0, nPanels*2*3);
+                    glDisable(GL_POLYGON_OFFSET_FILL);
+                }
+
+                m_shadSurf.disableAttributeArray(m_locSurf.m_attrVertex);
+            }
+            m_vboMesh.release();
         }
+        m_shadSurf.release();
     }
-    m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
-    m_vboMesh.release();
-    m_ShaderProgramLine.release();
 }
 
 

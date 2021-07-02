@@ -1,7 +1,7 @@
 /****************************************************************************
 
     BatchAbstractDlg Class
-       Copyright (C) 2021 Andre Deperrois
+       Copyright (C) 2021 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@
 #include "batchabstractdlg.h"
 #include "relistdlg.h"
 #include "xfoiladvanceddlg.h"
+#include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 #include <xflcore/gui_params.h>
 #include <misc/options/settings.h>
@@ -259,7 +260,7 @@ void BatchAbstractDlg::makeCommonWidgets()
     m_pteTextOutput->setWordWrapMode(QTextOption::NoWrap);
     m_pteTextOutput->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_pteTextOutput->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
-    QFontMetrics fm(Settings::s_TableFont);
+    QFontMetrics fm(DisplayOptions::tableFont());
     m_pteTextOutput->setMinimumWidth(67*fm.averageCharWidth());
 
     m_pchInitBL          = new QCheckBox(tr("Initialize BLs between polars"));
@@ -393,7 +394,7 @@ void BatchAbstractDlg::initDialog()
     blockSignals(true);
 
     m_pteTextOutput->clear();
-    m_pteTextOutput->setFont(Settings::s_TableFont);
+    m_pteTextOutput->setFont(DisplayOptions::tableFont());
 
     s_PolarType = xfl::FIXEDSPEEDPOLAR; //no choice...
 

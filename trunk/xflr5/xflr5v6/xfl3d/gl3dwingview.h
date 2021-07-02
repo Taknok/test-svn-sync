@@ -1,7 +1,7 @@
 /****************************************************************************
 
     gl3dWingView Class
-    Copyright (C) 2016 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,12 +21,12 @@
 
 #pragma once
 
-#include <xfl3d/gl3dview.h>
+#include <xfl3d/gl3dxflview.h>
 
 class Wing;
 class GL3dWingDlg;
 
-class gl3dWingView : public gl3dView
+class gl3dWingView : public gl3dXflView
 {
     public:
         gl3dWingView(QWidget *pParent = nullptr);
@@ -39,11 +39,11 @@ class gl3dWingView : public gl3dView
     private:
         void glRenderView() override;
 
-        void set3DRotationCenter(QPoint point) override;
+        bool intersectTheObject(Vector3d const &AA,  Vector3d const &BB, Vector3d &I) override;
         void glMake3dObjects() override;
 
     public slots:
-        void on3DReset() override;
+        void on3dReset() override;
 
     private:
         Wing const*m_pWing;

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     FoilTableDelegate Class
-    Copyright (C) 2009-2016 Andre Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,13 +27,13 @@
 #include <xflobjects/objects2d/foil.h>
 #include <xdirect/objects2d.h>
 #include <xflcore/xflcore.h>
+#include <xflcore/displayoptions.h>
 #include <misc/options/settings.h>
 #include <xflwidgets/customwts/doubleedit.h>
 
 
 
-FoilTableDelegate::FoilTableDelegate(QObject *pParent)
- : QItemDelegate(pParent)
+FoilTableDelegate::FoilTableDelegate(QObject *pParent) : QItemDelegate(pParent)
 {
     m_pManageFoils = nullptr;
     m_pAFoil = nullptr;
@@ -176,7 +176,7 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 
 void FoilTableDelegate::drawCheckBox(QPainter *painter, QRect const & r, bool bChecked) const
 {
-    QFontMetrics fm(Settings::s_TextFont);
+    QFontMetrics fm(DisplayOptions::textFont());
     int h23 = int(double(fm.height())*3./5.);//pixels
     int h3 = int(double(fm.height())/3.5);//pixels
     double h4 = double(fm.height())/5.0;

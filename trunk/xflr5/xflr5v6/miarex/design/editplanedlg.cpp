@@ -1,7 +1,7 @@
 /****************************************************************************
 
     EditPlaneDlg Class
-    Copyright (C) 2015-2019 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,13 +32,14 @@
 
 #include "editplanedlg.h"
 
-#include <xflcore/xflcore.h>
 #include <miarex/design/editobjectdelegate.h>
 #include <miarex/design/wingseldlg.h>
-#include <miarex/view/w3dprefsdlg.h>
 #include <misc/options/settings.h>
-#include <xflcore/units.h>
+#include <xfl3d/controls/w3dprefsdlg.h>
 #include <xfl3d/gl3dplaneview.h>
+#include <xflcore/displayoptions.h>
+#include <xflcore/units.h>
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/surface.h>
 
@@ -301,42 +302,42 @@ void EditPlaneDlg::setupLayout()
                 {
                     QGridLayout *pThreeDParamsLayout = new QGridLayout;
                     {
-                        m_pctrlAxes         = new QCheckBox(tr("Axes"), this);
-                        m_pctrlSurfaces     = new QCheckBox(tr("Surfaces"), this);
-                        m_pctrlOutline      = new QCheckBox(tr("Outline"), this);
-                        m_pctrlPanels       = new QCheckBox(tr("Panels"), this);
-                        m_pctrlFoilNames    = new QCheckBox(tr("Foil Names"), this);
-                        m_pctrlShowMasses       = new QCheckBox(tr("Masses"), this);
+                        m_pchAxes         = new QCheckBox(tr("Axes"), this);
+                        m_pchSurfaces     = new QCheckBox(tr("Surfaces"), this);
+                        m_pchOutline      = new QCheckBox(tr("Outline"), this);
+                        m_pchPanels       = new QCheckBox(tr("Panels"), this);
+                        m_pchFoilNames    = new QCheckBox(tr("Foil Names"), this);
+                        m_pchShowMasses       = new QCheckBox(tr("Masses"), this);
 
-                        m_pctrlAxes->setSizePolicy(szPolicyMaximum);
-                        m_pctrlSurfaces->setSizePolicy(szPolicyMaximum);
-                        m_pctrlOutline->setSizePolicy(szPolicyMaximum);
-                        m_pctrlPanels->setSizePolicy(szPolicyMaximum);
-                        m_pctrlFoilNames->setSizePolicy(szPolicyMaximum);
-                        m_pctrlShowMasses->setSizePolicy(szPolicyMaximum);
+                        m_pchAxes->setSizePolicy(szPolicyMaximum);
+                        m_pchSurfaces->setSizePolicy(szPolicyMaximum);
+                        m_pchOutline->setSizePolicy(szPolicyMaximum);
+                        m_pchPanels->setSizePolicy(szPolicyMaximum);
+                        m_pchFoilNames->setSizePolicy(szPolicyMaximum);
+                        m_pchShowMasses->setSizePolicy(szPolicyMaximum);
 
-                        pThreeDParamsLayout->addWidget(m_pctrlAxes, 1,1);
-                        pThreeDParamsLayout->addWidget(m_pctrlPanels, 1,2);
-                        pThreeDParamsLayout->addWidget(m_pctrlSurfaces, 1,3);
-                        pThreeDParamsLayout->addWidget(m_pctrlOutline, 2,1);
-                        pThreeDParamsLayout->addWidget(m_pctrlFoilNames, 2,2);
-                        pThreeDParamsLayout->addWidget(m_pctrlShowMasses, 2,3);
+                        pThreeDParamsLayout->addWidget(m_pchAxes, 1,1);
+                        pThreeDParamsLayout->addWidget(m_pchPanels, 1,2);
+                        pThreeDParamsLayout->addWidget(m_pchSurfaces, 1,3);
+                        pThreeDParamsLayout->addWidget(m_pchOutline, 2,1);
+                        pThreeDParamsLayout->addWidget(m_pchFoilNames, 2,2);
+                        pThreeDParamsLayout->addWidget(m_pchShowMasses, 2,3);
                     }
                     QHBoxLayout *pAxisViewLayout = new QHBoxLayout;
                     {
-                        m_pctrlX          = new QToolButton;
-                        m_pctrlY          = new QToolButton;
-                        m_pctrlZ          = new QToolButton;
-                        m_pctrlIso        = new QToolButton;
-                        m_pctrlFlip       = new QToolButton;
+                        m_ptbX          = new QToolButton;
+                        m_ptbY          = new QToolButton;
+                        m_ptbZ          = new QToolButton;
+                        m_ptbIso        = new QToolButton;
+                        m_ptbFlip       = new QToolButton;
                         int iconSize =32;
-                        if(m_pctrlX->iconSize().height()<=iconSize)
+                        if(m_ptbX->iconSize().height()<=iconSize)
                         {
-                            m_pctrlX->setIconSize(QSize(iconSize,iconSize));
-                            m_pctrlY->setIconSize(QSize(iconSize,iconSize));
-                            m_pctrlZ->setIconSize(QSize(iconSize,iconSize));
-                            m_pctrlIso->setIconSize(QSize(iconSize,iconSize));
-                            m_pctrlFlip->setIconSize(QSize(iconSize,iconSize));
+                            m_ptbX->setIconSize(QSize(iconSize,iconSize));
+                            m_ptbY->setIconSize(QSize(iconSize,iconSize));
+                            m_ptbZ->setIconSize(QSize(iconSize,iconSize));
+                            m_ptbIso->setIconSize(QSize(iconSize,iconSize));
+                            m_ptbFlip->setIconSize(QSize(iconSize,iconSize));
                         }
                         m_pXView    = new QAction(QIcon(":/resources/images/OnXView.png"), tr("X View"), this);
                         m_pYView    = new QAction(QIcon(":/resources/images/OnYView.png"), tr("Y View"), this);
@@ -349,32 +350,32 @@ void EditPlaneDlg::setupLayout()
                         m_pIsoView->setCheckable(true);
                         m_pFlipView->setCheckable(false);
 
-                        m_pctrlX->setDefaultAction(m_pXView);
-                        m_pctrlY->setDefaultAction(m_pYView);
-                        m_pctrlZ->setDefaultAction(m_pZView);
-                        m_pctrlIso->setDefaultAction(m_pIsoView);
-                        m_pctrlFlip->setDefaultAction(m_pFlipView);
-                        pAxisViewLayout->addWidget(m_pctrlX);
-                        pAxisViewLayout->addWidget(m_pctrlY);
-                        pAxisViewLayout->addWidget(m_pctrlZ);
-                        pAxisViewLayout->addWidget(m_pctrlIso);
-                        pAxisViewLayout->addWidget(m_pctrlFlip);
+                        m_ptbX->setDefaultAction(m_pXView);
+                        m_ptbY->setDefaultAction(m_pYView);
+                        m_ptbZ->setDefaultAction(m_pZView);
+                        m_ptbIso->setDefaultAction(m_pIsoView);
+                        m_ptbFlip->setDefaultAction(m_pFlipView);
+                        pAxisViewLayout->addWidget(m_ptbX);
+                        pAxisViewLayout->addWidget(m_ptbY);
+                        pAxisViewLayout->addWidget(m_ptbZ);
+                        pAxisViewLayout->addWidget(m_ptbIso);
+                        pAxisViewLayout->addWidget(m_ptbFlip);
                     }
                     QVBoxLayout *pRightColLayout = new QVBoxLayout;
                     {
-                        m_pctrlReset = new QPushButton(tr("Reset scale"));
-                        pRightColLayout->addWidget(m_pctrlReset);
+                        m_ppbReset = new QPushButton(tr("Reset scale"));
+                        pRightColLayout->addWidget(m_ppbReset);
                         QHBoxLayout *pClipLayout = new QHBoxLayout;
                         {
                             QLabel *ClipLabel = new QLabel(tr("Clip:"));
-                            m_pctrlClipPlanePos = new QSlider(Qt::Horizontal);
-                            m_pctrlClipPlanePos->setMinimum(-100);
-                            m_pctrlClipPlanePos->setMaximum(100);
-                            m_pctrlClipPlanePos->setSliderPosition(0);
-                            m_pctrlClipPlanePos->setTickInterval(10);
-                            m_pctrlClipPlanePos->setTickPosition(QSlider::TicksBelow);
+                            m_pslClipPlanePos = new QSlider(Qt::Horizontal);
+                            m_pslClipPlanePos->setMinimum(-100);
+                            m_pslClipPlanePos->setMaximum(100);
+                            m_pslClipPlanePos->setSliderPosition(0);
+                            m_pslClipPlanePos->setTickInterval(10);
+                            m_pslClipPlanePos->setTickPosition(QSlider::TicksBelow);
                             pClipLayout->addWidget(ClipLabel);
-                            pClipLayout->addWidget(m_pctrlClipPlanePos,1);
+                            pClipLayout->addWidget(m_pslClipPlanePos,1);
                         }
 
                         pRightColLayout->addLayout(pClipLayout);
@@ -404,10 +405,10 @@ void EditPlaneDlg::setupLayout()
                 {
                     QHBoxLayout *pRedrawCommandLayout = new QHBoxLayout;
                     {
-                        m_pctrlAutoRedraw = new QCheckBox(tr("Auto regeneration"));
-                        m_pctrlRedraw = new QPushButton(tr("Regenerate")+"\t(F4)");
-                        pRedrawCommandLayout->addWidget(m_pctrlAutoRedraw);
-                        pRedrawCommandLayout->addWidget(m_pctrlRedraw);
+                        m_pchAutoRedraw = new QCheckBox(tr("Auto regeneration"));
+                        m_ppbRedraw = new QPushButton(tr("Regenerate")+"\t(F4)");
+                        pRedrawCommandLayout->addWidget(m_pchAutoRedraw);
+                        pRedrawCommandLayout->addWidget(m_ppbRedraw);
                     }
 
                     m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Discard);
@@ -507,16 +508,16 @@ void EditPlaneDlg::initDialog(Plane *pPlane)
     m_pglPlaneView->setPlane(m_pPlane);
     m_pglPlaneView->setScale(qMax(m_pPlane->wing()->planformSpan(), m_pPlane->body() ? m_pPlane->body()->length() : 1.0));
 
-    m_pctrlSurfaces->setChecked(m_pglPlaneView->m_bSurfaces);
-    m_pctrlOutline->setChecked(m_pglPlaneView->m_bOutline);
-    m_pctrlAxes->setChecked(m_pglPlaneView->m_bAxes);
-    m_pctrlPanels->setChecked(m_pglPlaneView->m_bVLMPanels);
-    m_pctrlFoilNames->setChecked(m_pglPlaneView->m_bFoilNames);
-    m_pctrlShowMasses->setChecked(m_pglPlaneView->m_bShowMasses);
-    m_pctrlClipPlanePos->setValue(int(m_pglPlaneView->m_ClipPlanePos*100.0f));
+    m_pchSurfaces->setChecked(m_pglPlaneView->m_bSurfaces);
+    m_pchOutline->setChecked(m_pglPlaneView->m_bOutline);
+    m_pchAxes->setChecked(m_pglPlaneView->m_bAxes);
+    m_pchPanels->setChecked(m_pglPlaneView->m_bVLMPanels);
+    m_pchFoilNames->setChecked(m_pglPlaneView->m_bFoilNames);
+    m_pchShowMasses->setChecked(m_pglPlaneView->m_bShowMasses);
+    m_pslClipPlanePos->setValue(int(m_pglPlaneView->m_ClipPlanePos*100.0f));
 
-    m_pctrlAutoRedraw->setChecked(s_bAutoRedraw);
-    m_pctrlRedraw->setEnabled(!s_bAutoRedraw);
+    m_pchAutoRedraw->setChecked(s_bAutoRedraw);
+    m_ppbRedraw->setEnabled(!s_bAutoRedraw);
 }
 
 
@@ -609,26 +610,26 @@ void EditPlaneDlg::connectSignals()
     connect(m_pInsertAfter,    SIGNAL(triggered()), this, SLOT(onInsertAfter()));
     connect(m_pDeleteItem,     SIGNAL(triggered()), this, SLOT(onDelete()));
 
-    connect(m_pctrlAutoRedraw, SIGNAL(clicked()), this, SLOT(onAutoRedraw()));
-    connect(m_pctrlRedraw,     SIGNAL(clicked()), this, SLOT(onRedraw()));
-    connect(m_pctrlReset,      SIGNAL(clicked()), this, SLOT(on3DReset()));
+    connect(m_pchAutoRedraw, SIGNAL(clicked()), this, SLOT(onAutoRedraw()));
+    connect(m_ppbRedraw,     SIGNAL(clicked()), this, SLOT(onRedraw()));
+    connect(m_ppbReset,      SIGNAL(clicked()), this, SLOT(on3DReset()));
 
-    connect(m_pctrlReset,      SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DReset()));
+    connect(m_ppbReset,      SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DReset()));
 
-    connect(m_pctrlAxes,       SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onAxes(bool)));
-    connect(m_pctrlPanels,     SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onPanels(bool)));
-    connect(m_pctrlSurfaces,   SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onSurfaces(bool)));
-    connect(m_pctrlOutline,    SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onOutline(bool)));
-    connect(m_pctrlFoilNames,  SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onFoilNames(bool)));
-    connect(m_pctrlShowMasses, SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onShowMasses(bool)));
+    connect(m_pchAxes,       SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onAxes(bool)));
+    connect(m_pchPanels,     SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onPanels(bool)));
+    connect(m_pchSurfaces,   SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onSurfaces(bool)));
+    connect(m_pchOutline,    SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onOutline(bool)));
+    connect(m_pchFoilNames,  SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onFoilNames(bool)));
+    connect(m_pchShowMasses, SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onShowMasses(bool)));
 
-    connect(m_pctrlIso,        SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DIso()));
-    connect(m_pctrlX,          SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DFront()));
-    connect(m_pctrlY,          SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DLeft()));
-    connect(m_pctrlZ,          SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DTop()));
-    connect(m_pctrlFlip,       SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DFlip()));
+    connect(m_ptbIso,        SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DIso()));
+    connect(m_ptbX,          SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DFront()));
+    connect(m_ptbY,          SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DLeft()));
+    connect(m_ptbZ,          SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DTop()));
+    connect(m_ptbFlip,       SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DFlip()));
 
-    connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pglPlaneView, SLOT(onClipPlane(int)));
+    connect(m_pslClipPlanePos, SIGNAL(sliderMoved(int)), m_pglPlaneView, SLOT(onClipPlane(int)));
 
     connect(m_pHorizontalSplitter, SIGNAL(splitterMoved(int,int)), this, SLOT(onResize()));
 
@@ -641,27 +642,24 @@ void EditPlaneDlg::connectSignals()
  */
 void EditPlaneDlg::onCheckViewIcons()
 {
-    m_pctrlIso->setChecked(false);
-    m_pctrlX->setChecked(false);
-    m_pctrlY->setChecked(false);
-    m_pctrlZ->setChecked(false);
+    m_ptbIso->setChecked(false);
+    m_ptbX->setChecked(false);
+    m_ptbY->setChecked(false);
+    m_ptbZ->setChecked(false);
 }
-
-
 
 
 void EditPlaneDlg::on3DReset()
 {
     m_pglPlaneView->setScale(qMax(m_pPlane->wing()->planformSpan(), m_pPlane->body() ? m_pPlane->body()->length() : 1.0));
-    m_pglPlaneView->on3DReset();
+    m_pglPlaneView->on3dReset();
 }
-
 
 
 void EditPlaneDlg::onAutoRedraw()
 {
-    s_bAutoRedraw = m_pctrlAutoRedraw->isChecked();
-    m_pctrlRedraw->setEnabled(!s_bAutoRedraw);
+    s_bAutoRedraw = m_pchAutoRedraw->isChecked();
+    m_ppbRedraw->setEnabled(!s_bAutoRedraw);
 }
 
 
@@ -2038,17 +2036,17 @@ void EditPlaneDlg::paintPlaneLegend(QPainter &painter, Plane *pPlane, QRect draw
 
     QString Result, str, strong;
     QString str1;
-    double Mass=0.0;
-    int margin,dheight;
+    double Mass(0.0);
+    int margin(0),dheight(0);
 
-    QPen textPen(Settings::textColor());
+    QPen textPen(DisplayOptions::textColor());
     painter.setPen(textPen);
-    painter.setFont(Settings::textFont());
+    painter.setFont(DisplayOptions::textFont());
     painter.setRenderHint(QPainter::Antialiasing);
 
     margin = 10;
 
-    QFontMetrics fm(Settings::textFont());
+    QFontMetrics fm(DisplayOptions::textFont());
     dheight = fm.height();
     int D = 0;
     int LeftPos = margin;

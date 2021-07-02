@@ -1,7 +1,7 @@
 /****************************************************************************
 
     ManagePlanesDlg Class
-    Copyright (C) 2009-2019 Andre Deperrois
+    Copyright (C) 2009-2019 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 #include <miarex/objects3d.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
+#include <xflcore/displayoptions.h>
 #include <misc/options/settings.h>
 #include "planetabledelegate.h"
 #include <xflobjects/objects3d/plane.h>
@@ -159,7 +160,7 @@ void ManagePlanesDlg::setupLayout()
         QVBoxLayout *pLeftLayout = new QVBoxLayout;
         {
             m_pctrlPlaneTable = new QTableView(this);
-            m_pctrlPlaneTable->setFont(Settings::s_TableFont);
+            m_pctrlPlaneTable->setFont(DisplayOptions::tableFont());
 
             m_pctrlPlaneTable->setSelectionMode(QAbstractItemView::SingleSelection);
             m_pctrlPlaneTable->setSelectionBehavior(QAbstractItemView::SelectRows);

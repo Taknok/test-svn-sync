@@ -1,7 +1,7 @@
 /****************************************************************************
 
     SplineCtrlsDlg
-    Copyright (C) 2009-2016 Andre Deperrois
+    Copyright (C) 2009-2016 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,12 +28,13 @@
 #include <QDebug>
 
 
-#include "afoil.h"
 #include "splinectrlsdlg.h"
+#include <design/afoil.h>
 #include <gui_objects/splinefoil.h>
 #include <misc/options/settings.h>
-#include <xflwidgets/customwts/intedit.h>
+#include <xflcore/displayoptions.h>
 #include <xflwidgets/customwts/floateditdelegate.h>
+#include <xflwidgets/customwts/intedit.h>
 
 AFoil *SplineCtrlsDlg::s_pAFoil = nullptr;
 
@@ -163,7 +164,7 @@ void SplineCtrlsDlg::setupLayout()
                     }
 
                     m_ptvUpperList = new QTableView(this);
-                    m_ptvUpperList->setFont(Settings::s_TableFont);
+                    m_ptvUpperList->setFont(DisplayOptions::tableFont());
                     m_ptvUpperList->setWindowTitle(QObject::tr("Upper side points"));
                     m_ptvUpperList->setMinimumHeight(200);
                     m_ptvUpperList->setMinimumWidth(250);
@@ -192,7 +193,7 @@ void SplineCtrlsDlg::setupLayout()
                     }
 
                     m_ptvLowerList = new QTableView(this);
-                    m_ptvLowerList->setFont(Settings::s_TableFont);
+                    m_ptvLowerList->setFont(DisplayOptions::tableFont());
                     m_ptvLowerList->setWindowTitle(QObject::tr("Lower side points"));
                     m_ptvLowerList->setMinimumHeight(200);
                     m_ptvLowerList->setMinimumWidth(250);

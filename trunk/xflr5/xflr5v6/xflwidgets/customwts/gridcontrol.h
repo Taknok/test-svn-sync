@@ -1,7 +1,7 @@
 /****************************************************************************
 
     xflwidgets Library
-    Copyright (C) Andre Deperrois 
+    Copyright (C) André Deperrois 
     GNU General Public License v3
 
 *****************************************************************************/

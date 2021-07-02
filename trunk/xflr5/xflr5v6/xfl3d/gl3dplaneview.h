@@ -1,7 +1,7 @@
 /****************************************************************************
 
     gl3dPlaneView Class
-    Copyright (C) 2016-2019 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,40 +19,41 @@
 
 *****************************************************************************/
 
-#ifndef GL3DPLANEVIEW_H
-#define GL3DPLANEVIEW_H
+#pragma once
 
-#include <xfl3d/gl3dview.h>
+#include <xfl3d/gl3dxflview.h>
 
 class Plane;
 class EditPlaneDlg;
 
-class gl3dPlaneView : public gl3dView
+class gl3dPlaneView : public gl3dXflView
 {
-public:
-    gl3dPlaneView(QWidget *pParent = nullptr);
-    void setPlane(Plane*pPlane){m_pPlane = pPlane;}
+    public:
+        gl3dPlaneView(QWidget *pParent = nullptr);
+        void setPlane(Plane*pPlane){m_pPlane = pPlane;}
 
-private:
-    void glRenderView();
+    private:
+        void glRenderView() override;
 
-    void paintOverlay();
-    void resizeGL(int width, int height);
-    void set3DRotationCenter(QPoint point);
-    void glMake3dObjects();
+        void paintOverlay() override;
+        void resizeGL(int width, int height) override;
+        void set3dRotationCenter(QPoint point);
+        bool intersectTheObject(Vector3d const &AA,  Vector3d const &BB, Vector3d &I) override;
 
-public slots:
-    void on3DReset();
+        void glMake3dObjects() override;
 
-private:
-    Plane const* m_pPlane;
+    public slots:
+        void on3dReset() override;
+
+    private:
+        Plane const* m_pPlane;
 
 
-    EditPlaneDlg *m_pEditPlaneDlg;
+        EditPlaneDlg *m_pEditPlaneDlg;
 
-public:
-    bool m_bResetglSectionHighlight;
-    bool m_bResetglPlane, m_bResetglBody;
+    public:
+        bool m_bResetglSectionHighlight;
+        bool m_bResetglPlane, m_bResetglBody;
 };
 
-#endif // GL3DPLANEVIEW_H
+

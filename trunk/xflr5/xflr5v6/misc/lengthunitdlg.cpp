@@ -1,7 +1,7 @@
 /****************************************************************************
 
     UnitsDlg Class
-    Copyright (C) 2009 Andre Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,9 +22,10 @@
 #include <QGridLayout>
 #include <QVBoxLayout>
 
-#include <xflcore/xflcore.h>
-#include <misc/options/settings.h>
 #include "lengthunitdlg.h"
+#include <misc/options/settings.h>
+#include <xflcore/displayoptions.h>
+#include <xflcore/xflcore.h>
 
 
 LengthUnitDlg::LengthUnitDlg(QWidget *parent): QDialog(parent)
@@ -46,94 +47,94 @@ void LengthUnitDlg::SetupLayout()
         UnitsLayout->addWidget(lab1, 1,1);
 
 
-        m_pctrlQuestion = new QLabel(tr("Define the project units"));
+        m_plabQuestion = new QLabel(tr("Define the project units"));
 
-        m_pctrlLengthFactor = new QLabel(" ");
-        m_pctrlLengthFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
+        m_plabLengthFactor = new QLabel(" ");
+        m_plabLengthFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 
 
-        UnitsLayout->addWidget(m_pctrlLengthFactor, 1,2);
+        UnitsLayout->addWidget(m_plabLengthFactor, 1,2);
 
-        m_pctrlLength  = new QComboBox;
-        QFontMetrics fm(Settings::s_TextFont);
-        m_pctrlLength->setMinimumWidth(fm.averageCharWidth() * 10);
+        m_pcbLength  = new QComboBox;
+        QFontMetrics fm(DisplayOptions::textFont());
+        m_pcbLength->setMinimumWidth(fm.averageCharWidth() * 10);
 
-        UnitsLayout->addWidget(m_pctrlLength,  1,3);
+        UnitsLayout->addWidget(m_pcbLength,  1,3);
 
-        m_pctrlLengthInvFactor = new QLabel(" ");
+        m_plabLengthInvFactor = new QLabel(" ");
 
-        m_pctrlLengthInvFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
+        m_plabLengthInvFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 
-        UnitsLayout->addWidget(m_pctrlLengthInvFactor, 1,4);
+        UnitsLayout->addWidget(m_plabLengthInvFactor, 1,4);
 
         UnitsLayout->setColumnStretch(4,2);
         UnitsLayout->setColumnMinimumWidth(4,220);
     }
 
-    QHBoxLayout *CommandButtons = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     {
-        OKButton      = new QPushButton(tr("OK"));
-        CancelButton  = new QPushButton(tr("Cancel"));
-        CommandButtons->addStretch(1);
-        CommandButtons->addWidget(OKButton);
-        CommandButtons->addStretch(1);
-        CommandButtons->addWidget(CancelButton);
-        CommandButtons->addStretch(1);
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
 
-    QVBoxLayout *MainLayout = new QVBoxLayout;
+    QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        MainLayout->addWidget(m_pctrlQuestion);
-        MainLayout->addLayout(UnitsLayout);
-        MainLayout->addStretch(1);
-        MainLayout->addSpacing(20);
-        MainLayout->addLayout(CommandButtons);
-        MainLayout->addStretch(1);
+        pMainLayout->addWidget(m_plabQuestion);
+        pMainLayout->addLayout(UnitsLayout);
+        pMainLayout->addStretch(1);
+        pMainLayout->addSpacing(20);
+        pMainLayout->addWidget(m_pButtonBox);
+        pMainLayout->addStretch(1);
     }
 
-    setLayout(MainLayout);
+    setLayout(pMainLayout);
 
-    connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
-    connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
-    connect(m_pctrlLength, SIGNAL(activated(const QString &)),this, SLOT(OnSelChanged(const QString &)));
+    connect(m_pcbLength, SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
 }
 
 
-void LengthUnitDlg::InitDialog(int lengthUnitInd)
+
+void LengthUnitDlg::onButton(QAbstractButton *pButton)
+{
+    if      (m_pButtonBox->button(QDialogButtonBox::Ok) == pButton)      accept();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
+}
+
+
+void LengthUnitDlg::initDialog(int lengthUnitInd)
 {
     QStringList list;
     list <<"mm" << "cm"<<"dm"<<"m"<<"in"<<"ft";
-    m_pctrlLength->clear();
-    m_pctrlLength->addItems(list);        //5
+    m_pcbLength->clear();
+    m_pcbLength->addItems(list);        //5
 
 
     m_LengthUnitIndex = lengthUnitInd;
 
-    m_pctrlLength->setCurrentIndex(m_LengthUnitIndex);
+    m_pcbLength->setCurrentIndex(m_LengthUnitIndex);
 
-    m_pctrlLength->setFocus();
-    OnSelChanged(" ");
+    m_pcbLength->setFocus();
+    onSelChanged(" ");
 
 
-    m_pctrlQuestion->setText(m_Question);
+    m_plabQuestion->setText(m_Question);
 }
 
 
-void LengthUnitDlg::OnSelChanged(const QString &)
+void LengthUnitDlg::onSelChanged(const QString &)
 {
-    m_LengthUnitIndex  = m_pctrlLength->currentIndex();
+    m_LengthUnitIndex  = m_pcbLength->currentIndex();
 
 
-    SetUnits();
+    setUnits();
 
     QString str, strange;
 
     getLengthUnitLabel(str);
     strange= QString("     1 m = %1").arg(s_mtoUnit,15,'f',5);
-    m_pctrlLengthFactor->setText(strange);
+    m_plabLengthFactor->setText(strange);
     strange= "1 "+str+" = " +QString("%1 m").arg(1./s_mtoUnit,15,'f',5);
-    m_pctrlLengthInvFactor->setText(strange);
+    m_plabLengthInvFactor->setText(strange);
 
 
 }
@@ -194,7 +195,7 @@ void LengthUnitDlg::getLengthUnitLabel(QString &str)
 */
 //void UnitsDlg::SetUnits(int s_LengthUnit, int s_AreaUnit, int s_SpeedUnit, int s_WeightUnit, int s_ForceUnit, int s_MomentMUnit,
 //                     double &s_mtoUnit, double &s_m2toUnit, double &s_mstoUnit,  double &s_kgtoUnit, double &s_NtoUnit, double &s_NmtoUnit)
-void LengthUnitDlg::SetUnits()
+void LengthUnitDlg::setUnits()
 {
     switch(m_LengthUnitIndex)
     {

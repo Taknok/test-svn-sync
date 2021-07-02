@@ -1,7 +1,7 @@
 /****************************************************************************
 
     StabPolarDlg Class
-    Copyright (C) 2010-2019 Andre Deperrois
+    Copyright (C) 2010-2019 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@
 #include "stabpolardlg.h"
 #include <miarex/miarex.h>
 #include <misc/options/settings.h>
+#include <xflcore/displayoptions.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/plane.h>
@@ -934,7 +935,7 @@ void StabPolarDlg::setupLayout()
         m_pctrlAutoPlaneInertia = new QCheckBox(tr("Use plane inertia"));
 
         m_pInertiaControlTable = new QTableView(this);
-        m_pInertiaControlTable->setFont(Settings::s_TableFont);
+        m_pInertiaControlTable->setFont(DisplayOptions::tableFont());
 
         m_pInertiaControlTable->setWindowTitle(tr("Controls"));
         m_pInertiaControlTable->setMinimumWidth(400);
@@ -969,7 +970,7 @@ void StabPolarDlg::setupLayout()
     QVBoxLayout *pAngleControlPageLayout  = new QVBoxLayout;
     {
         m_pAngleControlTable = new QTableView(this);
-        m_pAngleControlTable->setFont(Settings::s_TableFont);
+        m_pAngleControlTable->setFont(DisplayOptions::tableFont());
 
         m_pAngleControlTable->setWindowTitle(tr("Controls"));
         m_pAngleControlTable->setMinimumWidth(400);
@@ -1061,7 +1062,7 @@ void StabPolarDlg::setupLayout()
     QVBoxLayout *pExtraDragPageLayout  = new QVBoxLayout;
     {
         m_pExtraDragControlTable = new QTableView(this);
-        m_pExtraDragControlTable->setFont(Settings::s_TableFont);
+        m_pExtraDragControlTable->setFont(DisplayOptions::tableFont());
 
         m_pExtraDragControlTable->setWindowTitle(tr("Extra drag"));
         m_pExtraDragControlTable->setMinimumWidth(400);

@@ -1,7 +1,7 @@
 /****************************************************************************
 
-         SplineSurface Class
-         Copyright (C) 2012 Andre Deperrois
+    NURBSSurface Class
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,14 +19,8 @@
 
 *****************************************************************************/
 
-/**
-  * @file this class implements the NURBSSurface class.
-  */
 
-#ifndef SPLINESURFACE_H
-#define SPLINESURFACE_H
-
-
+#pragma once
 
 
 
@@ -48,55 +42,54 @@
 class NURBSSurface
 {
     friend class Body;
-public:
-    NURBSSurface(int iAxis=0);
-    ~NURBSSurface();
+    public:
+        NURBSSurface(int iAxis=0);
+        ~NURBSSurface();
 
-    void   appendFrame(Frame*pFrame);
-    Frame *appendNewFrame();
-    void   clearFrames();
-    Frame *frameAt(int iFrame) {return m_pFrame.at(iFrame);}
-    Frame *firstFrame() {return m_pFrame.first();}
-    Frame *lastFrame() {return m_pFrame.last();}
-    int    frameCount() const {return m_pFrame.size();}
-    int    framePointCount() const;
-    double getu(double pos, double v) const;
-    double getv(double u, Vector3d r) const;
-    void   getPoint(double u, double v, Vector3d &Pt) const;
-    Vector3d point(double u, double v) const;
-    void   insertFrame(Frame *pNewFrame);
-    bool   intersectNURBS(Vector3d A, Vector3d B, Vector3d &I) const;
-    void   removeFrame(int iFrame);
-    void   setKnots();
-    int    setvDegree(int nvDegree);
-    int    setuDegree(int nuDegree);
-    int    uDegree() const {return m_iuDegree;}
-    int    vDegree() const {return m_ivDegree;}
+        void   appendFrame(Frame*pFrame);
+        Frame *appendNewFrame();
+        void   clearFrames();
+        Frame *frameAt(int iFrame) {return m_pFrame.at(iFrame);}
+        Frame *firstFrame() {return m_pFrame.first();}
+        Frame *lastFrame() {return m_pFrame.last();}
+        int    frameCount() const {return m_pFrame.size();}
+        int    framePointCount() const;
+        double getu(double pos, double v) const;
+        double getv(double u, Vector3d r) const;
+        void   getPoint(double u, double v, Vector3d &Pt) const;
+        Vector3d point(double u, double v) const;
+        void   insertFrame(Frame *pNewFrame);
+        bool   intersectNURBS(Vector3d A, Vector3d B, Vector3d &I) const;
+        void   removeFrame(int iFrame);
+        void   setKnots();
+        int    setvDegree(int nvDegree);
+        int    setuDegree(int nuDegree);
+        int    uDegree() const {return m_iuDegree;}
+        int    vDegree() const {return m_ivDegree;}
 
-    double weight(const double &d, int const &i, int const &N) const;
+        double weight(const double &d, int const &i, int const &N) const;
 
-    double splineBlend(int const &index, int const &p, double const &t, const double *knots) const;
+        double splineBlend(int const &index, int const &p, double const &t, const double *knots) const;
 
-private:
-    QVector<Frame*> m_pFrame;            /**< a pointer to the array of Frame objects */
+    private:
+        QVector<Frame*> m_pFrame;            /**< a pointer to the array of Frame objects */
 
-    int m_iuDegree;                 /**< the degree of the NURBS in the u direction */
-    int m_ivDegree;                 /**< the degree of the NURBS in the v direction */
-    int m_nuKnots;                  /**< the number of knots in the u direction */
-    int m_nvKnots;                  /**< the number of knots in the v direction */
+        int m_iuDegree;                 /**< the degree of the NURBS in the u direction */
+        int m_ivDegree;                 /**< the degree of the NURBS in the v direction */
+        int m_nuKnots;                  /**< the number of knots in the u direction */
+        int m_nvKnots;                  /**< the number of knots in the v direction */
 
-    double m_uKnots[MAXVLINES*2];   /**< the array of knots in the u direction */
-    double m_vKnots[MAXULINES*2];   /**< the array of knots in the v direction */
+        double m_uKnots[MAXVLINES*2];   /**< the array of knots in the u direction */
+        double m_vKnots[MAXULINES*2];   /**< the array of knots in the v direction */
 
-    int m_iRes;                     /**< the number of output points to draw the NURBS in both directions */
+        int m_iRes;                     /**< the number of output points to draw the NURBS in both directions */
 
-    double m_Bunch;                 /**< a bunch parameter used to modify the output of point density at the end or at the middle of the NURBS */
-    double m_EdgeWeightu;           /**< for a full NURBS. Unused, though, not practical */
-    double m_EdgeWeightv;           /**< for a full NURBS. Unused, though, not practical */
+        double m_Bunch;                 /**< a bunch parameter used to modify the output of point density at the end or at the middle of the NURBS */
+        double m_EdgeWeightu;           /**< for a full NURBS. Unused, though, not practical */
+        double m_EdgeWeightv;           /**< for a full NURBS. Unused, though, not practical */
 
-    int m_uAxis;                    /**< used to identify along which axis parameter u is set; 0=x, 1=y, 2=z */
-    int m_vAxis;                    /**< used to identify along which axis parameter u is set; 0=x, 1=y, 2=z */
+        int m_uAxis;                    /**< used to identify along which axis parameter u is set; 0=x, 1=y, 2=z */
+        int m_vAxis;                    /**< used to identify along which axis parameter u is set; 0=x, 1=y, 2=z */
 };
 
-#endif // SPLINESURFACE_H
 

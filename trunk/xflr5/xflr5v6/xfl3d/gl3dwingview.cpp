@@ -1,7 +1,7 @@
 /****************************************************************************
 
     gl3dWingView Class
-    Copyright (C) 2016 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,12 +24,12 @@
 #include "gl3dwingview.h"
 #include <QOpenGLPaintDevice>
 #include <miarex/design/gl3dwingdlg.h>
-#include <miarex/view/w3dprefsdlg.h>
+#include <xfl3d/controls/w3dprefsdlg.h>
 #include <xflobjects/objects3d/wing.h>
 #include <xflobjects/objects3d/surface.h>
 
 
-gl3dWingView::gl3dWingView(QWidget *pParent) : gl3dView(pParent)
+gl3dWingView::gl3dWingView(QWidget *pParent) : gl3dXflView(pParent)
 {
     m_pGL3dWingDlg = dynamic_cast<GL3dWingDlg*>(pParent);
     m_pWing = nullptr;
@@ -66,42 +66,16 @@ void gl3dWingView::glRenderView()
 }
 
 
-void gl3dWingView::on3DReset()
+void gl3dWingView::on3dReset()
 {
     startResetTimer(m_pWing->planformSpan());
 }
 
 
-void gl3dWingView::set3DRotationCenter(QPoint point)
+bool gl3dWingView::intersectTheObject(Vector3d const &AA,  Vector3d const &BB, Vector3d &I)
 {
-    //adjusts the new rotation center after the user has picked a point on the screen
-    //finds the closest panel under the point,
-    //and changes the rotation vector and viewport translation
-    Vector3d I, A, B, AA, BB, PP;
-
-    screenToViewport(point, B);
-    B.z = -1.0;
-    A.set(B.x, B.y, +1.0);
-
-    viewportToWorld(A, AA);
-    viewportToWorld(B, BB);
-
-    m_transIncrement.set(BB.x-AA.x, BB.y-AA.y, BB.z-AA.z);
-    m_transIncrement.normalize();
-
-    bool bIntersect = false;
-
-    if(m_pGL3dWingDlg->intersectObject(AA, m_transIncrement, I))
-    {
-        bIntersect = true;
-        PP.set(I);
-    }
-
-
-    if(bIntersect)
-    {
-        startTranslationTimer(PP);
-    }
+    Vector3d U = (BB-AA).normalized();
+    return m_pGL3dWingDlg->intersectObject(AA, U, I);
 }
 
 

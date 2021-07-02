@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Graph class
-        Copyright (C) 2003-2019 Andre Deperrois
+        Copyright (C) 2003-2019 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ class Graph
         void drawGraph(QPainter &painter);
         void drawAxes(QPainter &painter);
         void drawCurve(int nIndex, QPainter &painter);
-        void drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QColor &LegendColor, QColor &backColor);
+        void drawLegend(QPainter &painter, QPoint &Place, const QFont &LegendFont, const QColor &LegendColor, const QColor &backColor);
         void drawTitles(QPainter &painter);
         void drawXMinGrid(QPainter &painter);
         void drawYMinGrid(QPainter &painter);
@@ -78,8 +78,8 @@ class Graph
         QFont const &titleFont() const {return m_TitleFont;}
         void getLabelFont(QFont &labelFont) const {labelFont = m_LabelFont;}
         void getTitleFont(QFont &titleFont) const {titleFont = m_TitleFont;}
-        void setLabelFont(QFont &font) {m_LabelFont = font;}
-        void setTitleFont(QFont &font) {m_TitleFont = font;}
+        void setLabelFont(QFont const&font) {m_LabelFont = font;}
+        void setTitleFont(QFont const&font) {m_TitleFont = font;}
 
         void highlight(QPainter &painter, Curve *pCurve, int ref);
         static void setOppHighlighting(bool bHighLight){s_bHighlightPoint = bHighLight;}

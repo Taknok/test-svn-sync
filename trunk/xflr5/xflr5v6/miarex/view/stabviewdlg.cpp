@@ -1,7 +1,7 @@
 /****************************************************************************
 
     StabViewDlg Class
-    Copyright (C) 2010-2016 Andre Deperrois 
+    Copyright (C) 2010-2016 André Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@
 #include <miarex/miarex.h>
 #include <miarex/view/gl3dmiarexview.h>
 #include <misc/options/settings.h>
+#include <xflcore/displayoptions.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
 #include <xflgraph/curve.h>
@@ -644,7 +645,7 @@ void StabViewDlg::setupLayout()
             QVBoxLayout *pForcedResponseLayout = new QVBoxLayout;
             QLabel *ForcedText = new QLabel(tr("Control function"));
             m_pctrlControlTable = new QTableView(this);
-            m_pctrlControlTable->setFont(Settings::s_TableFont);
+            m_pctrlControlTable->setFont(DisplayOptions::tableFont());
 
             m_pctrlControlTable->setToolTip(tr("Enter the function of the control vs. time"));
             m_pctrlControlTable->setMinimumHeight(150);

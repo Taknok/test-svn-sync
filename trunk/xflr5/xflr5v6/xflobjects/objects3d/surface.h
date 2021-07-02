@@ -1,7 +1,7 @@
 /****************************************************************************
 
     CSurface Class
-    Copyright (C) 2005-2009 Andre Deperrois
+    Copyright (C) 2005-2009 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -125,7 +125,7 @@ public:
     void getSurfacePoint(double xArel, double xBrel, double yrel, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const;
     void getSection(double const &tau, double &Chord, double &Area, Vector3d &PtC4);
     void getYDist(int const &k, double &y1, double &y2) const;
-    void getSidePoints(enumPanelPosition pos, const Body *pBody, Vector3d *PtA, Vector3d *PtB, Vector3d *NA, Vector3d *NB, int nPoints) const;
+    void getSidePoints(enumPanelPosition pos, const Body *pBody, QVector<Vector3d> &PtA, QVector<Vector3d> &PtB, QVector<Vector3d> &NA, QVector<Vector3d> &NB, int nPoints) const;
     void init();
     void resetFlap();
     void rotateX(Vector3d const &O, double XTilt);

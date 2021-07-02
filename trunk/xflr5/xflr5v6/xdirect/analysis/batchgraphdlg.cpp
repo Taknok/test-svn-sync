@@ -1,7 +1,7 @@
 /****************************************************************************
 
     BatchDlg Class
-       Copyright (C) 2003-2017 Andre Deperrois
+       Copyright (C) 2003-2017 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -184,8 +184,8 @@ void BatchGraphDlg::setupLayout()
         {
             m_pRightSplitter->setChildrenCollapsible(false);
 
-            m_pteTextOutput->setFont(Settings::s_TableFont);
-            QFontMetrics fm(Settings::s_TableFont);
+            m_pteTextOutput->setFont(DisplayOptions::tableFont());
+            QFontMetrics fm(DisplayOptions::tableFont());
             m_pteTextOutput->setMinimumWidth(57*fm.averageCharWidth());
 
             m_pGraphWt = new GraphWt;

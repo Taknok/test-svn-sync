@@ -1,7 +1,7 @@
 /****************************************************************************
 
     MainFrame  Class
-    Copyright (C) Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include <QToolTip>
 #include <QGLFormat>
 #include <QMessageBox>
 #include <QtCore>
@@ -53,7 +54,6 @@
 #include <miarex/view/gl3dmiarexview.h>
 #include <miarex/view/gl3dscales.h>
 #include <miarex/view/stabviewdlg.h>
-#include <miarex/view/w3dprefsdlg.h>
 #include <misc/aboutq5.h>
 #include <misc/editplrdlg.h>
 #include <misc/options/languagewt.h>
@@ -80,10 +80,15 @@
 #include <xdirect/mgt/managefoilsdlg.h>
 #include <xdirect/objects2d.h>
 #include <xdirect/xdirect.h>
-#include <xfl3d/opengldlg.h>
+#include <xfl3d/controls/opengldlg.h>
+#include <xfl3d/controls/w3dprefsdlg.h>
+#include <xfl3d/testgl/gl3dfractal.h>
+#include <xfl3d/testgl/gl3dtestglview.h>
+#include <xflcore/displayoptions.h>
 #include <xflcore/trace.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
+#include <xflgraph/containers/graphwt.h>
 #include <xflgraph/containers/graphwt.h>
 #include <xflgraph/containers/legendwt.h>
 #include <xflgraph/containers/miarextilewt.h>
@@ -99,10 +104,15 @@
 #include <xflscript/xflscriptreader.h>
 #include <xflwidgets/color/colorpicker.h>
 #include <xflwidgets/customdlg/objectpropsdlg.h>
+#include <xflwidgets/customwts/plaintextoutput.h>
 #include <xflwidgets/customwts/popup.h>
+#include <xflwidgets/line/legendbtn.h>
 #include <xflwidgets/line/linepicker.h>
 #include <xflwidgets/line/linepickerdlg.h>
+#include <xflwidgets/mvc/expandabletreeview.h>
+#include <xflwidgets/mvc/objecttreedelegate.h>
 #include <xinverse/xinverse.h>
+
 
 #ifdef Q_OS_MAC
 #include <CoreFoundation/CoreFoundation.h>
@@ -135,20 +145,21 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 
     //    Settings sets(this);//to initialize the static variables
     //"Qt does not support style hints on X11 since this information is not provided by the window system."
-    /*    Settings::s_TextFont.setStyleHint(QFont::TypeWriter, QFont::OpenGLCompatible);
-    Settings::s_TextFont.setStyleStrategy(QFont::OpenGLCompatible);
-    Settings::s_TextFont.setFamily(Settings::s_TextFont.defaultFamily());
-    Settings::s_TextFont.setPointSize(9);
+    /*    DisplayOptions::textFont().setStyleHint(QFont::TypeWriter, QFont::OpenGLCompatible);
+    DisplayOptions::textFont().setStyleStrategy(QFont::OpenGLCompatible);
+    DisplayOptions::textFont().setFamily(DisplayOptions::textFont().defaultFamily());
+    DisplayOptions::textFont().setPointSize(9);
 
-    Settings::s_TableFont.setStyleHint(QFont::TypeWriter);
-    Settings::s_TableFont.setStyleStrategy(QFont::PreferDevice);
-    Settings::s_TableFont.setFamily(Settings::s_TableFont.defaultFamily());
-    Settings::s_TableFont.setPointSize(8);*/
+    DisplayOptions::tableFont().setStyleHint(QFont::TypeWriter);
+    DisplayOptions::tableFont().setStyleStrategy(QFont::PreferDevice);
+    DisplayOptions::tableFont().setFamily(DisplayOptions::tableFont().defaultFamily());
+    DisplayOptions::tableFont().setPointSize(8);*/
 
-    Settings::setDefaultFonts();
 
-    Settings::s_RefGraph.setTitleFont(Settings::s_TextFont);
-    Settings::s_RefGraph.setLabelFont(Settings::s_TextFont);
+    setDefaultStaticFonts();
+
+    Settings::s_RefGraph.setTitleFont(DisplayOptions::textFont());
+    Settings::s_RefGraph.setLabelFont(DisplayOptions::textFont());
 
     //    Settings::s_StyleSheetName = "xflr5_style";
     Settings::s_StyleSheetName = "";
@@ -207,7 +218,10 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
         GL3DScales::loadSettings(settings);
         W3dPrefsDlg::loadSettings(settings);
         Units::loadSettings(settings);
+        gl3dFractal::loadSettings(settings);
     }
+
+    pushSettings();
 
     if(m_pSaveTimer)
     {
@@ -248,7 +262,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     m_pctrlXDirectToolBar->hide();
     m_pctrlXInverseToolBar->hide();
     m_pctrlMiarexToolBar->hide();
-    m_pctrlStabViewWidget->hide();
+    m_pdwStabView->hide();
 
     setMenus();
 
@@ -401,12 +415,12 @@ void MainFrame::closeEvent (QCloseEvent * pEvent)
     m_VoidWidget.close();
 
 
-    m_pctrlXDirectWidget->close();
-    m_pctrlMiarexWidget->close();
-    m_pctrlAFoilWidget->close();
-    m_pctrlXInverseWidget->close();
-    m_pctrl3DScalesWidget->close();
-    m_pctrlStabViewWidget->close();
+    m_pdwXDirect->close();
+    m_pdwMiarex->close();
+    m_pdwAFoil->close();
+    m_pdwXInverse->close();
+    m_pdw3DScales->close();
+    m_pdwStabView->close();
     m_pGL3DScales->close();
     m_pctrlCentralWidget->close();
     deleteProject(true);
@@ -478,6 +492,10 @@ void MainFrame::createActions()
     m_pOnMiarexAct->setStatusTip(tr("Open Wing/plane design and analysis application"));
     connect(m_pOnMiarexAct, SIGNAL(triggered()), this, SLOT(onMiarex()));
 
+    m_pNoAppAct = new QAction(tr("Close all"), this);
+    m_pNoAppAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
+    m_pNoAppAct->setStatusTip(tr("Close all modules, but do not unload the active project"));
+    connect(m_pNoAppAct, SIGNAL(triggered()), SLOT(onSetNoApp()));
 
     m_pLoadLastProjectAction = new QAction(tr("Load Last Project"), this);
     m_pLoadLastProjectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_O));
@@ -879,25 +897,25 @@ void MainFrame::createDockWindows()
     XDirect::s_pMainFrame         = this;
     XInverse::s_pMainFrame        = this;
     Miarex::s_pMainFrame          = this;
-    gl3dView::s_pMainFrame        = this;
+    gl3dXflView::s_pMainFrame     = this;
     OpPointWidget::s_pMainFrame   = this;
 
 
-    m_pctrlXDirectWidget = new QDockWidget(tr("Direct foil analysis"), this);
-    m_pctrlXDirectWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    addDockWidget(Qt::RightDockWidgetArea, m_pctrlXDirectWidget);
+    m_pdwXDirect = new QDockWidget(tr("Direct foil analysis"), this);
+    m_pdwXDirect->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    addDockWidget(Qt::RightDockWidgetArea, m_pdwXDirect);
 
-    m_pctrlXInverseWidget = new QDockWidget(tr("Inverse foil design"), this);
-    m_pctrlXInverseWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    addDockWidget(Qt::RightDockWidgetArea, m_pctrlXInverseWidget);
+    m_pdwXInverse = new QDockWidget(tr("Inverse foil design"), this);
+    m_pdwXInverse->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    addDockWidget(Qt::RightDockWidgetArea, m_pdwXInverse);
 
-    m_pctrlMiarexWidget = new QDockWidget(tr("Plane analysis"), this);
-    m_pctrlMiarexWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    addDockWidget(Qt::RightDockWidgetArea, m_pctrlMiarexWidget);
+    m_pdwMiarex = new QDockWidget(tr("Plane analysis"), this);
+    m_pdwMiarex->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    addDockWidget(Qt::RightDockWidgetArea, m_pdwMiarex);
 
-    m_pctrlAFoilWidget = new QDockWidget(tr("Foil direct design"), this);
-    m_pctrlAFoilWidget->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
-    addDockWidget(Qt::BottomDockWidgetArea, m_pctrlAFoilWidget);
+    m_pdwAFoil = new QDockWidget(tr("Foil direct design"), this);
+    m_pdwAFoil->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+    addDockWidget(Qt::BottomDockWidgetArea, m_pdwAFoil);
 
     m_p2dWidget = new inverseviewwt(this);
     m_pgl3dMiarexView = new gl3dMiarexView(this);
@@ -908,45 +926,45 @@ void MainFrame::createDockWindows()
 
     m_pXDirect = new XDirect(this);
     m_pXDirect->setObjectName("XDirect ???");
-    m_pctrlXDirectWidget->setWidget(m_pXDirect);
-    m_pctrlXDirectWidget->setVisible(false);
-    m_pctrlXDirectWidget->setFloating(true);
-    m_pctrlXDirectWidget->move(960,60);
+    m_pdwXDirect->setWidget(m_pXDirect);
+    m_pdwXDirect->setVisible(false);
+    m_pdwXDirect->setFloating(true);
+    m_pdwXDirect->move(960,60);
 
     m_pXInverse = new XInverse(this);
-    m_pctrlXInverseWidget->setWidget(m_pXInverse);
-    m_pctrlXInverseWidget->setVisible(false);
-    m_pctrlXInverseWidget->setFloating(true);
-    m_pctrlXInverseWidget->move(960,60);
+    m_pdwXInverse->setWidget(m_pXInverse);
+    m_pdwXInverse->setVisible(false);
+    m_pdwXInverse->setFloating(true);
+    m_pdwXInverse->move(960,60);
 
     m_pMiarex = new Miarex;
-    m_pctrlMiarexWidget->setWidget(m_pMiarex);
-    m_pctrlMiarexWidget->setVisible(false);
-    m_pctrlMiarexWidget->setFloating(true);
-    m_pctrlMiarexWidget->move(960,60);
+    m_pdwMiarex->setWidget(m_pMiarex);
+    m_pdwMiarex->setVisible(false);
+    m_pdwMiarex->setFloating(true);
+    m_pdwMiarex->move(960,60);
 
 
     m_pGL3DScales = new GL3DScales(this);
     GL3DScales::s_pMiarex      = m_pMiarex;
-    m_pctrl3DScalesWidget = new QDockWidget(tr("3D Scales"), this);
-    m_pctrl3DScalesWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
-    addDockWidget(Qt::LeftDockWidgetArea, m_pctrl3DScalesWidget);
-    m_pctrl3DScalesWidget->setWidget(m_pGL3DScales);
-    m_pGL3DScales->setParent(m_pctrl3DScalesWidget);
-    m_pctrl3DScalesWidget->setVisible(false);
-    m_pctrl3DScalesWidget->setFloating(true);
-    m_pctrl3DScalesWidget->move(60,60);
+    m_pdw3DScales = new QDockWidget(tr("3D Scales"), this);
+    m_pdw3DScales->setAllowedAreas(Qt::LeftDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, m_pdw3DScales);
+    m_pdw3DScales->setWidget(m_pGL3DScales);
+    m_pGL3DScales->setParent(m_pdw3DScales);
+    m_pdw3DScales->setVisible(false);
+    m_pdw3DScales->setFloating(true);
+    m_pdw3DScales->move(60,60);
 
     StabViewDlg::s_pMiarex = m_pMiarex;
     m_pStabView = new StabViewDlg(this);
     StabViewDlg * pStabView = m_pStabView;
-    m_pctrlStabViewWidget = new QDockWidget(tr("Stability"), this);
-    m_pctrlStabViewWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
-    addDockWidget(Qt::LeftDockWidgetArea, m_pctrlStabViewWidget);
-    m_pctrlStabViewWidget->setWidget(pStabView);
-    m_pctrlStabViewWidget->setVisible(false);
-    m_pctrlStabViewWidget->setFloating(true);
-    m_pctrlStabViewWidget->move(60,60);
+    m_pdwStabView = new QDockWidget(tr("Stability"), this);
+    m_pdwStabView->setAllowedAreas(Qt::LeftDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, m_pdwStabView);
+    m_pdwStabView->setWidget(pStabView);
+    m_pdwStabView->setVisible(false);
+    m_pdwStabView->setFloating(true);
+    m_pdwStabView->move(60,60);
 
     m_pctrlCentralWidget = new QStackedWidget;
     m_pctrlCentralWidget->addWidget(&m_VoidWidget);
@@ -963,8 +981,8 @@ void MainFrame::createDockWindows()
     m_pAFoil->m_p2dWidget = m_pDirect2dWidget;
     connect(m_pDirect2dWidget, SIGNAL(objectModified()), m_pAFoil, SLOT(onSplinesModified()));
 
-    m_pctrlAFoilWidget->setWidget(m_pAFoil);
-    m_pctrlAFoilWidget->setVisible(false);
+    m_pdwAFoil->setWidget(m_pAFoil);
+    m_pdwAFoil->setVisible(false);
 
     m_p2dWidget->m_pXInverse  = m_pXInverse;
     m_p2dWidget->m_pMainFrame = this;
@@ -1033,6 +1051,8 @@ void MainFrame::createMenus()
 
     m_pModuleMenu = menuBar()->addMenu(tr("Module"));
     {
+        m_pModuleMenu->addAction(m_pNoAppAct);
+        m_pModuleMenu->addSeparator();
         m_pModuleMenu->addAction(m_pOnAFoilAct);
         m_pModuleMenu->addAction(m_pOnXInverseAct);
         m_pModuleMenu->addAction(m_pOnXDirectAct);
@@ -3184,6 +3204,26 @@ void MainFrame::keyPressEvent(QKeyEvent *pEvent)
                 onLogFile();
                 break;
             }
+            case Qt::Key_F2:
+            {
+                gl3dFractal *pTestView = new gl3dFractal;
+                pTestView->setAttribute(Qt::WA_DeleteOnClose);
+                pTestView->show();
+                pTestView->activateWindow();
+                break;
+            }
+            case Qt::Key_F3:
+            {
+                gl3dTestGLView *pTestView = new gl3dTestGLView;
+                pTestView->setAttribute(Qt::WA_DeleteOnClose);
+//                pTestView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+//                pTestView->showMaximized();
+                pTestView->show();
+                pTestView->activateWindow();
+
+                break;
+            }
+
             default:
                 pEvent->ignore();
         }
@@ -3383,41 +3423,41 @@ bool MainFrame::loadSettings()
         pt.rx() = settings.value("Miarex_x").toInt();
         pt.ry() = settings.value("Miarex_y").toInt();
         size    = settings.value("MiarexSize").toSize();
-        m_pctrlMiarexWidget->setFloating(bFloat);
-        if(bFloat) m_pctrlMiarexWidget->move(pt);
-        m_pctrlMiarexWidget->resize(size);
+        m_pdwMiarex->setFloating(bFloat);
+        if(bFloat) m_pdwMiarex->move(pt);
+        m_pdwMiarex->resize(size);
 
         bFloat  = settings.value("XDirect_Float").toBool();
         pt.rx() = settings.value("XDirect_x").toInt();
         pt.ry() = settings.value("XDirect_y").toInt();
         size    = settings.value("XDirectSize").toSize();
-        m_pctrlXDirectWidget->setFloating(bFloat);
-        if(bFloat) m_pctrlXDirectWidget->move(pt);
-        m_pctrlXDirectWidget->resize(size);
+        m_pdwXDirect->setFloating(bFloat);
+        if(bFloat) m_pdwXDirect->move(pt);
+        m_pdwXDirect->resize(size);
 
         bFloat  = settings.value("AFoil_Float").toBool();
         pt.rx() = settings.value("AFoil_x").toInt();
         pt.ry() = settings.value("AFoil_y").toInt();
         size    = settings.value("AFoilSize").toSize();
-        m_pctrlAFoilWidget->setFloating(bFloat);
-        if(bFloat) m_pctrlAFoilWidget->move(pt);
-        m_pctrlAFoilWidget->resize(size);
+        m_pdwAFoil->setFloating(bFloat);
+        if(bFloat) m_pdwAFoil->move(pt);
+        m_pdwAFoil->resize(size);
 
         bFloat  = settings.value("XInverse_Float").toBool();
         pt.rx() = settings.value("XInverse_x").toInt();
         pt.ry() = settings.value("XInverse_y").toInt();
         size    = settings.value("XInverseSize").toSize();
-        m_pctrlXInverseWidget->setFloating(bFloat);
-        if(bFloat) m_pctrlXInverseWidget->move(pt);
-        m_pctrlXInverseWidget->resize(size);
+        m_pdwXInverse->setFloating(bFloat);
+        if(bFloat) m_pdwXInverse->move(pt);
+        m_pdwXInverse->resize(size);
 
         bFloat  = settings.value("StabView_Float").toBool();
         pt.rx() = settings.value("StabView_x").toInt();
         pt.ry() = settings.value("StabView_y").toInt();
         size    = settings.value("StabSize").toSize();
-        m_pctrlStabViewWidget->setFloating(bFloat);
-        if(bFloat) m_pctrlStabViewWidget->move(pt);
-        m_pctrlStabViewWidget->resize(size);
+        m_pdwStabView->setFloating(bFloat);
+        if(bFloat) m_pdwStabView->move(pt);
+        m_pdwStabView->resize(size);
 
         m_ImageDirName = settings.value("ImageDirName").toString();
         m_ExportLastDirName = settings.value("ExportLastDirName").toString();
@@ -3650,16 +3690,16 @@ xfl::enumApp MainFrame::loadXFLR5File(QString pathname)
 void MainFrame::hideDockWindows()
 {
     m_pctrlMiarexToolBar->hide();
-    m_pctrlStabViewWidget->hide();
+    m_pdwStabView->hide();
     m_pctrlXDirectToolBar->hide();
     m_pctrlXInverseToolBar->hide();
     m_pctrlAFoilToolBar->hide();
 
-    m_pctrlAFoilWidget->hide();
-    m_pctrlMiarexWidget->hide();
-    m_pctrlXDirectWidget->hide();
-    m_pctrlXInverseWidget->hide();
-    m_pctrlXInverseWidget->hide();
+    m_pdwAFoil->hide();
+    m_pdwMiarex->hide();
+    m_pdwXDirect->hide();
+    m_pdwXInverse->hide();
+    m_pdwXInverse->hide();
 }
 
 
@@ -3673,7 +3713,7 @@ void MainFrame::onAFoil()
     m_iApp = xfl::DIRECTDESIGN;
 
     m_pctrlAFoilToolBar->show();
-    m_pctrlAFoilWidget->show();
+    m_pdwAFoil->show();
 
     setMainFrameCentralWidget();
     setMenus();
@@ -3880,8 +3920,6 @@ void MainFrame::onLogFile()
 }
 
 
-
-
 void MainFrame::onNewProject()
 {
     if(!s_bSaved)
@@ -3914,6 +3952,11 @@ void MainFrame::onNewProject()
 
     m_pMiarex->    m_PixText.fill(Qt::transparent);
     m_pgl3dMiarexView->m_bArcball = false;
+
+    hideDockWindows();
+    m_iApp = xfl::NOAPP;
+    setMenus();
+    setMainFrameCentralWidget();
 
     updateView();
 }
@@ -3959,57 +4002,57 @@ void MainFrame::onRestoreToolbars()
         m_pctrlXInverseToolBar->hide();
         m_pctrlAFoilToolBar->hide();
         m_pctrlMiarexToolBar->hide();
-        m_pctrlStabViewWidget->hide();
-        m_pctrl3DScalesWidget->hide();
+        m_pdwStabView->hide();
+        m_pdw3DScales->hide();
 
-        m_pctrlAFoilWidget->hide();
-        m_pctrlXInverseWidget->hide();
-        m_pctrlMiarexWidget->hide();
+        m_pdwAFoil->hide();
+        m_pdwXInverse->hide();
+        m_pdwMiarex->hide();
 
         m_pctrlXDirectToolBar->show();
-        m_pctrlXDirectWidget->show();
+        m_pdwXDirect->show();
     }
     else if(m_iApp==xfl::DIRECTDESIGN)
     {
         m_pctrlXInverseToolBar->hide();
         m_pctrlMiarexToolBar->hide();
         m_pctrlXDirectToolBar->hide();
-        m_pctrl3DScalesWidget->hide();
+        m_pdw3DScales->hide();
 
-        m_pctrlXDirectWidget->hide();
-        m_pctrlXInverseWidget->hide();
-        m_pctrlMiarexWidget->hide();
-        m_pctrlStabViewWidget->hide();
+        m_pdwXDirect->hide();
+        m_pdwXInverse->hide();
+        m_pdwMiarex->hide();
+        m_pdwStabView->hide();
 
         m_pctrlAFoilToolBar->show();
-        m_pctrlAFoilWidget->show();
+        m_pdwAFoil->show();
     }
     else if(m_iApp==xfl::INVERSEDESIGN)
     {
         m_pctrlAFoilToolBar->hide();
         m_pctrlMiarexToolBar->hide();
         m_pctrlXDirectToolBar->hide();
-        m_pctrl3DScalesWidget->hide();
-        m_pctrlStabViewWidget->hide();
+        m_pdw3DScales->hide();
+        m_pdwStabView->hide();
 
-        m_pctrlAFoilWidget->hide();
-        m_pctrlXDirectWidget->hide();
-        m_pctrlMiarexWidget->hide();
+        m_pdwAFoil->hide();
+        m_pdwXDirect->hide();
+        m_pdwMiarex->hide();
 
         m_pctrlXInverseToolBar->show();
-        m_pctrlXInverseWidget->show();
+        m_pdwXInverse->show();
     }
     else if(m_iApp==xfl::MIAREX)
     {
         m_pctrlXInverseToolBar->hide();
         m_pctrlAFoilToolBar->hide();
         m_pctrlXDirectToolBar->hide();
-        m_pctrl3DScalesWidget->hide();
+        m_pdw3DScales->hide();
 
-        m_pctrlAFoilWidget->hide();
-        m_pctrlXDirectWidget->hide();
-        m_pctrlXInverseWidget->hide();
-        m_pctrlMiarexWidget->show();
+        m_pdwAFoil->hide();
+        m_pdwXDirect->hide();
+        m_pdwXInverse->hide();
+        m_pdwMiarex->show();
         m_pctrlMiarexToolBar->show();
         //        if(pMiarex->m_iView==WSTABVIEW) m_pctrlStabViewWidget->show();
         //        else                            m_pctrlStabViewWidget->hide();
@@ -4324,7 +4367,7 @@ void MainFrame::onXDirect()
 
     hideDockWindows();
     m_pctrlXDirectToolBar->show();
-    m_pctrlXDirectWidget->show();
+    m_pdwXDirect->show();
 
     if(m_pXDirect) m_pXDirect->setFoil();
     updateFoilListBox();
@@ -4345,7 +4388,7 @@ void MainFrame::onMiarex()
 
     hideDockWindows();
     m_pctrlMiarexToolBar->show();
-    m_pctrlMiarexWidget->show();
+    m_pdwMiarex->show();
 
     updatePlaneListBox();
     m_pMiarex->setPlane();
@@ -4370,7 +4413,7 @@ void MainFrame::onXInverse()
 
     hideDockWindows();
     m_pctrlXInverseToolBar->show();
-    m_pctrlXInverseWidget->show();
+    m_pdwXInverse->show();
 
     setMainFrameCentralWidget();
     setMenus();
@@ -4390,7 +4433,7 @@ void MainFrame::onXInverseMixed()
 
     hideDockWindows();
     m_pctrlXInverseToolBar->show();
-    m_pctrlXInverseWidget->show();
+    m_pdwXInverse->show();
 
     m_pXInverse->m_bFullInverse = false;
     setMainFrameCentralWidget();
@@ -4790,27 +4833,27 @@ void MainFrame::saveSettings()
         else                                        settings.setValue("ExportFileType", 1);
 
         settings.setValue("GraphExportFilter", m_GraphExportFilter);
-        settings.setValue("Miarex_Float", m_pctrlMiarexWidget->isFloating());
-        settings.setValue("XDirect_Float", m_pctrlXDirectWidget->isFloating());
-        settings.setValue("AFoil_Float", m_pctrlAFoilWidget->isFloating());
-        settings.setValue("XInverse_Float", m_pctrlXInverseWidget->isFloating());
-        settings.setValue("StabView_Float", m_pctrlStabViewWidget->isFloating());
-        settings.setValue("Miarex_x", m_pctrlMiarexWidget->frameGeometry().x());
-        settings.setValue("Miarex_y", m_pctrlMiarexWidget->frameGeometry().y());
-        settings.setValue("XDirect_x", m_pctrlXDirectWidget->frameGeometry().x());
-        settings.setValue("XDirect_y", m_pctrlXDirectWidget->frameGeometry().y());
-        settings.setValue("AFoil_x", m_pctrlAFoilWidget->frameGeometry().x());
-        settings.setValue("AFoil_y", m_pctrlAFoilWidget->frameGeometry().y());
-        settings.setValue("XInverse_x", m_pctrlXInverseWidget->frameGeometry().x());
-        settings.setValue("XInverse_y", m_pctrlXInverseWidget->frameGeometry().y());
-        settings.setValue("StabView_x", m_pctrlStabViewWidget->frameGeometry().x());
-        settings.setValue("StabView_y", m_pctrlStabViewWidget->frameGeometry().y());
+        settings.setValue("Miarex_Float", m_pdwMiarex->isFloating());
+        settings.setValue("XDirect_Float", m_pdwXDirect->isFloating());
+        settings.setValue("AFoil_Float", m_pdwAFoil->isFloating());
+        settings.setValue("XInverse_Float", m_pdwXInverse->isFloating());
+        settings.setValue("StabView_Float", m_pdwStabView->isFloating());
+        settings.setValue("Miarex_x", m_pdwMiarex->frameGeometry().x());
+        settings.setValue("Miarex_y", m_pdwMiarex->frameGeometry().y());
+        settings.setValue("XDirect_x", m_pdwXDirect->frameGeometry().x());
+        settings.setValue("XDirect_y", m_pdwXDirect->frameGeometry().y());
+        settings.setValue("AFoil_x", m_pdwAFoil->frameGeometry().x());
+        settings.setValue("AFoil_y", m_pdwAFoil->frameGeometry().y());
+        settings.setValue("XInverse_x", m_pdwXInverse->frameGeometry().x());
+        settings.setValue("XInverse_y", m_pdwXInverse->frameGeometry().y());
+        settings.setValue("StabView_x", m_pdwStabView->frameGeometry().x());
+        settings.setValue("StabView_y", m_pdwStabView->frameGeometry().y());
 
-        settings.setValue("XDirectSize", m_pctrlXDirectWidget->size());
-        settings.setValue("AFoilSize", m_pctrlAFoilWidget->size());
-        settings.setValue("XInverseSize", m_pctrlXInverseWidget->size());
-        settings.setValue("MiarexSize", m_pctrlMiarexWidget->size());
-        settings.setValue("StabSize", m_pctrlStabViewWidget->size());
+        settings.setValue("XDirectSize", m_pdwXDirect->size());
+        settings.setValue("AFoilSize", m_pdwAFoil->size());
+        settings.setValue("XInverseSize", m_pdwXInverse->size());
+        settings.setValue("MiarexSize", m_pdwMiarex->size());
+        settings.setValue("StabSize", m_pdwStabView->size());
 
         settings.setValue("ImageDirName", m_ImageDirName);
         settings.setValue("ExportLastDirName", m_ExportLastDirName);
@@ -4850,6 +4893,7 @@ void MainFrame::saveSettings()
     GL3DScales::saveSettings(settings);
     W3dPrefsDlg::saveSettings(settings);
     Units::saveSettings(settings);
+    gl3dFractal::saveSettings(settings);
 }
 
 
@@ -6938,6 +6982,9 @@ void MainFrame::onPreferences()
     {
         setGraphSettings(&Settings::s_RefGraph);
     }
+
+    pushSettings();
+
     m_pAFoil->setTableFont();
     if(Settings::s_Theme==SETTINGS::DARKTHEME)
     {
@@ -7028,3 +7075,59 @@ void MainFrame::setPlainColorsFromFile()
     ColorPicker::setColorList(GoogleColorNames);
 }
 
+
+void MainFrame::onSetNoApp()
+{
+    hideDockWindows();
+    m_iApp = xfl::NOAPP;
+    setMenus();
+    setMainFrameCentralWidget();
+    update();
+}
+
+
+void MainFrame::pushSettings()
+{
+    gl3dView::setTextColor(DisplayOptions::textColor());
+    gl3dView::setBackColor(DisplayOptions::backgroundColor());
+    QToolTip::setFont(DisplayOptions::toolTipFont());
+
+    GraphWt::setTextFontStruct(DisplayOptions::textFontStruct());
+    GraphWt::setTextColor(DisplayOptions::textColor());
+
+
+    ObjectTreeDelegate::setTreeFontStruct(DisplayOptions::treeFontStruct());
+    ExpandableTreeView::setTreeFontStruct(DisplayOptions::treeFontStruct());
+    LegendBtn::setTextFontStruct(DisplayOptions::textFontStruct());
+    LegendBtn::setTextColor(DisplayOptions::textColor());
+    LegendBtn::setBackgroundColor(DisplayOptions::backgroundColor());
+    PlainTextOutput::setTableFontStruct(DisplayOptions::tableFontStruct());
+    LineBtn::setBackgroundColor(DisplayOptions::backgroundColor());
+}
+
+
+void MainFrame::setDefaultStaticFonts()
+{
+    //"Qt does not support style hints on X11 since this information is not provided by the window system."
+    QFont generalfnt(QFontDatabase::systemFont(QFontDatabase::GeneralFont));
+    QFont fixedfnt(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+
+    DisplayOptions::s_TextFontStruct    = {fixedfnt.family(),   fixedfnt.pointSize(),   fixedfnt.weight(),   fixedfnt.italic(),   QFont::Monospace};
+    DisplayOptions::s_TableFontStruct   = {fixedfnt.family(),   fixedfnt.pointSize(),   fixedfnt.weight(),   fixedfnt.italic(),   QFont::Monospace};
+    DisplayOptions::s_TreeFontStruct    = {generalfnt.family(), generalfnt.pointSize(), generalfnt.weight(), generalfnt.italic(), QFont::SansSerif};
+    DisplayOptions::s_ToolTipFontStruct = {generalfnt.family(), generalfnt.pointSize(), generalfnt.weight(), generalfnt.italic(), QFont::SansSerif};
+
+    QToolTip::setFont(DisplayOptions::toolTipFont());
+
+    GraphWt::setTextFontStruct(DisplayOptions::textFontStruct());
+    GraphWt::setTextColor(DisplayOptions::textColor());
+
+
+    ObjectTreeDelegate::setTreeFontStruct(DisplayOptions::treeFontStruct());
+    ExpandableTreeView::setTreeFontStruct(DisplayOptions::treeFontStruct());
+    LegendBtn::setTextFontStruct(DisplayOptions::textFontStruct());
+    LegendBtn::setTextColor(DisplayOptions::textColor());
+    LegendBtn::setBackgroundColor(DisplayOptions::backgroundColor());
+    PlainTextOutput::setTableFontStruct(DisplayOptions::tableFontStruct());
+    LineBtn::setBackgroundColor(DisplayOptions::backgroundColor());
+}

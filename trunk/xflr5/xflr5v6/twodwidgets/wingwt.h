@@ -1,7 +1,7 @@
 /****************************************************************************
 
     WingWidget Class
-        Copyright (C) 2015-2019 Andre Deperrois
+        Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef WINGWIDGET_H
-#define WINGWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include <QSettings>
@@ -35,48 +34,48 @@ class Miarex;
 class WingWidget : public QWidget
 {
     Q_OBJECT
-public:
-    WingWidget(QWidget *pParent = nullptr);
-    ~WingWidget();
 
-    void contextMenuEvent (QContextMenuEvent *pEvent);
-    void keyPressEvent(QKeyEvent *pEvent);
-    void mouseDoubleClickEvent (QMouseEvent *pEvent);
-    void mouseMoveEvent(QMouseEvent *pEvent);
-    void mousePressEvent(QMouseEvent *pEvent);
-    void mouseReleaseEvent(QMouseEvent *pEvent);
-    void paintEvent(QPaintEvent *pEvent);
-    void resizeEvent (QResizeEvent *pEvent);
-    void wheelEvent (QWheelEvent *pEvent);
+    public:
+        WingWidget(QWidget *pParent = nullptr);
+        ~WingWidget();
 
-    void setWingScale();
-    void setWingGraph(Graph *pGraph);
+        void contextMenuEvent (QContextMenuEvent *pEvent) override;
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void mouseDoubleClickEvent (QMouseEvent *pEvent) override;
+        void mouseMoveEvent(QMouseEvent *pEvent) override;
+        void mousePressEvent(QMouseEvent *pEvent) override;
+        void mouseReleaseEvent(QMouseEvent *pEvent) override;
+        void paintEvent(QPaintEvent *pEvent) override;
+        void resizeEvent (QResizeEvent *pEvent) override;
+        void wheelEvent (QWheelEvent *pEvent) override;
 
-private:
-    void paintXCmRef(QPainter &painter, QPointF ORef, double scale);
-    void paintXCP(QPainter &painter, QPointF ORef, double scale);
-    void paintXTr(QPainter &painter, QPointF ORef, double scale);
-    void paintWing(QPainter &painter, QPointF ORef, double scale);
+        void setWingScale();
+        void setWingGraph(Graph *pGraph);
+
+    private:
+        void paintXCmRef(QPainter &painter, QPointF ORef, double scale);
+        void paintXCP(QPainter &painter, QPointF ORef, double scale);
+        void paintXTr(QPainter &painter, QPointF ORef, double scale);
+        void paintWing(QPainter &painter, QPointF ORef, double scale);
 
 
-signals:
+    signals:
 
-public slots:
-    void onResetWingScale();
+    public slots:
+        void onResetWingScale();
 
-public:
+    public:
 
-    static Miarex *s_pMiarex;
+        static Miarex *s_pMiarex;
 
-private:
+    private:
 
-    bool m_bTrans;
+        bool m_bTrans;
 
-    double m_WingScale;
-    QPointF m_ptOffset;              /**< client offset position for wing display */
-    QPoint m_LastPoint;           /**< The client position of the previous mousepress event */
-    Graph * m_pGraph;
-    QPixmap m_PixText;
+        double m_WingScale;
+        QPointF m_ptOffset;              /**< client offset position for wing display */
+        QPoint m_LastPoint;           /**< The client position of the previous mousepress event */
+        Graph *m_pGraph;
+        QPixmap m_PixText;
 };
 
-#endif // WINGWIDGET_H

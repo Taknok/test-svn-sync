@@ -1,7 +1,7 @@
 /****************************************************************************
 
     GraphWt Class
-        Copyright (C) 2008-2021 Andre Deperrois
+        Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 #pragma once
 
 #include <QWidget>
+
+#include <xflcore/displayoptions.h>
 
 class Graph;
 
@@ -47,6 +49,13 @@ class GraphWt : public QWidget
         void setLegendPosition(QPoint const &pos) {m_LegendOrigin = pos;}
 
         void setOverlayedRect(bool bShow, double tlx, double tly, double brx, double bry);
+
+        static QColor const& textFontColor() {return s_TextColor;}
+        static void setTextColor(QColor textcolor) {s_TextColor=textcolor;}
+        static void setBackgroundColor(QColor bkcolor) {s_BackgroundColor=bkcolor;}
+
+        static void setTextFontStruct(FontStruct const &fntstruct) {s_TextFontStruct=fntstruct;}
+        static FontStruct const &textFontStruct() {return s_TextFontStruct;}
 
     protected:
         void paintEvent(QPaintEvent *pEvent) override;
@@ -85,5 +94,8 @@ class GraphWt : public QWidget
         bool m_bOverlayRectangle;
         QPointF m_TopLeft, m_BotRight; // in graph coordinates; should really be a Vector2d
 
+        static FontStruct s_TextFontStruct;
+        static QColor s_TextColor;
+        static QColor s_BackgroundColor;
 };
 

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     W3dPrefsDlg Class
-    Copyright (C) 2009-2016 Andre Deperrois XFLR5@yahoo.com
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ double W3dPrefsDlg::s_MassRadius = .017;
 QColor W3dPrefsDlg::s_MassColor = QColor(67, 151, 169);
 
 
-LineStyle W3dPrefsDlg::s_3DAxisStyle    = {true, Line::DASHDOT, 2, QColor(150,150,150),     Line::NOSYMBOL};
+LineStyle W3dPrefsDlg::s_AxisStyle    = {true, Line::DASHDOT, 2, QColor(150,150,150),     Line::NOSYMBOL};
 LineStyle W3dPrefsDlg::s_VLMStyle       = {true, Line::SOLID,   2, QColor(180,180,180),     Line::NOSYMBOL};
 
 LineStyle W3dPrefsDlg::s_OutlineStyle   = {true, Line::SOLID,   2, QColor(73,73,73),        Line::NOSYMBOL};
@@ -69,25 +69,25 @@ W3dPrefsDlg::W3dPrefsDlg(QWidget *pParent) : QDialog(pParent)
     setWindowTitle(tr("3D Styles"));
     setupLayout();
 
-    connect(m_plbAxis,               SIGNAL(clickedLB()),   SLOT(on3DAxis()));
-    connect(m_plbOutline,            SIGNAL(clickedLB()),   SLOT(onOutline()));
-    connect(m_plbVLMMesh,            SIGNAL(clickedLB()),   SLOT(onVLMMesh()));
-    connect(m_plbTopTrans,           SIGNAL(clickedLB()),   SLOT(onTopTrans()));
-    connect(m_plbBotTrans,           SIGNAL(clickedLB()),   SLOT(onBotTrans()));
-    connect(m_plbLift,               SIGNAL(clickedLB()),   SLOT(onXCP()));
-    connect(m_plbMoments,            SIGNAL(clickedLB()),   SLOT(onMoments()));
-    connect(m_plbInducedDrag,        SIGNAL(clickedLB()),   SLOT(onIDrag()));
-    connect(m_plbViscousDrag,        SIGNAL(clickedLB()),   SLOT(onVDrag()));
-    connect(m_plbDownwash,           SIGNAL(clickedLB()),   SLOT(onDownwash()));
-    connect(m_plbStreamLines,        SIGNAL(clickedLB()),   SLOT(onStreamLines()));
-    connect(m_plbWakePanels,         SIGNAL(clickedLB()),   SLOT(onWakePanels()));
+    connect(m_plbAxis,               SIGNAL(clickedLB(LineStyle)),   SLOT(on3DAxis()));
+    connect(m_plbOutline,            SIGNAL(clickedLB(LineStyle)),   SLOT(onOutline()));
+    connect(m_plbVLMMesh,            SIGNAL(clickedLB(LineStyle)),   SLOT(onVLMMesh()));
+    connect(m_plbTopTrans,           SIGNAL(clickedLB(LineStyle)),   SLOT(onTopTrans()));
+    connect(m_plbBotTrans,           SIGNAL(clickedLB(LineStyle)),   SLOT(onBotTrans()));
+    connect(m_plbLift,               SIGNAL(clickedLB(LineStyle)),   SLOT(onXCP()));
+    connect(m_plbMoments,            SIGNAL(clickedLB(LineStyle)),   SLOT(onMoments()));
+    connect(m_plbInducedDrag,        SIGNAL(clickedLB(LineStyle)),   SLOT(onIDrag()));
+    connect(m_plbViscousDrag,        SIGNAL(clickedLB(LineStyle)),   SLOT(onVDrag()));
+    connect(m_plbDownwash,           SIGNAL(clickedLB(LineStyle)),   SLOT(onDownwash()));
+    connect(m_plbStreamLines,        SIGNAL(clickedLB(LineStyle)),   SLOT(onStreamLines()));
+    connect(m_plbWakePanels,         SIGNAL(clickedLB(LineStyle)),   SLOT(onWakePanels()));
     connect(m_pcbMassColor,          SIGNAL(clicked()),     SLOT(onMasses()));
 }
 
 
 void W3dPrefsDlg::initDialog()
 {
-    m_plbAxis->setTheStyle(s_3DAxisStyle);
+    m_plbAxis->setTheStyle(s_AxisStyle);
     m_plbOutline->setTheStyle(s_OutlineStyle);
     m_plbVLMMesh->setTheStyle(s_VLMStyle);
     m_plbLift->setTheStyle(s_XCPStyle);
@@ -296,13 +296,13 @@ void W3dPrefsDlg::onOutline()
 void W3dPrefsDlg::on3DAxis()
 {
     LinePickerDlg LPdlg(this);
-    LPdlg.setTheStyle(s_3DAxisStyle);
+    LPdlg.setTheStyle(s_AxisStyle);
     LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
-        s_3DAxisStyle = LPdlg.theStyle();
-        m_plbAxis->setTheStyle(s_3DAxisStyle);
+        s_AxisStyle = LPdlg.theStyle();
+        m_plbAxis->setTheStyle(s_AxisStyle);
     }
 }
 
@@ -459,7 +459,7 @@ void W3dPrefsDlg::saveSettings(QSettings &settings)
 {
     settings.beginGroup("3dPrefs_2");
     {
-        s_3DAxisStyle.loadSettings(  settings, "3DAxisStyle");
+        s_AxisStyle.loadSettings(  settings, "3DAxisStyle");
         s_VLMStyle.saveSettings(     settings, "VLMStyle");
         s_OutlineStyle .saveSettings(settings, "OutlineStyle");
         s_XCPStyle.saveSettings(     settings, "XCPStyle");
@@ -496,7 +496,7 @@ void W3dPrefsDlg::loadSettings(QSettings &settings)
     resetDefaults();
     settings.beginGroup("3dPrefs_2");
     {
-        s_3DAxisStyle.loadSettings(  settings, "3DAxisStyle");
+        s_AxisStyle.loadSettings(  settings, "3DAxisStyle");
         s_VLMStyle.loadSettings(     settings, "VLMStyle");
         s_OutlineStyle .loadSettings(settings, "OutlineStyle");
         s_XCPStyle.loadSettings(     settings, "XCPStyle");
@@ -537,13 +537,10 @@ void W3dPrefsDlg::resetDefaults()
 
     s_MassColor = QColor(67, 151, 169);
 
-
-
     s_bAnimateTransitions = false;
     s_iChordwiseRes=29;
     s_iBodyAxialRes=23;
     s_iBodyHoopRes = 17;
-
 }
 
 

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     AFoil Class
-    Copyright (C) 2009-2016 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ class XFoil;
 
 
 /**
- * @brief the QAFoil class used as the interface for direct Foil design
+ * @brief the AFoil class used as the interface for direct Foil design
  */
 class AFoil : public QWidget
 {
@@ -136,8 +136,8 @@ class AFoil : public QWidget
         void takePicture();
         void setPicture();
 
-        void keyPressEvent(QKeyEvent *event) override;
-        void resizeEvent(QResizeEvent *event) override;
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void resizeEvent(QResizeEvent *pEvent) override;
 
 
     private:
@@ -147,11 +147,6 @@ class AFoil : public QWidget
         QTableView *m_ptvFoil;
         QStandardItemModel *m_pFoilModel;
         FoilTableDelegate *m_pFoilDelegate;
-
-        static MainFrame *s_pMainFrame;  /**< a static pointer to the instance of the application's MainFrame object >*/
-
-        int *m_precision;           /**< the array of digit numbers for each column of the Foil table >*/
-
 
         bool m_bStored;             /**< true if the current Picture has been stored on the Undo stack >*/
 
@@ -166,6 +161,8 @@ class AFoil : public QWidget
         QVector<SplineFoil> m_UndoStack;    /**< the stack of incremental modifications to the SplineFoil;
                                              we can't use the QStack though, because we need to access
                                              any point in the case of multiple undo operations >*/
+
+        static MainFrame *s_pMainFrame;  /**< a static pointer to the instance of the application's MainFrame object >*/
 };
 
 

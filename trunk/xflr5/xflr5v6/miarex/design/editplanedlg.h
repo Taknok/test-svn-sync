@@ -1,7 +1,7 @@
 /****************************************************************************
 
     EditPlaneDlg Class
-    Copyright (C) 2015-2019 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,8 +20,7 @@
 *****************************************************************************/
 
 
-#ifndef EDITPLANEOBJECTDLG_H
-#define EDITPLANEOBJECTDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QSettings>
@@ -57,113 +56,113 @@ class EditPlaneDlg : public QDialog
     friend class gl3dPlaneView;
     friend class gl3dView;
 
-public:
-    EditPlaneDlg(QWidget *pParent = nullptr);
+    public:
+        EditPlaneDlg(QWidget *pParent = nullptr);
 
-    void showEvent(QShowEvent *event);
-    void hideEvent(QHideEvent *event);
-    void resizeEvent(QResizeEvent *event);
-    void keyPressEvent(QKeyEvent *pEvent);
-    void contextMenuEvent(QContextMenuEvent *event);
-    void glMake3dObjects();
+        void glMake3dObjects();
 
-    bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
-    void connectSignals();
-    void identifySelection(const QModelIndex &indexSel);
-    void initDialog(Plane *pPlane);
-    void setupLayout();
-    void fillPlaneTreeView();
-    void fillWingTreeView(int iw, QList<QStandardItem *> &planeRootItem);
-    void fillBodyTreeView(QStandardItem *planeRootItem);
-    void fillPlaneMetaData(QStandardItem *item);
-    void readPlaneTree();
-    void readViewLevel(QModelIndex indexLevel);
-    void readBodyTree(Body *pBody, QModelIndex indexLevel);
-    void readWingTree(Wing *pWing, Vector3d &wingLE, double &tiltAngle, QModelIndex indexLevel);
-    void readInertiaTree(double &volumeMass, QVector<PointMass *> &pointMasses, QModelIndex indexLevel);
-    void readVectorTree(Vector3d &V, QModelIndex indexLevel);
-    void readWingSectionTree(Wing *pWing, QModelIndex indexLevel);
-    void readPointMassTree(PointMass *ppm, QModelIndex indexLevel);
-    void readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex indexLevel);
-    void resize3DView();
-    void resizeTreeView();
+        bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
+        void connectSignals();
+        void identifySelection(const QModelIndex &indexSel);
+        void initDialog(Plane *pPlane);
+        void setupLayout();
+        void fillPlaneTreeView();
+        void fillWingTreeView(int iw, QList<QStandardItem *> &planeRootItem);
+        void fillBodyTreeView(QStandardItem *planeRootItem);
+        void fillPlaneMetaData(QStandardItem *item);
+        void readPlaneTree();
+        void readViewLevel(QModelIndex indexLevel);
+        void readBodyTree(Body *pBody, QModelIndex indexLevel);
+        void readWingTree(Wing *pWing, Vector3d &wingLE, double &tiltAngle, QModelIndex indexLevel);
+        void readInertiaTree(double &volumeMass, QVector<PointMass *> &pointMasses, QModelIndex indexLevel);
+        void readVectorTree(Vector3d &V, QModelIndex indexLevel);
+        void readWingSectionTree(Wing *pWing, QModelIndex indexLevel);
+        void readPointMassTree(PointMass *ppm, QModelIndex indexLevel);
+        void readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex indexLevel);
+        void resize3DView();
+        void resizeTreeView();
 
-    QList<QStandardItem *> prepareRow(const QString &first, const QString &second="", const QString &third="",  const QString &fourth="");
-    QList<QStandardItem *> prepareBoolRow(const QString &first, const QString &second, const bool &third);
-    QList<QStandardItem *> prepareIntRow(const QString &first, const QString &second, const int &third);
-    QList<QStandardItem *> prepareDoubleRow(const QString &first, const QString &second, const double &third,  const QString &fourth);
+        QList<QStandardItem *> prepareRow(const QString &first, const QString &second="", const QString &third="",  const QString &fourth="");
+        QList<QStandardItem *> prepareBoolRow(const QString &first, const QString &second, const bool &third);
+        QList<QStandardItem *> prepareIntRow(const QString &first, const QString &second, const int &third);
+        QList<QStandardItem *> prepareDoubleRow(const QString &first, const QString &second, const double &third,  const QString &fourth);
 
 
-    static bool loadSettings(QSettings &settings);
-    static bool saveSettings(QSettings &settings);
+        static bool loadSettings(QSettings &settings);
+        static bool saveSettings(QSettings &settings);
 
-private slots:
-    void on3DReset();
-    void onAutoRedraw();
-    void onCheckViewIcons();
-    void onDelete();
-    void onEndEdit();
-    void onInsertBefore();
-    void onInsertAfter();
-    void onItemClicked(const QModelIndex &index);
-    void onOK();
-    void onRedraw();
-    void onResize();
-    void onButton(QAbstractButton *pButton);
+    private slots:
+        void on3DReset();
+        void onAutoRedraw();
+        void onCheckViewIcons();
+        void onDelete();
+        void onEndEdit();
+        void onInsertBefore();
+        void onInsertAfter();
+        void onItemClicked(const QModelIndex &index);
+        void onOK();
+        void onRedraw();
+        void onResize();
+        void onButton(QAbstractButton *pButton);
 
-private:
-    void accept();
-    void reject();
-    void paintPlaneLegend(QPainter &painter, Plane *pPlane, QRect drawRect);
+    private:
+        void showEvent(QShowEvent *event) override;
+        void hideEvent(QHideEvent *event) override;
+        void resizeEvent(QResizeEvent *event) override;
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void contextMenuEvent(QContextMenuEvent *event) override;
 
-public:
-    static bool s_bWindowMaximized;
-    static QPoint s_WindowPosition;   /**< the position on the client area of the dialog's topleft corner */
-    static QSize s_WindowSize;     /**< the window size in the client area */
-    static QByteArray m_HorizontalSplitterSizes;
+        void accept() override;
+        void reject() override;
+        void paintPlaneLegend(QPainter &painter, Plane *pPlane, QRect drawRect);
 
-    QPixmap m_PixText;
+    public:
+        static bool s_bWindowMaximized;
+        static QPoint s_WindowPosition;   /**< the position on the client area of the dialog's topleft corner */
+        static QSize s_WindowSize;     /**< the window size in the client area */
+        static QByteArray m_HorizontalSplitterSizes;
 
-private:
-    Plane * m_pPlane;
-    QTreeView * m_pStruct;
-    EditObjectDelegate *m_pDelegate;
-    QStandardItemModel *m_pModel;
+        QPixmap m_PixText;
 
-    //    ThreeDWidget *m_pgl1Widget;
-    gl3dPlaneView *m_pglPlaneView;
+    private:
+        Plane * m_pPlane;
+        QTreeView * m_pStruct;
+        EditObjectDelegate *m_pDelegate;
+        QStandardItemModel *m_pModel;
 
-    QCheckBox *m_pctrlAxes, *m_pctrlLight, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels;
-    QCheckBox *m_pctrlFoilNames, *m_pctrlShowMasses;
 
-    QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
-    QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso, *m_pctrlFlip;
+        gl3dPlaneView *m_pglPlaneView;
 
-    QMenu *m_pContextMenu;
-    QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteItem;
+        QCheckBox *m_pchAxes, *m_pchLight, *m_pchSurfaces, *m_pchOutline, *m_pchPanels;
+        QCheckBox *m_pchFoilNames, *m_pchShowMasses;
 
-    QSplitter *m_pHorizontalSplitter, *m_pLeftSideSplitter, *m_pRightSideSplitter;
+        QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
+        QToolButton *m_ptbX, *m_ptbY, *m_ptbZ, *m_ptbIso, *m_ptbFlip;
 
-    QCheckBox *m_pctrlAutoRedraw;
-    QPushButton *m_pctrlRedraw;
-    QPushButton *m_pctrlReset;
-    QDialogButtonBox *m_pButtonBox;
-    QSlider *m_pctrlClipPlanePos;
+        QMenu *m_pContextMenu;
+        QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteItem;
 
-    bool m_bChanged;
+        QSplitter *m_pHorizontalSplitter, *m_pLeftSideSplitter, *m_pRightSideSplitter;
 
-    static bool s_bAutoRedraw;
+        QCheckBox *m_pchAutoRedraw;
+        QPushButton *m_ppbRedraw;
+        QPushButton *m_ppbReset;
+        QDialogButtonBox *m_pButtonBox;
+        QSlider *m_pslClipPlanePos;
 
-    static bool s_bOutline;
-    static bool s_bSurfaces;
-    static bool s_bVLMPanels;
-    static bool s_bAxes;
-    static bool s_bShowMasses;
-    static bool s_bFoilNames;
+        bool m_bChanged;
 
-    enumObjectType m_enumActiveObject;
-    xfl::enumWingType m_enumActiveWingType;
-    int m_iActiveSection, m_iActiveFrame, m_iActivePointMass;
+        static bool s_bAutoRedraw;
+
+        static bool s_bOutline;
+        static bool s_bSurfaces;
+        static bool s_bVLMPanels;
+        static bool s_bAxes;
+        static bool s_bShowMasses;
+        static bool s_bFoilNames;
+
+        enumObjectType m_enumActiveObject;
+        xfl::enumWingType m_enumActiveWingType;
+        int m_iActiveSection, m_iActiveFrame, m_iActivePointMass;
 };
 
-#endif // EDITPLANEOBJECTDLG_H

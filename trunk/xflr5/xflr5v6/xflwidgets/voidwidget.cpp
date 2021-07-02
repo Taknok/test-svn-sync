@@ -1,7 +1,7 @@
 /****************************************************************************
 
     VoidWidget Class
-    Copyright (C) Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,10 +19,11 @@
 
 *****************************************************************************/
 
-#include "voidwidget.h"
-#include <misc/options/settings.h>
 #include <QPainter>
 #include <QPaintEvent>
+
+#include "voidwidget.h"
+#include <xflcore/displayoptions.h>
 
 
 VoidWidget::VoidWidget(QWidget *parent) : QWidget(parent)
@@ -34,7 +35,7 @@ void VoidWidget::paintEvent (QPaintEvent * pEvent )
 {
     QPainter painter(this);
 //    painter.setBackgroundMode(Qt::TransparentMode);
-    painter.fillRect(rect(), Settings::backgroundColor());
+    painter.fillRect(rect(), DisplayOptions::backgroundColor());
 
     pEvent->accept();
 }

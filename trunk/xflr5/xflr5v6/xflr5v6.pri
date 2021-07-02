@@ -40,10 +40,8 @@ SOURCES += \
     miarex/objects3d.cpp \
     miarex/view/gl3dmiarexview.cpp \
     miarex/view/gl3dscales.cpp \
-    miarex/view/gllightdlg.cpp \
     miarex/view/stabviewdlg.cpp \
     miarex/view/targetcurvedlg.cpp \
-    miarex/view/w3dprefsdlg.cpp \
     misc/aboutq5.cpp \
     misc/editplrdlg.cpp \
     misc/lengthunitdlg.cpp \
@@ -138,10 +136,8 @@ HEADERS += \
     miarex/objects3d.h \
     miarex/view/gl3dmiarexview.h \
     miarex/view/gl3dscales.h \
-    miarex/view/gllightdlg.h \
     miarex/view/stabviewdlg.h \
     miarex/view/targetcurvedlg.h \
-    miarex/view/w3dprefsdlg.h \
     misc/aboutq5.h \
     misc/editplrdlg.h \
     misc/lengthunitdlg.h \

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Body Class
-    Copyright (C) 2007-2016 Andre Deperrois
+    Copyright (C) 2007-2016 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -362,7 +362,7 @@ double Body::getv(double u, Vector3d r, bool bRight) const
 
     if(u<=0.0)          return 0.0;
     if(u>=1.0)          return 0.0;
-    if(r.VAbs()<1.0e-5) return 0.0;
+    if(r.norm()<1.0e-5) return 0.0;
 
     int iter=0;
     double v, v1, v2;
@@ -607,7 +607,7 @@ bool Body::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I, bool bRight) cons
     M0.set(0.0, A.y, A.z);
     M1.set(0.0, B.y, B.z);
 
-    if(M0.VAbs()<M1.VAbs())
+    if(M0.norm()<M1.norm())
     {
         tmp = A;        A   = B;        B   = tmp;
     }
@@ -715,22 +715,22 @@ bool Body::intersectFlatPanels(Vector3d const &A, Vector3d const &B, Vector3d &I
                 W = P  - TA;
                 V = TB - TA;
                 t_Prod = V*W;
-                if(t_Prod.VAbs() <1.0e-4 || t_Prod.dot(N)>=0.0) b1 = true; else b1 = false;
+                if(t_Prod.norm() <1.0e-4 || t_Prod.dot(N)>=0.0) b1 = true; else b1 = false;
 
                 W = P  - TB;
                 V = LB - TB;
                 t_Prod = V*W;
-                if(t_Prod.VAbs() <1.0e-4 || t_Prod.dot(N)>=0.0) b2 = true; else b2 = false;
+                if(t_Prod.norm() <1.0e-4 || t_Prod.dot(N)>=0.0) b2 = true; else b2 = false;
 
                 W = P  - LB;
                 V = LA - LB;
                 t_Prod = V*W;
-                if(t_Prod.VAbs() <1.0e-4 || t_Prod.dot(N)>=0.0) b3 = true; else b3 = false;
+                if(t_Prod.norm() <1.0e-4 || t_Prod.dot(N)>=0.0) b3 = true; else b3 = false;
 
                 W = P  - LA;
                 V = TA - LA;
                 t_Prod = V*W;
-                if(t_Prod.VAbs() <1.0e-4 || t_Prod.dot(N)>=0.0) b4 = true; else b4 = false;
+                if(t_Prod.norm() <1.0e-4 || t_Prod.dot(N)>=0.0) b4 = true; else b4 = false;
 
                 W = A-P;
                 V = B-P;
@@ -770,22 +770,22 @@ bool Body::intersectFlatPanels(Vector3d const &A, Vector3d const &B, Vector3d &I
                 W = P  - TA;
                 V = TB - TA;
                 t_Prod = V*W;
-                if(t_Prod.VAbs() <1.0e-4 || t_Prod.dot(N)>=0.0) b1 = true; else b1 = false;
+                if(t_Prod.norm() <1.0e-4 || t_Prod.dot(N)>=0.0) b1 = true; else b1 = false;
 
                 W = P  - TB;
                 V = LB - TB;
                 t_Prod = V*W;
-                if(t_Prod.VAbs() <1.0e-4 || t_Prod.dot(N)>=0.0) b2 = true; else b2 = false;
+                if(t_Prod.norm() <1.0e-4 || t_Prod.dot(N)>=0.0) b2 = true; else b2 = false;
 
                 W = P  - LB;
                 V = LA - LB;
                 t_Prod = V*W;
-                if(t_Prod.VAbs() <1.0e-4 || t_Prod.dot(N)>=0.0) b3 = true; else b3 = false;
+                if(t_Prod.norm() <1.0e-4 || t_Prod.dot(N)>=0.0) b3 = true; else b3 = false;
 
                 W = P  - LA;
                 V = TA - LA;
                 t_Prod = V*W;
-                if(t_Prod.VAbs() <1.0e-4 || t_Prod.dot(N)>=0.0) b4 = true; else b4 = false;
+                if(t_Prod.norm() <1.0e-4 || t_Prod.dot(N)>=0.0) b4 = true; else b4 = false;
 
                 W = A-P;
                 V = B-P;
@@ -857,7 +857,7 @@ bool Body::isInNURBSBodyOld(Vector3d Pt)
 
     t_N.x = 0.0;
 
-    if(t_r.VAbs()>t_N.VAbs()) return false;
+    if(t_r.norm()>t_N.norm()) return false;
     return true;
 }
 
@@ -1161,7 +1161,7 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
                 LATB = PTB - PLA;
                 TALB = PLB - PTA;
                 N = TALB * LATB;//panel area x2
-                BodyArea += N.VAbs() /2.0;
+                BodyArea += N.norm() /2.0;
             }
         }
 
@@ -1197,7 +1197,7 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
                     LATB = PTB - PLA;
                     TALB = PLB - PTA;
                     N = TALB * LATB;//panel area x2
-                    SectionArea += N.VAbs() /2.0;
+                    SectionArea += N.norm() /2.0;
                 }
                 SectionArea *= 2.0;// to account for right side;
 
@@ -1246,7 +1246,7 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
                     LATB = PTB - PLA;
                     TALB = PLB - PTA;
                     N = TALB * LATB;//panel area x2
-                    SectionArea += N.VAbs() /2.0;
+                    SectionArea += N.norm() /2.0;
                 }
                 SectionArea *= 2.0;// to account for right side;
 

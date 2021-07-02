@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Section2dWidget Class
-    Copyright (C) 2015-2019 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@
 #include <QAction>
 
 #include "section2dwt.h"
+#include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
-#include <misc/options/settings.h>
 #include <xflwidgets/customdlg/gridsettingsdlg.h>
 
 #define MININTERVAL  0.000000001
@@ -39,8 +39,6 @@ QColor Section2dWt::s_TextColor=Qt::lightGray;
 Section2dWt::Section2dWt(QWidget *parent) : QWidget(parent)
 {
     setMouseTracking(true);
-
-    m_FixedFont  = QFontDatabase::systemFont(QFontDatabase::FixedFont);
 
     m_hcCross = QCursor(Qt::CrossCursor);
     m_hcMove  = QCursor(Qt::ClosedHandCursor);
@@ -152,10 +150,10 @@ void Section2dWt::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
     QPainter painter(this);
     painter.save();
-    painter.fillRect(rect(), Settings::s_BackgroundColor);
+    painter.fillRect(rect(), DisplayOptions::backgroundColor());
 
-    painter.setFont(Settings::textFont());
-    QPen TextPen(Settings::textColor());
+    painter.setFont(DisplayOptions::textFont());
+    QPen TextPen(DisplayOptions::textColor());
     painter.setPen(TextPen);
 
     paintGrids(painter);
@@ -238,7 +236,7 @@ void Section2dWt::onLoadBackImage()
 {
     QString PathName;
     PathName = QFileDialog::getOpenFileName(this, tr("Open Image File"),
-                                            Settings::s_LastDirName,
+                                            QString(),
                                             "Image files (*.png *.jpg *.bmp)");
     m_bIsImageLoaded = m_BackImage.load(PathName);
 
@@ -519,12 +517,12 @@ void Section2dWt::wheelEvent (QWheelEvent *pEvent)
 
     if(pEvent->angleDelta().y()>0)
     {
-        if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
+        if(!DisplayOptions::bReverseZoom()) zoomFactor = 1./1.06;
         else                          zoomFactor = 1.06;
     }
     else
     {
-        if(!Settings::s_bReverseZoom) zoomFactor = 1.06;
+        if(!DisplayOptions::bReverseZoom()) zoomFactor = 1.06;
         else                          zoomFactor = 1./1.06;
     }
     zoomView(zoomFactor);
@@ -615,12 +613,11 @@ void Section2dWt::drawXScale(QPainter &painter)
 
     double scalex = m_fScale;
     painter.save();
-    painter.setFont(m_FixedFont);
-    QFontMetrics fm(m_FixedFont);
-    int dD = fm.height();
+    painter.setFont(DisplayOptions::textFont());
+    int dD = DisplayOptions::textFontStruct().height();
     QString strLabel = QString(format).arg(0.25,0,'f', m_Grid.nDecimals());
 
-    int dW = int((fm.horizontalAdvance(strLabel)*4)/16);
+    int dW = int((DisplayOptions::textFontStruct().width(strLabel)*4)/16);
     int TickSize = int(dD*3/4);
     int offy = int(m_ptOffset.y());
     offy = std::max(offy,0); //pixels
@@ -697,16 +694,15 @@ void Section2dWt::drawYScale(QPainter &painter)
     if(qIsNaN(m_fScale) || qIsInf(m_fScale)) return;
     double scaley = m_fScale * m_fScaleY;
     painter.save();
-    painter.setFont(m_FixedFont);
-    QFontMetrics fm(m_FixedFont);
-    int dD = fm.height();
+    painter.setFont(DisplayOptions::textFont());
+    int dD = DisplayOptions::textFontStruct().height();
 
     int height3  = int(dD/3);
 
     int TickSize = int(dD*3/4);
     int offx = int(m_ptOffset.x());
     offx = std::max(offx, 0);
-    offx = std::min(offx, rect().width()-(TickSize*12)/8-fm.horizontalAdvance("-1.0 10-4"));
+    offx = std::min(offx, rect().width()-(TickSize*12)/8-DisplayOptions::textFontStruct().width("-1.0 10-4"));
 
     QPen AxisPen(m_Grid.yAxisColor());
     AxisPen.setStyle(xfl::getStyle(m_Grid.yAxisStipple()));
@@ -958,12 +954,11 @@ void Section2dWt::drawLabel(QPainter &painter, int xu, int yu, double value, int
 
     QString strLabel;
     QString strLabelExp;
-    QFontMetrics fm(m_FixedFont);
 
     strLabel = QString(xfl::g_bLocalize ? "%L1" : "%1").arg(value, expo);
     if(align & Qt::AlignHCenter)
     {
-        int px = fm.horizontalAdvance(strLabel);
+        int px = DisplayOptions::textFontStruct().width(strLabel);
         painter.drawText(xu-px/2, yu, strLabel);
     }
     else if(align & Qt::AlignLeft)
@@ -971,6 +966,7 @@ void Section2dWt::drawLabel(QPainter &painter, int xu, int yu, double value, int
         painter.drawText(xu, yu, strLabel);
     }
 }
+
 
 /**
  * Draws the scale on the neutral line.
@@ -981,9 +977,9 @@ void Section2dWt::drawScale(QPainter &painter, double scalex)
 {
     painter.save();
 
-    painter.setFont(Settings::s_TextFont);
+    painter.setFont(DisplayOptions::textFont());
 
-    QFontMetrics fm(Settings::s_TextFont);
+    QFontMetrics fm(DisplayOptions::textFont());
     int dD = fm.height();
     int dW = fm.horizontalAdvance("0.1");
 
@@ -992,7 +988,7 @@ void Section2dWt::drawScale(QPainter &painter, double scalex)
     TickSize = dD/2;
     offy = int(m_ptOffset.y());
 
-    QPen TextPen(Settings::s_TextColor);
+    QPen TextPen(DisplayOptions::textColor());
     painter.setPen(TextPen);
 
     double xo = 0.0;
@@ -1126,8 +1122,8 @@ void Section2dWt::drawScaleLegend(QPainter &painter)
 {
     painter.save();
 
-    painter.setFont(Settings::textFont());
-    QPen TextPen(Settings::textColor());
+    painter.setFont(DisplayOptions::textFont());
+    QPen TextPen(DisplayOptions::textColor());
     painter.setPen(TextPen);
 
     painter.drawText(5,10, QString(tr("X-Scale = %1")).arg(m_fScale/m_fRefScale,4,'f',1));
@@ -1237,8 +1233,7 @@ void Section2dWt::setAutoUnits()
 
 void Section2dWt::setAutoUnit(double scale, double &unit, int &exponent)
 {
-    QFontMetrics fm(m_FixedFont);
-    int nTicks = width()/fm.averageCharWidth()/10;
+    int nTicks = width()/DisplayOptions::textFontStruct().averageCharWidth()/10;
 
 /*    if     (nTicks>=10) nTicks = 10; // number of ticks in the view
     else*/

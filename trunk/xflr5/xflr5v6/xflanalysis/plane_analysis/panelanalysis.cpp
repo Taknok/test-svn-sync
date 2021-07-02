@@ -2,7 +2,7 @@
 
     PanelAnalysis Class
 
-    Copyright (C) Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -3016,7 +3016,7 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, Vector3d Vin
                 Velocity.x = *(VInf               +p);
                 Velocity.y = *(VInf +   m_MatSize +p);
                 Velocity.z = *(VInf + 2*m_MatSize +p);
-                QInfStrip = Velocity.VAbs(); //used for viscous drag at the next step
+                QInfStrip = Velocity.norm(); //used for viscous drag at the next step
 
                 p+=m_ppSurface->at(j)->m_NXPanels*coef;
             }
@@ -3029,7 +3029,7 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, Vector3d Vin
                     Velocity.x = *(VInf               +p);
                     Velocity.y = *(VInf +   m_MatSize +p);
                     Velocity.z = *(VInf + 2*m_MatSize +p);
-                    QInfStrip = Velocity.VAbs();
+                    QInfStrip = Velocity.norm();
 
                     //FF force
                     if(m_pWPolar->bVLM1() || m_pPanel[p].m_bIsTrailing)
@@ -3105,7 +3105,7 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, Vector3d Vin
             Velocity.x = *(VInf               +p);
             Velocity.y = *(VInf +   m_MatSize +p);
             Velocity.z = *(VInf + 2*m_MatSize +p);
-            QInf = Velocity.VAbs();
+            QInf = Velocity.norm();
 
             getDoubletDerivative(p, Mu, Cp, VLocal, QInf, Velocity.x, Velocity.y, Velocity.z);
             PanelForce = m_pPanel[p].Normal * (-Cp) * m_pPanel[p].Area *1/2.*QInf*QInf;      // Newtons/rho
@@ -3130,7 +3130,7 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, Vector3d Vin
     {
         ExtraDrag += m_pWPolar->m_ExtraDragArea[iex] * m_pWPolar->m_ExtraDragCoef[iex];
     }
-    ExtraDrag *= 1./2.*m_pWPolar->density()*Vinc.VAbs()*Vinc.VAbs();   // N
+    ExtraDrag *= 1./2.*m_pWPolar->density()*Vinc.norm()*Vinc.norm();   // N
     Force += WindDirection*ExtraDrag;
 
     Moment *= m_pWPolar->density();                          // N.m
@@ -4939,7 +4939,7 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
                     {
                         m_pNode[n].copy(m_pMemNode[n]);
                         W = m_pNode[n] - m_pPlane->wingLE(0);
-                        Quat.Conjugate(W);
+                        Quat.conjugate(W);
                         m_pNode[n] = W + m_pPlane->wingLE(0);
                     }
                 }
@@ -4973,7 +4973,7 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
                         {
                             m_pNode[n].copy(m_pMemNode[n]);
                             W = m_pNode[n] - m_pPlane->wingLE(2);
-                            Quat.Conjugate(W);
+                            Quat.conjugate(W);
                             m_pNode[n] = W + m_pPlane->wingLE(2);
                         }
                     }
@@ -5043,7 +5043,7 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
                                     {
                                         m_pNode[n].copy(m_pMemNode[n]);
                                         W = m_pNode[n] - pWing->m_Surface.at(j)->m_HingePoint;
-                                        Quat.Conjugate(W);
+                                        Quat.conjugate(W);
                                         m_pNode[n] = W + pWing->m_Surface.at(j)->m_HingePoint;
                                     }
                                 }
@@ -5614,7 +5614,7 @@ void PanelAnalysis::relaxWake()
         TALB.z = WLB.z - WTA.z;
 
         m_pWakePanel[mw].Normal = LATB * TALB;
-        m_pWakePanel[mw].Area =  m_pWakePanel[mw].Normal.VAbs()/2.0;
+        m_pWakePanel[mw].Area =  m_pWakePanel[mw].Normal.norm()/2.0;
         m_pWakePanel[mw].Normal.normalize();
         m_pWakePanel[mw].setPanelFrame(WLA, WLB, WTA, WTB);
     }

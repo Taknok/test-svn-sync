@@ -1,7 +1,7 @@
 /****************************************************************************
 
     XInverse Class
-    Copyright (C) 2009-2016 Andre Deperrois
+    Copyright (C) 2009-2016 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,10 +25,8 @@
 #include <QMessageBox>
 #include <QDebug>
 
-#include "foilselectiondlg.h"
-#include "inverseoptionsdlg.h"
-#include "pertdlg.h"
 #include "xinverse.h"
+
 #include <globals/mainframe.h>
 #include <misc/options/settings.h>
 #include <misc/renamedlg.h>
@@ -37,6 +35,7 @@
 #include <xdirect/xdirect.h>
 #include <xflanalysis/analysis3d_params.h>
 #include <xflcore/constants.h>
+#include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 #include <xflgraph/controls/graphdlg.h>
 #include <xflgraph/curve.h>
@@ -46,6 +45,9 @@
 #include <xflwidgets/customwts/intedit.h>
 #include <xflwidgets/customwts/mintextedit.h>
 #include <xfoil.h>
+#include <xinverse/foilselectiondlg.h>
+#include <xinverse/inverseoptionsdlg.h>
+#include <xinverse/pertdlg.h>
 
 MainFrame *XInverse::s_pMainFrame;
 inverseviewwt *XInverse::s_p2dWidget;
@@ -323,7 +325,7 @@ void XInverse::drawGrid(QPainter &painter, double scale)
     TickSize = 5;
     scalex= scale;
 
-    QPen TextPen(Settings::s_TextColor);
+    QPen TextPen(DisplayOptions::textColor());
     painter.setPen(TextPen);
 
     //neutral line first
@@ -1904,7 +1906,7 @@ void XInverse::paintGraph(QPainter &painter)
     {
         m_QGraph.drawGraph(painter);
         QPoint Place(int(m_rGraphRect.right()-300), m_rGraphRect.top()+12);
-        m_QGraph.drawLegend(painter, Place, Settings::s_TextFont, Settings::s_TextColor, Settings::backgroundColor());
+        m_QGraph.drawLegend(painter, Place, DisplayOptions::textFont(), DisplayOptions::textColor(), DisplayOptions::backgroundColor());
     }
 
     // draw the zoom rectangle, if relevant
@@ -1967,8 +1969,8 @@ void XInverse::paintGraph(QPainter &painter)
 
     if(m_QGraph.isInDrawRect(m_PointDown) && Settings::bMousePos())
     {
-        QPen textPen(Settings::textColor());
-        QFontMetrics fm(Settings::textFont());
+        QPen textPen(DisplayOptions::textColor());
+        QFontMetrics fm(DisplayOptions::textFont());
 
         int fmheight  = fm.height();
 
@@ -1999,7 +2001,7 @@ void XInverse::paintFoil(QPainter &painter)
     //draw the reference and modified foils
     double alpha = m_pXFoil->alqsp[1]*180./PI;
 
-    QPen TextPen(Settings::s_TextColor);
+    QPen TextPen(DisplayOptions::textColor());
 
     if(m_bRefFoil && m_bLoaded)
     {
@@ -2047,11 +2049,11 @@ void XInverse::paintFoil(QPainter &painter)
         CtrlPen.setWidth(m_pRefFoil->lineWidth());
         painter.setPen(CtrlPen);
 
-        drawFoilPoints(painter, m_pRefFoil, -alpha, 1.0,  1.0, m_ptOffset, Settings::s_BackgroundColor);
+        drawFoilPoints(painter, m_pRefFoil, -alpha, 1.0,  1.0, m_ptOffset, DisplayOptions::backgroundColor());
     }
 
-    painter.setFont(Settings::s_TextFont);
-    QFontMetrics fm(Settings::s_TextFont);
+    painter.setFont(DisplayOptions::textFont());
+    QFontMetrics fm(DisplayOptions::textFont());
     int dD = fm.height();
     int Back = 4;
     int LeftPos = m_rCltRect.left()+10;
@@ -2112,7 +2114,7 @@ void XInverse::paintView(QPainter &painter)
 {
     painter.save();
 
-    painter.fillRect(m_rCltRect, Settings::s_BackgroundColor);
+    painter.fillRect(m_rCltRect, DisplayOptions::backgroundColor());
     paintGraph(painter);
     paintFoil(painter);
 

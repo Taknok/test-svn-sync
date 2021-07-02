@@ -1,7 +1,7 @@
 /****************************************************************************
 
     gl3dPlaneView Class
-    Copyright (C) 2016-2019 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <miarex/design/editplanedlg.h>
 
 
-gl3dPlaneView::gl3dPlaneView(QWidget *pParent) : gl3dView(pParent)
+gl3dPlaneView::gl3dPlaneView(QWidget *pParent) : gl3dXflView(pParent)
 {
     m_pEditPlaneDlg = dynamic_cast<EditPlaneDlg*>(pParent);
     m_pPlane = nullptr;
@@ -53,48 +53,22 @@ void gl3dPlaneView::glRenderView()
                 if(m_bFoilNames) paintFoilNames(pWing);
             }
         }
-        if(m_bShowMasses) glDrawMasses(m_pEditPlaneDlg->m_pPlane);
+        if(m_bShowMasses) paintMasses(m_pEditPlaneDlg->m_pPlane);
     }
 }
 
 
-void gl3dPlaneView::on3DReset()
+void gl3dPlaneView::on3dReset()
 {
     startResetTimer(m_pPlane->span());
 }
 
 
-void gl3dPlaneView::set3DRotationCenter(QPoint point)
+bool gl3dPlaneView::intersectTheObject(Vector3d const &AA,  Vector3d const &BB, Vector3d &I)
 {
-    //adjusts the new rotation center after the user has picked a point on the screen
-    //finds the closest panel under the point,
-    //and changes the rotation vector and viewport translation
-    Vector3d I, A, B, AA, BB, PP;
-
-    screenToViewport(point, B);
-    B.z = -1.0;
-    A.set(B.x, B.y, +1.0);
-
-    viewportToWorld(A, AA);
-    viewportToWorld(B, BB);
-
-    m_transIncrement.set(BB.x-AA.x, BB.y-AA.y, BB.z-AA.z);
-    m_transIncrement.normalize();
-
-    bool bIntersect = false;
-
-    if(m_pEditPlaneDlg->intersectObject(AA, m_transIncrement, I))
-    {
-        bIntersect = true;
-        PP.set(I);
-    }
-
-    if(bIntersect)
-    {
-        startTranslationTimer(PP);
-    }
+    Vector3d U = (BB-AA).normalized();
+    return m_pEditPlaneDlg->intersectObject(AA, U, I);
 }
-
 
 
 /**

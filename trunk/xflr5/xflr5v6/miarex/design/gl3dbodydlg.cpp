@@ -1,7 +1,7 @@
 /****************************************************************************
 
     GL3dBodyDlg Class
-    Copyright (C) 2009-2019 Andre Deperrois
+    Copyright (C) 2009-2019 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,14 +38,15 @@
 #include <miarex/design/inertiadlg.h>
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlplanewriter.h>
-#include <miarex/view/w3dprefsdlg.h>
+#include <xfl3d/controls/w3dprefsdlg.h>
 #include <misc/lengthunitdlg.h>
 #include <misc/options/settings.h>
 #include <twodwidgets/bodyframewt.h>
 #include <twodwidgets/bodylinewt.h>
-#include <xfl3d/arcball.h>
+#include <xfl3d/controls/arcball.h>
 #include <xfl3d/gl3dbodyview.h>
 #include <xflcore/units.h>
+#include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/body.h>
 #include <xflobjects/objects3d/plane.h>
@@ -140,45 +141,44 @@ void GL3dBodyDlg::connectSignals()
     connect(m_pchOutline,    SIGNAL(clicked(bool)), &m_gl3dBodyview, SLOT(onOutline(bool)));
     connect(m_pchShowMasses, SIGNAL(clicked(bool)), &m_gl3dBodyview, SLOT(onShowMasses(bool)));
 
-    connect(m_ptbIso,        SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DIso()));
-    connect(m_ptbX,          SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DFront()));
-    connect(m_ptbY,          SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DLeft()));
-    connect(m_ptbZ,          SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DTop()));
-    connect(m_ptbFlip,       SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3DFlip()));
+    connect(m_ptbIso,        SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3dIso()));
+    connect(m_ptbX,          SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3dFront()));
+    connect(m_ptbY,          SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3dLeft()));
+    connect(m_ptbZ,          SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3dTop()));
+    connect(m_ptbFlip,       SIGNAL(clicked()), &m_gl3dBodyview, SLOT(on3dFlip()));
 
-    connect(&m_gl3dBodyview, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
+    connect(&m_gl3dBodyview, SIGNAL(viewModified()), SLOT(onCheckViewIcons()));
 
-    //    connect(m_pctrlEdgeWeight, SIGNAL(sliderReleased()), this, SLOT(onEdgeWeight()));
-    connect(m_pslPanelBunch, SIGNAL(sliderMoved(int)), this, SLOT(onNURBSPanels()));
+    //    connect(m_pctrlEdgeWeight, SIGNAL(sliderReleased()), SLOT(onEdgeWeight()));
+    connect(m_pslPanelBunch, SIGNAL(sliderMoved(int)), SLOT(onNURBSPanels()));
 
-    connect(m_prbFlatPanels, SIGNAL(clicked()), this, SLOT(onLineType()));
-    connect(m_prbBSplines,   SIGNAL(clicked()), this, SLOT(onLineType()));
-    connect(m_pcbBodyColor,  SIGNAL(clicked()), this, SLOT(onBodyColor()));
+    connect(m_prbFlatPanels, SIGNAL(clicked()), SLOT(onLineType()));
+    connect(m_prbBSplines,   SIGNAL(clicked()), SLOT(onLineType()));
+    connect(m_pcbBodyColor,  SIGNAL(clicked()), SLOT(onBodyColor()));
 
-    connect(m_pleBodyName,     SIGNAL(editingFinished()), this, SLOT(onBodyName()));
-    connect(m_prbTextures,   SIGNAL(clicked()), this, SLOT(onTextures()));
-    connect(m_prbColor,      SIGNAL(clicked()), this, SLOT(onTextures()));
+    connect(m_pleBodyName,     SIGNAL(editingFinished()), SLOT(onBodyName()));
+    connect(m_prbTextures,   SIGNAL(clicked()), SLOT(onTextures()));
+    connect(m_prbColor,      SIGNAL(clicked()), SLOT(onTextures()));
 
-    connect(m_pdeNHoopPanels,  SIGNAL(editingFinished()), this, SLOT(onNURBSPanels()));
-    connect(m_pdeNXPanels,     SIGNAL(editingFinished()), this, SLOT(onNURBSPanels()));
-    connect(m_pcbXDegree,      SIGNAL(activated(int)), this, SLOT(onSelChangeXDegree(int)));
-    connect(m_pcbHoopDegree,   SIGNAL(activated(int)), this, SLOT(onSelChangeHoopDegree(int)));
+    connect(m_pdeNHoopPanels,  SIGNAL(editingFinished()), SLOT(onNURBSPanels()));
+    connect(m_pdeNXPanels,     SIGNAL(editingFinished()), SLOT(onNURBSPanels()));
+    connect(m_pcbXDegree,      SIGNAL(activated(int)), SLOT(onSelChangeXDegree(int)));
+    connect(m_pcbHoopDegree,   SIGNAL(activated(int)), SLOT(onSelChangeHoopDegree(int)));
 
-    connect(m_ppbUndo,       SIGNAL(clicked()),this, SLOT(onUndo()));
-    connect(m_ppbRedo,       SIGNAL(clicked()),this, SLOT(onRedo()));
+    connect(m_ppbUndo,       SIGNAL(clicked()),SLOT(onUndo()));
+    connect(m_ppbRedo,       SIGNAL(clicked()),SLOT(onRedo()));
 
-    connect(m_pSelectionModelFrame, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onFrameItemClicked(QModelIndex)));
-    connect(m_pFrameDelegate,       SIGNAL(closeEditor(QWidget *)), this, SLOT(onFrameCellChanged(QWidget *)));
-    connect(m_pSelectionModelPoint, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onPointItemClicked(QModelIndex)));
-    connect(m_pPointDelegate,       SIGNAL(closeEditor(QWidget *)), this, SLOT(onPointCellChanged(QWidget *)));
+    connect(m_pSelectionModelFrame, SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(onFrameItemClicked(QModelIndex)));
+    connect(m_pFrameDelegate,       SIGNAL(closeEditor(QWidget *)), SLOT(onFrameCellChanged(QWidget *)));
+    connect(m_pSelectionModelPoint, SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(onPointItemClicked(QModelIndex)));
+    connect(m_pPointDelegate,       SIGNAL(closeEditor(QWidget *)), SLOT(onPointCellChanged(QWidget *)));
 
-    connect(m_pBodyLineWt, SIGNAL(frameSelChanged()), this, SLOT(onFrameClicked()));
-    connect(m_pFrameWt,    SIGNAL(pointSelChanged()), this, SLOT(onPointClicked()));
+    connect(m_pBodyLineWt, SIGNAL(frameSelChanged()), SLOT(onFrameClicked()));
+    connect(m_pFrameWt,    SIGNAL(pointSelChanged()), SLOT(onPointClicked()));
 
-    connect(m_pBodyLineWt, SIGNAL(objectModified()), this, SLOT(onUpdateBody()));
-    connect(m_pFrameWt,    SIGNAL(objectModified()), this, SLOT(onUpdateBody()));
+    connect(m_pBodyLineWt, SIGNAL(objectModified()), SLOT(onUpdateBody()));
+    connect(m_pFrameWt,    SIGNAL(objectModified()), SLOT(onUpdateBody()));
 }
-
 
 
 void GL3dBodyDlg::onButton(QAbstractButton *pButton)
@@ -567,7 +567,7 @@ void GL3dBodyDlg::onImportBodyDef()
     LengthUnitDlg luDlg(this);
 
     luDlg.m_Question = QObject::tr("Choose the length unit to read this file :");
-    luDlg.InitDialog(Units::lengthUnitIndex());
+    luDlg.initDialog(Units::lengthUnitIndex());
 
     if(luDlg.exec() == QDialog::Accepted)
     {
@@ -778,7 +778,7 @@ void GL3dBodyDlg::onPointItemClicked(const QModelIndex &index)
 
 void GL3dBodyDlg::onResetScales()
 {
-    m_gl3dBodyview.on3DReset();
+    m_gl3dBodyview.on3dReset();
     m_pBodyLineWt->onResetScales();
     m_pFrameWt->onResetScales();
     updateView();
@@ -1116,8 +1116,8 @@ bool GL3dBodyDlg::initDialog(Body *pBody)
 {
     if(!pBody) return false;
 
-    m_pctrlFrameTable->setFont(Settings::s_TableFont);
-    m_pctrlPointTable->setFont(Settings::s_TableFont);
+    m_pctrlFrameTable->setFont(DisplayOptions::tableFont());
+    m_pctrlPointTable->setFont(DisplayOptions::tableFont());
 
     m_gl3dBodyview.setBody(pBody);
     m_gl3dBodyview.setScale(pBody->length());

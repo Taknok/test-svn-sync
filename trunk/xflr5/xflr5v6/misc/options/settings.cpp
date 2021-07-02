@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Settings Class
-    Copyright (C) 2018 Andre Deperrois
+    Copyright (C) 2018 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@
 #include <miarex/miarex.h>
 #include <xdirect/xdirect.h>
 #include <twodwidgets/section2dwt.h>
+#include <xflcore/displayoptions.h>
 #include <xflgraph/controls/graphdlg.h>
 #include <xflwidgets/color/textclrbtn.h>
 #include <xflwidgets/color/colorbtn.h>
@@ -44,11 +45,7 @@ bool Settings::s_bStyleSheets = true;
 QString Settings::s_StyleName;
 QString Settings::s_StyleSheetName;
 
-QFont Settings::s_TextFont;
-QFont Settings::s_TableFont;
-QColor Settings::s_BackgroundColor = QColor(3, 9, 9);
-QColor Settings::s_TextColor=QColor(221,221,221);
-bool Settings::s_bReverseZoom = false;
+
 Graph Settings::s_RefGraph;
 xfl::enumTextFileType Settings::s_ExportFileType;
 QString Settings::s_LastDirName = QDir::homePath();
@@ -91,25 +88,6 @@ Settings::Settings(QWidget *pParent) : QWidget(pParent)
 
     connect(m_pchReverseZoom,        SIGNAL(clicked()),                  SLOT(onReverseZoom()));
     connect(m_pchAlignChildrenStyle, SIGNAL(clicked()),                  SLOT(onAlignChildrenStyle()));
-}
-
-
-void Settings::setDefaultFonts()
-{
-    //    QFontDatabase fntDatabase;
-    //    QStringList fontFamiliyList = fntDatabase.families();
-    //    for (int i=0; i<fontFamiliyList.count(); i++) qDebug()<<fontFamiliyList.at(i);
-
-    QFont generalFont(QFontDatabase::systemFont(QFontDatabase::GeneralFont));
-    QFont fixedfont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
-    QFont titleFont(QFontDatabase::systemFont(QFontDatabase::TitleFont));
-    QFont smallestReadableFont(QFontDatabase::systemFont(QFontDatabase::SmallestReadableFont));
-
-    s_TextFont = QFont(fixedfont);
-    s_TableFont = QFont(fixedfont);
-
-
-//    Section2dWt::setFontStruct(fixedfont);
 }
 
 
@@ -244,17 +222,19 @@ void Settings::initWidget()
 
     m_MemGraph.copySettings(&s_RefGraph);
 
-    m_pcbBackColor->setColor(s_BackgroundColor);
+    m_pcbBackColor->setColor(DisplayOptions::s_BackgroundColor);
 
-    m_ptcbTextClr->setTextColor(s_TextColor);
-    m_ptcbTextClr->setBackgroundColor(s_BackgroundColor);
+    m_ptcbTextClr->setTextColor(DisplayOptions::s_TextColor);
+    m_ptcbTextClr->setBackgroundColor(DisplayOptions::s_BackgroundColor);
 
+    QFont s_TextFont = DisplayOptions::textFont();
     QString textFontName = s_TextFont.family() + QString(" %1").arg(s_TextFont.pointSize());
     m_ppbTextFont->setText(textFontName);
     m_ppbTextFont->setFont(s_TextFont);
     m_ptcbTextClr->setFont(s_TextFont);
     m_ptcbTextClr->setText(QObject::tr("Text color"));
 
+    QFont s_TableFont = DisplayOptions::tableFont();
     QString tableFontName = s_TableFont.family() + QString(" %1").arg(s_TableFont.pointSize());
     m_ppbTableFont->setText(tableFontName);
     m_ppbTableFont->setFont(s_TableFont);
@@ -264,7 +244,7 @@ void Settings::initWidget()
     else if(m_pcbStyles->findText(s_StyleSheetName)>=0)
         m_pcbStyles->setCurrentIndex(m_pcbStyles->findText(s_StyleSheetName));
 
-    m_pchReverseZoom->setChecked(s_bReverseZoom);
+    m_pchReverseZoom->setChecked(DisplayOptions::bReverseZoom());
     m_pchAlignChildrenStyle->setChecked(s_bAlignChildrenStyle);
 }
 
@@ -302,12 +282,12 @@ void Settings::onStyleChanged(const QString &StyleName)
 
 void Settings::onBackgroundColor2d()
 {
-    QColor Color = QColorDialog::getColor(s_BackgroundColor);
-    if(Color.isValid()) s_BackgroundColor = Color;
+    QColor Color = QColorDialog::getColor(DisplayOptions::s_BackgroundColor);
+    if(Color.isValid()) DisplayOptions::s_BackgroundColor = Color;
 
-    m_pcbBackColor->setColor(s_BackgroundColor);
+    m_pcbBackColor->setColor(DisplayOptions::s_BackgroundColor);
 
-    m_ptcbTextClr->setBackgroundColor(s_BackgroundColor);
+    m_ptcbTextClr->setBackgroundColor(DisplayOptions::s_BackgroundColor);
 }
 
 
@@ -328,44 +308,56 @@ void Settings::onGraphSettings()
 
 void Settings::onTextColor()
 {
-    QColor Color = QColorDialog::getColor(s_TextColor);
-    if(Color.isValid()) s_TextColor = Color;
-    m_ptcbTextClr->setTextColor(s_TextColor);
+    QColor Color = QColorDialog::getColor(DisplayOptions::s_TextColor);
+    if(Color.isValid()) DisplayOptions::s_TextColor = Color;
+    m_ptcbTextClr->setTextColor(DisplayOptions::s_TextColor);
 }
 
 
 void Settings::onTextFont()
 {
-    bool bOK;
+    bool bOK(false);
     QFont TextFont;
-    TextFont.setStyleHint(QFont::TypeWriter, QFont::OpenGLCompatible);
 
+    QFontDialog::FontDialogOptions dialogoptions = QFontDialog::MonospacedFonts;
+#ifdef Q_OS_MAC
+    if(s_bDontUseNativeDlg) dialogoptions |= QFontDialog::DontUseNativeDialog;
+#endif
 
-    TextFont = QFontDialog::getFont(&bOK, s_TextFont, this);
+    TextFont = QFontDialog::getFont(&bOK, DisplayOptions::textFont(), this,
+                                    QString("Display font"), dialogoptions);
 
     if (bOK)
     {
-        s_TextFont = TextFont;
-        m_ppbTextFont->setText(s_TextFont.family());
-        m_ppbTextFont->setFont(s_TextFont);
-        m_ptcbTextClr->setFont(s_TextFont);
+        DisplayOptions::setTextFont(TextFont);
+        setButtonFonts();
+
+/*        QString stylestring = QString::asprintf("color: %s; font-family: %s; font-size: %dpt",
+                                               DisplayOptions::textColor().name(QColor::HexRgb).toStdString().c_str(),
+                                               DisplayOptions::textFont().family().toStdString().c_str(),
+                                               DisplayOptions::textFont().pointSize());
+        m_ppbTextFont->setText(DisplayOptions::textFont().family() + QString::asprintf(" %d",DisplayOptions::textFont().pointSize()));
+        m_ppbTextFont->setStyleSheet(stylestring);
+        m_ptcbTextClr->setStyleSheet(stylestring);*/
     }
+
 }
 
 
 void Settings::onTableFont()
 {
-    bool bOK;
-    QFont TableFont;
-    //    TableFont.setStyleHint(QFont::TypeWriter, QFont::OpenGLCompatible);
-
-    TableFont = QFontDialog::getFont(&bOK, s_TableFont, this);
+    QFontDialog::FontDialogOptions dialogoptions = QFontDialog::MonospacedFonts;
+#ifdef Q_OS_MAC
+    if(s_bDontUseNativeDlg) dialogoptions |= QFontDialog::DontUseNativeDialog;
+#endif
+    bool bOK(false);
+    QFont TableFont = QFontDialog::getFont(&bOK, DisplayOptions::tableFont(), this,
+                                           QString("Table font"), dialogoptions);
 
     if (bOK)
     {
-        s_TableFont = TableFont;
-        m_ppbTableFont->setText(s_TableFont.family());
-        m_ppbTableFont->setFont(s_TableFont);
+        DisplayOptions::setTableFont(TableFont);
+        setButtonFonts();
     }
 }
 
@@ -378,20 +370,15 @@ void Settings::saveSettings(QSettings &settings)
         settings.setValue("XMLDirName", s_xmlDirName);
         settings.setValue("PlrDirName", s_plrDirName);
 
-        settings.setValue("BackgroundColor", s_BackgroundColor);
-        settings.setValue("TextColor", s_TextColor);
+        settings.setValue("BackgroundColor", DisplayOptions::s_BackgroundColor);
+        settings.setValue("TextColor", DisplayOptions::s_TextColor);
 
-        settings.setValue("TextFontFamily", s_TextFont.family());
-        settings.setValue("TextFontPointSize", s_TextFont.pointSize());
-        settings.setValue("TextFontItalic", s_TextFont.italic());
-        settings.setValue("TextFontBold", s_TextFont.bold());
+        DisplayOptions::s_TextFontStruct.saveSettings(   settings, "TextFont");
+        DisplayOptions::s_TableFontStruct.saveSettings(  settings, "TableFont");
+        DisplayOptions::s_TreeFontStruct.saveSettings(   settings, "TreeFont");
+        DisplayOptions::s_ToolTipFontStruct.saveSettings(settings, "ToolTipFont");
 
-        settings.setValue("TableFontFamily", s_TableFont.family());
-        settings.setValue("TableFontPointSize", s_TableFont.pointSize());
-        settings.setValue("TableFontItalic", s_TableFont.italic());
-        settings.setValue("TableFontBold", s_TableFont.bold());
-
-        settings.setValue("ReverseZoom", s_bReverseZoom);
+        settings.setValue("ScaleFactor", DisplayOptions::scaleFactor());
 
         settings.setValue("ShowMousePos", s_bShowMousePos);
         settings.setValue("AligneChildrenStyle", s_bAlignChildrenStyle);
@@ -417,24 +404,16 @@ void Settings::loadSettings(QSettings &settings)
         s_xmlDirName  = settings.value("XMLDirName", QDir::homePath()).toString();
         s_plrDirName  = settings.value("PlrDirName", QDir::homePath()).toString();
 
-        s_BackgroundColor = settings.value("BackgroundColor", QColor(5,11,13)).value<QColor>();
+        DisplayOptions::s_BackgroundColor = settings.value("BackgroundColor", QColor(5,11,13)).value<QColor>();
 
-        s_TextColor = settings.value("TextColor", QColor(237,237,237)).value<QColor>();
+        DisplayOptions::s_TextColor = settings.value("TextColor", QColor(237,237,237)).value<QColor>();
 
-        if(settings.contains("TextFontFamily"))
-            s_TextFont = QFont(settings.value("TextFontFamily").toString());
-        s_TextFont.setPointSize(settings.value("TextFontPointSize", 10).toInt());
-        s_TextFont.setItalic(settings.value("TextFontItalic", false).toBool());
-        s_TextFont.setBold(settings.value("TextFontBold", false).toBool());
-        s_TextFont.setStyleStrategy(QFont::OpenGLCompatible);
+        DisplayOptions::s_TextFontStruct.loadSettings(   settings, "TextFont");
+        DisplayOptions::s_TableFontStruct.loadSettings(  settings, "TableFont");
+        DisplayOptions::s_TreeFontStruct.loadSettings(   settings, "TreeFont");
+        DisplayOptions::s_ToolTipFontStruct.loadSettings(settings, "ToolTipFont");
 
-        if(settings.contains("TableFontFamily"))
-            s_TableFont = QFont(settings.value("TableFontFamily").toString());
-        s_TableFont.setPointSize(settings.value("TableFontPointSize", 10).toInt());
-        s_TableFont.setItalic(settings.value("TableFontItalic", false).toBool());
-        s_TableFont.setBold(settings.value("TableFontBold", false).toBool());
-
-        s_bReverseZoom   = settings.value("ReverseZoom", false).toBool();
+        DisplayOptions::setScaleFactor(settings.value("ScaleFactor", false).toDouble());
         s_bAlignChildrenStyle = settings.value("AligneChildrenStyle", true).toBool();
 
         s_bShowMousePos = settings.value("ShowMousePos", true).toBool();
@@ -456,7 +435,8 @@ void Settings::loadSettings(QSettings &settings)
 
 void Settings::onReverseZoom()
 {
-    s_bReverseZoom = m_pchReverseZoom->isChecked();
+    if(m_pchReverseZoom->isChecked()) DisplayOptions::setScaleFactor(-0.07);
+    else                              DisplayOptions::setScaleFactor( 0.07);
 }
 
 
@@ -466,34 +446,32 @@ void Settings::onAlignChildrenStyle()
 }
 
 
-
 void Settings::onTheme()
 {
     if (m_prbDark->isChecked())
     {
         m_bIsGraphModified = true;
         s_Theme = SETTINGS::DARKTHEME;
-        s_BackgroundColor = QColor(3, 9, 9);
-        s_TextColor=QColor(221,221,221);
+        DisplayOptions::s_BackgroundColor = QColor(3, 9, 9);
+        DisplayOptions::s_TextColor=QColor(221,221,221);
         s_RefGraph.setGraphDefaults(true);
     }
     else if(m_prbLight->isChecked())
     {
         m_bIsGraphModified = true;
         s_Theme = SETTINGS::LIGHTTHEME;
-        s_BackgroundColor = QColor(241, 241, 241);
-        s_TextColor=QColor(0,0,0);
+        DisplayOptions::s_BackgroundColor = QColor(241, 241, 241);
+        DisplayOptions::s_TextColor=QColor(0,0,0);
         s_RefGraph.setGraphDefaults(false);
     }
     else
     {
         return;
     }
-    m_pcbBackColor->setColor(s_BackgroundColor);
-    m_ptcbTextClr->setBackgroundColor(s_BackgroundColor);
-    m_ptcbTextClr->setTextColor(s_TextColor);
+    m_pcbBackColor->setColor(DisplayOptions::s_BackgroundColor);
+    m_ptcbTextClr->setBackgroundColor(DisplayOptions::s_BackgroundColor);
+    m_ptcbTextClr->setTextColor(DisplayOptions::s_TextColor);
 }
-
 
 
 void Settings::setColorList()
@@ -657,6 +635,37 @@ void Settings::setColorList()
 }
 
 
+
+void Settings::setButtonFonts()
+{
+    m_ppbTextFont->setText(DisplayOptions::textFontStruct().family());
+    m_ppbTextFont->setFont(DisplayOptions::textFont());
+    m_ptcbTextClr->setFont(DisplayOptions::textFont());
+
+    m_ptcbTextClr->setTextColor(DisplayOptions::textColor());
+    m_ptcbTextClr->setBackgroundColor(DisplayOptions::backgroundColor());
+
+
+    m_ppbTextFont->setText(DisplayOptions::textFont().family() + QString::asprintf(" %d",DisplayOptions::textFont().pointSize()));
+    m_ptcbTextClr->setText(QObject::tr("Text color"));
+    QString stylestring = QString::asprintf("font-family: %s; font-size: %dpt",
+                                           DisplayOptions::textFont().family().toStdString().c_str(),
+                                           DisplayOptions::textFont().pointSize());
+    m_ppbTextFont->setStyleSheet(stylestring);
+    stylestring = QString::asprintf("color: %s; font-family: %s; font-size: %dpt",
+                                           DisplayOptions::textColor().name(QColor::HexRgb).toStdString().c_str(),
+                                           DisplayOptions::textFont().family().toStdString().c_str(),
+                                           DisplayOptions::textFont().pointSize());
+    m_ptcbTextClr->setStyleSheet(stylestring);
+
+
+    QString tableFontName = DisplayOptions::tableFont().family() + QString(" %1").arg(DisplayOptions::tableFont().pointSize());
+    m_ppbTableFont->setText(tableFontName);
+    stylestring = QString::asprintf("font-family: %s; font-size: %dpt",
+                                    DisplayOptions::tableFont().family().toStdString().c_str(),
+                                    DisplayOptions::tableFont().pointSize());
+    m_ppbTableFont->setStyleSheet(stylestring);
+}
 
 
 
