@@ -1,7 +1,7 @@
 /****************************************************************************
 
     LegendWt Class
-        Copyright (C) 2015 Andre Deperrois 
+        Copyright (C) 2015 André Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "legendwt.h"
 
 #include <xflgraph/containers/graphtilewt.h>
+#include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
 #include <xflobjects/objects3d/plane.h>
@@ -72,7 +73,7 @@ void LegendWt::setMiarexView(xfl::enumMiarexViews eMiarexView)
 void LegendWt::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.fillRect(rect(), Settings::backgroundColor());
+    painter.fillRect(rect(), DisplayOptions::backgroundColor());
 
 
     int bottom = rect().height();
@@ -133,13 +134,13 @@ void LegendWt::drawWPolarLegend(QPainter &painter, QPointF place, int bottom)
     double LegendSize = 30;
     double LegendWidth = 280;
 
-    QFontMetrics fm(Settings::s_TextFont);
+    QFontMetrics fm(DisplayOptions::textFont());
     double ypos = fm.height();
 
-    painter.setFont(Settings::s_TextFont);
+    painter.setFont(DisplayOptions::textFont());
 
 
-    QPen TextPen(Settings::s_TextColor);
+    QPen TextPen(DisplayOptions::textColor());
     painter.setPen(TextPen);
     TextPen.setWidth(1);
 
@@ -171,7 +172,7 @@ void LegendWt::drawWPolarLegend(QPainter &painter, QPointF place, int bottom)
 #endif
 
 //    painter.setBackgroundMode(Qt::TransparentMode);
-    QBrush LegendBrush(Settings::s_BackgroundColor);
+    QBrush LegendBrush(DisplayOptions::backgroundColor());
     painter.setBrush(LegendBrush);
 
     QPen LegendPen;
@@ -238,7 +239,7 @@ void LegendWt::drawWPolarLegend(QPainter &painter, QPointF place, int bottom)
                             x1 = place.x() + 1.0*LegendSize;
                             y1 = place.y() + 1.*ypos*ny;
 
-                            xfl::drawSymbol(painter, pWPolar->pointStyle(), Settings::s_BackgroundColor, pWPolar->color(), x1, y1);
+                            xfl::drawSymbol(painter, pWPolar->pointStyle(), DisplayOptions::backgroundColor(), pWPolar->color(), x1, y1);
                         }
 
                         painter.setPen(TextPen);
@@ -289,17 +290,17 @@ void LegendWt::drawPOppGraphLegend(QPainter &painter, QPointF place, double bott
     }
 
     painter.save();
-    painter.setFont(Settings::s_TextFont);
+    painter.setFont(DisplayOptions::textFont());
 
-    QFontMetrics fm(Settings::s_TextFont);
+    QFontMetrics fm(DisplayOptions::textFont());
     ypos = fm.height();
 
-    QPen TextPen(Settings::s_TextColor);
+    QPen TextPen(DisplayOptions::textColor());
     painter.setPen(TextPen);
     TextPen.setWidth(1);
 
 //    painter.setBackgroundMode(Qt::TransparentMode);
-    QBrush LegendBrush(Settings::s_BackgroundColor);
+    QBrush LegendBrush(DisplayOptions::backgroundColor());
     painter.setBrush(LegendBrush);
 
     QPen LegendPen;
@@ -330,7 +331,7 @@ void LegendWt::drawPOppGraphLegend(QPainter &painter, QPointF place, double bott
             x1 = place.x() + 2.0*LegendSize;
             y1 = place.y() + 1.*ypos*ny;
 
-            xfl::drawSymbol(painter, s_pMiarex->curPOpp()->pointStyle(), Settings::s_BackgroundColor, s_pMiarex->curPOpp()->color(), x1, y1);
+            xfl::drawSymbol(painter, s_pMiarex->curPOpp()->pointStyle(), DisplayOptions::backgroundColor(), s_pMiarex->curPOpp()->color(), x1, y1);
         }
 
         painter.setPen(TextPen);
@@ -395,7 +396,7 @@ void LegendWt::drawPOppGraphLegend(QPainter &painter, QPointF place, double bott
                             x1 = place.x() + 2.0*LegendSize;
                             y1 = place.y() + 1.*ypos*ny;
 //                            painter.drawRect(x1-2, place.y() + 1.*ypos*ny-2, 4, 4);
-                            xfl::drawSymbol(painter, pPOpp->pointStyle(), Settings::s_BackgroundColor, pPOpp->color(), x1, y1);
+                            xfl::drawSymbol(painter, pPOpp->pointStyle(), DisplayOptions::backgroundColor(), pPOpp->color(), x1, y1);
                         }
 
                         painter.setPen(TextPen);
@@ -433,7 +434,7 @@ void LegendWt::drawCpLegend(QPainter &painter, Graph const *pGraph, QPointF plac
     bottom -= 15;//margin
 
     QPen CurvePen;
-    QPen TextPen(Settings::s_TextColor);
+    QPen TextPen(DisplayOptions::textColor());
 
     ny=0;
 
@@ -464,7 +465,7 @@ void LegendWt::drawCpLegend(QPainter &painter, Graph const *pGraph, QPointF plac
                 int x1 = int(place.x() + 2.0*LegendSize);
                 int y1 = int(place.y() + 1.*dny*ny);
 
-                xfl::drawSymbol(painter, pCurve->pointStyle(), Settings::s_BackgroundColor, pCurve->color(), x1, y1);
+                xfl::drawSymbol(painter, pCurve->pointStyle(), DisplayOptions::backgroundColor(), pCurve->color(), x1, y1);
             }
 
             pCurve->curveName(strong);
@@ -496,7 +497,7 @@ void LegendWt::drawStabTimeLegend(QPainter &painter, Graph const *pGraph, QPoint
     bottom -= 15;//margin
 
     QPen CurvePen;
-    QPen TextPen(Settings::s_TextColor);
+    QPen TextPen(DisplayOptions::textColor());
 
     int ny=0;
 
@@ -526,7 +527,7 @@ void LegendWt::drawStabTimeLegend(QPainter &painter, Graph const *pGraph, QPoint
             {
                 double x1 = place.x() + 2.0*LegendSize;
                 double y1 = place.y() + 1.*dny*ny;
-                xfl::drawSymbol(painter, pCurve->pointStyle(), Settings::s_BackgroundColor, pCurve->color(), x1, y1);
+                xfl::drawSymbol(painter, pCurve->pointStyle(), DisplayOptions::backgroundColor(), pCurve->color(), x1, y1);
             }
 
             pCurve->curveName(strong);
@@ -552,13 +553,13 @@ void LegendWt::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
     double LegendSize = 30;
     double LegendWidth = 240;
     painter.save();
-    painter.setFont(Settings::textFont());
+    painter.setFont(DisplayOptions::textFont());
 
-    QFont fnt(Settings::textFont()); //two step to shut valgrind up
+    QFont fnt(DisplayOptions::textFont()); //two step to shut valgrind up
     QFontMetrics fm(fnt);
     double legendHeight = fm.height()+1;
 
-    QPen TextPen(Settings::textColor());
+    QPen TextPen(DisplayOptions::textColor());
     painter.setPen(TextPen);
     TextPen.setWidth(1);
 
@@ -582,7 +583,7 @@ void LegendWt::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
     int nFoils= str.size();
 
     //    painter.setBackgroundMode(Qt::TransparentMode);
-    QBrush LegendBrush(Settings::s_BackgroundColor);
+    QBrush LegendBrush(DisplayOptions::backgroundColor());
     painter.setBrush(LegendBrush);
 
     QPen LegendPen;
@@ -641,7 +642,7 @@ void LegendWt::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
                         double x1 = place.x() + 1.5*LegendSize;
                         double y1 = place.y() + 1.*legendHeight*ny;
 
-                        xfl::drawSymbol(painter, pPolar->pointStyle(), Settings::s_BackgroundColor, pPolar->color(), x1, y1);
+                        xfl::drawSymbol(painter, pPolar->pointStyle(), DisplayOptions::backgroundColor(), pPolar->color(), x1, y1);
                     }
 
                     painter.setPen(TextPen);

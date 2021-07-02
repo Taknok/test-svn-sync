@@ -1,7 +1,7 @@
 /****************************************************************************
 
     ReListDlg Class
-    Copyright (C) 2009-2016 Andre Deperrois
+    Copyright (C) 2009-2016 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 #include <QStringList>
 
 #include "relistdlg.h"
-#include <misc/options/settings.h>
+#include <xflcore/displayoptions.h>
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/customwts/floateditdelegate.h>
 
@@ -122,7 +122,7 @@ void ReListDlg::setupLayout()
         QHBoxLayout * pListLayout = new QHBoxLayout;
         {
             m_ptvRe = new QTableView(this);
-            m_ptvRe->setFont(Settings::s_TableFont);
+            m_ptvRe->setFont(DisplayOptions::tableFont());
             m_ptvRe->setSelectionBehavior(QAbstractItemView::SelectRows);
             m_ptvRe->setEditTriggers(QAbstractItemView::AllEditTriggers);
             m_ptvRe->setWindowTitle(QObject::tr("Re List"));

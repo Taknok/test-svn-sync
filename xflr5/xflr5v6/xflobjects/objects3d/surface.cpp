@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Surface Class
-    Copyright (C) 2005-2016 Andre Deperrois 
+    Copyright (C) 2005-2016 André Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -278,8 +278,8 @@ double Surface::chord(double tau) const
     V1 = m_TA-m_LA;
     V2 = m_TB-m_LB;
 
-    ChordA = V1.VAbs();
-    ChordB = V2.VAbs();
+    ChordA = V1.norm();
+    ChordB = V2.norm();
 
     return ChordA + (ChordB-ChordA) * qAbs(tau);
 }
@@ -481,15 +481,15 @@ void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, Vect
  */
 void Surface::getSidePoints(enumPanelPosition pos,
                             Body const*pBody,
-                            Vector3d *PtA, Vector3d *PtB, Vector3d *NA, Vector3d *NB, int nPoints) const
+                            QVector<Vector3d> &PtA, QVector<Vector3d> &PtB, QVector<Vector3d> &NA, QVector<Vector3d> &NB, int nPoints) const
 {
     double xRelA=0, xRelB=0;
     Vector3d A4, B4, TA4, TB4, I;
-
+    Vector3d Ux(1,0,0);
     Vector3d V = Normal * NormalA;
-    Vector3d U = (m_TA - m_LA).normalized();
+    Vector3d Ua = (m_TA - m_LA).normalized();
     //    double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
-    double sindA = -V.dot(U);
+    double sindA = -V.dot(Ua);
     if(sindA> 1.0) sindA = 1.0;
     if(sindA<-1.0) sindA = -1.0;
     double alpha_dA = asin(sindA);
@@ -497,9 +497,9 @@ void Surface::getSidePoints(enumPanelPosition pos,
     alpha_dA *= 180.0/PI;
 
     V = Normal * NormalB;
-    U = (m_TB-m_LB).normalized();
+    Vector3d Ub = (m_TB-m_LB).normalized();
     //    double sindB = -V.dot(Vector3d(1.0,0.0,0.0));
-    double sindB = -V.dot(U);
+    double sindB = -V.dot(Ub);
     if(sindB> 1.0) sindB = 1.0;
     if(sindB<-1.0) sindB = -1.0;
     double alpha_dB = asin(sindB);
@@ -556,8 +556,8 @@ void Surface::getSidePoints(enumPanelPosition pos,
         double Oz = m_LA.z * (1.0-Ox) +  m_TA.z * Ox;
         PtA[i].y = Oy +(PtA[i].y - Oy)/cosdA;
         PtA[i].z = Oz +(PtA[i].z - Oz)/cosdA;
-        PtA[i].rotate(m_LA, m_LA-m_TA, +alpha_dA);
-        NA[i].rotate(Vector3d(1.0,0.0,0.0), delta);
+        PtA[i].rotate(m_LA, Ua, +alpha_dA);
+        NA[i].rotate(Ux, delta);
 
         NB[i].set(0.0,0.0,0.0);
         getSidePoint(xRelB, true,  pos, PtB[i], NB[i]);
@@ -566,8 +566,8 @@ void Surface::getSidePoints(enumPanelPosition pos,
         Oz = m_LB.z * (1.0-Ox) +  m_TB.z * Ox;
         PtB[i].y   = Oy +(PtB[i].y - Oy)/cosdB;
         PtB[i].z   = Oz +(PtB[i].z - Oz)/cosdB;
-        PtB[i].rotate(m_LB, m_LB-m_TB, +alpha_dB);
-        NB[i].rotate(Vector3d(1.0,0.0,0.0), delta);
+        PtB[i].rotate(m_LB, Ub, +alpha_dB);
+        NB[i].rotate(Ux, delta);
 
         if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
         {
@@ -587,7 +587,6 @@ void Surface::getSidePoints(enumPanelPosition pos,
 }
 
 
-
 /**
  * Returns the position of a surface point at the position specified by the input parameters.
  * @param xArel the relative position at the left Foil
@@ -600,7 +599,7 @@ void Surface::getSurfacePoint(double xArel, double xBrel, double yrel,
                               enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const
 {
     Vector3d APt, BPt, foilPt;
-    double nx=0, ny=0;
+    double nx(0), ny(0);
     if(pos==MIDSURFACE && m_pFoilA && m_pFoilB)
     {
         foilPt = m_pFoilA->midYRel(xArel);
@@ -898,7 +897,7 @@ bool Surface::rotateFlap(double Angle)
             R.x = s_pNode[m_FlapNode[k]].x - m_HingePoint.x;
             R.y = s_pNode[m_FlapNode[k]].y - m_HingePoint.y;
             R.z = s_pNode[m_FlapNode[k]].z - m_HingePoint.z;
-            Quat.Conjugate(R,S);
+            Quat.conjugate(R,S);
 
             s_pNode[m_FlapNode[k]].x = S.x + m_HingePoint.x;
             s_pNode[m_FlapNode[k]].y = S.y + m_HingePoint.y;

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     VoidWidget Class
-    Copyright (C) 2016 Andre Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef VOIDWIDGET_H
-#define VOIDWIDGET_H
+#pragma once
 
 #include <QWidget>
 
@@ -34,4 +33,4 @@ class VoidWidget : public QWidget
         void paintEvent (QPaintEvent * pEvent) override;
 };
 
-#endif // VOIDWIDGET_H
+

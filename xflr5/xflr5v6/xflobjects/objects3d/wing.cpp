@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Wing Class
-    Copyright (C) 2005-2016 Andre Deperrois
+    Copyright (C) 2005-2016 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -526,7 +526,7 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
                 Diag1 = ATop - CBot;
                 Diag2 = ABot - CTop;
                 PointNormal = Diag1 * Diag2;
-                ElemArea = PointNormal.VAbs()/2.0;
+                ElemArea = PointNormal.norm()/2.0;
                 if(ElemArea>0.0) ElemVolume[p] = ElemArea * LocalSpan;
                 else
                 {
@@ -2758,8 +2758,8 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
         //top surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft.data(), PtRight.data(),
-                                           NormalA.data(), NormalB.data(), CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft, PtRight,
+                                           NormalA, NormalB, CHORDPANELS+1);
 
             double tauA = double(is)   /double(SPANPANELS);
             double tauB = double(is+1) /double(SPANPANELS);
@@ -2817,8 +2817,8 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
         //bottom surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtLeft.data(), PtRight.data(),
-                                           NormalA.data(), NormalB.data(), CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtLeft, PtRight,
+                                           NormalA, NormalB, CHORDPANELS+1);
 
             double tauA = double(is)   / double(SPANPANELS);
             double tauB = double(is+1) / double(SPANPANELS);
@@ -2880,10 +2880,10 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
     {
         if(m_Surface.at(j)->isTipLeft())
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft.data(), PtRight.data(),
-                                           NormalA.data(), NormalB.data(), CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft.data(), PtBotRight.data(),
-                                           NormalA.data(), NormalB.data(), CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft, PtRight,
+                                           NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft, PtBotRight,
+                                           NormalA, NormalB, CHORDPANELS+1);
 
             N = m_Surface.at(j)->Normal;
             N.rotateX(90.0);
@@ -2965,10 +2965,10 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
 
         if(m_Surface.at(j)->isTipRight())
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft.data(), PtRight.data(),
-                                           NormalA.data(), NormalB.data(), CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft.data(), PtBotRight.data(),
-                                           NormalA.data(), NormalB.data(), CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft, PtRight,
+                                           NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft, PtBotRight,
+                                           NormalA, NormalB, CHORDPANELS+1);
 
             N = m_Surface.at(j)->Normal;
             N.rotateX(-90.0);
@@ -3084,8 +3084,8 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
     QVector<Vector3d> PtBotLeft(CHORDPANELS+1);
     QVector<Vector3d> PtBotRight(CHORDPANELS+1);
 
-    memset(NormalA.data(), 0, ulong(CHORDPANELS+1) * sizeof(Vector3d));
-    memset(NormalB.data(), 0, ulong(CHORDPANELS+1) * sizeof(Vector3d));
+    NormalA.fill(Vector3d());
+    NormalB.fill(Vector3d());
 
     //Number of triangles
     // nSurfaces
@@ -3108,7 +3108,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
         //top surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft.data(), PtRight.data(), NormalA.data(), NormalB.data(), CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft, PtRight, NormalA, NormalB, CHORDPANELS+1);
 
             double tauA = double(is)   / double(SPANPANELS);
             double tauB = double(is+1) / double(SPANPANELS);
@@ -3146,8 +3146,8 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
         //bottom surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtLeft.data(), PtRight.data(),
-                                           NormalA.data(), NormalB.data(), CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtLeft, PtRight,
+                                           NormalA, NormalB, CHORDPANELS+1);
 
             double tauA = double(is)   /double(SPANPANELS);
             double tauB = double(is+1) /double(SPANPANELS);
@@ -3192,8 +3192,8 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
     {
         if(m_Surface.at(j)->isTipLeft())
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft.data(),    PtRight.data(),    NormalA.data(), NormalB.data(), CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft.data(), PtBotRight.data(), NormalA.data(), NormalB.data(), CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
 
             N = m_Surface.at(j)->Normal;
             N.rotateX(90.0);
@@ -3238,8 +3238,8 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
 
         if(m_Surface.at(j)->isTipRight())
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft.data(),    PtRight.data(),    NormalA.data(), NormalB.data(), CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft.data(), PtBotRight.data(), NormalA.data(), NormalB.data(), CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
 
             N = m_Surface.at(j)->Normal;
             N.rotateX(-90.0);

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     xflr5 v6
-    Copyright (C) Andre Deperrois
+    Copyright (C) André Deperrois
     GNU General Public License v3
 
 *****************************************************************************/
@@ -27,7 +27,7 @@ class LineBtn : public QAbstractButton
         void setTheStyle(const LineStyle &ls);
         void setTheStyle(Line::enumLineStipple style, int width, const QColor &color, Line::enumPointStyle pointstyle);
 
-        void setColor(const QColor &color);
+        void setColor(QColor const &color);
         void setStipple(Line::enumLineStipple stipple);
         void setWidth(int width);
         void setPointStyle(Line::enumPointStyle pointstyle);

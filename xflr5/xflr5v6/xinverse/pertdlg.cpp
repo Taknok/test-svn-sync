@@ -1,7 +1,7 @@
 /****************************************************************************
 
     PertDlg class
-    Copyright (C) 2004-2016 Andre Deperrois 
+    Copyright (C) 2004-2016 André Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,11 +23,12 @@
 #include <QHBoxLayout>
 
 #include "pertdlg.h"
-#include <misc/options/settings.h>
 
-#include <xflwidgets/customwts/floateditdelegate.h>
+
+#include <xflcore/displayoptions.h>
 #include <xflobjects/objects2d/foil.h>
 #include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/floateditdelegate.h>
 
 
 PertDlg::PertDlg(QWidget *pParent) : QDialog(pParent)
@@ -70,7 +71,7 @@ void PertDlg::setupLayout()
     m_pFloatDelegate->setPrecision(precision);
 
     m_pctrlCnTable = new QTableView(this);
-    m_pctrlCnTable->setFont(Settings::s_TableFont);
+    m_pctrlCnTable->setFont(DisplayOptions::tableFont());
     m_pctrlCnTable->setWindowTitle(tr("Cn List"));
     m_pctrlCnTable->setMinimumHeight(500);
     m_pctrlCnTable->setMinimumWidth(350);

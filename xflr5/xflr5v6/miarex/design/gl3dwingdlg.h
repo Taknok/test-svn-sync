@@ -1,7 +1,7 @@
 /****************************************************************************
 
     GL3dWingDlg Class
-    Copyright (C) 2009-2019 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

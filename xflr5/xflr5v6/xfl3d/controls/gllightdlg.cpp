@@ -1,7 +1,7 @@
 /****************************************************************************
 
     GLLightDlg class
-    Copyright (C) 2009 Andre Deperrois xflr5@yahoo.com
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 #include <xfl3d/gl3dview.h>
 
 
-Light GLLightDlg::s_Light;
+
 Attenuation GLLightDlg::s_Attenuation;
 int GLLightDlg::s_iShininess = 3;
 
@@ -64,7 +64,7 @@ void GLLightDlg::connectSignals()
     connect(m_peslLightAmbient,  SIGNAL(sliderMoved(int)), SLOT(onChanged()));
     connect(m_peslLightDiffuse,  SIGNAL(sliderMoved(int)), SLOT(onChanged()));
     connect(m_peslLightSpecular, SIGNAL(sliderMoved(int)), SLOT(onChanged()));
-    connect(m_prslXLight,        SIGNAL(sliderMoved(int)), SLOT(onChanged()));
+    connect(m_peslXLight,        SIGNAL(sliderMoved(int)), SLOT(onChanged()));
     connect(m_peslYLight,        SIGNAL(sliderMoved(int)), SLOT(onChanged()));
     connect(m_peslZLight,        SIGNAL(sliderMoved(int)), SLOT(onChanged()));
 
@@ -204,10 +204,10 @@ void GLLightDlg::setupLayout()
             QLabel *lab22 = new QLabel(tr("y"));
             QLabel *lab23 = new QLabel(tr("z"));
 
-            m_prslXLight = new ExponentialSlider(true, 2.0, Qt::Horizontal);
+            m_peslXLight = new ExponentialSlider(true, 2.0, Qt::Horizontal);
             m_peslYLight = new ExponentialSlider(true, 2.0, Qt::Horizontal);
             m_peslZLight = new ExponentialSlider(true, 2.0, Qt::Horizontal);
-            m_prslXLight->setTickPosition(QSlider::TicksBelow);
+            m_peslXLight->setTickPosition(QSlider::TicksBelow);
             m_peslYLight->setTickPosition(QSlider::TicksBelow);
             m_peslZLight->setTickPosition(QSlider::TicksBelow);
             m_plabPosXValue = new QLabel(Units::lengthUnitLabel());
@@ -217,7 +217,7 @@ void GLLightDlg::setupLayout()
             pLightPosition->addWidget(lab21,1,1);
             pLightPosition->addWidget(lab22,2,1);
             pLightPosition->addWidget(lab23,3,1);
-            pLightPosition->addWidget(m_prslXLight,1,2);
+            pLightPosition->addWidget(m_peslXLight,1,2);
             pLightPosition->addWidget(m_peslYLight,2,2);
             pLightPosition->addWidget(m_peslZLight,3,2);
             pLightPosition->addWidget(m_plabPosXValue,1,3);
@@ -316,13 +316,15 @@ void GLLightDlg::onDefaults()
 
 void GLLightDlg::readParams(void)
 {
+    Light &s_Light = m_pglView->s_Light;
+
     s_Light.m_bIsLightOn = m_plabLight->isChecked();
 
     s_Light.m_Red     = float(m_pslRed->value())    /100.0f;
     s_Light.m_Green   = float(m_pslGreen->value())  /100.0f;
     s_Light.m_Blue    = float(m_pslBlue->value())   /100.0f;
 
-    s_Light.m_X  = float(m_prslXLight->expValue())/100.0f;
+    s_Light.m_X  = float(m_peslXLight->expValue())/100.0f;
     s_Light.m_Y  = float(m_peslYLight->expValue())/100.0f;
     s_Light.m_Z  = float(m_peslZLight->expValue())/100.0f;
 
@@ -340,13 +342,15 @@ void GLLightDlg::readParams(void)
 
 void GLLightDlg::setParams(void)
 {
+    Light &s_Light = gl3dView::s_Light;
+
     m_plabLight->setChecked(s_Light.m_bIsLightOn);
 
     m_peslLightAmbient->setExpValue( double(s_Light.m_Ambient)  *20.0);
     m_peslLightDiffuse->setExpValue( double(s_Light.m_Diffuse)  *20.0);
     m_peslLightSpecular->setExpValue(double(s_Light.m_Specular) *20.0);
 
-    m_prslXLight->setExpValue(double(s_Light.m_X)*100.0);
+    m_peslXLight->setExpValue(double(s_Light.m_X)*100.0);
     m_peslYLight->setExpValue(double(s_Light.m_Y)*100.0);
     m_peslZLight->setExpValue(double(s_Light.m_Z)*100.0);
 
@@ -366,6 +370,8 @@ void GLLightDlg::setParams(void)
 
 void GLLightDlg::setLabels()
 {
+    Light &s_Light = gl3dView::s_Light;
+
     QString strong;
 
     strong = QString::asprintf("%7.1f", double(s_Light.m_Ambient));
@@ -393,26 +399,26 @@ void GLLightDlg::setLabels()
 
 bool GLLightDlg::loadSettings(QSettings &settings)
 {
-    settings.beginGroup("GLLight3");
+    Light &s_Light = gl3dView::s_Light;
+    settings.beginGroup("GLLightDlg");
     {
-        //  we're reading/loading
-        s_Light.m_Ambient           = settings.value("Ambient",0.3).toFloat();
-        s_Light.m_Diffuse           = settings.value("Diffuse",1.2).toFloat();
-        s_Light.m_Specular          = settings.value("Specular",0.50).toFloat();
+        s_Light.m_Ambient           = settings.value("Ambient",  0.3).toFloat();
+        s_Light.m_Diffuse           = settings.value("Diffuse",  1.2).toFloat();
+        s_Light.m_Specular          = settings.value("Specular", 0.5).toFloat();
 
         s_Light.m_X                 = settings.value("XLight", 0.300).toFloat();
         s_Light.m_Y                 = settings.value("YLight", 0.300).toFloat();
         s_Light.m_Z                 = settings.value("ZLight", 3.000).toFloat();
 
-        s_Light.m_Red               = settings.value("RedLight",1.0).toFloat();
+        s_Light.m_Red               = settings.value("RedLight",  1.0).toFloat();
         s_Light.m_Green             = settings.value("GreenLight",1.0).toFloat();
-        s_Light.m_Blue              = settings.value("BlueLight",1.0).toFloat();
+        s_Light.m_Blue              = settings.value("BlueLight", 1.0).toFloat();
 
         s_iShininess     = settings.value("MatShininess", 5).toInt();
 
-        s_Attenuation.m_Constant    = settings.value("ConstantAtt",2.0).toFloat();
-        s_Attenuation.m_Linear      = settings.value("LinearAtt",1.0).toFloat();
-        s_Attenuation.m_Quadratic   = settings.value("QuadraticAtt",.5).toFloat();
+        s_Attenuation.m_Constant    = settings.value("ConstantAtt",  2.0).toFloat();
+        s_Attenuation.m_Linear      = settings.value("LinearAtt",    1.0).toFloat();
+        s_Attenuation.m_Quadratic   = settings.value("QuadraticAtt", 0.5).toFloat();
 
         s_Light.m_bIsLightOn        = settings.value("bLight", true).toBool();
     }
@@ -429,21 +435,22 @@ void GLLightDlg::setModelSize(double span)
 
 void GLLightDlg::setDefaults()
 {
+    Light &s_Light = gl3dView::s_Light;
     s_Light.m_Red   = 1.0f;
     s_Light.m_Green = 1.0f;
     s_Light.m_Blue  = 1.0f;
 
-    s_Light.m_Ambient  = 0.3f;
-    s_Light.m_Diffuse  = 1.20f;
-    s_Light.m_Specular = 0.50f;
+    s_Light.m_Ambient  = 0.67f;
+    s_Light.m_Diffuse  = 0.71f;
+    s_Light.m_Specular = 0.51f;
 
-    s_Light.m_X   =  0.1f * m_ModelSize;
+    s_Light.m_X   =  0.5f * m_ModelSize;
     s_Light.m_Y   =  0.3f * m_ModelSize;
     s_Light.m_Z   =  0.5f * m_ModelSize;
-    m_prslXLight->setRange(-int(m_ModelSize*100), int(m_ModelSize*100));
+    m_peslXLight->setRange(-int(m_ModelSize*100), int(m_ModelSize*100));
     m_peslYLight->setRange(-int(m_ModelSize*100), int(m_ModelSize*100));
     m_peslZLight->setRange(-int(m_ModelSize*100), int(m_ModelSize*100));
-    m_prslXLight->setTickInterval(int(m_ModelSize*10.0f));
+    m_peslXLight->setTickInterval(int(m_ModelSize*10.0f));
     m_peslYLight->setTickInterval(int(m_ModelSize*10.0f));
     m_peslZLight->setTickInterval(int(m_ModelSize*10.0f));
 
@@ -457,10 +464,10 @@ void GLLightDlg::setDefaults()
 }
 
 
-
 bool GLLightDlg::saveSettings(QSettings &settings)
 {
-    settings.beginGroup("GLLight3");
+    Light &s_Light = gl3dView::s_Light;
+    settings.beginGroup("GLLightDlg");
     {
         settings.setValue("Ambient",      s_Light.m_Ambient);
         settings.setValue("Diffuse",      s_Light.m_Diffuse);
@@ -502,6 +509,7 @@ void GLLightDlg::hideEvent(QHideEvent *)
 
 void GLLightDlg::onLight()
 {
+    Light &s_Light = gl3dView::s_Light;
     s_Light.m_bIsLightOn = m_plabLight->isChecked();
     setEnabled();
     apply();
@@ -510,6 +518,7 @@ void GLLightDlg::onLight()
 
 void GLLightDlg::setEnabled()
 {
+    Light &s_Light = gl3dView::s_Light;
     m_pslRed->setEnabled(s_Light.m_bIsLightOn);
     m_pslGreen->setEnabled(s_Light.m_bIsLightOn);
     m_pslBlue->setEnabled(s_Light.m_bIsLightOn);
@@ -518,7 +527,7 @@ void GLLightDlg::setEnabled()
     m_peslLightDiffuse->setEnabled(s_Light.m_bIsLightOn);
     m_peslLightSpecular->setEnabled(s_Light.m_bIsLightOn);
 
-    m_prslXLight->setEnabled(s_Light.m_bIsLightOn);
+    m_peslXLight->setEnabled(s_Light.m_bIsLightOn);
     m_peslYLight->setEnabled(s_Light.m_bIsLightOn);
     m_peslZLight->setEnabled(s_Light.m_bIsLightOn);
 

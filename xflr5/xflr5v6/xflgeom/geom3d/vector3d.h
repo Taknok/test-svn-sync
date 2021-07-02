@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Vector3d Class
-    Copyright (C) 2008 Andre Deperrois
+    Copyright (C) 2008 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -141,6 +141,8 @@ public:
     float yf() const {return float(y);}
     float zf() const {return float(z);}
 
+    void reset() {x=y=z=0;}
+
     void copy(Vector3d const &V)
     {
         x = V.x;
@@ -164,14 +166,14 @@ public:
 
     void normalize()
     {
-        double abs = VAbs();
+        double abs = norm();
         if(abs< 1.e-10) return;
         x/=abs;
         y/=abs;
         z/=abs;
     }
 
-    double VAbs() const
+    double norm() const
     {
         return sqrt(x*x+y*y+z*z);
     }
@@ -203,7 +205,7 @@ public:
 
     Vector3d normalized() const
     {
-        double l = VAbs();
+        double l = norm();
         if(fabs(l)<0.000000001) return Vector3d(0.0,0.0,0.0);
         else return Vector3d(x/l, y/l, z/l);
     }

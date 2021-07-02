@@ -1,7 +1,7 @@
 /****************************************************************************
 
     XFLR5App  Class
-    Copyright (C) 2008-2017 Andre Deperrois 
+    Copyright (C) 2008-2017 André Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,13 +31,14 @@
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
+#include <ctime>
+#include <iostream>
 
 #include "xflr5app.h"
 #include <globals/mainframe.h>
 #include <xflcore/trace.h>
 #include <misc/options/settings.h>
-#include <ctime>
-#include <iostream>
+
 
 XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
 {

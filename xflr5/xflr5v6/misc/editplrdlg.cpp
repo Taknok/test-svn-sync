@@ -1,7 +1,7 @@
 /****************************************************************************
 
     EditPlrDlg Class
-    Copyright (C) 2009-2018 Andre Deperrois
+    Copyright (C) 2009-2018 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,10 +28,11 @@
 #include "editplrdlg.h"
 #include <miarex/miarex.h>
 #include <misc/options/settings.h>
-#include <xflwidgets/customwts/floateditdelegate.h>
+#include <xdirect/xdirect.h>
+#include <xflcore/displayoptions.h>
 #include <xflobjects/objects2d/polar.h>
 #include <xflobjects/objects3d/wpolar.h>
-#include <xdirect/xdirect.h>
+#include <xflwidgets/customwts/floateditdelegate.h>
 
 QByteArray EditPlrDlg::s_Geometry;
 
@@ -271,7 +272,7 @@ void EditPlrDlg::setupLayout()
     }
 
     m_pctrlPointTable = new QTableView(this);
-    m_pctrlPointTable->setFont(Settings::s_TableFont);
+    m_pctrlPointTable->setFont(DisplayOptions::tableFont());
     m_pctrlPointTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_pctrlPointTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_pctrlPointTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

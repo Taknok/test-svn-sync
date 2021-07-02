@@ -1,7 +1,7 @@
 /****************************************************************************
 
     GL3DScales Class
-    Copyright (C) 2009-2016 Andre Deperrois 
+    Copyright (C) 2009-2016 André Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #include <miarex/miarex.h>
 #include <miarex/view/gl3dmiarexview.h>
 #include <misc/options/settings.h>
+#include <xflcore/displayoptions.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
 #include <xflwidgets/customwts/exponentialslider.h>
@@ -119,7 +120,7 @@ void GL3DScales::setupLayout()
         {
             QVBoxLayout *pSliderLayout = new QVBoxLayout;
             {
-                QFontMetrics fm(Settings::s_TextFont);
+                QFontMetrics fm(DisplayOptions::textFont());
                 int w = 6 * fm.averageCharWidth();
                 QHBoxLayout *pLiftScaleLayout = new QHBoxLayout;
                 {

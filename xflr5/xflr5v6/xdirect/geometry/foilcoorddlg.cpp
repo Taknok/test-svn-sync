@@ -1,7 +1,7 @@
 /****************************************************************************
 
     FoilCoordDlg Class
-    Copyright (C) 2009-2016 Andre Deperrois 
+    Copyright (C) 2009-2016 André Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,9 +25,9 @@
 #include <QHeaderView>
 
 #include "foilcoorddlg.h"
-#include <misc/options/settings.h>
-#include <xflwidgets/customwts/floateditdelegate.h>
+#include <xflcore/displayoptions.h>
 #include <xflobjects/objects2d/foil.h>
+#include <xflwidgets/customwts/floateditdelegate.h>
 
 
 
@@ -60,7 +60,7 @@ void FoilCoordDlg::setupLayout()
     {
         m_ptvCoordTable = new QTableView(this);
         {
-            m_ptvCoordTable->setFont(Settings::s_TableFont);
+            m_ptvCoordTable->setFont(DisplayOptions::tableFont());
 
             m_pCoordModel = new QStandardItemModel(this);
             m_pCoordModel->setRowCount(10);//temporary

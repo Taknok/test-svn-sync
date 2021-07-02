@@ -1,7 +1,7 @@
 /****************************************************************************
 
     FontStruct Class
-    Copyright (C) Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 // initialized before the GUI is constructed
 // From the Qt dochttps://doc.qt.io/qt-5/qfont.html:
 //     Note that a QGuiApplication instance must exist before a QFont can be used.
-// This cause errors when linking statically to the Qt libs
+// This causes errors when linking statically to the Qt libs
 
 struct FontStruct
 {

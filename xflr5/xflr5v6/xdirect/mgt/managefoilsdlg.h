@@ -1,7 +1,7 @@
 /****************************************************************************
 
     ManageFoilsDlg Class
-    Copyright (C) 2009 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,8 +20,7 @@
 *****************************************************************************/
 
 
-#ifndef MANAGEFOILSDLG_H
-#define MANAGEFOILSDLG_H
+#pragma once
 
 #include <QDialog>
 
@@ -39,46 +38,44 @@ class ManageFoilsDlg : public QDialog
     friend class XDirect;
     friend class MainFrame;
 
-public:
-    ManageFoilsDlg(QWidget *pParent=nullptr);
-    ~ManageFoilsDlg();
+    public:
+        ManageFoilsDlg(QWidget *pParent=nullptr);
+        ~ManageFoilsDlg();
 
-    void initDialog(QString FoilName);
-    void resizeEvent(QResizeEvent *pEvent);
-    void keyPressEvent(QKeyEvent *pEvent);
-    void showEvent(QShowEvent *pEvent);
-    void hideEvent(QHideEvent *pEvent);
+        void initDialog(QString FoilName);
+        void resizeEvent(QResizeEvent *pEvent);
+        void keyPressEvent(QKeyEvent *pEvent);
+        void showEvent(QShowEvent *pEvent);
+        void hideEvent(QHideEvent *pEvent);
 
-    QSize sizeHint() const {return QSize(1200,700);}
+        QSize sizeHint() const {return QSize(1200,700);}
 
-private slots:
-    void onDelete();
-    void onRename();
-    void onExport();
-    void onFoilClicked(const QModelIndex& index);
-    void onDoubleClickTable(const QModelIndex &index);
+    private slots:
+        void onDelete();
+        void onRename();
+        void onExport();
+        void onFoilClicked(const QModelIndex& index);
+        void onDoubleClickTable(const QModelIndex &index);
 
-private:
+    private:
 
-    void fillFoilTable();
-    void fillTableRow(int row);
+        void fillFoilTable();
+        void fillTableRow(int row);
 
-    void setupLayout();
+        void setupLayout();
 
-private:
-    QDialogButtonBox *m_pButtonBox;
+    private:
+        QDialogButtonBox *m_pButtonBox;
 
-    QPushButton *m_pctrlRename, *m_pctrlDelete, *m_pctrlSelect, *m_pctrlExport;
-    QTableView *m_pctrlFoilTable;
-    QStandardItemModel *m_pFoilModel;
-    FoilTableDelegate *m_pFoilDelegate;
+        QPushButton *m_pctrlRename, *m_pctrlDelete, *m_pctrlSelect, *m_pctrlExport;
+        QTableView *m_pctrlFoilTable;
+        QStandardItemModel *m_pFoilModel;
+        FoilTableDelegate *m_pFoilDelegate;
 
-    int m_iSelection;
-    Foil *m_pFoil;
-    int  *m_precision;
-    bool m_bChanged;
+        int m_iSelection;
+        Foil *m_pFoil;
+        bool m_bChanged;
 
-    static QByteArray s_Geometry;
+        static QByteArray s_Geometry;
 };
 
-#endif // MANAGEFOILSDLG_H

@@ -1,7 +1,7 @@
 /****************************************************************************
 
-         SplineSurface Class
-         Copyright (C) 2012 Andre Deperrois
+    NURBSSurface Class
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 
 *****************************************************************************/
 
-#include <QDebug>
 
 #include "nurbssurface.h"
 #include <xflanalysis/analysis3d_params.h>
@@ -152,7 +151,7 @@ double NURBSSurface::getv(double u, Vector3d r) const
 
     if(u<=0.0)          return 0.0;
     if(u>=1.0)          return 0.0;
-    if(r.VAbs()<1.0e-5) return 0.0;
+    if(r.norm()<1.0e-5) return 0.0;
 
     int iter=0;
     double v=0, v1=0, v2=0;
@@ -309,7 +308,7 @@ double NURBSSurface::Weight(int i, int N)
 bool NURBSSurface::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I) const
 {
     Vector3d  tmp, M0, M1;
-    double u, v, dist, t, tp;
+    double u(0), v(0), dist(0), t(0), tp(0);
     int iter = 0;
     int itermax = 20;
     double dmax = 1.0e-5;
@@ -318,7 +317,7 @@ bool NURBSSurface::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I) const
     M0.set(0.0, A.y, A.z);
     M1.set(0.0, B.y, B.z);
 
-    if(M0.VAbs()<M1.VAbs())
+    if(M0.norm()<M1.norm())
     {
         tmp = A;        A = B;          B = tmp;
     }

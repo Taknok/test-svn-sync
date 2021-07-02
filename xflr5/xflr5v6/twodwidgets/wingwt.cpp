@@ -1,7 +1,7 @@
 /****************************************************************************
 
     WingWidget Class
-        Copyright (C) 2015-2019 Andre Deperrois
+        Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,12 +24,13 @@
 #include <QContextMenuEvent>
 
 #include "wingwt.h"
-#include <xflcore/xflcore.h>
-#include <xflgraph/graph.h>
 #include <miarex/miarex.h>
 #include <miarex/objects3d.h>
-#include <miarex/view/w3dprefsdlg.h>
 #include <misc/options/settings.h>
+#include <xfl3d/controls/w3dprefsdlg.h>
+#include <xflcore/displayoptions.h>
+#include <xflcore/xflcore.h>
+#include <xflgraph/graph.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/planeopp.h>
 #include <xflobjects/objects3d/wpolar.h>
@@ -147,10 +148,10 @@ void WingWidget::paintEvent(QPaintEvent *)
 
     QPainter painter(this);
     painter.save();
-    painter.fillRect(rect(), Settings::backgroundColor());
-    painter.setFont(Settings::s_TextFont);
+    painter.fillRect(rect(), DisplayOptions::backgroundColor());
+    painter.setFont(DisplayOptions::textFont());
 
-    QPen TextPen(Settings::s_TextColor);
+    QPen TextPen(DisplayOptions::textColor());
     TextPen.setWidth(1);
     painter.setPen(TextPen);
 
@@ -173,7 +174,6 @@ void WingWidget::paintEvent(QPaintEvent *)
     }
     painter.restore();
 }
-
 
 
 /**
@@ -273,7 +273,7 @@ void WingWidget::paintXCmRef(QPainter & painter, QPointF ORef, double scale)
     O.rx() = offset.x();
     O.ry() = offset.y();
 
-    QPen XCmRefPen(Settings::s_TextColor);
+    QPen XCmRefPen(DisplayOptions::textColor());
     painter.setPen(XCmRefPen);
 
     double XCm = O.x() ;
@@ -462,12 +462,12 @@ void WingWidget::wheelEvent (QWheelEvent *pEvent)
 
     if(pEvent->angleDelta().y()>0)
     {
-        if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
+        if(!DisplayOptions::bReverseZoom()) zoomFactor = 1./1.06;
         else                          zoomFactor = 1.06;
     }
     else
     {
-        if(!Settings::s_bReverseZoom) zoomFactor = 1.06;
+        if(!DisplayOptions::bReverseZoom()) zoomFactor = 1.06;
         else                          zoomFactor = 1./1.06;
     }
 

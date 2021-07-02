@@ -2,7 +2,7 @@
 
     MainFrame Class
 
-    Copyright (C) Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -118,40 +118,40 @@ class MainFrame : public QMainWindow
         void onAlignChildrenStyle(bool bAlign);
 
     private slots:
+        bool onSaveProjectAs();
+        bool onSaveProjectAs(const QString pathName);
         void aboutQt();
         void aboutXFLR5();
         void onCurFoilStyle();
+        void onCurGraphSettings();
         void onExecuteScript();
         void onExportCurGraph();
-        void onCurGraphSettings();
-        void onInsertProject();
         void onHighlightOperatingPoint();
-        void onMakePlrFiles(QString const pathname) const;
-        void onNewProject();
+        void onInsertProject();
         void onLoadFile();
         void onLogFile();
+        void onMakePlrFiles(QString const pathname) const;
+        void onManageFoils();
+        void onNewProject();
         void onOpenGLInfo();
+        void onOpenRecentFile();
         void onPreferences();
         void onProjectModified();
         void onResetCurGraphScales();
         void onResetSettings();
         void onRestoreToolbars();
-        bool onSaveProjectAs();
-        bool onSaveProjectAs(const QString pathName);
+        void onSavePlaneAsProject();
+        void onSaveProject();
         void onSaveTimer();
         void onSaveViewToImageFile();
         void onSelChangeFoil(int sel);
-        void onSelChangePolar(int sel);
         void onSelChangeOpp(int sel);
         void onSelChangePlane(int sel);
         void onSelChangePlaneOpp(int sel);
+        void onSelChangePolar(int sel);
         void onSelChangeWPolar(int sel);
-        void onSaveProject();
-        void onManageFoils();
-        void onSavePlaneAsProject();
-        void onOpenRecentFile();
+        void onSetNoApp();
         void onShowMousePos();
-
 
     protected:
         void keyPressEvent(QKeyEvent *pEvent);
@@ -185,6 +185,7 @@ class MainFrame : public QMainWindow
         void hideDockWindows();
         bool loadSettings();
         bool loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
+        void pushSettings();
         void readPolarFile(QDataStream &ar);
         void saveFoilPolars(QDataStream &ar, const QVector<Foil*> &FoilList) const;
         bool saveProject(QString PathName="");
@@ -196,6 +197,7 @@ class MainFrame : public QMainWindow
         void selectWPolar(WPolar *pWPolar);
         void selectPlaneOpp(PlaneOpp *pPlaneOpp);
         void setColorListFromFile();
+        void setDefaultStaticFonts();
         void setPlainColorsFromFile();
         void setNoApp();
         bool serializeProjectWPA(QDataStream &ar, bool bIsStoring);
@@ -255,8 +257,8 @@ class MainFrame : public QMainWindow
         MiarexTileWidget *m_pMiarexTileWidget;
         XDirectTileWidget *m_pXDirectTileWidget;
 
-        QDockWidget *m_pctrlXDirectWidget, *m_pctrlMiarexWidget, *m_pctrlAFoilWidget, *m_pctrlXInverseWidget;
-        QDockWidget *m_pctrl3DScalesWidget, *m_pctrlStabViewWidget;
+        QDockWidget *m_pdwXDirect, *m_pdwMiarex, *m_pdwAFoil, *m_pdwXInverse;
+        QDockWidget *m_pdw3DScales, *m_pdwStabView;
 
         QToolBar *m_pctrlXDirectToolBar;   /**< The tool bar container which holds the instance of the QXDirect application  */
         QToolBar *m_pctrlXInverseToolBar;
@@ -300,7 +302,7 @@ class MainFrame : public QMainWindow
         QMenu *m_pWPlrCtxMenu, *m_pWOppCtxMenu, *m_pW3DCtxMenu, *m_pWCpCtxMenu, *m_pWTimeCtxMenu, *m_pW3DStabCtxMenu;
 
         //MainFrame actions
-        QAction *m_pOnXDirectAct, *m_pOnMiarexAct, *m_pOnAFoilAct, *m_pOnXInverseAct, *m_pOnMixedInverseAct;
+        QAction *m_pOnXDirectAct, *m_pOnMiarexAct, *m_pOnAFoilAct, *m_pOnXInverseAct, *m_pOnMixedInverseAct, *m_pNoAppAct;
         QAction *m_pOpenAct, *m_pInsertAct;
         QAction *m_pSaveAct, *m_pSaveProjectAsAct,*m_pNewProjectAct, *m_pCloseProjectAct;
         QAction *m_pExecuteScript;

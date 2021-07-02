@@ -1,7 +1,7 @@
 /****************************************************************************
 
     AFoil Class
-    Copyright (C) 2009-2016 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,14 +26,13 @@
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QHBoxLayout>
-#include <QtDebug>
 
 
-#include "afoil.h"
-#include "afoiltabledlg.h"
-#include "splinectrlsdlg.h"
-#include "lecircledlg.h"
-#include "foiltabledelegate.h"
+#include <design/afoil.h>
+#include <design/afoiltabledlg.h>
+#include <design/foiltabledelegate.h>
+#include <design/lecircledlg.h>
+#include <design/splinectrlsdlg.h>
 #include <globals/mainframe.h>
 #include <gui_objects/splinefoil.h>
 #include <misc/options/settings.h>
@@ -48,11 +47,12 @@
 #include <xdirect/geometry/tegapdlg.h>
 #include <xdirect/geometry/twodpaneldlg.h>
 #include <xdirect/objects2d.h>
-#include <xdirect/objects2d.h>
 #include <xdirect/xdirect.h>
+#include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects_global.h>
+#include <xflwidgets/line/linemenu.h>
 #include <xflwidgets/line/linepickerdlg.h>
 #include <xfoil.h>
 
@@ -72,7 +72,6 @@ AFoil::AFoil(QWidget *parent)  : QWidget(parent)
     m_StackPos = 0;
 
     m_ptvFoil = nullptr;
-    m_precision = nullptr;
 
     m_pSF = new SplineFoil();
     m_pSF->m_bModified = false;
@@ -103,7 +102,6 @@ AFoil::~AFoil()
     clearStack(-1);
     if(m_pSF) delete m_pSF;
     if(m_pBufferFoil) delete m_pBufferFoil;
-    if(m_precision) delete [] m_precision;
 }
 
 
@@ -1046,32 +1044,35 @@ void AFoil::onFoilStyle()
 {
     if(!XDirect::curFoil())
     {
-        LinePickerDlg dlg(this);
-        dlg.initDialog(m_pSF->theStyle(), true, true);
+        LineStyle ls(m_pSF->theStyle());
+        LineMenu *pLineMenu = new LineMenu(nullptr);
+        pLineMenu->initMenu(ls);
+        pLineMenu->exec(QCursor::pos());
+        ls = pLineMenu->theStyle();
 
-        if(QDialog::Accepted==dlg.exec())
-        {
-            m_pSF->setTheStyle(dlg.theStyle());
-            m_pSF->m_Extrados.setTheStyle(dlg.theStyle());
-            m_pSF->m_Intrados.setTheStyle(dlg.theStyle());
-            m_p2dWidget->update();
-        }
+        m_pSF->setTheStyle(ls);
+        m_pSF->m_Extrados.setTheStyle(ls);
+        m_pSF->m_Intrados.setTheStyle(ls);
+        m_p2dWidget->update();
+
+        emit projectModified();
     }
     else
     {
-        LinePickerDlg dlg(this);
-        dlg.initDialog(XDirect::curFoil()->theStyle(), true, true);
+        Foil *pFoil = XDirect::curFoil();
+        LineStyle ls(pFoil->theStyle());
+        LineMenu *pLineMenu = new LineMenu(nullptr);
+        pLineMenu->initMenu(ls);
+        pLineMenu->exec(QCursor::pos());
+        ls = pLineMenu->theStyle();
+        pFoil->setTheStyle(ls);
 
-        if(QDialog::Accepted==dlg.exec())
-        {
-            emit projectModified();
-            XDirect::curFoil()->setTheStyle(dlg.theStyle());
 
-            if(Settings::isAlignedChildrenStyle())
-                Objects2d::setFoilChildrenStyle(XDirect::curFoil());
+        if(Settings::isAlignedChildrenStyle())
+            Objects2d::setFoilChildrenStyle(XDirect::curFoil());
 
-            m_p2dWidget->update();
-        }
+        m_p2dWidget->update();
+        emit projectModified();
     }
 }
 
@@ -1082,10 +1083,10 @@ void AFoil::onFoilStyle()
 void AFoil::onHideAllFoils()
 {
     emit projectModified();
-    Foil*pFoil;
+
     for (int k=0; k<Objects2d::foilCount(); k++)
     {
-        pFoil = Objects2d::foilAt(k);
+        Foil*pFoil = Objects2d::foilAt(k);
         pFoil->setVisible(false);
     }
     fillFoilTable();
@@ -1136,12 +1137,10 @@ void AFoil::onRenameFoil()
 {
     if(!XDirect::curFoil()) return;
 
-    Foil*pOldFoil;
-
     QStringList NameList;
     for(int k=0; k<Objects2d::foilCount(); k++)
     {
-        pOldFoil = Objects2d::foilAt(k);
+        Foil*pOldFoil = Objects2d::foilAt(k);
         NameList.append(pOldFoil->name());
     }
 
@@ -1164,10 +1163,10 @@ void AFoil::onRenameFoil()
 void AFoil::onShowAllFoils()
 {
     emit projectModified();
-    Foil*pFoil;
+
     for (int k=0; k<Objects2d::foilCount(); k++)
     {
-        pFoil = Objects2d::foilAt(k);
+        Foil*pFoil = Objects2d::foilAt(k);
         pFoil->setVisible(true);
     }
     fillFoilTable();
@@ -1308,11 +1307,11 @@ void AFoil::setupLayout()
     m_ptvFoil->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_ptvFoil->setContextMenuPolicy(Qt::CustomContextMenu);
     m_ptvFoil->setWordWrap(false);
-    m_ptvFoil->setFont(Settings::s_TableFont);
-    m_ptvFoil->horizontalHeader()->setFont(Settings::s_TableFont);
+    m_ptvFoil->setFont(DisplayOptions::tableFont());
+    m_ptvFoil->horizontalHeader()->setFont(DisplayOptions::tableFont());
 
     //    connect(m_pctrlFoilTable, SIGNAL(pressed(const QModelIndex &)), this, SLOT(OnFoilClicked(const QModelIndex&)));
-    connect(m_ptvFoil, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onFoilTableCtxMenu(const QPoint &)));
+    connect(m_ptvFoil, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(onFoilTableCtxMenu(const QPoint &)));
 
     QHBoxLayout *pMainLayout = new QHBoxLayout;
     pMainLayout->addWidget(m_ptvFoil);
@@ -1354,26 +1353,8 @@ void AFoil::setupLayout()
     m_ptvFoil->setColumnHidden(10, true);
     m_ptvFoil->setColumnHidden(11, true);
 
-
-    m_precision = new int[16];
-    m_precision[0]  = 2;
-    m_precision[1]  = 2;
-    m_precision[2]  = 2;
-    m_precision[3]  = 2;
-    m_precision[4]  = 2;
-    m_precision[5]  = 0;
-    m_precision[6]  = 2;
-    m_precision[7]  = 2;
-    m_precision[8]  = 2;
-    m_precision[9]  = 2;
-    m_precision[10] = 2;
-    m_precision[11] = 2;
-    m_precision[12] = 2;
-    m_precision[13] = 2;
-    m_precision[14] = 2;
-    m_precision[15] = 2;
-
-    m_pFoilDelegate->m_Precision = m_precision;
+    QVector<int> precision(16,2);
+    m_pFoilDelegate->m_Precision = precision;
     //    connect(m_pFoilDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
 
     connect(this, SIGNAL(projectModified()), s_pMainFrame, SLOT(onProjectModified()));
@@ -1386,14 +1367,12 @@ void AFoil::setupLayout()
  */
 void AFoil::selectFoil(Foil* pFoil)
 {
-    int i;
-
     if(pFoil)
     {
         QModelIndex ind;
         QString FoilName;
 
-        for(i=0; i< m_pFoilModel->rowCount(); i++)
+        for(int i=0; i< m_pFoilModel->rowCount(); i++)
         {
             ind = m_pFoilModel->index(i, 0, QModelIndex());
             FoilName = ind.model()->data(ind, Qt::EditRole).toString();
@@ -1603,7 +1582,7 @@ void AFoil::onAFoilTableColumns()
  * The client area has been resized. Update the column widths.
  * @param event the QResizeEvent.
  */
-void AFoil::resizeEvent(QResizeEvent *event)
+void AFoil::resizeEvent(QResizeEvent *pEvent)
 {
     int ncol = m_ptvFoil->horizontalHeader()->count() - m_ptvFoil->horizontalHeader()->hiddenSectionCount();
     //add 1 to get double width for the name
@@ -1614,7 +1593,7 @@ void AFoil::resizeEvent(QResizeEvent *event)
 
     m_ptvFoil->setColumnWidth(0, 2*unitwidth);
     for(int i=1; i<16; i++)    m_ptvFoil->setColumnWidth(i, unitwidth);
-    event->accept();
+    pEvent->accept();
 }
 
 
@@ -1622,7 +1601,7 @@ void AFoil::resizeEvent(QResizeEvent *event)
 /** Sets the display font for the Foil table using the default defined in the MainFrame class/ */
 void AFoil::setTableFont()
 {
-    m_ptvFoil->setFont(Settings::s_TableFont);
+    m_ptvFoil->setFont(DisplayOptions::tableFont());
 }
 
 

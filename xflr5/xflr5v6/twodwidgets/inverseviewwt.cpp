@@ -1,7 +1,7 @@
 /****************************************************************************
 
     inverseviewwt Class
-    Copyright (C) 2009-2016 Andre Deperrois
+    Copyright (C) 2009-2016 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,11 +24,10 @@
 #include <QMouseEvent>
 
 #include <globals/mainframe.h>
-#include <misc/options/settings.h>
 #include <xflgraph/graph.h>
 #include <xinverse/xinverse.h>
 #include <twodwidgets/inverseviewwt.h>
-
+#include <xflcore/displayoptions.h>
 
 /**
 *The public constructor
@@ -153,12 +152,12 @@ void inverseviewwt::wheelEvent(QWheelEvent *pEvent)
 
     if(pEvent->angleDelta().y()>0)
     {
-        if(!Settings::s_bReverseZoom) ZoomFactor = 1./1.06;
+        if(!DisplayOptions::bReverseZoom()) ZoomFactor = 1./1.06;
         else                          ZoomFactor = 1.06;
     }
     else
     {
-        if(!Settings::s_bReverseZoom) ZoomFactor = 1.06;
+        if(!DisplayOptions::bReverseZoom()) ZoomFactor = 1.06;
         else                          ZoomFactor = 1./1.06;
     }
 
@@ -189,7 +188,7 @@ void inverseviewwt::paintEvent(QPaintEvent *event)
     else
     {
         QPainter painter(this);
-        painter.fillRect(rect(), Settings::s_BackgroundColor);
+        painter.fillRect(rect(), DisplayOptions::backgroundColor());
     }
     event->accept();
 }

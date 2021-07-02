@@ -1,7 +1,7 @@
 /****************************************************************************
 
     gl3dBodyView Class
-    Copyright (C) 2016-2019 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,39 +19,37 @@
 
 *****************************************************************************/
 
-#ifndef GL3DBODYVIEW_H
-#define GL3DBODYVIEW_H
+#pragma once
 
-#include <xfl3d/gl3dview.h>
+#include <xfl3d/gl3dxflview.h>
 
 class Body;
 class GL3dBodyDlg;
 
-class gl3dBodyView : public gl3dView
+class gl3dBodyView : public gl3dXflView
 {
-public:
-    gl3dBodyView(QWidget *pParent = nullptr);
-    void setBody(Body* pBody){m_pBody = pBody;}
-    void resetGLBody() {m_bResetglBody = true;}
+    public:
+        gl3dBodyView(QWidget *pParent = nullptr);
+        void setBody(Body* pBody){m_pBody = pBody;}
+        void resetGLBody() {m_bResetglBody = true;}
 
-private:
-    void glRenderView() override;
-    void contextMenuEvent (QContextMenuEvent * event) override;
-    void set3DRotationCenter(QPoint point) override;
+    private:
+        void glRenderView() override;
+        void contextMenuEvent (QContextMenuEvent * event) override;
+        bool intersectTheObject(Vector3d const &AA,  Vector3d const &BB, Vector3d &I) override;
 
-    void glMake3dObjects() override;
+        void glMake3dObjects() override;
 
-public slots:
-    void on3DReset() override;
+    public slots:
+        void on3dReset() override;
 
 
-public:
-    Body *m_pBody;
+    public:
+        Body *m_pBody;
 
-    bool m_bResetglFrameHighlight;
-    bool m_bResetglBody;
+        bool m_bResetglFrameHighlight;
+        bool m_bResetglBody;
 
-//    GL3dBodyDlg *m_pglBodyDlg;
 };
 
-#endif // GL3DBODYVIEW_H
+

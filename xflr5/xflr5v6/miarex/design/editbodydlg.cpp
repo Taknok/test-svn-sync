@@ -1,7 +1,7 @@
 /****************************************************************************
 
     EditBodyDlg Class
-    Copyright (C) 2015-2019 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@
 #include <QFileDialog>
 #include <QShowEvent>
 
-#include <xflcore/xflcore.h>
 #include <miarex/design/bodyscaledlg.h>
 #include <miarex/design/bodytransdlg.h>
 #include <miarex/design/editbodydlg.h>
@@ -35,12 +34,14 @@
 #include <miarex/design/inertiadlg.h>
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlplanewriter.h>
-#include <miarex/view/w3dprefsdlg.h>
 #include <misc/options/settings.h>
-#include <xflcore/units.h>
-#include <xfl3d/gl3dbodyview.h>
 #include <twodwidgets/bodyframewt.h>
 #include <twodwidgets/bodylinewt.h>
+#include <xfl3d/controls/w3dprefsdlg.h>
+#include <xfl3d/gl3dbodyview.h>
+#include <xflcore/displayoptions.h>
+#include <xflcore/units.h>
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/body.h>
 #include <xflobjects/objects3d/plane.h>
 
@@ -1239,9 +1240,9 @@ void EditBodyDlg::paintBodyLegend(QPainter &painter)
 {
     painter.save();
 
-    QPen textPen(Settings::s_TextColor);
+    QPen textPen(DisplayOptions::textColor());
     painter.setPen(textPen);
-    painter.setFont(Settings::s_TextFont);
+    painter.setFont(DisplayOptions::textFont());
     painter.setRenderHint(QPainter::Antialiasing);
 
     painter.restore();

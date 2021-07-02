@@ -1,7 +1,7 @@
 /****************************************************************************
 
     FoilDesignWt Class
-    Copyright (C) 2015 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 *****************************************************************************/
 
 #pragma once
+
 #include <QVector>
 #include "section2dwt.h"
 

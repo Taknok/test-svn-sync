@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Miarex
-            Copyright (C) 2008-2019 Andre Deperrois
+            Copyright (C) 2008-2019 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -55,19 +55,18 @@
 #include <miarex/mgt/xmlwpolarwriter.h>
 #include <miarex/objects3d.h>
 #include <miarex/view/gl3dmiarexview.h>
-#include <miarex/view/gllightdlg.h>
 #include <miarex/view/stabviewdlg.h>
 #include <miarex/view/targetcurvedlg.h>
-#include <miarex/view/w3dprefsdlg.h>
 #include <misc/editplrdlg.h>
-#include <xflwidgets/customdlg/moddlg.h>
-#include <xflwidgets/customdlg/objectpropsdlg.h>
 #include <misc/options/settings.h>
 #include <misc/polarfilterdlg.h>
 #include <misc/renamedlg.h>
 #include <misc/stlexportdialog.h>
 #include <twodwidgets/wingwt.h>
 #include <xdirect/objects2d.h>
+
+#include <xfl3d/controls/gllightdlg.h>
+#include <xfl3d/controls/w3dprefsdlg.h>
 #include <xflanalysis/matrix.h>
 #include <xflcore/trace.h>
 #include <xflcore/units.h>
@@ -86,12 +85,14 @@
 #include <xflobjects/objects3d/wingopp.h>
 #include <xflobjects/objects3d/wpolar.h>
 #include <xflobjects/objects_global.h>
+#include <xflwidgets/customdlg/moddlg.h>
+#include <xflwidgets/customdlg/objectpropsdlg.h>
+#include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/mintextedit.h>
 #include <xflwidgets/line/linebtn.h>
 #include <xflwidgets/line/linecbbox.h>
 #include <xflwidgets/line/linedelegate.h>
 #include <xflwidgets/line/linepickerwt.h>
-#include <xflwidgets/customwts/doubleedit.h>
-#include <xflwidgets/customwts/mintextedit.h>
 
 #ifdef Q_OS_WIN
 #include <windows.h> // for Sleep
@@ -461,17 +462,18 @@ void Miarex::connectSignals()
 
 
 
-    connect(m_ppbKeepCpSection,   SIGNAL(clicked()),         this, SLOT(onKeepCpSection()));
-    connect(m_ppbResetCpSection,  SIGNAL(clicked()),         this, SLOT(onResetCpSection()));
-    connect(m_pslCpSectionSlider, SIGNAL(sliderMoved(int)),  this, SLOT(onCpSectionSlider(int)));
-    connect(m_pdeSpanPos,         SIGNAL(editingFinished()), this, SLOT(onCpPosition()));
+    connect(m_ppbKeepCpSection,   SIGNAL(clicked()),         SLOT(onKeepCpSection()));
+    connect(m_ppbResetCpSection,  SIGNAL(clicked()),         SLOT(onResetCpSection()));
+    connect(m_pslCpSectionSlider, SIGNAL(sliderMoved(int)),  SLOT(onCpSectionSlider(int)));
+    connect(m_pdeSpanPos,         SIGNAL(editingFinished()), SLOT(onCpPosition()));
 
     connect(m_pchAxes,  SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onAxes(bool)));
-    connect(m_ptbX,     SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DFront()));
-    connect(m_ptbY,     SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DLeft()));
-    connect(m_ptbZ,     SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DTop()));
-    connect(m_ptbIso,   SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DIso()));
-    connect(m_ptbFlip,  SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3DFlip()));
+    connect(m_ptbX,     SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3dFront()));
+    connect(m_ptbY,     SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3dLeft()));
+    connect(m_ptbZ,     SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3dTop()));
+    connect(m_ptbIso,   SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3dIso()));
+    connect(m_ptbFlip,  SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3dFlip()));
+
     connect(m_pslClipPlanePos, SIGNAL(sliderMoved(int)), m_pgl3dMiarexView, SLOT(onClipPlane(int)));
 
     connect(m_ppb3DResetScale, SIGNAL(clicked()), this, SLOT(on3DResetScale()));
@@ -513,10 +515,10 @@ void Miarex::setControls()
     else                                                                   m_pswMiddleControls->setCurrentIndex(0);
 
     if (m_iView==xfl::W3DVIEW && (m_pCurWPolar && m_pCurWPolar->isStabilityPolar()))
-        s_pMainFrame->m_pctrlStabViewWidget->show();
+        s_pMainFrame->m_pdwStabView->show();
     else if (m_iView==xfl::STABTIMEVIEW || m_iView==xfl::STABPOLARVIEW)
-        s_pMainFrame->m_pctrlStabViewWidget->show();
-    else s_pMainFrame->m_pctrlStabViewWidget->hide();
+        s_pMainFrame->m_pdwStabView->show();
+    else s_pMainFrame->m_pdwStabView->hide();
 
     StabViewDlg *pStabView = s_pMainFrame->m_pStabView;
     pStabView->setControls();
@@ -629,7 +631,7 @@ void Miarex::setControls()
     m_pdeSpanPos->setValue(m_CurSpanPos);
     m_pslCpSectionSlider->setValue(int(m_CurSpanPos*100.0));
 
-    s_pMainFrame->m_pW3DScalesAct->setChecked(s_pMainFrame->m_pctrl3DScalesWidget->isVisible());
+    s_pMainFrame->m_pW3DScalesAct->setChecked(s_pMainFrame->m_pdw3DScales->isVisible());
 
     m_pchAxes->setChecked(m_pgl3dMiarexView->m_bAxes);
     m_pchOutline->setChecked(m_pgl3dMiarexView->m_bOutline);
@@ -1611,7 +1613,7 @@ void Miarex::keyPressEvent(QKeyEvent *pEvent)
         {
             stopAnimate();
 
-            if(s_pMainFrame->m_pctrl3DScalesWidget->isVisible()) s_pMainFrame->m_pctrl3DScalesWidget->hide();
+            if(s_pMainFrame->m_pdw3DScales->isVisible()) s_pMainFrame->m_pdw3DScales->hide();
             updateView();
             break;
         }
@@ -2045,7 +2047,7 @@ void Miarex::on3DView()
         updateView();
         if(m_pCurWPolar && m_pCurWPolar->polarType()==xfl::STABILITYPOLAR)
         {
-            s_pMainFrame->m_pctrlStabViewWidget->show();
+            s_pMainFrame->m_pdwStabView->show();
         }
         return;
     }
@@ -2085,7 +2087,7 @@ void Miarex::on3DCp()
 */
 void Miarex::on3DResetScale()
 {
-    m_pgl3dMiarexView->on3DReset();
+    m_pgl3dMiarexView->on3dReset();
 }
 
 
@@ -4697,10 +4699,10 @@ void Miarex::onGL3DScale()
         //        m_pctrl3DSettings->setChecked(false);
         return;
     }
-    if(s_pMainFrame->m_pctrl3DScalesWidget->isVisible()) s_pMainFrame->m_pctrl3DScalesWidget->hide();
-    else                                                 s_pMainFrame->m_pctrl3DScalesWidget->show();
+    if(s_pMainFrame->m_pdw3DScales->isVisible()) s_pMainFrame->m_pdw3DScales->hide();
+    else                                                 s_pMainFrame->m_pdw3DScales->show();
 
-    s_pMainFrame->m_pW3DScalesAct->setChecked(s_pMainFrame->m_pctrl3DScalesWidget->isVisible());
+    s_pMainFrame->m_pW3DScalesAct->setChecked(s_pMainFrame->m_pdw3DScales->isVisible());
     //    if(m_pctrl3DSettings->isChecked()) s_pMainFrame->m_pctrl3DScalesWidget->show();
     //    else                               s_pMainFrame->m_pctrl3DScalesWidget->hide();
 }
@@ -6008,11 +6010,11 @@ void Miarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar,
     int margin,dheight;
     float ratio = 1.0;
 
-    QPen textPen(Settings::s_TextColor);
+    QPen textPen(DisplayOptions::textColor());
     painter.setPen(textPen);
-    QFont font(Settings::s_TextFont);
+    QFont font(DisplayOptions::textFont());
     ratio = m_pgl3dMiarexView->devicePixelRatio();
-    font.setPointSize(int(float(Settings::s_TextFont.pointSize())*ratio));
+    font.setPointSize(int(float(DisplayOptions::textFont().pointSize())*ratio));
     painter.setFont(font);
     painter.setRenderHint(QPainter::Antialiasing);
 
@@ -6141,13 +6143,13 @@ void Miarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
     float ratio = 1.0;
 
 
-    QPen textPen(Settings::s_TextColor);
+    QPen textPen(DisplayOptions::textColor());
     painter.setPen(textPen);
-    QFont font(Settings::s_TextFont);
+    QFont font(DisplayOptions::textFont());
     if (m_iView == xfl::W3DVIEW)
         ratio = m_pgl3dMiarexView->devicePixelRatio();
     margin *= ratio;
-    font.setPointSize(int(float(Settings::s_TextFont.pointSize())*ratio));
+    font.setPointSize(int(float(DisplayOptions::textFont().pointSize())*ratio));
     painter.setFont(font);
     painter.setRenderHint(QPainter::Antialiasing);
 
@@ -6603,7 +6605,7 @@ void Miarex::setScale()
     {
         double bodyLength = 0.0;
         if(m_pCurPlane->body()) bodyLength = m_pCurPlane->body()->length();
-        m_pgl3dMiarexView->set3DScale(std::max(m_pCurPlane->span(), bodyLength));
+        m_pgl3dMiarexView->set3dScale(std::max(m_pCurPlane->span(), bodyLength));
     }
 }
 
@@ -6749,9 +6751,9 @@ void Miarex::setCurveParams()
         m_plabUnit3->setText(str);
 
         m_plabParameterName->setText("Freestream velocity");
-        QFont fontSymbol(Settings::s_TextFont);
+        QFont fontSymbol(DisplayOptions::textFont());
         fontSymbol.setBold(true);
-        fontSymbol.setPointSize(Settings::s_TextFont.pointSize()+2);
+        fontSymbol.setPointSize(DisplayOptions::textFont().pointSize()+2);
         m_plabParameterName->setFont(fontSymbol);
     }
     else if(m_pCurWPolar && m_pCurWPolar->polarType()==xfl::STABILITYPOLAR)
@@ -6761,7 +6763,7 @@ void Miarex::setCurveParams()
         m_plabUnit3->setText("");
 
         m_plabParameterName->setText("Control parameter");
-        QFont fontSymbol(Settings::s_TextFont);
+        QFont fontSymbol(DisplayOptions::textFont());
         fontSymbol.setBold(true);
         m_plabParameterName->setFont(fontSymbol);
     }
@@ -7364,7 +7366,7 @@ void Miarex::setWPolar(bool bCurrent, QString WPlrName)
         StabViewDlg *pStabView = s_pMainFrame->m_pStabView;
         pStabView->setControls();
         pStabView->setMode();
-        s_pMainFrame->m_pctrlStabViewWidget->show();
+        s_pMainFrame->m_pdwStabView->show();
         pStabView->show();
     }
 
@@ -7724,9 +7726,9 @@ void Miarex::paintCpLegendText(QPainter &painter)
 
     painter.save();
 
-    QFont font(Settings::s_TextFont);
+    QFont font(DisplayOptions::textFont());
     ratio = m_pgl3dMiarexView->devicePixelRatio();
-    font.setPointSize(int(float(Settings::s_TextFont.pointSize())*ratio));
+    font.setPointSize(int(float(DisplayOptions::textFont().pointSize())*ratio));
     painter.setFont(font);
     painter.setRenderHint(QPainter::Antialiasing);
 
@@ -7746,7 +7748,7 @@ void Miarex::paintCpLegendText(QPainter &painter)
     double range = gl3dMiarexView::s_LegendMax - gl3dMiarexView::s_LegendMin;
     double delta = range / 20;
 
-    QPen textPen(Settings::s_TextColor);
+    QPen textPen(DisplayOptions::textColor());
     painter.setPen(textPen);
     painter.setRenderHint(QPainter::Antialiasing);
 
@@ -7787,12 +7789,12 @@ void Miarex::paintPanelForceLegendText(QPainter &painter)
     double ratio = 1.0;
 
     painter.save();
-    QFont font(Settings::s_TextFont);
+    QFont font(DisplayOptions::textFont());
     ratio = m_pgl3dMiarexView->devicePixelRatio();
-    font.setPointSize(int(double(Settings::s_TextFont.pointSize())*ratio));
+    font.setPointSize(int(double(DisplayOptions::textFont().pointSize())*ratio));
     painter.setFont(font);
     painter.setRenderHint(QPainter::Antialiasing);
-    QPen textPen(Settings::s_TextColor);
+    QPen textPen(DisplayOptions::textColor());
     painter.setPen(textPen);
 
     WingOpp *pWOppList[MAXWINGS];

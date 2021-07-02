@@ -1,7 +1,7 @@
 /****************************************************************************
 
     InertiaDlg Class
-    Copyright (C) 2009-2019 Andre Deperrois
+    Copyright (C) 2009-2019 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,12 +33,13 @@
 
 
 #include "inertiadlg.h"
-#include <xflcore/xflcore.h>
-#include <xflcore/units.h>
 #include <misc/options/settings.h>
+#include <xflcore/displayoptions.h>
+#include <xflcore/units.h>
+#include <xflcore/xflcore.h>
+#include <xflobjects/objects3d/plane.h>
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/customwts/floateditdelegate.h>
-#include <xflobjects/objects3d/plane.h>
 
 QByteArray InertiaDlg::s_Geometry;
 
@@ -1006,7 +1007,7 @@ void InertiaDlg::setupLayout()
     QLabel *pPointMasses = new QLabel(tr("Additional Point Masses"));
     m_pctrlMassTable = new QTableView(this);
     m_pctrlMassTable->setSizePolicy(szPolicyExpanding);
-    m_pctrlMassTable->setFont(Settings::s_TableFont);
+    m_pctrlMassTable->setFont(DisplayOptions::tableFont());
     m_pctrlMassTable->setMinimumHeight(150);
     m_pctrlMassTable->horizontalHeader()->setStretchLastSection(true);
     m_pctrlMassTable->setSelectionMode(QAbstractItemView::SingleSelection);

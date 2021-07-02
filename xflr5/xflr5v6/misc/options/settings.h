@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Settings Class
-    Copyright (C) 2018 Andre Deperrois
+    Copyright (C) 2018 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -53,84 +53,79 @@ class Settings : public QWidget
 
     friend class MainFrame;
 
-public:
-    Settings(QWidget *pParent);
-    void initWidget();
+    public:
+        Settings(QWidget *pParent);
+        void initWidget();
 
-    static void loadSettings(QSettings &settings);
-    static void saveSettings(QSettings &settings);
+        static void loadSettings(QSettings &settings);
+        static void saveSettings(QSettings &settings);
 
-    static QColor &backgroundColor(){return s_BackgroundColor;}
-    static QColor &textColor(){return s_TextColor;}
-    static QString &styleName(){return s_StyleName;}
-    static QFont &textFont(){return s_TextFont;}
-    static QFont &tableFont(){return s_TableFont;}
-    static void setDefaultFonts();
-    static void setColorList();
-    static bool isLightTheme() {return s_Theme==SETTINGS::LIGHTTHEME;}
+        static QString &styleName(){return s_StyleName;}
+        static void setColorList();
+        static bool isLightTheme() {return s_Theme==SETTINGS::LIGHTTHEME;}
 
-    static void setLastDirName(QString dirname) {s_LastDirName=dirname;}
-    static QString const &lastDirName() {return s_LastDirName;}
+        static void setLastDirName(QString dirname) {s_LastDirName=dirname;}
+        static QString const &lastDirName() {return s_LastDirName;}
 
-    static void setXmlDirName(QString dirname) {s_xmlDirName=dirname;}
-    static QString xmlDirName() {return s_xmlDirName;}
+        static void setXmlDirName(QString dirname) {s_xmlDirName=dirname;}
+        static QString xmlDirName() {return s_xmlDirName;}
 
-    static void setPlrDirName(QString dirname) {s_plrDirName=dirname;}
-    static QString plrDirName() {return s_plrDirName;}
+        static void setPlrDirName(QString dirname) {s_plrDirName=dirname;}
+        static QString plrDirName() {return s_plrDirName;}
 
-    static void setAlignedChildrenStyle(bool bAlign) {s_bAlignChildrenStyle = bAlign;}
-    static bool isAlignedChildrenStyle() {return s_bAlignChildrenStyle;}
+        static void setAlignedChildrenStyle(bool bAlign) {s_bAlignChildrenStyle = bAlign;}
+        static bool isAlignedChildrenStyle() {return s_bAlignChildrenStyle;}
 
-    static void showMousePos(bool bShow) {s_bShowMousePos=bShow;}
-    static bool bMousePos() {return s_bShowMousePos;}
+        static void showMousePos(bool bShow) {s_bShowMousePos=bShow;}
+        static bool bMousePos() {return s_bShowMousePos;}
 
-private slots:
-    void onStyleChanged(const QString &StyleName);
-    void onBackgroundColor2d();
-    void onGraphSettings();
-    void onTextColor();
-    void onTextFont();
-    void onTableFont();
-    void onReverseZoom();
-    void onAlignChildrenStyle();
-    void onTheme();
+    private slots:
+        void onAlignChildrenStyle();
+        void onBackgroundColor2d();
+        void onGraphSettings();
+        void onReverseZoom();
+        void onStyleChanged(const QString &StyleName);
+        void onTableFont();
+        void onTextColor();
+        void onTextFont();
+        void onTheme();
 
-private:
-    void setupLayout();
+    private:
+        void setupLayout();
+        void setButtonFonts();
 
-    ColorBtn *m_pcbBackColor;
-    TextClrBtn *m_ptcbTextClr;
-    QPushButton *m_ppbTextFont, *m_ppbTableFont;
-    QPushButton *m_ppbGraphSettings;
+    private:
+        ColorBtn *m_pcbBackColor;
+        TextClrBtn *m_ptcbTextClr;
+        QPushButton *m_ppbTextFont, *m_ppbTableFont;
+        QPushButton *m_ppbGraphSettings;
 
-    QCheckBox *m_pchReverseZoom;
-    QCheckBox *m_pchAlignChildrenStyle;
+        QCheckBox *m_pchReverseZoom;
+        QCheckBox *m_pchAlignChildrenStyle;
 
-    QComboBox *m_pcbStyles;
+        QComboBox *m_pcbStyles;
 
-    QRadioButton *m_prbDark, *m_prbLight, *m_prbCustom;
+        QRadioButton *m_prbDark, *m_prbLight, *m_prbCustom;
 
-    QDir m_StyleSheetDir;
-    Graph m_MemGraph;
-    bool m_bIsGraphModified;
+        QDir m_StyleSheetDir;
+        Graph m_MemGraph;
+        bool m_bIsGraphModified;
 
-public:
-    //settings variables used throughout the program
-    static QString s_StyleName, s_StyleSheetName;
-    static QFont s_TextFont, s_TableFont;
-    static QColor s_BackgroundColor, s_BackgroundColor3d;
-    static QColor s_TextColor;
-    static bool s_bStyleSheets;
-    static bool s_bReverseZoom;
-    static xfl::enumTextFileType s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
-    static Graph s_RefGraph;//Reference setttings
-    static QString s_LastDirName, s_xmlDirName, s_plrDirName;
-    static QStringList s_colorList;
-    static QStringList s_colorNames;
-    static SETTINGS::enumThemeType s_Theme;
-    static bool s_bShowMousePos;
+    public:
+        //settings variables used throughout the program
+        static QString s_StyleName, s_StyleSheetName;
 
-    static bool s_bAlignChildrenStyle;
+        static bool s_bStyleSheets;
+
+        static xfl::enumTextFileType s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
+        static Graph s_RefGraph;//Reference setttings
+        static QString s_LastDirName, s_xmlDirName, s_plrDirName;
+        static QStringList s_colorList;
+        static QStringList s_colorNames;
+        static SETTINGS::enumThemeType s_Theme;
+        static bool s_bShowMousePos;
+
+        static bool s_bAlignChildrenStyle;
 };
 
 

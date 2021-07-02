@@ -1,7 +1,7 @@
 /****************************************************************************
 
     gl3dBodyView Class
-    Copyright (C) 2016-2019 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,13 +24,13 @@
 
 #include "gl3dbodyview.h"
 #include <misc/options/settings.h>
-#include <miarex/view/w3dprefsdlg.h>
+#include <xfl3d/controls/w3dprefsdlg.h>
 #include <miarex/design/gl3dbodydlg.h>
 #include <globals/mainframe.h>
 #include <xflobjects/objects3d/body.h>
 
 
-gl3dBodyView::gl3dBodyView(QWidget *pParent) : gl3dView(pParent)
+gl3dBodyView::gl3dBodyView(QWidget *pParent) : gl3dXflView(pParent)
 {
 //    m_pglBodyDlg = dynamic_cast<GL3dBodyDlg*>(pParent);
     m_pBody = nullptr;
@@ -41,7 +41,7 @@ gl3dBodyView::gl3dBodyView(QWidget *pParent) : gl3dView(pParent)
 /*    m_pixTextLegend = QPixmap(":/resources/images/xflr5_64.png");
     m_pixTextLegend.fill(Qt::transparent);
 
-    QFontMetrics fm(Settings::s_TextFont);
+    QFontMetrics fm(DisplayOptions::textFont());
     int w = fm.averageCharWidth()*19;
     int h = fm.height()*5;
     QRect rect(0,0,w,h);
@@ -79,7 +79,7 @@ void gl3dBodyView::contextMenuEvent (QContextMenuEvent * event)
 }
 
 
-void gl3dBodyView::on3DReset()
+void gl3dBodyView::on3dReset()
 {
     startResetTimer(m_pBody->length());
 }
@@ -109,37 +109,9 @@ void gl3dBodyView::glMake3dObjects()
 }
 
 
-void gl3dBodyView::set3DRotationCenter(QPoint point)
+bool gl3dBodyView::intersectTheObject(Vector3d const &AA,  Vector3d const &BB, Vector3d &I)
 {
-    //adjusts the new rotation center after the user has picked a point on the screen
-    //finds the closest panel under the point,
-    //and changes the rotation vector and viewport translation
-    Vector3d I, A, B, AA, BB, PP;
-
-    screenToViewport(point, B);
-    B.z = -1.0;
-    A.set(B.x, B.y, +1.0);
-
-    viewportToWorld(A, AA);
-    viewportToWorld(B, BB);
-
-    m_transIncrement.set(BB.x-AA.x, BB.y-AA.y, BB.z-AA.z);
-    m_transIncrement.normalize();
-
-    bool bIntersect = false;
-
-
-    if(m_pBody->intersectFlatPanels(AA, AA+m_transIncrement*10, I))
-    {
-        bIntersect = true;
-        PP.set(I);
-    }
-
-
-    if(bIntersect)
-    {
-        startTranslationTimer(PP);
-    }
+    return m_pBody->intersectFlatPanels(AA, BB, I);
 }
 
 

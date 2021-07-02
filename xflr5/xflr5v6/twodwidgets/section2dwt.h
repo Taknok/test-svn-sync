@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Section2dWidget Class
-    Copyright (C) 2015-2019 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -164,8 +164,6 @@ class Section2dWt : public QWidget
 
         bool m_bIsImageLoaded;      /**< true if a backgruond image is loaded */
         QPixmap m_BackImage;        /**< the QPixmap object with the background image */
-
-        QFont m_FixedFont;
 
         static QColor s_BackColor;
         static QColor s_TextColor;

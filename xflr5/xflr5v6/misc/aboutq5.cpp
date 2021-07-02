@@ -1,7 +1,7 @@
 /****************************************************************************
 
     AboutQ5 Class
-    Copyright (C) 2008-2008 Andre Deperrois 
+    Copyright (C) 2008-2008 André Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ void AboutQ5::setupLayout()
 
     QLabel *pLab2  = new QLabel(tr("Copyright (C) M. Drela and H. Youngren 2000 - XFoil v6.94"));
     QLabel *pLab3  = new QLabel(tr("Copyright (C) Matthieu Scherrer 2004 - Miarex v1.00"));
-    QLabel *pLab4  = new QLabel(tr("Copyright (C) Andre Deperrois 2003-2019"));
+    QLabel *pLab4  = new QLabel(tr("Copyright (C) André Deperrois 2003-2019"));
     QLabel *pLab5  = new QLabel(tr("This program is distributed in the hope that it will be useful,"));
     QLabel *pLab6  = new QLabel(tr("but WITHOUT ANY WARRANTY; without even the implied warranty of"));
     QLabel *pLab7  = new QLabel(tr("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));

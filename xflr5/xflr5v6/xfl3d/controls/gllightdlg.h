@@ -1,7 +1,7 @@
 /****************************************************************************
 
     GLLightDlg class
-    Copyright (C) 2009 Andre Deperrois xflr5@yahoo.com
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,19 +34,7 @@ class gl3dView;
 class ExponentialSlider;
 class DoubleEdit;
 
-
-struct Light
-{
-    float m_Ambient=0.3f, m_Diffuse=1.2f, m_Specular=0.5f; // the light intensities
-    float m_Red=1.0f, m_Green=1.0f, m_Blue=1.0f; // the color of light
-    float m_X=0.1f, m_Y=0.3f, m_Z=0.5f; // coordinates in camera space
-    bool m_bIsLightOn=true;
-};
-
-struct Attenuation
-{
-        float m_Constant=1.0, m_Linear=0.5, m_Quadratic=0.0;
-};
+#include <xfl3d/controls/light.h>
 
 class GLLightDlg : public QDialog
 {
@@ -67,8 +55,6 @@ class GLLightDlg : public QDialog
         static bool loadSettings(QSettings &settings);
         static bool saveSettings(QSettings &settings);
 
-        static bool isLightOn() {return s_Light.m_bIsLightOn;}
-        static void setLightOn(bool bLight) {s_Light.m_bIsLightOn = bLight;}
 
     private:
         void connectSignals();
@@ -89,7 +75,7 @@ class GLLightDlg : public QDialog
         QSlider *m_pslRed, *m_pslGreen, *m_pslBlue;
         QSlider  *m_pslMatShininess;
         ExponentialSlider *m_peslLightAmbient, *m_peslLightDiffuse, *m_peslLightSpecular;
-        ExponentialSlider *m_prslXLight, *m_peslYLight, *m_peslZLight;
+        ExponentialSlider *m_peslXLight, *m_peslYLight, *m_peslZLight;
 
         QCheckBox *m_plabLight;
         QLabel *m_plabLightAmbient, *m_plabLightDiffuse, *m_plabLightSpecular;
@@ -105,7 +91,6 @@ class GLLightDlg : public QDialog
     private:
         gl3dView *m_pglView;
 
-        static Light s_Light;
         static Attenuation s_Attenuation;
         static int s_iShininess;
         float m_ModelSize;

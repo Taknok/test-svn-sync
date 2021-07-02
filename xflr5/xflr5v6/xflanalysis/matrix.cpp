@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Matrix Functions 
-    Copyright (C) 2008-2017 Andre Deperrois 
+    Copyright (C) 2008-2017 André Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -726,7 +726,7 @@ void TestEigen()
 * The eigenvector is calculated by direct matrix inversion.
 * One of the vector's component is set to 1, to avoid the trivial solution V=0;
 *
-* (c) Andre Deperrois October 2009
+* (c) André Deperrois October 2009
 *@param a the complex two-dimensional 4x4 input matrix to diagonalize
 *@param lambda the output array of four complex eigenvalues
 *@param V the eigenvector as a one-dimensional array of complex values
@@ -808,7 +808,7 @@ bool Eigenvector(double a[][4], complex<double> lambda, complex<double> *V)
 * P(x) = Sum p_i x^i        i = 0..n;
 * The polynoms coefficient are in array p
 *
-* Andre Deperrois October 2009
+* André Deperrois October 2009
 *@param p the array of the polynoms double's coefficients
 *@param root the array of the polynom's complex roots
 *@param n the polynom's order

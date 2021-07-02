@@ -1,6 +1,7 @@
 
 
 HEADERS += \
+    $$PWD/displayoptions.h \
     xflcore/constants.h \
     xflcore/core_enums.h \
     xflcore/fontstruct.h \
@@ -14,6 +15,7 @@ HEADERS += \
 
 
 SOURCES += \
+    $$PWD/displayoptions.cpp \
     xflcore/trace.cpp \
     xflcore/units.cpp \
     xflcore/xflcore.cpp \

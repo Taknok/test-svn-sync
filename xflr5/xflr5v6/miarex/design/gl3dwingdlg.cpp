@@ -1,7 +1,7 @@
 /****************************************************************************
 
     GL3dWingDlg Class
-    Copyright (C) 2009-2019 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@
 #include <QColorDialog>
 
 
-#include <xflcore/xflcore.h>
 #include <miarex/design/gl3dwingdlg.h>
 #include <miarex/design/inertiadlg.h>
 #include <miarex/design/wingdelegate.h>
@@ -36,18 +35,20 @@
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlplanewriter.h>
 #include <miarex/objects3d.h>
-#include <miarex/view/w3dprefsdlg.h>
-#include <xflwidgets/color/colorbtn.h>
-#include <xflcore/units.h>
 #include <misc/options/settings.h>
-#include <xflwidgets/customwts/doubleedit.h>
 #include <xdirect/objects2d.h>
+#include <xdirect/objects2d.h>
+#include <xfl3d/controls/w3dprefsdlg.h>
+#include <xfl3d/gl3dwingview.h>
+#include <xflcore/displayoptions.h>
+#include <xflcore/units.h>
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/surface.h>
 #include <xflobjects/objects3d/wing.h>
 #include <xflobjects/objects_global.h>
-#include <xfl3d/gl3dwingview.h>
-#include <xdirect/objects2d.h>
+#include <xflwidgets/color/colorbtn.h>
+#include <xflwidgets/customwts/doubleedit.h>
 
 
 QByteArray GL3dWingDlg::s_WindowGeometry;
@@ -199,50 +200,49 @@ void GL3dWingDlg::contextMenuEvent(QContextMenuEvent *pEvent)
 
 void GL3dWingDlg::connectSignals()
 {
-    connect(m_pInsertBefore,  SIGNAL(triggered()), this, SLOT(onInsertBefore()));
-    connect(m_pInsertAfter,   SIGNAL(triggered()), this, SLOT(onInsertAfter()));
-    connect(m_pDeleteSection, SIGNAL(triggered()), this, SLOT(onDeleteSection()));
-    connect(m_pResetSection,  SIGNAL(triggered()), this, SLOT(onResetSection()));
+    connect(m_pInsertBefore,  SIGNAL(triggered()), SLOT(onInsertBefore()));
+    connect(m_pInsertAfter,   SIGNAL(triggered()), SLOT(onInsertAfter()));
+    connect(m_pDeleteSection, SIGNAL(triggered()), SLOT(onDeleteSection()));
+    connect(m_pResetSection,  SIGNAL(triggered()), SLOT(onResetSection()));
 
-    connect(m_pResetScales, SIGNAL(triggered()), m_pglWingView, SLOT(on3DReset()));
+    connect(m_pResetScales,  SIGNAL(triggered()), m_pglWingView, SLOT(on3dReset()));
+    connect(m_ptbIso,        SIGNAL(clicked()),   m_pglWingView, SLOT(on3dIso()));
+    connect(m_ptbX,          SIGNAL(clicked()),   m_pglWingView, SLOT(on3dFront()));
+    connect(m_ptbY,          SIGNAL(clicked()),   m_pglWingView, SLOT(on3dLeft()));
+    connect(m_ptbZ,          SIGNAL(clicked()),   m_pglWingView, SLOT(on3dTop()));
+    connect(m_pctrlReset,    SIGNAL(clicked()),   m_pglWingView, SLOT(on3dReset()));
+    connect(m_ptbFlip,       SIGNAL(clicked()),   m_pglWingView, SLOT(on3dFlip()));
 
-    connect(m_ptbIso,        SIGNAL(clicked()), m_pglWingView, SLOT(on3DIso()));
-    connect(m_ptbX,          SIGNAL(clicked()), m_pglWingView, SLOT(on3DFront()));
-    connect(m_ptbY,          SIGNAL(clicked()), m_pglWingView, SLOT(on3DLeft()));
-    connect(m_ptbZ,          SIGNAL(clicked()), m_pglWingView, SLOT(on3DTop()));
-    connect(m_pctrlReset,      SIGNAL(clicked()), m_pglWingView, SLOT(on3DReset()));
-    connect(m_ptbFlip,       SIGNAL(clicked()), m_pglWingView, SLOT(on3DFlip()));
 
+    connect(m_pchFoilNames,  SIGNAL(clicked()),SLOT(onFoilNames()));
+    connect(m_pchShowMasses, SIGNAL(clicked()),SLOT(onShowMasses()));
 
-    connect(m_pchFoilNames,  SIGNAL(clicked()),this, SLOT(onFoilNames()));
-    connect(m_pchShowMasses, SIGNAL(clicked()),this, SLOT(onShowMasses()));
+    connect(m_pchAxes,       SIGNAL(clicked()), SLOT(onAxes()));
+    connect(m_pchPanels,     SIGNAL(clicked()), SLOT(onPanels()));
+    connect(m_pchSurfaces,   SIGNAL(clicked()), SLOT(onSurfaces()));
+    connect(m_pchOutline,    SIGNAL(clicked()), SLOT(onOutline()));
 
-    connect(m_pchAxes,       SIGNAL(clicked()), this, SLOT(onAxes()));
-    connect(m_pchPanels,     SIGNAL(clicked()), this, SLOT(onPanels()));
-    connect(m_pchSurfaces,   SIGNAL(clicked()), this, SLOT(onSurfaces()));
-    connect(m_pchOutline,    SIGNAL(clicked()), this, SLOT(onOutline()));
+    connect(m_ppbInsertBefore,  SIGNAL(clicked()), SLOT(onInsertBefore()));
+    connect(m_ppbInsertAfter,   SIGNAL(clicked()), SLOT(onInsertAfter()));
+    connect(m_ppbDeleteSection, SIGNAL(clicked()), SLOT(onDeleteSection()));
 
-    connect(m_ppbInsertBefore,  SIGNAL(clicked()), this, SLOT(onInsertBefore()));
-    connect(m_ppbInsertAfter,   SIGNAL(clicked()), this, SLOT(onInsertAfter()));
-    connect(m_ppbDeleteSection, SIGNAL(clicked()), this, SLOT(onDeleteSection()));
+    connect(m_pctrlResetMesh,   SIGNAL(clicked()), SLOT(onResetMesh()));
+    connect(m_pcbWingColor,     SIGNAL(clicked()), SLOT(onWingColor()));
+    connect(m_prbTextures,      SIGNAL(clicked()), SLOT(onTextures()));
+    connect(m_prbColor,         SIGNAL(clicked()), SLOT(onTextures()));
+    connect(m_pchSymetric,      SIGNAL(clicked()), SLOT(onSymetric()));
+    connect(m_prbRightSide,     SIGNAL(clicked()), SLOT(onSide()));
+    connect(m_prbLeftSide,      SIGNAL(clicked()), SLOT(onSide()));
 
-    connect(m_pctrlResetMesh,     SIGNAL(clicked()), this, SLOT(onResetMesh()));
-    connect(m_pcbWingColor,     SIGNAL(clicked()), this, SLOT(onWingColor()));
-    connect(m_prbTextures,      SIGNAL(clicked()), this, SLOT(onTextures()));
-    connect(m_prbColor,         SIGNAL(clicked()), this, SLOT(onTextures()));
-    connect(m_pchSymetric,      SIGNAL(clicked()), this, SLOT(onSymetric()));
-    connect(m_prbRightSide,     SIGNAL(clicked()), this, SLOT(onSide()));
-    connect(m_prbLeftSide,      SIGNAL(clicked()), this, SLOT(onSide()));
+    connect(m_pctrlWingDescription, SIGNAL(textChanged()), SLOT(onDescriptionChanged()));
 
-    connect(m_pctrlWingDescription, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
-
-    connect(m_pInertia,       SIGNAL(triggered()), this, SLOT(onInertia()));
-    connect(m_pScaleWing,     SIGNAL(triggered()), this, SLOT(onScaleWing()));
-    connect(m_pglWingView,    SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
-    connect(m_pImportWingAct, SIGNAL(triggered()),this, SLOT(onImportWing()));
-    connect(m_pExportWingAct, SIGNAL(triggered()),this, SLOT(onExportWing()));
-    connect(m_pImportWingXml, SIGNAL(triggered()),this, SLOT(onImportWingFromXML()));
-    connect(m_pExportWingXml, SIGNAL(triggered()),this, SLOT(onExportWingToXML()));
+    connect(m_pInertia,       SIGNAL(triggered()), SLOT(onInertia()));
+    connect(m_pScaleWing,     SIGNAL(triggered()),    SLOT(onScaleWing()));
+    connect(m_pglWingView,    SIGNAL(viewModified()), SLOT(onCheckViewIcons()));
+    connect(m_pImportWingAct, SIGNAL(triggered()),    SLOT(onImportWing()));
+    connect(m_pExportWingAct, SIGNAL(triggered()),    SLOT(onExportWing()));
+    connect(m_pImportWingXml, SIGNAL(triggered()),    SLOT(onImportWingFromXML()));
+    connect(m_pExportWingXml, SIGNAL(triggered()),    SLOT(onExportWingToXML()));
 }
 
 
@@ -444,7 +444,7 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
     m_pcbWingColor->setColor(m_pWing->m_WingColor);
     m_pcbWingColor->setEnabled(m_prbColor->isChecked());
 
-    m_ptvWingSections->setFont(Settings::s_TableFont);
+    m_ptvWingSections->setFont(DisplayOptions::tableFont());
 
     m_pWingModel = new QStandardItemModel;
     m_pWingModel->setRowCount(30);//temporary
@@ -1581,7 +1581,7 @@ void GL3dWingDlg::resizeEvent(QResizeEvent *)
     m_ptvWingSections->setColumnWidth(8, wCols);
     m_ptvWingSections->setColumnWidth(9, wCols);
 
-    if(m_pWing)    m_pglWingView->set3DScale(m_pWing->planformSpan());
+    if(m_pWing)    m_pglWingView->set3dScale(m_pWing->planformSpan());
     m_pglWingView->update();
 }
 

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     ManageFoilsDlg Class
-    Copyright (C) 2009-2016 Andre Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,10 +28,12 @@
 
 
 #include "managefoilsdlg.h"
-#include <misc/options/settings.h>
-#include <misc/renamedlg.h>
-#include <xdirect/objects2d.h>
+
 #include <design/foiltabledelegate.h>
+#include <misc/renamedlg.h>
+#include <misc/options/settings.h>
+#include <xdirect/objects2d.h>
+#include <xflcore/displayoptions.h>
 #include <xflobjects/objects2d/foil.h>
 
 QByteArray ManageFoilsDlg::s_Geometry;
@@ -44,8 +46,6 @@ ManageFoilsDlg::ManageFoilsDlg(QWidget *pParent) : QDialog(pParent)
     m_bChanged = false;
     m_iSelection = 0;
     m_pFoil = nullptr;
-    m_precision = nullptr;
-
     setupLayout();
 
     connect(m_pctrlDelete, SIGNAL(clicked()),this, SLOT(onDelete()));
@@ -152,7 +152,7 @@ void ManageFoilsDlg::setupLayout()
     }
 
     m_pctrlFoilTable   = new QTableView(this);
-    m_pctrlFoilTable->setFont(Settings::s_TableFont);
+    m_pctrlFoilTable->setFont(DisplayOptions::tableFont());
     m_pctrlFoilTable->setSelectionMode(QAbstractItemView::SingleSelection);
     m_pctrlFoilTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_pctrlFoilTable->horizontalHeader()->setStretchLastSection(true);
@@ -201,28 +201,15 @@ void ManageFoilsDlg::setupLayout()
     m_pctrlFoilTable->setItemDelegate(m_pFoilDelegate);
     m_pFoilDelegate->m_pFoilModel = m_pFoilModel;
 
-    m_precision = new int[12];
-    m_precision[0]  = 2;
-    m_precision[1]  = 2;
-    m_precision[2]  = 2;
-    m_precision[3]  = 2;
-    m_precision[4]  = 2;
-    m_precision[5]  = 0;
-    m_precision[6]  = 2;
-    m_precision[7]  = 2;
-    m_precision[8]  = 2;
-    m_precision[9]  = 2;
-    m_precision[10] = 2;
-    m_precision[11] = 2;
-
+    QVector<int> m_precision(12,2);
     m_pFoilDelegate->m_Precision = m_precision;
 }
 
 
 ManageFoilsDlg::~ManageFoilsDlg()
 {
-    if(m_precision) delete [] m_precision;
 }
+
 
 void ManageFoilsDlg::fillFoilTable()
 {

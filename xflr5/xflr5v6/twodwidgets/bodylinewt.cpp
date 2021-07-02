@@ -1,7 +1,7 @@
 /****************************************************************************
 
     BodyLineWidget Class
-    Copyright (C) 2015 Andre Deperrois
+    Copyright (C) 2015 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 
 #include <xflcore/xflcore.h>
 #include <miarex/design/bodyscaledlg.h>
-#include <misc/options/settings.h>
+#include <xflcore/displayoptions.h>
 #include <xflcore/units.h>
 #include <xflobjects/objects3d/body.h>
 #include <twodwidgets/bodylinewt.h>
@@ -194,7 +194,7 @@ void BodyLineWt::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.save();
-    painter.fillRect(rect(), Settings::s_BackgroundColor);
+    painter.fillRect(rect(), DisplayOptions::backgroundColor());
 
     drawScaleLegend(painter);
     drawBackImage(painter);
@@ -272,7 +272,7 @@ void BodyLineWt::dragSelectedPoint(double x, double y)
 void BodyLineWt::drawScaleLegend(QPainter &painter)
 {
     painter.save();
-    QPen TextPen(Settings::s_TextColor);
+    QPen TextPen(DisplayOptions::textColor());
     painter.setPen(TextPen);
     painter.drawText(5,10, QString(tr("X-Scale = %1")).arg(m_fScale/m_fRefScale,4,'f',1));
     painter.drawText(5,22, QString(tr("Y-Scale = %1")).arg(m_fScaleY*m_fScale/m_fRefScale,4,'f',1));

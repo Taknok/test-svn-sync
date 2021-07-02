@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Frame Class
-    Copyright (C) 2007-2016 Andre Deperrois 
+    Copyright (C) 2007-2016 André Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -224,7 +224,7 @@ int Frame::insertPoint(const Vector3d &Real, int iAxis)
  */
 double Frame::height() const
 {
-    return (m_CtrlPoint.last() - m_CtrlPoint.first()).VAbs();
+    return (m_CtrlPoint.last() - m_CtrlPoint.first()).norm();
 /*    double hmin    =  10.0;
     double hmax = -10.0;
     for(int k=0; k<m_CtrlPoint.size(); k++)

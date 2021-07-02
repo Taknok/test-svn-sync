@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Wing Class
-    Copyright (C) 2005-2016 Andre Deperrois 
+    Copyright (C) 2005-2016 André Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ class Wing
     friend class StabViewDlg;
     friend class EditPlaneDlg;
     friend class EditBodyDlg;
-    friend class gl3dView;
+    friend class gl3dXflView;
     friend class XMLPlaneReader;
     friend class WingOpp;
 

@@ -1,16 +1,12 @@
 #version 330
 
-in vec4 vertex;
-uniform mat4 pvmMatrix;
-uniform mat4 mMatrix;
-uniform mat4 vMatrix;
+in vec4 vertexPosition_modelSpace;
+in vec4 vertexColor;
 
-out vec3 vPosition;
+out vec4 VtxColor;
 
 void main(void)
 {
-    gl_Position = pvmMatrix * vertex;
-    vec4 vsPos = vMatrix * mMatrix * vertex; // position of vertex in viewspace
-
-    vPosition = vsPos.xyz / vsPos.w;
+    VtxColor = vertexColor;
+    gl_Position =  vertexPosition_modelSpace;// pass through, the processing is done in the geom shader
 }

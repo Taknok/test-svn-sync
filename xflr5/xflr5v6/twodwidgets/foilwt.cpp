@@ -1,7 +1,7 @@
 /****************************************************************************
 
     FoilWt Class
-    Copyright (C) 2015 Andre Deperrois
+    Copyright (C) 2015 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #include <gui_objects/splinefoil.h>
 #include <misc/options/settings.h>
 #include <xdirect/xdirect.h>
+#include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects_global.h>
@@ -62,7 +63,7 @@ void FoilWt::setScale()
 void FoilWt::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.fillRect(rect(), Settings::s_BackgroundColor);
+    painter.fillRect(rect(), DisplayOptions::backgroundColor());
 
     drawScaleLegend(painter);
     drawBackImage(painter);
@@ -86,7 +87,7 @@ void FoilWt::paintSplines(QPainter &painter)
 
     QPen CtrlPen;
 
-    QBrush FillBrush(Settings::s_BackgroundColor);
+    QBrush FillBrush(DisplayOptions::backgroundColor());
     painter.setBrush(FillBrush);
     painter.restore();
 }
@@ -101,7 +102,7 @@ void FoilWt::paintFoils(QPainter &painter)
     painter.save();
     QPen FoilPen, CenterPen, CtrlPen;
 
-    QBrush FillBrush(Settings::s_BackgroundColor);
+    QBrush FillBrush(DisplayOptions::backgroundColor());
     painter.setBrush(FillBrush);
 
     for (int k=0; k<m_oaFoil.size(); k++)
@@ -123,7 +124,7 @@ void FoilWt::paintFoils(QPainter &painter)
                 drawMidLine(painter, pFoil, m_fScale, m_fScale*m_fScaleY, m_ptOffset);
             }
 
-            drawFoilPoints(painter, pFoil, 0.0, m_fScale,m_fScale*m_fScaleY, m_ptOffset, Settings::s_BackgroundColor);
+            drawFoilPoints(painter, pFoil, 0.0, m_fScale,m_fScale*m_fScaleY, m_ptOffset, DisplayOptions::backgroundColor());
         }
     }
     if (m_pBufferFoil && m_pBufferFoil->isVisible())
@@ -140,7 +141,7 @@ void FoilWt::paintFoils(QPainter &painter)
 
         CtrlPen.setColor(m_pBufferFoil->color());
         painter.setPen(CtrlPen);
-        drawFoilPoints(painter, m_pBufferFoil, 0.0, m_fScale,m_fScale*m_fScaleY, m_ptOffset, Settings::s_BackgroundColor);
+        drawFoilPoints(painter, m_pBufferFoil, 0.0, m_fScale,m_fScale*m_fScaleY, m_ptOffset, DisplayOptions::backgroundColor());
 
     }
     painter.restore();
@@ -155,11 +156,11 @@ void FoilWt::paintLegend(QPainter &painter)
 {
     painter.save();
 
-    painter.setFont(Settings::s_TextFont);
+    painter.setFont(DisplayOptions::textFont());
 
     if(m_bShowLegend)
     {
-        QFont fnt(Settings::s_TextFont); //valgrind
+        QFont fnt(DisplayOptions::textFont()); //valgrind
         QFontMetrics fm(fnt);
         int fmw = fm.averageCharWidth();
 
@@ -173,10 +174,10 @@ void FoilWt::paintLegend(QPainter &painter)
 
         painter.setBackgroundMode(Qt::TransparentMode);
 
-        QPen TextPen(Settings::s_TextColor);
+        QPen TextPen(DisplayOptions::textColor());
         painter.setPen(TextPen);
 
-        QBrush FillBrush(Settings::s_BackgroundColor);
+        QBrush FillBrush(DisplayOptions::backgroundColor());
         painter.setBrush(FillBrush);
 
         QPen LegendPen;
@@ -201,7 +202,7 @@ void FoilWt::paintLegend(QPainter &painter)
 
                     double x1 = Place.x() + (0.5*LegendSize);
 
-                    xfl::drawSymbol(painter, pRefFoil->pointStyle(), Settings::s_BackgroundColor, pRefFoil->color(), QPointF(x1, Place.y() + ypos*k));
+                    xfl::drawSymbol(painter, pRefFoil->pointStyle(), DisplayOptions::backgroundColor(), pRefFoil->color(), QPointF(x1, Place.y() + ypos*k));
                     painter.setPen(TextPen);
                     painter.drawText(Place.x() + LegendSize + fmw, Place.y() + ypos*k+delta, pRefFoil->name());
                     k++;

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     FoilTableDelegate Class
-    Copyright (C) 2009-2016 Andre Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ class FoilTableDelegate : public QItemDelegate
 
     private:
         QStandardItemModel *m_pFoilModel;
-        int *m_Precision; ///table of float precisions for each column
+        QVector<int> m_Precision; ///table of float precisions for each column
         AFoil *m_pAFoil;
         void *m_pManageFoils;
 };

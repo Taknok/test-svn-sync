@@ -1,7 +1,7 @@
 /****************************************************************************
 
     OpPointWidget Class
-    Copyright (C) 2016-2016 Andre Deperrois 
+    Copyright (C) 2016-2016 André Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 #include <xdirect/xdirect.h>
 #include <xdirect/xdirectstyledlg.h>
 #include <xflcore/constants.h>
+#include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 #include <xflgraph/controls/graphdlg.h>
 #include <xflgraph/graph.h>
@@ -352,12 +353,12 @@ void OpPointWidget::wheelEvent(QWheelEvent *pEvent)
 
         if(pEvent->angleDelta().y()>0)
         {
-            if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
+            if(!DisplayOptions::bReverseZoom()) zoomFactor = 1./1.06;
             else                          zoomFactor = 1.06;
         }
         else
         {
-            if(!Settings::s_bReverseZoom) zoomFactor = 1.06;
+            if(!DisplayOptions::bReverseZoom()) zoomFactor = 1.06;
             else                          zoomFactor = 1./1.06;
         }
 
@@ -390,12 +391,12 @@ void OpPointWidget::wheelEvent(QWheelEvent *pEvent)
 
         if(pEvent->angleDelta().y()>0)
         {
-            if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
+            if(!DisplayOptions::bReverseZoom()) zoomFactor = 1./1.06;
             else                          zoomFactor = 1.06;
         }
         else
         {
-            if(!Settings::s_bReverseZoom) zoomFactor = 1.06;
+            if(!DisplayOptions::bReverseZoom()) zoomFactor = 1.06;
             else                          zoomFactor = 1./1.06;
         }
 
@@ -432,7 +433,7 @@ void OpPointWidget::paintEvent(QPaintEvent *pEvent)
         QPainter painter(this);
         painter.save();
 
-        painter.fillRect(rect(), Settings::s_BackgroundColor);
+        painter.fillRect(rect(), DisplayOptions::backgroundColor());
         paintGraph(painter);
         paintOpPoint(painter);
 
@@ -441,7 +442,7 @@ void OpPointWidget::paintEvent(QPaintEvent *pEvent)
     else
     {
         QPainter painter(this);
-        painter.fillRect(rect(), Settings::s_BackgroundColor);
+        painter.fillRect(rect(), DisplayOptions::backgroundColor());
     }
     pEvent->accept();
 }
@@ -458,7 +459,7 @@ void OpPointWidget::paintGraph(QPainter &painter)
 
     painter.save();
 
-    QFontMetrics fm(Settings::textFont());
+    QFontMetrics fm(DisplayOptions::textFont());
     int fmheight = fm.height();
     int fmWidth  = fm.averageCharWidth();
 //  draw  the graph
@@ -466,13 +467,13 @@ void OpPointWidget::paintGraph(QPainter &painter)
     {
         m_pCpGraph->drawGraph(painter);
         QPoint Place(m_pCpGraph->clientRect()->right()-73*fmWidth, m_pCpGraph->clientRect()->top()+fmheight);
-        m_pCpGraph->drawLegend(painter, Place, Settings::s_TextFont, Settings::s_TextColor, Settings::backgroundColor());
+        m_pCpGraph->drawLegend(painter, Place, DisplayOptions::textFont(), DisplayOptions::textColor(), DisplayOptions::backgroundColor());
     }
 
 
     if(m_pCpGraph->isInDrawRect(m_LastPoint) && Settings::bMousePos())
     {
-        QPen textPen(Settings::textColor());
+        QPen textPen(DisplayOptions::textColor());
 
         painter.setPen(textPen);
 
@@ -511,8 +512,8 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
     }
     if(!m_pCpGraph->isInDrawRect(m_LastPoint) && Settings::bMousePos())
     {
-        QPen textPen(Settings::textColor());
-        QFontMetrics fm(Settings::textFont());
+        QPen textPen(DisplayOptions::textColor());
+        QFontMetrics fm(DisplayOptions::textFont());
         int fmheight  = fm.height();
         painter.setPen(textPen);
 
@@ -532,7 +533,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
     drawFoil(painter, XDirect::curFoil(), -Alpha, m_fScale, m_fScale*m_fYScale, m_FoilOffset);
     if(XDirect::curFoil()->pointStyle()>0)
-        drawFoilPoints(painter, XDirect::curFoil(), -Alpha, m_fScale,m_fScale*m_fYScale, m_FoilOffset, Settings::s_BackgroundColor);
+        drawFoilPoints(painter, XDirect::curFoil(), -Alpha, m_fScale,m_fScale*m_fYScale, m_FoilOffset, DisplayOptions::backgroundColor());
 
 
 /*    if(m_bShowPanels)
@@ -550,14 +551,14 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
     // Write Titles and results
     QString strong;
 
-    painter.setFont(Settings::s_TextFont);
+    painter.setFont(DisplayOptions::textFont());
     int D = 0;
     int ZPos = rect().bottom();
     int XPos = rect().right()-10;
-    QPen WritePen(Settings::s_TextColor);
+    QPen WritePen(DisplayOptions::textColor());
     painter.setPen(WritePen);
 
-    QFontMetrics fm(Settings::s_TextFont);
+    QFontMetrics fm(DisplayOptions::textFont());
     int dD = fm.height();
 
     //write the foil's properties

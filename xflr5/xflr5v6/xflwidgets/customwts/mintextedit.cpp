@@ -1,7 +1,7 @@
 /****************************************************************************
 
     MinTextEdit Class
-    Copyright (C) 2014 Andre Deperrois
+    Copyright (C) 2014 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,8 @@
 
 
 #include <xflwidgets/customwts/mintextedit.h>
-#include <misc/options/settings.h>
+
+#include <xflcore/displayoptions.h>
 
 
 MinTextEdit::MinTextEdit(QWidget *parent)
@@ -32,7 +33,7 @@ MinTextEdit::MinTextEdit(QWidget *parent)
 
 QSize MinTextEdit::sizeHint() const
 {
-    QFontMetrics fm(Settings::s_TextFont);
+    QFontMetrics fm(DisplayOptions::textFont());
     int w = 23 * fm.averageCharWidth();
     int h = fm.height();
     return QSize(w, h);

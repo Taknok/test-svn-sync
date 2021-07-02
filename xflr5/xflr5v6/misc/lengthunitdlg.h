@@ -1,7 +1,7 @@
 /****************************************************************************
 
     LengthUnitDlgDlg Class
-    Copyright (C) 2009 Andre Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,13 +20,13 @@
 *****************************************************************************/
 
 
-#ifndef LENGTHUNITDLG_H
-#define LENGTHUNITDLG_H
+#pragma once
 
 #include <QComboBox>
 #include <QDialog>
 #include <QPushButton>
 #include <QLabel>
+#include <QDialogButtonBox>
 
 class LengthUnitDlg : public QDialog
 {
@@ -34,41 +34,40 @@ class LengthUnitDlg : public QDialog
     friend class MainFrame;
     friend class Miarex;
 
-public:
-    LengthUnitDlg(QWidget *parent);
+    public:
+        LengthUnitDlg(QWidget *parent);
 
-    void getLengthUnitLabel(QString &str);
-    QString lengthUnitLabel();
-    double mtoUnit()  {return s_mtoUnit;}
-    int lengthUnitIndex() {return m_LengthUnitIndex;}
+        void getLengthUnitLabel(QString &str);
+        QString lengthUnitLabel();
+        double mtoUnit()  {return s_mtoUnit;}
+        int lengthUnitIndex() {return m_LengthUnitIndex;}
 
-    void InitDialog(int lengthUnitInd);
-    void SetUnits();
+        void initDialog(int lengthUnitInd);
+        void setUnits();
 
-private slots:
-    void OnSelChanged(const QString &);
+    private slots:
+        void onSelChanged(const QString &);
+        void onButton(QAbstractButton *pButton);
 
-private:
-    QPushButton *OKButton, *CancelButton;
+    private:
 
-    QComboBox    *m_pctrlLength;
+        QComboBox *m_pcbLength;
 
+        QLabel *m_plabLengthFactor, *m_plabLengthInvFactor;
+        QLabel *m_plabQuestion;
 
-    QLabel *m_pctrlLengthFactor, *m_pctrlLengthInvFactor;
+    private:
+        void SetupLayout();
 
-    QLabel *m_pctrlQuestion;
+        int m_LengthUnitIndex;    /**< The index of the user selected unit in the array of length units. @todo use an enumeration instead. */
 
-private:
-    void SetupLayout();
-
-    int m_LengthUnitIndex;    /**< The index of the user selected unit in the array of length units. @todo use an enumeration instead. */
-
-    double s_mtoUnit;    /**< Conversion factor from meters to the user selected length unit. */
+        double s_mtoUnit;    /**< Conversion factor from meters to the user selected length unit. */
 
 
-public:
+        QDialogButtonBox *m_pButtonBox;
 
-    QString m_Question;
+    public:
+
+        QString m_Question;
 };
 
-#endif // UNITSDLG_H

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Graph Classes
-    Copyright (C) 2003-2019 Andre Deperrois
+    Copyright (C) 2003-2019 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -588,7 +588,7 @@ void Graph::drawYMinGrid(QPainter &painter)
 }
 
 
-void Graph::drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QColor &LegendColor, QColor &backColor)
+void Graph::drawLegend(QPainter &painter, QPoint &Place, QFont const&LegendFont, QColor const &LegendColor, QColor const &backColor)
 {
     painter.save();
     int LegendSize, ypos;

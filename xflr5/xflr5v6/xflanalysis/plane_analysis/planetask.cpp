@@ -2,7 +2,7 @@
 
     PlaneTask Class
 
-    Copyright (C) 2008-2017 Andre Deperrois 
+    Copyright (C) 2008-2017 André Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -561,7 +561,7 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
                         LATB = TB - LA;
                         TALB = LB - TA;
                         m_Panel[m_MatSize].Normal = LATB * TALB;
-                        m_Panel[m_MatSize].Area =  m_Panel[m_MatSize].Normal.VAbs()/2.0;
+                        m_Panel[m_MatSize].Area =  m_Panel[m_MatSize].Normal.norm()/2.0;
                         m_Panel[m_MatSize].Normal.normalize();
 
                         m_Panel[m_MatSize].m_bIsInSymPlane  = false;
@@ -670,7 +670,7 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
                 LATB = TB - LA;
                 TALB = LB - TA;
                 m_Panel[m_MatSize].Normal = LATB * TALB;
-                m_Panel[m_MatSize].Area =  m_Panel[m_MatSize].Normal.VAbs()/2.0;
+                m_Panel[m_MatSize].Area =  m_Panel[m_MatSize].Normal.norm()/2.0;
                 m_Panel[m_MatSize].Normal.normalize();
 
                 m_Panel[m_MatSize].m_bIsInSymPlane  = false;
@@ -765,7 +765,7 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
             LATB = TB - LA;
             TALB = LB - TA;
             m_Panel[m_MatSize].Normal = LATB * TALB;
-            m_Panel[m_MatSize].Area =  m_Panel[m_MatSize].Normal.VAbs()/2.0;
+            m_Panel[m_MatSize].Area =  m_Panel[m_MatSize].Normal.norm()/2.0;
             m_Panel[m_MatSize].Normal.normalize();
 
             m_Panel[m_MatSize].m_bIsInSymPlane  = false;
@@ -1281,7 +1281,7 @@ bool PlaneTask::createWakeElems(int PanelIndex, Plane const*pPlane, WPolar const
 
         m_WakePanel[mw].m_Pos = MIDSURFACE;
         m_WakePanel[mw].m_bIsWakePanel = true;
-        m_WakePanel[mw].Area =  m_WakePanel[mw].Normal.VAbs()/2.0;
+        m_WakePanel[mw].Area =  m_WakePanel[mw].Normal.norm()/2.0;
         m_WakePanel[mw].Normal.normalize();
         m_WakePanel[mw].setPanelFrame(LA,LB, TA, TB);
         m_WakePanel[mw].m_bIsLeftPanel  = false;

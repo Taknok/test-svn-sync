@@ -1,7 +1,7 @@
 /****************************************************************************
 
     WPolarDlg Class
-    Copyright (C) 2009-2019 Andre Deperrois
+    Copyright (C) 2009-2019 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@
 #include "wpolardlg.h"
 #include <miarex/miarex.h>
 #include <misc/options/settings.h>
+#include <xflcore/displayoptions.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/plane.h>
@@ -1035,7 +1036,7 @@ void WPolarDlg::setupLayout()
     QVBoxLayout *pExtraDragPageLayout  = new QVBoxLayout;
     {
         m_pExtraDragControlTable = new QTableView(this);
-        m_pExtraDragControlTable->setFont(Settings::s_TableFont);
+        m_pExtraDragControlTable->setFont(DisplayOptions::tableFont());
 
         m_pExtraDragControlTable->setWindowTitle(tr("Extra drag"));
         m_pExtraDragControlTable->setMinimumWidth(400);
