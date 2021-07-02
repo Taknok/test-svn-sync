@@ -18,5 +18,5 @@
 
 //General
 #define MAXRECENTFILES         8  /**< Defines the maximum number of file names in the recent file list */
-#define SETTINGSFORMAT     19351  /**< A random number which defines the format of the settings file */
+#define SETTINGSFORMAT     37351  /**< A random number which defines the format of the settings file */
 

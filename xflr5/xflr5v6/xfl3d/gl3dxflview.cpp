@@ -45,8 +45,8 @@
 #include <xflobjects/objects3d/wing.h>
 #include <xflobjects/objects3d/wpolar.h>
 
-Miarex *gl3dXflView::s_pMiarex;
-MainFrame *gl3dXflView::s_pMainFrame;
+Miarex *gl3dXflView::s_pMiarex(nullptr);
+MainFrame *gl3dXflView::s_pMainFrame(nullptr);
 
 gl3dXflView::gl3dXflView(QWidget *pParent) : gl3dView(pParent)
 {
@@ -1282,8 +1282,7 @@ void gl3dXflView::glMakeWingGeometry(int iWing, Wing const *pWing, Body const *p
         if(!pSurf) continue;
 
         //top surface
-        pSurf->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight,
-                                              NormalA, NormalB, CHORDPOINTS);
+        pSurf->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, NormalA, NormalB, CHORDPOINTS);
         pWing->getTextureUV(j, leftV.data(), rightV.data(), leftU, rightU, CHORDPOINTS);
 
         //left side vertices
@@ -1573,26 +1572,28 @@ void gl3dXflView::glMakeWingGeometry(int iWing, Wing const *pWing, Body const *p
     //SECTIONS OUTLINE
     for (int j=0; j<pWing->m_Surface.size(); j++)
     {
+        Surface const *pSurf = pWing->surface(j);
+        pSurf->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, NormalA, NormalB, CHORDPOINTS);
         //top surface
         //left side vertices
         for (int l=0; l<CHORDPOINTS-1; l++)
         {
-            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].xf();
-            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].yf();
-            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].zf();
-            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l+1].xf();
-            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l+1].yf();
-            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l+1].zf();
+            wingOutlineVertexArray[iv++] = PtTopLeft.at(l).xf();
+            wingOutlineVertexArray[iv++] = PtTopLeft.at(l).yf();
+            wingOutlineVertexArray[iv++] = PtTopLeft.at(l).zf();
+            wingOutlineVertexArray[iv++] = PtTopLeft.at(l+1).xf();
+            wingOutlineVertexArray[iv++] = PtTopLeft.at(l+1).yf();
+            wingOutlineVertexArray[iv++] = PtTopLeft.at(l+1).zf();
         }
         //right side vertices
         for (int l=0; l<CHORDPOINTS-1; l++)
         {
-            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].xf();
-            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].yf();
-            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].zf();
-            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l+1].xf();
-            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l+1].yf();
-            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l+1].zf();
+            wingOutlineVertexArray[iv++] = PtTopRight.at(l).xf();
+            wingOutlineVertexArray[iv++] = PtTopRight.at(l).yf();
+            wingOutlineVertexArray[iv++] = PtTopRight.at(l).zf();
+            wingOutlineVertexArray[iv++] = PtTopRight.at(l+1).xf();
+            wingOutlineVertexArray[iv++] = PtTopRight.at(l+1).yf();
+            wingOutlineVertexArray[iv++] = PtTopRight.at(l+1).zf();
         }
 
 
@@ -1601,43 +1602,43 @@ void gl3dXflView::glMakeWingGeometry(int iWing, Wing const *pWing, Body const *p
         //left side vertices
         for (int l=0; l<CHORDPOINTS-1; l++)
         {
-            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].xf();
-            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].yf();
-            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].zf();
-            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l+1].xf();
-            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l+1].yf();
-            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l+1].zf();
+            wingOutlineVertexArray[iv++] = PtBotLeft.at(l).xf();
+            wingOutlineVertexArray[iv++] = PtBotLeft.at(l).yf();
+            wingOutlineVertexArray[iv++] = PtBotLeft.at(l).zf();
+            wingOutlineVertexArray[iv++] = PtBotLeft.at(l+1).xf();
+            wingOutlineVertexArray[iv++] = PtBotLeft.at(l+1).yf();
+            wingOutlineVertexArray[iv++] = PtBotLeft.at(l+1).zf();
         }
 
         //right side vertices
         for (int l=0; l<CHORDPOINTS-1; l++)
         {
-            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].xf();
-            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].yf();
-            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].zf();
-            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l+1].xf();
-            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l+1].yf();
-            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l+1].zf();
+            wingOutlineVertexArray[iv++] = PtBotRight.at(l).xf();
+            wingOutlineVertexArray[iv++] = PtBotRight.at(l).yf();
+            wingOutlineVertexArray[iv++] = PtBotRight.at(l).zf();
+            wingOutlineVertexArray[iv++] = PtBotRight.at(l+1).xf();
+            wingOutlineVertexArray[iv++] = PtBotRight.at(l+1).yf();
+            wingOutlineVertexArray[iv++] = PtBotRight.at(l+1).zf();
         }
 
         //Leading edge
-        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+0].xf();
-        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+0].yf();
-        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+0].zf();
-        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+0].xf();
-        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+0].yf();
-        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+0].zf();
+        wingOutlineVertexArray[iv++] = PtTopLeft.first().xf();
+        wingOutlineVertexArray[iv++] = PtTopLeft.first().yf();
+        wingOutlineVertexArray[iv++] = PtTopLeft.first().zf();
+        wingOutlineVertexArray[iv++] = PtTopRight.first().xf();
+        wingOutlineVertexArray[iv++] = PtTopRight.first().yf();
+        wingOutlineVertexArray[iv++] = PtTopRight.first().zf();
 
         //trailing edge
-        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS + CHORDPOINTS-1].xf();
-        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS + CHORDPOINTS-1].yf();
-        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS + CHORDPOINTS-1].zf();
-        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS + CHORDPOINTS-1].xf();
-        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS + CHORDPOINTS-1].yf();
-        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS + CHORDPOINTS-1].zf();
+        wingOutlineVertexArray[iv++] = PtTopLeft.at(CHORDPOINTS-1).xf();
+        wingOutlineVertexArray[iv++] = PtTopLeft.at(CHORDPOINTS-1).yf();
+        wingOutlineVertexArray[iv++] = PtTopLeft.at(CHORDPOINTS-1).zf();
+        wingOutlineVertexArray[iv++] = PtTopRight.at(CHORDPOINTS-1).xf();
+        wingOutlineVertexArray[iv++] = PtTopRight.at(CHORDPOINTS-1).yf();
+        wingOutlineVertexArray[iv++] = PtTopRight.at(CHORDPOINTS-1).zf();
     }
 
-    //TE flap outline....
+    //TE flap outline
     for (int j=0; j<pWing->m_Surface.size(); j++)
     {
         Surface const *pSurf =  pWing->m_Surface[j];
@@ -1679,7 +1680,7 @@ void gl3dXflView::glMakeWingGeometry(int iWing, Wing const *pWing, Body const *p
     //LE flap outline....
     for (int j=0; j<pWing->m_Surface.size(); j++)
     {
-        Surface const *pSurf =  pWing->m_Surface[j];
+        Surface const *pSurf =  pWing->m_Surface.at(j);
         Foil const *pFoilA = pSurf->m_pFoilA;
         Foil const *pFoilB = pSurf->m_pFoilB;
         if(pFoilA && pFoilB && pFoilA->m_bLEFlap && pFoilB->m_bLEFlap)

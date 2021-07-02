@@ -41,21 +41,21 @@ double W3dPrefsDlg::s_MassRadius = .017;
 QColor W3dPrefsDlg::s_MassColor = QColor(67, 151, 169);
 
 
-LineStyle W3dPrefsDlg::s_AxisStyle    = {true, Line::DASHDOT, 2, QColor(150,150,150),     Line::NOSYMBOL};
-LineStyle W3dPrefsDlg::s_VLMStyle       = {true, Line::SOLID,   2, QColor(180,180,180),     Line::NOSYMBOL};
+LineStyle W3dPrefsDlg::s_AxisStyle      = {true, Line::DASHDOT, 1, QColor(150,150,150),     Line::NOSYMBOL};
+LineStyle W3dPrefsDlg::s_VLMStyle       = {true, Line::SOLID,   1, QColor(180,180,180),     Line::NOSYMBOL};
 
-LineStyle W3dPrefsDlg::s_OutlineStyle   = {true, Line::SOLID,   2, QColor(73,73,73),        Line::NOSYMBOL};
+LineStyle W3dPrefsDlg::s_OutlineStyle   = {true, Line::SOLID,   1, QColor(73,73,73),        Line::NOSYMBOL};
 LineStyle W3dPrefsDlg::s_XCPStyle       = {true, Line::SOLID,   2, QColor(50, 150, 50),     Line::NOSYMBOL};
 LineStyle W3dPrefsDlg::s_MomentStyle    = {true, Line::SOLID,   2, QColor(200, 100, 100),   Line::NOSYMBOL};
 LineStyle W3dPrefsDlg::s_IDragStyle     = {true, Line::SOLID,   2, QColor(255,200,0),       Line::NOSYMBOL};
 LineStyle W3dPrefsDlg::s_DownwashStyle  = {true, Line::SOLID,   2, QColor(255, 100, 100),   Line::NOSYMBOL};
-LineStyle W3dPrefsDlg::s_WakeStyle      = {true, Line::SOLID,   2, QColor(0, 150, 200),     Line::NOSYMBOL};
+LineStyle W3dPrefsDlg::s_WakeStyle      = {true, Line::SOLID,   1, QColor(0, 150, 200),     Line::NOSYMBOL};
 LineStyle W3dPrefsDlg::s_CpStyle        = {true, Line::SOLID,   2, QColor(255,0,0),         Line::NOSYMBOL};
 LineStyle W3dPrefsDlg::s_StreamStyle    = {true, Line::SOLID,   2, QColor(200, 150, 255),   Line::NOSYMBOL};
 
-LineStyle W3dPrefsDlg::s_VDragStyle     = {true, Line::SOLID,   2, QColor(200,100,220),     Line::NOSYMBOL};
-LineStyle W3dPrefsDlg::s_TopStyle       = {true, Line::SOLID,   2, QColor(171, 103, 220),   Line::NOSYMBOL};
-LineStyle W3dPrefsDlg::s_BotStyle       = {true, Line::DASH,    2, QColor(171, 103, 220),   Line::NOSYMBOL};
+LineStyle W3dPrefsDlg::s_VDragStyle     = {true, Line::SOLID,   1, QColor(200,100,220),     Line::NOSYMBOL};
+LineStyle W3dPrefsDlg::s_TopStyle       = {true, Line::SOLID,   1, QColor(171, 103, 220),   Line::NOSYMBOL};
+LineStyle W3dPrefsDlg::s_BotStyle       = {true, Line::DASH,    1, QColor(171, 103, 220),   Line::NOSYMBOL};
 
 int W3dPrefsDlg::s_iChordwiseRes = 73;
 int W3dPrefsDlg::s_iBodyAxialRes = 23;

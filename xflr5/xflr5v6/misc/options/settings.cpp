@@ -413,7 +413,7 @@ void Settings::loadSettings(QSettings &settings)
         DisplayOptions::s_TreeFontStruct.loadSettings(   settings, "TreeFont");
         DisplayOptions::s_ToolTipFontStruct.loadSettings(settings, "ToolTipFont");
 
-        DisplayOptions::setScaleFactor(settings.value("ScaleFactor", false).toDouble());
+        DisplayOptions::setScaleFactor(settings.value("ScaleFactor", DisplayOptions::scaleFactor()).toDouble());
         s_bAlignChildrenStyle = settings.value("AligneChildrenStyle", true).toBool();
 
         s_bShowMousePos = settings.value("ShowMousePos", true).toBool();
