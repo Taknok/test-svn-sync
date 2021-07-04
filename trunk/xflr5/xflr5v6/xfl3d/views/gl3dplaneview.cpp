@@ -41,10 +41,6 @@ void gl3dPlaneView::glRenderView()
 {
     if(m_pPlane)
     {
-        Body const*pBody = m_pPlane->body();
-
-        if(pBody->isFlatPanelType())
-
         m_shadSurf.bind();
         {
             m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix, m_matView*m_matModel);
@@ -58,22 +54,25 @@ void gl3dPlaneView::glRenderView()
         }
         m_shadLine.release();
 
-        bool bTextures = pBody->hasTextures() && (m_pLeftBodyTexture && m_pRightBodyTexture);
-        if(bTextures)
+        Body const*pBody = m_pPlane->body();
+        if(pBody)
         {
-            paintTriangles3VtxTexture(m_vboFuseLeft,  pBody->color(), false, true, m_pLeftBodyTexture);
-            paintTriangles3VtxTexture(m_vboFuseRight, pBody->color(), false, true, m_pRightBodyTexture);
+            bool bTextures = pBody->hasTextures() && (m_pLeftBodyTexture && m_pRightBodyTexture);
+            if(bTextures)
+            {
+                paintTriangles3VtxTexture(m_vboFuseLeft,  pBody->color(), false, true, m_pLeftBodyTexture);
+                paintTriangles3VtxTexture(m_vboFuseRight, pBody->color(), false, true, m_pRightBodyTexture);
+            }
+            else
+            {
+                paintTriangles3VtxTexture(m_vboFuseLeft,  pBody->color(), false, true, nullptr);
+                paintTriangles3VtxTexture(m_vboFuseRight, pBody->color(), false, true, nullptr);
+            }
+            if(pBody->isFlatPanelType())
+                paintSegments(m_vboFuseOutline, W3dPrefs::s_OutlineStyle);
+            else
+                paintLineStrip(m_vboFuseOutline, W3dPrefs::s_OutlineStyle);
         }
-        else
-        {
-            paintTriangles3VtxTexture(m_vboFuseLeft,  pBody->color(), false, true, nullptr);
-            paintTriangles3VtxTexture(m_vboFuseRight, pBody->color(), false, true, nullptr);
-        }
-        if(pBody->isFlatPanelType())
-            paintSegments(m_vboFuseOutline, W3dPrefs::s_OutlineStyle);
-        else
-            paintLineStrip(m_vboFuseOutline, W3dPrefs::s_OutlineStyle);
-
 
         for(int iw=0; iw<MAXWINGS; iw++)
         {
