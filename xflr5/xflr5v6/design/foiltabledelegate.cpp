@@ -28,7 +28,7 @@
 #include <xdirect/objects2d.h>
 #include <xflcore/xflcore.h>
 #include <xflcore/displayoptions.h>
-#include <misc/options/settings.h>
+
 #include <xflwidgets/customwts/doubleedit.h>
 
 

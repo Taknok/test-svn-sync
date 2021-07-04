@@ -26,14 +26,12 @@
 #include <QGridLayout>
 
 #include "linepickerdlg.h"
+#include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
-#include <misc/options/settings.h>
-
+#include <xflwidgets/line/linebtn.h>
+#include <xflwidgets/line/linecbbox.h>
+#include <xflwidgets/line/linedelegate.h>
 #include <xflwidgets/line/linepickerwt.h>
-#include "linebtn.h"
-#include "linecbbox.h"
-#include "linedelegate.h"
-
 
 LinePickerDlg::LinePickerDlg(QWidget *pParent): QDialog(pParent)
 {
@@ -83,7 +81,7 @@ void LinePickerDlg::initDialog(Line::enumPointStyle pointStyle, Line::enumLineSt
 void LinePickerDlg::initDialog(bool bFlowDownEnable)
 {
     m_pchFlowDownStyle->setVisible(bFlowDownEnable);
-    m_pchFlowDownStyle->setChecked(Settings::isAlignedChildrenStyle());
+    m_pchFlowDownStyle->setChecked(DisplayOptions::isAlignedChildrenStyle());
 
     fillBoxes();
 }
@@ -114,14 +112,14 @@ void LinePickerDlg::keyPressEvent(QKeyEvent *event)
 
 void LinePickerDlg::accept()
 {
-    Settings::setAlignedChildrenStyle(m_pchFlowDownStyle->isChecked());
+    DisplayOptions::setAlignedChildrenStyle(m_pchFlowDownStyle->isChecked());
     QDialog::accept();
 }
 
 
 void LinePickerDlg::reject()
 {
-    Settings::setAlignedChildrenStyle(m_pchFlowDownStyle->isChecked());
+    DisplayOptions::setAlignedChildrenStyle(m_pchFlowDownStyle->isChecked());
     QDialog::reject();
 }
 

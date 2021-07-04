@@ -38,7 +38,7 @@
 #include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 #include <xflcore/gui_params.h>
-#include <misc/options/settings.h>
+
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/customwts/intedit.h>
 #include <xdirect/analysis/xfoiltask.h>

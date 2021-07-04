@@ -24,7 +24,7 @@
 #include "gl3dwingview.h"
 #include <QOpenGLPaintDevice>
 #include <miarex/design/gl3dwingdlg.h>
-#include <xfl3d/controls/w3dprefsdlg.h>
+#include <xfl3d/controls/w3dprefs.h>
 #include <xflobjects/objects3d/wing.h>
 #include <xflobjects/objects3d/surface.h>
 
@@ -83,7 +83,7 @@ void gl3dWingView::glMakeWingSectionHighlight(Wing const*pWing, int iSectionHigh
 {
     Vector3d Point, Normal;
 
-    int CHORDPOINTS = W3dPrefsDlg::chordwiseRes();
+    int CHORDPOINTS = W3dPrefs::chordwiseRes();
     int iSection = 0;
     int jSurf = 0;
     for(int jSection=0; jSection<pWing->NWingSection(); jSection++)

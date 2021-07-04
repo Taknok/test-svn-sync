@@ -58,7 +58,7 @@
 #include <miarex/view/stabviewdlg.h>
 #include <miarex/view/targetcurvedlg.h>
 #include <misc/editplrdlg.h>
-#include <misc/options/settings.h>
+#include <misc/options/settingswt.h>
 #include <misc/polarfilterdlg.h>
 #include <misc/renamedlg.h>
 #include <misc/stlexportdialog.h>
@@ -66,8 +66,8 @@
 #include <xdirect/objects2d.h>
 
 #include <xfl3d/controls/gllightdlg.h>
-#include <xfl3d/controls/w3dprefsdlg.h>
-#include <xflanalysis/matrix.h>
+#include <xfl3d/controls/w3dprefs.h>
+#include <xflcore/matrix.h>
 #include <xflcore/trace.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
@@ -650,7 +650,7 @@ void Miarex::setControls()
     m_pchVDrag->setChecked(m_bVCd);
     m_pchStream->setChecked(m_pgl3dMiarexView->m_bStream);
     m_pslClipPlanePos->setValue(int(m_pgl3dMiarexView->m_ClipPlanePos*100.0f));
-    m_pslClipPlanePos->setEnabled(W3dPrefsDlg::s_bEnableClipPlane);
+    m_pslClipPlanePos->setEnabled(W3dPrefs::s_bEnableClipPlane);
 
     m_pchOutline->setEnabled(m_pCurPlane);
     m_pchSurfaces->setEnabled(m_pCurPlane);
@@ -662,7 +662,7 @@ void Miarex::setControls()
 
     setCurveParams();
 
-    m_pchAlignChildren->setChecked(Settings::isAlignedChildrenStyle());
+    m_pchAlignChildren->setChecked(DisplayOptions::isAlignedChildrenStyle());
 
     blockSignals(false);
 }
@@ -1969,7 +1969,7 @@ bool Miarex::loadSettings(QSettings &settings)
 
         PlaneOpp::s_bKeepOutOpps  = settings.value("KeepOutOpps").toBool();
 
-        W3dPrefsDlg::s_MassColor = settings.value("MassColor", QColor(100, 100, 200)).value<QColor>();
+        W3dPrefs::s_MassColor = settings.value("MassColor", QColor(100, 100, 200)).value<QColor>();
 
         LLTAnalysis::s_CvPrec       = settings.value("CvPrec").toDouble();
         LLTAnalysis::s_RelaxMax     = settings.value("RelaxMax").toDouble();
@@ -2097,7 +2097,7 @@ void Miarex::on3DResetScale()
 */
 void Miarex::on3DPrefs()
 {
-    W3dPrefsDlg w3dDlg(s_pMainFrame);
+    W3dPrefs w3dDlg(s_pMainFrame);
     w3dDlg.initDialog();
 
     w3dDlg.exec();
@@ -3272,6 +3272,7 @@ void Miarex::onEditCurBody()
     GL3dBodyDlg glbDlg(s_pMainFrame);
     glbDlg.m_bEnableName = false;
     glbDlg.initDialog(pModPlane->body());
+    glbDlg.setTexturePath(getTexturePath(m_pCurPlane));
 
     if(glbDlg.exec()!=QDialog::Accepted)
     {
@@ -3320,7 +3321,7 @@ void Miarex::onEditCurBody()
     // in all cases copy new color and texture flag
     if(m_pCurPlane->body())
     {
-        m_pCurPlane->body()->setBodyColor( pModPlane->body()->bodyColor());
+        m_pCurPlane->body()->setBodyColor( pModPlane->body()->color());
         m_pCurPlane->body()->setTextures(pModPlane->body()->hasTextures());
     }
 
@@ -3576,6 +3577,7 @@ void Miarex::onEditCurPlane()
     plDlg.m_pPlane = pModPlane;
     plDlg.m_bAcceptName = false;
     plDlg.initDialog();
+    plDlg.setTexturePath(getTexturePath(m_pCurPlane));
 
     ModDlg mdDlg(s_pMainFrame);
 
@@ -3639,7 +3641,6 @@ void Miarex::onEditCurPlane()
 }
 
 
-
 /**
  * @brief The user has requested an edition of one of the wings.
  * Launches the dialog box, and maps the data depending on whether the user wants to overwrite, create a new object, or has cancelled the request.
@@ -3685,19 +3686,19 @@ void Miarex::onEditCurWing()
 
     pModPlane->duplicate(m_pCurPlane);
 
-    GL3dWingDlg plDlg(s_pMainFrame);
-    plDlg.m_bAcceptName = false;
-    plDlg.initDialog(pModPlane->wing(iWing));
+    GL3dWingDlg wgDlg(s_pMainFrame);
+    wgDlg.m_bAcceptName = false;
+    wgDlg.initDialog(pModPlane->wing(iWing));
+    wgDlg.setTexturePath(getTexturePath(m_pCurPlane));
 
-
-    if(QDialog::Accepted == plDlg.exec())
+    if(QDialog::Accepted == wgDlg.exec())
     {
         m_bResetTextLegend = true;
         gl3dMiarexView::s_bResetglGeom = true;
         gl3dMiarexView::s_bResetglMesh = true;
         s_bResetCurves = true;
 
-        if(plDlg.m_bDescriptionChanged)
+        if(wgDlg.m_bDescriptionChanged)
         {
             emit projectModified();
             m_pCurPlane->wing(iWing)->setWingColor(pModPlane->wing(iWing)->wingColor());
@@ -3705,7 +3706,7 @@ void Miarex::onEditCurWing()
             m_pCurPlane->wing(iWing)->setTextures(pModPlane->wing(iWing)->textures());
         }
 
-        if(plDlg.m_bChanged)
+        if(wgDlg.m_bChanged)
         {
             if(bHasResults)
             {
@@ -3887,13 +3888,13 @@ void Miarex::onExportCurPOpp()
     strong.replace(" ","");
     strong.replace("/", "");
     FileName = QFileDialog::getSaveFileName(this, tr("Export OpPoint"),
-                                            Settings::s_LastDirName +'/'+strong,
+                                            xfl::s_LastDirName +'/'+strong,
                                             tr("Text File (*.txt);;Comma Separated Values (*.csv)"),
                                             &filter);
 
     if(!FileName.length()) return;
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
     pos = FileName.lastIndexOf(".csv");
     if (pos>0) Settings::s_ExportFileType = xfl::CSV;
     else       Settings::s_ExportFileType = xfl::TXT;
@@ -4178,14 +4179,14 @@ void Miarex::onExportCurWPolar()
     FileName.replace("/", "_");
     FileName.replace(".", "_");
     FileName = QFileDialog::getSaveFileName(this, tr("Export Polar"),
-                                            Settings::s_LastDirName + "/"+FileName,
+                                            xfl::s_LastDirName + "/"+FileName,
                                             tr("Text File (*.txt);;Comma Separated Values (*.csv)"),
                                             &filter);
 
     if(!FileName.length()) return;
 
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
     pos = FileName.lastIndexOf(".csv");
 
     if(filter.indexOf("*.txt")>0)
@@ -4219,7 +4220,7 @@ void Miarex::onExportWPolars()
     QTextStream out;
 
     //select the directory for output
-    DirName = QFileDialog::getExistingDirectory(this,  tr("Export Directory"), Settings::s_LastDirName);
+    DirName = QFileDialog::getExistingDirectory(this,  tr("Export Directory"), xfl::s_LastDirName);
 
     WPolar *pWPolar=nullptr;
     for(int l=0; l<Objects3d::polarCount(); l++)
@@ -4263,12 +4264,12 @@ void Miarex::onExporttoAVL()
     FileName = m_pCurPlane->planeName();
     FileName.replace("/", " ");
     FileName = QFileDialog::getSaveFileName(this, tr("Export Plane"),
-                                            Settings::s_LastDirName + "/"+FileName,
+                                            xfl::s_LastDirName + "/"+FileName,
                                             tr("AVL Text File (*.avl)"), &filter);
     if(!FileName.length()) return;
 
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
 
     pos = FileName.indexOf(".avl", Qt::CaseInsensitive);
     if(pos<0) FileName += ".avl";
@@ -4837,12 +4838,12 @@ void Miarex::onImportWPolars()
     QString PathName;
 
     PathNames = QFileDialog::getOpenFileNames(s_pMainFrame, tr("Open File"),
-                                              Settings::s_LastDirName,
+                                              xfl::s_LastDirName,
                                               tr("Plane Polar Format (*.*)"));
     if(!PathNames.size()) return;
 
     int pos = PathName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+    if(pos>0) xfl::s_LastDirName = PathName.left(pos);
 
     for (int i=0; i<PathNames.size(); i++)
     {
@@ -4931,7 +4932,7 @@ void Miarex::onImportWPolars()
                     else bRead = false;
                 }
 
-                QColor clr = xfl::randomColor(!Settings::isLightTheme());
+                QColor clr = xfl::randomColor(!DisplayOptions::isLightTheme());
                 pWPolar->setColor(clr);
 
                 Objects3d::addWPolar(pWPolar);
@@ -4970,7 +4971,7 @@ void Miarex::onKeepCpSection()
     //    pNewCurve->setCurveName(pCurrentCurve->curveName());
     //    pNewCurve->setColor(pCurrentCurve->color());
 
-    m_CpLineStyle.m_Color = xfl::randomColor(!Settings::isLightTheme());
+    m_CpLineStyle.m_Color = xfl::randomColor(!DisplayOptions::isLightTheme());
     pCurrentCurve->setColor(m_CpLineStyle.m_Color);
 
     m_CpLineStyle.m_Stipple = Line::SOLID;
@@ -5077,6 +5078,7 @@ void Miarex::onNewPlaneObject()
 
     EditPlaneDlg eplDlg(s_pMainFrame);
     eplDlg.initDialog(pPlane);
+    eplDlg.setTexturePath(getTexturePath(m_pCurPlane));
 
     if(QDialog::Accepted == eplDlg.exec())
     {
@@ -5796,7 +5798,9 @@ void Miarex::onSetupLight()
     GLLightDlg *pdlg = new GLLightDlg;
     pdlg->setModelSize(m_pCurPlane->planformSpan());
     pdlg->setgl3dView(m_pgl3dMiarexView);
+    m_pgl3dMiarexView->setLightVisible(true);
     pdlg->show();
+    update();
 }
 
 
@@ -6601,7 +6605,7 @@ bool Miarex::saveSettings(QSettings &settings)
  */
 void Miarex::setScale()
 {
-    if(/*m_iView==XFLR5::W3DVIEW && */m_pCurPlane && W3dPrefsDlg::s_bAutoAdjustScale)
+    if(/*m_iView==XFLR5::W3DVIEW && */m_pCurPlane && W3dPrefs::s_bAutoAdjustScale)
     {
         double bodyLength = 0.0;
         if(m_pCurPlane->body()) bodyLength = m_pCurPlane->body()->length();
@@ -6797,7 +6801,7 @@ void Miarex::setCurveParams()
  * Sets an active polar and operating point for this plane, if any are available
  * @param PlaneName the name of the plane to be set as active
  */
-void Miarex::setPlane(QString PlaneName)
+void Miarex::setPlane(QString const &PlaneName)
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     m_bResetTextLegend = true;
@@ -6860,6 +6864,8 @@ void Miarex::setPlane(QString PlaneName)
 
     setScale();
     setWGraphScale();
+
+    m_pgl3dMiarexView->setTexturePath(getTexturePath(m_pCurPlane));
 
     s_bResetCurves = true;
 
@@ -7547,7 +7553,7 @@ void Miarex::updateCurve()
         m_pCurWPolar->setTheStyle(m_LineStyle);
         m_pCurWPolar->setVisible(bCurveVisible);
 
-        if(Settings::isAlignedChildrenStyle()) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
+        if(DisplayOptions::isAlignedChildrenStyle()) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
     }
     else if(m_iView==xfl::STABTIMEVIEW && m_pCurWPolar)
     {
@@ -7558,7 +7564,7 @@ void Miarex::updateCurve()
     {
         m_pCurWPolar->setTheStyle(m_LineStyle);
         m_pCurWPolar->setVisible(m_pchShowCurve->isChecked());
-        if(Settings::isAlignedChildrenStyle()) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
+        if(DisplayOptions::isAlignedChildrenStyle()) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
     }
     else if (m_iView==xfl::WOPPVIEW)
     {
@@ -8226,7 +8232,7 @@ void Miarex::onExporttoSTL()
 
     QFileDialog Fdlg(this);
     FileName = Fdlg.getSaveFileName(this, tr("Export to STL File"),
-                                    Settings::s_LastDirName + "/"+FileName+".stl",
+                                    xfl::s_LastDirName + "/"+FileName+".stl",
                                     tr("STL File (*.stl)"),
                                     &filter, QFileDialog::DontConfirmOverwrite);
 
@@ -8236,7 +8242,7 @@ void Miarex::onExporttoSTL()
     bool bBinary = STLExportDlg::s_bBinary;
 
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
 
     pos = FileName.indexOf(".stl", Qt::CaseInsensitive);
     if(pos<0) FileName += ".stl";
@@ -8292,18 +8298,18 @@ void Miarex::onImportSTLFile()
     FileName.replace("/", " ");
     /*    QFileDialog dlg(this);
     FileName = dlg.getOpenFileName(this, tr("Import stl"),
-                                    Settings::s_LastDirName + "/"+FileName+".stl",
+                                    xfl::s_LastDirName + "/"+FileName+".stl",
                                     tr("STL Text File (*.stl);;STL Binary File (*.stl)"),
                                     &filter);
 
     if(!FileName.length()) return;
 
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
 
     pos = FileName.indexOf(".stl", Qt::CaseInsensitive);
     if(pos<0) FileName += ".stl";*/
-    FileName = Settings::s_LastDirName + "/" + "0zPlane.stl";
+    FileName = xfl::s_LastDirName + "/" + "0zPlane.stl";
 
     QFile XFile(FileName);
 
@@ -8368,11 +8374,11 @@ void Miarex::onImportFromXml()
 {
     QString PathName;
     PathName = QFileDialog::getOpenFileName(s_pMainFrame, tr("Open XML File"),
-                                            Settings::s_xmlDirName,
+                                            xfl::s_xmlDirName,
                                             tr("XML file")+"(*.xml)");
     if(!PathName.length())        return ;
     int pos = PathName.lastIndexOf("/");
-    if(pos>0) Settings::s_xmlDirName = PathName.left(pos);
+    if(pos>0) xfl::s_xmlDirName = PathName.left(pos);
 
     QFile xmlFile(PathName);
     if (!xmlFile.open(QIODevice::ReadOnly))
@@ -8412,11 +8418,11 @@ void Miarex::onImportPlanesfromXML()
 {
     QStringList pathNames;
     pathNames = QFileDialog::getOpenFileNames(s_pMainFrame, tr("Open XML File"),
-                                              Settings::s_xmlDirName,
+                                              xfl::s_xmlDirName,
                                               tr("Plane XML file")+"(*.xml)");
     if(!pathNames.size()) return;
     int pos = pathNames.at(0).lastIndexOf("/");
-    if(pos>0) Settings::s_xmlDirName = pathNames.at(0).left(pos);
+    if(pos>0) xfl::s_xmlDirName = pathNames.at(0).left(pos);
 
     for(int iFile=0; iFile<pathNames.size(); iFile++)
     {
@@ -8433,11 +8439,11 @@ void Miarex::onImportAnalysisFromXML()
 {
     QStringList pathNames;
     pathNames = QFileDialog::getOpenFileNames(s_pMainFrame, tr("Open XML File"),
-                                              Settings::s_xmlDirName,
+                                              xfl::s_xmlDirName,
                                               tr("Analysis XML file")+"(*.xml)");
     if(!pathNames.size()) return ;
     int pos = pathNames.at(0).lastIndexOf("/");
-    if(pos>0) Settings::s_xmlDirName = pathNames.at(0).left(pos);
+    if(pos>0) xfl::s_xmlDirName = pathNames.at(0).left(pos);
 
     for(int iFile=0; iFile<pathNames.size(); iFile++)
     {
@@ -8553,13 +8559,13 @@ void Miarex::onExportPlanetoXML()
 
     strong = m_pCurPlane->planeName();
     FileName = QFileDialog::getSaveFileName(s_pMainFrame, tr("Export plane definition to xml file"),
-                                            Settings::s_xmlDirName +'/'+strong,
+                                            xfl::s_xmlDirName +'/'+strong,
                                             filter,
                                             &filter);
 
     if(!FileName.length()) return;
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_xmlDirName = FileName.left(pos);
+    if(pos>0) xfl::s_xmlDirName = FileName.left(pos);
 
     if(FileName.indexOf(".xml", Qt::CaseInsensitive)<0) FileName += ".xml";
 
@@ -8590,13 +8596,13 @@ void Miarex::onExportAnalysisToXML()
     strong.replace(".", "_");
 
     FileName = QFileDialog::getSaveFileName(s_pMainFrame, tr("Export analysis definition to xml file"),
-                                            Settings::s_xmlDirName +'/'+strong,
+                                            xfl::s_xmlDirName +'/'+strong,
                                             filter,
                                             &filter);
 
     if(!FileName.length()) return;
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_xmlDirName = FileName.left(pos);
+    if(pos>0) xfl::s_xmlDirName = FileName.left(pos);
 
     if(FileName.indexOf(".xml", Qt::CaseInsensitive)<0) FileName += ".xml";
 
@@ -9200,4 +9206,13 @@ QString Miarex::WPolarVariableName(int iVar)
         default:
             return QString();
     }
+}
+
+
+QString Miarex::getTexturePath(Plane const*pPlane)
+{
+    if(!pPlane) return QString();
+    QString projectPath = xfl::lastDirName() + QDir::separator() + MainFrame::s_ProjectName+ "_textures";
+    QString texturePath = projectPath+QDir::separator()+pPlane->planeName();
+    return texturePath;
 }

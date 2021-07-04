@@ -43,6 +43,7 @@
 #define NHOOPPOINTS 67  //used for display and to export the geometry
 #define NXPOINTS 97     //used for display and to export the geometry
 
+class Triangle3d;
 
 /**
  * This class :
@@ -88,12 +89,15 @@ public:
                      double &GCm, double &GRm, double &GYm, double &Alpha, Vector3d &CoG) const;
     void duplicate(const Body *pBody);
     void getPoint(double u, double v, bool bRight, Vector3d &Pt) const;
+
+    NURBSSurface const &nurbs() const {return m_SplineSurface;}
+
     Vector3d Point(double u, double v, bool bRight) const;
     void removeActiveFrame();
     void removeSideLine(int SideLine);
     void scale(double XFactor, double YFactor, double ZFactor, bool bFrameOnly=false, int FrameID=0);
     void translate(double XTrans, double, double ZTrans, bool bFrameOnly=false, int FrameID=0);
-    void translate(Vector3d T, bool bFrameOnly=false, int FrameID=0);
+    void translate(Vector3d const &T, bool bFrameOnly=false, int FrameID=0);
     void setNURBSKnots();
     void setPanelPos();
     void setEdgeWeight(double uw, double vw);
@@ -119,15 +123,16 @@ public:
 
     Vector3d CoG() {return m_CoG;}
 
-
-    QString &bodyName(){return m_BodyName;}
-    QString &bodyDescription() {return m_BodyDescription;}
+    void setName(QString const&name){m_BodyName=name;}
+    void setDescription(QString const&des){m_BodyDescription=des;}
+    QString const &bodyName() const {return m_BodyName;}
+    QString const &bodyDescription() const {return m_BodyDescription;}
 
     bool hasTextures() const {return m_bTextures;}
     void setTextures(bool bTextures) {m_bTextures = bTextures;}
 
-    QColor const &bodyColor() const {return m_BodyColor;}
-    QColor &bodyColor() {return m_BodyColor;}
+    QColor const &color() const {return m_BodyColor;}
+    QColor &color() {return m_BodyColor;}
     void setBodyColor(QColor const&color) {m_BodyColor=color;}
 
     NURBSSurface& nurbs() {return m_SplineSurface;}
@@ -156,6 +161,11 @@ public:
     int readValues(QString line, double &x, double &y, double &z) const;
     bool Rewind1Line(QTextStream &in, int &Line, QString &strong) const;
 
+    void makeSplineTriangulation(int nx, int nh, QVector<Triangle3d> &triangles) const;
+
+    int isNode(Vector3d &Pt, QVector<Vector3d> &m_Node);
+    int makePanels(int nFirst, Vector3d const &pos, QVector<Panel> &panels, QVector<Vector3d> &nodes);
+    int nPanels() const {return m_NElements;}
 
     //____________________VARIABLES_____________________________________________
 

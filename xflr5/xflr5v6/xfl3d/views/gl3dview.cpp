@@ -29,7 +29,7 @@
 #include "gl3dview.h"
 #include <xfl3d/gl_globals.h>
 #include <xfl3d/controls/gllightdlg.h>
-#include <xfl3d/controls/w3dprefsdlg.h>
+#include <xfl3d/controls/w3dprefs.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/trace.h>
 #include <xflcore/xflcore.h>
@@ -41,11 +41,11 @@
 #define NUMARCPOINTS  11
 
 
+bool gl3dView::s_bMultiSample = true;
+QSurfaceFormat gl3dView::s_GlSurfaceFormat;
+
 FontStruct gl3dView::s_glFontStruct;
 Light gl3dView::s_Light;
-
-int gl3dView::s_OpenGLMajor = 2;
-int gl3dView::s_OpenGLMinor = 1;
 
 QColor gl3dView::s_TextColor = Qt::white;
 QColor gl3dView::s_BackgroundColor = QColor(5,10,17);
@@ -64,7 +64,7 @@ gl3dView::gl3dView(QWidget *pParent) : QOpenGLWidget(pParent)
 
     m_iTransitionInc = 0;
 
-    m_bShowLight = false;
+    m_bLightVisible = false;
     m_bArcball = m_bCrossPoint = false;
     m_bAxes = true;
     m_bUse120StyleShaders = true;
@@ -94,6 +94,20 @@ gl3dView::gl3dView(QWidget *pParent) : QOpenGLWidget(pParent)
 
     m_ZoomFactor = 1.0;
     m_iTimerInc=0;
+}
+
+
+#define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048
+#define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
+void gl3dView::getMemoryStatus(int &total_mem_kb, int &cur_avail_mem_kb)
+{
+    total_mem_kb = 0;
+    glGetIntegerv(GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX,
+                  &total_mem_kb);
+
+    cur_avail_mem_kb = 0;
+    glGetIntegerv(GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX,
+                  &cur_avail_mem_kb);
 }
 
 
@@ -654,6 +668,88 @@ void gl3dView::getGLError()
     }
 }
 
+void gl3dView::saveSettings(QSettings &settings)
+{
+    settings.beginGroup("gl3dView");
+    {
+        settings.setValue("OpenGL_major", s_GlSurfaceFormat.majorVersion());
+        settings.setValue("OpenGL_minor", s_GlSurfaceFormat.minorVersion());
+        switch(s_GlSurfaceFormat.profile())
+        {
+            case QSurfaceFormat::NoProfile:            settings.setValue("Profile", 0);  break;
+            case QSurfaceFormat::CoreProfile:          settings.setValue("Profile", 1);  break;
+            case QSurfaceFormat::CompatibilityProfile: settings.setValue("Profile", 2);  break;
+        }
+        settings.setValue("MultiSamples", s_GlSurfaceFormat.samples());
+        settings.setValue("EnableMultiSamp", s_bMultiSample);
+        settings.setValue("DeprecatedFuncs", s_GlSurfaceFormat.testOption(QSurfaceFormat::DeprecatedFunctions));
+
+        settings.setValue("Ambient",      s_Light.m_Ambient);
+        settings.setValue("Diffuse",      s_Light.m_Diffuse);
+        settings.setValue("Specular",     s_Light.m_Specular);
+
+        settings.setValue("XLight",       s_Light.m_X);
+        settings.setValue("YLight",       s_Light.m_Y);
+        settings.setValue("ZLight",       s_Light.m_Z);
+
+        settings.setValue("EyeDist",      s_Light.m_EyeDist);
+
+        settings.setValue("RedLight",     s_Light.m_Red);
+        settings.setValue("GreenLight",   s_Light.m_Green);
+        settings.setValue("BlueLight",    s_Light.m_Blue);
+        settings.setValue("bLight",       s_Light.m_bIsLightOn);
+
+        settings.setValue("MatShininess", s_Light.m_iShininess);
+
+        settings.setValue("ConstantAtt",  s_Light.m_Attenuation.m_Constant);
+        settings.setValue("LinearAtt",    s_Light.m_Attenuation.m_Linear);
+        settings.setValue("QuadraticAtt", s_Light.m_Attenuation.m_Quadratic);
+    }
+    settings.endGroup();
+}
+
+
+void gl3dView::loadSettings(QSettings &settings)
+{
+    settings.beginGroup("gl3dView");
+    {
+        s_GlSurfaceFormat.setMajorVersion(settings.value("OpenGL_major", 3).toInt());
+        s_GlSurfaceFormat.setMinorVersion(settings.value("OpenGL_minor", 3).toInt());
+        switch(settings.value("Profile",1).toInt())
+        {
+            case 0: s_GlSurfaceFormat.setProfile(QSurfaceFormat::NoProfile);            break;
+            default:
+            case 1: s_GlSurfaceFormat.setProfile(QSurfaceFormat::CoreProfile);          break;
+            case 2: s_GlSurfaceFormat.setProfile(QSurfaceFormat::CompatibilityProfile); break;
+        }
+        s_GlSurfaceFormat.setSamples(settings.value("MultiSamples", 4).toInt());
+        s_bMultiSample = settings.value("EnableMultiSamp", s_bMultiSample).toBool();
+
+        s_GlSurfaceFormat.setOption(QSurfaceFormat::DeprecatedFunctions, settings.value("DeprecatedFuncs", false).toBool());
+
+        s_Light.m_Ambient           = settings.value("Ambient",  s_Light.m_Ambient).toFloat();
+        s_Light.m_Diffuse           = settings.value("Diffuse",  s_Light.m_Diffuse).toFloat();
+        s_Light.m_Specular          = settings.value("Specular", s_Light.m_Specular).toFloat();
+
+        s_Light.m_X                 = settings.value("XLight",  s_Light.m_X).toFloat();
+        s_Light.m_Y                 = settings.value("YLight",  s_Light.m_Y).toFloat();
+        s_Light.m_Z                 = settings.value("ZLight",  s_Light.m_Z).toFloat();
+        s_Light.m_EyeDist           = settings.value("EyeDist", s_Light.m_EyeDist).toFloat();
+
+        s_Light.m_Red               = settings.value("RedLight",   s_Light.m_Red).toFloat();
+        s_Light.m_Green             = settings.value("GreenLight", s_Light.m_Green).toFloat();
+        s_Light.m_Blue              = settings.value("BlueLight",  s_Light.m_Blue).toFloat();
+
+        s_Light.m_iShininess                = settings.value("MatShininess", s_Light.m_iShininess).toInt();
+        s_Light.m_Attenuation.m_Constant    = settings.value("ConstantAtt",  s_Light.m_Attenuation.m_Constant).toFloat();
+        s_Light.m_Attenuation.m_Linear      = settings.value("LinearAtt",    s_Light.m_Attenuation.m_Linear).toFloat();
+        s_Light.m_Attenuation.m_Quadratic   = settings.value("QuadraticAtt", s_Light.m_Attenuation.m_Quadratic).toFloat();
+
+        s_Light.m_bIsLightOn        = settings.value("bLight", true).toBool();
+    }
+    settings.endGroup();
+}
+
 
 void gl3dView::initializeGL()
 {
@@ -849,7 +945,7 @@ void gl3dView::paintGL3()
 
     if(m_bArcball) paintArcBall();
 
-    if(m_bShowLight)
+    if(m_bLightVisible)
     {
         Vector3d lightPos(double(s_Light.m_X), double(s_Light.m_Y), double(s_Light.m_Z));
         double radius = double(s_Light.m_Z+2.0f)/73.0;
@@ -859,7 +955,24 @@ void gl3dView::paintGL3()
         lightColor.setBlueF( double(s_Light.m_Blue));
         lightColor.setAlphaF(1.0);
 
+        m_matModel.setToIdentity();
+        m_matModel.translate(s_Light.m_X, s_Light.m_Y, s_Light.m_Z);
+
+        QMatrix4x4 vm(m_matView);
+        m_matView.setToIdentity();
+
+/*        m_shadSurf.bind();
+        {
+            m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix, m_matModel);
+            m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, m_matProj*m_matModel);
+        }
+        m_shadSurf.release();
+*/
         paintSphere(lightPos, radius, lightColor, false);
+
+        // leave things as they were
+        m_matModel.setToIdentity();
+        m_matView=vm;
     }
 
     if(m_bAxes)
@@ -948,9 +1061,9 @@ void gl3dView::paintAxes()
         m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
         m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
         m_shadLine.setUniformValue(m_locLine.m_HasUniColor, 1);
-        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_AxisStyle.m_Color);
-        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_AxisStyle.m_Stipple));
-        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_AxisStyle.m_Width);
+        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_AxisStyle.m_Color);
+        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_AxisStyle.m_Stipple));
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_AxisStyle.m_Width);
         m_shadLine.setUniformValue(m_locLine.m_Viewport, QVector2D(float(m_GLViewRect.width()), float(m_GLViewRect.height())));
         m_vboAxes.bind();
         {
@@ -960,8 +1073,8 @@ void gl3dView::paintAxes()
             if(m_bUse120StyleShaders)
             {
                 glEnable(GL_LINE_STIPPLE);
-                GLLineStipple(W3dPrefsDlg::s_AxisStyle.m_Stipple);
-                glLineWidth(float(W3dPrefsDlg::s_AxisStyle.m_Width));
+                GLLineStipple(W3dPrefs::s_AxisStyle.m_Stipple);
+                glLineWidth(float(W3dPrefs::s_AxisStyle.m_Width));
             }
 
             int nvertices = m_vboAxes.size()/3/int(sizeof(float)); // three components
@@ -1698,6 +1811,71 @@ void gl3dView::paintTriangles3Vtx(QOpenGLBuffer &vbo, const QColor &backclr, boo
 }
 
 
+void gl3dView::paintTriangles3VtxTexture(QOpenGLBuffer &vbo, const QColor &backclr, bool bTwoSided, bool bLight, QOpenGLTexture *pTexture)
+{
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
+    int stride = 8;
+    m_shadSurf.bind();
+    {
+        if(pTexture)
+        {
+            m_shadSurf.setUniformValue(m_locSurf.m_HasTexture, 1);
+        }
+        else
+        {
+            m_shadSurf.setUniformValue(m_locSurf.m_UniColor, backclr);
+             m_shadSurf.setUniformValue(m_locSurf.m_HasUniColor, 1);
+        }
+
+        if(bLight) m_shadSurf.setUniformValue(m_locSurf.m_Light, 1);
+        else       m_shadSurf.setUniformValue(m_locSurf.m_Light, 0);
+
+        if(bTwoSided)
+        {
+            m_shadSurf.setUniformValue(m_locSurf.m_TwoSided, 1);
+            glDisable(GL_CULL_FACE);
+        }
+        else
+        {
+            m_shadSurf.setUniformValue(m_locSurf.m_TwoSided, 0);
+            glEnable(GL_CULL_FACE);
+        }
+
+
+        m_shadSurf.enableAttributeArray(m_locSurf.m_attrVertex);
+        m_shadSurf.enableAttributeArray(m_locSurf.m_attrNormal);
+
+        vbo.bind();
+        {
+            int nTriangles = vbo.size()/3/stride/int(sizeof(float)); // three vertices and (3 position components+3 normal components)
+
+            m_shadSurf.setAttributeBuffer(m_locSurf.m_attrVertex, GL_FLOAT, 0,                 3, stride*sizeof(GLfloat));
+            m_shadSurf.setAttributeBuffer(m_locSurf.m_attrNormal, GL_FLOAT, 3*sizeof(GLfloat), 3, stride*sizeof(GLfloat));
+            if(pTexture)
+            {
+                pTexture->bind();
+                m_shadSurf.enableAttributeArray(m_locSurf.m_attrUV);
+                m_shadSurf.setAttributeBuffer(m_locSurf.m_attrUV, GL_FLOAT, 6*sizeof(GLfloat), 2, stride *sizeof(GLfloat));
+            }
+            glEnable(GL_POLYGON_OFFSET_FILL);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            glPolygonOffset(DEPTHFACTOR, DEPTHUNITS);
+
+            glDrawArrays(GL_TRIANGLES, 0, nTriangles*3);
+        }
+        vbo.release();
+        glDisable(GL_POLYGON_OFFSET_FILL);
+
+        m_shadSurf.disableAttributeArray(m_locSurf.m_attrVertex);
+        m_shadSurf.disableAttributeArray(m_locSurf.m_attrNormal);
+        m_shadSurf.setUniformValue(m_locSurf.m_TwoSided, 0); // leave things as they were
+        glEnable(GL_CULL_FACE);
+    }
+    m_shadSurf.release();
+}
+
+
 void gl3dView::paintSegments(QOpenGLBuffer &vbo, LineStyle const &ls, bool bHigh)
 {
     paintSegments(vbo, ls.m_Color, ls.m_Width, ls.m_Stipple, bHigh);
@@ -1781,7 +1959,7 @@ void gl3dView::paintBox(double x, double y, double z, double dx, double dy, doub
         m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, pvmMat*modelmat);
     }
     m_shadLine.release();
-    paintSegments(m_vboCubeEdges, W3dPrefsDlg::s_OutlineStyle);
+    paintSegments(m_vboCubeEdges, W3dPrefs::s_OutlineStyle);
 
     //leave things as they were
     modelmat.setToIdentity();
@@ -1848,5 +2026,37 @@ void gl3dView::onDynamicIncrement()
     update();
 }
 
+
+void gl3dView::paintLineStrip(QOpenGLBuffer &vbo, LineStyle const &ls)
+{
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
+    m_shadLine.bind();
+    {
+        m_shadLine.setUniformValue(m_locLine.m_UniColor, ls.m_Color);
+        if(m_bUse120StyleShaders)
+        {
+            glLineWidth(ls.m_Width);
+            glEnable(GL_LINE_STIPPLE);
+            glLineStipple(1, GLStipple(ls.m_Stipple));
+        }
+
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, ls.m_Width);
+        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(ls.m_Stipple));
+
+        vbo.bind();
+        {
+            m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
+            int nPoints = vbo.size()/3/int(sizeof(float));
+            glDrawArrays(GL_LINE_STRIP, 0, nPoints);
+            m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
+        }
+        vbo.release();
+        if(m_bUse120StyleShaders) glDisable(GL_LINE_STIPPLE);
+    }
+
+    m_shadLine.release();
+}
 
 

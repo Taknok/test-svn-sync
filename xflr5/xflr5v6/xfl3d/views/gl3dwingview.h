@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <xfl3d/gl3dxflview.h>
+#include <xfl3d/views/gl3dxflview.h>
 
 class Wing;
 class GL3dWingDlg;

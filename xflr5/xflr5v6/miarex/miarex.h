@@ -240,6 +240,7 @@ class Miarex : public QWidget
         void fillWOppCurve(WingOpp const*pWOpp, Graph *pGraph, Curve *pCurve);
         void fillStabCurve(Curve *pCurve, WPolar const *pWPolar, int iMode);
         void getPolarProperties(WPolar const *pWPolar, QString &polarProps, bool bData=false);
+        QString getTexturePath(Plane const*pPlane);
         void importPlaneFromXML(QFile &xmlFile);
         void importWPolarFromXML(QFile &xmlFile);
         bool intersectObject(Vector3d O,  Vector3d U, Vector3d &I);
@@ -263,7 +264,7 @@ class Miarex : public QWidget
         PlaneOpp* setPlaneOppObject(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pCurPOpp, bool bCurrent, double x);
         void setScale();
         void setStabGraphTitles();
-        void setPlane(QString PlaneName="");
+        void setPlane(const QString &PlaneName="");
         void setupLayout();
         void setViewControls();
         void setView(xfl::enumGraphView eView);
@@ -275,6 +276,8 @@ class Miarex : public QWidget
         void updateCurve();
         void updateUnits();
         void updateView();
+
+
         static QString WPolarVariableName(int iVar);
 
         Plane* curPlane() {return m_pCurPlane;}

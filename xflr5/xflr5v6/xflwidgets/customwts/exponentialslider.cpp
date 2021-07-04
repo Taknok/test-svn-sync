@@ -42,8 +42,8 @@ double ExponentialSlider::expValue() const
         double position = double(value());
         double frac     = (position-mid)/halfspan;
 
-        if(frac>=0.0) return mid + pow( frac, m_exponential) * halfspan;
-        else          return mid - pow(-frac, m_exponential) * halfspan;
+        if(frac>=0.0) return + pow( frac, m_exponential) * halfspan;
+        else          return - pow(-frac, m_exponential) * halfspan;
     }
     else
     {

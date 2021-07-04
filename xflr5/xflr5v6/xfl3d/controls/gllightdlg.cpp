@@ -30,7 +30,7 @@
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/customwts/exponentialslider.h>
 #include <xflcore/units.h>
-#include <xfl3d/gl3dview.h>
+#include <xfl3d/views/gl3dview.h>
 
 
 
@@ -200,9 +200,9 @@ void GLLightDlg::setupLayout()
     {
         QGridLayout *pLightPosition = new QGridLayout;
         {
-            QLabel *lab21 = new QLabel(tr("x"));
-            QLabel *lab22 = new QLabel(tr("y"));
-            QLabel *lab23 = new QLabel(tr("z"));
+            QLabel *plab21 = new QLabel(tr("x"));
+            QLabel *plab22 = new QLabel(tr("y"));
+            QLabel *plab23 = new QLabel(tr("z"));
 
             m_peslXLight = new ExponentialSlider(true, 2.0, Qt::Horizontal);
             m_peslYLight = new ExponentialSlider(true, 2.0, Qt::Horizontal);
@@ -214,9 +214,9 @@ void GLLightDlg::setupLayout()
             m_plabPosYValue = new QLabel(Units::lengthUnitLabel());
             m_plabPosZValue = new QLabel(Units::lengthUnitLabel());
 
-            pLightPosition->addWidget(lab21,1,1);
-            pLightPosition->addWidget(lab22,2,1);
-            pLightPosition->addWidget(lab23,3,1);
+            pLightPosition->addWidget(plab21,1,1);
+            pLightPosition->addWidget(plab22,2,1);
+            pLightPosition->addWidget(plab23,3,1);
             pLightPosition->addWidget(m_peslXLight,1,2);
             pLightPosition->addWidget(m_peslYLight,2,2);
             pLightPosition->addWidget(m_peslZLight,3,2);
@@ -234,10 +234,10 @@ void GLLightDlg::setupLayout()
         m_pslMatShininess->setTickInterval(2);
         m_pslMatShininess->setTickPosition(QSlider::TicksBelow);
 
-        QLabel *lab35 = new QLabel(tr("Material Shininess"));
+        QLabel *plab35 = new QLabel(tr("Material Shininess"));
         m_plabMatShininess = new QLabel("1");
 
-        pMaterialDataLayout->addWidget(lab35);
+        pMaterialDataLayout->addWidget(plab35);
         pMaterialDataLayout->addWidget(m_pslMatShininess);
         pMaterialDataLayout->addWidget(m_plabMatShininess);
     }
@@ -436,23 +436,7 @@ void GLLightDlg::setModelSize(double span)
 void GLLightDlg::setDefaults()
 {
     Light &s_Light = gl3dView::s_Light;
-    s_Light.m_Red   = 1.0f;
-    s_Light.m_Green = 1.0f;
-    s_Light.m_Blue  = 1.0f;
-
-    s_Light.m_Ambient  = 0.67f;
-    s_Light.m_Diffuse  = 0.71f;
-    s_Light.m_Specular = 0.51f;
-
-    s_Light.m_X   =  0.5f * m_ModelSize;
-    s_Light.m_Y   =  0.3f * m_ModelSize;
-    s_Light.m_Z   =  0.5f * m_ModelSize;
-    m_peslXLight->setRange(-int(m_ModelSize*100), int(m_ModelSize*100));
-    m_peslYLight->setRange(-int(m_ModelSize*100), int(m_ModelSize*100));
-    m_peslZLight->setRange(-int(m_ModelSize*100), int(m_ModelSize*100));
-    m_peslXLight->setTickInterval(int(m_ModelSize*10.0f));
-    m_peslYLight->setTickInterval(int(m_ModelSize*10.0f));
-    m_peslZLight->setTickInterval(int(m_ModelSize*10.0f));
+    s_Light.setDefaults(m_ModelSize);
 
     s_iShininess = 5;
 

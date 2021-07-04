@@ -25,7 +25,8 @@
 
 #include <xdirect/xdirect.h>
 #include <xflcore/xflcore.h>
-#include <misc/options/settings.h>
+#include <xflcore/displayoptions.h>
+
 
 
 
@@ -201,13 +202,13 @@ OpPoint* Objects2d::addOpPoint(Foil const *pFoil, Polar *pPolar, OpPoint *pOpPoi
 //    if(!pPolar) pPolar = XDirect::curPolar(); // risky
     if(!pPolar) return nullptr;
 
-    if(Settings::isAlignedChildrenStyle())
+    if(DisplayOptions::isAlignedChildrenStyle())
     {
         pOpPoint->setTheStyle(pPolar->theStyle());
     }
     else
     {
-        pOpPoint->setColor(xfl::randomColor(!Settings::isLightTheme()));
+        pOpPoint->setColor(xfl::randomColor(!DisplayOptions::isLightTheme()));
     }
 
     pOpPoint->setFoilName(pFoil->name());
@@ -777,13 +778,13 @@ Polar *Objects2d::createPolar(Foil *pFoil, xfl::enumPolarType PolarType, double 
 
     Polar *pNewPolar = new Polar;
 
-    if(Settings::isAlignedChildrenStyle())
+    if(DisplayOptions::isAlignedChildrenStyle())
     {
         pNewPolar->setTheStyle(pFoil->theStyle());
     }
     else
     {
-        QColor clr = xfl::randomColor(!Settings::isLightTheme());
+        QColor clr = xfl::randomColor(!DisplayOptions::isLightTheme());
         pNewPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
     }
 

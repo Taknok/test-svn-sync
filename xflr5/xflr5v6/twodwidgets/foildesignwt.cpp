@@ -26,7 +26,7 @@
 #include "foildesignwt.h"
 #include <globals/mainframe.h>
 #include <gui_objects/splinefoil.h>
-#include <misc/options/settings.h>
+
 #include <xdirect/objects2d.h>
 #include <xdirect/xdirect.h>
 #include <xflcore/displayoptions.h>

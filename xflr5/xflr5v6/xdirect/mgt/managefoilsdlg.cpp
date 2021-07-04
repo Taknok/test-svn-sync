@@ -31,9 +31,10 @@
 
 #include <design/foiltabledelegate.h>
 #include <misc/renamedlg.h>
-#include <misc/options/settings.h>
+
 #include <xdirect/objects2d.h>
 #include <xflcore/displayoptions.h>
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects2d/foil.h>
 
 QByteArray ManageFoilsDlg::s_Geometry;
@@ -309,12 +310,12 @@ void ManageFoilsDlg::onExport()
     FileName.replace("/", " ");
 
     FileName = QFileDialog::getSaveFileName(this, tr("Export Foil"),
-                                            Settings::s_LastDirName+"/"+FileName+".dat",
+                                            xfl::s_LastDirName+"/"+FileName+".dat",
                                             tr("Foil File (*.dat)"));
 
     if(!FileName.length()) return;
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
 
     QFile XFile(FileName);
 

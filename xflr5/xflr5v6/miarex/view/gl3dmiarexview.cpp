@@ -35,7 +35,7 @@
 #include <miarex/view/gl3dscales.h>
 #include <xflobjects/objects3d/surface.h>
 #include <xflobjects/objects3d/wpolar.h>
-#include <xfl3d/controls/w3dprefsdlg.h>
+#include <xfl3d/controls/w3dprefs.h>
 
 
 bool gl3dMiarexView::s_bResetglGeom = true;
@@ -120,7 +120,17 @@ void gl3dMiarexView::glRenderView()
 
     if(pPOpp)    m_matModel.rotate(float(pPOpp->alpha()),0.0,1.0,0.0);
 
-    //    if(W3dPrefsDlg::s_bEnableClipPlane) glEnable(GL_CLIP_PLANE0);
+    m_shadSurf.bind();
+    {
+        m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix, m_matView*m_matModel);
+        m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+    }
+    m_shadSurf.release();
+    m_shadLine.bind();
+    {
+        m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
+        m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+    }
 
     if(s_pMiarex->m_pCurPlane)
     {
@@ -160,9 +170,15 @@ void gl3dMiarexView::glRenderView()
                     if(s_pMiarex->m_pCurPlane->wing(iw))
                         paintEditWingMesh(m_vboEditWingMesh[iw]);
                 }
-                paintEditBodyMesh(s_pMiarex->m_pCurPlane->body());
+//                paintEditBodyMesh(s_pMiarex->m_pCurPlane->body());
+                if(s_pMiarex->m_pCurPlane->body())
+                    paintMesh(m_vboEditBodyMesh, true);
             }
-            else paintMesh(s_pMiarex->matSize());
+            else
+            {
+                bool bBackground = (!s_pMiarex->m_pCurPOpp || !s_pMiarex->m_b3DCp);
+                paintMesh(m_vboMesh, bBackground);
+            }
         }
 
         if(pPOpp)
@@ -203,7 +219,34 @@ void gl3dMiarexView::glRenderView()
                 if(m_bFoilNames) paintFoilNames(pWing);
             }
         }
-        paintBody(s_pMiarex->m_pCurPlane->body());
+
+        Body const*pBody=s_pMiarex->m_pCurPlane->body();
+        if(pBody)
+        {
+            if(m_bSurfaces)
+            {
+                bool bTextures = pBody->hasTextures() && (m_pLeftBodyTexture && m_pRightBodyTexture);
+
+                if(bTextures)
+                {
+                    paintTriangles3VtxTexture(m_vboFuseLeft,  pBody->color(), false, true, m_pLeftBodyTexture);
+                    paintTriangles3VtxTexture(m_vboFuseRight, pBody->color(), false, true, m_pRightBodyTexture);
+                }
+                else
+                {
+                    paintTriangles3VtxTexture(m_vboFuseLeft,  pBody->color(), false, true, nullptr);
+                    paintTriangles3VtxTexture(m_vboFuseRight, pBody->color(), false, true, nullptr);
+                }
+            }
+
+            if(m_bOutline)
+            {
+                if(pBody->isFlatPanelType())
+                    paintSegments(m_vboFuseOutline, W3dPrefs::s_OutlineStyle);
+                else
+                    paintLineStrip(m_vboFuseOutline, W3dPrefs::s_OutlineStyle);
+            }
+        }
 
         if(pPOpp)
         {
@@ -856,9 +899,9 @@ void gl3dMiarexView::paintDownwash(int iWing)
     m_shadLine.bind();
     {
         m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
-        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_DownwashStyle.m_Color);
-        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_DownwashStyle.m_Stipple));
-        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_DownwashStyle.m_Width);
+        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_DownwashStyle.m_Color);
+        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_DownwashStyle.m_Stipple));
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_DownwashStyle.m_Width);
 
         m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
         m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
@@ -867,9 +910,9 @@ void gl3dMiarexView::paintDownwash(int iWing)
             glEnable(GL_DEPTH_TEST);
             glEnable (GL_LINE_STIPPLE);
 
-            GLLineStipple(W3dPrefsDlg::s_DownwashStyle.m_Stipple);
+            GLLineStipple(W3dPrefs::s_DownwashStyle.m_Stipple);
 
-            glLineWidth(GLfloat(W3dPrefsDlg::s_DownwashStyle.m_Width));
+            glLineWidth(GLfloat(W3dPrefs::s_DownwashStyle.m_Width));
 
             m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3);
 
@@ -1248,9 +1291,9 @@ void gl3dMiarexView::paintLift(int iWing)
     m_shadLine.bind();
     {
         m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
-        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_XCPStyle.m_Color);
-        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_XCPStyle.m_Stipple));
-        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_XCPStyle.m_Width);
+        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_XCPStyle.m_Color);
+        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_XCPStyle.m_Stipple));
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_XCPStyle.m_Width);
 
         m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
         m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
@@ -1258,9 +1301,9 @@ void gl3dMiarexView::paintLift(int iWing)
         glEnable(GL_DEPTH_TEST);
         glEnable (GL_LINE_STIPPLE);
 
-        GLLineStipple(W3dPrefsDlg::s_XCPStyle.m_Stipple);
+        GLLineStipple(W3dPrefs::s_XCPStyle.m_Stipple);
 
-        glLineWidth(GLfloat(W3dPrefsDlg::s_XCPStyle.m_Width));
+        glLineWidth(GLfloat(W3dPrefs::s_XCPStyle.m_Width));
 
         m_vboLiftStrips[iWing].bind();
         {
@@ -1272,7 +1315,7 @@ void gl3dMiarexView::paintLift(int iWing)
 
         m_vboLiftForce.bind();
         {
-            glLineWidth(GLfloat(W3dPrefsDlg::s_XCPStyle.m_Width)*2.0f);
+            glLineWidth(GLfloat(W3dPrefs::s_XCPStyle.m_Width)*2.0f);
             m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3);
             glDrawArrays(GL_LINES, 0, 6);
         }
@@ -1292,9 +1335,9 @@ void gl3dMiarexView::paintMoments()
     m_shadLine.bind();
     {
         m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
-        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_MomentStyle.m_Color);
-        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_MomentStyle.m_Stipple));
-        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_MomentStyle.m_Width);
+        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_MomentStyle.m_Color);
+        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_MomentStyle.m_Stipple));
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_MomentStyle.m_Width);
         m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
         m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
 
@@ -1303,9 +1346,9 @@ void gl3dMiarexView::paintMoments()
             glEnable(GL_DEPTH_TEST);
             glEnable (GL_LINE_STIPPLE);
 
-            GLLineStipple(W3dPrefsDlg::s_MomentStyle.m_Stipple);
+            GLLineStipple(W3dPrefs::s_MomentStyle.m_Stipple);
 
-            glLineWidth(GLfloat(W3dPrefsDlg::s_MomentStyle.m_Width));
+            glLineWidth(GLfloat(W3dPrefs::s_MomentStyle.m_Width));
 
             m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3);
 
@@ -1704,12 +1747,12 @@ void gl3dMiarexView::paintDrag(int iWing)
         {
             m_vboICd[iWing].bind();
             {
-                m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_IDragStyle.m_Color);
-                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_IDragStyle.m_Stipple));
-                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_IDragStyle.m_Width);
-                GLLineStipple(W3dPrefsDlg::s_IDragStyle.m_Stipple);
+                m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_IDragStyle.m_Color);
+                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_IDragStyle.m_Stipple));
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_IDragStyle.m_Width);
+                GLLineStipple(W3dPrefs::s_IDragStyle.m_Stipple);
 
-                glLineWidth(GLfloat(W3dPrefsDlg::s_IDragStyle.m_Width));
+                glLineWidth(GLfloat(W3dPrefs::s_IDragStyle.m_Width));
                 m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3);
 
 
@@ -1724,12 +1767,12 @@ void gl3dMiarexView::paintDrag(int iWing)
         {
             m_vboVCd[iWing].bind();
             {
-                m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_VDragStyle.m_Color);
-                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_VDragStyle.m_Stipple));
-                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_VDragStyle.m_Width);
-                GLLineStipple(W3dPrefsDlg::s_VDragStyle.m_Stipple);
+                m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_VDragStyle.m_Color);
+                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_VDragStyle.m_Stipple));
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_VDragStyle.m_Width);
+                GLLineStipple(W3dPrefs::s_VDragStyle.m_Stipple);
 
-                glLineWidth(GLfloat(W3dPrefsDlg::s_VDragStyle.m_Width));
+                glLineWidth(GLfloat(W3dPrefs::s_VDragStyle.m_Width));
 
                 m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3);
 
@@ -1768,13 +1811,13 @@ void gl3dMiarexView::paintStreamLines()
             glEnable(GL_DEPTH_TEST);
             glEnable (GL_LINE_STIPPLE);
 
-            m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_StreamStyle.m_Color);
-            m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_StreamStyle.m_Stipple));
-            m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_StreamStyle.m_Width);
+            m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_StreamStyle.m_Color);
+            m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_StreamStyle.m_Stipple));
+            m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_StreamStyle.m_Width);
 
-            GLLineStipple(W3dPrefsDlg::s_StreamStyle.m_Stipple);
+            GLLineStipple(W3dPrefs::s_StreamStyle.m_Stipple);
 
-            glLineWidth(GLfloat(W3dPrefsDlg::s_StreamStyle.m_Width));
+            glLineWidth(GLfloat(W3dPrefs::s_StreamStyle.m_Width));
 
             int pos=0;
 
@@ -1813,23 +1856,23 @@ void gl3dMiarexView::paintTransitions(int iWing)
 
             if(s_pMiarex->m_bXTop)
             {
-                m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_TopStyle.m_Color);
-                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_TopStyle.m_Stipple));
-                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_TopStyle.m_Width);
-                GLLineStipple(W3dPrefsDlg::s_TopStyle.m_Stipple);
+                m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_TopStyle.m_Color);
+                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_TopStyle.m_Stipple));
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_TopStyle.m_Width);
+                GLLineStipple(W3dPrefs::s_TopStyle.m_Stipple);
 
-                glLineWidth(GLfloat(W3dPrefsDlg::s_TopStyle.m_Width));
+                glLineWidth(GLfloat(W3dPrefs::s_TopStyle.m_Width));
                 glDrawArrays(GL_LINE_STRIP, 0, m_Ny[iWing]);
             }
 
 
             if(s_pMiarex->m_bXBot)
             {
-                m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_BotStyle.m_Color);
-                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_BotStyle.m_Stipple));
-                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_BotStyle.m_Width);
-                GLLineStipple(W3dPrefsDlg::s_BotStyle.m_Stipple);
-                glLineWidth(GLfloat(W3dPrefsDlg::s_BotStyle.m_Width));
+                m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_BotStyle.m_Color);
+                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_BotStyle.m_Stipple));
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_BotStyle.m_Width);
+                GLLineStipple(W3dPrefs::s_BotStyle.m_Stipple);
+                glLineWidth(GLfloat(W3dPrefs::s_BotStyle.m_Width));
                 glDrawArrays(GL_LINE_STRIP, m_Ny[iWing], m_Ny[iWing]);
             }
         }
@@ -1856,13 +1899,13 @@ void gl3dMiarexView::paintSurfaceVelocities(int nPanels)
         m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj * m_matView);
 
         m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
-        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_WakeStyle.m_Color);
+        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_WakeStyle.m_Color);
         m_vboSurfaceVelocities.bind();
         {
             m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
 
 
-            glLineWidth(W3dPrefsDlg::s_WakeStyle.m_Width);
+            glLineWidth(W3dPrefs::s_WakeStyle.m_Width);
             glEnable(GL_DEPTH_TEST);
             glDrawArrays(GL_LINES, 0, nPanels*3*2);
 
@@ -1925,7 +1968,7 @@ void gl3dMiarexView::paintPanelForces(int nPanels)
             m_shadSurf.setAttributeBuffer(m_locSurf.m_attrVertex, GL_FLOAT, 0,                  3, 6 * sizeof(GLfloat));
             m_shadSurf.setAttributeBuffer(m_locSurf.m_attrColor,  GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
 
-            glLineWidth(W3dPrefsDlg::s_XCPStyle.m_Width);
+            glLineWidth(W3dPrefs::s_XCPStyle.m_Width);
             glEnable(GL_DEPTH_TEST);
             glDrawArrays(GL_LINES, 0, nPanels*3*2);
 
@@ -2379,84 +2422,6 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
 }
 
 
-void gl3dMiarexView::paintMesh(int nPanels)
-{
-    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
-
-    m_shadLine.bind();
-    {
-        m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
-        m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefsDlg::s_VLMStyle.m_Color);
-        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefsDlg::s_VLMStyle.m_Stipple));
-        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefsDlg::s_VLMStyle.m_Width);
-
-        m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
-        m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
-
-        m_vboMesh.bind();
-        {
-            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, 6 * sizeof(GLfloat));
-
-            glLineWidth(W3dPrefsDlg::s_VLMStyle.m_Width);
-            glEnable(GL_LINE_STIPPLE);
-            GLLineStipple(W3dPrefsDlg::s_VLMStyle.m_Stipple);
-            int pos = 0;
-            for(int p=0; p<nPanels*2; p++)
-            {
-                glDrawArrays(GL_LINE_STRIP, pos, 3);
-                pos +=3 ;
-            }
-            glDisable (GL_LINE_STIPPLE);
-
-            m_shadLine.setUniformValue(m_locLine.m_UniColor, DisplayOptions::backgroundColor());
-
-            if(!m_bSurfaces)
-            {
-                if(!s_pMiarex->m_pCurPOpp || !s_pMiarex->m_b3DCp)
-                {
-                    glEnable(GL_POLYGON_OFFSET_FILL);
-                    glPolygonOffset(DEPTHFACTOR, DEPTHUNITS);
-                    glDrawArrays(GL_TRIANGLES, 0, nPanels*2*3);
-                    glDisable(GL_POLYGON_OFFSET_FILL);
-                }
-            }
-            m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
-        }
-        m_vboMesh.release();
-    }
-    m_shadLine.release();
-
-    if(!m_bSurfaces)
-    {
-        m_shadSurf.bind();
-        {
-            m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix, m_matView*m_matModel);
-            m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, m_matProj*m_matView*m_matModel);
-            m_shadSurf.setUniformValue(m_locSurf.m_UniColor, DisplayOptions::backgroundColor());
-            m_shadSurf.setUniformValue(m_locSurf.m_HasUniColor, 1);
-
-            m_vboMesh.bind();
-            {
-                m_shadSurf.enableAttributeArray(m_locSurf.m_attrVertex);
-                m_shadSurf.setAttributeBuffer(m_locSurf.m_attrVertex, GL_FLOAT, 0, 3, 6 * sizeof(GLfloat));
-
-                if(!s_pMiarex->m_pCurPOpp || !s_pMiarex->m_b3DCp)
-                {
-                    glEnable(GL_POLYGON_OFFSET_FILL);
-                    glPolygonOffset(DEPTHFACTOR, DEPTHUNITS);
-                    glDrawArrays(GL_TRIANGLES, 0, nPanels*2*3);
-                    glDisable(GL_POLYGON_OFFSET_FILL);
-                }
-
-                m_shadSurf.disableAttributeArray(m_locSurf.m_attrVertex);
-            }
-            m_vboMesh.release();
-        }
-        m_shadSurf.release();
-    }
-}
-
-
 /**
 * Creates the VertexBufferObjects for OpenGL 3.0
 */
@@ -2479,8 +2444,16 @@ void gl3dMiarexView::glMake3dObjects()
         Body translatedBody;
         translatedBody.duplicate(pCurBody);
         translatedBody.translate(pCurPlane->bodyPos());
-        if(pCurBody->isSplineType())         glMakeBodySplines(&translatedBody);
-        else if(pCurBody->isFlatPanelType()) glMakeBody3DFlatPanels(&translatedBody);
+        if(pCurBody->isSplineType())
+        {
+            glMakeFuseSplines(&translatedBody);
+            glMakeFuseSplinesOutline(&translatedBody);
+        }
+        else if(pCurBody->isFlatPanelType())
+        {
+            glMakeFuseFlatPanels(&translatedBody);
+            glMakeFuseFlatPanelsOutline(&translatedBody);
+        }
         s_bResetglBody = false;
     }
 
@@ -2522,7 +2495,12 @@ void gl3dMiarexView::glMake3dObjects()
                 else m_vboEditWingMesh[iw].destroy();
             }
             if(pCurPlane->body())
-                glMakeEditBodyMesh(pCurPlane->body(), pCurPlane->bodyPos());
+            {
+                QVector<Panel> panels;
+                QVector<Vector3d> nodes;
+                pCurPlane->body()->makePanels(0, pCurPlane->bodyPos(), panels, nodes);
+                glMakePanels(m_vboEditBodyMesh, panels.size(), nodes.size(), nodes.constData(), panels.constData(), nullptr);
+            }
         }
         else
             glMakePanels(m_vboMesh, theTask.m_MatSize, theTask.m_nNodes, theTask.m_Node, theTask.m_Panel, nullptr);

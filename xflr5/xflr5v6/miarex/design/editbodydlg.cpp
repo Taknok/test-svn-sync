@@ -27,6 +27,7 @@
 #include <QFileDialog>
 #include <QShowEvent>
 
+#include <globals/mainframe.h>
 #include <miarex/design/bodyscaledlg.h>
 #include <miarex/design/bodytransdlg.h>
 #include <miarex/design/editbodydlg.h>
@@ -34,11 +35,11 @@
 #include <miarex/design/inertiadlg.h>
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlplanewriter.h>
-#include <misc/options/settings.h>
+
 #include <twodwidgets/bodyframewt.h>
 #include <twodwidgets/bodylinewt.h>
-#include <xfl3d/controls/w3dprefsdlg.h>
-#include <xfl3d/gl3dbodyview.h>
+#include <xfl3d/controls/w3dprefs.h>
+#include <xfl3d/views/gl3dbodyview.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
@@ -304,23 +305,23 @@ void EditBodyDlg::setupLayout()
                 {
                     QGridLayout *pThreeDParamsLayout = new QGridLayout;
                     {
-                        m_pctrlAxes         = new QCheckBox(tr("Axes"), this);
-                        m_pctrlSurfaces     = new QCheckBox(tr("Surfaces"), this);
-                        m_pctrlOutline      = new QCheckBox(tr("Outline"), this);
-                        m_pctrlPanels       = new QCheckBox(tr("Panels"), this);
-                        m_pctrlShowMasses   = new QCheckBox(tr("Masses"), this);
+                        m_pchAxes         = new QCheckBox(tr("Axes"), this);
+                        m_pchSurfaces     = new QCheckBox(tr("Surfaces"), this);
+                        m_pchOutline      = new QCheckBox(tr("Outline"), this);
+                        m_pchPanels       = new QCheckBox(tr("Panels"), this);
+                        m_pchShowMasses   = new QCheckBox(tr("Masses"), this);
 
-                        m_pctrlAxes->setSizePolicy(szPolicyMaximum);
-                        m_pctrlSurfaces->setSizePolicy(szPolicyMaximum);
-                        m_pctrlOutline->setSizePolicy(szPolicyMaximum);
-                        m_pctrlPanels->setSizePolicy(szPolicyMaximum);
-                        m_pctrlShowMasses->setSizePolicy(szPolicyMaximum);
+                        m_pchAxes->setSizePolicy(szPolicyMaximum);
+                        m_pchSurfaces->setSizePolicy(szPolicyMaximum);
+                        m_pchOutline->setSizePolicy(szPolicyMaximum);
+                        m_pchPanels->setSizePolicy(szPolicyMaximum);
+                        m_pchShowMasses->setSizePolicy(szPolicyMaximum);
 
-                        pThreeDParamsLayout->addWidget(m_pctrlAxes, 1,1);
-                        pThreeDParamsLayout->addWidget(m_pctrlPanels, 1,3);
-                        pThreeDParamsLayout->addWidget(m_pctrlSurfaces, 1,2);
-                        pThreeDParamsLayout->addWidget(m_pctrlOutline, 2,2);
-                        pThreeDParamsLayout->addWidget(m_pctrlShowMasses, 2,3);
+                        pThreeDParamsLayout->addWidget(m_pchAxes, 1,1);
+                        pThreeDParamsLayout->addWidget(m_pchPanels, 1,3);
+                        pThreeDParamsLayout->addWidget(m_pchSurfaces, 1,2);
+                        pThreeDParamsLayout->addWidget(m_pchOutline, 2,2);
+                        pThreeDParamsLayout->addWidget(m_pchShowMasses, 2,3);
                     }
 
                     QHBoxLayout *pAxisViewLayout = new QHBoxLayout;
@@ -443,11 +444,11 @@ void EditBodyDlg::initDialog(Body *pBody)
 
     fillBodyTreeView();
 
-    m_pctrlSurfaces->setChecked(m_pglBodyView->m_bSurfaces);
-    m_pctrlOutline->setChecked(m_pglBodyView->m_bOutline);
-    m_pctrlAxes->setChecked(m_pglBodyView->m_bAxes);
-    m_pctrlPanels->setChecked(m_pglBodyView->m_bVLMPanels);
-    m_pctrlShowMasses->setChecked(m_pglBodyView->m_bShowMasses);
+    m_pchSurfaces->setChecked(m_pglBodyView->m_bSurfaces);
+    m_pchOutline->setChecked(m_pglBodyView->m_bOutline);
+    m_pchAxes->setChecked(m_pglBodyView->m_bAxes);
+    m_pchPanels->setChecked(m_pglBodyView->m_bVLMPanels);
+    m_pchShowMasses->setChecked(m_pglBodyView->m_bShowMasses);
 }
 
 
@@ -540,11 +541,11 @@ void EditBodyDlg::connectSignals()
 
     connect(m_pctrlReset,      SIGNAL(clicked()), m_pglBodyView, SLOT(on3DReset()));
 
-    connect(m_pctrlAxes,       SIGNAL(clicked(bool)), m_pglBodyView, SLOT(onAxes(bool)));
-    connect(m_pctrlPanels,     SIGNAL(clicked(bool)), m_pglBodyView, SLOT(onPanels(bool)));
-    connect(m_pctrlSurfaces,   SIGNAL(clicked(bool)), m_pglBodyView, SLOT(onSurfaces(bool)));
-    connect(m_pctrlOutline,    SIGNAL(clicked(bool)), m_pglBodyView, SLOT(onOutline(bool)));
-    connect(m_pctrlShowMasses, SIGNAL(clicked(bool)), m_pglBodyView, SLOT(onShowMasses(bool)));
+    connect(m_pchAxes,       SIGNAL(clicked(bool)), m_pglBodyView, SLOT(onAxes(bool)));
+    connect(m_pchPanels,     SIGNAL(clicked(bool)), m_pglBodyView, SLOT(onPanels(bool)));
+    connect(m_pchSurfaces,   SIGNAL(clicked(bool)), m_pglBodyView, SLOT(onSurfaces(bool)));
+    connect(m_pchOutline,    SIGNAL(clicked(bool)), m_pglBodyView, SLOT(onOutline(bool)));
+    connect(m_pchShowMasses, SIGNAL(clicked(bool)), m_pglBodyView, SLOT(onShowMasses(bool)));
 
     connect(m_pctrlIso,        SIGNAL(clicked()), m_pglBodyView, SLOT(on3DIso()));
     connect(m_pctrlX,          SIGNAL(clicked()), m_pglBodyView, SLOT(on3DFront()));
@@ -671,16 +672,16 @@ void EditBodyDlg::fillBodyTreeView()
     QList<QStandardItem*> bodyColorFolder = prepareRow("Color");
     bodyFolder.first()->appendRow(bodyColorFolder);
     {
-        QList<QStandardItem*> dataItem = prepareIntRow("", "red", m_pBody->bodyColor().red());
+        QList<QStandardItem*> dataItem = prepareIntRow("", "red", m_pBody->color().red());
         bodyColorFolder.first()->appendRow(dataItem);
 
-        dataItem = prepareIntRow("", "green", m_pBody->bodyColor().green());
+        dataItem = prepareIntRow("", "green", m_pBody->color().green());
         bodyColorFolder.first()->appendRow(dataItem);
 
-        dataItem = prepareIntRow("", "blue", m_pBody->bodyColor().blue());
+        dataItem = prepareIntRow("", "blue", m_pBody->color().blue());
         bodyColorFolder.first()->appendRow(dataItem);
 
-        dataItem = prepareIntRow("", "alpha", m_pBody->bodyColor().alpha());
+        dataItem = prepareIntRow("", "alpha", m_pBody->color().alpha());
         bodyColorFolder.first()->appendRow(dataItem);
     }
 
@@ -848,10 +849,10 @@ void EditBodyDlg::readBodyTree(QModelIndex indexLevel)
 
                     dataIndex = subIndex.sibling(subIndex.row(),2);
 
-                    if(field.compare("red", Qt::CaseInsensitive)==0)         m_pBody->bodyColor().setRed(dataIndex.data().toInt());
-                    else if(field.compare("green", Qt::CaseInsensitive)==0)  m_pBody->bodyColor().setGreen(dataIndex.data().toInt());
-                    else if(field.compare("blue", Qt::CaseInsensitive)==0)   m_pBody->bodyColor().setBlue(dataIndex.data().toInt());
-                    else if(field.compare("alpha", Qt::CaseInsensitive)==0)  m_pBody->bodyColor().setAlpha(dataIndex.data().toInt());
+                    if(field.compare("red", Qt::CaseInsensitive)==0)         m_pBody->color().setRed(dataIndex.data().toInt());
+                    else if(field.compare("green", Qt::CaseInsensitive)==0)  m_pBody->color().setGreen(dataIndex.data().toInt());
+                    else if(field.compare("blue", Qt::CaseInsensitive)==0)   m_pBody->color().setBlue(dataIndex.data().toInt());
+                    else if(field.compare("alpha", Qt::CaseInsensitive)==0)  m_pBody->color().setAlpha(dataIndex.data().toInt());
 
                     subIndex = subIndex.sibling(subIndex.row()+1,0);
                 }while(subIndex.isValid());
@@ -935,7 +936,7 @@ void EditBodyDlg::readBodyTree(QModelIndex indexLevel)
 
             dataIndex = indexLevel.sibling(indexLevel.row(),2);
 
-            if     (field.compare("Name", Qt::CaseInsensitive)==0) m_pBody->bodyName() = value;
+            if     (field.compare("Name", Qt::CaseInsensitive)==0) m_pBody->setName(value);
             else if(field.compare("Type", Qt::CaseInsensitive)==0) m_pBody->bodyType() = xfl::bodyPanelType(value);
         }
 
@@ -1290,13 +1291,13 @@ void EditBodyDlg::onExportBodyGeom()
     QString filter =".csv";
 
     FileName = QFileDialog::getSaveFileName(this, QObject::tr("Export Body Geometry"),
-                                            Settings::s_LastDirName ,
+                                            xfl::s_LastDirName ,
                                             QObject::tr("Text File (*.txt);;Comma Separated Values (*.csv)"),
                                             &filter);
     if(!FileName.length()) return;
 
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
     pos = FileName.lastIndexOf(".csv");
     if (pos>0) type = 2;
 
@@ -1319,13 +1320,13 @@ void EditBodyDlg::onExportBodyXML()
 
     strong = m_pBody->bodyName();
     FileName = QFileDialog::getSaveFileName(this, tr("Export plane definition to xml file"),
-                                            Settings::s_LastDirName +'/'+strong,
+                                            xfl::s_LastDirName +'/'+strong,
                                             filter,
                                             &filter);
 
     if(!FileName.length()) return;
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
 
     pos = FileName.indexOf(".xml", Qt::CaseInsensitive);
     if(pos<0) FileName += ".xml";
@@ -1349,11 +1350,11 @@ void EditBodyDlg::onImportBodyXML()
 
     QString PathName;
     PathName = QFileDialog::getOpenFileName(this, tr("Open XML File"),
-                                            Settings::s_LastDirName,
+                                            xfl::s_LastDirName,
                                             tr("Plane XML file")+"(*.xml)");
     if(!PathName.length())        return ;
     int pos = PathName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+    if(pos>0) xfl::s_LastDirName = PathName.left(pos);
 
     QFile XFile(PathName);
     if (!XFile.open(QIODevice::ReadOnly))
@@ -1444,6 +1445,10 @@ void EditBodyDlg::onBodyInertia()
 }
 
 
+void EditBodyDlg::setTexturePath(QString const &path)
+{
+    m_pglBodyView->setTexturePath(path);
+}
 
 
 

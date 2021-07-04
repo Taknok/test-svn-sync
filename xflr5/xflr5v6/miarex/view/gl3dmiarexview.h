@@ -23,7 +23,7 @@
 #pragma once
 
 
-#include <xfl3d/gl3dxflview.h>
+#include <xfl3d/views/gl3dxflview.h>
 
 class gl3dMiarexView : public gl3dXflView
 {
@@ -54,7 +54,6 @@ class gl3dMiarexView : public gl3dXflView
         void paintTransitions(int iWing);
         void paintPanelCp(int nPanels);
         void paintPanelForces(int nPanels);
-        void paintMesh(int nPanels);
 
         private:
             void glRenderView() override;

@@ -33,7 +33,7 @@
 #include <xflwidgets/customwts/ctrltabledelegate.h>
 #include "wpolardlg.h"
 #include <miarex/miarex.h>
-#include <misc/options/settings.h>
+
 #include <xflcore/displayoptions.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>

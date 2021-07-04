@@ -43,6 +43,10 @@
 bool xfl::g_bLocalize = false;
 int xfl::s_SymbolSize = 3;
 
+QString xfl::s_LastDirName = QDir::homePath();
+QString xfl::s_xmlDirName  = QDir::homePath();
+QString xfl::s_plrDirName  = QDir::homePath();
+
 
 
 /**

@@ -31,7 +31,7 @@
 #include "splinectrlsdlg.h"
 #include <design/afoil.h>
 #include <gui_objects/splinefoil.h>
-#include <misc/options/settings.h>
+
 #include <xflcore/displayoptions.h>
 #include <xflwidgets/customwts/floateditdelegate.h>
 #include <xflwidgets/customwts/intedit.h>

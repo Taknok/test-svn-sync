@@ -49,10 +49,19 @@ namespace xfl
     extern bool g_bLocalize;
 
     extern int s_SymbolSize;
+    extern QString s_LastDirName, s_xmlDirName, s_plrDirName;
 
 
     QString versionName(bool bFull);
 
+    inline void setLastDirName(QString dirname) {s_LastDirName=dirname;}
+    inline QString const &lastDirName() {return s_LastDirName;}
+
+    inline void setXmlDirName(QString dirname) {s_xmlDirName=dirname;}
+    inline QString xmlDirName() {return s_xmlDirName;}
+
+    inline void setPlrDirName(QString dirname) {s_plrDirName=dirname;}
+    inline QString plrDirName() {return s_plrDirName;}
 
     float GLGetRed(float tau);
     float GLGetGreen(float tau);

@@ -224,7 +224,111 @@ void NURBSSurface::getPoint(double u, double v, Vector3d &Pt) const
 }
 
 
+void NURBSSurface::getNormal(double u, double v, Vector3d &N) const
+{
+    Vector3d Su, Sv, Vv, rpt;
+    double cs=0, bs=0;
 
+    u=std::max(u, 1e-4);
+    v=std::max(v, 1e-4);
+    u=std::min(u, 1.0-1.e-4);
+    v=std::min(v, 1.0-1.e-4);
+
+    // calculate the u derivative
+    for(int iu=0; iu<frameCount(); iu++)
+    {
+        Frame const *uframe = m_pFrame.at(iu);
+        Vv.reset();
+
+        for(int jv=0; jv<framePointCount(); jv++)
+        {
+             cs = basis(jv, m_ivDegree, v, m_vKnots);
+
+            rpt.x = uframe->ctrlPointAt(jv).x;
+            rpt.y = uframe->ctrlPointAt(jv).y;
+            rpt.z = uframe->ctrlPointAt(jv).z;
+
+            Vv.x += rpt.x * cs;
+            Vv.y += rpt.y * cs;
+            Vv.z += rpt.z * cs;
+
+        }
+
+        bs = basisDerivative(iu, m_iuDegree, u, m_uKnots);
+
+        Su.x += Vv.x * bs;
+        Su.y += Vv.y * bs;
+        Su.z += Vv.z * bs;
+    }
+
+    // calculate the u derivative
+    for(int iu=0; iu<frameCount(); iu++)
+    {
+        Frame const *uframe = m_pFrame.at(iu);
+        Vv.reset();
+
+        for(int jv=0; jv<framePointCount(); jv++)
+        {
+             cs = basisDerivative(jv, m_ivDegree, v, m_vKnots);
+
+            rpt.x = uframe->ctrlPointAt(jv).x;
+            rpt.y = uframe->ctrlPointAt(jv).y;
+            rpt.z = uframe->ctrlPointAt(jv).z;
+
+
+            Vv.x += rpt.x * cs;
+            Vv.y += rpt.y * cs;
+            Vv.z += rpt.z * cs;
+
+        }
+
+        bs = basis(iu, m_iuDegree, u, m_uKnots);
+
+        Sv.x += Vv.x * bs;
+        Sv.y += Vv.y * bs;
+        Sv.z += Vv.z * bs;
+    }
+
+    N = (Su * Sv).normalized();
+}
+
+#define KNOTPRECISION 1.e-6
+double NURBSSurface::basis(int i, int deg, double t, double const *knots) const
+{
+    double sum = 0.0;
+    if(deg==0)
+    {
+        if(knots[i]<=t && t<knots[i+1]) return 1.0;
+        else                            return 0.0;
+    }
+
+    if(fabs(knots[i+deg]-knots[i])>KNOTPRECISION)
+    {
+        sum += (t-knots[i])/(knots[i+deg]-knots[i]) * basis(i, deg-1, t, knots);
+    }
+
+    if(fabs(knots[i+deg+1]-knots[i+1])>KNOTPRECISION)
+    {
+        sum += (knots[i+deg+1]-t)/(knots[i+deg+1]-knots[i+1]) * basis(i+1, deg-1, t, knots);
+    }
+    return sum;
+}
+
+
+double NURBSSurface::basisDerivative(int i, int deg, double t, double const *knots) const
+{
+    double der = 0.0;
+
+    if(fabs(knots[i+deg]-knots[i])>KNOTPRECISION)
+    {
+        der += double(deg)/(knots[i+deg]  -knots[i])   * basis(i, deg-1, t, knots);
+    }
+    if(fabs(knots[i+deg+1]-knots[i+1])>KNOTPRECISION)
+    {
+        der -= double(deg)/(knots[i+deg+1]-knots[i+1]) * basis(i+1, deg-1, t, knots);
+    }
+    return der;
+}
 
 /**
  * Returns the point corresponding to the pair of parameters (u,v)

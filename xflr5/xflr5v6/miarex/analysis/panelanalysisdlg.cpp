@@ -34,17 +34,18 @@
 
 
 #include "panelanalysisdlg.h"
-#include <xflanalysis/plane_analysis/panelanalysis.h>
-#include <xflanalysis/plane_analysis/planetask.h>
-#include <xflcore/xflcore.h>
-#include <xflcore/gui_params.h>
 #include <miarex/miarex.h>
 #include <miarex/objects3d.h>
+
+#include <xflanalysis/plane_analysis/panelanalysis.h>
+#include <xflanalysis/plane_analysis/planetask.h>
+#include <xflcore/displayoptions.h>
+#include <xflcore/gui_params.h>
 #include <xflcore/units.h>
-#include <misc/options/settings.h>
+#include <xflcore/xflcore.h>
+#include <xflgeom/geom3d/vector3d.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/wpolar.h>
-#include <xflgeom/geom3d/vector3d.h>
 
 QByteArray PanelAnalysisDlg::s_Geometry;
 
@@ -256,7 +257,7 @@ void PanelAnalysisDlg::cleanUp()
             //add the data to the polar object
             PlaneOpp *pPOpp = m_pTheTask->m_pthePanelAnalysis->m_PlaneOppList.at(iPOpp);
 
-            if(Settings::isAlignedChildrenStyle())
+            if(DisplayOptions::isAlignedChildrenStyle())
             {
                 pPOpp->setTheStyle(m_pTheTask->m_pWPolar->theStyle());
             }

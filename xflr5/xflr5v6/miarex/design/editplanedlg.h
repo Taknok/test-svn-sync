@@ -61,7 +61,8 @@ class EditPlaneDlg : public QDialog
 
         void glMake3dObjects();
 
-        bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
+        void setTexturePath(QString const &path);
+
         void connectSignals();
         void identifySelection(const QModelIndex &indexSel);
         void initDialog(Plane *pPlane);
@@ -130,7 +131,6 @@ class EditPlaneDlg : public QDialog
         EditObjectDelegate *m_pDelegate;
         QStandardItemModel *m_pModel;
 
-
         gl3dPlaneView *m_pglPlaneView;
 
         QCheckBox *m_pchAxes, *m_pchLight, *m_pchSurfaces, *m_pchOutline, *m_pchPanels;
@@ -138,6 +138,8 @@ class EditPlaneDlg : public QDialog
 
         QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
         QToolButton *m_ptbX, *m_ptbY, *m_ptbZ, *m_ptbIso, *m_ptbFlip;
+        QPushButton *m_ppbReset;
+        QSlider *m_pslClipPlanePos;
 
         QMenu *m_pContextMenu;
         QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteItem;
@@ -146,9 +148,7 @@ class EditPlaneDlg : public QDialog
 
         QCheckBox *m_pchAutoRedraw;
         QPushButton *m_ppbRedraw;
-        QPushButton *m_ppbReset;
         QDialogButtonBox *m_pButtonBox;
-        QSlider *m_pslClipPlanePos;
 
         bool m_bChanged;
 

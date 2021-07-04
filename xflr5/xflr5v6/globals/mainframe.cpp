@@ -59,7 +59,7 @@
 #include <misc/options/languagewt.h>
 #include <misc/options/preferencesdlg.h>
 #include <misc/options/saveoptions.h>
-#include <misc/options/settings.h>
+#include <misc/options/settingswt.h>
 #include <misc/renamedlg.h>
 #include <twodwidgets/foildesignwt.h>
 #include <twodwidgets/inverseviewwt.h>
@@ -80,9 +80,9 @@
 #include <xdirect/mgt/managefoilsdlg.h>
 #include <xdirect/objects2d.h>
 #include <xdirect/xdirect.h>
-#include <xfl3d/controls/opengldlg.h>
-#include <xfl3d/controls/w3dprefsdlg.h>
-#include <xfl3d/testgl/gl3dfractal.h>
+#include <xfl3d/controls/w3dprefs.h>
+#include <xfl3d/glinfo/opengldlg.h>
+#include <xfl3d/testgl/gl2dfractal.h>
 #include <xfl3d/testgl/gl3dtestglview.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/trace.h>
@@ -216,9 +216,9 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
         m_pXInverse->loadSettings(settings);
 
         GL3DScales::loadSettings(settings);
-        W3dPrefsDlg::loadSettings(settings);
+        W3dPrefs::loadSettings(settings);
         Units::loadSettings(settings);
-        gl3dFractal::loadSettings(settings);
+        gl2dFractal::loadSettings(settings);
     }
 
     pushSettings();
@@ -887,7 +887,7 @@ void MainFrame::createAFoilToolbar()
 
 void MainFrame::onAlignChildrenStyle(bool bAlign)
 {
-    Settings::setAlignedChildrenStyle(bAlign);
+    DisplayOptions::setAlignedChildrenStyle(bAlign);
 }
 
 
@@ -1156,7 +1156,7 @@ void MainFrame::createGraphActions()
 
     m_pShowMousePosAct     = new QAction(tr("Display mouse coordinates"), this);
     m_pShowMousePosAct->setCheckable(true);
-    m_pShowMousePosAct->setChecked(Settings::bMousePos());
+    m_pShowMousePosAct->setChecked(DisplayOptions::bMousePos());
     m_pShowMousePosAct->setStatusTip(tr("Display the coordinates of the mouse on the top right corner of the graph"));
     connect(m_pShowMousePosAct, SIGNAL(triggered()), this, SLOT(onShowMousePos()));
 
@@ -3092,7 +3092,7 @@ QColor MainFrame::getColor(int type)
         {
         }
     }
-    return xfl::randomColor(!Settings::isLightTheme());
+    return xfl::randomColor(!DisplayOptions::isLightTheme());
 }
 
 
@@ -3206,7 +3206,7 @@ void MainFrame::keyPressEvent(QKeyEvent *pEvent)
             }
             case Qt::Key_F2:
             {
-                gl3dFractal *pTestView = new gl3dFractal;
+                gl2dFractal *pTestView = new gl2dFractal;
                 pTestView->setAttribute(Qt::WA_DeleteOnClose);
                 pTestView->show();
                 pTestView->activateWindow();
@@ -3537,7 +3537,7 @@ xfl::enumApp MainFrame::loadXFLR5File(QString pathname)
     pathname.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
 
     int pos = pathname.lastIndexOf("/");
-    if(pos>0) Settings::setLastDirName(pathname.left(pos));
+    if(pos>0) xfl::setLastDirName(pathname.left(pos));
 
     if(end==".plr")
     {
@@ -3733,7 +3733,7 @@ void MainFrame::onCurFoilStyle()
     {
         XDirect::curFoil()->setTheStyle(dlg.theStyle());
 
-        if(Settings::isAlignedChildrenStyle())
+        if(DisplayOptions::isAlignedChildrenStyle())
             Objects2d::setFoilChildrenStyle(XDirect::curFoil());
 
         m_pXDirect->setControls();
@@ -3750,11 +3750,11 @@ void MainFrame::onInsertProject()
     QString PathName;
 
     PathName = QFileDialog::getOpenFileName(this, tr("Open File"),
-                                            Settings::lastDirName(),
+                                            xfl::lastDirName(),
                                             "Project file (*.wpa *.xfl)");
     if(!PathName.length()) return;
     int pos = PathName.lastIndexOf("/");
-    if(pos>0) Settings::setLastDirName(PathName.left(pos));
+    if(pos>0) xfl::setLastDirName(PathName.left(pos));
 
     QFile XFile(PathName);
     if (!XFile.open(QIODevice::ReadOnly))
@@ -3836,7 +3836,7 @@ void MainFrame::onLoadFile()
     bool warn_non_airfoil_multiload = false;
 
     PathNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
-                                              Settings::lastDirName(),
+                                              xfl::lastDirName(),
                                               "XFLR5 file (*.dat *.plr *.wpa *.xfl)");
     if(!PathNames.size()) return;
     if(PathNames.size() > 1)
@@ -3863,7 +3863,7 @@ void MainFrame::onLoadFile()
         PathName.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
 
         int pos = PathName.lastIndexOf("/");
-        if(pos>0) Settings::setLastDirName(PathName.left(pos));
+        if(pos>0) xfl::setLastDirName(PathName.left(pos));
 
         App = loadXFLR5File(PathName);
     }
@@ -3965,6 +3965,7 @@ void MainFrame::onNewProject()
 void MainFrame::onOpenGLInfo()
 {
     OpenGlDlg w(this);
+    w.initDialog();
     w.exec();
 }
 
@@ -3986,9 +3987,9 @@ void MainFrame::onResetSettings()
 #endif
 
         settings.clear();
-        Settings::setLastDirName(QDir::homePath());
-        Settings::setXmlDirName(QDir::homePath());
-        Settings::setPlrDirName(QDir::homePath());
+        xfl::setLastDirName(QDir::homePath());
+        xfl::setXmlDirName(QDir::homePath());
+        xfl::setPlrDirName(QDir::homePath());
         // do not save on exit
         m_bSaveSettings = false;
     }
@@ -4354,8 +4355,8 @@ void MainFrame::onSelChangeOpp(int sel)
 
 void MainFrame::onShowMousePos()
 {
-    Settings::showMousePos(!Settings::bMousePos());
-    m_pShowMousePosAct->setChecked(Settings::bMousePos());
+    DisplayOptions::showMousePos(!DisplayOptions::bMousePos());
+    m_pShowMousePosAct->setChecked(DisplayOptions::bMousePos());
 }
 
 
@@ -4562,7 +4563,7 @@ bool MainFrame::saveProject(QString PathName)
     if(!PathName.length())
     {
         PathName = QFileDialog::getSaveFileName(this, tr("Save the Project File"),
-                                                Settings::lastDirName()+"/"+FileName,
+                                                xfl::lastDirName()+"/"+FileName,
                                                 "XFLR5 v6 Project File (*.xfl)",
                                                 &Filter);
 
@@ -4574,7 +4575,7 @@ bool MainFrame::saveProject(QString PathName)
         PathName.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
 
         pos = PathName.lastIndexOf("/");
-        if(pos>0) Settings::setLastDirName(PathName.left(pos));
+        if(pos>0) xfl::setLastDirName(PathName.left(pos));
     }
 
 
@@ -4634,7 +4635,7 @@ void MainFrame::onSavePlaneAsProject()
     QString FileName = strong;
 
     PathName = QFileDialog::getSaveFileName(this, tr("Save the Project File"),
-                                            Settings::lastDirName()+"/"+FileName,
+                                            xfl::lastDirName()+"/"+FileName,
                                             "XFLR5 v6 Project File (*.xfl)",
                                             &Filter);
 
@@ -4643,7 +4644,7 @@ void MainFrame::onSavePlaneAsProject()
     if(pos<0) PathName += ".xfl";
     PathName.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
     pos = PathName.lastIndexOf("/");
-    if(pos>0) Settings::setLastDirName(PathName.left(pos));
+    if(pos>0) xfl::setLastDirName(PathName.left(pos));
 
 
     QFile fp(PathName);
@@ -4659,7 +4660,6 @@ void MainFrame::onSavePlaneAsProject()
     serializePlaneProject(ar);
     fp.close();
 }
-
 
 
 bool MainFrame::serializePlaneProject(QDataStream &ar)
@@ -4891,9 +4891,9 @@ void MainFrame::saveSettings()
     m_pMiarex->saveSettings(settings);
     m_pXInverse->saveSettings(settings);
     GL3DScales::saveSettings(settings);
-    W3dPrefsDlg::saveSettings(settings);
+    W3dPrefs::saveSettings(settings);
     Units::saveSettings(settings);
-    gl3dFractal::saveSettings(settings);
+    gl2dFractal::saveSettings(settings);
 }
 
 
@@ -6598,12 +6598,12 @@ void MainFrame::onExecuteScript()
 
     QString XmlPathName;
     XmlPathName = QFileDialog::getOpenFileName(this, tr("Open XML Script File"),
-                                               Settings::lastDirName(),
+                                               xfl::lastDirName(),
                                                tr("XML Script file")+"(*.xml)");
     if(!XmlPathName.length()) return;
     QFileInfo fi(XmlPathName);
 
-    Settings::setLastDirName(fi.path());
+    xfl::setLastDirName(fi.path());
     executeScript(XmlPathName, false, true);
 }
 
@@ -6986,7 +6986,7 @@ void MainFrame::onPreferences()
     pushSettings();
 
     m_pAFoil->setTableFont();
-    if(Settings::s_Theme==SETTINGS::DARKTHEME)
+    if(DisplayOptions::isDarkTheme())
     {
         m_pXDirectTileWidget->opPointWidget()->setNeutralLineColor(QColor(190,190,190));
     }

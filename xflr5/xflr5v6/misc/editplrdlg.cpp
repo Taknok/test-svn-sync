@@ -27,7 +27,7 @@
 
 #include "editplrdlg.h"
 #include <miarex/miarex.h>
-#include <misc/options/settings.h>
+
 #include <xdirect/xdirect.h>
 #include <xflcore/displayoptions.h>
 #include <xflobjects/objects2d/polar.h>

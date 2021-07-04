@@ -24,23 +24,21 @@
 #include <QGroupBox>
 #include <QTimer>
 #include <QApplication>
-
+#include <QDir>
 #include <QDebug>
 
 #include "batchgraphdlg.h"
-
-#include <xflgraph/curve.h>
-#include <xflgraph/graph.h>
-#include <misc/options/settings.h>
-#include <xflwidgets/customwts/doubleedit.h>
-#include <xflwidgets/customwts/intedit.h>
-#include <xflgraph/containers/graphwt.h>
 #include <xdirect/analysis/xfoiltask.h>
 #include <xdirect/objects2d.h>
 #include <xdirect/xdirect.h>
 #include <xflcore/xflevents.h>
+#include <xflgraph/containers/graphwt.h>
+#include <xflgraph/curve.h>
+#include <xflgraph/graph.h>
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects2d/polar.h>
+#include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/intedit.h>
 
 
 QByteArray BatchGraphDlg::s_VSplitterSizes;

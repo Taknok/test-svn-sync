@@ -26,7 +26,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 
-#include <xflanalysis/matrix.h>
+#include <xflcore/matrix.h>
 #include "panelanalysis.h"
 #include <xflobjects/objects3d/wpolar.h>
 #include <xflobjects/objects3d/plane.h>

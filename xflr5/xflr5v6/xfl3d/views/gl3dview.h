@@ -19,8 +19,6 @@
 
 *****************************************************************************/
 
-
-
 #pragma once
 
 
@@ -94,7 +92,9 @@ class gl3dView : public QOpenGLWidget
         gl3dView(QWidget *pParent = nullptr);
         ~gl3dView();
 
-        void setLightVisible(bool bShow) {m_bShowLight=bShow;}
+        void setLightVisible(bool bShow) {m_bLightVisible=bShow;}
+
+        void getMemoryStatus(int &total_mem_kb, int &cur_avail_mem_kb);
 
         static void setFontStruct(FontStruct const & fntstruct) {s_glFontStruct=fntstruct;}
         static void setTextColor(QColor const &textclr) {s_TextColor=textclr;}
@@ -108,6 +108,31 @@ class gl3dView : public QOpenGLWidget
 
         static bool bSpinAnimation() {return s_bSpinAnimation;}
         static double spinDamping() {return s_SpinDamping;}
+
+        static void setMultiSample(bool bEnable) {s_bMultiSample=bEnable;}
+        static bool bMultiSample() {return s_bMultiSample;}
+
+        static void setXflSurfaceFormat(QSurfaceFormat const &fmt) {s_GlSurfaceFormat = fmt;}
+        static QSurfaceFormat const& defaultXflSurfaceFormat() {return s_GlSurfaceFormat;}
+
+        static void setOGLVersion(int OGLMajor, int OGLMinor) {s_GlSurfaceFormat.setVersion(OGLMajor, OGLMinor);}
+        static int oglMajor() {return s_GlSurfaceFormat.majorVersion();}
+        static int oglMinor() {return s_GlSurfaceFormat.minorVersion();}
+
+        static void setDefaultSamples(int nSamples) {s_GlSurfaceFormat.setSamples(nSamples);}
+        static int defaultSamples() {return s_GlSurfaceFormat.samples();}
+
+        static void setProfile(QSurfaceFormat::OpenGLContextProfile prof) {s_GlSurfaceFormat.setProfile(prof);}
+        static QSurfaceFormat::OpenGLContextProfile defaultProfile() {return s_GlSurfaceFormat.profile();}
+
+        static void setDeprecatedFuncs(bool bDeprecated) {s_GlSurfaceFormat.setOption(QSurfaceFormat::DeprecatedFunctions, bDeprecated);}
+        static bool deprecatedFuncs() {return s_GlSurfaceFormat.testOption(QSurfaceFormat::DeprecatedFunctions);}
+
+        static void setDebugContext(bool bDebug) {s_GlSurfaceFormat.setOption(QSurfaceFormat::DebugContext, bDebug);}
+        static bool debugContext() {return s_GlSurfaceFormat.testOption(QSurfaceFormat::DebugContext);}
+
+        static void loadSettings(QSettings &settings);
+        static void saveSettings(QSettings &settings);
 
     signals:
         void viewModified();
@@ -170,8 +195,10 @@ class gl3dView : public QOpenGLWidget
         void paintAxes();
         void paintSphere(const Vector3d &place, double radius, QColor sphereColor, bool bLight=true);
         void paintTriangles3Vtx(QOpenGLBuffer &vbo, const QColor &backclr, bool bTwoSided, bool bLight);
+        void paintTriangles3VtxTexture(QOpenGLBuffer &vbo, const QColor &backclr, bool bTwoSided, bool bLight, QOpenGLTexture *pTexture);
         void paintSegments(QOpenGLBuffer &vbo, LineStyle const &ls, bool bHigh = false);
         void paintSegments(QOpenGLBuffer &vbo, const QColor &clr, int thickness, Line::enumLineStipple stip=Line::SOLID, bool bHigh=false);
+        void paintLineStrip(QOpenGLBuffer &vbo, const LineStyle &ls);
         void paintBox(double x, double y, double z, double dx, double dy, double dz, QColor const &clr, bool bLight);
         void paintCube(double x, double y, double z, double side, QColor const &clr, bool bLight);
 
@@ -199,9 +226,7 @@ class gl3dView : public QOpenGLWidget
 
     public:
         static void printFormat(QSurfaceFormat const &ctxFormat, QString &log);
-        static void setOGLVersion(int OGLMajor, int OGLMinor) {s_OpenGLMajor=OGLMajor; s_OpenGLMinor=OGLMinor;}
-        static int oglMajor() {return s_OpenGLMajor;}
-        static int oglMinor() {return s_OpenGLMinor;}
+
 
     protected:
 
@@ -216,7 +241,7 @@ class gl3dView : public QOpenGLWidget
         ShaderLocations m_locSurf;
         ShaderLocations m_locLine;
 
-        bool m_bShowLight;
+        bool m_bLightVisible;
 
         bool m_bAxes;                      /**< true if the axes are to be displayed in the 3D view*/
         bool m_bArcball;            //true if the arcball is to be displayed
@@ -282,9 +307,9 @@ class gl3dView : public QOpenGLWidget
         static Light s_Light;
         static FontStruct s_glFontStruct;
 
-        static int s_OpenGLMajor;
-        static int s_OpenGLMinor;
 
+        static bool s_bMultiSample;
+        static QSurfaceFormat s_GlSurfaceFormat;
 };
 
 GLushort GLStipple(Line::enumLineStipple stipple);

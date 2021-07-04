@@ -38,13 +38,13 @@
 #include <miarex/design/inertiadlg.h>
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlplanewriter.h>
-#include <xfl3d/controls/w3dprefsdlg.h>
+#include <xfl3d/controls/w3dprefs.h>
 #include <misc/lengthunitdlg.h>
-#include <misc/options/settings.h>
+
 #include <twodwidgets/bodyframewt.h>
 #include <twodwidgets/bodylinewt.h>
 #include <xfl3d/controls/arcball.h>
-#include <xfl3d/gl3dbodyview.h>
+#include <xfl3d/views/gl3dbodyview.h>
 #include <xflcore/units.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
@@ -169,9 +169,9 @@ void GL3dBodyDlg::connectSignals()
     connect(m_ppbRedo,       SIGNAL(clicked()),SLOT(onRedo()));
 
     connect(m_pSelectionModelFrame, SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(onFrameItemClicked(QModelIndex)));
-    connect(m_pFrameDelegate,       SIGNAL(closeEditor(QWidget *)), SLOT(onFrameCellChanged(QWidget *)));
+    connect(m_pFrameDelegate,       SIGNAL(closeEditor(QWidget*)), SLOT(onFrameCellChanged(QWidget*)));
     connect(m_pSelectionModelPoint, SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(onPointItemClicked(QModelIndex)));
-    connect(m_pPointDelegate,       SIGNAL(closeEditor(QWidget *)), SLOT(onPointCellChanged(QWidget *)));
+    connect(m_pPointDelegate,       SIGNAL(closeEditor(QWidget*)), SLOT(onPointCellChanged(QWidget*)));
 
     connect(m_pBodyLineWt, SIGNAL(frameSelChanged()), SLOT(onFrameClicked()));
     connect(m_pFrameWt,    SIGNAL(pointSelChanged()), SLOT(onPointClicked()));
@@ -418,7 +418,7 @@ void GL3dBodyDlg::onBodyColor()
     dialogOptions |= QColorDialog::DontUseNativeDialog;
 #endif
 #endif
-    QColor clr = QColorDialog::getColor(m_pBody->bodyColor(),
+    QColor clr = QColorDialog::getColor(m_pBody->color(),
                                         this, "Color selection", dialogOptions);
 
     if(clr.isValid())
@@ -471,13 +471,13 @@ void GL3dBodyDlg::onExportBodyXML()
 
     strong = m_pBody->bodyName();
     FileName = QFileDialog::getSaveFileName(this, tr("Export plane definition to xml file"),
-                                            Settings::s_LastDirName +'/'+strong,
+                                            xfl::s_LastDirName +'/'+strong,
                                             filter,
                                             &filter);
 
     if(!FileName.length()) return;
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
 
     pos = FileName.indexOf(".xml", Qt::CaseInsensitive);
     if(pos<0) FileName += ".xml";
@@ -505,12 +505,12 @@ void GL3dBodyDlg::onExportBodyDef()
     FileName.replace("/", " ");
 
     FileName = QFileDialog::getSaveFileName(this, QObject::tr("Export Body Definition"),
-                                            Settings::s_LastDirName,
+                                            xfl::s_LastDirName,
                                             QObject::tr("Text Format (*.txt)"));
     if(!FileName.length()) return;
 
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
 
     QFile XFile(FileName);
 
@@ -537,13 +537,13 @@ void GL3dBodyDlg::onExportBodyGeom()
     QString filter =".csv";
 
     FileName = QFileDialog::getSaveFileName(this, QObject::tr("Export Body Geometry"),
-                                            Settings::s_LastDirName ,
+                                            xfl::s_LastDirName ,
                                             QObject::tr("Text File (*.txt);;Comma Separated Values (*.csv)"),
                                             &filter);
     if(!FileName.length()) return;
 
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
     pos = FileName.lastIndexOf(".csv");
     if (pos>0) type = 2;
 
@@ -578,11 +578,11 @@ void GL3dBodyDlg::onImportBodyDef()
     QString PathName;
 
     PathName = QFileDialog::getOpenFileName(this, QObject::tr("Open File"),
-                                            Settings::s_LastDirName,
+                                            xfl::s_LastDirName,
                                             QObject::tr("All files (*.*)"));
     if(!PathName.length()) return;
     int pos = PathName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+    if(pos>0) xfl::s_LastDirName = PathName.left(pos);
 
     QFile XFile(PathName);
     if (!XFile.open(QIODevice::ReadOnly))
@@ -621,11 +621,11 @@ void GL3dBodyDlg::onImportBodyXML()
 
     QString PathName;
     PathName = QFileDialog::getOpenFileName(this, tr("Open XML File"),
-                                            Settings::s_LastDirName,
+                                            xfl::s_LastDirName,
                                             tr("Plane XML file")+"(*.xml)");
     if(!PathName.length())        return ;
     int pos = PathName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+    if(pos>0) xfl::s_LastDirName = PathName.left(pos);
 
     QFile XFile(PathName);
     if (!XFile.open(QIODevice::ReadOnly))
@@ -975,7 +975,7 @@ void GL3dBodyDlg::accept()
 {
     if(m_pBody)
     {
-        m_pBody->bodyDescription() = m_pteBodyDescription->toPlainText();
+        m_pBody->setDescription(m_pteBodyDescription->toPlainText());
         QColor clr = m_pcbBodyColor->color();
         m_pBody->setBodyColor(clr);
     }
@@ -1494,7 +1494,6 @@ void GL3dBodyDlg::setupLayout()
         {
             m_pBodyLineWt = new BodyLineWt(this);
             m_pBodyLineWt->setSizePolicy(szPolicyMaximum);
-            m_pBodyLineWt->sizePolicy().setVerticalStretch(2);
 
             m_pLeftSplitter->addWidget(m_pBodyLineWt);
             m_pLeftSplitter->addWidget(&m_gl3dBodyview);
@@ -1713,5 +1712,11 @@ void GL3dBodyDlg::blockSignalling(bool bBlock)
 
     m_pSelectionModelPoint->blockSignals(bBlock);
     m_pSelectionModelFrame->blockSignals(bBlock);
+}
+
+
+void GL3dBodyDlg::setTexturePath(QString const &path)
+{
+    m_gl3dBodyview.setTexturePath(path);
 }
 

@@ -71,6 +71,8 @@ class GL3dWingDlg: public QDialog
         void glMakeSectionHighlight(QOpenGLBuffer &vbo, int &nStrips, int &stripSize);
         int iSection() const {return m_iSection;}
 
+        void setTexturePath(QString const &path);
+
         static void loadSettings(QSettings &settings);
         static void saveSettings(QSettings &settings);
 

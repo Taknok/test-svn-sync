@@ -31,7 +31,7 @@
 
 #include <QtCore>
 
-#include <xflanalysis/matrix.h>
+#include <xflcore/matrix.h>
 #include <xflanalysis/analysis3d_globals.h>
 
 /**

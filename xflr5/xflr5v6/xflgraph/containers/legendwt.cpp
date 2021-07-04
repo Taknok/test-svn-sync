@@ -33,7 +33,7 @@
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects2d/polar.h>
 #include <xflobjects/objects2d/oppoint.h>
-#include <misc/options/settings.h>
+
 #include <miarex/miarex.h>
 #include <miarex/objects3d.h>
 #include <xinverse/xinverse.h>

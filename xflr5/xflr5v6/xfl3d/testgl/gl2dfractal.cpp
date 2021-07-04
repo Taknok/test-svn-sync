@@ -10,21 +10,21 @@
 #include <QGridLayout>
 #include <QLabel>
 
-#include "gl3dfractal.h"
+#include "gl2dfractal.h"
 
 #include <xflcore/displayoptions.h>
 #include <xflcore/trace.h>
-#include <xfl3d/gl3dview.h> // for the static variables
+#include <xfl3d/views/gl3dview.h> // for the static variables
 #include <xflwidgets/customwts/intedit.h>
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/wt_globals.h>
 
-int gl3dFractal:: s_MaxIter = 32;
-float gl3dFractal::s_MaxLength = 10;
+int gl2dFractal:: s_MaxIter = 32;
+float gl2dFractal::s_MaxLength = 10;
 
-float gl3dFractal::s_ScaleFactor = 0.06f;
+float gl2dFractal::s_ScaleFactor = 0.06f;
 
-gl3dFractal::gl3dFractal(QWidget *pParent) : QOpenGLWidget(pParent)
+gl2dFractal::gl2dFractal(QWidget *pParent) : QOpenGLWidget(pParent)
 {
     setWindowTitle("Mandelbrot");
     setFocusPolicy(Qt::WheelFocus);
@@ -92,7 +92,7 @@ gl3dFractal::gl3dFractal(QWidget *pParent) : QOpenGLWidget(pParent)
 }
 
 
-void gl3dFractal::loadSettings(QSettings &settings)
+void gl2dFractal::loadSettings(QSettings &settings)
 {
     settings.beginGroup("gl3dFractal");
     {
@@ -103,7 +103,7 @@ void gl3dFractal::loadSettings(QSettings &settings)
 }
 
 
-void gl3dFractal::saveSettings(QSettings &settings)
+void gl2dFractal::saveSettings(QSettings &settings)
 {
     settings.beginGroup("gl3dFractal");
     {
@@ -114,7 +114,7 @@ void gl3dFractal::saveSettings(QSettings &settings)
 }
 
 
-void gl3dFractal::onDynamicIncrement()
+void gl2dFractal::onDynamicIncrement()
 {
 //    qDebug("onDynamicIncrement::Elapsed=%d ms", int(m_MoveTime.elapsed()));
 
@@ -151,14 +151,14 @@ void gl3dFractal::onDynamicIncrement()
 }
 
 
-void gl3dFractal::startDynamicTimer()
+void gl2dFractal::startDynamicTimer()
 {
     m_DynTimer.start(17);
     setMouseTracking(false);
 }
 
 
-void gl3dFractal::stopDynamicTimer()
+void gl2dFractal::stopDynamicTimer()
 {
     if(m_DynTimer.isActive())
     {
@@ -169,7 +169,7 @@ void gl3dFractal::stopDynamicTimer()
 }
 
 
-void gl3dFractal::keyPressEvent(QKeyEvent *pEvent)
+void gl2dFractal::keyPressEvent(QKeyEvent *pEvent)
 {
     bool bCtrl = (pEvent->modifiers() & Qt::ControlModifier);
     switch (pEvent->key())
@@ -206,7 +206,7 @@ void gl3dFractal::keyPressEvent(QKeyEvent *pEvent)
 }
 
 
-void gl3dFractal::showEvent(QShowEvent *pEvent)
+void gl2dFractal::showEvent(QShowEvent *pEvent)
 {
     setFocus();
     m_ptOffset = QPointF(0.25*width(),0);
@@ -214,7 +214,7 @@ void gl3dFractal::showEvent(QShowEvent *pEvent)
 }
 
 
-void gl3dFractal::mouseReleaseEvent(QMouseEvent *pEvent)
+void gl2dFractal::mouseReleaseEvent(QMouseEvent *pEvent)
 {
     if(gl3dView::bSpinAnimation())
     {
@@ -233,7 +233,7 @@ void gl3dFractal::mouseReleaseEvent(QMouseEvent *pEvent)
 }
 
 
-void gl3dFractal::mousePressEvent(QMouseEvent *pEvent)
+void gl2dFractal::mousePressEvent(QMouseEvent *pEvent)
 {
     m_LastPoint = pEvent->pos();
     m_PressedPoint = m_LastPoint;
@@ -244,7 +244,7 @@ void gl3dFractal::mousePressEvent(QMouseEvent *pEvent)
 }
 
 
-void gl3dFractal::mouseMoveEvent(QMouseEvent *pEvent)
+void gl2dFractal::mouseMoveEvent(QMouseEvent *pEvent)
 {
     if(!hasFocus()) setFocus();
 
@@ -267,7 +267,7 @@ void gl3dFractal::mouseMoveEvent(QMouseEvent *pEvent)
 }
 
 
-void gl3dFractal::wheelEvent(QWheelEvent *pEvent)
+void gl2dFractal::wheelEvent(QWheelEvent *pEvent)
 {
     int dy = pEvent->pixelDelta().y();
     if(dy==0) dy = pEvent->angleDelta().y(); // pixeldelta usabel on macOS and angleDelta on win/linux; depends also on driver and hardware
@@ -299,7 +299,7 @@ void gl3dFractal::wheelEvent(QWheelEvent *pEvent)
 }
 
 
-void gl3dFractal::screenToViewport(QPoint const &point, QVector2D &real) const
+void gl2dFractal::screenToViewport(QPoint const &point, QVector2D &real) const
 {
     float h2 = float(geometry().height()) /2.0f;
     float w2 = float(geometry().width())  /2.0f;
@@ -310,7 +310,7 @@ void gl3dFractal::screenToViewport(QPoint const &point, QVector2D &real) const
 
 
 /* triangle strip */
-void gl3dFractal::makeQuad()
+void gl2dFractal::makeQuad()
 {
     QVector<GLfloat> QuadVertexArray(12, 0);
 
@@ -343,7 +343,7 @@ void gl3dFractal::makeQuad()
 }
 
 
-void gl3dFractal::initializeGL()
+void gl2dFractal::initializeGL()
 {
     QString strange, vsrc, fsrc;
     vsrc = ":/shaders/fractal/fractal_VS.glsl";
@@ -379,7 +379,7 @@ void gl3dFractal::initializeGL()
 }
 
 
-void gl3dFractal::paintGL()
+void gl2dFractal::paintGL()
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
     m_shadFrac.bind();

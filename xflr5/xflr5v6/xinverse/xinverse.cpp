@@ -28,7 +28,7 @@
 #include "xinverse.h"
 
 #include <globals/mainframe.h>
-#include <misc/options/settings.h>
+
 #include <misc/renamedlg.h>
 #include <twodwidgets/inverseviewwt.h>
 #include <xdirect/objects2d.h>
@@ -1967,7 +1967,7 @@ void XInverse::paintGraph(QPainter &painter)
         }
     }
 
-    if(m_QGraph.isInDrawRect(m_PointDown) && Settings::bMousePos())
+    if(m_QGraph.isInDrawRect(m_PointDown) && DisplayOptions::bMousePos())
     {
         QPen textPen(DisplayOptions::textColor());
         QFontMetrics fm(DisplayOptions::textFont());

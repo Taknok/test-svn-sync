@@ -30,15 +30,15 @@
 
 
 #include "xfoilanalysisdlg.h"
-#include <xfoil.h>
-#include <xflcore/gui_params.h>
-#include <xflgraph/curve.h>
-#include <xflgraph/graph.h>
-#include <misc/options/settings.h>
-#include <xflgraph/containers/graphwt.h>
-#include <xdirect/xdirect.h>
+#include <misc/options/settingswt.h>
 #include <xdirect/analysis/xfoiltask.h>
 #include <xdirect/objects2d.h>
+#include <xdirect/xdirect.h>
+#include <xflcore/gui_params.h>
+#include <xflgraph/containers/graphwt.h>
+#include <xflgraph/curve.h>
+#include <xflgraph/graph.h>
+#include <xfoil.h>
 
 
 XDirect *XFoilAnalysisDlg::s_pXDirect;

@@ -386,7 +386,7 @@ bool XMLPlaneReader::readBody(Body *pBody, Vector3d &position, double lengthUnit
     {
         if (name().toString().compare(QString("name"),Qt::CaseInsensitive) ==0)
         {
-            pBody->bodyName() = readElementText();
+            pBody->setName(readElementText());
         }
         else if (name().toString().compare(QString("color"), Qt::CaseInsensitive)==0)
         {
@@ -396,7 +396,7 @@ bool XMLPlaneReader::readBody(Body *pBody, Vector3d &position, double lengthUnit
         }
         else if (name().toString().compare(QString("description"), Qt::CaseInsensitive)==0)
         {
-            pBody->bodyDescription() = readElementText();
+            pBody->setDescription(readElementText());
         }
         else if (name().compare(QString("Inertia"), Qt::CaseInsensitive)==0)
         {

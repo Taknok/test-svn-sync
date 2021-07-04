@@ -22,11 +22,11 @@
 class IntEdit;
 class DoubleEdit;
 
-class gl3dFractal : public QOpenGLWidget
+class gl2dFractal : public QOpenGLWidget
 {
     Q_OBJECT
     public:
-        gl3dFractal(QWidget *pParent = nullptr);
+        gl2dFractal(QWidget *pParent = nullptr);
 
         virtual QSize sizeHint() const override {return QSize(1500, 1100);}
         void initializeGL() override;
