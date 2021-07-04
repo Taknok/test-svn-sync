@@ -33,7 +33,7 @@
 
 
 #include "inertiadlg.h"
-#include <misc/options/settings.h>
+
 #include <xflcore/displayoptions.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
@@ -501,12 +501,12 @@ void InertiaDlg::onExportToAVL()
     else if(m_pBody) FileName = m_pBody->m_BodyName;
     FileName.replace("/", " ");
     FileName += ".mass";
-    FileName = QFileDialog::getSaveFileName(this, tr("Export Mass Properties"),Settings::s_LastDirName + "/"+FileName,
+    FileName = QFileDialog::getSaveFileName(this, tr("Export Mass Properties"), xfl::s_LastDirName + "/"+FileName,
                                             tr("AVL Mass File (*.mass)"), &filter);
     if(!FileName.length()) return;
 
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
 
     pos = FileName.lastIndexOf(".");
     if(pos<0) FileName += ".mass";

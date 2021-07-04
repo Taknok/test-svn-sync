@@ -29,7 +29,7 @@
 #include <xflobjects/objects3d/planeopp.h>
 #include <xflobjects/objects3d/wpolar.h>
 #include <xflobjects/objects3d/wing.h>
-#include <xflanalysis/matrix.h>
+#include <xflcore/matrix.h>
 
 int LLTAnalysis::s_IterLim = 100;
 int LLTAnalysis::s_NLLTStations = 20;

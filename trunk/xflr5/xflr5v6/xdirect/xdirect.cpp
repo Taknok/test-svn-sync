@@ -31,7 +31,7 @@
 
 #include <globals/mainframe.h>
 #include <misc/editplrdlg.h>
-#include <misc/options/settings.h>
+#include <misc/options/settingswt.h>
 #include <misc/polarfilterdlg.h>
 #include <misc/renamedlg.h>
 #include <xdirect/analysis/batchctrldlg.h>
@@ -54,6 +54,7 @@
 #include <xdirect/xdirectstyledlg.h>
 #include <xdirect/xml/xmlpolarreader.h>
 #include <xdirect/xml/xmlpolarwriter.h>
+#include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 #include <xflgraph/containers/xdirecttilewt.h>
 #include <xflgraph/controls/graphdlg.h>
@@ -292,7 +293,7 @@ void XDirect::setControls()
 
     s_pMainFrame->checkGraphActions();
 
-    m_pchAlignChildren->setChecked(Settings::isAlignedChildrenStyle());
+    m_pchAlignChildren->setChecked(DisplayOptions::isAlignedChildrenStyle());
 }
 
 
@@ -1632,13 +1633,13 @@ void XDirect::onDefinePolar()
     {
         setCurPolar(new Polar());
 
-        if(Settings::isAlignedChildrenStyle())
+        if(DisplayOptions::isAlignedChildrenStyle())
         {
             m_pCurPolar->setTheStyle(m_pCurFoil->theStyle());
         }
         else
         {
-            QColor clr = xfl::randomColor(!Settings::isLightTheme());
+            QColor clr = xfl::randomColor(!DisplayOptions::isLightTheme());
             m_pCurPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
         }
 
@@ -1913,7 +1914,7 @@ void XDirect::onCadd()
     if(QDialog::Accepted == caDlg.exec())
     {
         pNewFoil->setPointStyle(psState);
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         setCurOpp(pOpPoint);
 
         if(addNewFoil(pNewFoil))
@@ -1949,7 +1950,7 @@ void XDirect::onDerotateFoil()
     Foil *pCurFoil = curFoil();
     Foil *pNewFoil = new Foil;
     pNewFoil->copyFoil(m_pCurFoil);
-    setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+    setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
     setCurFoil(pNewFoil);
     updateView();
 
@@ -1984,7 +1985,7 @@ void XDirect::onNormalizeFoil()
     Foil *pCurFoil = curFoil();
     Foil *pNewFoil = new Foil;
     pNewFoil->copyFoil(m_pCurFoil);
-    setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+    setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
     setCurFoil(pNewFoil);
     updateView();
 
@@ -2070,12 +2071,12 @@ void XDirect::onExportBLData()
     fileName.replace("/", " ");
 
     fileName = QFileDialog::getSaveFileName(this, tr("Export Current XFoil Results"),
-                                            Settings::s_LastDirName,
+                                            xfl::s_LastDirName,
                                             tr("Text File (*.txt);;Comma Separated Values (*.csv)"));
 
     if(!fileName.length()) return;
     int pos = fileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = fileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = fileName.left(pos);
 
     pos  = fileName.lastIndexOf(".csv");
     if(pos>0) type = xfl::CSV;
@@ -2219,7 +2220,7 @@ void XDirect::onExportAllPolarsTxt()
 {
     QString DirName;
     //select the directory for output
-    DirName = QFileDialog::getExistingDirectory(this,  tr("Export Directory"), Settings::s_LastDirName);
+    DirName = QFileDialog::getExistingDirectory(this,  tr("Export Directory"), xfl::s_LastDirName);
     onExportAllPolarsTxt(DirName, Settings::s_ExportFileType);
 }
 
@@ -2264,7 +2265,7 @@ void XDirect::onExportAllFoilPolars()
     FileName = ".plr";
     FileName.replace("/", " ");
 
-    FileName = QFileDialog::getSaveFileName(this, tr("Polar File"), Settings::plrDirName()+"/"+FileName, tr("Polar File (*.plr)"));
+    FileName = QFileDialog::getSaveFileName(this, tr("Polar File"), xfl::plrDirName()+"/"+FileName, tr("Polar File (*.plr)"));
     if(!FileName.length()) return;
 
     QString strong = FileName.right(4);
@@ -2274,7 +2275,7 @@ void XDirect::onExportAllFoilPolars()
     if (!XFile.open(QIODevice::WriteOnly)) return;
 
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::setPlrDirName(FileName.left(pos));
+    if(pos>0) xfl::setPlrDirName(FileName.left(pos));
 
     QDataStream ar(&XFile);
 #if QT_VERSION >= 0x040500
@@ -2306,7 +2307,7 @@ void XDirect::onSaveFoilPolars()
     FileName = m_pCurFoil->name() + ".plr";
     FileName.replace("/", " ");
 
-    FileName = QFileDialog::getSaveFileName(this, tr("Polar File"), Settings::plrDirName()+"/"+FileName, tr("Polar File (*.plr)"));
+    FileName = QFileDialog::getSaveFileName(this, tr("Polar File"), xfl::plrDirName()+"/"+FileName, tr("Polar File (*.plr)"));
     if(!FileName.length()) return;
 
     QString strong = FileName.right(4);
@@ -2316,7 +2317,7 @@ void XDirect::onSaveFoilPolars()
     if (!XFile.open(QIODevice::WriteOnly)) return;
 
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::setPlrDirName(FileName.left(pos));
+    if(pos>0) xfl::setPlrDirName(FileName.left(pos));
 
     QDataStream ar(&XFile);
 #if QT_VERSION >= 0x040500
@@ -2344,12 +2345,12 @@ void XDirect::onExportCurFoil()
     FileName.replace("/", " ");
 
     FileName = QFileDialog::getSaveFileName(this, tr("Export Foil"),
-                                            Settings::s_LastDirName+"/"+FileName+".dat",
+                                            xfl::s_LastDirName+"/"+FileName+".dat",
                                             tr("Foil File (*.dat)"));
 
     if(!FileName.length()) return;
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
 
     QFile XFile(FileName);
 
@@ -2376,13 +2377,13 @@ void XDirect::onExportCurOpp()
     else                                       filter = "Comma Separated Values (*.csv)";
 
     FileName = QFileDialog::getSaveFileName(this, tr("Export OpPoint"),
-                                            Settings::s_LastDirName ,
+                                            xfl::s_LastDirName ,
                                             tr("Text File (*.txt);;Comma Separated Values (*.csv)"),
                                             &filter);
     if(!FileName.length()) return;
 
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
     pos = FileName.lastIndexOf(".csv");
     if (pos>0) Settings::s_ExportFileType = xfl::CSV;
     else       Settings::s_ExportFileType = xfl::TXT;
@@ -2417,7 +2418,7 @@ void XDirect::onExportPolarOpps()
     else                                       filter = "Comma Separated Values (*.csv)";
 
     FileName = QFileDialog::getSaveFileName(this, tr("Export OpPoint"),
-                                            Settings::s_LastDirName ,
+                                            xfl::s_LastDirName ,
                                             tr("Text File (*.txt);;Comma Separated Values (*.csv)"),
                                             &filter);
 
@@ -2425,7 +2426,7 @@ void XDirect::onExportPolarOpps()
     if(!FileName.length()) return;
 
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
     pos = FileName.lastIndexOf(".csv");
     if (pos>0) Settings::s_ExportFileType = xfl::CSV;
     else       Settings::s_ExportFileType = xfl::TXT;
@@ -2529,13 +2530,13 @@ void XDirect::onExportCurPolar()
     FileName = m_pCurPolar->polarName();
     FileName.replace("/", " ");
     FileName = QFileDialog::getSaveFileName(this, tr("Export Polar"),
-                                            Settings::s_LastDirName + "/"+FileName,
+                                            xfl::s_LastDirName + "/"+FileName,
                                             tr("Text File (*.txt);;Comma Separated Values (*.csv)"),
                                             &filter);
     if(!FileName.length()) return;
 
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
     pos = FileName.lastIndexOf(".csv");
     if (pos>0) Settings::s_ExportFileType = xfl::CSV;
     else       Settings::s_ExportFileType = xfl::TXT;
@@ -2592,7 +2593,7 @@ void XDirect::onFoilCoordinates()
         pNewFoil->m_TEXHinge = Xh;
         pNewFoil->m_TEYHinge = Yh;
 
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
 
         setCurOpp(pOpPoint);
 
@@ -2652,7 +2653,7 @@ void XDirect::onFoilGeom()
 
     if(fgeDlg.exec() == QDialog::Accepted)
     {
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         setCurOpp(pOpPoint);
 
         if(addNewFoil(pNewFoil))
@@ -2783,12 +2784,12 @@ void XDirect::onImportXFoilPolars()
 {
     QStringList pathNames;
     pathNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
-                                              Settings::s_LastDirName,
+                                              xfl::s_LastDirName,
                                               tr("XFoil Polar Format (*.*)"));
 
     if(!pathNames.size()) return ;
     int pos = pathNames.at(0).lastIndexOf("/");
-    if(pos>0) Settings::s_xmlDirName = pathNames.at(0).left(pos);
+    if(pos>0) xfl::s_xmlDirName = pathNames.at(0).left(pos);
 
     Polar *pPolar = nullptr;
     for(int iFile=0; iFile<pathNames.size(); iFile++)
@@ -2997,14 +2998,14 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     pPolar->setAutoPolarName();
     pPolar->setPolarName(pPolar->polarName() + "_Imported");
 
-    if(Settings::isAlignedChildrenStyle())
+    if(DisplayOptions::isAlignedChildrenStyle())
     {
         pFoil = Objects2d::foil(FoilName);
         pPolar->setTheStyle(pFoil->theStyle());
     }
     else
     {
-        QColor clr = xfl::randomColor(!Settings::isLightTheme());
+        QColor clr = xfl::randomColor(!DisplayOptions::isLightTheme());
         pPolar->setColor(clr);
     }
 
@@ -3029,11 +3030,11 @@ void XDirect::onImportJavaFoilPolar()
     const char *text;
 
     PathName = QFileDialog::getOpenFileName(s_pMainFrame, tr("Open File"),
-                                            Settings::s_LastDirName,
+                                            xfl::s_LastDirName,
                                             tr("JavaFoil Polar Format (*.*)"));
     if(!PathName.length())        return ;
     int pos = PathName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+    if(pos>0) xfl::s_LastDirName = PathName.left(pos);
 
     QFile XFile(PathName);
     if (!XFile.open(QIODevice::ReadOnly))
@@ -3156,7 +3157,7 @@ void XDirect::onInterpolateFoils()
 
     if(ifDlg.exec() == QDialog::Accepted)
     {
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setName(ifDlg.m_NewFoilName);
 
         if(addNewFoil(pNewFoil))
@@ -3225,7 +3226,7 @@ void XDirect::onNacaFoils()
             str = QString("%1").arg(nacaDlg.s_Digits);
         str = "NACA "+ str;
 
-        setRandomFoilColor(pNacaFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNacaFoil, !DisplayOptions::isLightTheme());
         pNacaFoil->setName(str);
 
         setCurOpp(pCurOpp);
@@ -3350,7 +3351,7 @@ void XDirect::onRefinePanelsGlobally()
     if(QDialog::Accepted == tdpDlg.exec())
     {
         pNewFoil->setPointStyle(psState);
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         setCurOpp(pOpPoint);
         if(addNewFoil(pNewFoil))
         {
@@ -3621,7 +3622,7 @@ void XDirect::onSetFlap()
     if(QDialog::Accepted == flpDlg.exec())
     {
         //        pNewFoil->copyFoil(curFoil());
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
 
         setCurOpp(pOpPoint);
 
@@ -3671,7 +3672,7 @@ void XDirect::onSetLERadius()
 
     if(QDialog::Accepted == lDlg.exec())
     {
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         setCurOpp(pOpPoint);
 
         if(addNewFoil(pNewFoil))
@@ -3720,7 +3721,7 @@ void XDirect::onSetTEGap()
 
     if(QDialog::Accepted == tegDlg.exec())
     {
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
 
         if(addNewFoil(pNewFoil))
         {
@@ -4681,7 +4682,7 @@ void XDirect::updateCurveStyle(LineStyle const &ls)
         m_pCurPolar->setWidth(m_LineStyle.m_Width);
         m_pCurPolar->setPointStyle(m_LineStyle.m_Symbol);
 
-        if(Settings::isAlignedChildrenStyle())
+        if(DisplayOptions::isAlignedChildrenStyle())
         {
             Objects2d::setPolarChildrenStyle(m_pCurPolar);
         }
@@ -4859,11 +4860,11 @@ void XDirect::onImportXMLAnalysis()
 {
     QString PathName;
     PathName = QFileDialog::getOpenFileName(s_pMainFrame, tr("Open XML File"),
-                                            Settings::s_LastDirName,
+                                            xfl::s_LastDirName,
                                             tr("Analysis XML file")+"(*.xml)");
     if(!PathName.length())        return ;
     int pos = PathName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+    if(pos>0) xfl::s_LastDirName = PathName.left(pos);
 
     QFile XFile(PathName);
     if (!XFile.open(QIODevice::ReadOnly))
@@ -4944,13 +4945,13 @@ void XDirect::onExportXMLAnalysis()
     strong.replace(".", "_");
 
     FileName = QFileDialog::getSaveFileName(s_pMainFrame, tr("Export analysis definition to xml file"),
-                                            Settings::s_LastDirName +'/'+strong,
+                                            xfl::s_LastDirName +'/'+strong,
                                             filter,
                                             &filter);
 
     if(!FileName.length()) return;
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
 
     if(FileName.indexOf(".xml", Qt::CaseInsensitive)<0) FileName += ".xml";
 

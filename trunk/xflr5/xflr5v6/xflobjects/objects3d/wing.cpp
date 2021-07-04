@@ -2117,7 +2117,7 @@ bool Wing::isWingFoil(const Foil *pFoil) const
  * @param I the intersection point, if any, otherwise returns an unchanged value
  * @return true if an intersection point was found, false otherwise
  */
-bool Wing::intersectWing(Vector3d O,  Vector3d U, Vector3d &I)
+bool Wing::intersectWing(Vector3d O,  Vector3d U, Vector3d &I) const
 {
     double dist=0.0;
 

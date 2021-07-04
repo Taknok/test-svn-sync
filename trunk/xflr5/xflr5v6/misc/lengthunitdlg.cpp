@@ -23,7 +23,7 @@
 #include <QVBoxLayout>
 
 #include "lengthunitdlg.h"
-#include <misc/options/settings.h>
+
 #include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 

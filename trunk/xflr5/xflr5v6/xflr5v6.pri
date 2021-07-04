@@ -48,7 +48,7 @@ SOURCES += \
     misc/options/languagewt.cpp \
     misc/options/preferencesdlg.cpp \
     misc/options/saveoptions.cpp \
-    misc/options/settings.cpp \
+    misc/options/settingswt.cpp \
     misc/polarfilterdlg.cpp \
     misc/renamedlg.cpp \
     misc/stlexportdialog.cpp \
@@ -144,7 +144,7 @@ HEADERS += \
     misc/options/languagewt.h \
     misc/options/preferencesdlg.h \
     misc/options/saveoptions.h \
-    misc/options/settings.h \
+    misc/options/settingswt.h \
     misc/polarfilterdlg.h \
     misc/renamedlg.h \
     misc/stlexportdialog.h \

@@ -31,7 +31,7 @@
 #include "xflscriptexec.h"
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlwpolarreader.h>
-#include <misc/options/settings.h>
+
 #include <xdirect/analysis/xfoiltask.h>
 #include <xdirect/objects2d.h>
 #include <xdirect/xml/xmlpolarreader.h>

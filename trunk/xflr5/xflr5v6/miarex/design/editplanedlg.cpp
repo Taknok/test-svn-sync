@@ -19,24 +19,24 @@
 
 *****************************************************************************/
 
-#include <QApplication>
 #include <QAction>
-#include <QMenu>
-#include <QShowEvent>
-#include <QHeaderView>
-#include <QHBoxLayout>
+#include <QApplication>
+#include <QDir>
 #include <QGridLayout>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QMenu>
 #include <QMessageBox>
-#include <QDebug>
+#include <QShowEvent>
 
 
 #include "editplanedlg.h"
-
+#include <globals/mainframe.h>
 #include <miarex/design/editobjectdelegate.h>
 #include <miarex/design/wingseldlg.h>
-#include <misc/options/settings.h>
-#include <xfl3d/controls/w3dprefsdlg.h>
-#include <xfl3d/gl3dplaneview.h>
+
+#include <xfl3d/controls/w3dprefs.h>
+#include <xfl3d/views/gl3dplaneview.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
@@ -262,9 +262,7 @@ void EditPlaneDlg::setupLayout()
     szPolicyMinimum.setHorizontalPolicy(QSizePolicy::Minimum);
     szPolicyMinimum.setVerticalPolicy(QSizePolicy::Minimum);
 
-    QSizePolicy szPolicyMaximum;
-    szPolicyMaximum.setHorizontalPolicy(QSizePolicy::Maximum);
-    szPolicyMaximum.setVerticalPolicy(QSizePolicy::Maximum);
+    QSizePolicy szPolicyMaximum(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
     QSizePolicy szPolicyPreferred;
     szPolicyPreferred.setHorizontalPolicy(QSizePolicy::Preferred);
@@ -464,39 +462,10 @@ void EditPlaneDlg::onOK()
         return;
     }
 
-    //check the number of surfaces
-    /*    int nSurfaces = 0;
-    for (int j=0; j<m_pPlane->wing()->NWingSection()-1; j++)
-    {
-        if(qAbs(m_pPlane->wing()->YPosition(j)-m_pPlane->wing()->YPosition(j+1)) > Wing::s_MinPanelSize) nSurfaces+=2;
-    }
-    if(m_pPlane->stab())
-    {
-        for (int j=0; j<m_pPlane->stab()->NWingSection()-1; j++)
-        {
-            if(qAbs(m_pPlane->stab()->YPosition(j)-m_pPlane->stab()->YPosition(j+1)) > Wing::s_MinPanelSize) nSurfaces+=2;
-        }
-    }
-
-    if(m_pPlane->fin())
-    {
-        for (int j=0; j<m_pPlane->fin()->NWingSection()-1; j++)
-        {
-            if(qAbs(m_pPlane->fin()->YPosition(j)-m_pPlane->fin()->YPosition(j+1)) > Wing::s_MinPanelSize)
-            {
-                if((m_pPlane->m_bSymFin) || m_pPlane->m_bDoubleFin)
-                    nSurfaces += 2;
-                else
-                    nSurfaces += 1;
-            }
-        }
-    }*/
-
     m_pPlane->computeBodyAxisInertia();
 
     accept();
 }
-
 
 
 void EditPlaneDlg::initDialog(Plane *pPlane)
@@ -521,6 +490,12 @@ void EditPlaneDlg::initDialog(Plane *pPlane)
 }
 
 
+void EditPlaneDlg::setTexturePath(QString const &path)
+{
+    if(m_pglPlaneView) m_pglPlaneView->setTexturePath(path);
+    m_pglPlaneView->resetPlane();
+    m_pglPlaneView->update();
+}
 
 
 void EditPlaneDlg::keyPressEvent(QKeyEvent *pEvent)
@@ -614,8 +589,6 @@ void EditPlaneDlg::connectSignals()
     connect(m_ppbRedraw,     SIGNAL(clicked()), this, SLOT(onRedraw()));
     connect(m_ppbReset,      SIGNAL(clicked()), this, SLOT(on3DReset()));
 
-    connect(m_ppbReset,      SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DReset()));
-
     connect(m_pchAxes,       SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onAxes(bool)));
     connect(m_pchPanels,     SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onPanels(bool)));
     connect(m_pchSurfaces,   SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onSurfaces(bool)));
@@ -623,11 +596,13 @@ void EditPlaneDlg::connectSignals()
     connect(m_pchFoilNames,  SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onFoilNames(bool)));
     connect(m_pchShowMasses, SIGNAL(clicked(bool)), m_pglPlaneView, SLOT(onShowMasses(bool)));
 
-    connect(m_ptbIso,        SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DIso()));
-    connect(m_ptbX,          SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DFront()));
-    connect(m_ptbY,          SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DLeft()));
-    connect(m_ptbZ,          SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DTop()));
-    connect(m_ptbFlip,       SIGNAL(clicked()), m_pglPlaneView, SLOT(on3DFlip()));
+
+    connect(m_ppbReset,      SIGNAL(clicked()), m_pglPlaneView, SLOT(on3dReset()));
+    connect(m_ptbIso,        SIGNAL(clicked()), m_pglPlaneView, SLOT(on3dIso()));
+    connect(m_ptbX,          SIGNAL(clicked()), m_pglPlaneView, SLOT(on3dFront()));
+    connect(m_ptbY,          SIGNAL(clicked()), m_pglPlaneView, SLOT(on3dLeft()));
+    connect(m_ptbZ,          SIGNAL(clicked()), m_pglPlaneView, SLOT(on3dTop()));
+    connect(m_ptbFlip,       SIGNAL(clicked()), m_pglPlaneView, SLOT(on3dFlip()));
 
     connect(m_pslClipPlanePos, SIGNAL(sliderMoved(int)), m_pglPlaneView, SLOT(onClipPlane(int)));
 
@@ -682,7 +657,6 @@ void EditPlaneDlg::onRedraw()
 
     m_pglPlaneView->repaint();
     QApplication::restoreOverrideCursor();
-
 }
 
 
@@ -690,24 +664,6 @@ void EditPlaneDlg::onEndEdit()
 {
     if(s_bAutoRedraw) onRedraw();
 }
-
-
-bool EditPlaneDlg::intersectObject(Vector3d AA, Vector3d U, Vector3d &I)
-{
-    Wing *pWingList[MAXWINGS] = {m_pPlane->wing(), m_pPlane->wing2(), m_pPlane->stab(), m_pPlane->fin()};
-
-    for(int iw=0; iw<MAXWINGS; iw++)
-    {
-        if (pWingList[iw] && pWingList[iw]->intersectWing(AA, U, I)) return true;
-    }
-
-    if(m_pPlane->body())
-    {
-        if(m_pPlane->body()->intersectFlatPanels(AA, AA+U*10, I)) return true;
-    }
-    return false;
-}
-
 
 
 QList<QStandardItem *> EditPlaneDlg::prepareRow(const QString &object, const QString &field, const QString &value,  const QString &unit)
@@ -1071,16 +1027,16 @@ void EditPlaneDlg::fillBodyTreeView(QStandardItem*planeRootItem)
     QList<QStandardItem*> bodyColorFolder = prepareRow("Color");
     bodyFolder.first()->appendRow(bodyColorFolder);
     {
-        QList<QStandardItem*> dataItem = prepareIntRow("", "red", pBody->bodyColor().red());
+        QList<QStandardItem*> dataItem = prepareIntRow("", "red", pBody->color().red());
         bodyColorFolder.first()->appendRow(dataItem);
 
-        dataItem = prepareIntRow("", "green", pBody->bodyColor().green());
+        dataItem = prepareIntRow("", "green", pBody->color().green());
         bodyColorFolder.first()->appendRow(dataItem);
 
-        dataItem = prepareIntRow("", "blue", pBody->bodyColor().blue());
+        dataItem = prepareIntRow("", "blue", pBody->color().blue());
         bodyColorFolder.first()->appendRow(dataItem);
 
-        dataItem = prepareIntRow("", "alpha", pBody->bodyColor().alpha());
+        dataItem = prepareIntRow("", "alpha", pBody->color().alpha());
         bodyColorFolder.first()->appendRow(dataItem);
     }
 
@@ -1416,10 +1372,10 @@ void EditPlaneDlg::readBodyTree(Body *pBody, QModelIndex indexLevel)
 
                     dataIndex = subIndex.sibling(subIndex.row(),2);
 
-                    if     (field.compare("red", Qt::CaseInsensitive)==0)    pBody->bodyColor().setRed(dataIndex.data().toInt());
-                    else if(field.compare("green", Qt::CaseInsensitive)==0)  pBody->bodyColor().setGreen(dataIndex.data().toInt());
-                    else if(field.compare("blue",  Qt::CaseInsensitive)==0)  pBody->bodyColor().setBlue(dataIndex.data().toInt());
-                    else if(field.compare("alpha", Qt::CaseInsensitive)==0)  pBody->bodyColor().setAlpha(dataIndex.data().toInt());
+                    if     (field.compare("red", Qt::CaseInsensitive)==0)    pBody->color().setRed(dataIndex.data().toInt());
+                    else if(field.compare("green", Qt::CaseInsensitive)==0)  pBody->color().setGreen(dataIndex.data().toInt());
+                    else if(field.compare("blue",  Qt::CaseInsensitive)==0)  pBody->color().setBlue(dataIndex.data().toInt());
+                    else if(field.compare("alpha", Qt::CaseInsensitive)==0)  pBody->color().setAlpha(dataIndex.data().toInt());
 
                     subIndex = subIndex.sibling(subIndex.row()+1,0);
                 }while(subIndex.isValid());
@@ -1496,7 +1452,7 @@ void EditPlaneDlg::readBodyTree(Body *pBody, QModelIndex indexLevel)
 
             dataIndex = indexLevel.sibling(indexLevel.row(),2);
 
-            if     (field.compare("Name", Qt::CaseInsensitive)==0) pBody->bodyName() = value;
+            if     (field.compare("Name", Qt::CaseInsensitive)==0) pBody->setName(value);
             else if(field.compare("Type", Qt::CaseInsensitive)==0) pBody->bodyType() = xfl::bodyPanelType(value);
         }
 

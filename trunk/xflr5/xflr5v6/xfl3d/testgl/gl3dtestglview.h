@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <xfl3d/gl3dview.h>
+#include <xfl3d/views/gl3dview.h>
 #include <xflgeom/geom3d/vector3d.h>
 
 class gl3dTestGLView : public gl3dView

@@ -32,7 +32,7 @@
 #include <globals/mainframe.h>
 #include <misc/options/languagewt.h>
 #include <misc/options/saveoptions.h>
-#include <misc/options/settings.h>
+#include <misc/options/settingswt.h>
 #include <xflcore/units.h>
 #include <xflwidgets/color/colorbtn.h>
 #include <xflwidgets/color/textclrbtn.h>

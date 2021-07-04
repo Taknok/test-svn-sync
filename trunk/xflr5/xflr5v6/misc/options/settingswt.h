@@ -39,12 +39,6 @@ class MainFrame;
 class TextClrBtn;
 class ColorBtn;
 
-// first name space
-namespace SETTINGS
-{
-/** @enum The different types of polar available for 2D and 3D calculations. */
-    typedef enum {LIGHTTHEME, DARKTHEME, CUSTOMTHEME} enumThemeType;
-}
 
 
 class Settings : public QWidget
@@ -62,22 +56,7 @@ class Settings : public QWidget
 
         static QString &styleName(){return s_StyleName;}
         static void setColorList();
-        static bool isLightTheme() {return s_Theme==SETTINGS::LIGHTTHEME;}
 
-        static void setLastDirName(QString dirname) {s_LastDirName=dirname;}
-        static QString const &lastDirName() {return s_LastDirName;}
-
-        static void setXmlDirName(QString dirname) {s_xmlDirName=dirname;}
-        static QString xmlDirName() {return s_xmlDirName;}
-
-        static void setPlrDirName(QString dirname) {s_plrDirName=dirname;}
-        static QString plrDirName() {return s_plrDirName;}
-
-        static void setAlignedChildrenStyle(bool bAlign) {s_bAlignChildrenStyle = bAlign;}
-        static bool isAlignedChildrenStyle() {return s_bAlignChildrenStyle;}
-
-        static void showMousePos(bool bShow) {s_bShowMousePos=bShow;}
-        static bool bMousePos() {return s_bShowMousePos;}
 
     private slots:
         void onAlignChildrenStyle();
@@ -119,13 +98,9 @@ class Settings : public QWidget
 
         static xfl::enumTextFileType s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
         static Graph s_RefGraph;//Reference setttings
-        static QString s_LastDirName, s_xmlDirName, s_plrDirName;
         static QStringList s_colorList;
         static QStringList s_colorNames;
-        static SETTINGS::enumThemeType s_Theme;
-        static bool s_bShowMousePos;
 
-        static bool s_bAlignChildrenStyle;
 };
 
 

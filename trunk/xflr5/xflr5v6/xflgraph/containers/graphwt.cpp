@@ -21,7 +21,7 @@
 
 
 #include <globals/mainframe.h>
-#include <misc/options/settings.h>
+
 #include "graphwt.h"
 #include "graphtilewt.h"
 #include <xflgraph/controls/graphdlg.h>
@@ -102,7 +102,7 @@ void GraphWt::paintEvent(QPaintEvent *  pEvent )
     }
 
     if(m_bDrawLegend) m_pGraph->drawLegend(painter, m_LegendOrigin, DisplayOptions::textFont(), DisplayOptions::textColor(), DisplayOptions::backgroundColor());
-    if(hasFocus() && Settings::bMousePos())
+    if(hasFocus() && DisplayOptions::bMousePos())
     {
         QPen textPen(DisplayOptions::textColor());
         QFontMetrics fm(DisplayOptions::textFont());

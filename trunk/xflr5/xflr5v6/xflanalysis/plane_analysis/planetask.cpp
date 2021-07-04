@@ -439,6 +439,7 @@ bool PlaneTask::initializePanels()
  *    - from tip to tail
  * The panels are appended to the existing array of panels
  * @return the number of panels which have been created and appended
+ * @todo use Body::makePanels() instead
  */
 int PlaneTask::createBodyElements(Plane *pCurPlane)
 {
@@ -448,12 +449,12 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
     Body *pCurBody = pCurPlane->body();
 
     double uk=0, uk1=0, v=0, dj=0, dj1=0, dl1=0;
-    double dpx=0, dpz=0;
+    double dpx(0), dpz(0);
     Vector3d LATB, TALB;
     Vector3d LA, LB, TA, TB;
     Vector3d PLA, PTA, PLB, PTB;
 
-    int n0, n1, n2, n3, lnx, lnh;
+    int n0(0), n1(0), n2(0), n3(0), lnx(0), lnh(0);
     int nx = pCurBody->nxPanels();
     int nh = pCurBody->nhPanels();
     int p = 0;
@@ -492,19 +493,19 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
                 for (int k=0; k<pCurBody->sideLineCount()-1; k++)
                 {
                     //build the four corner points of the strips
-                    PLB.x =  (1.0- dj) * pCurBody->framePosition(i)      +  dj * pCurBody->framePosition(i+1)       +dpx;
+                    PLB.x =  (1.0- dj) * pCurBody->framePosition(i)             +  dj * pCurBody->framePosition(i+1)              +dpx;
                     PLB.y = -(1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k].y   -  dj * pCurBody->frame(i+1)->m_CtrlPoint[k].y;
                     PLB.z =  (1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k].z   +  dj * pCurBody->frame(i+1)->m_CtrlPoint[k].z    +dpz;
 
-                    PTB.x =  (1.0-dj1) * pCurBody->framePosition(i)      + dj1 * pCurBody->framePosition(i+1)       +dpx;
+                    PTB.x =  (1.0-dj1) * pCurBody->framePosition(i)             + dj1 * pCurBody->framePosition(i+1)              +dpx;
                     PTB.y = -(1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k].y   - dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k].y;
                     PTB.z =  (1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k].z   + dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k].z    +dpz;
 
-                    PLA.x =  (1.0- dj) * pCurBody->framePosition(i)      +  dj * pCurBody->framePosition(i+1)       +dpx;
+                    PLA.x =  (1.0- dj) * pCurBody->framePosition(i)             +  dj * pCurBody->framePosition(i+1)              +dpx;
                     PLA.y = -(1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k+1].y -  dj * pCurBody->frame(i+1)->m_CtrlPoint[k+1].y;
                     PLA.z =  (1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k+1].z +  dj * pCurBody->frame(i+1)->m_CtrlPoint[k+1].z  +dpz;
 
-                    PTA.x =  (1.0-dj1) * pCurBody->framePosition(i)      + dj1 * pCurBody->framePosition(i+1)       +dpx;
+                    PTA.x =  (1.0-dj1) * pCurBody->framePosition(i)             + dj1 * pCurBody->framePosition(i+1)              +dpx;
                     PTA.y = -(1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k+1].y - dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k+1].y;
                     PTA.z =  (1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k+1].z + dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k+1].z  +dpz;
 
@@ -687,7 +688,7 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
                 m_Panel[m_MatSize].m_iPU = m_MatSize - nh;
 
                 if(k==0)    m_Panel[m_MatSize].m_iPU = -1;// no panel downstream
-                if(k==nx-1)    m_Panel[m_MatSize].m_iPD = -1;// no panel upstream
+                if(k==nx-1) m_Panel[m_MatSize].m_iPD = -1;// no panel upstream
 
                 m_Panel[m_MatSize].m_iPL = m_MatSize + 1;
                 m_Panel[m_MatSize].m_iPR = m_MatSize - 1;

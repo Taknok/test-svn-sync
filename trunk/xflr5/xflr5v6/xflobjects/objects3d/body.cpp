@@ -987,7 +987,7 @@ void Body::translate(double XTrans, double , double ZTrans, bool bFrameOnly, int
  * @param bFrameOnly true if only a Frame is to be translated
  * @param FrameID the index of the Frame object to be translated
  */
-void Body::translate(Vector3d T, bool bFrameOnly, int FrameID)
+void Body::translate(const Vector3d &T, bool bFrameOnly, int FrameID)
 {
     translate(T.x, T.y, T.z, bFrameOnly, FrameID);
 }
@@ -2150,13 +2150,10 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unitd) const
 {
     Vector3d P1, P2, P3, P4, N, P1P3, P2P4;
 
-    int nTriangles = (sideLineCount()-1) * (frameCount()-1); //quads
-    nTriangles *= 2;  // two triangles per quad
-
     float unitf = float(unitd);
 
     // count the non-null triangles
-    nTriangles=0;
+    int nTriangles=0;
     for (int k=0; k<sideLineCount()-1;k++)
     {
         for (int j=0; j<frameCount()-1;j++)
@@ -2319,3 +2316,371 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unitd) const
 }
 
 
+int Body::isNode(Vector3d &Pt, QVector<Vector3d> &m_Node)
+{
+    for (int in=m_Node.size()-1; in>=0; in--)
+    {
+        if(Pt.isSame(m_Node[in])) return in;
+    }
+    return -1;
+}
+
+
+int Body::makePanels(int nFirst, Vector3d const &pos, QVector<Panel> &panels, QVector<Vector3d> &nodes)
+{
+    double uk(0), uk1(0), v(0), dj(0), dj1(0), dl1(0);
+    double dpx(0), dpz(0);
+    Vector3d LATB, TALB;
+    Vector3d LA, LB, TA, TB;
+    Vector3d PLA, PTA, PLB, PTB;
+
+    int n0(0), n1(0), n2(0), n3(0), lnx(0), lnh(0);
+    int nx = nxPanels();
+    int nh = nhPanels();
+    int p = 0;
+
+    int FullSize = 0;
+    int nPanels = 0;
+    int nNodes = 0;
+
+    lnx = 0;
+
+    dpx = pos.x;
+    dpz = pos.z;
+
+    if(isFlatPanelType())
+    {
+        nx = 0;
+        for(int i=0; i<frameCount()-1; i++) nx+=m_xPanels[i];
+        nh = 0;
+        for(int i=0; i<sideLineCount()-1; i++) nh+=m_hPanels[i];
+        FullSize = nx*nh*2;
+        setNXPanels(nx);
+        setNHPanels(nh);
+
+        for (int i=0; i<frameCount()-1; i++)
+        {
+            for (int j=0; j<m_xPanels[i]; j++)
+            {
+                dj  = double( j) /double(m_xPanels[i]);
+                dj1 = double(j+1)/double(m_xPanels[i]);
+
+                //body left side
+                lnh = 0;
+                for (int k=0; k<sideLineCount()-1; k++)
+                {
+                    //build the four corner points of the strips
+                    PLB.x =  (1.0- dj) * framePosition(i)                +  dj * framePosition(i+1)                 +dpx;
+                    PLB.y = -(1.0- dj) * frame(i)->m_CtrlPoint.at(k).y   -  dj * frame(i+1)->m_CtrlPoint.at(k).y;
+                    PLB.z =  (1.0- dj) * frame(i)->m_CtrlPoint.at(k).z   +  dj * frame(i+1)->m_CtrlPoint.at(k).z    +dpz;
+
+                    PTB.x =  (1.0-dj1) * framePosition(i)                + dj1 * framePosition(i+1)                 +dpx;
+                    PTB.y = -(1.0-dj1) * frame(i)->m_CtrlPoint.at(k).y   - dj1 * frame(i+1)->m_CtrlPoint.at(k).y;
+                    PTB.z =  (1.0-dj1) * frame(i)->m_CtrlPoint.at(k).z   + dj1 * frame(i+1)->m_CtrlPoint.at(k).z    +dpz;
+
+                    PLA.x =  (1.0- dj) * framePosition(i)                +  dj * framePosition(i+1)                 +dpx;
+                    PLA.y = -(1.0- dj) * frame(i)->m_CtrlPoint.at(k+1).y -  dj * frame(i+1)->m_CtrlPoint.at(k+1).y;
+                    PLA.z =  (1.0- dj) * frame(i)->m_CtrlPoint.at(k+1).z +  dj * frame(i+1)->m_CtrlPoint.at(k+1).z  +dpz;
+
+                    PTA.x =  (1.0-dj1) * framePosition(i)                + dj1 * framePosition(i+1)                 +dpx;
+                    PTA.y = -(1.0-dj1) * frame(i)->m_CtrlPoint.at(k+1).y - dj1 * frame(i+1)->m_CtrlPoint.at(k+1).y;
+                    PTA.z =  (1.0-dj1) * frame(i)->m_CtrlPoint.at(k+1).z + dj1 * frame(i+1)->m_CtrlPoint.at(k+1).z  +dpz;
+
+                    LB = PLB;
+                    TB = PTB;
+
+                    for (int l=0; l<m_hPanels[k]; l++)
+                    {
+                        dl1  = double(l+1) / double(m_hPanels[k]);
+                        LA = PLB * (1.0- dl1) + PLA * dl1;
+                        TA = PTB * (1.0- dl1) + PTA * dl1;
+
+                        n0 = isNode(LA, nodes);
+                        n1 = isNode(TA, nodes);
+                        n2 = isNode(LB, nodes);
+                        n3 = isNode(TB, nodes);
+
+                        panels.append(Panel());
+                        Panel &panel = panels.last();
+                        if(n0>=0) {
+                            panel.m_iLA = n0;
+                        }
+                        else {
+                            panel.m_iLA = nNodes;
+                            nodes.push_back(LA);
+                            nNodes++;
+                        }
+
+                        if(n1>=0) {
+                            panel.m_iTA = n1;
+                        }
+                        else {
+                            panel.m_iTA = nNodes;
+                            nodes.push_back(TA);
+                            nNodes++;
+                        }
+
+                        if(n2>=0) {
+                            panel.m_iLB = n2;
+                        }
+                        else {
+                            panel.m_iLB = nNodes;
+                            nodes.push_back(LB);
+                            nNodes++;
+                        }
+
+                        if(n3 >=0) {
+                            panel.m_iTB = n3;
+                        }
+                        else {
+                            panel.m_iTB = nNodes;
+                            nodes.push_back(TB);
+                            nNodes++;
+                        }
+
+                        LATB = TB - LA;
+                        TALB = LB - TA;
+                        panel.Normal = LATB * TALB;
+                        panel.Area =  panel.Normal.norm()/2.0;
+                        panel.Normal.normalize();
+
+                        panel.m_bIsInSymPlane  = false;
+                        panel.m_bIsLeading     = false;
+                        panel.m_bIsTrailing    = false;
+                        panel.m_Pos = BODYSURFACE;
+                        panel.m_iElement = nPanels;
+                        panel.m_bIsLeftPanel  = true;
+                        panel.setPanelFrame(LA, LB, TA, TB);
+
+                        // set neighbour panels
+
+                        panel.m_iPD = nPanels + nh;
+                        panel.m_iPU = nPanels - nh;
+
+                        if(lnx==0)      panel.m_iPU = -1;// no panel downstream
+                        if(lnx==nx-1)    panel.m_iPD = -1;// no panel upstream
+
+                        panel.m_iPL = nPanels + 1;
+                        panel.m_iPR = nPanels - 1;
+
+                        if(lnh==0)     panel.m_iPR = nFirst + FullSize - p - 1;
+                        if(lnh==nh-1)  panel.m_iPL = nFirst + FullSize - p - 1;
+
+                        nPanels++;
+                        p++;
+                        LB = LA;
+                        TB = TA;
+                        lnh++;
+                    }
+                }
+                lnx++;
+            }
+        }
+    }
+    else if(isSplineType())
+    {
+        FullSize = 2*nx*nh;
+        //start with left side... same as for wings
+        for (int k=0; k<nx; k++)
+        {
+            uk  = m_XPanelPos[k];
+            uk1 = m_XPanelPos[k+1];
+
+            getPoint(uk,  0, false, LB);
+            getPoint(uk1, 0, false, TB);
+
+            LB.x += dpx;
+            LB.z += dpz;
+            TB.x += dpx;
+            TB.z += dpz;
+
+            for (int l=0; l<nh; l++)
+            {
+                //start with left side... same as for wings
+                v = double(l+1) / double(nh);
+                getPoint(uk,  v, false, LA);
+                getPoint(uk1, v, false, TA);
+
+                LA.x += dpx;
+                LA.z += dpz;
+                TA.x += dpx;
+                TA.z += dpz;
+
+                n0 = isNode(LA, nodes);
+                n1 = isNode(TA, nodes);
+                n2 = isNode(LB, nodes);
+                n3 = isNode(TB, nodes);
+
+                panels.append(Panel());
+                Panel &panel = panels.last();
+                if(n0>=0) {
+                    panel.m_iLA = n0;
+                }
+                else {
+                    panel.m_iLA = nNodes;
+                    nodes.push_back(LA);
+                    nNodes++;
+                }
+
+                if(n1>=0) {
+                    panel.m_iTA = n1;
+                }
+                else {
+                    panel.m_iTA = nNodes;
+                    nodes.push_back(TA);
+                    nNodes++;
+                }
+
+                if(n2>=0) {
+                    panel.m_iLB = n2;
+                }
+                else {
+                    panel.m_iLB = nNodes;
+                    nodes.push_back(LB);
+                    nNodes++;
+                }
+
+                if(n3 >=0) {
+                    panel.m_iTB = n3;
+                }
+                else {
+                    panel.m_iTB = nNodes;
+                    nodes.push_back(TB);
+                    nNodes++;
+                }
+
+                LATB = TB - LA;
+                TALB = LB - TA;
+                panel.Normal = LATB * TALB;
+                panel.Area =  panel.Normal.norm()/2.0;
+                panel.Normal.normalize();
+
+                panel.m_bIsInSymPlane  = false;
+                panel.m_bIsLeading     = false;
+                panel.m_bIsTrailing    = false;
+                panel.m_Pos = BODYSURFACE;
+                panel.m_iElement = nPanels;
+                panel.m_bIsLeftPanel  = true;
+                panel.setPanelFrame(LA, LB, TA, TB);
+
+                // set neighbour panels
+
+                panel.m_iPD = nPanels + nh;
+                panel.m_iPU = nPanels - nh;
+
+                if(k==0)    panel.m_iPU = -1;// no panel downstream
+                if(k==nx-1) panel.m_iPD = -1;// no panel upstream
+
+                panel.m_iPL = nPanels + 1;
+                panel.m_iPR = nPanels - 1;
+
+                if(l==0)     panel.m_iPR = nFirst + FullSize - p - 1;
+                if(l==nh-1)  panel.m_iPL = nFirst + FullSize - p - 1;
+
+                LB = LA;
+                TB = TA;
+                nPanels++;
+                p++;
+            }
+        }
+    }
+
+    //right side next
+    int i = nPanels;
+
+    for (int k=nx-1; k>=0; k--)
+    {
+        for (int l=nh-1; l>=0; l--)
+        {
+            i--;
+            LA = nodes[panels[i].m_iLB];
+            TA = nodes[panels[i].m_iTB];
+            LB = nodes[panels[i].m_iLA];
+            TB = nodes[panels[i].m_iTA];
+
+            LA.y = -LA.y;
+            LB.y = -LB.y;
+            TA.y = -TA.y;
+            TB.y = -TB.y;
+
+            n0 = isNode(LA, nodes);
+            n1 = isNode(TA, nodes);
+            n2 = isNode(LB, nodes);
+            n3 = isNode(TB, nodes);
+
+            panels.append(Panel());
+            Panel &panel = panels.last();
+            if(n0>=0) {
+                panel.m_iLA = n0;
+            }
+            else {
+                panel.m_iLA = nNodes;
+                nodes.push_back(LA);
+                nNodes++;
+            }
+
+            if(n1>=0) {
+                panel.m_iTA = n1;
+            }
+            else {
+                panel.m_iTA = nNodes;
+                nodes.push_back(TA);
+                nNodes++;
+            }
+
+            if(n2>=0) {
+                panel.m_iLB = n2;
+            }
+            else {
+                panel.m_iLB = nNodes;
+                nodes.push_back(LB);
+                nNodes++;
+            }
+
+            if(n3 >=0) {
+                panel.m_iTB = n3;
+            }
+            else {
+                panel.m_iTB = nNodes;
+                nodes.push_back(TB);
+                nNodes++;
+            }
+
+            LATB = TB - LA;
+            TALB = LB - TA;
+            panel.Normal = LATB * TALB;
+            panel.Area =  panel.Normal.norm()/2.0;
+            panel.Normal.normalize();
+
+            panel.m_bIsInSymPlane  = false;
+            panel.m_bIsLeading     = false;
+            panel.m_bIsTrailing    = false;
+            panel.m_Pos = BODYSURFACE;
+            panel.m_iElement = nPanels;
+            panel.m_bIsLeftPanel  = false;
+            panel.setPanelFrame(LA, LB, TA, TB);
+
+            // set neighbour panels
+            // valid only for Panel Analysis
+
+            panel.m_iPD = nPanels - nh;
+            panel.m_iPU = nPanels + nh;
+
+            if(k==0)    panel.m_iPU = -1;// no panel downstream
+            if(k==nx-1) panel.m_iPD = -1;// no panel upstream
+
+            panel.m_iPL = nPanels + 1;
+            panel.m_iPR = nPanels - 1;
+
+            if(l==0)     panel.m_iPL = nFirst + FullSize - p - 1;
+            if(l==nh-1)  panel.m_iPR = nFirst + FullSize - p - 1;
+
+            LB = LA;
+            TB = TA;
+            nPanels++;
+            p++;
+        }
+    }
+    m_NElements = nPanels-nFirst;
+    return m_NElements;
+}

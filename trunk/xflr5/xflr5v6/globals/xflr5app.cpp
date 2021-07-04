@@ -37,7 +37,7 @@
 #include "xflr5app.h"
 #include <globals/mainframe.h>
 #include <xflcore/trace.h>
-#include <misc/options/settings.h>
+
 
 
 XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)

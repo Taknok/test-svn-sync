@@ -61,17 +61,18 @@ class EditBodyDlg : public QDialog
 
         bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
         void connectSignals();
+        void fillBodyTreeView();
         void identifySelection(const QModelIndex &indexSel);
         void initDialog(Body *pBody);
-        void setupLayout();
-        void fillBodyTreeView();
+        void readBodyFrameTree(Frame *pFrame, QModelIndex indexLevel);
         void readBodyTree(QModelIndex indexLevel);
         void readInertiaTree(double &volumeMass, QVector<PointMass *> &pointMasses, QModelIndex indexLevel);
-        void readVectorTree(Vector3d &V, QModelIndex indexLevel);
         void readPointMassTree(PointMass *ppm, QModelIndex indexLevel);
-        void readBodyFrameTree(Frame *pFrame, QModelIndex indexLevel);
+        void readVectorTree(Vector3d &V, QModelIndex indexLevel);
         void resizeTreeView();
         void setActiveFrame(int iFrame);
+        void setTexturePath(QString const &path);
+        void setupLayout();
         void updateViews();
 
         QList<QStandardItem *> prepareRow(const QString &first, const QString &second="", const QString &third="",  const QString &fourth="");
@@ -135,8 +136,8 @@ class EditBodyDlg : public QDialog
         BodyLineWt *m_pBodyLineWidget;
         BodyFrameWt *m_pFrameWidget;
 
-        QCheckBox *m_pctrlAxes, *m_pctrlLight, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels;
-        QCheckBox *m_pctrlShowMasses;
+        QCheckBox *m_pchAxes, *m_pchLight, *m_pchSurfaces, *m_pchOutline, *m_pchPanels;
+        QCheckBox *m_pchShowMasses;
 
         QAction *m_pExportBodyGeom, *m_pBodyInertia;// *m_pSetupLight;
         QAction *m_pExportBodyXML, *m_pImportBodyXML;

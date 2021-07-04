@@ -32,7 +32,7 @@
 #include "aerodatadlg.h"
 #include "stabpolardlg.h"
 #include <miarex/miarex.h>
-#include <misc/options/settings.h>
+
 #include <xflcore/displayoptions.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>

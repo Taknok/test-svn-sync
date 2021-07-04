@@ -37,7 +37,7 @@
 #include <QPixmap>
 #include <QDialogButtonBox>
 
-#include <xfl3d/gl3dbodyview.h>
+#include <xfl3d/views/gl3dbodyview.h>
 
 class ColorBtn;
 class DoubleEdit;
@@ -64,6 +64,8 @@ class GL3dBodyDlg : public QDialog
     public:
         GL3dBodyDlg(QWidget *pParent=nullptr);
         ~GL3dBodyDlg();
+
+        void setTexturePath(QString const &path);
 
     private slots:
         void onBodyColor();
@@ -202,7 +204,6 @@ class GL3dBodyDlg : public QDialog
 
         //    bool m_bStored;
         bool m_bResetFrame;
-
         bool m_bChanged;
 
 
@@ -211,11 +212,5 @@ class GL3dBodyDlg : public QDialog
 
 
         bool m_bEnableName;
-
-        Vector3d m_RealPopUp;
-        QPoint m_ptPopUp;
-
-        //    QRect m_rCltRect;
-
 };
 

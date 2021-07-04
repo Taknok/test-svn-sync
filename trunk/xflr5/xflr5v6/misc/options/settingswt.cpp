@@ -30,12 +30,13 @@
 #include <QHBoxLayout>
 #include <QtDebug>
 
-#include "settings.h"
+#include "settingswt.h"
 #include <globals/mainframe.h>
 #include <miarex/miarex.h>
 #include <xdirect/xdirect.h>
 #include <twodwidgets/section2dwt.h>
 #include <xflcore/displayoptions.h>
+#include <xflcore/xflcore.h>
 #include <xflgraph/controls/graphdlg.h>
 #include <xflwidgets/color/textclrbtn.h>
 #include <xflwidgets/color/colorbtn.h>
@@ -48,16 +49,8 @@ QString Settings::s_StyleSheetName;
 
 Graph Settings::s_RefGraph;
 xfl::enumTextFileType Settings::s_ExportFileType;
-QString Settings::s_LastDirName = QDir::homePath();
-QString Settings::s_xmlDirName = QDir::homePath();
-QString Settings::s_plrDirName = QDir::homePath();
 QStringList Settings::s_colorList;
 QStringList Settings::s_colorNames;
-
-bool Settings::s_bShowMousePos = true;
-bool Settings::s_bAlignChildrenStyle = true;
-
-SETTINGS::enumThemeType Settings::s_Theme = SETTINGS::DARKTHEME;
 
 
 Settings::Settings(QWidget *pParent) : QWidget(pParent)
@@ -245,7 +238,7 @@ void Settings::initWidget()
         m_pcbStyles->setCurrentIndex(m_pcbStyles->findText(s_StyleSheetName));
 
     m_pchReverseZoom->setChecked(DisplayOptions::bReverseZoom());
-    m_pchAlignChildrenStyle->setChecked(s_bAlignChildrenStyle);
+    m_pchAlignChildrenStyle->setChecked(DisplayOptions::s_bAlignChildrenStyle);
 }
 
 
@@ -366,9 +359,9 @@ void Settings::saveSettings(QSettings &settings)
 {
     settings.beginGroup("global_settings");
     {
-        settings.setValue("LastDirName", s_LastDirName);
-        settings.setValue("XMLDirName", s_xmlDirName);
-        settings.setValue("PlrDirName", s_plrDirName);
+        settings.setValue("LastDirName", xfl::s_LastDirName);
+        settings.setValue("XMLDirName",  xfl::s_xmlDirName);
+        settings.setValue("PlrDirName",  xfl::s_plrDirName);
 
         settings.setValue("BackgroundColor", DisplayOptions::s_BackgroundColor);
         settings.setValue("TextColor", DisplayOptions::s_TextColor);
@@ -380,14 +373,14 @@ void Settings::saveSettings(QSettings &settings)
 
         settings.setValue("ScaleFactor", DisplayOptions::scaleFactor());
 
-        settings.setValue("ShowMousePos", s_bShowMousePos);
-        settings.setValue("AligneChildrenStyle", s_bAlignChildrenStyle);
+        settings.setValue("ShowMousePos", DisplayOptions::s_bShowMousePos);
+        settings.setValue("AligneChildrenStyle", DisplayOptions::s_bAlignChildrenStyle);
 
         settings.setValue("ShowStyleSheets", s_bStyleSheets);
         settings.setValue("StyleSheetName", s_StyleSheetName);
 
-        if(isLightTheme()) settings.setValue("Theme",0);
-        else               settings.setValue("Theme",1);
+        if(DisplayOptions::isLightTheme()) settings.setValue("Theme",0);
+        else                               settings.setValue("Theme",1);
 
         s_RefGraph.setGraphName("Reference_Graph");
         s_RefGraph.saveSettings(settings);
@@ -400,9 +393,9 @@ void Settings::loadSettings(QSettings &settings)
 {
     settings.beginGroup("global_settings");
     {
-        s_LastDirName = settings.value("LastDirName", QDir::homePath()).toString();
-        s_xmlDirName  = settings.value("XMLDirName", QDir::homePath()).toString();
-        s_plrDirName  = settings.value("PlrDirName", QDir::homePath()).toString();
+        xfl::s_LastDirName = settings.value("LastDirName", QDir::homePath()).toString();
+        xfl::s_xmlDirName  = settings.value("XMLDirName", QDir::homePath()).toString();
+        xfl::s_plrDirName  = settings.value("PlrDirName", QDir::homePath()).toString();
 
         DisplayOptions::s_BackgroundColor = settings.value("BackgroundColor", QColor(5,11,13)).value<QColor>();
 
@@ -414,16 +407,16 @@ void Settings::loadSettings(QSettings &settings)
         DisplayOptions::s_ToolTipFontStruct.loadSettings(settings, "ToolTipFont");
 
         DisplayOptions::setScaleFactor(settings.value("ScaleFactor", DisplayOptions::scaleFactor()).toDouble());
-        s_bAlignChildrenStyle = settings.value("AligneChildrenStyle", true).toBool();
+        DisplayOptions::s_bAlignChildrenStyle = settings.value("AligneChildrenStyle", true).toBool();
 
-        s_bShowMousePos = settings.value("ShowMousePos", true).toBool();
+        DisplayOptions::s_bShowMousePos = settings.value("ShowMousePos", true).toBool();
 
         s_bStyleSheets   = settings.value("ShowStyleSheets", false).toBool();
         s_StyleSheetName = settings.value("StyleSheetName", "xflr5_style").toString();
 
         int iTheme = settings.value("Theme",1).toInt();
-        if(iTheme==0) s_Theme = SETTINGS::LIGHTTHEME;
-        else          s_Theme = SETTINGS::DARKTHEME;
+        if(iTheme==0) DisplayOptions::setTheme(DisplayOptions::LIGHTTHEME);
+        else          DisplayOptions::setTheme(DisplayOptions::DARKTHEME);
 
         s_RefGraph.setGraphName("Reference_Graph");
         s_RefGraph.loadSettings(settings);
@@ -442,7 +435,7 @@ void Settings::onReverseZoom()
 
 void Settings::onAlignChildrenStyle()
 {
-    s_bAlignChildrenStyle = m_pchAlignChildrenStyle->isChecked();
+    DisplayOptions::s_bAlignChildrenStyle = m_pchAlignChildrenStyle->isChecked();
 }
 
 
@@ -451,7 +444,7 @@ void Settings::onTheme()
     if (m_prbDark->isChecked())
     {
         m_bIsGraphModified = true;
-        s_Theme = SETTINGS::DARKTHEME;
+        DisplayOptions::setTheme(DisplayOptions::DARKTHEME);
         DisplayOptions::s_BackgroundColor = QColor(3, 9, 9);
         DisplayOptions::s_TextColor=QColor(221,221,221);
         s_RefGraph.setGraphDefaults(true);
@@ -459,7 +452,7 @@ void Settings::onTheme()
     else if(m_prbLight->isChecked())
     {
         m_bIsGraphModified = true;
-        s_Theme = SETTINGS::LIGHTTHEME;
+        DisplayOptions::setTheme(DisplayOptions::LIGHTTHEME);
         DisplayOptions::s_BackgroundColor = QColor(241, 241, 241);
         DisplayOptions::s_TextColor=QColor(0,0,0);
         s_RefGraph.setGraphDefaults(false);

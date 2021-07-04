@@ -29,9 +29,17 @@ namespace DisplayOptions
     extern QColor s_TextColor;
 
     extern double s_ScaleFactor;
+    extern bool s_bAlignChildrenStyle;
+    extern bool s_bShowMousePos;
 
     typedef enum {LIGHTTHEME, DARKTHEME, CUSTOMTHEME} enumThemeType;
     extern  enumThemeType s_Theme;
+
+    inline void setAlignedChildrenStyle(bool bAlign) {s_bAlignChildrenStyle = bAlign;}
+    inline bool isAlignedChildrenStyle()             {return s_bAlignChildrenStyle;}
+
+    inline void showMousePos(bool bShow) {s_bShowMousePos=bShow;}
+    inline bool bMousePos() {return s_bShowMousePos;}
 
     inline QColor backgroundColor() {return s_BackgroundColor;}
     inline void setBackgroundColor(QColor clr) {s_BackgroundColor=clr;}

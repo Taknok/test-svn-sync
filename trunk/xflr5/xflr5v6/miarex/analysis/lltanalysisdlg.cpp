@@ -30,21 +30,20 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QKeyEvent>
-#include <QtDebug>
 
 #include "lltanalysisdlg.h"
-#include <xflgraph/containers/graphwt.h>
+#include <miarex/miarex.h>
+#include <miarex/objects3d.h>
+#include <misc/options/settingswt.h>
 #include <xflanalysis/plane_analysis/lltanalysis.h>
 #include <xflanalysis/plane_analysis/planetask.h>
 #include <xflanalysis/plane_analysis/planetaskevent.h>
 #include <xflcore/gui_params.h>
+#include <xflgraph/containers/graphwt.h>
 #include <xflgraph/curve.h>
 #include <xflgraph/graph.h>
-#include <miarex/miarex.h>
-#include <miarex/objects3d.h>
-#include <misc/options/settings.h>
-#include <xflobjects/objects3d/wpolar.h>
 #include <xflobjects/objects3d/wing.h>
+#include <xflobjects/objects3d/wpolar.h>
 
 QByteArray LLTAnalysisDlg::s_Geometry;
 
@@ -268,7 +267,7 @@ void LLTAnalysisDlg::cleanUp()
         for(int iPOpp=0; iPOpp<m_pTheTask->m_ptheLLTAnalysis->m_PlaneOppList.size(); iPOpp++)
         {
             PlaneOpp *pPOpp = m_pTheTask->m_ptheLLTAnalysis->m_PlaneOppList.at(iPOpp);
-            if(Settings::isAlignedChildrenStyle())
+            if(DisplayOptions::isAlignedChildrenStyle())
             {
                 pPOpp->setTheStyle(m_pTheTask->m_pWPolar->theStyle());
             }

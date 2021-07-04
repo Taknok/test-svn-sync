@@ -33,7 +33,7 @@
 #include <xflgraph/controls/graphdlg.h>
 #include <miarex/miarex.h>
 #include <xflcore/units.h>
-#include <misc/options/settings.h>
+
 #include <xflobjects/objects3d/plane.h>
 #include <xflgraph/containers/graphwt.h>
 #include <xflgraph/containers/legendwt.h>

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     PlaneDlg Class
-    Copyright (C) 2009-2019 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef PLANEDLG_H
-#define PLANEDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QLabel>
@@ -35,128 +34,132 @@
 class Plane;
 class DoubleEdit;
 
+class gl3dPlaneView;
+
 /** The class to define and edit planes. SUes */
 
 class PlaneDlg : public QDialog
 {
     Q_OBJECT
     friend class Miarex;
-    friend class MainFrame;
-    friend class EditPlaneDlg;
+    friend class gl3dPlaneView;
 
-public:
-    PlaneDlg(QWidget *parent);
-    void initDialog();
+    public:
+        PlaneDlg(QWidget *parent);
+        void initDialog();
+        void setTexturePath(QString const &path) {m_TexturePath=path;}
 
-private slots:
-    void onOK();
-    void onFin();
-    void onStab();
-    void onBodyCheck();
-    void onDefineWing();
-    void onDefineStab();
-    void onDefineFin();
-    void onDefineBody();
-    void onDefineBodyObject();
-    void onChanged();
-    void onDescriptionChanged();
-    void onImportWing();
-    void onDefaultBody();
-    void onPlaneName();
-    void onSymFin();
-    void onDoubleFin();
-    void onBiplane();
-    void onDefineWing2();
-    void onImportWing2();
-    void onImportPlaneBody();
-    void onImportXMLBody();
-    void onInertia();
-    void onButton(QAbstractButton *pButton);
+    private slots:
+        void onOK();
+        void onFin();
+        void onStab();
+        void onBodyCheck();
+        void onDefineWing();
+        void onDefineStab();
+        void onDefineFin();
+        void onDefineBody();
+        void onDefineBodyObject();
+        void onChanged();
+        void onDescriptionChanged();
+        void onImportWing();
+        void onDefaultBody();
+        void onPlaneName();
+        void onSymFin();
+        void onDoubleFin();
+        void onBiplane();
+        void onDefineWing2();
+        void onImportWing2();
+        void onImportPlaneBody();
+        void onImportXMLBody();
+        void onInertia();
+        void onButton(QAbstractButton *pButton);
 
-private:
-    void setupLayout();
-    void setResults();
-    void readParams();
-    void setParams();
-    void keyPressEvent(QKeyEvent *event) override;
-    void showEvent(QShowEvent *pEvent) override;
-    void hideEvent(QHideEvent *pEvent) override;
-    void reject() override;
+    private:
+        void connectSignals();
+        void setupLayout();
+        void setResults();
+        void readParams();
+        void setParams();
+        void keyPressEvent(QKeyEvent *event) override;
+        void showEvent(QShowEvent *pEvent) override;
+        void hideEvent(QHideEvent *pEvent) override;
+        void reject() override;
 
-private:
+    private:
 
-    Plane *m_pPlane;   /**< A pointer to the plane which is currently edited in this dialog window */
-    bool m_bChanged;   /**< Set to true whenever the data in the window has been changed */
-    bool m_bDescriptionChanged;
-    bool m_bAcceptName;
-
-
-private:
-    QLabel *m_pctrlSurf1;
-    QLabel *m_pctrlSurf2;
-    QLabel *m_pctrlSurf3;
-    //    QLabel *m_pctrlVolume;
-    QLabel *m_pctrlLen1;
-    QLabel *m_pctrlLen2;
-    QLabel *m_pctrlLen3;
-    QLabel *m_pctrlLen4;
-    QLabel *m_pctrlLen5;
-    QLabel *m_pctrlLen6;
-    QLabel *m_pctrlLen7;
-    QLabel *m_pctrlLen8;
-    QLabel *m_pctrlLen9;
-    QLabel *m_pctrlLen10;
-    QLabel *m_pctrlLen11;
-    QLabel *m_pctrlLen12;
-    QLabel *m_pctrlLen13;
-    QLabel *m_pctrlWingSpan;
-    QLabel *m_pctrlWingSurface;
-    QLabel *m_pctrlStabVolume;
-    QLabel *m_pctrlFinSurface;
-    QLabel *m_pctrlStabLeverArm;
-    QLabel *m_pctrlStabSurface;
-    QLabel *m_pctrlPlaneVolume;
-    QLabel *m_pctrlVLMTotalPanels;
-    DoubleEdit  *m_pctrlXBody;
-    DoubleEdit  *m_pctrlZBody;
-    DoubleEdit  *m_pctrlXLEFin;
-    DoubleEdit  *m_pctrlYLEFin;
-    DoubleEdit  *m_pctrlZLEFin;
-    DoubleEdit  *m_pctrlZLEStab;
-    DoubleEdit  *m_pctrlXLEStab;
-    DoubleEdit  *m_pctrlXLEWing;
-    DoubleEdit  *m_pctrlZLEWing;
-    DoubleEdit  *m_pctrlXLEWing2;
-    DoubleEdit  *m_pctrlZLEWing2;
-    DoubleEdit  *m_pctrlStabTilt;
-    DoubleEdit  *m_pctrlFinTilt;
-    DoubleEdit  *m_pctrlWingTilt;
-    DoubleEdit  *m_pctrlWingTilt2;
-    QLineEdit *m_pctrlPlaneName;
-    QTextEdit *m_pctrlPlaneDescription;
-    QCheckBox *m_pctrlBiplane;
-    QCheckBox *m_pctrlBody;
-    QCheckBox *m_pctrlStabCheck;
-    QCheckBox *m_pctrlFinCheck;
-    QCheckBox *m_pctrlDoubleFin;
-    QCheckBox    *m_pctrlSymFin;
-    QPushButton *m_pctrlDefineWing;
-    QPushButton *m_pctrlImportWing;
-    QPushButton *m_pctrlDefineWing2;
-    QPushButton *m_pctrlImportWing2;
-    QPushButton    *m_pctrlDefineFin;
-    QPushButton    *m_pctrlVTail;
-    QPushButton    *m_pctrlDefineStab;
-    QPushButton *m_pctrlBodyActions;
-    QPushButton *m_pctrlPlaneInertia;
-
-    QDialogButtonBox *m_pButtonBox;
+        Plane *m_pPlane;   /**< A pointer to the plane which is currently edited in this dialog window */
+        bool m_bChanged;   /**< Set to true whenever the data in the window has been changed */
+        bool m_bDescriptionChanged;
+        bool m_bAcceptName;
 
 
-    QAction *m_pImportXMLBody, *m_pImportPlaneBody;
+    private:
+        QLabel *m_plabWingSpan;
+        QLabel *m_plabWingSurface;
+        QLabel *m_plabStabVolume;
+        QLabel *m_plabFinSurface;
+        QLabel *m_plabStabLeverArm;
+        QLabel *m_plabStabSurface;
+        QLabel *m_plabPlaneVolume;
+        QLabel *m_plabVLMTotalPanels;
+        DoubleEdit *m_pdeXBody;
+        DoubleEdit *m_pdeZBody;
+        DoubleEdit *m_pdeXLEFin;
+        DoubleEdit *m_pdeYLEFin;
+        DoubleEdit *m_pdeZLEFin;
+        DoubleEdit *m_pdeZLEStab;
+        DoubleEdit *m_pdeXLEStab;
+        DoubleEdit *m_pdeXLEWing;
+        DoubleEdit *m_pdeZLEWing;
+        DoubleEdit *m_pdeXLEWing2;
+        DoubleEdit *m_pdeZLEWing2;
+        DoubleEdit *m_pdeStabTilt;
+        DoubleEdit *m_pdeFinTilt;
+        DoubleEdit *m_pdeWingTilt;
+        DoubleEdit *m_pdeWingTilt2;
+        QLineEdit *m_plePlaneName;
+        QTextEdit *m_ptePlaneDescription;
+        QCheckBox *m_pchBiplane;
+        QCheckBox *m_pchBody;
+        QCheckBox *m_pchStabCheck;
+        QCheckBox *m_pchFinCheck;
+        QCheckBox *m_pchDoubleFin;
+        QCheckBox *m_pchSymFin;
+        QPushButton *m_ppbDefineWing;
+        QPushButton *m_ppbImportWing;
+        QPushButton *m_ppbDefineWing2;
+        QPushButton *m_ppbImportWing2;
+        QPushButton *m_ppbDefineFin;
+        QPushButton *m_ppbVTail;
+        QPushButton *m_ppbDefineStab;
+        QPushButton *m_ppbBodyActions;
+        QPushButton *m_ppbPlaneInertia;
 
-    static QByteArray s_Geometry;
+        QCheckBox *m_pchAxes, *m_pchLight, *m_pchSurfaces, *m_pchOutline, *m_pchPanels;
+        QCheckBox *m_pchFoilNames, *m_pchShowMasses;
+
+        QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
+        QToolButton *m_ptbX, *m_ptbY, *m_ptbZ, *m_ptbIso, *m_ptbFlip;
+        QPushButton *m_ppbReset;
+        QSlider *m_pslClipPlanePos;
+
+        gl3dPlaneView *m_pglPlaneView;
+
+        QDialogButtonBox *m_pButtonBox;
+
+
+        QAction *m_pImportXMLBody, *m_pImportPlaneBody;
+
+        QString m_TexturePath;
+
+        static bool s_bOutline;
+        static bool s_bSurfaces;
+        static bool s_bVLMPanels;
+        static bool s_bAxes;
+        static bool s_bShowMasses;
+        static bool s_bFoilNames;
+
+        static QByteArray s_Geometry;
 
 };
 
-#endif // PLANEDLG_H

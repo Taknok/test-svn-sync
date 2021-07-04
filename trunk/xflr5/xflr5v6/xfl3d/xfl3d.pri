@@ -1,35 +1,35 @@
 
 
 HEADERS += \
-    $$PWD/controls/arcball.h \
-    $$PWD/controls/gllightdlg.h \
-    $$PWD/controls/light.h \
-    $$PWD/controls/opengldlg.h \
-    $$PWD/controls/w3dprefsdlg.h \
-    $$PWD/gl3dxflview.h \
-    $$PWD/gl_globals.h \
-    $$PWD/testgl/gl3dfractal.h \
-    $$PWD/testgl/gl3dtestglview.h \
-    xfl3d/gl3dbodyview.h \
-    xfl3d/gl3dplaneview.h \
-    xfl3d/gl3dview.h \
-    xfl3d/gl3dwingview.h \
+    xfl3d/controls/arcball.h \
+    xfl3d/controls/gllightdlg.h \
+    xfl3d/controls/light.h \
+    xfl3d/controls/w3dprefs.h \
+    xfl3d/gl_globals.h \
+    xfl3d/glinfo/opengldlg.h \
+    xfl3d/testgl/gl2dfractal.h \
+    xfl3d/testgl/gl3dtestglview.h \
+    xfl3d/views/gl3dbodyview.h \
+    xfl3d/views/gl3dplaneview.h \
+    xfl3d/views/gl3dview.h \
+    xfl3d/views/gl3dwingview.h \
+    xfl3d/views/gl3dxflview.h \
 
 
 
 SOURCES += \
-    $$PWD/controls/arcball.cpp \
-    $$PWD/controls/gllightdlg.cpp \
-    $$PWD/controls/opengldlg.cpp \
-    $$PWD/controls/w3dprefsdlg.cpp \
-    $$PWD/gl3dxflview.cpp \
-    $$PWD/gl_globals.cpp \
-    $$PWD/testgl/gl3dfractal.cpp \
-    $$PWD/testgl/gl3dtestglview.cpp \
-    xfl3d/gl3dbodyview.cpp \
-    xfl3d/gl3dplaneview.cpp \
-    xfl3d/gl3dview.cpp \
-    xfl3d/gl3dwingview.cpp \
+    xfl3d/controls/arcball.cpp \
+    xfl3d/controls/gllightdlg.cpp \
+    xfl3d/controls/w3dprefs.cpp \
+    xfl3d/gl_globals.cpp \
+    xfl3d/glinfo/opengldlg.cpp \
+    xfl3d/testgl/gl2dfractal.cpp \
+    xfl3d/testgl/gl3dtestglview.cpp \
+    xfl3d/views/gl3dbodyview.cpp \
+    xfl3d/views/gl3dplaneview.cpp \
+    xfl3d/views/gl3dview.cpp \
+    xfl3d/views/gl3dwingview.cpp \
+    xfl3d/views/gl3dxflview.cpp \
 
 
 RESOURCES += \

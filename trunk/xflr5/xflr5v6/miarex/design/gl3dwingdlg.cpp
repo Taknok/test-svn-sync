@@ -35,11 +35,11 @@
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlplanewriter.h>
 #include <miarex/objects3d.h>
-#include <misc/options/settings.h>
+
 #include <xdirect/objects2d.h>
 #include <xdirect/objects2d.h>
-#include <xfl3d/controls/w3dprefsdlg.h>
-#include <xfl3d/gl3dwingview.h>
+#include <xfl3d/controls/w3dprefs.h>
+#include <xfl3d/views/gl3dwingview.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
@@ -471,7 +471,7 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
 
     m_pWingDelegate = new WingDelegate(this);
     m_ptvWingSections->setItemDelegate(m_pWingDelegate);
-    connect(m_pWingDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
+    connect(m_pWingDelegate,  SIGNAL(closeEditor(QWidget*)), this, SLOT(onCellChanged(QWidget*)));
 
     m_precision = new int[10];
     m_precision[0] = 3;
@@ -492,6 +492,12 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
     m_ptvWingSections->selectRow(m_iSection);
     setCurrentSection(m_iSection);
     return true;
+}
+
+
+void GL3dWingDlg::setTexturePath(QString const &path)
+{
+    if(m_pglWingView) m_pglWingView->setTexturePath(path);
 }
 
 
@@ -1652,10 +1658,10 @@ void GL3dWingDlg::onImportWingFromXML()
     QString path_to_file;
     path_to_file = QFileDialog::getOpenFileName(nullptr,
                                                 QString("Open XML File"),
-                                                Settings::s_LastDirName,
+                                                xfl::s_LastDirName,
                                                 tr("Plane XML file")+"(*.xml)");
     QFileInfo fileinfo(path_to_file);
-    Settings::s_LastDirName = fileinfo.path();
+    xfl::s_LastDirName = fileinfo.path();
 
     QFile xmlfile(path_to_file);
 
@@ -1699,13 +1705,13 @@ void GL3dWingDlg::onExportWingToXML()
     strong = m_pWing->wingName().trimmed();
     strong.replace(' ', '_');
     FileName = QFileDialog::getSaveFileName(this, tr("Export to xml file"),
-                                            Settings::s_LastDirName +'/'+strong,
+                                            xfl::s_LastDirName +'/'+strong,
                                             filter,
                                             &filter);
 
     if(!FileName.length()) return;
     QFileInfo fileInfo(FileName);
-    Settings::s_LastDirName = fileInfo.path();
+    xfl::s_LastDirName = fileInfo.path();
 
     if(FileName.indexOf(".xml", Qt::CaseInsensitive)<0) FileName += ".xml";
 
@@ -1724,7 +1730,7 @@ void GL3dWingDlg::onImportWing()
     QString path_to_file;
     path_to_file = QFileDialog::getOpenFileName(nullptr,
                                                 QString("Open File"),
-                                                Settings::s_LastDirName,
+                                                xfl::s_LastDirName,
                                                 QString("XFLR5 Wing file (*.xwimp)"));
     QString errorMsg;
     if(!m_pWing->importDefinition(path_to_file, errorMsg))
@@ -1745,7 +1751,7 @@ void GL3dWingDlg::onExportWing()
     QString path_to_file;
     path_to_file = QFileDialog::getSaveFileName(nullptr,
                                                 QString("Save File"),
-                                                Settings::s_LastDirName,
+                                                xfl::s_LastDirName,
                                                 QString("XFLR5 Wing file (*.xwimp)"));
     if (!path_to_file.endsWith(".xwimp")) {
         path_to_file.append(".xwimp");
@@ -1799,7 +1805,6 @@ void GL3dWingDlg::saveSettings(QSettings &settings)
     }
     settings.endGroup();
 }
-
 
 
 

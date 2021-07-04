@@ -35,7 +35,7 @@
 #include <design/splinectrlsdlg.h>
 #include <globals/mainframe.h>
 #include <gui_objects/splinefoil.h>
-#include <misc/options/settings.h>
+
 #include <misc/renamedlg.h>
 #include <xdirect/geometry/cadddlg.h>
 #include <xdirect/geometry/flapdlg.h>
@@ -377,7 +377,7 @@ void AFoil::onAFoilDerotateFoil()
     //then duplicate the buffer foil and add it
     Foil *pNewFoil = new Foil();
     pNewFoil->copyFoil(m_pBufferFoil);
-    setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+    setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
     pNewFoil->setLineStipple(Line::SOLID);
     pNewFoil->setLineWidth(1);
 
@@ -430,7 +430,7 @@ void AFoil::onAFoilCadd()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
@@ -494,7 +494,7 @@ void AFoil::onAFoilPanels()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
@@ -543,7 +543,7 @@ void AFoil::onAFoilFoilCoordinates()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setHighLight(-1);
@@ -585,7 +585,7 @@ void AFoil::onAFoilFoilGeom()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
@@ -633,7 +633,7 @@ void AFoil::onAFoilSetTEGap()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
@@ -682,7 +682,7 @@ void AFoil::onAFoilSetLERadius()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
@@ -736,7 +736,7 @@ void AFoil::onAFoilInterpolateFoils()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
@@ -787,7 +787,7 @@ void AFoil::onAFoilNacaFoils()
 
         Foil *pNewFoil    = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
@@ -835,7 +835,7 @@ void AFoil::onAFoilSetFlap()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
 
@@ -887,7 +887,7 @@ void AFoil::onDuplicate()
     if(!XDirect::curFoil()) return;
     Foil *pNewFoil = new Foil;
     pNewFoil->copyFoil(XDirect::curFoil());
-    setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
+    setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
     pNewFoil->initFoil();
 
     addNewFoil(pNewFoil);
@@ -909,11 +909,11 @@ void AFoil::onExportCurFoil()
     FileName.replace("/", " ");
 
     FileName = QFileDialog::getSaveFileName(this, tr("Export Foil"),
-                                            Settings::s_LastDirName+"/"+FileName+".dat",
+                                            xfl::s_LastDirName+"/"+FileName+".dat",
                                             tr("Foil File (*.dat)"));
     if(!FileName.length()) return;
     int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
 
     QFile XFile(FileName);
 
@@ -957,13 +957,13 @@ void AFoil::onExportSplinesToFile()
 
     FileName.replace("/", " ");
     FileName = QFileDialog::getSaveFileName(this, tr("Export Splines"),
-                                            Settings::s_LastDirName,
+                                            xfl::s_LastDirName,
                                             tr("Text File (*.dat)"));
 
     if(!FileName.length()) return;
     int pos;
     pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+    if(pos>0) xfl::s_LastDirName = FileName.left(pos);
 
     QFile XFile(FileName);
 
@@ -1068,7 +1068,7 @@ void AFoil::onFoilStyle()
         pFoil->setTheStyle(ls);
 
 
-        if(Settings::isAlignedChildrenStyle())
+        if(DisplayOptions::isAlignedChildrenStyle())
             Objects2d::setFoilChildrenStyle(XDirect::curFoil());
 
         m_p2dWidget->update();

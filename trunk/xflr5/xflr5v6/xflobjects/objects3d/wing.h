@@ -122,7 +122,7 @@ class Wing
         void computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz);
         void computeBodyAxisInertia();
 
-        bool intersectWing(Vector3d O,  Vector3d U, Vector3d &I);
+        bool intersectWing(Vector3d O,  Vector3d U, Vector3d &I) const;
 
         void scaleSweep(double NewSweep);
         void scaleTwist(double NewTwist);

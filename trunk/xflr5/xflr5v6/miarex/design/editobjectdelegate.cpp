@@ -23,7 +23,7 @@
 #include <QtDebug>
 #include "editobjectdelegate.h"
 #include <xflobjects/objects2d/foil.h>
-#include <misc/options/settings.h>
+
 #include <xflwidgets/customwts/intedit.h>
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflcore/core_enums.h>

@@ -27,7 +27,7 @@
 
 
 #include <globals/mainframe.h>
-#include <misc/options/settings.h>
+
 #include <xdirect/xdirect.h>
 #include <xdirect/xdirectstyledlg.h>
 #include <xflcore/constants.h>
@@ -471,7 +471,7 @@ void OpPointWidget::paintGraph(QPainter &painter)
     }
 
 
-    if(m_pCpGraph->isInDrawRect(m_LastPoint) && Settings::bMousePos())
+    if(m_pCpGraph->isInDrawRect(m_LastPoint) && DisplayOptions::bMousePos())
     {
         QPen textPen(DisplayOptions::textColor());
 
@@ -510,7 +510,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
         painter.drawLine(rect().left(),  int(m_FoilOffset.y()),
                          rect().right(), int(m_FoilOffset.y()));
     }
-    if(!m_pCpGraph->isInDrawRect(m_LastPoint) && Settings::bMousePos())
+    if(!m_pCpGraph->isInDrawRect(m_LastPoint) && DisplayOptions::bMousePos())
     {
         QPen textPen(DisplayOptions::textColor());
         QFontMetrics fm(DisplayOptions::textFont());

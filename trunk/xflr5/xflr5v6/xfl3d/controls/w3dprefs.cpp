@@ -26,7 +26,7 @@
 #include <QColorDialog>
 #include <QPushButton>
 
-#include "w3dprefsdlg.h"
+#include "w3dprefs.h"
 #include <xflwidgets/line/linepickerdlg.h>
 
 #include <xflwidgets/line/linebtn.h>
@@ -34,37 +34,37 @@
 #include <xflwidgets/customwts/intedit.h>
 
 
-bool W3dPrefsDlg::s_bAutoAdjustScale = true;
-bool W3dPrefsDlg::s_bWakePanels = false;
+bool W3dPrefs::s_bAutoAdjustScale = true;
+bool W3dPrefs::s_bWakePanels = false;
 
-double W3dPrefsDlg::s_MassRadius = .017;
-QColor W3dPrefsDlg::s_MassColor = QColor(67, 151, 169);
-
-
-LineStyle W3dPrefsDlg::s_AxisStyle      = {true, Line::DASHDOT, 1, QColor(150,150,150),     Line::NOSYMBOL};
-LineStyle W3dPrefsDlg::s_VLMStyle       = {true, Line::SOLID,   1, QColor(180,180,180),     Line::NOSYMBOL};
-
-LineStyle W3dPrefsDlg::s_OutlineStyle   = {true, Line::SOLID,   1, QColor(73,73,73),        Line::NOSYMBOL};
-LineStyle W3dPrefsDlg::s_XCPStyle       = {true, Line::SOLID,   2, QColor(50, 150, 50),     Line::NOSYMBOL};
-LineStyle W3dPrefsDlg::s_MomentStyle    = {true, Line::SOLID,   2, QColor(200, 100, 100),   Line::NOSYMBOL};
-LineStyle W3dPrefsDlg::s_IDragStyle     = {true, Line::SOLID,   2, QColor(255,200,0),       Line::NOSYMBOL};
-LineStyle W3dPrefsDlg::s_DownwashStyle  = {true, Line::SOLID,   2, QColor(255, 100, 100),   Line::NOSYMBOL};
-LineStyle W3dPrefsDlg::s_WakeStyle      = {true, Line::SOLID,   1, QColor(0, 150, 200),     Line::NOSYMBOL};
-LineStyle W3dPrefsDlg::s_CpStyle        = {true, Line::SOLID,   2, QColor(255,0,0),         Line::NOSYMBOL};
-LineStyle W3dPrefsDlg::s_StreamStyle    = {true, Line::SOLID,   2, QColor(200, 150, 255),   Line::NOSYMBOL};
-
-LineStyle W3dPrefsDlg::s_VDragStyle     = {true, Line::SOLID,   1, QColor(200,100,220),     Line::NOSYMBOL};
-LineStyle W3dPrefsDlg::s_TopStyle       = {true, Line::SOLID,   1, QColor(171, 103, 220),   Line::NOSYMBOL};
-LineStyle W3dPrefsDlg::s_BotStyle       = {true, Line::DASH,    1, QColor(171, 103, 220),   Line::NOSYMBOL};
-
-int W3dPrefsDlg::s_iChordwiseRes = 73;
-int W3dPrefsDlg::s_iBodyAxialRes = 23;
-int W3dPrefsDlg::s_iBodyHoopRes  = 17;
-bool W3dPrefsDlg::s_bAnimateTransitions = true;
-bool W3dPrefsDlg::s_bEnableClipPlane = false;
+double W3dPrefs::s_MassRadius = .017;
+QColor W3dPrefs::s_MassColor = QColor(67, 151, 169);
 
 
-W3dPrefsDlg::W3dPrefsDlg(QWidget *pParent) : QDialog(pParent)
+LineStyle W3dPrefs::s_AxisStyle      = {true, Line::DASHDOT, 1, QColor(150,150,150),     Line::NOSYMBOL};
+LineStyle W3dPrefs::s_VLMStyle       = {true, Line::SOLID,   1, QColor(180,180,180),     Line::NOSYMBOL};
+
+LineStyle W3dPrefs::s_OutlineStyle   = {true, Line::SOLID,   1, QColor(73,73,73),        Line::NOSYMBOL};
+LineStyle W3dPrefs::s_XCPStyle       = {true, Line::SOLID,   2, QColor(50, 150, 50),     Line::NOSYMBOL};
+LineStyle W3dPrefs::s_MomentStyle    = {true, Line::SOLID,   2, QColor(200, 100, 100),   Line::NOSYMBOL};
+LineStyle W3dPrefs::s_IDragStyle     = {true, Line::SOLID,   2, QColor(255,200,0),       Line::NOSYMBOL};
+LineStyle W3dPrefs::s_DownwashStyle  = {true, Line::SOLID,   2, QColor(255, 100, 100),   Line::NOSYMBOL};
+LineStyle W3dPrefs::s_WakeStyle      = {true, Line::SOLID,   1, QColor(0, 150, 200),     Line::NOSYMBOL};
+LineStyle W3dPrefs::s_CpStyle        = {true, Line::SOLID,   2, QColor(255,0,0),         Line::NOSYMBOL};
+LineStyle W3dPrefs::s_StreamStyle    = {true, Line::SOLID,   2, QColor(200, 150, 255),   Line::NOSYMBOL};
+
+LineStyle W3dPrefs::s_VDragStyle     = {true, Line::SOLID,   1, QColor(200,100,220),     Line::NOSYMBOL};
+LineStyle W3dPrefs::s_TopStyle       = {true, Line::SOLID,   1, QColor(171, 103, 220),   Line::NOSYMBOL};
+LineStyle W3dPrefs::s_BotStyle       = {true, Line::DASH,    1, QColor(171, 103, 220),   Line::NOSYMBOL};
+
+int W3dPrefs::s_iChordwiseRes = 73;
+int W3dPrefs::s_iBodyAxialRes = 23;
+int W3dPrefs::s_iBodyHoopRes  = 17;
+bool W3dPrefs::s_bAnimateTransitions = true;
+bool W3dPrefs::s_bEnableClipPlane = false;
+
+
+W3dPrefs::W3dPrefs(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle(tr("3D Styles"));
     setupLayout();
@@ -85,7 +85,7 @@ W3dPrefsDlg::W3dPrefsDlg(QWidget *pParent) : QDialog(pParent)
 }
 
 
-void W3dPrefsDlg::initDialog()
+void W3dPrefs::initDialog()
 {
     m_plbAxis->setTheStyle(s_AxisStyle);
     m_plbOutline->setTheStyle(s_OutlineStyle);
@@ -112,7 +112,7 @@ void W3dPrefsDlg::initDialog()
 
 
 
-void W3dPrefsDlg::setupLayout()
+void W3dPrefs::setupLayout()
 {
     QLabel *lab1 = new QLabel(tr("Axis"));
     QLabel *lab2 = new QLabel(tr("Outline"));
@@ -281,7 +281,7 @@ void W3dPrefsDlg::setupLayout()
 }
 
 
-void W3dPrefsDlg::onOutline()
+void W3dPrefs::onOutline()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setTheStyle(s_OutlineStyle);
@@ -293,7 +293,7 @@ void W3dPrefsDlg::onOutline()
     }
 }
 
-void W3dPrefsDlg::on3DAxis()
+void W3dPrefs::on3DAxis()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setTheStyle(s_AxisStyle);
@@ -306,7 +306,7 @@ void W3dPrefsDlg::on3DAxis()
     }
 }
 
-void W3dPrefsDlg::onTopTrans()
+void W3dPrefs::onTopTrans()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setTheStyle(s_TopStyle);
@@ -319,7 +319,7 @@ void W3dPrefsDlg::onTopTrans()
     }
 }
 
-void W3dPrefsDlg::onBotTrans()
+void W3dPrefs::onBotTrans()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setTheStyle(s_BotStyle);
@@ -332,7 +332,7 @@ void W3dPrefsDlg::onBotTrans()
     }
 }
 
-void W3dPrefsDlg::onIDrag()
+void W3dPrefs::onIDrag()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setTheStyle(s_IDragStyle);
@@ -345,7 +345,7 @@ void W3dPrefsDlg::onIDrag()
     }
 }
 
-void W3dPrefsDlg::onVDrag()
+void W3dPrefs::onVDrag()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setTheStyle(s_VDragStyle);
@@ -358,7 +358,7 @@ void W3dPrefsDlg::onVDrag()
     }
 }
 
-void W3dPrefsDlg::onXCP()
+void W3dPrefs::onXCP()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setTheStyle(s_XCPStyle);
@@ -371,7 +371,7 @@ void W3dPrefsDlg::onXCP()
     }
 }
 
-void W3dPrefsDlg::onMoments()
+void W3dPrefs::onMoments()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setTheStyle(s_MomentStyle);
@@ -384,7 +384,7 @@ void W3dPrefsDlg::onMoments()
     }
 }
 
-void W3dPrefsDlg::onDownwash()
+void W3dPrefs::onDownwash()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setTheStyle(s_DownwashStyle);
@@ -397,7 +397,7 @@ void W3dPrefsDlg::onDownwash()
     }
 }
 
-void W3dPrefsDlg::onStreamLines()
+void W3dPrefs::onStreamLines()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setTheStyle(s_StreamStyle);
@@ -410,7 +410,7 @@ void W3dPrefsDlg::onStreamLines()
     }
 }
 
-void W3dPrefsDlg::onWakePanels()
+void W3dPrefs::onWakePanels()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setTheStyle(s_WakeStyle);
@@ -423,7 +423,7 @@ void W3dPrefsDlg::onWakePanels()
     }
 }
 
-void W3dPrefsDlg::onVLMMesh()
+void W3dPrefs::onVLMMesh()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setTheStyle(s_VLMStyle);
@@ -438,7 +438,7 @@ void W3dPrefsDlg::onVLMMesh()
 }
 
 
-void W3dPrefsDlg::onMasses()
+void W3dPrefs::onMasses()
 {
     QColorDialog::ColorDialogOptions dialogOptions = QColorDialog::ShowAlphaChannel;
 #ifdef Q_OS_MAC
@@ -455,7 +455,7 @@ void W3dPrefsDlg::onMasses()
 }
 
 
-void W3dPrefsDlg::saveSettings(QSettings &settings)
+void W3dPrefs::saveSettings(QSettings &settings)
 {
     settings.beginGroup("3dPrefs_2");
     {
@@ -491,7 +491,7 @@ void W3dPrefsDlg::saveSettings(QSettings &settings)
 }
 
 
-void W3dPrefsDlg::loadSettings(QSettings &settings)
+void W3dPrefs::loadSettings(QSettings &settings)
 {
     resetDefaults();
     settings.beginGroup("3dPrefs_2");
@@ -524,14 +524,14 @@ void W3dPrefsDlg::loadSettings(QSettings &settings)
 }
 
 
-void W3dPrefsDlg::onResetDefaults()
+void W3dPrefs::onResetDefaults()
 {
     resetDefaults();
     initDialog();
 }
 
 
-void W3dPrefsDlg::resetDefaults()
+void W3dPrefs::resetDefaults()
 {
     s_bWakePanels = false;
 
@@ -544,13 +544,13 @@ void W3dPrefsDlg::resetDefaults()
 }
 
 
-void W3dPrefsDlg::onOK()
+void W3dPrefs::onOK()
 {
     readSettings();
     accept();
 }
 
-void W3dPrefsDlg::readSettings()
+void W3dPrefs::readSettings()
 {
     s_bAnimateTransitions = m_pchAnimateTransitions->isChecked();
     s_bAutoAdjustScale = m_pchAutoAdjustScale->isChecked();

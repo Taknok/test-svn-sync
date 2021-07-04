@@ -32,7 +32,7 @@ class LineBtn;
 class ColorBtn;
 class IntEdit;
 
-class W3dPrefsDlg : public QDialog
+class W3dPrefs : public QDialog
 {
     Q_OBJECT
 
@@ -41,7 +41,7 @@ class W3dPrefsDlg : public QDialog
     friend class GL3dBodyDlg;
 
     public:
-        W3dPrefsDlg(QWidget *pParent);
+        W3dPrefs(QWidget *pParent);
         void initDialog();
 
         static int chordwiseRes() {return s_iChordwiseRes;}

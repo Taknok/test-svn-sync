@@ -1,6 +1,6 @@
 /****************************************************************************
 
-    gl3dPlaneView Class
+    gl3dBodyView Class
     Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
@@ -21,39 +21,36 @@
 
 #pragma once
 
-#include <xfl3d/gl3dxflview.h>
+#include <xfl3d/views/gl3dxflview.h>
 
-class Plane;
-class EditPlaneDlg;
+class Body;
+class GL3dBodyDlg;
 
-class gl3dPlaneView : public gl3dXflView
+class gl3dBodyView : public gl3dXflView
 {
     public:
-        gl3dPlaneView(QWidget *pParent = nullptr);
-        void setPlane(Plane*pPlane){m_pPlane = pPlane;}
+        gl3dBodyView(QWidget *pParent = nullptr);
+        void setBody(Body* pBody){m_pBody = pBody;}
+        void resetGLBody() {m_bResetglBody = true;}
 
     private:
         void glRenderView() override;
-
-        void paintOverlay() override;
-        void resizeGL(int width, int height) override;
-        void set3dRotationCenter(QPoint point);
+        void contextMenuEvent (QContextMenuEvent * event) override;
         bool intersectTheObject(Vector3d const &AA,  Vector3d const &BB, Vector3d &I) override;
 
         void glMake3dObjects() override;
+        void glMakePanels(QOpenGLBuffer &vbo, int nPanels, const Vector3d *pNode, const Panel *pPanel);
 
     public slots:
         void on3dReset() override;
 
-    private:
-        Plane const* m_pPlane;
-
-
-        EditPlaneDlg *m_pEditPlaneDlg;
 
     public:
-        bool m_bResetglSectionHighlight;
-        bool m_bResetglPlane, m_bResetglBody;
+        Body *m_pBody;
+
+        bool m_bResetglFrameHighlight;
+        bool m_bResetglBody;
+
 };
 
 

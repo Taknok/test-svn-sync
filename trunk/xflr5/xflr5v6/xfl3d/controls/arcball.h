@@ -26,7 +26,6 @@
 #define ROLL  -110.0
 #define PITCH   0.0
 
-#include <xflgeom/geom3d/vector3d.h>
 #include <xflgeom/geom3d/quaternion.h>
 
 

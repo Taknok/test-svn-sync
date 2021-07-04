@@ -26,7 +26,7 @@
 #include "xflr5app.h"
 #include <globals/mainframe.h>
 #include <xflcore/trace.h>
-
+#include <xfl3d/views/gl3dview.h>
 
 void customLogHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
@@ -59,6 +59,59 @@ void customLogHandler(QtMsgType type, const QMessageLogContext& context, const Q
     }
 
     if(g_bTrace) Trace(msg);
+}
+
+
+
+/** OpenGL Default format must be set prior to app construction if Qt::AA_ShareOpenGLContexts is set */
+void setOGLDefaultFormat(int version)
+{
+#if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
+    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+#elif defined Q_OS_LINUX
+    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+#else
+    QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
+#endif
+    // Load preferred OpenGL version
+    // and set the default format before any 3d view is created
+    int OGLMajor = 3;
+    int OGLMinor = 3;
+    if(QFile(settings.fileName()).exists())
+    {
+        gl3dView::loadSettings(settings);
+        OGLMajor = gl3dView::oglMajor();
+        OGLMinor = gl3dView::oglMinor();
+    }
+
+    if(version>0)
+    {
+        OGLMajor = int(version/10);
+        OGLMinor = version - 10*OGLMajor;
+        qDebug()<<"setting context"<<OGLMajor<<OGLMinor;
+    }
+
+    // choose between the version passed as option if valid and the saved setting
+
+    if(OGLMajor<=2 || (OGLMajor==3 && OGLMinor<3))
+    {
+        // Systems (may? commonly?) respond with the latest 4.x context,
+        // so force deprecated functions and compatibility profile
+        // Will also force v120 style shaders in GL initialization
+        gl3dView::setProfile(QSurfaceFormat::NoProfile);
+        gl3dView::setDeprecatedFuncs(true);
+    }
+    else
+    {
+        gl3dView::setProfile(QSurfaceFormat::CoreProfile);
+        gl3dView::setDeprecatedFuncs(false);
+    }
+
+    gl3dView::setOGLVersion(OGLMajor, OGLMinor);
+
+    if(gl3dView::defaultXflSurfaceFormat().samples()<0) gl3dView::setDefaultSamples(4);
+
+    QSurfaceFormat::setDefaultFormat(gl3dView::defaultXflSurfaceFormat()); // for all QOpenGLWidgets
 }
 
 /**
@@ -101,33 +154,31 @@ int main(int argc, char *argv[])
     qDebug()<<strange;*/
 #endif
 
-/*    QSurfaceFormat defaultFormat = QSurfaceFormat::defaultFormat();
-    defaultFormat.setVersion(3, 3);
-//    defaultFormat.setProfile(QSurfaceFormat::CompatibilityProfile); //only relevant for 3.2+
-    QSurfaceFormat::setDefaultFormat(defaultFormat);*/
 
-/*
-#ifdef QT_DEBUG
-    QString strange;
-    strange = QString::asprintf("App default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
-    qDebug()<<strange;
-    switch (QSurfaceFormat::defaultFormat().profile()) {
-        case QSurfaceFormat::NoProfile:
-                qDebug()<<"   No Profile";
-            break;
-        case QSurfaceFormat::CoreProfile:
-                qDebug()<<"   Core Profile";
-            break;
-        case QSurfaceFormat::CompatibilityProfile:
-                qDebug()<<"   Compatibility Profile";
-            break;
-        default:
-            break;
+    qInstallMessageHandler(&customLogHandler);
+
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+
+    /*To set up sharing between QOpenGLWidget instances belonging to different windows,
+     * set the Qt::AA_ShareOpenGLContexts application attribute before instantiating QApplication.
+     * This will trigger sharing between all QOpenGLWidget instances without any further steps.*/
+    QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+//    QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
+//    QCoreApplication::setAttribute(Qt::AA_UseOpenGLES);
+//    qDebug()<<QCoreApplication::testAttribute(Qt::AA_ShareOpenGLContexts);
+
+    int version = -1;
+    for(int i=0; i<argc; i++)
+    {
+        QString strange = argv[i];
+        if(strange.compare("-o", Qt::CaseSensitive)==0 && i<argc-1)
+        {
+            version = QString(argv[i+1]).toInt();
+            qDebug()<<"OGL version" << version << "requested";
+        }
     }
-#endif*/
-
-    QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
-
+    setOGLDefaultFormat(version);
     qInstallMessageHandler(&customLogHandler);
     XFLR5App app(argc, argv);
 

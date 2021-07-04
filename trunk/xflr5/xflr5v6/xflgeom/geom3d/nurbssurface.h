@@ -57,6 +57,7 @@ class NURBSSurface
         double getu(double pos, double v) const;
         double getv(double u, Vector3d r) const;
         void   getPoint(double u, double v, Vector3d &Pt) const;
+        void   getNormal(double u, double v, Vector3d &N) const;
         Vector3d point(double u, double v) const;
         void   insertFrame(Frame *pNewFrame);
         bool   intersectNURBS(Vector3d A, Vector3d B, Vector3d &I) const;
@@ -70,6 +71,9 @@ class NURBSSurface
         double weight(const double &d, int const &i, int const &N) const;
 
         double splineBlend(int const &index, int const &p, double const &t, const double *knots) const;
+
+        double basis(int i, int deg, double t, const double *knots) const;
+        double basisDerivative(int i, int deg, double t, const double *knots) const;
 
     private:
         QVector<Frame*> m_pFrame;            /**< a pointer to the array of Frame objects */
