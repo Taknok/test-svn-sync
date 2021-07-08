@@ -1,7 +1,7 @@
 /****************************************************************************
 
     WingScaleDlg Class
-    Copyright (C) 2009 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,10 +20,13 @@
 *****************************************************************************/
 
 #include <QPushButton>
+#include <QFontDatabase>
+#include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QLabel>
 
 #include "wingscaledlg.h"
+
 #include <xflcore/xflcore.h>
 #include <xflcore/units.h>
 #include <xflwidgets/customwts/doubleedit.h>
@@ -48,53 +51,69 @@ void WingScaleDlg::setupLayout()
 {
     QGridLayout *pScaleLayout = new QGridLayout;
     {
-        m_pctrlSpan  = new QCheckBox(tr("Span scaling"));
-        m_pctrlChord = new QCheckBox(tr("Chord scaling"));
-        m_pctrlSweep = new QCheckBox(tr("Sweep scaling"));
-        m_pctrlTwist = new QCheckBox(tr("Twist scaling"));
-        m_pctrlScaleArea = new QCheckBox(tr("Area scaling"));
-        m_pctrlScaleAR   = new QCheckBox(tr("Aspect ratio scaling"));
-        m_pctrlScaleTR   = new QCheckBox(tr("Taper ratio scaling"));
+        m_pchSpan  = new QCheckBox(tr("Span scaling"));
+        m_pchChord = new QCheckBox(tr("Chord scaling"));
+        m_pchSweep = new QCheckBox(tr("Sweep scaling"));
+        m_pchTwist = new QCheckBox(tr("Twist scaling"));
+        m_pchScaleArea = new QCheckBox(tr("Area scaling"));
+        m_pchScaleAR   = new QCheckBox(tr("Aspect ratio scaling"));
+        m_pchScaleTR   = new QCheckBox(tr("Taper ratio scaling"));
 
-        m_pctrlNewSpan  = new DoubleEdit(0,3);
-        m_pctrlNewChord = new DoubleEdit(0,3);
-        m_pctrlNewTwist = new DoubleEdit(0,3);
-        m_pctrlNewSweep = new DoubleEdit(0,3);
-        m_pctrlNewArea  = new DoubleEdit(0,3);
-        m_pctrlNewAR    = new DoubleEdit(0,3);
-        m_pctrlNewTR    = new DoubleEdit(0,3);
+        m_pdeNewSpan  = new DoubleEdit(0,3);
+        m_pdeNewChord = new DoubleEdit(0,3);
+        m_pdeNewTwist = new DoubleEdit(0,3);
+        m_pdeNewSweep = new DoubleEdit(0,3);
+        m_pdeNewArea  = new DoubleEdit(0,3);
+        m_pdeNewAR    = new DoubleEdit(0,3);
+        m_pdeNewTR    = new DoubleEdit(0,3);
 
-        m_pctrlRefSpan  = new QLabel("0.000");
-        m_pctrlRefChord = new QLabel("0.000");
-        m_pctrlRefSweep = new QLabel("0.000");
-        m_pctrlRefTwist = new QLabel("0.000");
-        m_pctrlRefArea  = new QLabel("0.000");
-        m_pctrlRefAR    = new QLabel("0.000");
-        m_pctrlRefTR    = new QLabel("0.000");
+        m_plabRefSpan  = new QLabel("0.000");
+        m_plabRefChord = new QLabel("0.000");
+        m_plabRefSweep = new QLabel("0.000");
+        m_plabRefTwist = new QLabel("0.000");
+        m_plabRefArea  = new QLabel("0.000");
+        m_plabRefAR    = new QLabel("0.000");
+        m_plabRefTR    = new QLabel("0.000");
 
-        m_pctrlRefSpan->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        m_pctrlRefChord->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        m_pctrlRefSweep->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        m_pctrlRefTwist->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        m_pctrlRefArea->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        m_pctrlRefAR->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        m_pctrlRefTR->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        m_plabRefSpan->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+        m_plabRefChord->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+        m_plabRefSweep->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+        m_plabRefTwist->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+        m_plabRefArea->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+        m_plabRefAR->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+        m_plabRefTR->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 
-        m_pctrlSpanRatio  = new QLabel("1.000");
-        m_pctrlChordRatio = new QLabel("1.000");
-        m_pctrlSweepRatio = new QLabel("1.000");
-        m_pctrlTwistRatio = new QLabel("1.000");
-        m_pctrlAreaRatio  = new QLabel("1.000");
-        m_pctrlARRatio    = new QLabel("1.000");
-        m_pctrlTRRatio    = new QLabel("1.000");
+        m_plabRefSpan->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
+        m_plabRefChord->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        m_plabRefSweep->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        m_plabRefTwist->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        m_plabRefArea->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
+        m_plabRefAR->setAlignment(   Qt::AlignRight | Qt::AlignVCenter);
+        m_plabRefTR->setAlignment(   Qt::AlignRight | Qt::AlignVCenter);
 
-        m_pctrlSpanRatio->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        m_pctrlChordRatio->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        m_pctrlSweepRatio->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        m_pctrlTwistRatio->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        m_pctrlAreaRatio->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        m_pctrlARRatio->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        m_pctrlTRRatio->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        m_plabSpanRatio  = new QLabel("1.000");
+        m_plabChordRatio = new QLabel("1.000");
+        m_plabSweepRatio = new QLabel("1.000");
+        m_plabTwistRatio = new QLabel("1.000");
+        m_plabAreaRatio  = new QLabel("1.000");
+        m_plabARRatio    = new QLabel("1.000");
+        m_plabTRRatio    = new QLabel("1.000");
+
+        m_plabSpanRatio->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+        m_plabChordRatio->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+        m_plabSweepRatio->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+        m_plabTwistRatio->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+        m_plabAreaRatio->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+        m_plabARRatio->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+        m_plabTRRatio->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+
+        m_plabSpanRatio->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
+        m_plabChordRatio->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        m_plabSweepRatio->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        m_plabTwistRatio->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        m_plabAreaRatio->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
+        m_plabARRatio->setAlignment(   Qt::AlignRight | Qt::AlignVCenter);
+        m_plabTRRatio->setAlignment(   Qt::AlignRight | Qt::AlignVCenter);
 
         QLabel *lab11 = new QLabel(tr("Reference"));
         QLabel *lab12 = new QLabel(tr("New"));
@@ -106,40 +125,35 @@ void WingScaleDlg::setupLayout()
         pScaleLayout->addWidget(lab12, 1,3);
         pScaleLayout->addWidget(lab13, 1,5);
 
-        pScaleLayout->addWidget(m_pctrlSpan,      2,1);
-        pScaleLayout->addWidget(m_pctrlRefSpan,   2,2);
-        pScaleLayout->addWidget(m_pctrlNewSpan,   2,3);
-        pScaleLayout->addWidget(m_pctrlSpanRatio, 2,5);
+        pScaleLayout->addWidget(m_pchSpan,       2,1);
+        pScaleLayout->addWidget(m_plabRefSpan,   2,2);
+        pScaleLayout->addWidget(m_pdeNewSpan,    2,3);
+        pScaleLayout->addWidget(m_plabSpanRatio, 2,5);
 
-        pScaleLayout->addWidget(m_pctrlChord,     3,1);
-        pScaleLayout->addWidget(m_pctrlRefChord,  3,2);
-        pScaleLayout->addWidget(m_pctrlNewChord,  3,3);
-        pScaleLayout->addWidget(m_pctrlChordRatio,3,5);
+        pScaleLayout->addWidget(m_pchChord,      3,1);
+        pScaleLayout->addWidget(m_plabRefChord,  3,2);
+        pScaleLayout->addWidget(m_pdeNewChord,   3,3);
+        pScaleLayout->addWidget(m_plabChordRatio,3,5);
 
-        pScaleLayout->addWidget(m_pctrlSweep,     4,1);
-        pScaleLayout->addWidget(m_pctrlRefSweep,  4,2);
-        pScaleLayout->addWidget(m_pctrlNewSweep,  4,3);
-        pScaleLayout->addWidget(m_pctrlSweepRatio,4,5);
+        pScaleLayout->addWidget(m_pchSweep,      4,1);
+        pScaleLayout->addWidget(m_plabRefSweep,  4,2);
+        pScaleLayout->addWidget(m_pdeNewSweep,   4,3);
+        pScaleLayout->addWidget(m_plabSweepRatio,4,5);
 
-        pScaleLayout->addWidget(m_pctrlTwist,     5,1);
-        pScaleLayout->addWidget(m_pctrlRefTwist,  5,2);
-        pScaleLayout->addWidget(m_pctrlNewTwist,  5,3);
-        pScaleLayout->addWidget(m_pctrlTwistRatio,5,5);
+        pScaleLayout->addWidget(m_pchTwist,      5,1);
+        pScaleLayout->addWidget(m_plabRefTwist,  5,2);
+        pScaleLayout->addWidget(m_pdeNewTwist,   5,3);
+        pScaleLayout->addWidget(m_plabTwistRatio,5,5);
 
-        pScaleLayout->addWidget(m_pctrlScaleArea, 6,1);
-        pScaleLayout->addWidget(m_pctrlRefArea,   6,2);
-        pScaleLayout->addWidget(m_pctrlNewArea,   6,3);
-        pScaleLayout->addWidget(m_pctrlAreaRatio, 6,5);
+        pScaleLayout->addWidget(m_pchScaleArea,  6,1);
+        pScaleLayout->addWidget(m_plabRefArea,   6,2);
+        pScaleLayout->addWidget(m_pdeNewArea,    6,3);
+        pScaleLayout->addWidget(m_plabAreaRatio, 6,5);
 
-        pScaleLayout->addWidget(m_pctrlScaleAR, 7,1);
-        pScaleLayout->addWidget(m_pctrlRefAR,   7,2);
-        pScaleLayout->addWidget(m_pctrlNewAR,   7,3);
-        pScaleLayout->addWidget(m_pctrlARRatio, 7,5);
-
-        /*        pScaleLayout->addWidget(m_pctrlScaleTR, 8,1);
-        pScaleLayout->addWidget(m_pctrlRefTR,   8,2);
-        pScaleLayout->addWidget(m_pctrlNewTR,   8,3);
-        pScaleLayout->addWidget(m_pctrlTRRatio, 8,5);*/
+        pScaleLayout->addWidget(m_pchScaleAR,    7,1);
+        pScaleLayout->addWidget(m_plabRefAR,     7,2);
+        pScaleLayout->addWidget(m_pdeNewAR,      7,3);
+        pScaleLayout->addWidget(m_plabARRatio,   7,5);
 
         QString unitLabel;
         Units::getLengthUnitLabel(unitLabel);
@@ -158,53 +172,35 @@ void WingScaleDlg::setupLayout()
         pScaleLayout->addWidget(pAreaUnit,    6, 4);
     }
 
-    QHBoxLayout *pCommandButtons = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     {
-        QPushButton *OKButton = new QPushButton(tr("OK"));
-        QPushButton *CancelButton = new QPushButton(tr("Cancel"));
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(OKButton);
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(CancelButton);
-        pCommandButtons->addStretch(1);
-
-        connect(OKButton, SIGNAL(clicked()), this, SLOT(onOK()));
-        connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
-
-    /*    QHBoxLayout *pStretchLayout = new QHBoxLayout;
-    {
-        pStretchLayout->addStretch(1);
-        pStretchLayout->addLayout(pScaleLayout);
-        pStretchLayout->addStretch(1);
-    }*/
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        pMainLayout->addStretch(1);
         pMainLayout->addLayout(pScaleLayout);
         pMainLayout->addStretch(1);
-        pMainLayout->addLayout(pCommandButtons);
-        pMainLayout->addStretch(1);
+        pMainLayout->addWidget(m_pButtonBox);
     }
 
     setLayout(pMainLayout);
 
-    connect(m_pctrlSpan,  SIGNAL(clicked()), this, SLOT(onClickedCheckBox()));
-    connect(m_pctrlChord, SIGNAL(clicked()), this, SLOT(onClickedCheckBox()));
-    connect(m_pctrlSweep, SIGNAL(clicked()), this, SLOT(onClickedCheckBox()));
-    connect(m_pctrlTwist, SIGNAL(clicked()), this, SLOT(onClickedCheckBox()));
-    connect(m_pctrlScaleArea, SIGNAL(clicked()), this, SLOT(onClickedCheckBox()));
-    connect(m_pctrlScaleAR, SIGNAL(clicked()), this, SLOT(onClickedCheckBox()));
-    connect(m_pctrlScaleTR, SIGNAL(clicked()), this, SLOT(onClickedCheckBox()));
+    connect(m_pchSpan,       SIGNAL(clicked()),      SLOT(onClickedCheckBox()));
+    connect(m_pchChord,      SIGNAL(clicked()),      SLOT(onClickedCheckBox()));
+    connect(m_pchSweep,      SIGNAL(clicked()),      SLOT(onClickedCheckBox()));
+    connect(m_pchTwist,      SIGNAL(clicked()),      SLOT(onClickedCheckBox()));
+    connect(m_pchScaleArea,  SIGNAL(clicked()),      SLOT(onClickedCheckBox()));
+    connect(m_pchScaleAR,    SIGNAL(clicked()),      SLOT(onClickedCheckBox()));
+    connect(m_pchScaleTR,    SIGNAL(clicked()),      SLOT(onClickedCheckBox()));
 
-    connect(m_pctrlNewSpan,  SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pctrlNewChord, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pctrlNewSweep, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pctrlNewTwist, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pctrlNewArea, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pctrlNewAR, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pctrlNewTR, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+    connect(m_pdeNewSpan,    SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeNewChord,   SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeNewSweep,   SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeNewTwist,   SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeNewArea,    SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeNewAR,      SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeNewTR,      SIGNAL(valueChanged()), SLOT(onEditingFinished()));
 }
 
 
@@ -227,45 +223,45 @@ void WingScaleDlg::initDialog(double const &RefSpan, double const &RefChord, dou
     m_NewAR    = RefAR;
     m_NewTR    = RefTR;
 
-    m_pctrlSpan->setChecked(m_bSpan);//(false)
-    m_pctrlChord->setChecked(m_bChord);
-    m_pctrlTwist->setChecked(m_bTwist);
-    m_pctrlSweep->setChecked(m_bSweep);
-    m_pctrlScaleArea->setChecked(m_bArea);
-    m_pctrlScaleAR->setChecked(m_bAR);
-    m_pctrlScaleTR->setChecked(m_bTR);
+    m_pchSpan->setChecked(m_bSpan);//(false)
+    m_pchChord->setChecked(m_bChord);
+    m_pchTwist->setChecked(m_bTwist);
+    m_pchSweep->setChecked(m_bSweep);
+    m_pchScaleArea->setChecked(m_bArea);
+    m_pchScaleAR->setChecked(m_bAR);
+    m_pchScaleTR->setChecked(m_bTR);
 
     QString strong;
 
     strong = QString("%1").arg(m_RefSpan * Units::mtoUnit(),8,'f',3);
-    m_pctrlRefSpan->setText(strong);
+    m_plabRefSpan->setText(strong);
 
     strong = QString("%1").arg(m_RefChord * Units::mtoUnit(),8,'f',3);
-    m_pctrlRefChord->setText(strong);
+    m_plabRefChord->setText(strong);
 
     strong = QString("%1").arg(m_RefSweep,8,'f',2);
     strong += QChar(0260);
-    m_pctrlRefSweep->setText(strong);
+    m_plabRefSweep->setText(strong);
 
     strong = QString("%1").arg(m_RefTwist,8,'f',2);
-    m_pctrlRefTwist->setText(strong);
+    m_plabRefTwist->setText(strong);
 
     strong = QString ("%1").arg(m_RefArea *Units::m2toUnit(), 8,'f',3);
-    m_pctrlRefArea->setText(strong);
+    m_plabRefArea->setText(strong);
 
     strong = QString ("%1").arg(m_RefAR , 8,'f',3);
-    m_pctrlRefAR->setText(strong);
+    m_plabRefAR->setText(strong);
 
     strong = QString ("%1").arg(m_RefTR , 8,'f',3);
-    m_pctrlRefTR->setText(strong);
+    m_plabRefTR->setText(strong);
 
-    m_pctrlNewSpan->setValue(m_NewSpan * Units::mtoUnit());
-    m_pctrlNewChord->setValue(m_NewChord * Units::mtoUnit());
-    m_pctrlNewSweep->setValue(m_NewSweep);
-    m_pctrlNewTwist->setValue(m_NewTwist);
-    m_pctrlNewArea->setValue(m_NewArea*Units::m2toUnit());
-    m_pctrlNewAR->setValue(m_NewAR);
-    m_pctrlNewTR->setValue(m_NewTR);
+    m_pdeNewSpan->setValue(m_NewSpan * Units::mtoUnit());
+    m_pdeNewChord->setValue(m_NewChord * Units::mtoUnit());
+    m_pdeNewSweep->setValue(m_NewSweep);
+    m_pdeNewTwist->setValue(m_NewTwist);
+    m_pdeNewArea->setValue(m_NewArea*Units::m2toUnit());
+    m_pdeNewAR->setValue(m_NewAR);
+    m_pdeNewTR->setValue(m_NewTR);
 
     setResults();
     enableControls();
@@ -277,6 +273,13 @@ void WingScaleDlg::onClickedCheckBox()
 {
     readData();
     enableControls();
+}
+
+
+void WingScaleDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)     == pButton)  onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
 }
 
 
@@ -293,36 +296,61 @@ void WingScaleDlg::onEditingFinished()
 }
 
 
+void WingScaleDlg::keyPressEvent(QKeyEvent *event)
+{
+    // Prevent Return Key from closing App
+    switch (event->key())
+    {
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+        {
+            if(!m_pButtonBox->hasFocus())
+            {
+                m_pButtonBox->setFocus();
+            }
+            return;
+        }
+        case Qt::Key_Escape:
+        {
+            reject();
+            break;
+        }
+        default:
+            event->ignore();
+    }
+}
+
+
 
 void WingScaleDlg::enableControls()
 {
-    m_pctrlNewSpan->setEnabled(m_bSpan);
-    m_pctrlNewChord->setEnabled(m_bChord);
-    m_pctrlNewSweep->setEnabled(m_bSweep);
-    m_pctrlNewTwist->setEnabled(m_bTwist);
-    m_pctrlNewArea->setEnabled(m_bArea);
-    m_pctrlNewAR->setEnabled(m_bAR);
-    m_pctrlNewTR->setEnabled(m_bTR);
+    m_pdeNewSpan->setEnabled(m_bSpan);
+    m_pdeNewChord->setEnabled(m_bChord);
+    m_pdeNewSweep->setEnabled(m_bSweep);
+    m_pdeNewTwist->setEnabled(m_bTwist);
+    m_pdeNewArea->setEnabled(m_bArea);
+    m_pdeNewAR->setEnabled(m_bAR);
+    m_pdeNewTR->setEnabled(m_bTR);
 }
 
 
 void WingScaleDlg::readData()
 {
-    m_bSpan  = m_pctrlSpan->isChecked();
-    m_bChord = m_pctrlChord->isChecked();
-    m_bSweep = m_pctrlSweep->isChecked();
-    m_bTwist = m_pctrlTwist->isChecked();
-    m_bArea  = m_pctrlScaleArea->isChecked();
-    m_bAR    = m_pctrlScaleAR->isChecked();
-    m_bTR    = m_pctrlScaleTR->isChecked();
+    m_bSpan  = m_pchSpan->isChecked();
+    m_bChord = m_pchChord->isChecked();
+    m_bSweep = m_pchSweep->isChecked();
+    m_bTwist = m_pchTwist->isChecked();
+    m_bArea  = m_pchScaleArea->isChecked();
+    m_bAR    = m_pchScaleAR->isChecked();
+    m_bTR    = m_pchScaleTR->isChecked();
 
-    m_NewSpan  = m_pctrlNewSpan->value()  / Units::mtoUnit();
-    m_NewChord = m_pctrlNewChord->value() / Units::mtoUnit();
-    m_NewSweep = m_pctrlNewSweep->value();
-    m_NewTwist = m_pctrlNewTwist->value();
-    m_NewArea  = m_pctrlNewArea->value() /Units::m2toUnit();
-    m_NewAR    = m_pctrlNewAR->value();
-    m_NewTR    = m_pctrlNewTR->value();
+    m_NewSpan  = m_pdeNewSpan->value()  / Units::mtoUnit();
+    m_NewChord = m_pdeNewChord->value() / Units::mtoUnit();
+    m_NewSweep = m_pdeNewSweep->value();
+    m_NewTwist = m_pdeNewTwist->value();
+    m_NewArea  = m_pdeNewArea->value() /Units::m2toUnit();
+    m_NewAR    = m_pdeNewAR->value();
+    m_NewTR    = m_pdeNewTR->value();
 }
 
 
@@ -332,31 +360,31 @@ void WingScaleDlg::setResults()
 
     if(m_RefSpan>0.0)  strong = QString("%1").arg(m_NewSpan/m_RefSpan, 6,'f',3);
     else               strong =" 1.000";
-    m_pctrlSpanRatio->setText(strong);
+    m_plabSpanRatio->setText(strong);
 
     if(m_RefChord>0.0) strong = QString("%1").arg(m_NewChord/m_RefChord, 6,'f',3);
     else               strong =" 1.000";
-    m_pctrlChordRatio->setText(strong);
+    m_plabChordRatio->setText(strong);
 
     if(m_RefSweep>0.0) strong = QString("%1").arg(m_NewSweep/m_RefSweep, 6,'f',3);
     else               strong =" 1.000";
-    m_pctrlSweepRatio->setText(strong);
+    m_plabSweepRatio->setText(strong);
 
     if(m_RefTwist>0.0) strong = QString("%1").arg(m_NewTwist/m_RefTwist, 6,'f',3);
     else               strong =" 1.000";
-    m_pctrlTwistRatio->setText(strong);
+    m_plabTwistRatio->setText(strong);
 
     if(m_RefArea>0.0)  strong = QString("%1").arg(m_NewArea/m_RefArea, 6,'f',3);
     else               strong =" 1.000";
-    m_pctrlAreaRatio->setText(strong);
+    m_plabAreaRatio->setText(strong);
 
     if(m_RefAR>0.0)    strong = QString("%1").arg(m_NewAR/m_RefAR, 6,'f',3);
     else               strong =" 1.000";
-    m_pctrlARRatio->setText(strong);
+    m_plabARRatio->setText(strong);
 
     if(m_RefTR>0.0)    strong = QString("%1").arg(m_NewTR/m_RefTR, 6,'f',3);
     else               strong =" 1.000";
-    m_pctrlTRRatio->setText(strong);
+    m_plabTRRatio->setText(strong);
 }
 
 
