@@ -1,7 +1,7 @@
 /****************************************************************************
 
-    FoilSelectionDlg Classes
-        Copyright (C) 2009 André Deperrois 
+    FoilSelectionDlg Classe
+    Copyright (C)  André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -58,8 +58,8 @@ void FoilSelectionDlg::setupLayout()
         pMainLayout->addWidget(m_pButtonBox);
     }
 
-    connect(m_plwNameList, SIGNAL(itemClicked(QListWidgetItem *)),       SLOT(onSelChangeList(QListWidgetItem *)));
-    connect(m_plwNameList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), SLOT(onDoubleClickList(QListWidgetItem *)));
+    connect(m_plwNameList, SIGNAL(itemClicked(QListWidgetItem*)),       SLOT(onSelChangeList(QListWidgetItem*)));
+    connect(m_plwNameList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(onDoubleClickList(QListWidgetItem*)));
 
     setLayout(pMainLayout);
 }

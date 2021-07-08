@@ -1,7 +1,7 @@
 /****************************************************************************
 
-    FoilSelectionDlg Classes
-        Copyright (C) 2009 André Deperrois
+    FoilSelectionDlg Classe
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,8 +20,7 @@
 *****************************************************************************/
 
 
-#ifndef FOILSELECTIONDLG_H
-#define FOILSELECTIONDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QListWidget>
@@ -36,34 +35,32 @@ class FoilSelectionDlg : public QDialog
 {
     Q_OBJECT
 
-public:
-    FoilSelectionDlg(QWidget *pParent);
+    public:
+        FoilSelectionDlg(QWidget *pParent);
 
-    void setFoilName(QString name) {m_FoilName=name;}
-    QString const &selectedFoilName() const {return m_FoilName;}
-    void initDialog(const QVector<Foil *> *FoilList, const QStringList &FoilSelList);
+        void setFoilName(QString name) {m_FoilName=name;}
+        QString const &selectedFoilName() const {return m_FoilName;}
+        void initDialog(const QVector<Foil *> *FoilList, const QStringList &FoilSelList);
 
-    void setFoilList(QVector<Foil*> const &foilList) {m_FoilList = foilList;}
-    QVector<Foil*> const &foilList() const {return m_FoilList;}
-    QStringList const &foilSelectionList() const {return m_FoilSelectionList;}
+        void setFoilList(QVector<Foil*> const &foilList) {m_FoilList = foilList;}
+        QVector<Foil*> const &foilList() const {return m_FoilList;}
+        QStringList const &foilSelectionList() const {return m_FoilSelectionList;}
 
-private slots:
-    void onOK();
-    void onSelChangeList(QListWidgetItem *);
-    void onDoubleClickList(QListWidgetItem *);
-    void onSelectAll();
-    void onButton(QAbstractButton *pButton);
+    private slots:
+        void onOK();
+        void onSelChangeList(QListWidgetItem *);
+        void onDoubleClickList(QListWidgetItem *);
+        void onSelectAll();
+        void onButton(QAbstractButton *pButton);
 
-private:
-    void setupLayout();
+    private:
+        void setupLayout();
 
-    QDialogButtonBox *m_pButtonBox;
-    QPushButton *m_ppbSelectAll;
-    QListWidget *m_plwNameList;
-    QString m_FoilName;
+        QDialogButtonBox *m_pButtonBox;
+        QPushButton *m_ppbSelectAll;
+        QListWidget *m_plwNameList;
+        QString m_FoilName;
 
-    QVector<Foil*> m_FoilList; /** in input, the array of all foil pointers, in output, pointers to the selected foils @todo make two lists*/
-    QStringList m_FoilSelectionList;
+        QVector<Foil*> m_FoilList; /** in input, the array of all foil pointers, in output, pointers to the selected foils @todo make two lists*/
+        QStringList m_FoilSelectionList;
 };
-
-#endif // FOILSELECTIONDLG_H

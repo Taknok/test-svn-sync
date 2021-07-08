@@ -1,7 +1,7 @@
 /****************************************************************************
 
     InterpolateFoilsDlg Class
-    Copyright (C) 2008-2017 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,14 +21,14 @@
 
 
 
-#ifndef INTERPOLATEFOILSDLG_H
-#define INTERPOLATEFOILSDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QPushButton>
 #include <QComboBox>
 #include <QLabel>
 #include <QSlider>
+#include <QDialogButtonBox>
 
 class XFoil;
 class Foil;
@@ -38,40 +38,44 @@ class InterpolateFoilsDlg : public QDialog
 {
     Q_OBJECT
 
+    public:
+        InterpolateFoilsDlg(QWidget *pParent);
+        void initDialog();
+        void setupLayout();
+        void update();
 
-public:
-    InterpolateFoilsDlg(QWidget *pParent);
-    void initDialog();
-    void setupLayout();
-    void update();
+    private:
+        QSize sizeHint() const override {return QSize(500,500);}
+        void keyPressEvent(QKeyEvent *event) override;
 
-private slots:
-    void onSelChangeFoil1(int);
-    void onSelChangeFoil2(int);
-    void onFrac();
-    void onOK();
-    void onVScroll(int val);
-
-    void keyPressEvent(QKeyEvent *event) override;
-
-private:
-    QComboBox *m_pctrlFoil1, *m_pctrlFoil2;
-    QLabel *m_pctrlCamb1, *m_pctrlCamb2, *m_pctrlThick1, *m_pctrlThick2;
-    QLabel *m_pctrlCamb3, *m_pctrlThick3;
-    QSlider *m_pctrlSlider;
-    DoubleEdit *m_pctrlFrac;
-    QPushButton *OKButton, *CancelButton;
-
-public:
-
-    Foil* m_pBufferFoil;
-
-    QWidget *m_pParent;
-    double m_Frac;
-    QString m_NewFoilName;
+    private slots:
+        void onSelChangeFoil1(int);
+        void onSelChangeFoil2(int);
+        void onFrac();
+        void onOK();
+        void onVScroll(int val);
+        void onButton(QAbstractButton *pButton);
 
 
-    static XFoil *s_pXFoil;
+    private:
+        QComboBox *m_pctrlFoil1, *m_pctrlFoil2;
+        QLabel *m_plabCamb1, *m_plabCamb2, *m_plabThick1, *m_plabThick2;
+        QLabel *m_plabCamb3, *m_plabThick3;
+        QSlider *m_pslMix;
+        DoubleEdit *m_pdeFrac;
+
+        QDialogButtonBox *m_pButtonBox;
+
+    public:
+
+        Foil* m_pBufferFoil;
+
+        QWidget *m_pParent;
+        double m_Frac;
+        QString m_NewFoilName;
+
+
+        static XFoil *s_pXFoil;
 };
 
-#endif // INTERPOLATEFOILSDLG_H
+

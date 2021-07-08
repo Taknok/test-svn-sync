@@ -1,7 +1,7 @@
 /****************************************************************************
 
     InterpolateFoilsDlg Class
-    Copyright (C) 2008-2017 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -45,8 +45,8 @@ InterpolateFoilsDlg::InterpolateFoilsDlg(QWidget *pParent) : QDialog(pParent)
 
     connect(m_pctrlFoil1,  SIGNAL(activated(int)),    this, SLOT(onSelChangeFoil1(int)));
     connect(m_pctrlFoil2,  SIGNAL(activated(int)),    this, SLOT(onSelChangeFoil2(int)));
-    connect(m_pctrlFrac,   SIGNAL(editingFinished()), this, SLOT(onFrac()));
-    connect(m_pctrlSlider, SIGNAL(sliderMoved(int)),  this, SLOT(onVScroll(int)));
+    connect(m_pdeFrac,   SIGNAL(editingFinished()), this, SLOT(onFrac()));
+    connect(m_pslMix, SIGNAL(sliderMoved(int)),  this, SLOT(onVScroll(int)));
 }
 
 
@@ -57,60 +57,52 @@ void InterpolateFoilsDlg::setupLayout()
         m_pctrlFoil1 = new QComboBox;
         m_pctrlFoil1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         m_pctrlFoil2 = new QComboBox;
-        m_pctrlCamb1 = new QLabel(tr("Camb1"));
-        m_pctrlCamb2 = new QLabel(tr("Camb2"));
-        m_pctrlThick1 = new QLabel(tr("Thick1"));
-        m_pctrlThick2 = new QLabel(tr("Thick2"));
-        m_pctrlCamb1->setMinimumWidth(250);
-        m_pctrlCamb2->setMinimumWidth(250);
-        m_pctrlThick1->setMinimumWidth(250);
-        m_pctrlThick2->setMinimumWidth(250);
+        m_plabCamb1 = new QLabel(tr("Camb1"));
+        m_plabCamb2 = new QLabel(tr("Camb2"));
+        m_plabThick1 = new QLabel(tr("Thick1"));
+        m_plabThick2 = new QLabel(tr("Thick2"));
+        m_plabCamb1->setMinimumWidth(250);
+        m_plabCamb2->setMinimumWidth(250);
+        m_plabThick1->setMinimumWidth(250);
+        m_plabThick2->setMinimumWidth(250);
         pLeftSide->addWidget(m_pctrlFoil1);
-        pLeftSide->addWidget(m_pctrlCamb1);
-        pLeftSide->addWidget(m_pctrlThick1);
+        pLeftSide->addWidget(m_plabCamb1);
+        pLeftSide->addWidget(m_plabThick1);
         pLeftSide->addStretch(1);
         pLeftSide->addWidget(m_pctrlFoil2);
-        pLeftSide->addWidget(m_pctrlCamb2);
-        pLeftSide->addWidget(m_pctrlThick2);
+        pLeftSide->addWidget(m_plabCamb2);
+        pLeftSide->addWidget(m_plabThick2);
     }
 
 
-    m_pctrlSlider = new QSlider;
-    m_pctrlSlider->setMinimumHeight(300);
-    m_pctrlSlider->setMinimum(0);
-    m_pctrlSlider->setMaximum(SLIDERSCALE);
-    m_pctrlSlider->setTickInterval(SLIDERSCALE/10);
-    m_pctrlSlider->setTickPosition(QSlider::TicksLeft);
+    m_pslMix = new QSlider;
+    m_pslMix->setMinimumHeight(300);
+    m_pslMix->setMinimum(0);
+    m_pslMix->setMaximum(SLIDERSCALE);
+    m_pslMix->setTickInterval(SLIDERSCALE/10);
+    m_pslMix->setTickPosition(QSlider::TicksLeft);
 
 
     QVBoxLayout *pFoil3Layout = new QVBoxLayout;
     {
-        m_pctrlFrac = new DoubleEdit;
-        m_pctrlCamb3 = new QLabel(tr("Camb3"));
-        m_pctrlCamb3->setMinimumWidth(250);
-        m_pctrlThick3 = new QLabel(tr("Thick3"));
-        m_pctrlThick3->setMinimumWidth(250);
-        m_pctrlFrac->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-        m_pctrlCamb3->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-        m_pctrlThick3->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+        m_pdeFrac = new DoubleEdit;
+        m_plabCamb3 = new QLabel(tr("Camb3"));
+        m_plabCamb3->setMinimumWidth(250);
+        m_plabThick3 = new QLabel(tr("Thick3"));
+        m_plabThick3->setMinimumWidth(250);
+        m_pdeFrac->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+        m_plabCamb3->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+        m_plabThick3->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
         pFoil3Layout->addStretch();
-        pFoil3Layout->addWidget(m_pctrlFrac);
-        pFoil3Layout->addWidget(m_pctrlCamb3);
-        pFoil3Layout->addWidget(m_pctrlThick3);
+        pFoil3Layout->addWidget(m_pdeFrac);
+        pFoil3Layout->addWidget(m_plabCamb3);
+        pFoil3Layout->addWidget(m_plabThick3);
         pFoil3Layout->addStretch();
     }
 
-    QHBoxLayout *pCommandButtons = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     {
-        OKButton = new QPushButton(tr("OK"));
-        CancelButton = new QPushButton(tr("Cancel"));
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(OKButton);
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(CancelButton);
-        pCommandButtons->addStretch(1);
-        connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-        connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
 
 
@@ -118,19 +110,17 @@ void InterpolateFoilsDlg::setupLayout()
     {
         pColumnLayout->addLayout(pLeftSide);
         pColumnLayout->addStretch(1);
-        pColumnLayout->addWidget(m_pctrlSlider);
+        pColumnLayout->addWidget(m_pslMix);
         pColumnLayout->addLayout(pFoil3Layout);
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
         pMainLayout->addLayout(pColumnLayout);
-        pMainLayout->addLayout(pCommandButtons);
+        pMainLayout->addWidget(m_pButtonBox);
     }
 
     setLayout(pMainLayout);
-    setMinimumWidth(400);
-    setMinimumHeight(400);
 }
 
 
@@ -152,8 +142,8 @@ void InterpolateFoilsDlg::initDialog()
     m_pctrlFoil2->setCurrentIndex(1);
 
     m_Frac = 0.0;
-    m_pctrlFrac->setValue(100);
-    m_pctrlSlider->setSliderPosition(SLIDERSCALE);
+    m_pdeFrac->setValue(100);
+    m_pslMix->setSliderPosition(SLIDERSCALE);
 
     onSelChangeFoil1(0);
     onSelChangeFoil2(1);
@@ -169,14 +159,10 @@ void InterpolateFoilsDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus() )
             {
                 update();
-                OKButton->setFocus();
-            }
-            else if (OKButton->hasFocus())
-            {
-                onOK();
+                m_pButtonBox->setFocus();
             }
             break;
         }
@@ -205,14 +191,14 @@ void InterpolateFoilsDlg::onSelChangeFoil1(int)
         strong = QString(tr(" at x=%1")).arg(pFoil->xCamber()*100,5,'f',1);
         strong += "%";
         str+=strong;
-        m_pctrlCamb1->setText(str);
+        m_plabCamb1->setText(str);
 
         str = QString(tr("Thick.=%1")).arg(pFoil->thickness()*100,5,'f',2);
         str += "%";
         strong = QString(tr(" at x=%1")).arg(pFoil->xThickness()*100,5,'f',1);
         strong += "%";
         str+=strong;
-        m_pctrlThick1->setText(str);
+        m_plabThick1->setText(str);
 
         m_NewFoilName = pFoil->name();
     }
@@ -234,14 +220,14 @@ void InterpolateFoilsDlg::onSelChangeFoil2(int)
         strong = QString(tr(" at x=%1")).arg(pFoil->xCamber()*100,5,'f',1);
         strong += "%";
         str+=strong;
-        m_pctrlCamb2->setText(str);
+        m_plabCamb2->setText(str);
 
         str = QString(tr("Thick.=%1")).arg(pFoil->thickness()*100,5,'f',2);
         str += "%";
         strong = QString(tr(" at x=%1")).arg(pFoil->xThickness()*100,5,'f',1);
         strong += "%";
         str+=strong;
-        m_pctrlThick2->setText(str);
+        m_plabThick2->setText(str);
     }
     update();
 }
@@ -290,22 +276,29 @@ qDebug()<<"________";*/
     strong = QString(tr(" at x=%1")).arg(m_pBufferFoil->xCamber()*100,5,'f',1);
     strong += "%";
     str+=strong;
-    m_pctrlCamb3->setText(str);
+    m_plabCamb3->setText(str);
 
     str = QString(tr("Thick.=%1")).arg(m_pBufferFoil->thickness()*100,5,'f',2);
     str += "%";
     strong = QString(tr(" at x=%1")).arg(m_pBufferFoil->xThickness()*100,5,'f',1);
     strong += "%";
     str+=strong;
-    m_pctrlThick3->setText(str);
+    m_plabThick3->setText(str);
     m_pParent->update();
+}
+
+
+void InterpolateFoilsDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)     == pButton)  onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
 }
 
 
 void InterpolateFoilsDlg::onFrac()
 {
-    m_Frac = m_pctrlFrac->value();
-    m_pctrlSlider->setSliderPosition(int(m_Frac/100.0*SLIDERSCALE));
+    m_Frac = m_pdeFrac->value();
+    m_pslMix->setSliderPosition(int(m_Frac/100.0*SLIDERSCALE));
     m_Frac = 100.0 - m_Frac;
 
     update();
@@ -322,9 +315,9 @@ void InterpolateFoilsDlg::onOK()
 
 void InterpolateFoilsDlg::onVScroll(int val)
 {
-    val = m_pctrlSlider->sliderPosition();
+    val = m_pslMix->sliderPosition();
     m_Frac = (SLIDERSCALE - double(val))/SLIDERSCALE*100.0;
-    m_pctrlFrac->setValue(100.0-m_Frac);
+    m_pdeFrac->setValue(100.0-m_Frac);
     update();
 }
 
