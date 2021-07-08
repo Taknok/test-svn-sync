@@ -1,7 +1,7 @@
 /****************************************************************************
 
     BodyTransDlg Class
-    Copyright (C) 2009 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,11 +19,10 @@
 
 *****************************************************************************/
 
-#ifndef BODYTRANSDLG_H
-#define BODYTRANSDLG_H
+#pragma once
 
 #include <QDialog>
-#include <QPushButton>
+#include <QDialogButtonBox>
 #include <QCheckBox>
 #include <QLabel>
 
@@ -38,32 +37,28 @@ class BodyTransDlg : public QDialog
     friend class GL3dBodyDlg;
     friend class EditBodyDlg;
 
-public:
-    BodyTransDlg(QWidget *pParent);
-    void initDialog();
+    public:
+        BodyTransDlg(QWidget *pParent);
+        void initDialog();
 
-private slots:
-    void onOK();
-    void onFrameOnly();
+    private slots:
+        void onButton(QAbstractButton *pButton);
+        void onOK();
+        void onFrameOnly();
 
-private:
-    void keyPressEvent(QKeyEvent *event);
-    void setupLayout();
+    private:
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void setupLayout();
 
-    DoubleEdit *m_pctrlXTransFactor;
-    DoubleEdit *m_pctrlYTransFactor;
-    DoubleEdit *m_pctrlZTransFactor;
-    IntEdit *m_pctrlFrameID;
-    QCheckBox *m_pctrlFrameOnly;
-    QLabel *m_pctrlLength1;
-    QLabel *m_pctrlLength2;
-    QLabel *m_pctrlLength3;
-    QPushButton *m_pOKButton, *m_pCancelButton;
+        DoubleEdit *m_pdeXTransFactor;
+        DoubleEdit *m_pdeYTransFactor;
+        DoubleEdit *m_pdeZTransFactor;
+        IntEdit *m_pctrlFrameID;
+        QCheckBox *m_pctrlFrameOnly;
+        QDialogButtonBox *m_pButtonBox;
 
-    double m_XTrans, m_YTrans, m_ZTrans;
-    bool   m_bFrameOnly;
-    int    m_FrameID;
+        double m_XTrans, m_YTrans, m_ZTrans; bool   m_bFrameOnly;
+        int    m_FrameID;
 
 };
 
-#endif // BODYTRANSDLG_H
