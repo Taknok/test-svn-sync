@@ -1,7 +1,7 @@
 /****************************************************************************
 
     WingScaleDlg Class
-    Copyright (C) 2009 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,10 +19,10 @@
 
 *****************************************************************************/
 
-#ifndef WINGSCALEDLG_H
-#define WINGSCALEDLG_H
+#pragma once
 
 #include <QDialog>
+#include <QDialogButtonBox>
 #include <QCheckBox>
 #include <QLabel>
 
@@ -33,37 +33,41 @@ class WingScaleDlg : public QDialog
     Q_OBJECT
     friend class Miarex;
     friend class MainFrame;
-public:
-    WingScaleDlg(QWidget *pParent);
-    void initDialog(double const &RefSpan, double const &RefChord, double const &RefSweep, double const &RefTwist, const double &RefArea, const double &RefAR, const double &RefTR);
-private:
-    void setupLayout();
-    void readData();
-    void setResults();
-    void enableControls();
+    public:
+        WingScaleDlg(QWidget *pParent);
+        void initDialog(double const &RefSpan, double const &RefChord, double const &RefSweep, double const &RefTwist, const double &RefArea, const double &RefAR, const double &RefTR);
 
-private slots:
-    void onOK();
-    void onClickedCheckBox();
-    void onEditingFinished();
+    private:
+        void setupLayout();
+        void readData();
+        void setResults();
+        void enableControls();
+        void keyPressEvent(QKeyEvent *event) override;
+
+    private slots:
+        void onButton(QAbstractButton *pButton);
+        void onOK();
+        void onClickedCheckBox();
+        void onEditingFinished();
 
 
-public:
+    public:
 
-    QCheckBox *m_pctrlSpan, *m_pctrlChord, *m_pctrlSweep, *m_pctrlTwist;
-    QCheckBox *m_pctrlScaleArea, *m_pctrlScaleAR, *m_pctrlScaleTR;
-    DoubleEdit  *m_pctrlNewSpan, *m_pctrlNewChord, *m_pctrlNewSweep, *m_pctrlNewTwist;
-    DoubleEdit *m_pctrlNewArea, *m_pctrlNewAR, *m_pctrlNewTR;
-    QLabel *m_pctrlRefSpan, *m_pctrlRefChord, *m_pctrlRefSweep, *m_pctrlRefTwist;
-    QLabel *m_pctrlRefArea,*m_pctrlRefAR, *m_pctrlRefTR;
-    QLabel *m_pctrlSpanRatio, *m_pctrlChordRatio, *m_pctrlSweepRatio, *m_pctrlTwistRatio;
-    QLabel *m_pctrlAreaRatio,*m_pctrlARRatio, *m_pctrlTRRatio;
+        QCheckBox *m_pchSpan, *m_pchChord, *m_pchSweep, *m_pchTwist;
+        QCheckBox *m_pchScaleArea, *m_pchScaleAR, *m_pchScaleTR;
+        DoubleEdit *m_pdeNewSpan, *m_pdeNewChord, *m_pdeNewSweep, *m_pdeNewTwist;
+        DoubleEdit *m_pdeNewArea, *m_pdeNewAR, *m_pdeNewTR;
+        QLabel *m_plabRefSpan, *m_plabRefChord, *m_plabRefSweep, *m_plabRefTwist;
+        QLabel *m_plabRefArea,*m_plabRefAR, *m_plabRefTR;
+        QLabel *m_plabSpanRatio, *m_plabChordRatio, *m_plabSweepRatio, *m_plabTwistRatio;
+        QLabel *m_plabAreaRatio,*m_plabARRatio, *m_plabTRRatio;
 
-    bool m_bSweep, m_bSpan, m_bChord, m_bTwist;
-    bool m_bArea, m_bAR, m_bTR;
+        QDialogButtonBox *m_pButtonBox;
 
-    double m_NewSweep, m_NewChord, m_NewTwist, m_NewSpan, m_NewArea, m_NewAR, m_NewTR;
-    double m_RefSweep, m_RefChord, m_RefTwist, m_RefSpan, m_RefArea, m_RefAR, m_RefTR;
+        bool m_bSweep, m_bSpan, m_bChord, m_bTwist;
+        bool m_bArea, m_bAR, m_bTR;
+
+        double m_NewSweep, m_NewChord, m_NewTwist, m_NewSpan, m_NewArea, m_NewAR, m_NewTR;
+        double m_RefSweep, m_RefChord, m_RefTwist, m_RefSpan, m_RefArea, m_RefAR, m_RefTR;
 };
 
-#endif // WINGSCALEDLG_H
