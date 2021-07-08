@@ -1,7 +1,7 @@
 /****************************************************************************
 
     InverseOptionsDlg  Classes
-    Copyright (C) 2009-2016 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include <QDialogButtonBox>
 #include <QGridLayout>
 
 #include <xflcore/xflcore.h>
@@ -42,14 +43,14 @@ void InverseOptionsDlg::setupLayout()
 {
     QGridLayout *pStyleLayout = new QGridLayout;
     {
-        QLabel * lab1 = new QLabel(tr("Reference Foil"));
-        QLabel * lab2 = new QLabel(tr("Modified Foil"));
-        QLabel * lab3 = new QLabel(tr("Spline"));
-        QLabel * lab4 = new QLabel(tr("Reflected Curve"));
-        lab1->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        lab2->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        lab3->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        lab4->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        QLabel *plab1 = new QLabel(tr("Reference Foil"));
+        QLabel *plab2 = new QLabel(tr("Modified Foil"));
+        QLabel *plab3 = new QLabel(tr("Spline"));
+        QLabel *plab4 = new QLabel(tr("Reflected Curve"));
+        plab1->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        plab2->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        plab3->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        plab4->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
 
         m_plbRefFoil   = new LineBtn(this);
@@ -57,42 +58,34 @@ void InverseOptionsDlg::setupLayout()
         m_plbSpline    = new LineBtn(this);
         m_plbReflected = new LineBtn(this);
 
-        pStyleLayout->addWidget(lab1,1,1);
-        pStyleLayout->addWidget(lab2,2,1);
-        pStyleLayout->addWidget(lab3,3,1);
-        pStyleLayout->addWidget(lab4,4,1);
+        pStyleLayout->addWidget(plab1,1,1);
+        pStyleLayout->addWidget(plab2,2,1);
+        pStyleLayout->addWidget(plab3,3,1);
+        pStyleLayout->addWidget(plab4,4,1);
         pStyleLayout->addWidget(m_plbRefFoil,1,2);
         pStyleLayout->addWidget(m_plbModFoil,2,2);
         pStyleLayout->addWidget(m_plbSpline,3,2);
         pStyleLayout->addWidget(m_plbReflected,4,2);
     }
 
-    QHBoxLayout *pCommandButtons = new QHBoxLayout;
+    QDialogButtonBox *pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     {
-        QPushButton *pOKButton      = new QPushButton(tr("OK"));
-        QPushButton *pCancelButton  = new QPushButton(tr("Cancel"));
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(pOKButton);
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(pCancelButton);
-        pCommandButtons->addStretch(1);
-
-        connect(pOKButton, SIGNAL(clicked()),this, SLOT(accept()));
-        connect(pCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+        connect(pButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+        connect(pButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
         pMainLayout->addLayout(pStyleLayout);
-        pMainLayout->addLayout(pCommandButtons);
+        pMainLayout->addWidget(pButtonBox);
     }
 
     setLayout(pMainLayout);
 
-    connect(m_plbRefFoil,   SIGNAL(clickedLB()), this, SLOT(onRefStyle()));
-    connect(m_plbModFoil,   SIGNAL(clickedLB()), this, SLOT(onModStyle()));
-    connect(m_plbSpline,    SIGNAL(clickedLB()), this, SLOT(onSplineStyle()));
-    connect(m_plbReflected, SIGNAL(clickedLB()), this, SLOT(onReflectedStyle()));
+    connect(m_plbRefFoil,   SIGNAL(clickedLB(LineStyle)), SLOT(onRefStyle()));
+    connect(m_plbModFoil,   SIGNAL(clickedLB(LineStyle)), SLOT(onModStyle()));
+    connect(m_plbSpline,    SIGNAL(clickedLB(LineStyle)), SLOT(onSplineStyle()));
+    connect(m_plbReflected, SIGNAL(clickedLB(LineStyle)), SLOT(onReflectedStyle()));
 }
 
 

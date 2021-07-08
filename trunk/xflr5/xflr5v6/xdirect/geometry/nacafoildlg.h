@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Naca Foil Dlg
-    Copyright (C) 2008 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,10 +19,10 @@
 
 *****************************************************************************/
 
-#ifndef NACAFOILDLG_H
-#define NACAFOILDLG_H
+#pragma once
 
 #include <QDialog>
+#include <QDialogButtonBox>
 #include <QLabel>
 #include <QPushButton>
 #include <QLineEdit>
@@ -39,29 +39,29 @@ class NacaFoilDlg : public QDialog
     friend class XFoil;
 
 
-private slots:
-    void onEditingFinished();
-    void onOK();
+    private slots:
+        void onEditingFinished();
+        void onOK();
+        void onButton(QAbstractButton *pButton);
 
-public:
-    NacaFoilDlg(QWidget *pParent);
-    void setupLayout();
-    void generateFoil();
-    void keyPressEvent(QKeyEvent *event);
+    public:
+        NacaFoilDlg(QWidget *pParent);
+        void setupLayout();
+        void generateFoil();
+        void keyPressEvent(QKeyEvent *pEvent) override;
 
-    static XFoil *s_pXFoil;
+        static XFoil *s_pXFoil;
 
-    QWidget *m_pParent;
+        QWidget *m_pParent;
 
-    Foil *m_pBufferFoil;
-    QPushButton *m_pOKButton, *CancelButton;
-    QLineEdit *m_pctrlNumber;
-    IntEdit *m_pctrlPanels;
-    QLabel * m_pctrlMessage;
+        Foil *m_pBufferFoil;
+        QDialogButtonBox *m_pButtonBox;
+        QLineEdit *m_pleNumber;
+        IntEdit *m_piePanels;
+        QLabel * m_plabMessage;
 
-    bool m_bGenerated;
-    static int s_Digits;
-    static int s_Panels;
+        bool m_bGenerated;
+        static int s_Digits;
+        static int s_Panels;
 };
 
-#endif // NACAFOIL_H

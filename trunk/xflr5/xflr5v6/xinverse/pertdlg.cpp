@@ -1,7 +1,7 @@
 /****************************************************************************
 
     PertDlg class
-    Copyright (C) 2004-2016 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -44,11 +44,6 @@ PertDlg::PertDlg(QWidget *pParent) : QDialog(pParent)
      m_pFloatDelegate = nullptr;
 
     setupLayout();
-
-    connect(pRestoreButton, SIGNAL(clicked()),this, SLOT(onRestore()));
-    connect(pApplyButton, SIGNAL(clicked()),this, SLOT(onApply()));
-    connect(pOKButton, SIGNAL(clicked()),this, SLOT(accept()));
-    connect(pCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 PertDlg::~PertDlg()
@@ -70,49 +65,39 @@ void PertDlg::setupLayout()
     QVector<int> precision = {0,5,5};
     m_pFloatDelegate->setPrecision(precision);
 
-    m_pctrlCnTable = new QTableView(this);
-    m_pctrlCnTable->setFont(DisplayOptions::tableFont());
-    m_pctrlCnTable->setWindowTitle(tr("Cn List"));
-    m_pctrlCnTable->setMinimumHeight(500);
-    m_pctrlCnTable->setMinimumWidth(350);
-    m_pctrlCnTable->setColumnWidth(0,30);
-    m_pctrlCnTable->setColumnWidth(1,100);
-    m_pctrlCnTable->setColumnWidth(2,100);
+    m_ptvCn = new QTableView(this);
+    m_ptvCn->setFont(DisplayOptions::tableFont());
+    m_ptvCn->setWindowTitle(tr("Cn List"));
+    m_ptvCn->setMinimumHeight(500);
+    m_ptvCn->setMinimumWidth(350);
+    m_ptvCn->setColumnWidth(0,30);
+    m_ptvCn->setColumnWidth(1,100);
+    m_ptvCn->setColumnWidth(2,100);
 
-    m_pctrlCnTable->setModel(&m_CnModel);
-    m_pctrlCnTable->setItemDelegate(m_pFloatDelegate);
+    m_ptvCn->setModel(&m_CnModel);
+    m_ptvCn->setItemDelegate(m_pFloatDelegate);
 
 
-    connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
+    connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget*)), this, SLOT(onCellChanged(QWidget*)));
 
-    QVBoxLayout *pCommandButtons = new QVBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply | QDialogButtonBox::RestoreDefaults);
     {
-        pRestoreButton    = new QPushButton(tr("Restore"));
-        pApplyButton    = new QPushButton(tr("Apply"));
-        pOKButton       = new QPushButton(tr("OK"));
-        pCancelButton   = new QPushButton(tr("Cancel"));
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(pRestoreButton);
-        pCommandButtons->addWidget(pApplyButton);
-        pCommandButtons->addStretch(2);
-        pCommandButtons->addWidget(pOKButton);
-        pCommandButtons->addWidget(pCancelButton);
-        pCommandButtons->addStretch(1);
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
 
-    QHBoxLayout * pMainLayout = new QHBoxLayout(this);
+    QVBoxLayout * pMainLayout = new QVBoxLayout;
     {
-        pMainLayout->addWidget(m_pctrlCnTable);
-        pMainLayout->addLayout(pCommandButtons);
+        pMainLayout->addWidget(m_ptvCn);
+        pMainLayout->addWidget(m_pButtonBox);
     }
     setLayout(pMainLayout);
 }
 
 
 
-void PertDlg::keyPressEvent(QKeyEvent *event)
+void PertDlg::keyPressEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Escape:
         {
@@ -122,18 +107,13 @@ void PertDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!pOKButton->hasFocus() && !pCancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                pOKButton->setFocus();
-            }
-            else if(pCancelButton->hasFocus())
-            {
-                reject();
-                return;
+                m_pButtonBox->setFocus();
             }
             else
             {
-                accept();
+                onOK();
                 return;
 
             }
@@ -144,11 +124,19 @@ void PertDlg::keyPressEvent(QKeyEvent *event)
     }
 }
 
+
+void PertDlg::onButton(QAbstractButton *pButton)
+{
+    if      (m_pButtonBox->button(QDialogButtonBox::Ok)              == pButton)  onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Apply)           == pButton)  onApply();
+    else if (m_pButtonBox->button(QDialogButtonBox::RestoreDefaults) == pButton)  onRestore();
+    else if (m_pButtonBox->button(QDialogButtonBox::Discard)         == pButton)  reject();
+}
+
+
 void PertDlg::onApply()
 {
     readData();
-    pOKButton->setFocus();
-
 }
 
 
@@ -186,13 +174,13 @@ void PertDlg::initDialog()
 
     fillCnModel();
 
-    m_pctrlCnTable->setFocus();
+    m_ptvCn->setFocus();
 }
 
 
 void PertDlg::onCellChanged(QWidget *)
 {
-    QModelIndex index = m_pctrlCnTable->currentIndex();
+    QModelIndex index = m_ptvCn->currentIndex();
     int pos = index.row();
     if(pos<0)  return;
     

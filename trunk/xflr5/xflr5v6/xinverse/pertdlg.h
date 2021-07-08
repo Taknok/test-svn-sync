@@ -1,7 +1,7 @@
 /****************************************************************************
 
     PertDlg class
-    Copyright (C) 2009 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,10 +19,10 @@
 
 *****************************************************************************/
 
-#ifndef PERTDLG_H
-#define PERTDLG_H
+#pragma once
 
 #include <QDialog>
+#include <QDialogButtonBox>
 #include <QCheckBox>
 #include <QPushButton>
 #include <QTableView>
@@ -41,42 +41,42 @@ class PertDlg : public QDialog
     friend class MainFrame;
     friend class XInverse;
 
-public:
-    PertDlg(QWidget *pParent);
-    ~PertDlg();
+    public:
+        PertDlg(QWidget *pParent);
+        ~PertDlg();
 
 
-private slots:
-    void onCellChanged(QWidget *);
-    void onRestore();
-    void onApply();
-    void onOK();
+    private slots:
+        void onCellChanged(QWidget *);
+        void onRestore();
+        void onApply();
+        void onOK();
+        void onButton(QAbstractButton *pButton);
 
-private:
-    void setupLayout();
-    void initDialog();
-    void fillCnModel() ;
-    void readData();
+    private:
+        void setupLayout();
+        void initDialog();
+        void fillCnModel() ;
+        void readData();
 
-private:
+    private:
+        QDialogButtonBox *m_pButtonBox;
 
-    QPushButton *pOKButton, *pCancelButton, *pApplyButton, *pRestoreButton;
+        QTableView *m_ptvCn;
+        QStandardItemModel m_CnModel;
+        FloatEditDelegate *m_pFloatDelegate;
 
-    QTableView *m_pctrlCnTable;
-    QStandardItemModel m_CnModel;
-    FloatEditDelegate *m_pFloatDelegate;
-
-protected:
-    void keyPressEvent(QKeyEvent *event);
+    protected:
+        void keyPressEvent(QKeyEvent *pEvent) override;
 
 
-private:
-    void * m_pXInverse;
-    int   m_nc; 
-    double m_cnr[IMX+1];
-    double m_cni[IMX+1];
-    double m_backr[IMX+1];
-    double m_backi[IMX+1];
+    private:
+        void * m_pXInverse;
+        int   m_nc;
+        double m_cnr[IMX+1];
+        double m_cni[IMX+1];
+        double m_backr[IMX+1];
+        double m_backi[IMX+1];
 };
-#endif
+
 

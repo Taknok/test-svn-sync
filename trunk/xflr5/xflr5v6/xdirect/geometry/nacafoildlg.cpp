@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Naca Foil Dlg
-    Copyright (C) 2009 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -43,8 +43,8 @@ NacaFoilDlg::NacaFoilDlg(QWidget *pParent) : QDialog(pParent)
 
     setupLayout();
 
-    m_pctrlNumber->setText(QString("%1").arg(s_Digits,4,10,QChar('0')));
-    m_pctrlPanels->setValue(s_Panels);
+    m_pleNumber->setText(QString("%1").arg(s_Digits,4,10,QChar('0')));
+    m_piePanels->setValue(s_Panels);
 }
 
 
@@ -52,66 +52,63 @@ void NacaFoilDlg::setupLayout()
 {
     QFormLayout *pFormLayout = new QFormLayout;
     {
-        m_pctrlNumber = new QLineEdit(this);
+        m_pleNumber = new QLineEdit(this);
 //        m_pctrlNumber->setValidator(new QIntValidator(m_pctrlNumber));
-        m_pctrlNumber->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
-        m_pctrlPanels = new IntEdit(100, this);
-        m_pctrlPanels->setMax(IQX);
+        m_pleNumber->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+        m_piePanels = new IntEdit(100, this);
+        m_piePanels->setMax(IQX);
 
-        pFormLayout->addRow(tr("4 or 5 digits:"), m_pctrlNumber);
-        pFormLayout->addRow(tr("Number of Panels:"), m_pctrlPanels);
+        pFormLayout->addRow(tr("4 or 5 digits:"), m_pleNumber);
+        pFormLayout->addRow(tr("Number of Panels:"), m_piePanels);
     }
 
-    m_pctrlMessage = new QLabel();
-    m_pctrlMessage->setMinimumWidth(120);
+    m_plabMessage = new QLabel();
+    m_plabMessage->setMinimumWidth(120);
 
-    QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     {
-        m_pOKButton = new QPushButton(tr("OK"));
-        m_pOKButton->setAutoDefault(false);
-        CancelButton = new QPushButton(tr("Cancel"));
-        CancelButton->setAutoDefault(false);
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(m_pOKButton);
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(CancelButton);
-        pCommandButtonsLayout->addStretch(1);
-        connect(m_pOKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-        connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
         pMainLayout->addLayout(pFormLayout);
         pMainLayout->addStretch(1);
-        pMainLayout->addWidget(m_pctrlMessage);
+        pMainLayout->addWidget(m_plabMessage);
         pMainLayout->addSpacing(30);
-        pMainLayout->addLayout(pCommandButtonsLayout);
+        pMainLayout->addWidget(m_pButtonBox);
     }
 
     setLayout(pMainLayout);
 
-    connect(m_pctrlNumber, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pctrlPanels, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+    connect(m_pleNumber, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+    connect(m_piePanels, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
 }
+
+
+void NacaFoilDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)     == pButton)  onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
+}
+
 
 
 void NacaFoilDlg::onEditingFinished()
 {
 //    s_Digits = locale().toInt(m_pctrlNumber->text().trimmed());
 
-    bool bOK;
-    QString strange = m_pctrlNumber->text();
-    int d = m_pctrlNumber->text().toInt(&bOK);
+    bool bOK(false);
+    int d = m_pleNumber->text().toInt(&bOK);
 //    int d1 = m_pctrlNumber->value();
     if(bOK) s_Digits = d;
 
-    s_Panels = m_pctrlPanels->value();
+    s_Panels = m_piePanels->value();
 
     generateFoil();
 
-    m_pctrlNumber->setText(QString("%1").arg(s_Digits,4,10,QChar('0')));
-    m_pOKButton->setFocus();
+    m_pleNumber->setText(QString("%1").arg(s_Digits,4,10,QChar('0')));
+    m_pButtonBox->setFocus();
 }
 
 
@@ -131,26 +128,26 @@ void NacaFoilDlg::generateFoil()
         int three  = s_Digits/100;
         if(three!=210 && three !=220 && three !=230 && three !=240 && three !=250)
         {
-            m_pctrlNumber->selectAll();
-            m_pctrlMessage->setText(tr("Illegal NACA Number"));
+            m_pleNumber->selectAll();
+            m_plabMessage->setText(tr("Illegal NACA Number"));
             m_bGenerated = false;
             return;
         }
         if(!s_pXFoil->naca5(s_Digits, s_Panels))
         {
             m_bGenerated = false;
-            m_pctrlMessage->setText(tr("Illegal NACA Number"));
+            m_plabMessage->setText(tr("Illegal NACA Number"));
             return;
         }
     }
     else
     {
-        m_pctrlNumber->selectAll();
-        m_pctrlMessage->setText(tr("Illegal NACA Number"));
+        m_pleNumber->selectAll();
+        m_plabMessage->setText(tr("Illegal NACA Number"));
         m_bGenerated = false;
         return;
     }
-    m_pctrlMessage->setText(" ");
+    m_plabMessage->setText(" ");
 
     for (int j=0; j< s_pXFoil->nb; j++)
     {
@@ -168,7 +165,6 @@ void NacaFoilDlg::generateFoil()
 }
 
 
-
 void NacaFoilDlg::keyPressEvent(QKeyEvent *event)
 {
     // Prevent Return Key from closing App
@@ -178,18 +174,14 @@ void NacaFoilDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!m_pOKButton->hasFocus() && !CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
                 generateFoil();
-                if(m_bGenerated) m_pOKButton->setFocus();
+                if(m_bGenerated) m_pButtonBox->setFocus();
                 else
                 {
-                    m_pctrlNumber->selectAll();
+                    m_pleNumber->selectAll();
                 }
-            }
-            else if (m_pOKButton->hasFocus())
-            {
-                onOK();
             }
             return;
         }
