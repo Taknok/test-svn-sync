@@ -1,7 +1,7 @@
 /****************************************************************************
 
     BodyScaleDlg Class
-    Copyright (C) 2009 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,15 +20,16 @@
 *****************************************************************************/
 
 
-#ifndef BODYSCALEDLG_H
-#define BODYSCALEDLG_H
+#pragma once
 
 #include <QDialog>
+#include <QDialogButtonBox>
 #include <QCheckBox>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QLabel>
 
+class IntEdit;
 class DoubleEdit;
 class GL3dBodyDlg;
 
@@ -42,34 +43,35 @@ class BodyScaleDlg : public QDialog
     friend class BodyFrameWt;
     friend class BodyLineWt;
 
-public:
-    BodyScaleDlg(QWidget *pParent);
+    public:
+        BodyScaleDlg(QWidget *pParent);
 
-private slots:
-    void onOK();
-    void onRadio();
+    private slots:
+        void onOK();
+        void onRadio();
+        void onButton(QAbstractButton *pButton);
 
-private:
-    void setupLayout();
-    void initDialog(bool bFrameOnly=false);
-    void enableControls();
-    void keyPressEvent(QKeyEvent *event);
+    private:
+        void setupLayout();
+        void initDialog(bool bFrameOnly=false);
+        void enableControls();
+        void keyPressEvent(QKeyEvent *event);
 
-private:
+    private:
 
-    QPushButton *m_pOKButton, *m_pCancelButton;
-    QRadioButton *m_pctrlBody, *m_pctrlFrame;
-    DoubleEdit *m_pctrlXScaleFactor;
-    DoubleEdit *m_pctrlYScaleFactor;
-    DoubleEdit *m_pctrlZScaleFactor;
-    DoubleEdit *m_pctrlFrameID;
+        QDialogButtonBox *m_pButtonBox;
+
+        QRadioButton *m_prbBody, *m_prbFrame;
+        DoubleEdit *m_pdeXScaleFactor;
+        DoubleEdit *m_pdeYScaleFactor;
+        DoubleEdit *m_pdeZScaleFactor;
+        IntEdit *m_pieFrameID;
 
 
-private:
+    private:
 
-    double m_XFactor, m_YFactor, m_ZFactor;
-    bool m_bFrameOnly;
-    int m_FrameID;
+        double m_XFactor, m_YFactor, m_ZFactor;
+        bool m_bFrameOnly;
+        int m_FrameID;
 };
 
-#endif // BODYGRIDDLG_H

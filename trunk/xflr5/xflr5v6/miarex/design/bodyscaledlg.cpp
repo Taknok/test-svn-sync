@@ -1,7 +1,7 @@
 /****************************************************************************
 
     BodyScaleDlg Class
-    Copyright (C) 2009 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
+
 #include <QGroupBox>
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -30,6 +31,7 @@
 #include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/body.h>
 #include <xflwidgets/line/linepickerdlg.h>
+#include <xflwidgets/customwts/intedit.h>
 #include <xflwidgets/customwts/doubleedit.h>
 
 
@@ -49,27 +51,27 @@ BodyScaleDlg::BodyScaleDlg(QWidget *pParent ): QDialog(pParent)
 
 void BodyScaleDlg::initDialog(bool bFrameOnly)
 {
-    m_pctrlXScaleFactor->setValue(m_XFactor);
-    m_pctrlYScaleFactor->setValue(m_YFactor);
-    m_pctrlZScaleFactor->setValue(m_ZFactor);
+    m_pdeXScaleFactor->setValue(m_XFactor);
+    m_pdeYScaleFactor->setValue(m_YFactor);
+    m_pdeZScaleFactor->setValue(m_ZFactor);
 
-    m_pctrlXScaleFactor->setFocus();
+    m_pdeXScaleFactor->setFocus();
 
 
-    m_pctrlFrameID->setEnabled(false);
-    m_pctrlFrameID->setValue(m_FrameID+1);
+    m_pieFrameID->setEnabled(false);
+    m_pieFrameID->setValue(m_FrameID+1);
 
     m_bFrameOnly = bFrameOnly;
     if(!m_bFrameOnly)
     {
-        m_pctrlBody->setChecked(true);
-        m_pctrlFrame->setChecked(false);
+        m_prbBody->setChecked(true);
+        m_prbFrame->setChecked(false);
     }
     else
     {
-        m_pctrlBody->setChecked(false);
-        m_pctrlFrame->setChecked(true);
-        m_pctrlXScaleFactor->setEnabled(false);
+        m_prbBody->setChecked(false);
+        m_prbFrame->setChecked(true);
+        m_pdeXScaleFactor->setEnabled(false);
     }
 
     enableControls();
@@ -87,23 +89,22 @@ void BodyScaleDlg::setupLayout()
 
     QGridLayout *pTopLayout = new QGridLayout;
     {
-        m_pctrlBody  = new QRadioButton(tr("Whole Body"));
-        m_pctrlFrame = new QRadioButton(tr("Frame Only"));
-        m_pctrlFrameID = new DoubleEdit(10);
-        m_pctrlFrameID->setDigits(0);
-        pTopLayout->addWidget(m_pctrlBody,1,1);
-        pTopLayout->addWidget(m_pctrlFrame,2,1);
-        pTopLayout->addWidget(m_pctrlFrameID,2,2);
+        m_prbBody  = new QRadioButton(tr("Whole Body"));
+        m_prbFrame = new QRadioButton(tr("Frame Only"));
+        m_pieFrameID = new IntEdit(10);
+        pTopLayout->addWidget(m_prbBody,1,1);
+        pTopLayout->addWidget(m_prbFrame,2,1);
+        pTopLayout->addWidget(m_pieFrameID,2,2);
     }
 
     QGridLayout *pScaleLayout = new QGridLayout;
     {
-        m_pctrlXScaleFactor = new DoubleEdit(1.0);
-        m_pctrlYScaleFactor = new DoubleEdit(2.000);
-        m_pctrlZScaleFactor = new DoubleEdit(3.);
-        m_pctrlXScaleFactor->setDigits(3);
-        m_pctrlYScaleFactor->setDigits(3);
-        m_pctrlZScaleFactor->setDigits(3);
+        m_pdeXScaleFactor = new DoubleEdit(1.0);
+        m_pdeYScaleFactor = new DoubleEdit(2.000);
+        m_pdeZScaleFactor = new DoubleEdit(3.);
+        m_pdeXScaleFactor->setDigits(3);
+        m_pdeYScaleFactor->setDigits(3);
+        m_pdeZScaleFactor->setDigits(3);
         QLabel *lab0 = new QLabel(tr("Scale Factor"));
         QLabel *lab1 = new QLabel(tr("X Scale"));
         QLabel *lab2 = new QLabel(tr("Y Scale"));
@@ -112,39 +113,27 @@ void BodyScaleDlg::setupLayout()
         pScaleLayout->addWidget(lab1,2,1);
         pScaleLayout->addWidget(lab2,3,1);
         pScaleLayout->addWidget(lab3,4,1);
-        pScaleLayout->addWidget(m_pctrlXScaleFactor,2,2);
-        pScaleLayout->addWidget(m_pctrlYScaleFactor,3,2);
-        pScaleLayout->addWidget(m_pctrlZScaleFactor,4,2);
+        pScaleLayout->addWidget(m_pdeXScaleFactor,2,2);
+        pScaleLayout->addWidget(m_pdeYScaleFactor,3,2);
+        pScaleLayout->addWidget(m_pdeZScaleFactor,4,2);
     }
 
-    QHBoxLayout *pCommandButtons = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     {
-        m_pOKButton      = new QPushButton(tr("OK"));
-        m_pCancelButton  = new QPushButton(tr("Cancel"));
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(m_pOKButton);
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(m_pCancelButton);
-        pCommandButtons->addStretch(1);
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        pMainLayout->addStretch(1);
         pMainLayout->addLayout(pTopLayout);
-        pMainLayout->addStretch(1);
         pMainLayout->addLayout(pScaleLayout);
-        pMainLayout->addStretch(1);
-        pMainLayout->addLayout(pCommandButtons);
+        pMainLayout->addWidget(m_pButtonBox);
         pMainLayout->addStretch(1);
     }
     setLayout(pMainLayout);
 
-    connect(m_pOKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-    connect(m_pCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-
-    connect(m_pctrlBody, SIGNAL(clicked()), this, SLOT(onRadio()));
-    connect(m_pctrlFrame, SIGNAL(clicked()), this, SLOT(onRadio()));
+    connect(m_prbBody, SIGNAL(clicked()), this, SLOT(onRadio()));
+    connect(m_prbFrame, SIGNAL(clicked()), this, SLOT(onRadio()));
 
     //    connect(m_pctrlXScaleFactor, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
     //    connect(m_pctrlYScaleFactor, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
@@ -159,6 +148,12 @@ void BodyScaleDlg::enableControls()
 }
 
 
+void BodyScaleDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)      == pButton)  onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
+}
+
 
 void BodyScaleDlg::keyPressEvent(QKeyEvent *event)
 {
@@ -168,13 +163,9 @@ void BodyScaleDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!m_pOKButton->hasFocus() && !m_pCancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                m_pOKButton->setFocus();
-            }
-            else
-            {
-                onOK();
+                m_pButtonBox->setFocus();
             }
             return;
         }
@@ -189,19 +180,18 @@ void BodyScaleDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-
 void BodyScaleDlg::onRadio()
 {
-    if(m_pctrlBody->isChecked())
+    if(m_prbBody->isChecked())
     {
-        m_pctrlFrameID->setEnabled(false);
-        m_pctrlXScaleFactor->setEnabled(true);
+        m_pieFrameID->setEnabled(false);
+        m_pdeXScaleFactor->setEnabled(true);
         m_bFrameOnly = false;
     }
     else
     {
-        m_pctrlFrameID->setEnabled(true);
-        m_pctrlXScaleFactor->setEnabled(false);
+        m_pieFrameID->setEnabled(true);
+        m_pdeXScaleFactor->setEnabled(false);
         m_bFrameOnly = true;
     }
 }
@@ -209,11 +199,11 @@ void BodyScaleDlg::onRadio()
 
 void BodyScaleDlg::onOK()
 {
-    m_FrameID = m_pctrlFrameID->value()-1;
+    m_FrameID = m_pieFrameID->value()-1;
 
-    m_XFactor = m_pctrlXScaleFactor->value();
-    m_YFactor = m_pctrlYScaleFactor->value();
-    m_ZFactor = m_pctrlZScaleFactor->value();
+    m_XFactor = m_pdeXScaleFactor->value();
+    m_YFactor = m_pdeYScaleFactor->value();
+    m_ZFactor = m_pdeZScaleFactor->value();
 
     QDialog::accept();
 }

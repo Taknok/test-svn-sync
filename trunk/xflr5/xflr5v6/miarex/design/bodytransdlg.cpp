@@ -1,7 +1,7 @@
 /****************************************************************************
 
     BodyTransDlg Class
-    Copyright (C) 2009 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -45,39 +45,29 @@ BodyTransDlg::BodyTransDlg(QWidget *pParent): QDialog(pParent)
 
 void BodyTransDlg::initDialog()
 {
-    m_pctrlXTransFactor->setValue(m_XTrans);
-    m_pctrlYTransFactor->setValue(m_YTrans);
-    m_pctrlZTransFactor->setValue(m_ZTrans);
+    m_pdeXTransFactor->setValue(m_XTrans);
+    m_pdeYTransFactor->setValue(m_YTrans);
+    m_pdeZTransFactor->setValue(m_ZTrans);
 
-    m_pctrlYTransFactor->setEnabled(false);
+    m_pdeYTransFactor->setEnabled(false);
 
     m_pctrlFrameOnly->setChecked(m_bFrameOnly);
     m_pctrlFrameID->setValue(m_FrameID+1);
     m_pctrlFrameID->setEnabled(m_bFrameOnly);
-
-    QString length;
-    Units::getLengthUnitLabel(length);
-    m_pctrlLength1->setText(length);
-    m_pctrlLength2->setText(length);
-    m_pctrlLength3->setText(length);
 }
 
 
-void BodyTransDlg::keyPressEvent(QKeyEvent *event)
+void BodyTransDlg::keyPressEvent(QKeyEvent *pEvent)
 {
     // Prevent Return Key from closing App
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!m_pOKButton->hasFocus() && !m_pCancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                m_pOKButton->setFocus();
-            }
-            else
-            {
-                onOK();
+                m_pButtonBox->setFocus();
             }
             return;
         }
@@ -87,8 +77,15 @@ void BodyTransDlg::keyPressEvent(QKeyEvent *event)
             break;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
     }
+}
+
+
+void BodyTransDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)      == pButton)  onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
 }
 
 
@@ -96,9 +93,9 @@ void BodyTransDlg::onOK()
 {
     m_bFrameOnly = m_pctrlFrameOnly->isChecked();
     m_FrameID    = m_pctrlFrameID->value()-1;
-    m_XTrans     = m_pctrlXTransFactor->value() / Units::mtoUnit();
-    m_YTrans     = m_pctrlYTransFactor->value() / Units::mtoUnit();
-    m_ZTrans     = m_pctrlZTransFactor->value() / Units::mtoUnit();
+    m_XTrans     = m_pdeXTransFactor->value() / Units::mtoUnit();
+    m_YTrans     = m_pdeYTransFactor->value() / Units::mtoUnit();
+    m_ZTrans     = m_pdeZTransFactor->value() / Units::mtoUnit();
     accept();
 }
 
@@ -127,34 +124,28 @@ void BodyTransDlg::setupLayout()
         QLabel * XTrans = new QLabel(tr("X Translation"));
         QLabel * YTrans = new QLabel(tr("Y Translation"));
         QLabel * ZTrans = new QLabel(tr("Z Translation"));
-        m_pctrlXTransFactor = new DoubleEdit(0.0,3);
-        m_pctrlYTransFactor = new DoubleEdit(0.0,3);
-        m_pctrlZTransFactor = new DoubleEdit(0.0,3);
-        m_pctrlLength1 = new QLabel("m");
-        m_pctrlLength2 = new QLabel("m");
-        m_pctrlLength3 = new QLabel("m");
-        pTransLayout->addWidget(XTrans,1,1);
-        pTransLayout->addWidget(YTrans,2,1);
-        pTransLayout->addWidget(ZTrans,3,1);
-        pTransLayout->addWidget(m_pctrlXTransFactor,1,2);
-        pTransLayout->addWidget(m_pctrlYTransFactor,2,2);
-        pTransLayout->addWidget(m_pctrlZTransFactor,3,2);
-        pTransLayout->addWidget(m_pctrlLength1,1,3);
-        pTransLayout->addWidget(m_pctrlLength2,2,3);
-        pTransLayout->addWidget(m_pctrlLength3,3,3);
+        m_pdeXTransFactor = new DoubleEdit(0.0,3);
+        m_pdeYTransFactor = new DoubleEdit(0.0,3);
+        m_pdeZTransFactor = new DoubleEdit(0.0,3);
+        QString length;
+        Units::getLengthUnitLabel(length);
+        QLabel *plabLength1 = new QLabel(length);
+        QLabel *plabLength2 = new QLabel(length);
+        QLabel *plabLength3 = new QLabel(length);
+        pTransLayout->addWidget(XTrans,              1,1);
+        pTransLayout->addWidget(YTrans,              2,1);
+        pTransLayout->addWidget(ZTrans,              3,1);
+        pTransLayout->addWidget(m_pdeXTransFactor, 1,2);
+        pTransLayout->addWidget(m_pdeYTransFactor, 2,2);
+        pTransLayout->addWidget(m_pdeZTransFactor, 3,2);
+        pTransLayout->addWidget(plabLength1,         1,3);
+        pTransLayout->addWidget(plabLength2,         2,3);
+        pTransLayout->addWidget(plabLength3,         3,3);
     }
 
-    QHBoxLayout *pCommandButtons = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     {
-        m_pOKButton       = new QPushButton(tr("OK"));
-        m_pCancelButton   = new QPushButton(tr("Cancel"));
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(m_pOKButton);
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(m_pCancelButton);
-        pCommandButtons->addStretch(1);
-        connect(m_pOKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-        connect(m_pCancelButton,   SIGNAL(clicked()), this, SLOT(reject()));
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
@@ -162,7 +153,7 @@ void BodyTransDlg::setupLayout()
         pMainLayout->addLayout(pFrameIDLayout);
         pMainLayout->addLayout(pTransLayout);
         pMainLayout->addStretch(1);
-        pMainLayout->addLayout(pCommandButtons);
+        pMainLayout->addWidget(m_pButtonBox);
     }
 
     setLayout(pMainLayout);
