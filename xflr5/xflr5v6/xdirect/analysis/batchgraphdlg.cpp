@@ -29,7 +29,7 @@
 
 #include "batchgraphdlg.h"
 #include <xdirect/analysis/xfoiltask.h>
-#include <xdirect/objects2d.h>
+#include <xflobjects/objects2d/objects2d.h>
 #include <xdirect/xdirect.h>
 #include <xflcore/xflevents.h>
 #include <xflgraph/containers/graphwt.h>
@@ -239,12 +239,12 @@ void BatchGraphDlg::alphaLoop()
         str = QString("Alpha = %1\n").arg(alphadeg,0,'f',2);
         outputMsg(str);
 
-        Polar *pCurPolar = Objects2d::createPolar(m_pCurFoil, xfl::FIXEDAOAPOLAR, alphadeg, s_Mach, s_ACrit, s_XTop, s_XBot);
+        Polar *pCurPolar = Objects2d::createPolar(m_pFoil, xfl::FIXEDAOAPOLAR, alphadeg, s_Mach, s_ACrit, s_XTop, s_XBot);
 
         if(!pCurPolar) return;
 
         m_pXFoilTask->setReRange(s_ReMin, s_ReMax, s_ReInc);
-        m_pXFoilTask->initializeXFoilTask(m_pCurFoil, pCurPolar, XDirect::s_bViscous, s_bInitBL, s_bFromZero);
+        m_pXFoilTask->initializeXFoilTask(m_pFoil, pCurPolar, XDirect::s_bViscous, s_bInitBL, s_bFromZero);
 
         m_pXFoilTask->run();
 
@@ -284,7 +284,7 @@ void BatchGraphDlg::cleanUp()
  */
 void BatchGraphDlg::initDialog()
 {
-    if(!m_pCurFoil) return;
+    if(!m_pFoil) return;
 
     m_prbFoil1->setChecked(s_bCurrentFoil);
     m_prbFoil2->setChecked(!s_bCurrentFoil);
@@ -587,10 +587,10 @@ void BatchGraphDlg::ReLoop()
         str = QString("Re=%1   Ma=%2   Nc=%3\n").arg(Reynolds,8,'f',0).arg(Mach,5,'f',3).arg(NCrit,5,'f',2);
         outputMsg(str);
 
-        Polar *pCurPolar = Objects2d::createPolar(m_pCurFoil, xfl::FIXEDSPEEDPOLAR, Reynolds, s_Mach, s_ACrit, s_XTop, s_XBot);
+        Polar *pCurPolar = Objects2d::createPolar(m_pFoil, xfl::FIXEDSPEEDPOLAR, Reynolds, s_Mach, s_ACrit, s_XTop, s_XBot);
         if(!pCurPolar) return;
 
-        m_pXFoilTask->initializeXFoilTask(m_pCurFoil, pCurPolar, XDirect::s_bViscous, s_bInitBL, s_bFromZero);
+        m_pXFoilTask->initializeXFoilTask(m_pFoil, pCurPolar, XDirect::s_bViscous, s_bInitBL, s_bFromZero);
         m_pXFoilTask->run();
 
         m_bErrors = m_bErrors || m_pXFoilTask->m_bErrors;
@@ -666,9 +666,9 @@ void BatchGraphDlg::analyze()
     {
         for(int i=0; i<m_FoilList.count();i++)
         {
-            m_pCurFoil = Objects2d::foil(m_FoilList.at(i));
+            m_pFoil = Objects2d::foil(m_FoilList.at(i));
 
-            strong = tr("Analyzing ")+m_pCurFoil->name()+("\n");
+            strong = tr("Analyzing ")+m_pFoil->name()+("\n");
             outputMsg(strong);
             if(s_PolarType!=xfl::FIXEDAOAPOLAR) ReLoop();
             else                                  alphaLoop();

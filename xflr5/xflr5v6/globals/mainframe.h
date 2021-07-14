@@ -86,12 +86,14 @@ class MainFrame : public QMainWindow
     friend class LanguageWt;
     friend class Miarex;
     friend class MiarexTileWidget;
-    friend class OpPointWidget;
+    friend class OpPointWt;
     friend class Settings;
     friend class XDirect;
     friend class XDirectTileWidget;
     friend class XInverse;
     friend class gl3dMiarexView;
+    friend class PlaneTreeView;
+    friend class FoilTreeView;
 
     Q_OBJECT
 
@@ -99,6 +101,11 @@ class MainFrame : public QMainWindow
         MainFrame(QWidget * parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
         ~MainFrame();
 
+        xfl::enumApp xflr5App() const {return m_iApp;}
+        QString &exportLastDirName() {return m_ExportLastDirName;}
+        QString &exportGraphFilter() {return m_GraphExportFilter;}
+
+        void loadLastProject();
         xfl::enumApp loadXFLR5File(QString PathName);
         static MainFrame* self();
 
@@ -106,7 +113,6 @@ class MainFrame : public QMainWindow
 
         void executeScript(QString XmlScriptName, bool bShowProgressStdIO, bool bShowLog=false);
         bool bAutoLoadLast() const {return m_bAutoLoadLast;}
-
 
     public slots:
         void onAFoil();
@@ -122,7 +128,6 @@ class MainFrame : public QMainWindow
         bool onSaveProjectAs(const QString pathName);
         void aboutQt();
         void aboutXFLR5();
-        void onCurFoilStyle();
         void onCurGraphSettings();
         void onExecuteScript();
         void onExportCurGraph();
@@ -144,14 +149,7 @@ class MainFrame : public QMainWindow
         void onSaveProject();
         void onSaveTimer();
         void onSaveViewToImageFile();
-        void onSelChangeFoil(int sel);
-        void onSelChangeOpp(int sel);
-        void onSelChangePlane(int sel);
-        void onSelChangePlaneOpp(int sel);
-        void onSelChangePolar(int sel);
-        void onSelChangeWPolar(int sel);
         void onSetNoApp();
-        void onShowMousePos();
 
     protected:
         void keyPressEvent(QKeyEvent *pEvent);
@@ -190,12 +188,6 @@ class MainFrame : public QMainWindow
         void saveFoilPolars(QDataStream &ar, const QVector<Foil*> &FoilList) const;
         bool saveProject(QString PathName="");
         void saveSettings();
-        void selectFoil(Foil *pFoil);
-        void selectPolar(Polar *pPolar);
-        void selectOpPoint(OpPoint *pOpp);
-        void selectPlane(Plane *pPlane);
-        void selectWPolar(WPolar *pWPolar);
-        void selectPlaneOpp(PlaneOpp *pPlaneOpp);
         void setColorListFromFile();
         void setDefaultStaticFonts();
         void setPlainColorsFromFile();
@@ -214,14 +206,8 @@ class MainFrame : public QMainWindow
         void setupDataDir();
         QString shortenFileName(QString &PathName);
         void testConfiguration();
-        void updateFoilListBox();
-        void updatePolarListBox();
-        void updateOppListBox();
         void updateRecentFileActions();
-        void updatePlaneListBox();
         void updateView();
-        void updateWPolarListBox();
-        void updatePOppListBox();
 
         static bool hasOpenGL(){return s_bOpenGL;}
 
@@ -231,9 +217,6 @@ class MainFrame : public QMainWindow
         static QColor getColor(int type);
 
 
-        xfl::enumApp xflr5App(){return m_iApp;}
-        QString &exportLastDirName() {return m_ExportLastDirName;}
-        QString &exportGraphFilter() {return m_GraphExportFilter;}
 
         /*___________________________________________Variables_______________________________*/
 
@@ -249,7 +232,7 @@ class MainFrame : public QMainWindow
 
         static QPointer<MainFrame> _self; /**< necessary for MacOS >*/
 
-        QStackedWidget *m_pctrlCentralWidget;     /** The stacked widget which is loaded at the center of the display area. The stack switches between the widgets depending on the user's request. */
+        QStackedWidget *m_pswCentralWidget;     /** The stacked widget which is loaded at the center of the display area. The stack switches between the widgets depending on the user's request. */
         VoidWidget m_VoidWidget;
         inverseviewwt *m_p2dWidget;           /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings */
         FoilDesignWt *m_pDirect2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings of foils in Direct Design */
@@ -257,13 +240,15 @@ class MainFrame : public QMainWindow
         MiarexTileWidget *m_pMiarexTileWidget;
         XDirectTileWidget *m_pXDirectTileWidget;
 
-        QDockWidget *m_pdwXDirect, *m_pdwMiarex, *m_pdwAFoil, *m_pdwXInverse;
+        QDockWidget *m_pdwXDirect, *m_pdwFoilTreeView;
+        QDockWidget *m_pdwAFoil, *m_pdwXInverse;
         QDockWidget *m_pdw3DScales, *m_pdwStabView;
+        QDockWidget *m_pdwMiarex, *m_pdwPlaneTreeView;
 
-        QToolBar *m_pctrlXDirectToolBar;   /**< The tool bar container which holds the instance of the QXDirect application  */
-        QToolBar *m_pctrlXInverseToolBar;
-        QToolBar *m_pctrlMiarexToolBar;
-        QToolBar *m_pctrlAFoilToolBar;
+        QToolBar *m_ptbXDirect;   /**< The tool bar container which holds the instance of the QXDirect application  */
+        QToolBar *m_ptbXInverse;
+        QToolBar *m_ptbMiarex;
+        QToolBar *m_ptbAFoil;
 
         //Common Menus
         QMenu *m_pMainMenu;
@@ -318,7 +303,6 @@ class MainFrame : public QMainWindow
         //Graph Actions
         QAction *m_pSingleGraph[MAXGRAPHS], *m_pTwoGraphs, *m_pFourGraphs, *m_pAllGraphs;
         QAction *m_pGraphDlgAct;
-        QAction *m_pShowMousePosAct;
 
         //AFoil Actions
         QAction *m_pZoomInAct, *m_pResetXScaleAct, *m_pResetYScaleAct, *m_pResetXYScaleAct;
@@ -344,7 +328,6 @@ class MainFrame : public QMainWindow
         QAction *m_pEditWingAct, *m_pEditStabAct, *m_pEditFinAct;
         QAction *m_pSavePlaneAsProjectAct, *m_pRenameCurPlaneAct, *m_pDeleteCurPlane, *m_pDuplicateCurPlane;
         QAction *m_pRenameCurWPolar, *m_pEditWPolarAct, *m_pEditWPolarPts, *m_pExportCurWPolar, *m_pResetCurWPolar;
-        QAction *m_pShowPolarProps, *m_pShowWOppProps;
         QAction *m_pDeleteCurWPolar, *m_pDeleteCurWOpp;
         QAction *m_pEditObjectAct, *m_pEditWPolarObjectAct;
         QAction *m_pImportPlaneFromXml, *m_pImportAnalysisFromXml, *m_pExportPlaneToXML, *m_pExportAnalysisToXML;
@@ -373,9 +356,9 @@ class MainFrame : public QMainWindow
         QAction *m_pShowAllPolars, *m_pHideAllPolars, *m_pShowCurOppOnly, *m_pShowAllOpPoints, *m_pHideAllOpPoints, *m_pExportPolarOpps;
         QAction *m_pHideFoilOpps, *m_pShowFoilOpps, *m_pDeleteFoilOpps;
         QAction *m_pHidePolarOpps, *m_pShowPolarOpps, *m_pDeletePolarOpps;
-        QAction *m_pExportCurOpp, *m_pDeleteCurOpp, *m_pGetOppProps, *m_pGetPolarProps;
+        QAction *m_pExportCurOpp, *m_pDeleteCurOpp;
         QAction *m_pViewXFoilAdvanced, *m_pViewLogFile, *m_pShowNeutralLine, *m_pResetFoilScale, *m_pShowInviscidCurve;
-        QAction *m_pExportCurFoil, *m_pDeleteCurFoil, *m_pRenameCurFoil, *m_pSetCurFoilStyle;
+        QAction *m_pExportCurFoil, *m_pDeleteCurFoil, *m_pRenameCurFoil;
         QAction *m_pDerotateFoil, *m_pNormalizeFoil, *m_pRefineLocalFoil, *m_pRefineGlobalFoil , *m_pEditCoordsFoil, *m_pScaleFoil;
         QAction *m_pSetTEGap, *m_pSetLERadius, *m_pSetFlap, *m_pInterpolateFoils, *m_pNacaFoils, *m_pDirectDuplicateCurFoil;
 
@@ -396,9 +379,6 @@ class MainFrame : public QMainWindow
         QAction *m_pInverseZoomIn;
         QAction *m_pOverlayFoil, *m_pClearOverlayFoil;
 
-
-        QComboBox *m_pcbFoil, *m_pcbPolar, *m_pcbOpPoint;
-        QComboBox *m_pcbPlane, *m_pcbPlanePolar, *m_pcbPlaneOpp;
         QRadioButton *m_prbFullInverse, *m_prbMixedInverse;
         QLabel *m_plabProjectName;
 

@@ -21,9 +21,10 @@
 
 #include <QPainter>
 
-#include "gl3dwingview.h"
 #include <QOpenGLPaintDevice>
-#include <miarex/design/gl3dwingdlg.h>
+
+#include "gl3dwingview.h"
+#include <xflobjects/editors/gl3dwingdlg.h>
 #include <xfl3d/controls/w3dprefs.h>
 #include <xflobjects/objects3d/wing.h>
 #include <xflobjects/objects3d/surface.h>
@@ -50,21 +51,6 @@ void gl3dWingView::setWing(Wing const*pWing)
         qDebug()<<pWS->rightFoilName()<<pWS->leftFoilName()<< pWS->m_NXPanels << pWS->m_NYPanels << pWS->m_XPanelDist << pWS->m_YPanelDist <<pWS-> m_Chord;
     }*/
 }
-
-
-void gl3dWingView::glRenderView()
-{
-    if(m_pWing)
-    {
-        paintWing(0, m_pWing);
-        if(m_bFoilNames)  paintFoilNames(m_pWing);
-        if(m_bVLMPanels)  paintEditWingMesh(m_vboEditWingMesh[0]);
-        if(m_bShowMasses)
-            paintMasses(m_pWing->volumeMass(), Vector3d(0.0,0.0,0.0), "Structural mass", m_pWing->m_PointMass);
-        if(m_pGL3dWingDlg->iSection()>=0) paintSectionHighlight();
-    }
-}
-
 
 void gl3dWingView::on3dReset()
 {
@@ -212,13 +198,43 @@ void gl3dWingView::glMake3dObjects()
     if(m_bResetglWing)
     {
         m_bResetglWing = false;
-
-        glMakeWingGeometry(0, m_pWing, nullptr);
+        glMakeWingSurface(m_pWing, nullptr, m_vboSurface);
+        glMakeWingOutline(m_pWing, nullptr, m_vboOutline);
+//        glMakeWingGeometry(0, m_pWing, nullptr);
         glMakeWingEditMesh(m_vboEditWingMesh[0], m_pWing);
     }
 }
 
 
+void gl3dWingView::glRenderView()
+{
+    if(m_pWing)
+    {
+        // paintWing(0, m_pWing);
 
+        m_shadSurf.bind();
+        {
+            m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix, m_matView*m_matModel);
+            m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+        }
+        m_shadSurf.release();
+        m_shadLine.bind();
+        {
+            m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
+            m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+        }
+        m_shadLine.release();
 
+        if(m_bSurfaces)
+            paintTriangles3VtxTexture(m_vboSurface, m_pWing->color(), false, true, nullptr);
 
+        if(m_bOutline)
+            paintSegments(m_vboOutline, W3dPrefs::s_OutlineStyle, false);
+
+        if(m_bFoilNames)  paintFoilNames(m_pWing);
+        if(m_bVLMPanels)  paintEditWingMesh(m_vboEditWingMesh[0]);
+        if(m_bShowMasses)
+            paintMasses(m_pWing->volumeMass(), Vector3d(0.0,0.0,0.0), "Structural mass", m_pWing->m_PointMass);
+        if(m_pGL3dWingDlg->iSection()>=0) paintSectionHighlight();
+    }
+}

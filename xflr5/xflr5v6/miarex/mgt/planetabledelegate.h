@@ -1,7 +1,7 @@
 /****************************************************************************
 
     UFOTableDelegate Class
-    Copyright (C) 2009 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef UFOTABLEDELEGATE_H
-#define UFOTABLEDELEGATE_H
+#pragma once
 
 #include <QVector>
 #include <QItemDelegate>
@@ -36,22 +35,20 @@ class PlaneTableDelegate : public QItemDelegate
     friend class ManagePlanesDlg;
     friend class MainFrame;
 
-public:
-    PlaneTableDelegate(QObject *parent = 0);
+    public:
+        PlaneTableDelegate(QObject *parent = 0);
 
-    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index) const;
-    void setEditorData(QWidget *editor, const QModelIndex &index) const;
-    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
-    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    bool editorEvent(QEvent *, QAbstractItemModel *, const QStyleOptionViewItem &, const QModelIndex &);
+        QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index) const;
+        void setEditorData(QWidget *editor, const QModelIndex &index) const;
+        void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+        void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+        void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+        bool editorEvent(QEvent *, QAbstractItemModel *, const QStyleOptionViewItem &, const QModelIndex &);
 
-private:
-    QStandardItemModel *m_pPlaneModel;
-    int *m_Precision; ///table of float precisions for each column
+    private:
+        QStandardItemModel *m_pPlaneModel;
+        QVector<int> m_Precision; ///table of float precisions for each column
 };
-
-#endif // UFOTABLEDELEGATE_H
 
 
 

@@ -23,22 +23,24 @@
 
 #include <QDialog>
 #include <QKeyEvent>
+#include <QDialogButtonBox>
 
 #include <xflcore/linestyle.h>
 
 
 class LineBtn;
-class OpPointWidget;
+class OpPointWt;
 
 class XDirectStyleDlg : public QDialog
 {
     Q_OBJECT
-    friend class OpPointWidget;
+    friend class OpPointWt;
 
     public:
-        XDirectStyleDlg(OpPointWidget *pParent=nullptr);
+        XDirectStyleDlg(OpPointWt *pParent=nullptr);
 
-        private slots:
+    private slots:
+        void onButton(QAbstractButton *pButton);
         void onRestoreDefaults();
         void onNeutralStyle();
         void onBLStyle();
@@ -48,14 +50,18 @@ class XDirectStyleDlg : public QDialog
         void keyPressEvent(QKeyEvent *pEvent) override;
         void setupLayout();
 
+
+
     private:
-        OpPointWidget *m_pOpPointWt;
+        OpPointWt *m_pOpPointWt;
         LineBtn *m_plbBL, *m_plbPressure, *m_plbNeutral;
-        QPushButton *m_ppbOKButton;
 
         LineStyle m_FoilStyle;
         LineStyle m_BLStyle;
         LineStyle m_PressureStyle;
         LineStyle m_NeutralStyle;
+
+
+        QDialogButtonBox *m_pButtonBox;
 };
 

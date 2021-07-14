@@ -200,6 +200,13 @@ void OpPoint::exportOpp(QTextStream &out, QString Version, bool bCSV, Foil*pFoil
 }
 
 
+QString OpPoint::properties(Foil *pFoil, bool bData) const
+{
+    QString props;
+    getOppProperties(props, pFoil, bData);
+    return props;
+}
+
 /**
  * Returns a QString object holding the description and value of the OpPoint's parameters
  * @param &OpPointProperties the reference of the QString object to be filled with the description

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     EditPlrDlg Class
-    Copyright (C) 2009 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
 
 *****************************************************************************/
 
-#ifndef EDITPLRDLG_H
-#define EDITPLRDLG_H
+#pragma once
+
 
 #include <QDialog>
 #include <QPushButton>
@@ -41,44 +41,44 @@ class EditPlrDlg : public QDialog
     friend class XDirect;
     friend class Miarex;
 
-public:
-    EditPlrDlg(QWidget *pParent=nullptr);
-    ~EditPlrDlg();
+    public:
+        EditPlrDlg(QWidget *pParent=nullptr);
+        ~EditPlrDlg();
 
-    QSize sizeHint() const {return QSize(1100,700);}
+        QSize sizeHint() const {return QSize(1100,700);}
 
-    void initDialog(XDirect *pXDirect, Polar *pPolar, Miarex *pMiarex, WPolar *pWPolar);
+        void initDialog(XDirect *pXDirect, Polar *pPolar, Miarex *pMiarex, WPolar *pWPolar);
 
-private slots:
-    void onButton(QAbstractButton *pButton);
+    private slots:
+        void onButton(QAbstractButton *pButton);
 
-private:
-    void deletePoint();
-    void deleteAllPoints();
-    void setupLayout();
-    void fillPolarData();
-    void fillWPolarData();
-    void keyPressEvent(QKeyEvent *event);
-    void resizeEvent(QResizeEvent*event);
-    void hideEvent(QHideEvent *event);
-    void showEvent(QShowEvent *event);
+    private:
+        void deletePoint();
+        void deleteAllPoints();
+        void setupLayout();
+        void fillPolarData();
+        void fillWPolarData();
+        void keyPressEvent(QKeyEvent *event);
+        void resizeEvent(QResizeEvent*event);
+        void hideEvent(QHideEvent *event);
+        void showEvent(QShowEvent *event);
 
-private:
-    QPushButton *m_pctrlDeletePoint, *m_pctrlDeleteAllPoints;
+    private:
+        QPushButton *m_ppbDeletePoint, *m_ppbDeleteAllPoints;
 
 
-    Polar *m_pPolar;
-    WPolar *m_pWPolar;
+        Polar *m_pPolar;
+        WPolar *m_pWPolar;
 
-    QTableView *m_pctrlPointTable;
-    QStandardItemModel *m_pPointModel;
-    FloatEditDelegate *m_pFloatDelegate;
-    QDialogButtonBox *m_pButtonBox;
+        QTableView *m_ptvPoints;
+        QStandardItemModel *m_pPointModel;
+        FloatEditDelegate *m_pFloatDelegate;
+        QDialogButtonBox *m_pButtonBox;
 
-    XDirect *m_pXDirect;
-    Miarex *m_pMiarex;
+        XDirect *m_pXDirect;
+        Miarex *m_pMiarex;
 
-    static QByteArray s_Geometry;
+        static QByteArray s_Geometry;
 };
 
-#endif // EDITPLRDLG_H
+

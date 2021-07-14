@@ -27,7 +27,7 @@
 #include <globals/mainframe.h>
 #include <gui_objects/splinefoil.h>
 
-#include <xdirect/objects2d.h>
+#include <xflobjects/objects2d/objects2d.h>
 #include <xdirect/xdirect.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>

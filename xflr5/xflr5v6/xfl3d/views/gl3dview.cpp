@@ -25,6 +25,7 @@
 #include <QOpenGLPaintDevice>
 #include <QMouseEvent>
 #include <QFontDatabase>
+#include <QDir>
 
 #include "gl3dview.h"
 #include <xfl3d/gl_globals.h>
@@ -672,8 +673,10 @@ void gl3dView::saveSettings(QSettings &settings)
 {
     settings.beginGroup("gl3dView");
     {
-        settings.setValue("OpenGL_major", s_GlSurfaceFormat.majorVersion());
-        settings.setValue("OpenGL_minor", s_GlSurfaceFormat.minorVersion());
+        int OGLMajor = s_GlSurfaceFormat.majorVersion();
+        int OGLMinor = s_GlSurfaceFormat.minorVersion();
+        settings.setValue("OpenGL_major", OGLMajor);
+        settings.setValue("OpenGL_minor", OGLMinor);
         switch(s_GlSurfaceFormat.profile())
         {
             case QSurfaceFormat::NoProfile:            settings.setValue("Profile", 0);  break;
@@ -713,8 +716,10 @@ void gl3dView::loadSettings(QSettings &settings)
 {
     settings.beginGroup("gl3dView");
     {
-        s_GlSurfaceFormat.setMajorVersion(settings.value("OpenGL_major", 3).toInt());
-        s_GlSurfaceFormat.setMinorVersion(settings.value("OpenGL_minor", 3).toInt());
+        int OGLMajor = settings.value("OpenGL_major", 3).toInt();
+        int OGLMinor = settings.value("OpenGL_minor", 3).toInt();
+        s_GlSurfaceFormat.setMajorVersion(OGLMajor);
+        s_GlSurfaceFormat.setMinorVersion(OGLMinor);
         switch(settings.value("Profile",1).toInt())
         {
             case 0: s_GlSurfaceFormat.setProfile(QSurfaceFormat::NoProfile);            break;
@@ -754,7 +759,13 @@ void gl3dView::loadSettings(QSettings &settings)
 void gl3dView::initializeGL()
 {
     QSurfaceFormat ctxtFormat = format();
+
     m_bUse120StyleShaders = (ctxtFormat.majorVersion()*10+ctxtFormat.minorVersion())<33;
+
+    if(format().testOption(QSurfaceFormat::DeprecatedFunctions))
+    {
+        m_bUse120StyleShaders = true;
+    }
 
     if(g_bTrace)
     {
@@ -763,8 +774,8 @@ void gl3dView::initializeGL()
         Trace(log);
     }
 
-
     glMakeAxes();
+    glMakeLightSource();
     glMakeUnitSphere(m_vboSphere);
     glMakeCube(Vector3d(), 1.0,1.0,1.0, m_vboCube, m_vboCubeEdges);
     glMakeArcBall(m_ArcBall);
@@ -854,6 +865,51 @@ void gl3dView::initializeGL()
     }
     m_shadSurf.release();
 
+    //--------- setup the shader to paint stippled large points -----------
+    if(!m_bUse120StyleShaders)
+    {
+        vsrc = ":/shaders/point/point_VS.glsl";
+        m_shadPoint.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
+        if(m_shadPoint.log().length())
+        {
+            strange = QString::asprintf("%s", QString("Point vertex shader log:"+m_shadPoint.log()).toStdString().c_str());
+            Trace(strange);
+        }
+
+        gsrc = ":/shaders/point/point_GS.glsl";
+        m_shadPoint.addShaderFromSourceFile(QOpenGLShader::Geometry, gsrc);
+        if(m_shadPoint.log().length())
+        {
+            strange = QString::asprintf("%s", QString("Point geometry shader log:"+m_shadPoint.log()).toStdString().c_str());
+            Trace(strange);
+        }
+
+        fsrc = ":/shaders/point/point_FS.glsl";
+        m_shadPoint.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
+        if(m_shadPoint.log().length())
+        {
+            strange = QString::asprintf("%s", QString("Point fragment shader log:"+m_shadPoint.log()).toStdString().c_str());
+            Trace(strange);
+        }
+
+        m_shadPoint.link();
+        m_shadPoint.bind();
+        {
+            m_locPoint.m_attrVertex = m_shadPoint.attributeLocation("vertexPosition_modelSpace");
+            m_locPoint.m_State  = m_shadPoint.attributeLocation("PointState");
+            m_locPoint.m_vmMatrix   = m_shadPoint.uniformLocation("vmMatrix");
+            m_locPoint.m_pvmMatrix  = m_shadPoint.uniformLocation("pvmMatrix");
+            m_locPoint.m_ClipPlane  = m_shadPoint.uniformLocation("clipPlane0");
+            m_locPoint.m_UniColor   = m_shadPoint.uniformLocation("Color");
+            m_locPoint.m_Thickness  = m_shadPoint.uniformLocation("Thickness");
+            m_locPoint.m_Shape      = m_shadPoint.uniformLocation("Shape");
+            m_locPoint.m_Viewport   = m_shadPoint.uniformLocation("Viewport");
+            m_locPoint.m_Light      = m_shadPoint.uniformLocation("LightOn");
+            m_locPoint.m_TwoSided   = m_shadPoint.uniformLocation("TwoSided");
+        }
+        m_shadPoint.release();
+    }
+
     glSetupLight();
 }
 
@@ -885,6 +941,27 @@ void gl3dView::glSetupLight()
         m_shadSurf.setUniformValue(m_shadSurf.uniformLocation("Kq"),                       s_Light.m_Attenuation.m_Quadratic);
     }
     m_shadSurf.release();
+
+    if(!m_bUse120StyleShaders)
+    {
+        m_shadPoint.bind();
+        {
+            if(isLightOn()) m_shadPoint.setUniformValue(m_locPoint.m_Light, 1);
+            else            m_shadPoint.setUniformValue(m_locPoint.m_Light, 0);
+
+            m_shadPoint.setUniformValue(m_shadPoint.uniformLocation("LightPosition_viewSpace"),  x,y,z);
+            m_shadPoint.setUniformValue(m_shadPoint.uniformLocation("EyePosition_viewSpace"),    0,0,s_Light.m_EyeDist);
+            m_shadPoint.setUniformValue(m_shadPoint.uniformLocation("LightColor"),               LightColor);
+            m_shadPoint.setUniformValue(m_shadPoint.uniformLocation("LightAmbient"),             s_Light.m_Ambient);
+            m_shadPoint.setUniformValue(m_shadPoint.uniformLocation("LightDiffuse"),             s_Light.m_Diffuse);
+            m_shadPoint.setUniformValue(m_shadPoint.uniformLocation("LightSpecular"),            s_Light.m_Specular);
+            m_shadPoint.setUniformValue(m_shadPoint.uniformLocation("MaterialShininess"),        float(s_Light.m_iShininess));
+            m_shadPoint.setUniformValue(m_shadPoint.uniformLocation("Kc"),                       s_Light.m_Attenuation.m_Constant);
+            m_shadPoint.setUniformValue(m_shadPoint.uniformLocation("Kl"),                       s_Light.m_Attenuation.m_Linear);
+            m_shadPoint.setUniformValue(m_shadPoint.uniformLocation("Kq"),                       s_Light.m_Attenuation.m_Quadratic);
+        }
+        m_shadPoint.release();
+    }
 }
 
 
@@ -918,6 +995,14 @@ void gl3dView::paintGL3()
     m_shadSurf.release();
 
 
+    if(m_shadPoint.isLinked())
+    {
+        m_shadPoint.bind();
+        m_shadPoint.setUniformValue(m_locPoint.m_ClipPlane, m_ClipPlanePos);
+        m_shadPoint.setUniformValue(m_locPoint.m_Viewport, QVector2D(float(m_GLViewRect.width()), float(m_GLViewRect.height())));
+        m_shadPoint.release();
+    }
+
     int width  = int(geometry().width()  * pixelRatio);
     int height = int(geometry().height() * pixelRatio);
 
@@ -945,36 +1030,6 @@ void gl3dView::paintGL3()
 
     if(m_bArcball) paintArcBall();
 
-    if(m_bLightVisible)
-    {
-        Vector3d lightPos(double(s_Light.m_X), double(s_Light.m_Y), double(s_Light.m_Z));
-        double radius = double(s_Light.m_Z+2.0f)/73.0;
-        QColor lightColor;
-        lightColor.setRedF(  double(s_Light.m_Red));
-        lightColor.setGreenF(double(s_Light.m_Green));
-        lightColor.setBlueF( double(s_Light.m_Blue));
-        lightColor.setAlphaF(1.0);
-
-        m_matModel.setToIdentity();
-        m_matModel.translate(s_Light.m_X, s_Light.m_Y, s_Light.m_Z);
-
-        QMatrix4x4 vm(m_matView);
-        m_matView.setToIdentity();
-
-/*        m_shadSurf.bind();
-        {
-            m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix, m_matModel);
-            m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, m_matProj*m_matModel);
-        }
-        m_shadSurf.release();
-*/
-        paintSphere(lightPos, radius, lightColor, false);
-
-        // leave things as they were
-        m_matModel.setToIdentity();
-        m_matView=vm;
-    }
-
     if(m_bAxes)
     {
         // fixed scale axis for the axis
@@ -991,6 +1046,47 @@ void gl3dView::paintGL3()
 
     glRenderView();
 
+    if(m_bLightVisible)
+    {
+        Vector3d lightPos(double(s_Light.m_X), double(s_Light.m_Y), double(s_Light.m_Z));
+        double radius = double(s_Light.m_Z+LIGHTREFLENGTH)/150.0;
+
+        QColor lightColor;
+        lightColor.setRedF(  double(s_Light.m_Red));
+        lightColor.setGreenF(double(s_Light.m_Green));
+        lightColor.setBlueF( double(s_Light.m_Blue));
+        lightColor.setAlphaF(1.0);
+
+        QMatrix4x4 vm(m_matView);
+        m_matView.setToIdentity();
+
+        if(m_bUse120StyleShaders)
+        {
+            paintSphere(lightPos, radius, lightColor, false);
+        }
+        else
+        {
+            m_matModel.setToIdentity();
+            m_matModel.translate(s_Light.m_X, s_Light.m_Y, s_Light.m_Z);
+
+            m_shadPoint.bind();
+            {
+                m_shadPoint.setUniformValue(m_locPoint.m_vmMatrix, m_matModel);
+                // skip the matView since the light is fixed in world space
+                m_shadPoint.setUniformValue(m_locPoint.m_pvmMatrix, m_matProj*m_matModel);
+            }
+            m_shadPoint.release();
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable(GL_DEPTH_TEST);
+            paintPoints(m_vboLightSource, radius*10.0*LIGHTREFLENGTH, 0, false, lightColor, 4);
+        }
+
+        // leave things as they were
+         m_matModel.setToIdentity();
+         m_matView=vm;
+    }
+
     glDisable(GL_BLEND);
     glDisable(GL_DEPTH_TEST);
 }
@@ -999,6 +1095,25 @@ void gl3dView::paintGL3()
 void gl3dView::setScale(double refLength)
 {
     m_glScalef = 1.5/refLength;
+}
+
+
+void gl3dView::glMakeLightSource()
+{
+    int nPts = 1;
+    int buffersize = nPts*4;
+    QVector<float> pts(buffersize);
+
+    pts[0] = 0.0;
+    pts[1] = 0.0;
+    pts[2] = 0.0;
+    pts[3] = -1.0; // invalid state so that the shader uses the uniform colour instead
+
+    if(m_vboLightSource.isCreated()) m_vboLightSource.destroy();
+    m_vboLightSource.create();
+    m_vboLightSource.bind();
+    m_vboLightSource.allocate(pts.data(), buffersize * int(sizeof(GLfloat)));
+    m_vboLightSource.release();
 }
 
 
@@ -1094,6 +1209,36 @@ void gl3dView::paintAxes()
     glRenderText(1.0, 0.015, 0.015, "X", s_TextColor);
     glRenderText(0.015, 1.0, 0.015, "Y", s_TextColor);
     glRenderText(0.015, 0.015, 1.0, "Z", s_TextColor);
+}
+
+
+void gl3dView::paintPoints(QOpenGLBuffer &vbo, float width, int iShape, bool bLight, QColor const &clr, int stride)
+{
+    if(m_bUse120StyleShaders) return;
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+    m_shadPoint.bind();
+    {
+        // iShape 0: Pentagon, 1: Icosahedron, 2: Cube
+        m_shadPoint.setUniformValue(m_locPoint.m_Shape, iShape);
+        m_shadPoint.setUniformValue(m_locPoint.m_UniColor, clr); // only used if vertex state is invalid 0< or >1
+        m_shadPoint.setUniformValue(m_locPoint.m_Thickness, width);
+        if(bLight)m_shadPoint.setUniformValue(m_locPoint.m_Light, 1);
+        else      m_shadPoint.setUniformValue(m_locPoint.m_Light, 0);
+
+        if(vbo.bind())
+        {
+            m_shadPoint.enableAttributeArray(m_locPoint.m_attrVertex);
+            m_shadPoint.setAttributeBuffer(m_locPoint.m_attrVertex, GL_FLOAT, 0, 3, stride*sizeof(float));
+            m_shadPoint.enableAttributeArray(m_locPoint.m_State);
+            m_shadPoint.setAttributeBuffer(m_locPoint.m_State, GL_FLOAT, 3*sizeof(float), 1, stride*sizeof(float));
+            int npts = vbo.size()/stride/int(sizeof(float));
+            glDrawArrays(GL_POINTS, 0, npts);// 4 vertices defined but only 3 are used
+            m_shadPoint.disableAttributeArray(m_locPoint.m_attrVertex);
+            m_shadPoint.disableAttributeArray(m_locPoint.m_State);
+        }
+        vbo.release();
+    }
+    m_shadPoint.release();
 }
 
 
@@ -1486,14 +1631,19 @@ void gl3dView::startResetTimer(double length)
     m_TransitionTimer.start(7);//7 ms x 50 times
 }
 
+
 /** note: glLineStipple is deprecated since OpenGL 3.1 */
-void GLLineStipple(int style)
+void GLLineStipple(Line::enumLineStipple stipple)
 {
-    if     (style == Qt::DashLine)       glLineStipple (1, 0xCFCF);
-    else if(style == Qt::DotLine)        glLineStipple (1, 0x6666);
-    else if(style == Qt::DashDotLine)    glLineStipple (1, 0xFF18);
-    else if(style == Qt::DashDotDotLine) glLineStipple (1, 0x7E66);
-    else                                 glLineStipple (1, 0xFFFF);
+    switch(stipple)
+    {
+        default:
+        case Line::SOLID:       glLineStipple (1, 0xFFFF);   break;
+        case Line::DASH:        glLineStipple (1, 0xCFCF);   break;
+        case Line::DOT:         glLineStipple (1, 0x6666);   break;
+        case Line::DASHDOT:     glLineStipple (1, 0xFF18);   break;
+        case Line::DASHDOTDOT:  glLineStipple (1, 0x7E66);   break;
+    }
 }
 
 
@@ -1805,7 +1955,7 @@ void gl3dView::paintTriangles3Vtx(QOpenGLBuffer &vbo, const QColor &backclr, boo
         m_shadSurf.disableAttributeArray(m_locSurf.m_attrVertex);
         m_shadSurf.disableAttributeArray(m_locSurf.m_attrNormal);
         m_shadSurf.setUniformValue(m_locSurf.m_TwoSided, 0); // leave things as they were
-        glEnable(GL_CULL_FACE);
+        glDisable(GL_CULL_FACE);
     }
     m_shadSurf.release();
 }
@@ -1825,7 +1975,7 @@ void gl3dView::paintTriangles3VtxTexture(QOpenGLBuffer &vbo, const QColor &backc
         else
         {
             m_shadSurf.setUniformValue(m_locSurf.m_UniColor, backclr);
-             m_shadSurf.setUniformValue(m_locSurf.m_HasUniColor, 1);
+            m_shadSurf.setUniformValue(m_locSurf.m_HasUniColor, 1);
         }
 
         if(bLight) m_shadSurf.setUniformValue(m_locSurf.m_Light, 1);
@@ -1869,6 +2019,7 @@ void gl3dView::paintTriangles3VtxTexture(QOpenGLBuffer &vbo, const QColor &backc
 
         m_shadSurf.disableAttributeArray(m_locSurf.m_attrVertex);
         m_shadSurf.disableAttributeArray(m_locSurf.m_attrNormal);
+        m_shadSurf.disableAttributeArray(m_locSurf.m_attrUV);
         m_shadSurf.setUniformValue(m_locSurf.m_TwoSided, 0); // leave things as they were
         glEnable(GL_CULL_FACE);
     }

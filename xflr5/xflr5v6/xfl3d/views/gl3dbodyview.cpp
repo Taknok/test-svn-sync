@@ -27,7 +27,7 @@
 #include "gl3dbodyview.h"
 
 #include <xfl3d/controls/w3dprefs.h>
-#include <miarex/design/gl3dbodydlg.h>
+#include <xflobjects/editors/gl3dbodydlg.h>
 #include <globals/mainframe.h>
 #include <xflobjects/objects3d/body.h>
 #include <xflcore/displayoptions.h>
@@ -62,17 +62,8 @@ void gl3dBodyView::glRenderView()
 
         if(m_bSurfaces)
         {
-            bool bTextures = m_pBody->hasTextures() && (m_pLeftBodyTexture && m_pRightBodyTexture);
-            if(bTextures)
-            {
-                paintTriangles3VtxTexture(m_vboFuseLeft,  m_pBody->color(), false, true, m_pLeftBodyTexture);
-                paintTriangles3VtxTexture(m_vboFuseRight, m_pBody->color(), false, true, m_pRightBodyTexture);
-            }
-            else
-            {
-                paintTriangles3VtxTexture(m_vboFuseLeft,  m_pBody->color(), false, true, nullptr);
-                paintTriangles3VtxTexture(m_vboFuseRight, m_pBody->color(), false, true, nullptr);
-            }
+            paintTriangles3VtxTexture(m_vboFuseLeft,  m_pBody->color(), false, true, nullptr);
+            paintTriangles3VtxTexture(m_vboFuseRight, m_pBody->color(), false, true, nullptr);
         }
         if(m_bOutline)
         {

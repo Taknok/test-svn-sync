@@ -1,7 +1,7 @@
 /****************************************************************************
 
     ManagePlanesDlg Class
-    Copyright (C) 2009-2019 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,8 +20,7 @@
 *****************************************************************************/
 
 
-#ifndef MANAGEPLANESDLG_H
-#define MANAGEPLANESDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QTextEdit>
@@ -39,45 +38,43 @@ class ManagePlanesDlg : public QDialog
     friend class Miarex;
     friend class MainFrame;
 
-public:
-    ManagePlanesDlg(QWidget *pParent);
-    ~ManagePlanesDlg();
+    public:
+        ManagePlanesDlg(QWidget *pParent);
+        ~ManagePlanesDlg();
 
-    void initDialog(QString &UFOName);
+        void initDialog(QString &UFOName);
 
-private slots:
-    void onDelete();
-    void onRename();
-    void onTableRowChanged(QModelIndex index);
-    void onDoubleClickTable(const QModelIndex &index);
-    void onDescriptionChanged();
-    void onButton(QAbstractButton *pButton);
+    private slots:
+        void onDelete();
+        void onRename();
+        void onTableRowChanged(QModelIndex index);
+        void onDoubleClickTable(const QModelIndex &index);
+        void onDescriptionChanged();
+        void onButton(QAbstractButton *pButton);
 
-private:
-    void resizeEvent(QResizeEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+    private:
+        void resizeEvent(QResizeEvent *event) override;
+        void keyPressEvent(QKeyEvent *event) override;
 
-    void fillPlaneTable();
-    void fillPlaneRow(int row);
+        void fillPlaneTable();
+        void fillPlaneRow(int row);
 
-    void setupLayout();
-    void selectPlane();
+        void setupLayout();
+        void selectPlane();
 
-private:
+    private:
 
-    QDialogButtonBox *m_pButtonBox;
+        QDialogButtonBox *m_pButtonBox;
 
-    QPushButton *m_pctrlRename, *m_pctrlDelete;
-    QTextEdit *m_pctrlDescription;
-    QTableView *m_pctrlPlaneTable;
-    QStandardItemModel *m_pPlaneModel;
-    PlaneTableDelegate *m_pPlaneDelegate;
-    //    QItemSelectionModel *m_pSelectionModel;
+        QPushButton *m_ppbRename, *m_ppbDelete;
+        QTextEdit *m_pteDescription;
+        QTableView *m_ptvPlanes;
+        QStandardItemModel *m_pPlaneModel;
+        PlaneTableDelegate *m_pPlaneDelegate;
+        //    QItemSelectionModel *m_pSelectionModel;
 
-    int *m_pPrecision;
-
-    Plane *m_pPlane;
-    bool m_bChanged;
+        Plane *m_pPlane;
+        bool m_bChanged;
 };
 
-#endif // MANAGEPLANESDLG_H
+

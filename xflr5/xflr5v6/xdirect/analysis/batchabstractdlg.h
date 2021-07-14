@@ -124,7 +124,7 @@ class BatchAbstractDlg : public QDialog
 
         QFile *m_pXFile;                   /**< a pointer to the output log file */
 
-        Foil *m_pCurFoil;                  /**< a pointer to the current Foil */
+        Foil *m_pFoil;                  /**< a pointer to the current Foil */
 
         QStringList m_FoilList;            /**< the list of foils to analyze */
 

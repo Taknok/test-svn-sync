@@ -42,7 +42,7 @@
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/customwts/intedit.h>
 #include <xdirect/analysis/xfoiltask.h>
-#include <xdirect/objects2d.h>
+#include <xflobjects/objects2d/objects2d.h>
 #include <xdirect/xdirect.h>
 #include <xflcore/xflevents.h>
 #include <xflobjects/objects2d/foil.h>
@@ -86,7 +86,7 @@ QByteArray BatchAbstractDlg::s_Geometry;
 BatchAbstractDlg::BatchAbstractDlg(QWidget *pParent) : QDialog(pParent)
 {
     m_pXFile = nullptr;
-    m_pCurFoil = nullptr;
+    m_pFoil = nullptr;
 
 
     m_FoilList.clear();

@@ -747,12 +747,25 @@ QString Polar::autoPolarName(xfl::enumPolarType polarType, double Re, double Mac
 }
 
 
+bool Polar::hasOpp(OpPoint const *pOpp) const
+{
+    return (pOpp->foilName()==m_FoilName && pOpp->polarName()==m_Name);
+}
+
+QString Polar::properties() const
+{
+    QString props;
+    getProperties(props);
+    return props;
+}
+
+
 /**
  * Returns a QString object holding the description and value of the polar's parameters
  * @param &PolarProperties the reference of the QString object to be filled with the description
  * @param bData true if the analysis data should be appended to the string
  */
-void Polar::getPolarProperties(QString &polarProps) const
+void Polar::getProperties(QString &polarProps) const
 {
     QString strong;
     polarProps = m_Name +"\n\n";

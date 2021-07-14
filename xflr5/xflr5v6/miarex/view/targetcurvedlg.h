@@ -1,7 +1,7 @@
 /****************************************************************************
 
     TargetCurveDlg Class
-    Copyright (C) 2015 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef TARGETCURVEDLG_H
-#define TARGETCURVEDLG_H
+#pragma once
 
 #include <QDialog>
 #include <xflwidgets/customwts/doubleedit.h>
@@ -30,24 +29,23 @@
 class TargetCurveDlg : public QDialog
 {
     Q_OBJECT
-public:
-    TargetCurveDlg(QWidget *pParent=nullptr);
-    void initDialog(bool bShowElliptic, bool bShowBell, bool bMaxCl, double curveExp);
+    public:
+        TargetCurveDlg(QWidget *pParent=nullptr);
+        void initDialog(bool bShowElliptic, bool bShowBell, bool bMaxCl, double curveExp);
 
-private:
-    void setupLayout();
+    private:
+        void setupLayout();
 
-private slots:
-    void onOK();
+    private slots:
+        void onOK();
 
-public:
-    double m_BellCurveExp;
-    bool m_bMaxCL, m_bShowBellCurve, m_bShowEllipticCurve;
+    public:
+        double m_BellCurveExp;
+        bool m_bMaxCL, m_bShowBellCurve, m_bShowEllipticCurve;
 
-private:
-    DoubleEdit *m_pCtrlExptEdit;
-    QRadioButton *m_pCtrlRadio1, *m_pCtrlRadio2;
-    QCheckBox *m_pctrlShowBellCurve, *m_pctrlShowEllipticCurve;
+    private:
+        DoubleEdit *m_pdeExptEdit;
+        QRadioButton *m_prbRadio1, *m_prbRadio2;
+        QCheckBox *m_pchShowBellCurve, *m_pchShowEllipticCurve;
 };
 
-#endif // TARGETCURVEDLG_H

@@ -2,7 +2,7 @@
 
     xflr5v6
     Copyright (C) André Deperrois
-    All rights reserved.
+    GNU General Public License v3
 
 *****************************************************************************/
 

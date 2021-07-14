@@ -25,6 +25,7 @@
 #include <QDialog>
 #include <QCheckBox>
 #include <QSettings>
+#include <QDialogButtonBox>
 
 #include <xflcore/linestyle.h>
 
@@ -62,8 +63,9 @@ class W3dPrefs : public QDialog
         void onStreamLines();
         void onVLMMesh();
         void onMasses();
-        void onResetDefaults();
+        void onRestoreDefaults();
         void onOK();
+        void onButton(QAbstractButton *pButton);
 
     private:
         void setupLayout();
@@ -81,6 +83,8 @@ class W3dPrefs : public QDialog
         QCheckBox *m_pchAnimateTransitions, *m_pchAutoAdjustScale;
         QCheckBox *m_pchEnableClipPlane;
         IntEdit *m_pieChordwiseRes, *m_pieBodyAxialRes, *m_pcieBodyHoopRes;
+
+        QDialogButtonBox *m_pButtonBox;
 
     public:
         static double s_MassRadius;

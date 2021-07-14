@@ -132,161 +132,166 @@ void gl3dMiarexView::glRenderView()
         m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
     }
 
-    if(s_pMiarex->m_pCurPlane)
+    if(!s_pMiarex->m_pCurPlane) return;
+
+    m_matModel = modeMatrix;
+
+    // We use the model matrix to apply alpha and beta rotations to the geometry.
+    if(pPOpp)
     {
-        m_matModel = modeMatrix;
+        //apply aoa rotation
+        m_matModel.rotate(float(pPOpp->alpha()),0.0,1.0,0.0);
 
-        // We use the model matrix to apply alpha and beta rotations to the geometry.
-        if(pPOpp)
+        /* CP position alredy includes the sideslip geometry, shond't be rotated by sideslip*/
+        if(s_pMiarex->m_bXCP)
         {
-            //apply aoa rotation
-            m_matModel.rotate(float(pPOpp->alpha()),0.0,1.0,0.0);
-
-            /* CP position alredy includes the sideslip geometry, shond't be rotated by sideslip*/
-            if(s_pMiarex->m_bXCP)
+            for(int iw=0; iw<MAXWINGS; iw++)
             {
-                for(int iw=0; iw<MAXWINGS; iw++)
-                {
-                    if(s_pMiarex->m_pCurPlane->wing(iw)) paintLift(iw);
-                }
+                if(s_pMiarex->m_pCurPlane->wing(iw)) paintLift(iw);
             }
+        }
 
-            // apply sideslip
-            if(fabs(pPOpp->beta())>PRECISION)
-                m_matModel.rotate(float(pPOpp->beta()), 0.0, 0.0, 1.0);
+        // apply sideslip
+        if(fabs(pPOpp->beta())>PRECISION)
+            m_matModel.rotate(float(pPOpp->beta()), 0.0, 0.0, 1.0);
+    }
+    else
+    {
+        if(pWPolar && fabs(pWPolar->Beta())>0.001)
+            m_matModel.rotate(float(pWPolar->Beta()), 0.0, 0.0, 1.0);
+    }
+
+    m_shadSurf.bind();
+    {
+        m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix, m_matView*m_matModel);
+        m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+    }
+    m_shadSurf.release();
+    m_shadLine.bind();
+    {
+        m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
+        m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+    }
+
+    if(m_bVLMPanels)
+    {
+        if(!pWPolar || s_pMiarex->m_pCurWPolar->isLLTMethod())
+        {
+            for(int iw=0; iw<MAXWINGS; iw++)
+            {
+                if(s_pMiarex->m_pCurPlane->wing(iw))
+                    paintEditWingMesh(m_vboEditWingMesh[iw]);
+            }
+//                paintEditBodyMesh(s_pMiarex->m_pCurPlane->body());
+            if(s_pMiarex->m_pCurPlane->body())
+                paintMesh(m_vboEditBodyMesh, true);
         }
         else
         {
-            if(pWPolar && fabs(pWPolar->Beta())>0.001)
-                m_matModel.rotate(float(pWPolar->Beta()), 0.0, 0.0, 1.0);
-        }
-
-        if(m_bVLMPanels)
-        {
-            if(!pWPolar || s_pMiarex->m_pCurWPolar->isLLTMethod())
-            {
-                for(int iw=0; iw<MAXWINGS; iw++)
-                {
-                    if(s_pMiarex->m_pCurPlane->wing(iw))
-                        paintEditWingMesh(m_vboEditWingMesh[iw]);
-                }
-//                paintEditBodyMesh(s_pMiarex->m_pCurPlane->body());
-                if(s_pMiarex->m_pCurPlane->body())
-                    paintMesh(m_vboEditBodyMesh, true);
-            }
-            else
-            {
-                bool bBackground = (!s_pMiarex->m_pCurPOpp || !s_pMiarex->m_b3DCp);
-                paintMesh(m_vboMesh, bBackground);
-            }
-        }
-
-        if(pPOpp)
-        {
-            if(s_pMiarex->m_b3DCp && pPOpp->analysisMethod()>=xfl::VLMMETHOD)
-            {
-                paintPanelCp(s_pMiarex->matSize());
-            }
-            if(s_pMiarex->m_bPanelForce && pPOpp->analysisMethod()>=xfl::VLMMETHOD)
-            {
-                paintPanelForces(s_pMiarex->matSize());
-            }
-        }
-
-        //streamlines and velocities are rotated by aoa when constructed
-        if(pPOpp && m_bStream && pPOpp && !pPOpp->isLLTMethod() && !s_bResetglStream)
-            paintStreamLines();
-
-        if(pPOpp && m_bSurfVelocities && !pPOpp->isLLTMethod())
-            paintSurfaceVelocities(s_pMiarex->matSize());
-
-        m_shadLine.bind();
-        {
-            m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
-            m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
-        }
-        m_shadLine.release();
-
-        if(m_bShowMasses) paintMasses(s_pMiarex->m_pCurPlane);
-
-
-        for(int iw=0; iw<MAXWINGS; iw++)
-        {
-            Wing * pWing = s_pMiarex->m_pCurPlane->wing(iw);
-            if(pWing)
-            {
-                paintWing(iw, pWing);
-                if(m_bFoilNames) paintFoilNames(pWing);
-            }
-        }
-
-        Body const*pBody=s_pMiarex->m_pCurPlane->body();
-        if(pBody)
-        {
-            if(m_bSurfaces)
-            {
-                bool bTextures = pBody->hasTextures() && (m_pLeftBodyTexture && m_pRightBodyTexture);
-
-                if(bTextures)
-                {
-                    paintTriangles3VtxTexture(m_vboFuseLeft,  pBody->color(), false, true, m_pLeftBodyTexture);
-                    paintTriangles3VtxTexture(m_vboFuseRight, pBody->color(), false, true, m_pRightBodyTexture);
-                }
-                else
-                {
-                    paintTriangles3VtxTexture(m_vboFuseLeft,  pBody->color(), false, true, nullptr);
-                    paintTriangles3VtxTexture(m_vboFuseRight, pBody->color(), false, true, nullptr);
-                }
-            }
-
-            if(m_bOutline)
-            {
-                if(pBody->isFlatPanelType())
-                    paintSegments(m_vboFuseOutline, W3dPrefs::s_OutlineStyle);
-                else
-                    paintLineStrip(m_vboFuseOutline, W3dPrefs::s_OutlineStyle);
-            }
-        }
-
-        if(pPOpp)
-        {
-            if(s_pMiarex->m_bMoments)
-            {
-                paintMoments();
-            }
-            if(s_pMiarex->m_bDownwash)
-            {
-                for(int iw=0; iw<MAXWINGS; iw++)
-                {
-                    if(s_pMiarex->m_pCurPlane->wing(iw)) paintDownwash(iw);
-                }
-            }
-            if(s_pMiarex->m_bICd || s_pMiarex->m_bVCd)
-            {
-                for(int iw=0; iw<MAXWINGS; iw++)
-                {
-                    if(s_pMiarex->m_pCurPlane->wing(iw)) paintDrag(iw);
-                }
-            }
-            if(s_pMiarex->m_bXTop || s_pMiarex->m_bXBot)
-            {
-                for(int iw=0; iw<MAXWINGS; iw++)
-                {
-                    if(s_pMiarex->m_pCurPlane->wing(iw)) paintTransitions(iw);
-                }
-            }
-
-            if (s_pMiarex->m_b3DCp && pPOpp && pPOpp->analysisMethod()>=xfl::VLMMETHOD)
-            {
-                //                paintCpLegendClr();
-            }
-            else if (s_pMiarex->m_bPanelForce && pPOpp && pPOpp->analysisMethod()>=xfl::VLMMETHOD)
-            {
-                //                paintCpLegendClr();
-            }
+            bool bBackground = (!s_pMiarex->m_pCurPOpp || !s_pMiarex->m_b3DCp);
+            paintMesh(m_vboMesh, bBackground);
         }
     }
-    //    if(W3dPrefsDlg::s_bEnableClipPlane) glDisable(GL_CLIP_PLANE0);
+
+    if(pPOpp)
+    {
+        if(s_pMiarex->m_b3DCp && pPOpp->analysisMethod()>=xfl::VLMMETHOD)
+        {
+            paintPanelCp(s_pMiarex->matSize());
+        }
+        if(s_pMiarex->m_bPanelForce && pPOpp->analysisMethod()>=xfl::VLMMETHOD)
+        {
+            paintPanelForces(s_pMiarex->matSize());
+        }
+    }
+
+    //streamlines and velocities are rotated by aoa when constructed
+    if(pPOpp && m_bStream && pPOpp && !pPOpp->isLLTMethod() && !s_bResetglStream)
+        paintStreamLines();
+
+    if(pPOpp && m_bSurfVelocities && !pPOpp->isLLTMethod())
+        paintSurfaceVelocities(s_pMiarex->matSize());
+
+    m_shadLine.bind();
+    {
+        m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
+        m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+    }
+    m_shadLine.release();
+
+    if(m_bShowMasses) paintMasses(s_pMiarex->m_pCurPlane);
+
+
+    for(int iw=0; iw<MAXWINGS; iw++)
+    {
+        Wing * pWing = s_pMiarex->m_pCurPlane->wing(iw);
+        if(pWing)
+        {
+            if(m_bSurfaces)
+                paintTriangles3VtxTexture(m_vboWingSurface[iw], pWing->color(), false, true, nullptr);
+
+            if(m_bOutline)
+                paintSegments(m_vboWingOutline[iw], W3dPrefs::s_OutlineStyle, false);
+
+            if(m_bFoilNames) paintFoilNames(pWing);
+        }
+    }
+
+    Body const*pBody=s_pMiarex->m_pCurPlane->body();
+    if(pBody)
+    {
+        if(m_bSurfaces)
+        {
+            paintTriangles3VtxTexture(m_vboFuseLeft,  pBody->color(), false, true, nullptr);
+            paintTriangles3VtxTexture(m_vboFuseRight, pBody->color(), false, true, nullptr);
+        }
+
+        if(m_bOutline)
+        {
+            if(pBody->isFlatPanelType())
+                paintSegments(m_vboFuseOutline, W3dPrefs::s_OutlineStyle);
+            else
+                paintLineStrip(m_vboFuseOutline, W3dPrefs::s_OutlineStyle);
+        }
+    }
+
+    if(pPOpp)
+    {
+        if(s_pMiarex->m_bMoments)
+        {
+            paintMoments();
+        }
+        if(s_pMiarex->m_bDownwash)
+        {
+            for(int iw=0; iw<MAXWINGS; iw++)
+            {
+                if(s_pMiarex->m_pCurPlane->wing(iw)) paintDownwash(iw);
+            }
+        }
+        if(s_pMiarex->m_bICd || s_pMiarex->m_bVCd)
+        {
+            for(int iw=0; iw<MAXWINGS; iw++)
+            {
+                if(s_pMiarex->m_pCurPlane->wing(iw)) paintDrag(iw);
+            }
+        }
+        if(s_pMiarex->m_bXTop || s_pMiarex->m_bXBot)
+        {
+            for(int iw=0; iw<MAXWINGS; iw++)
+            {
+                if(s_pMiarex->m_pCurPlane->wing(iw)) paintTransitions(iw);
+            }
+        }
+
+        if (s_pMiarex->m_b3DCp && pPOpp && pPOpp->analysisMethod()>=xfl::VLMMETHOD)
+        {
+            //                paintCpLegendClr();
+        }
+        else if (s_pMiarex->m_bPanelForce && pPOpp && pPOpp->analysisMethod()>=xfl::VLMMETHOD)
+        {
+            //                paintCpLegendClr();
+        }
+    }
 }
 
 
@@ -328,10 +333,9 @@ void gl3dMiarexView::resizeGL(int width, int height)
     int side = qMin(width, height);
     glViewport((width - side) / 2, (height - side) / 2, side, side);
 
-    double w, h, s;
-    w = double(width);
-    h = double(height);
-    s = 1.0;
+    double w = double(width);
+    double h = double(height);
+    double s = 1.0;
 
     if(w>h)    m_GLViewRect.setRect(-s, s*h/w, s, -s*h/w);
     else    m_GLViewRect.setRect(-s*w/h, s, s*w/h, -s);
@@ -345,15 +349,25 @@ void gl3dMiarexView::resizeGL(int width, int height)
 
 void gl3dMiarexView::paintOverlay()
 {
+    gl3dView::paintOverlay();
     QOpenGLPaintDevice device(size() * devicePixelRatio());
-    QPainter painter(&device);
 
-    if(!s_pMiarex->m_PixText.isNull()) painter.drawPixmap(0,0, s_pMiarex->m_PixText);
-    if(!m_PixTextOverlay.isNull())
+    QPainter painter(&device);
+/*
+bool bExport(false);
+if(bExport)
+{
+    qDebug()<<device.size();
+    s_pMiarex->m_PixText.save(QDir::homePath()+"/miarex.png", "PNG");
+    m_PixTextOverlay.save(QDir::homePath()+"/overlay.png", "PNG");
+}*/
+/*    if(!m_PixTextOverlay.isNull())
     {
         painter.drawPixmap(0,0, m_PixTextOverlay);
         m_PixTextOverlay.fill(Qt::transparent);
-    }
+    }*/
+    if(!s_pMiarex->m_PixText.isNull())
+        painter.drawPixmap(0,0, s_pMiarex->m_PixText);
 }
 
 
@@ -1927,8 +1941,7 @@ void gl3dMiarexView::paintPanelCp(int nPanels)
         m_shadSurf.setUniformValue(m_locSurf.m_Light, 0);
         m_shadSurf.setUniformValue(m_locSurf.m_HasUniColor, 0); // using attribute buffer instead
         m_shadSurf.setUniformValue(m_locSurf.m_HasTexture, 0);
-        m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix, m_matView*m_matModel);
-        m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, m_matProj*m_matView*m_matModel);
+
         m_shadSurf.enableAttributeArray(m_locSurf.m_attrVertex);
         m_shadSurf.enableAttributeArray(m_locSurf.m_attrColor);
         m_vboPanelCp.bind();
@@ -1941,10 +1954,10 @@ void gl3dMiarexView::paintPanelCp(int nPanels)
             glDrawArrays(GL_TRIANGLES, 0, nPanels*2*3);
             glDisable(GL_POLYGON_OFFSET_FILL);
 
-            m_shadSurf.disableAttributeArray(m_locSurf.m_attrColor);
-            m_shadSurf.disableAttributeArray(m_locSurf.m_attrVertex);
         }
         m_vboPanelCp.release();
+        m_shadSurf.disableAttributeArray(m_locSurf.m_attrColor);
+        m_shadSurf.disableAttributeArray(m_locSurf.m_attrVertex);
     }
     m_shadSurf.release();
 }
@@ -1972,10 +1985,10 @@ void gl3dMiarexView::paintPanelForces(int nPanels)
             glEnable(GL_DEPTH_TEST);
             glDrawArrays(GL_LINES, 0, nPanels*3*2);
 
-            m_shadSurf.disableAttributeArray(m_locSurf.m_attrVertex);
-            m_shadSurf.disableAttributeArray(m_locSurf.m_attrColor);
         }
         m_vboPanelForces.release();
+        m_shadSurf.disableAttributeArray(m_locSurf.m_attrVertex);
+        m_shadSurf.disableAttributeArray(m_locSurf.m_attrColor);
     }
     m_shadSurf.release();
 }
@@ -2459,24 +2472,28 @@ void gl3dMiarexView::glMake3dObjects()
 
     if(s_bResetglGeom  && pCurPlane)
     {
-        Body translatedBody;
+        Body TranslatedBody;
         if(pCurPlane->body())
         {
-            translatedBody.duplicate(pCurPlane->body());
-            translatedBody.translate(pCurPlane->bodyPos());
+            TranslatedBody.duplicate(pCurPlane->body());
+            TranslatedBody.translate(pCurPlane->bodyPos());
         }
 
         for(int iw=0; iw<MAXWINGS; iw++)
         {
-            if(pCurPlane->wing(iw))
+            if(pCurPlane->wingAt(iw))
             {
                 if(pCurPlane->body())
                 {
-                    glMakeWingGeometry(iw, pCurPlane->wing(iw), &translatedBody);
+//                    glMakeWingGeometry(iw, pCurPlane->wing(iw), &translatedBody);
+                    glMakeWingSurface(pCurPlane->wingAt(iw), &TranslatedBody, m_vboWingSurface[iw]);
+                    glMakeWingOutline(pCurPlane->wingAt(iw), &TranslatedBody, m_vboWingOutline[iw]);
                 }
                 else
                 {
-                    glMakeWingGeometry(iw, pCurPlane->wing(iw), nullptr);
+//                    glMakeWingGeometry(iw, pCurPlane->wing(iw), nullptr);
+                    glMakeWingSurface(pCurPlane->wingAt(iw), nullptr, m_vboWingSurface[iw]);
+                    glMakeWingOutline(pCurPlane->wingAt(iw), nullptr, m_vboWingOutline[iw]);
                 }
             }
         }

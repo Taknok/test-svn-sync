@@ -232,12 +232,8 @@ class Wing
         void setRightFoilName(int iSec, QString foilname) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_RightFoilName=foilname;}
         void setLeftFoilName(int iSec, QString foilname) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_LeftFoilName=foilname;}
 
-
-        bool textures() const {return m_bTextures;}
-        void setTextures(bool bTextures) {m_bTextures=bTextures;}
-
-        QColor const & wingColor() const {return m_WingColor;}
-        void setWingColor(QColor const &colour) {m_WingColor= colour;}
+        QColor const & color() const {return m_Color;}
+        void setColor(QColor const &colour) {m_Color= colour;}
 
         xfl::enumWingType const &wingType() const {return m_WingType;}
         void setWingType(xfl::enumWingType type) {m_WingType=type;}
@@ -270,13 +266,12 @@ class Wing
     private:
         QString m_WingName;                           /**< the Wing's name; this name is used to identify the wing and as a reference for child Polar and WingOpp objects. */
         QString m_WingDescription;                 /**< a text field for the description of the Wing */
-        QColor m_WingColor;                        /**< the Wing's display color */
+        QColor m_Color;                        /**< the Wing's display color */
 
         xfl::enumWingType m_WingType;  /** Defines the type of wing on the plane : main, second, elevator, fin, other */
 
         static double s_MinPanelSize;      /**< wing minimum panel size ; panels of less length are ignored */
 
-        bool m_bTextures;
         bool m_bWingOut;                 /**< true if the wing OpPoint is outside the flight envelope of the available Type 1 polar mesh */
         bool m_bSymetric;                 /**< true if the wing's geometry is symetric */
         bool m_bIsFin;                   /**< true if this wing describes a fin */

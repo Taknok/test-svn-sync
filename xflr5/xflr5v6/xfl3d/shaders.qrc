@@ -11,5 +11,8 @@
         <file>shaders/line/line_GS.glsl</file>
         <file>shaders/fractal/fractal_FS.glsl</file>
         <file>shaders/fractal/fractal_VS.glsl</file>
+        <file>shaders/point/point_FS.glsl</file>
+        <file>shaders/point/point_GS.glsl</file>
+        <file>shaders/point/point_VS.glsl</file>
     </qresource>
 </RCC>

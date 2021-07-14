@@ -1,7 +1,7 @@
 /****************************************************************************
 
     XDirectTileWidget Class
-        Copyright (C) 2015 André Deperrois
+        Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #include <QDebug>
 
 #include <globals/mainframe.h>
-#include <twodwidgets/oppointwt.h>
+#include <xdirect/oppointwt.h>
 #include <xdirect/xdirect.h>
 #include <xflgraph/containers/graphwt.h>
 #include <xflgraph/containers/legendwt.h>
@@ -44,7 +44,7 @@ XDirectTileWidget::XDirectTileWidget(QWidget *pParent) :  GraphTileWidget(pParen
     m_xflr5App = xfl::XFOILANALYSIS;
 
     m_pLegendWidget = new LegendWt(this);
-    m_pOpPointWidget = new OpPointWidget(this);
+    m_pOpPointWidget = new OpPointWt(this);
     //    m_pLegendStack = new QStackedWidget(this);
 
     m_nGraphWidgets = MAXPOLARGRAPHS;

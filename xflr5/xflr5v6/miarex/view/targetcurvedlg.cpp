@@ -1,7 +1,7 @@
 /****************************************************************************
 
     TargetCurveDlg Class
-    Copyright (C) 2015 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 
+
 TargetCurveDlg::TargetCurveDlg(QWidget *pParent) : QDialog(pParent)
 {
     m_BellCurveExp = 1;
@@ -42,11 +43,11 @@ void TargetCurveDlg::initDialog(bool bShowElliptic, bool bShowBell, bool bMaxCl,
     m_bShowBellCurve = bShowBell;
     m_bMaxCL = bMaxCl;
     m_BellCurveExp = curveExp;
-    m_pctrlShowEllipticCurve->setChecked(m_bShowEllipticCurve);
-    m_pctrlShowBellCurve->setChecked(m_bShowBellCurve);
-    m_pCtrlExptEdit->setValue(m_BellCurveExp);
-    m_pCtrlRadio1->setChecked(m_bMaxCL);
-    m_pCtrlRadio2->setChecked(!m_bMaxCL);
+    m_pchShowEllipticCurve->setChecked(m_bShowEllipticCurve);
+    m_pchShowBellCurve->setChecked(m_bShowBellCurve);
+    m_pdeExptEdit->setValue(m_BellCurveExp);
+    m_prbRadio1->setChecked(m_bMaxCL);
+    m_prbRadio2->setChecked(!m_bMaxCL);
 }
 
 
@@ -57,32 +58,32 @@ void TargetCurveDlg::setupLayout()
         QHBoxLayout *pEllLayout = new QHBoxLayout;
         {
             QLabel *pEllipticLabel = new QLabel(QString::fromUtf8("y=sqrt(1-(2x/b)²)"));
-            m_pctrlShowEllipticCurve = new QCheckBox(tr("Show Elliptic Curve"));
-            pEllLayout->addWidget(m_pctrlShowEllipticCurve);
+            m_pchShowEllipticCurve = new QCheckBox(tr("Show Elliptic Curve"));
+            pEllLayout->addWidget(m_pchShowEllipticCurve);
             pEllLayout->addWidget(pEllipticLabel);
         }
         QHBoxLayout *pBellLayout = new QHBoxLayout;
         {
             QLabel *pBellLabel = new QLabel(QString::fromUtf8("y=(1-(2x/b)²)^p"));
-            m_pctrlShowBellCurve = new QCheckBox(tr("Show Bell Curve"));
-            pBellLayout->addWidget(m_pctrlShowBellCurve);
+            m_pchShowBellCurve = new QCheckBox(tr("Show Bell Curve"));
+            pBellLayout->addWidget(m_pchShowBellCurve);
             pBellLayout->addWidget(pBellLabel);
         }
         QHBoxLayout * pExpLayout = new QHBoxLayout;
         {
             QLabel *pExpLabel = new QLabel(tr("Bell Curve exponent:"));
-            m_pCtrlExptEdit = new DoubleEdit(1, 2);
+            m_pdeExptEdit = new DoubleEdit(1, 2);
             pExpLayout->addWidget(pExpLabel);
-            pExpLayout->addWidget(m_pCtrlExptEdit);
+            pExpLayout->addWidget(m_pdeExptEdit);
         }
         QGroupBox *pctrlCLBox = new QGroupBox(tr("Cl Adjustment"));
         {
             QHBoxLayout *pCLLayout = new QHBoxLayout;
             {
-                m_pCtrlRadio1 = new QRadioButton(tr("Max local Cl"));
-                m_pCtrlRadio2 = new QRadioButton(tr("Wing CL"));
-                pCLLayout->addWidget(m_pCtrlRadio1);
-                pCLLayout->addWidget(m_pCtrlRadio2);
+                m_prbRadio1 = new QRadioButton(tr("Max local Cl"));
+                m_prbRadio2 = new QRadioButton(tr("Wing CL"));
+                pCLLayout->addWidget(m_prbRadio1);
+                pCLLayout->addWidget(m_prbRadio2);
             }
             pctrlCLBox->setLayout(pCLLayout);
         }
@@ -103,10 +104,10 @@ void TargetCurveDlg::setupLayout()
 
 void TargetCurveDlg::onOK()
 {
-    m_bShowEllipticCurve = m_pctrlShowEllipticCurve->isChecked();
-    m_bShowBellCurve = m_pctrlShowBellCurve->isChecked();
-    m_BellCurveExp = m_pCtrlExptEdit->value();
-    m_bMaxCL = m_pCtrlRadio1->isChecked();
+    m_bShowEllipticCurve = m_pchShowEllipticCurve->isChecked();
+    m_bShowBellCurve = m_pchShowBellCurve->isChecked();
+    m_BellCurveExp = m_pdeExptEdit->value();
+    m_bMaxCL = m_prbRadio1->isChecked();
     accept();
 }
 

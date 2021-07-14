@@ -1,7 +1,7 @@
 /****************************************************************************
 
     WPolarDlg Class
-    Copyright (C) 2009-2019 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,8 +22,7 @@
  *@file This file contains the definition of the class WPolarDlg which is used to define the data for a WPolar object.
  */
 
-#ifndef WPOLARDLG_H
-#define WPOLARDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QCheckBox>
@@ -56,101 +55,100 @@ class WPolarDlg : public QDialog
     friend class Miarex;
     friend class MainFrame;
 
-public:
-    WPolarDlg(QWidget *pParent=nullptr);
-    ~WPolarDlg();
+    public:
+        WPolarDlg(QWidget *pParent=nullptr);
+        ~WPolarDlg();
 
-private:
+    private:
 
-    void connectSignals();
-    void initDialog(Plane *pPlane, WPolar *pWPolar=nullptr);
+        void connectSignals();
+        void initDialog(Plane *pPlane, WPolar *pWPolar=nullptr);
 
-    void keyPressEvent(QKeyEvent *event) override;
-    void showEvent(QShowEvent *pEvent) override;
-    void hideEvent(QHideEvent *pEvent) override;
-
-
-private:
-
-    void readExtraDragData();
-    void readValues();
-    void resizeColumns();
-    void setDensity();
-    void setReynolds();
-    void setupLayout();
-    void setWingLoad();
-    void setWPolarName();
-    void enableControls();
-    void fillExtraDragList();
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void showEvent(QShowEvent *pEvent) override;
+        void hideEvent(QHideEvent *pEvent) override;
 
 
-private slots:
-    void onOK();
-    void onArea();
-    void onAeroData();
-    void onUnit();
-    void onMethod();
-    void onPolarName();
-    void onAutoName();
-    void onTiltedGeom();
-    void onViscous();
-    void onIgnoreBodyPanels();
-    void onGroundEffect();
-    void onPolarType();
-    void onEditingFinished();
-    void onPlaneInertia();
-    void onTabChanged(int index);
-    void onButton(QAbstractButton *pButton);
+    private:
 
-private:
-    static WPolar s_WPolar;
-
-    Plane *m_pPlane;
-
-    bool m_bAutoName;
-    int m_UnitType;//1= International, 2= English
-    double m_WingLoad;
-
-    DoubleEdit *m_pctrlXCmRef, *m_pctrlZCmRef;
-    DoubleEdit *m_pctrlDensity;
-    DoubleEdit *m_pctrlViscosity;
-    DoubleEdit *m_pctrlAlpha;
-    DoubleEdit *m_pctrlBeta;
-    DoubleEdit *m_pctrlWeight;
-    DoubleEdit *m_pctrlQInf;
-    DoubleEdit *m_pctrlHeight;
-    QLineEdit *m_pctrlWPolarName;
-
-    QCheckBox *m_pctrlPlaneInertia;
-    QCheckBox *m_pctrlGroundEffect;
-    QCheckBox *m_pctrlViscous;
-    QCheckBox *m_pctrlIgnoreBodyPanels;
-    QCheckBox *m_pctrlTiltGeom;
-    QCheckBox *m_pctrlAutoName;
-
-    QRadioButton *m_prbType1,*m_prbType2,*m_prbType4,*m_prbType5;
-    QRadioButton *m_pctrlLLTMethod, *m_pctrlVLM1Method, *m_pctrlVLM2Method, *m_pctrlPanelMethod;
-    QRadioButton *m_pctrlUnit1, *m_pctrlUnit2;
-    QRadioButton *m_pctrlArea1, *m_pctrlArea2, *m_pctrlArea3;
-
-    DoubleEdit *m_pctrlRefChord, *m_pctrlRefArea, *m_pctrlRefSpan;
-
-    QLabel *m_pctrlSRe;
-    QLabel *m_pctrlRRe;
-    QLabel *m_pctrlQInfCl;
-    QLabel *m_pctrlWingLoad;
-
-    QLabel *m_pctrlRho, *m_pctrlNu;
-    QLabel *m_pctrlDensityUnit, *m_pctrlViscosityUnit;
-
-    QDialogButtonBox *m_pButtonBox;
-
-    QTableView *m_pExtraDragControlTable;
-    QStandardItemModel *m_pExtraDragControlModel;
-    CtrlTableDelegate *m_pCtrlDelegate;
+        void readExtraDragData();
+        void readValues();
+        void resizeColumns();
+        void setDensity();
+        void setReynolds();
+        void setupLayout();
+        void setWingLoad();
+        void setWPolarName();
+        void enableControls();
+        void fillExtraDragList();
 
 
-    static QByteArray s_Geometry;
+    private slots:
+        void onOK();
+        void onArea();
+        void onAeroData();
+        void onUnit();
+        void onMethod();
+        void onPolarName();
+        void onAutoName();
+        void onTiltedGeom();
+        void onViscous();
+        void onIgnoreBodyPanels();
+        void onGroundEffect();
+        void onPolarType();
+        void onEditingFinished();
+        void onPlaneInertia();
+        void onTabChanged(int index);
+        void onButton(QAbstractButton *pButton);
+
+    private:
+        static WPolar s_WPolar;
+
+        Plane *m_pPlane;
+
+        bool m_bAutoName;
+        int m_UnitType;//1= International, 2= English
+        double m_WingLoad;
+
+        DoubleEdit *m_pdeXCmRef, *m_pdeZCmRef;
+        DoubleEdit *m_pdeDensity;
+        DoubleEdit *m_pdeViscosity;
+        DoubleEdit *m_pdeAlpha;
+        DoubleEdit *m_pdeBeta;
+        DoubleEdit *m_pdeWeight;
+        DoubleEdit *m_pdeQInf;
+        DoubleEdit *m_pdeHeight;
+        QLineEdit *m_pleWPolarName;
+
+        QCheckBox *m_pchPlaneInertia;
+        QCheckBox *m_pchGroundEffect;
+        QCheckBox *m_pchViscous;
+        QCheckBox *m_pchIgnoreBodyPanels;
+        QCheckBox *m_pchTiltGeom;
+        QCheckBox *m_pchAutoName;
+
+        QRadioButton *m_prbType1, *m_prbType2, *m_prbType4, *m_prbType5;
+        QRadioButton *m_prbLLTMethod, *m_prbVLM1Method, *m_prbVLM2Method, *m_prbPanelMethod;
+        QRadioButton *m_prbUnit1, *m_prbUnit2;
+        QRadioButton *m_prbArea1, *m_prbArea2, *m_prbArea3;
+
+        DoubleEdit *m_pdeRefChord, *m_pdeRefArea, *m_pdeRefSpan;
+
+        QLabel *m_plabSRe;
+        QLabel *m_plabRRe;
+        QLabel *m_plabQInfCl;
+        QLabel *m_plabWingLoad;
+
+        QLabel *m_plabRho, *m_plabNu;
+        QLabel *m_plabDensityUnit, *m_plabViscosityUnit;
+
+        QDialogButtonBox *m_pButtonBox;
+
+        QTableView *m_ptvExtraDragControl;
+        QStandardItemModel *m_pExtraDragControlModel;
+        CtrlTableDelegate *m_pControlDelegate;
+
+
+        static QByteArray s_Geometry;
 };
 
-#endif // WPOLARDLG_H

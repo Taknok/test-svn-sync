@@ -25,13 +25,13 @@ struct Light
             m_Green = 1.0f;
             m_Blue  = 1.0f;
 
-            m_Ambient   = 0.3f;
-            m_Diffuse   = 1.4f;
-            m_Specular  = 0.7f;
+            m_Ambient   = 0.67f;
+            m_Diffuse   = 1.41f;
+            m_Specular  = 0.71f;
 
-            m_X   =  0.35f * float(reflength);
-            m_Y   =  0.25f * float(reflength);
-            m_Z   =  0.25f * float(reflength);
+            m_X   =  0.23f * float(reflength);
+            m_Y   =  0.19f * float(reflength);
+            m_Z   =  0.19f * float(reflength);
 
             m_EyeDist =  1.0f * float(reflength);
 

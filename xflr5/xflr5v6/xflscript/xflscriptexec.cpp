@@ -29,11 +29,11 @@
 #include <QDebug>
 
 #include "xflscriptexec.h"
-#include <miarex/mgt/xmlplanereader.h>
-#include <miarex/mgt/xmlwpolarreader.h>
+#include <xflobjects/xml/xmlplanereader.h>
+#include <xflobjects/xml/xmlwpolarreader.h>
 
 #include <xdirect/analysis/xfoiltask.h>
-#include <xdirect/objects2d.h>
+#include <xflobjects/objects2d/objects2d.h>
 #include <xdirect/xml/xmlpolarreader.h>
 #include <xflanalysis/plane_analysis/planetask.h>
 #include <xflcore/gui_params.h>

@@ -37,11 +37,11 @@ void ExpandableTreeView::initETV()
 {
 //    m_pCollapseAll  = new QAction(QIcon(":/icons/level--.png"), tr("Collapse all"),           this);
 //    m_pExpandAll    = new QAction(QIcon(":/icons/level++.png"), tr("Expand all"),             this);
-    m_pLevelMinus   = new QAction(QIcon(":/icons/level-.png"),  tr("Collapse selected item"), this);
-    m_pLevelPlus    = new QAction(QIcon(":/icons/level+.png"),  tr("Expand selected item"),   this);
-    m_pLevel0Action = new QAction(QIcon(":/icons/level0.png"),  tr("Object level"),           this);
-    m_pLevel1Action = new QAction(QIcon(":/icons/level1.png"),  tr("Polar level"),            this);
-    m_pLevel2Action = new QAction(QIcon(":/icons/level2.png"),  tr("Operating Point level"),  this);
+    m_pLevelMinus   = new QAction(QIcon(":/resources/images/level-.png"),  tr("Collapse selected item"), this);
+    m_pLevelPlus    = new QAction(QIcon(":/resources/images/level+.png"),  tr("Expand selected item"),   this);
+    m_pLevel0Action = new QAction(QIcon(":/resources/images/level0.png"),  tr("Object level"),           this);
+    m_pLevel1Action = new QAction(QIcon(":/resources/images/level1.png"),  tr("Polar level"),            this);
+    m_pLevel2Action = new QAction(QIcon(":/resources/images/level2.png"),  tr("Operating Point level"),  this);
 
     m_pCtrlWidget = new QWidget;
     {

@@ -34,10 +34,6 @@
 
 using namespace std;
 
-bool isEven(int n);
-bool isBetween(int f, int f1, int f2);
-bool isBetween(int f, double f1, double f2);
-
 
 double GetPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bool &bOutRe, bool &bError);
 double GetPlrPointFromAlpha(Foil *pFoil, double Re, double Alpha, int PlrVar, bool &bOutRe, bool &bError);

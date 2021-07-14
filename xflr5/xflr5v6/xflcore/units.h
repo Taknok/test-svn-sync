@@ -36,18 +36,18 @@ class Units : public QWidget
         Units(QWidget *parent);
         void initWidget();
 
-        static void getLengthUnitLabel(QString &str);
-        static void getSpeedUnitLabel( QString &str);
-        static void getWeightUnitLabel(QString &str);
-        static void getAreaUnitLabel(  QString &str);
-        static void getMomentUnitLabel(QString &str);
-        static void getForceUnitLabel( QString &str);
-        static void getPressureUnitLabel( QString &str);
+        static void getLengthUnitLabel(  QString &str);
+        static void getSpeedUnitLabel(   QString &str);
+        static void getMassUnitLabel(    QString &str);
+        static void getAreaUnitLabel(    QString &str);
+        static void getMomentUnitLabel(  QString &str);
+        static void getForceUnitLabel(   QString &str);
+        static void getPressureUnitLabel(QString &str);
         static void getInertiaUnitLabel( QString &str);
 
         static QString lengthUnitLabel();
         static QString speedUnitLabel();
-        static QString weightUnitLabel();
+        static QString massUnitLabel();
         static QString areaUnitLabel();
         static QString momentUnitLabel();
         static QString forceUnitLabel();

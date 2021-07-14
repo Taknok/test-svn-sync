@@ -323,7 +323,7 @@ void Units::onSelChanged(const QString &)
     strange= strUnitLabel.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
     m_pctrlSpeedInvFactor->setText(strange);
 
-    getWeightUnitLabel(strUnitLabel);
+    getMassUnitLabel(strUnitLabel);
     strange= QString("1 kg = %1").arg(s_kgtoUnit,11,'f',5);
     m_pctrlWeightFactor->setText(strange);
     strUnit = QString("%1 kg").arg(1./s_kgtoUnit,11,'f',5);
@@ -565,7 +565,7 @@ void Units::getSpeedUnitLabel(QString &str)
  *@param str the reference of the QString to be filled with the name of the mass unit
  *@param unit the index of the mass unit
  */
-void Units::getWeightUnitLabel(QString &str)
+void Units::getMassUnitLabel(QString &str)
 {
     switch(s_WeightUnitIndex)
     {
@@ -686,10 +686,10 @@ QString Units::speedUnitLabel()
     return str;
 }
 
-QString Units::weightUnitLabel()
+QString Units::massUnitLabel()
 {
     QString str;
-    getWeightUnitLabel(str);
+    getMassUnitLabel(str);
     return str;
 }
 

@@ -25,12 +25,12 @@
 
 #include "wingwt.h"
 #include <miarex/miarex.h>
-#include <miarex/objects3d.h>
 
 #include <xfl3d/controls/w3dprefs.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 #include <xflgraph/graph.h>
+#include <xflobjects/objects3d/objects3d.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/planeopp.h>
 #include <xflobjects/objects3d/wpolar.h>
@@ -49,19 +49,6 @@ WingWidget::WingWidget(QWidget *pParent) : QWidget(pParent)
     m_WingScale = 1.0;
     m_ptOffset.rx() = 0;
     m_ptOffset.ry() = 0;
-}
-
-
-
-WingWidget::~WingWidget()
-{
-}
-
-
-
-void WingWidget::contextMenuEvent (QContextMenuEvent *pEvent)
-{
-    pEvent->ignore();
 }
 
 
@@ -88,11 +75,6 @@ void WingWidget::keyPressEvent(QKeyEvent *pEvent)
     }
 
     pEvent->ignore();
-}
-
-
-void WingWidget::mouseDoubleClickEvent (QMouseEvent *)
-{
 }
 
 

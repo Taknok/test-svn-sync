@@ -106,6 +106,13 @@ class WPolar : public XflObject
         bool isStabilityPolar()  const    {return m_WPolarType==xfl::STABILITYPOLAR;}       /**< returns true if the polar is of the STABILITYPOLAR type, false otherwise >*/
         bool isBetaPolar()       const    {return m_WPolarType==xfl::BETAPOLAR;}            /**< returns true if the polar is of the BETAPOLAR type, false otherwise >*/
 
+        bool isT1Polar()  const {return m_WPolarType==xfl::FIXEDSPEEDPOLAR;}   /**< returns true if the polar is of the FIXEDSPEEDPOLAR type, false otherwise >*/
+        bool isT2Polar()  const {return m_WPolarType==xfl::FIXEDLIFTPOLAR;}   /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/
+        bool isT12Polar() const {return isT1Polar() || isT2Polar();}
+        bool isT4Polar()  const {return m_WPolarType==xfl::FIXEDAOAPOLAR;}   /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/
+        bool isT5Polar()  const {return m_WPolarType==xfl::BETAPOLAR;}   /**< returns true if the polar is of the STABILITYPOLAR type, false otherwise >*/
+        bool isT7Polar()  const {return m_WPolarType==xfl::STABILITYPOLAR;}   /**< returns true if the polar is of the STABILITYPOLAR type, false otherwise >*/
+
         bool bThinSurfaces()     const {return m_bThinSurfaces;}  /**< returns true if the analysis if using thin surfaces, i.e. VLM, false if 3D Panels for the Wing objects. */
         bool bWakeRollUp()       const {return m_bWakeRollUp;}
         bool bTilted()           const {return m_bTiltedGeom; }
@@ -171,6 +178,13 @@ class WPolar : public XflObject
         void setCoGIxz(double ixz) {m_CoGIxz=ixz;}
 
         int dataSize() const {return m_Alpha.size();}
+
+
+        bool hasPOpp(const PlaneOpp *pPOpp) const;
+
+        QString getProperties(QString &PolarProps, const Plane *pPlane,
+                           double lenunit, double massunit, double speedunit, double areaunit,
+                           QString const &lenlab, const QString &masslab, QString const &speedlab, QString const &arealab) const;
 
     private:
 

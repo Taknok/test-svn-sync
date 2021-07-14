@@ -30,7 +30,8 @@
 #include <QDebug>
 
 #include "editpolardefdlg.h"
-#include <miarex/design/editobjectdelegate.h>
+
+#include <xflobjects/editors/editobjectdelegate.h>
 #include <xflanalysis/analysis3d_globals.h>
 #include <xflcore/core_enums.h>
 #include <xflcore/units.h>
@@ -162,11 +163,7 @@ void EditPolarDefDlg::keyPressEvent(QKeyEvent *pEvent)
                 m_pButtonBox->setFocus();
                 return;
             }
-            else
-            {
-                accept();
-                return;
-            }
+            break;
         }
         case Qt::Key_Escape:
         {
@@ -411,7 +408,7 @@ void EditPolarDefDlg::fillInertiaData(QList<QStandardItem *> inertiaFolder)
     dataItem = prepareBoolRow("", "Use plane inertia", m_pWPolar->bAutoInertia());
     inertiaFolder.first()->appendRow(dataItem);
 
-    dataItem = prepareDoubleRow("", "Mass", m_pWPolar->mass()*Units::kgtoUnit(), Units::weightUnitLabel());
+    dataItem = prepareDoubleRow("", "Mass", m_pWPolar->mass()*Units::kgtoUnit(), Units::massUnitLabel());
     inertiaFolder.first()->appendRow(dataItem);
 
     QList<QStandardItem*> cogFolder = prepareRow("Center of Gravity");
@@ -648,7 +645,7 @@ void EditPolarDefDlg::fillControlFields(QList<QStandardItem*> stabControlFolder)
 
     int i;
     strLength  = Units::lengthUnitLabel();
-    strMass    = Units::weightUnitLabel();
+    strMass    = Units::massUnitLabel();
     strInertia = Units::inertiaUnitLabel();
 
     QList<QStandardItem*> massCtrlFolder = prepareRow("Mass gains");

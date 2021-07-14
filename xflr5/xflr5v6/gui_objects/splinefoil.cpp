@@ -286,9 +286,9 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
  */
 bool SplineFoil::serializeXFL(QDataStream &ar, bool bIsStoring)
 {
-    double dble=0, x=0,y=0;
+    int k(0), n(0);
+    double dble(0), x(0), y(0);
     int ArchiveFormat=200002; // 200002: nes LineStyle format
-    int k=0,n=0;
 
     if(bIsStoring)
     {

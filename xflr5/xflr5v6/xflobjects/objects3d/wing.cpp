@@ -70,7 +70,6 @@ Wing::Wing()
 
     clearPointMasses();
 
-    m_bTextures     = false;
     m_bIsFin        = false;
     m_bDoubleFin    = false;
     m_bSymFin       = false;
@@ -85,9 +84,9 @@ Wing::Wing()
     clr.setHsv(QRandomGenerator::global()->bounded(360),
                QRandomGenerator::global()->bounded(55)+30,
                QRandomGenerator::global()->bounded(55)+150);
-    m_WingColor.setRed(  clr.red());
-    m_WingColor.setGreen(clr.green());
-    m_WingColor.setBlue( clr.blue());
+    m_Color.setRed(  clr.red());
+    m_Color.setGreen(clr.green());
+    m_Color.setBlue( clr.blue());
 
     m_pWingPanel     = nullptr;
 
@@ -1084,7 +1083,6 @@ void Wing::duplicate(Wing const*pWing)
     m_bIsFin        = pWing->m_bIsFin;
     m_bSymFin       = pWing->m_bSymFin;
     m_bDoubleFin    = pWing->m_bDoubleFin;
-    m_bTextures     = pWing->m_bTextures;
 
     clearWingSections();
 
@@ -1128,7 +1126,7 @@ void Wing::duplicate(Wing const*pWing)
     }
 
     m_WingDescription = pWing->m_WingDescription;
-    m_WingColor       = pWing->m_WingColor;
+    m_Color       = pWing->m_Color;
 }
 
 
@@ -2441,7 +2439,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
 
         if(ArchiveFormat>=1010)
         {
-            ar >> k; m_WingColor.setAlpha(k);
+            ar >> k; m_Color.setAlpha(k);
             for(int i=0; i<20; i++) ar>>f;
             for(int i=0; i<20; i++) ar>>k;
         }
@@ -2450,8 +2448,6 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
         return true;
     }
 }
-
-
 
 
 /**
@@ -2477,7 +2473,7 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
         ar << m_WingName;
         ar << m_WingDescription;
 
-        writeQColor(ar, m_WingColor.red(), m_WingColor.green(), m_WingColor.blue(), m_WingColor.alpha());
+        writeQColor(ar, m_Color.red(), m_Color.green(), m_Color.blue(), m_Color.alpha());
 
         ar << m_bSymetric;
 
@@ -2537,7 +2533,8 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
             ar << m_PointMass.at(i)->tag();
         }
 
-        if(m_bTextures) ar<<1 ; else ar<<0;
+        ar<<1 ; // formerly bTextures
+
         // space allocation for the future storage of more data, without need to change the format
         for (int i=1; i<19; i++) ar << 0;
         switch (wingType()) {
@@ -2572,7 +2569,7 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 
         int a,r,g,b;
         readQColor(ar, r, g, b, a);
-        m_WingColor = {r,g,b,a};
+        m_Color = {r,g,b,a};
 
         ar >> m_bSymetric;
 
@@ -2615,7 +2612,8 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
             m_PointMass.append(new PointMass(dm, Vector3d(px, py, pz), tag));
         }
 
-        ar>>k; if(k) m_bTextures=true; else m_bTextures=false;
+        ar>>k; //formerly bTextures
+
         // space allocation
         for (int i=1; i<19; i++) ar >> k;
         ar >>k;

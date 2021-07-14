@@ -1,7 +1,7 @@
 /****************************************************************************
 
     STLExportDialog
-    Copyright (C) 2016 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef STLEXPORTDIALOG_H
-#define STLEXPORTDIALOG_H
+#pragma once
 
 #include <QDialog>
 #include <QCheckBox>
@@ -35,38 +34,40 @@ class IntEdit;
 class STLExportDlg : public QDialog
 {
     Q_OBJECT
-public:
-    STLExportDlg();
-    void initDialog(Plane *pPlane);
+    public:
+        STLExportDlg();
+        void initDialog(Plane *pPlane);
 
-    void accept();
+        void accept();
 
-    static bool loadSettings(QSettings &settings);
-    static bool saveSettings(QSettings &settings);
+        static bool loadSettings(QSettings &settings);
+        static bool saveSettings(QSettings &settings);
 
-    static bool s_bBinary;
-    static int s_NChordPanels;
-    static int s_NSpanPanels;
-    static int s_iObject;
+        static bool s_bBinary;
+        static int s_NChordPanels;
+        static int s_NSpanPanels;
+        static int s_iObject;
 
-private:
-    void setupLayout();
-    void connectSignals();
-    void setLabels();
+    private:
+        void setupLayout();
+        void connectSignals();
+        void setLabels();
 
-private slots:
-    void onObjectSelection();
-    void onButton(QAbstractButton *pButton);
-    void onReadParams();
+    private slots:
+        void onObjectSelection();
+        void onButton(QAbstractButton *pButton);
+        void onReadParams();
 
-private:
-    IntEdit *m_pctrlChordPanels, *m_pctrlSpanPanels;
-    QRadioButton *m_pctrlBinary, *m_pctrlASCII;
-    QRadioButton *m_prb[5];
+    private:
+        IntEdit *m_pieChordPanels, *m_pieSpanPanels;
+        QRadioButton *m_prbBinary, *m_prbASCII;
+        QRadioButton *m_prb[5];
 
-    QLabel *m_pctrlChordLabel, *m_pctrlSpanLabel;
+        QLabel *m_plabChordLabel, *m_plabSpanLabel;
 
-    QDialogButtonBox *m_pButtonBox;
+        QDialogButtonBox *m_pButtonBox;
 };
 
-#endif // STLEXPORTDIALOG_H
+
+
+

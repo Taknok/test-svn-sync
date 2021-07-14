@@ -35,10 +35,10 @@
 #include <xflobjects/objects2d/oppoint.h>
 
 #include <miarex/miarex.h>
-#include <miarex/objects3d.h>
+#include <xflobjects/objects3d/objects3d.h>
 #include <xinverse/xinverse.h>
 #include <xdirect/xdirect.h>
-#include <xdirect/objects2d.h>
+#include <xflobjects/objects2d/objects2d.h>
 #include <xflgraph/curve.h>
 
 
@@ -154,11 +154,11 @@ void LegendWt::drawWPolarLegend(QPainter &painter, QPointF place, int bottom)
         for (int i=0; i<Objects3d::polarCount(); i++)
         {
             pWPolar = Objects3d::polarAt(i);
-            if (pWPolar->planeName()==pPlane->planeName() && pWPolar->isVisible() && !isFiltered(pWPolar))
+            if (pWPolar->planeName()==pPlane->name() && pWPolar->isVisible() && !isFiltered(pWPolar))
             {
                 if(m_MiarexView==xfl::WPOLARVIEW || (m_MiarexView==xfl::STABPOLARVIEW && pWPolar->isStabilityPolar()))
                 {
-                    strPlaneList.append(pPlane->planeName());
+                    strPlaneList.append(pPlane->name());
                     break;
                 }
             }

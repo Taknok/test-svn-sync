@@ -34,7 +34,7 @@
 #include <globals/mainframe.h>
 #include <miarex/miarex.h>
 #include <xdirect/xdirect.h>
-#include <twodwidgets/section2dwt.h>
+#include <xflwidgets/view/section2dwt.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 #include <xflgraph/controls/graphdlg.h>

@@ -126,6 +126,7 @@ public:
     void getSection(double const &tau, double &Chord, double &Area, Vector3d &PtC4);
     void getYDist(int const &k, double &y1, double &y2) const;
     void getSidePoints(enumPanelPosition pos, const Body *pBody, QVector<Vector3d> &PtA, QVector<Vector3d> &PtB, QVector<Vector3d> &NA, QVector<Vector3d> &NB, int nPoints) const;
+
     void init();
     void resetFlap();
     void rotateX(Vector3d const &O, double XTilt);
@@ -134,7 +135,7 @@ public:
     void setCornerPoints(Vector3d const &LA, Vector3d const &TA, Vector3d const &LB, Vector3d const &TB);
     void setNormal();
     void setFlap();
-    void setSidePoints(Body *pBody, double dx, double dz);
+    void setMeshSidePoints(Body *pBody, double dx, double dz);
     void setTwist();
     void setTwist2();
     void translate(Vector3d const &T);

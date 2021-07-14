@@ -1,7 +1,7 @@
 /****************************************************************************
 
     StabPolarDlg Class
-    Copyright (C) 2010-2019 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,8 +20,7 @@
 *****************************************************************************/
 
 
-#ifndef STABPOLARDLG_H
-#define STABPOLARDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QCheckBox>
@@ -62,105 +61,102 @@ class StabPolarDlg : public QDialog
     friend class Miarex;
     friend class MainFrame;
 
-public:
-    StabPolarDlg(QWidget *pParent=nullptr);
-    ~StabPolarDlg();
+    public:
+        StabPolarDlg(QWidget *pParent=nullptr);
+        ~StabPolarDlg();
 
-    void initDialog(Plane *pPlane, WPolar *pWPolar=nullptr);
+        void initDialog(Plane *pPlane, WPolar *pWPolar=nullptr);
 
-private:
-    void setupLayout();
-    void connectSignals();
-    void resizeColumns();
-    void keyPressEvent(QKeyEvent *event) override;
-    void showEvent(QShowEvent *pEvent) override;
-    void hideEvent(QHideEvent *pEvent) override;
+    private:
+        void setupLayout();
+        void connectSignals();
+        void resizeColumns();
+        void keyPressEvent(QKeyEvent *event) override;
+        void showEvent(QShowEvent *pEvent) override;
+        void hideEvent(QHideEvent *pEvent) override;
 
-private slots:
-    void onOK();
-    void onAutoInertia(bool isChecked);
-    void onAutoName();
-    void onWPolarName();
-    void onArea();
-    void onEditingFinished();
-    void onViscous();
-    void onIgnoreBodyPanels();
-    void onUnit();
-    void onAngleCellChanged(QWidget *);
-    void onInertiaCellChanged(QWidget *);
-    void onDragCellChanged(QWidget *);
-    void onMethod();
-    void onAeroData();
-    void onTabChanged(int index);
-    void onButton(QAbstractButton *pButton);
+    private slots:
+        void onOK();
+        void onAutoInertia(bool isChecked);
+        void onAutoName();
+        void onWPolarName();
+        void onArea();
+        void onEditingFinished();
+        void onViscous();
+        void onIgnoreBodyPanels();
+        void onUnit();
+        void onAngleCellChanged(QWidget *);
+        void onInertiaCellChanged(QWidget *);
+        void onDragCellChanged(QWidget *);
+        void onMethod();
+        void onAeroData();
+        void onTabChanged(int index);
+        void onButton(QAbstractButton *pButton);
 
-private:
-    void enableControls();
-    void fillControlList();
-    void fillExtraDragList();
-    void fillInertiaPage();
-    void readCtrlData();
-    void readExtraDragData();
-    void readInertiaData();
-    void readData();
-    void setDensity();
-    void setWPolarName();
-    void setViscous();
+    private:
+        void enableControls();
+        void fillControlList();
+        void fillExtraDragList();
+        void fillInertiaPage();
+        void readCtrlData();
+        void readExtraDragData();
+        void readInertiaData();
+        void readData();
+        void setDensity();
+        void setWPolarName();
+        void setViscous();
 
 
-private:
+    private:
 
-    QDialogButtonBox *m_pButtonBox;
+        QDialogButtonBox *m_pButtonBox;
 
-    QTableView *m_pInertiaControlTable;
-    CtrlTableModel *m_pInertiaControlModel;
-    QTabWidget *m_pTabWidget;
+        QTableView *m_ptvInertiaControl;
+        CtrlTableModel *m_pInertiaControlModel;
+        QTabWidget *m_ptwMain;
 
-    QTableView *m_pAngleControlTable;
-    CtrlTableModel *m_pAngleControlModel;
+        QTableView *m_ptvAngleControl;
+        CtrlTableModel *m_pAngleControlModel;
 
-    QTableView *m_pExtraDragControlTable;
-    CtrlTableModel *m_pExtraDragControlModel;
+        QTableView *m_ptvExtraDragControl;
+        CtrlTableModel *m_pExtraDragControlModel;
 
-    CtrlTableDelegate *m_pMassCtrlDelegate, *m_pAngleCtrlDelegate, *m_pDragCtrlDelegate;
+        CtrlTableDelegate *m_pMassCtrlDelegate, *m_pAngleCtrlDelegate, *m_pDragCtrlDelegate;
 
-    DoubleEdit *m_pctrlDensity;
-    DoubleEdit *m_pctrlViscosity;
-    DoubleEdit *m_pctrlBeta;
-    DoubleEdit *m_pctrlPhi;
-    QLineEdit *m_pctrlWPolarName;
+        DoubleEdit *m_pdeDensity;
+        DoubleEdit *m_pdeViscosity;
+        DoubleEdit *m_pdeBeta;
+        DoubleEdit *m_pdePhi;
+        QLineEdit *m_pleWPolarName;
 
-    QCheckBox *m_pctrlViscous;
-    QCheckBox *m_pctrlAutoName;
-    QCheckBox *m_pctrlIgnoreBodyPanels;
-    QCheckBox *m_pctrlAutoPlaneInertia;
+        QCheckBox *m_pchViscous;
+        QCheckBox *m_pchAutoName;
+        QCheckBox *m_pchIgnoreBodyPanels;
+        QCheckBox *m_pchAutoPlaneInertia;
 
-    QRadioButton *m_pctrlUnit1, *m_pctrlUnit2;
-    QRadioButton *m_pctrlArea1, *m_pctrlArea2, *m_pctrlArea3;
+        QRadioButton *m_prbUnit1, *m_prbUnit2;
+        QRadioButton *m_prbArea1, *m_prbArea2, *m_prbArea3;
 
-    DoubleEdit *m_pctrlRefChord, *m_pctrlRefArea, *m_pctrlRefSpan;
+        DoubleEdit *m_pdeRefChord, *m_pdeRefArea, *m_pdeRefSpan;
 
-    QStackedWidget *m_pctrlAnalysisControls;
-    QRadioButton *m_pctrlWingMethod2, *m_pctrlWingMethod3;
-    QRadioButton *m_pctrlPanelMethod;
+        QStackedWidget *m_pswAnalysisControls;
+        QRadioButton *m_prbWingMethod2, *m_prbWingMethod3;
+        QRadioButton *m_prbPanelMethod;
 
-    QLabel *m_pctrlRho, *m_pctrlNu;
-    QLabel *m_pctrlDensityUnit, *m_pctrlViscosityUnit;
+        QLabel *m_plabRho, *m_plabNu;
+        QLabel *m_plabDensityUnit, *m_plabViscosityUnit;
 
-    QVector<int> m_anglePrecision, m_massPrecision;
+        static WPolar s_StabWPolar;
 
-    static WPolar s_StabWPolar;
+        Plane *m_pPlane;
+        Wing *m_pWingList[MAXWINGS];         // pointers to the four wings of the currently selected plane
 
-    Plane *m_pPlane;
-    Wing *m_pWingList[MAXWINGS];         // pointers to the four wings of the currently selected plane
+        bool m_bAutoName;
+        int m_UnitType;//1= International, 2= Imperial
 
-    bool m_bAutoName;
-    int m_UnitType;//1= International, 2= Imperial
-
-    static QByteArray s_Geometry;
+        static QByteArray s_Geometry;
 };
 
 
 
 
-#endif // STABPOLARDLG_H

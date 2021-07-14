@@ -1,23 +1,17 @@
 HEADERS += \
-    $$PWD/customdlg/gridsettingsdlg.h \
-    $$PWD/customwts/floateditdelegate.h \
-    $$PWD/customwts/mintextedit.h \
-    $$PWD/line/linepickerdlg.h \
-    $$PWD/line/linepickerwt.h \
-    $$PWD/voidwidget.h \
     xflwidgets/color/colorbtn.h \
     xflwidgets/color/colorgraddlg.h \
     xflwidgets/color/colormenubtn.h \
     xflwidgets/color/colorpicker.h \
     xflwidgets/color/textclrbtn.h \
     xflwidgets/customdlg/doublevaluedlg.h \
+    xflwidgets/customdlg/gridsettingsdlg.h \
     xflwidgets/customdlg/helpimgdlg.h \
     xflwidgets/customdlg/intvaluedlg.h \
     xflwidgets/customdlg/intvaluesdlg.h \
     xflwidgets/customdlg/logmessagedlg.h \
     xflwidgets/customdlg/moddlg.h \
     xflwidgets/customdlg/newnamedlg.h \
-    xflwidgets/customdlg/objectpropsdlg.h \
     xflwidgets/customdlg/separatorsdlg.h \
     xflwidgets/customdlg/stringvaluedlg.h \
     xflwidgets/customdlg/xfldialog.h \
@@ -30,8 +24,10 @@ HEADERS += \
     xflwidgets/customwts/curveactiondelegate.h \
     xflwidgets/customwts/doubleedit.h \
     xflwidgets/customwts/exponentialslider.h \
+    xflwidgets/customwts/floateditdelegate.h \
     xflwidgets/customwts/gridcontrol.h \
     xflwidgets/customwts/intedit.h \
+    xflwidgets/customwts/mintextedit.h \
     xflwidgets/customwts/numedit.h \
     xflwidgets/customwts/plaintextoutput.h \
     xflwidgets/customwts/popup.h \
@@ -43,34 +39,32 @@ HEADERS += \
     xflwidgets/line/linedelegate.h \
     xflwidgets/line/linemenu.h \
     xflwidgets/line/linepicker.h \
+    xflwidgets/line/linepickerdlg.h \
+    xflwidgets/line/linepickerwt.h \
     xflwidgets/mvc/expandabletreeview.h \
     xflwidgets/mvc/objecttreedelegate.h \
     xflwidgets/mvc/objecttreeitem.h \
     xflwidgets/mvc/objecttreemodel.h \
     xflwidgets/view/grid.h \
+    xflwidgets/view/section2dwt.h \
+    xflwidgets/voidwidget.h \
     xflwidgets/wt_globals.h \
 
 
 SOURCES += \
-    $$PWD/customdlg/gridsettingsdlg.cpp \
-    $$PWD/customwts/floateditdelegate.cpp \
-    $$PWD/customwts/mintextedit.cpp \
-    $$PWD/line/linepickerdlg.cpp \
-    $$PWD/line/linepickerwt.cpp \
-    $$PWD/voidwidget.cpp \
     xflwidgets/color/colorbtn.cpp \
     xflwidgets/color/colorgraddlg.cpp \
     xflwidgets/color/colormenubtn.cpp \
     xflwidgets/color/colorpicker.cpp \
     xflwidgets/color/textclrbtn.cpp \
     xflwidgets/customdlg/doublevaluedlg.cpp \
+    xflwidgets/customdlg/gridsettingsdlg.cpp \
     xflwidgets/customdlg/helpimgdlg.cpp \
     xflwidgets/customdlg/intvaluedlg.cpp \
     xflwidgets/customdlg/intvaluesdlg.cpp \
     xflwidgets/customdlg/logmessagedlg.cpp \
     xflwidgets/customdlg/moddlg.cpp \
     xflwidgets/customdlg/newnamedlg.cpp \
-    xflwidgets/customdlg/objectpropsdlg.cpp \
     xflwidgets/customdlg/separatorsdlg.cpp \
     xflwidgets/customdlg/stringvaluedlg.cpp \
     xflwidgets/customdlg/xfldialog.cpp \
@@ -83,8 +77,10 @@ SOURCES += \
     xflwidgets/customwts/curveactiondelegate.cpp \
     xflwidgets/customwts/doubleedit.cpp \
     xflwidgets/customwts/exponentialslider.cpp \
+    xflwidgets/customwts/floateditdelegate.cpp \
     xflwidgets/customwts/gridcontrol.cpp \
     xflwidgets/customwts/intedit.cpp \
+    xflwidgets/customwts/mintextedit.cpp \
     xflwidgets/customwts/numedit.cpp \
     xflwidgets/customwts/plaintextoutput.cpp \
     xflwidgets/customwts/popup.cpp \
@@ -96,11 +92,15 @@ SOURCES += \
     xflwidgets/line/linedelegate.cpp \
     xflwidgets/line/linemenu.cpp \
     xflwidgets/line/linepicker.cpp \
+    xflwidgets/line/linepickerdlg.cpp \
+    xflwidgets/line/linepickerwt.cpp \
     xflwidgets/mvc/expandabletreeview.cpp \
     xflwidgets/mvc/objecttreedelegate.cpp \
     xflwidgets/mvc/objecttreeitem.cpp \
     xflwidgets/mvc/objecttreemodel.cpp \
     xflwidgets/view/grid.cpp \
+    xflwidgets/view/section2dwt.cpp \
+    xflwidgets/voidwidget.cpp \
     xflwidgets/wt_globals.cpp \
 
 

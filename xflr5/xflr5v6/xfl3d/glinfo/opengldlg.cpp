@@ -2,7 +2,7 @@
 
     xflr5v6
     Copyright (C) André Deperrois
-    All rights reserved.
+    GNU General Public License v3
 
 *****************************************************************************/
 
@@ -117,6 +117,7 @@ QMessageBox::StandardButton OpenGlDlg::applyChanges()
             QSurfaceFormat fmt = QSurfaceFormat::defaultFormat();
             readFormat(fmt);
             gl3dView::setXflSurfaceFormat(fmt);
+//qDebug()            << gl3dView::defaultXflSurfaceFormat();
             if(g_bTrace)
             {
                 Trace("OpenGLDlg - new default OpenGL context specified:\n");

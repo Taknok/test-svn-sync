@@ -1,7 +1,7 @@
 /****************************************************************************
 
     AFoilTableDlg Class
-    Copyright (C) 2009 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,13 +19,12 @@
 
 *****************************************************************************/
 
-#ifndef AFOILTABLEDLG_H
-#define AFOILTABLEDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QPushButton>
 #include <QCheckBox>
-
+#include <QDialogButtonBox>
 
 
 class AFoilTableDlg : public QDialog
@@ -34,36 +33,35 @@ class AFoilTableDlg : public QDialog
 
     friend class AFoil;
 
-public:
-    AFoilTableDlg(QWidget *pParent);
-    void initDialog();
+    public:
+        AFoilTableDlg(QWidget *pParent);
+        void initDialog();
 
-private slots:
-    void onOK();
-
-
-private:
-    void setupLayout();
-    void keyPressEvent(QKeyEvent *pEvent);
+    private slots:
+        void onOK();
 
 
-    QPushButton *m_pOKButton, *m_pCancelButton;
-    QCheckBox *m_pctrlFoilName;
-    QCheckBox *m_pctrlThickness;
-    QCheckBox *m_pctrlThicknessAt;
-    QCheckBox *m_pctrlCamber;
-    QCheckBox *m_pctrlCamberAt;
-    QCheckBox *m_pctrlPoints;
-    QCheckBox *m_pctrlTEFlapAngle;
-    QCheckBox *m_pctrlTEXHinge;
-    QCheckBox *m_pctrlTEYHinge;
-    QCheckBox *m_pctrlLEFlapAngle;
-    QCheckBox *m_pctrlLEXHinge;
-    QCheckBox *m_pctrlLEYHinge;
+    private:
+        void setupLayout();
+        void keyPressEvent(QKeyEvent *pEvent);
 
-    bool m_bFoilName, m_bPoints;
-    bool m_bThickness, m_bThicknessAt, m_bCamber, m_bCamberAt;
-    bool m_bTEFlapAngle, m_bTEXHinge, m_bTEYHinge, m_bLEFlapAngle, m_bLEXHinge, m_bLEYHinge;
+        QDialogButtonBox *m_pButtonBox;
+
+        QCheckBox *m_pchFoilName;
+        QCheckBox *m_pchThickness;
+        QCheckBox *m_pchThicknessAt;
+        QCheckBox *m_pchCamber;
+        QCheckBox *m_pchCamberAt;
+        QCheckBox *m_pchPoints;
+        QCheckBox *m_pchTEFlapAngle;
+        QCheckBox *m_pchTEXHinge;
+        QCheckBox *m_pchTEYHinge;
+        QCheckBox *m_pchLEFlapAngle;
+        QCheckBox *m_pchLEXHinge;
+        QCheckBox *m_pchLEYHinge;
+
+        bool m_bFoilName, m_bPoints;
+        bool m_bThickness, m_bThicknessAt, m_bCamber, m_bCamberAt;
+        bool m_bTEFlapAngle, m_bTEXHinge, m_bTEYHinge, m_bLEFlapAngle, m_bLEXHinge, m_bLEYHinge;
 };
 
-#endif // AFOILTableDLG_H

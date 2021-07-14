@@ -71,7 +71,7 @@ void GraphWt::setTitles(QString &Title, QPoint &Place)
 }
 
 
-void GraphWt::paintEvent(QPaintEvent *  pEvent )
+void GraphWt::paintEvent(QPaintEvent *pEvent)
 {
     QPainter painter(this);
     painter.save();
@@ -102,6 +102,7 @@ void GraphWt::paintEvent(QPaintEvent *  pEvent )
     }
 
     if(m_bDrawLegend) m_pGraph->drawLegend(painter, m_LegendOrigin, DisplayOptions::textFont(), DisplayOptions::textColor(), DisplayOptions::backgroundColor());
+
     if(hasFocus() && DisplayOptions::bMousePos())
     {
         QPen textPen(DisplayOptions::textColor());

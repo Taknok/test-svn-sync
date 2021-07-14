@@ -42,25 +42,12 @@ MainFrame *gl3dXflView::s_pMainFrame(nullptr);
 
 gl3dXflView::gl3dXflView(QWidget *pParent) : gl3dView(pParent)
 {
-    m_WingMeshIndicesArray = nullptr;
-
-    m_pLeftBodyTexture = m_pRightBodyTexture= nullptr;
-    for(int iw=0; iw<MAXWINGS; iw++)
-    {
-        m_pWingTopLeftTexture[iw] = m_pWingTopRightTexture[iw] = nullptr;
-        m_pWingBotLeftTexture[iw] = m_pWingBotRightTexture[iw] = nullptr;
-    }
-
     m_bOutline    = true;
     m_bSurfaces   = true;
     m_bVLMPanels  = false;
     m_bAxes       = true;
     m_bShowMasses = false;
     m_bFoilNames  = false;
-
-    for(int iw=0; iw<MAXWINGS; iw++) m_iWingElems[iw]=0;
-    m_iWingMeshElems = 0;
-
 
     m_nHighlightLines = m_HighlightLineSize = 0;
     memset(m_Ny, 0, sizeof(m_Ny));
@@ -74,9 +61,6 @@ gl3dXflView::~gl3dXflView()
         m_vboEditWingMesh[iWing].destroy();
     }
 
-    if(m_WingMeshIndicesArray) delete[] m_WingMeshIndicesArray;
-
-
     m_vboBody.destroy();
     m_vboEditBodyMesh.destroy();
 
@@ -85,23 +69,6 @@ gl3dXflView::~gl3dXflView()
         m_vboWingSurface[iWing].destroy();
         m_vboWingOutline[iWing].destroy();
     }
-
-    makeCurrent();
-    if(m_pLeftBodyTexture)     delete m_pLeftBodyTexture;
-    if(m_pRightBodyTexture)    delete m_pRightBodyTexture;
-
-    for(int iw=0; iw<MAXWINGS; iw++)
-    {
-        if(m_pWingBotLeftTexture[iw])  delete m_pWingBotLeftTexture[iw];
-        if(m_pWingTopLeftTexture[iw])  delete m_pWingTopLeftTexture[iw];
-        if(m_pWingBotRightTexture[iw]) delete m_pWingBotRightTexture[iw];
-        if(m_pWingTopRightTexture[iw]) delete m_pWingTopRightTexture[iw];
-        m_pWingBotLeftTexture[iw] = nullptr;
-        m_pWingTopLeftTexture[iw] = nullptr;
-        m_pWingBotRightTexture[iw] = nullptr;
-        m_pWingTopRightTexture[iw] = nullptr;
-    }
-    doneCurrent();
 }
 
 
@@ -143,17 +110,6 @@ void gl3dXflView::onShowMasses(bool bChecked)
 void gl3dXflView::glMakeFuseFlatPanels(Body const*pBody)
 {
     Vector3d P1, P2, P3, P4, N, P1P3, P2P4, Tj, Tjp1;
-
-    if(m_pLeftBodyTexture)  delete m_pLeftBodyTexture;
-    if(m_pRightBodyTexture) delete m_pRightBodyTexture;
-
-    QImage leftTexture  = QImage(QString(m_TexturePath+QDir::separator()+"body_left.png"));
-    if(leftTexture.isNull()) leftTexture = QImage(QString(":/resources/default_textures/body_left.png"));
-    m_pLeftBodyTexture  = new QOpenGLTexture(leftTexture);
-    QImage rightTexture  = QImage(QString(m_TexturePath+QDir::separator()+"body_right.png"));
-    if(rightTexture.isNull()) rightTexture = QImage(QString(":/resources/default_textures/body_right.png"));
-    m_pRightBodyTexture  = new QOpenGLTexture(rightTexture);
-
 
     int buffersize = (pBody->sideLineCount()-1) * (pBody->frameCount()-1); //quads
     buffersize *= 2;    //two triangles per quad
@@ -441,16 +397,6 @@ void gl3dXflView::glMakeFuseSplines(Body const *pBody)
     Vector3d Point;
     Vector3d Normal;
 
-    if(m_pLeftBodyTexture)  delete m_pLeftBodyTexture;
-    if(m_pRightBodyTexture) delete m_pRightBodyTexture;
-
-    QImage leftTexture  = QImage(QString(m_TexturePath+QDir::separator()+"body_left.png"));
-    if(leftTexture.isNull()) leftTexture = QImage(QString(":/resources/default_textures/body_left.png"));
-    m_pLeftBodyTexture  = new QOpenGLTexture(leftTexture);
-    QImage rightTexture  = QImage(QString(m_TexturePath+QDir::separator()+"body_right.png"));
-    if(rightTexture.isNull()) rightTexture = QImage(QString(":/resources/default_textures/body_right.png"));
-    m_pRightBodyTexture  = new QOpenGLTexture(rightTexture);
-
     //vertices array size:
     // surface:
     //     (NX+1)*(NH+1) : from 0 to NX, and from 0 to NH
@@ -727,30 +673,34 @@ void gl3dXflView::glMakeFuseSplinesOutline(Body const*pBody)
 }
 
 
-/** used in GL3DWingDlg and gl3dBodyView*/
 void gl3dXflView::paintSectionHighlight()
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
     m_shadLine.bind();
-    m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
-    m_vboHighlight.bind();
-    m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
-    m_shadLine.setUniformValue(m_locLine.m_UniColor, QColor(255,0,0));
-    glLineWidth(5);
-
-    int pos = 0;
-    for(int iLines=0; iLines<m_nHighlightLines; iLines++)
     {
-        glDrawArrays(GL_LINE_STRIP, pos, m_HighlightLineSize);
-        pos += m_HighlightLineSize;
-    }
+        m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
+        m_shadLine.setUniformValue(m_locLine.m_UniColor, QColor(255,0,0));
+        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(Line::SOLID));
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, 3);
+        m_vboHighlight.bind();
+        {
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
+            glLineWidth(5);
 
-    m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
-    m_vboHighlight.release();
+            int pos = 0;
+            for(int iLines=0; iLines<m_nHighlightLines; iLines++)
+            {
+                glDrawArrays(GL_LINE_STRIP, pos, m_HighlightLineSize);
+                pos += m_HighlightLineSize;
+            }
+
+            m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
+        }
+        m_vboHighlight.release();
+    }
     m_shadLine.release();
 }
-
 
 
 /** Default mesh, if no polar has been defined */
@@ -859,167 +809,6 @@ void gl3dXflView::setSpanStations(Plane const *pPlane, WPolar const *pWPolar, Pl
 }
 
 
-void gl3dXflView::paintWing(int iWing, Wing const *pWing)
-{
-    if(!pWing) return;
-
-    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
-
-    int CHORDPOINTS = W3dPrefs::chordwiseRes();
-
-    QMatrix4x4 vmMat(m_matView*m_matModel);
-    QMatrix4x4 pvmMat(m_matProj*vmMat);
-
-    if(m_bSurfaces)
-    {
-        QVector<ushort> const &wingIndicesArray = m_WingIndicesArray[iWing];
-
-        int pos = 0;
-
-        bool bTextures = pWing->textures() &&
-                (m_pWingBotLeftTexture[iWing] && m_pWingBotRightTexture[iWing] && m_pWingTopLeftTexture[iWing] && m_pWingTopRightTexture[iWing]);
-
-        m_shadSurf.bind();
-        {
-            m_vboWingSurface[iWing].bind();
-            {
-                m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix, vmMat);
-                m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, pvmMat);
-
-                if(s_Light.m_bIsLightOn) m_shadSurf.setUniformValue(m_locSurf.m_Light, 1);
-                else                     m_shadSurf.setUniformValue(m_locSurf.m_Light, 0);
-
-                if(bTextures)
-                {
-                    m_shadSurf.setUniformValue(m_locSurf.m_HasTexture, 1);
-//                    m_shadSurf.setUniformValue(m_locSurf.m_TexSampler, 0); //TEXTURE0  is the default anyway
-                }
-                else
-                {
-                    m_shadSurf.setUniformValue(m_locSurf.m_HasTexture, 0);
-                    m_shadSurf.setUniformValue(m_locSurf.m_UniColor, pWing->wingColor());
-                    m_shadSurf.setUniformValue(m_locSurf.m_HasUniColor, 1);
-                }
-
-                m_shadSurf.setUniformValue(m_locSurf.m_TwoSided, 1);
-                glDisable(GL_CULL_FACE);
-
-                m_shadSurf.enableAttributeArray(m_locSurf.m_attrVertex);
-                m_shadSurf.enableAttributeArray(m_locSurf.m_attrNormal);
-
-                int stride = 8;
-                m_shadSurf.setAttributeBuffer(m_locSurf.m_attrVertex, GL_FLOAT, 0,                  3, stride * sizeof(GLfloat));
-                m_shadSurf.setAttributeBuffer(m_locSurf.m_attrNormal, GL_FLOAT, 3* sizeof(GLfloat), 3, stride * sizeof(GLfloat));
-                if(bTextures)
-                {
-                    m_shadSurf.enableAttributeArray(m_locSurf.m_attrUV);
-                    m_shadSurf.setAttributeBuffer(m_locSurf.m_attrUV, GL_FLOAT, 6*sizeof(GLfloat), 2, stride *sizeof(GLfloat));
-                }
-
-                glEnable(GL_POLYGON_OFFSET_FILL);
-                glPolygonOffset(DEPTHFACTOR, DEPTHUNITS);
-
-                //indices array size:
-                //  Top & bottom surfaces
-                //      NSurfaces
-                //      x (ChordPoints-1)quads
-                //      x2 triangles per/quad
-                //      x2 top and bottom surfaces
-                //      x3 indices/triangle
-
-                pos = 0;
-                for (int j=0; j<pWing->m_Surface.count(); j++)
-                {
-                    Surface const *pSurf = pWing->m_Surface.at(j);
-                    //top surface
-                    if(bTextures)
-                    {
-                        if(pSurf->isLeftSurf()) m_pWingTopLeftTexture[iWing]->bind();
-                        else                    m_pWingTopRightTexture[iWing]->bind();
-                    }
-                    glDrawElements(GL_TRIANGLES, (CHORDPOINTS-1)*2*3, GL_UNSIGNED_SHORT, wingIndicesArray.data()+pos);
-                    if(bTextures)
-                    {
-                        if(pSurf->isLeftSurf()) m_pWingTopLeftTexture[iWing]->release();
-                        else                    m_pWingTopRightTexture[iWing]->release();
-                    }
-                    pos += (CHORDPOINTS-1)*2*3;
-                    // bottom surface
-                    if(bTextures)
-                    {
-                        if(pSurf->isLeftSurf()) m_pWingBotLeftTexture[iWing]->bind();
-                        else                    m_pWingBotRightTexture[iWing]->bind();
-                    }
-                    glDrawElements(GL_TRIANGLES, (CHORDPOINTS-1)*2*3, GL_UNSIGNED_SHORT, wingIndicesArray.data()+pos);
-                    if(bTextures)
-                    {
-                        if(pSurf->isLeftSurf()) m_pWingBotLeftTexture[iWing]->release();
-                        else                    m_pWingBotRightTexture[iWing]->release();
-                    }
-                    pos += (CHORDPOINTS-1)*2*3;
-                }
-
-                for (int j=0; j<pWing->m_Surface.count(); j++)
-                {
-                    Surface const *pSurf = pWing->m_Surface.at(j);
-                    //tip ssurface
-                    if(pSurf->isTipLeft())
-                    {
-                        glDrawElements(GL_TRIANGLES, (CHORDPOINTS-1)*2*3, GL_UNSIGNED_SHORT, wingIndicesArray.data()+pos);
-                        pos += (CHORDPOINTS-1)*2*3;
-                    }
-
-                    if(pSurf->isTipRight())
-                    {
-                        glDrawElements(GL_TRIANGLES, (CHORDPOINTS-1)*2*3, GL_UNSIGNED_SHORT, wingIndicesArray.data()+pos);
-                        pos += (CHORDPOINTS-1)*2*3;
-                    }
-                }
-
-                glDisable(GL_POLYGON_OFFSET_FILL);
-            }
-
-            m_vboWingSurface[iWing].release();
-
-            m_shadSurf.disableAttributeArray(m_locSurf.m_attrVertex);
-            m_shadSurf.disableAttributeArray(m_locSurf.m_attrNormal);
-        }
-        m_shadSurf.release();
-    }
-
-    if(m_bOutline)
-    {
-        m_shadLine.bind();
-        {
-            m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_OutlineStyle.m_Color);
-            m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
-            m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
-
-            m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_OutlineStyle.m_Stipple));
-            m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_OutlineStyle.m_Width);
-
-            m_vboWingOutline[iWing].bind();
-            {
-                m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
-                m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, 3* sizeof(GLfloat));
-
-                glLineWidth(W3dPrefs::s_OutlineStyle.m_Width);
-                glEnable (GL_LINE_STIPPLE);
-                GLLineStipple(W3dPrefs::s_OutlineStyle.m_Stipple);
-
-                glDrawArrays(GL_LINES, 0, m_iWingOutlinePoints[iWing]);
-            }
-            m_vboWingOutline[iWing].release();
-
-            m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
-        }
-        m_shadLine.release();
-    }
-    glDisable(GL_LINE_STIPPLE);
-}
-
-
-
 void gl3dXflView::paintFoilNames(Wing const *pWing)
 {
     int j=0;
@@ -1058,7 +847,7 @@ void gl3dXflView::paintMasses(double volumeMass, const Vector3d &pos, const QStr
     if(qAbs(volumeMass)>PRECISION)
     {
         glRenderText(pos.x, pos.y, pos.z + delta,
-                     tag + QString(" (%1").arg(volumeMass*Units::kgtoUnit(), 0,'g',3) + Units::weightUnitLabel()+")",
+                     tag + QString(" (%1").arg(volumeMass*Units::kgtoUnit(), 0,'g',3) + Units::massUnitLabel()+")",
                      massclr);
     }
 
@@ -1071,7 +860,7 @@ void gl3dXflView::paintMasses(double volumeMass, const Vector3d &pos, const QStr
         glRenderText(ptMasses[im]->position().x + pos.x,
                      ptMasses[im]->position().y + pos.y,
                      ptMasses[im]->position().z + pos.z + delta,
-                     ptMasses[im]->tag()+QString(" (%1").arg(ptMasses[im]->mass()*Units::kgtoUnit(), 0,'g',3)+Units::weightUnitLabel()+")",
+                     ptMasses[im]->tag()+QString(" (%1").arg(ptMasses[im]->mass()*Units::kgtoUnit(), 0,'g',3)+Units::massUnitLabel()+")",
                      massclr);
     }
 }
@@ -1094,7 +883,7 @@ void gl3dXflView::paintMasses(Plane const *pPlane)
         }
     }
 
-    paintMasses(0.0, Vector3d(0.0,0.0,0.0),"",pPlane->m_PointMass);
+    paintMasses(0.0, Vector3d(0.0,0.0,0.0),"", pPlane->m_PointMass);
 
 
     if(pPlane->body())
@@ -1113,510 +902,11 @@ void gl3dXflView::paintMasses(Plane const *pPlane)
 
     //plot CG
     Vector3d Place(pPlane->CoG().x, pPlane->CoG().y, pPlane->CoG().z);
-    paintSphere(Place, W3dPrefs::s_MassRadius*2.0/m_glScalef,
-                massclr);
+    paintSphere(Place, W3dPrefs::s_MassRadius*2.0/m_glScalef, massclr);
 
     glRenderText(pPlane->CoG().x, pPlane->CoG().y, pPlane->CoG().z + delta,
                  "CoG "+QString("%1").arg(pPlane->totalMass()*Units::kgtoUnit(), 7,'g',3)
-                 +Units::weightUnitLabel(), massclr);
-}
-
-
-void gl3dXflView::glMakeWingGeometry(int iWing, Wing const *pWing, Body const *pBody)
-{
-    ushort CHORDPOINTS = ushort(W3dPrefs::chordwiseRes());
-
-    Vector3d N, Pt;
-    QVector<Vector3d>NormalA(CHORDPOINTS);
-    QVector<Vector3d>NormalB(CHORDPOINTS);
-    QVector<Vector3d>PtBotLeft(pWing->m_Surface.count() * CHORDPOINTS);
-    QVector<Vector3d>PtBotRight(pWing->m_Surface.count() * CHORDPOINTS);
-    QVector<Vector3d>PtTopLeft(pWing->m_Surface.count() * CHORDPOINTS);
-    QVector<Vector3d>PtTopRight(pWing->m_Surface.count() * CHORDPOINTS);
-
-    QVector<double>leftV(CHORDPOINTS);
-    QVector<double>rightV(CHORDPOINTS);
-    double leftU=0.0, rightU=1.0;
-    memset(NormalA.data(), 0, sizeof(CHORDPOINTS*sizeof(Vector3d)));
-    memset(NormalB.data(), 0, sizeof(CHORDPOINTS*sizeof(Vector3d)));
-    //vertices array size:
-    // surface:
-    //     pWing->NSurfaces
-    //     xCHORDPOINTS : from 0 to CHORDPOINTS
-    //     x2  for A and B sides
-    //     x2  for top and bottom
-    // outline
-    //     2 points mLA & mLB for leading edge
-    //     2 points mTA & mTB for trailing edge
-    //
-    // x8  : for 3 vertex components, 3 normal components, 2 texture components
-
-    int bufferSize = pWing->m_Surface.count()*CHORDPOINTS*2*2 ;
-    bufferSize *= 8;
-
-    QVector<float>wingVertexArray(bufferSize);
-
-    N.set(0.0, 0.0, 0.0);
-    int iv=0; //index of vertex components
-
-    //SURFACE
-    for (int j=0; j<pWing->m_Surface.size(); j++)
-    {
-        Surface const *pSurf = pWing->surface(j);
-        if(!pSurf) continue;
-
-        //top surface
-        pSurf->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, NormalA, NormalB, CHORDPOINTS);
-        pWing->getTextureUV(j, leftV.data(), rightV.data(), leftU, rightU, CHORDPOINTS);
-
-        //left side vertices
-        for (int l=0; l<CHORDPOINTS; l++)
-        {
-            wingVertexArray[iv++] = PtTopLeft.at(l).xf();
-            wingVertexArray[iv++] = PtTopLeft.at(l).yf();
-            wingVertexArray[iv++] = PtTopLeft.at(l).zf();
-            wingVertexArray[iv++] = NormalA.at(l).xf();
-            wingVertexArray[iv++] = NormalA.at(l).yf();
-            wingVertexArray[iv++] = NormalA.at(l).zf();
-            wingVertexArray[iv++] = float(leftU);
-            wingVertexArray[iv++] = float(leftV.at(l));
-        }
-        //right side vertices
-        for (int l=0; l<CHORDPOINTS; l++)
-        {
-            wingVertexArray[iv++] = PtTopRight.at(l).xf();
-            wingVertexArray[iv++] = PtTopRight.at(l).yf();
-            wingVertexArray[iv++] = PtTopRight.at(l).zf();
-            wingVertexArray[iv++] = NormalB.at(l).xf();
-            wingVertexArray[iv++] = NormalB.at(l).yf();
-            wingVertexArray[iv++] = NormalB.at(l).zf();
-            wingVertexArray[iv++] = float(rightU);
-            wingVertexArray[iv++] = float(rightV.at(l));
-        }
-
-
-        //bottom surface
-        pSurf->getSidePoints(BOTSURFACE, pBody, PtBotLeft, PtBotRight,
-                                              NormalA, NormalB, CHORDPOINTS);
-
-        //left side vertices
-        for (int l=0; l<CHORDPOINTS; l++)
-        {
-            wingVertexArray[iv++] = PtBotLeft.at(l).xf();
-            wingVertexArray[iv++] = PtBotLeft.at(l).yf();
-            wingVertexArray[iv++] = PtBotLeft.at(l).zf();
-            wingVertexArray[iv++] = NormalA.at(l).xf();
-            wingVertexArray[iv++] = NormalA.at(l).yf();
-            wingVertexArray[iv++] = NormalA.at(l).zf();
-            wingVertexArray[iv++] = float(1.0-leftU);
-            wingVertexArray[iv++] = float(leftV.at(l));
-        }
-
-        //right side vertices
-        for (int l=0; l<CHORDPOINTS; l++)
-        {
-            wingVertexArray[iv++] = PtBotRight.at(l).xf();
-            wingVertexArray[iv++] = PtBotRight.at(l).yf();
-            wingVertexArray[iv++] = PtBotRight.at(l).zf();
-            wingVertexArray[iv++] = NormalB.at(l).xf();
-            wingVertexArray[iv++] = NormalB.at(l).yf();
-            wingVertexArray[iv++] = NormalB.at(l).zf();
-            wingVertexArray[iv++] = float(1.0-rightU);
-            wingVertexArray[iv++] = float(rightV.at(l));
-        }
-    }
-
-
-    Q_ASSERT(iv==bufferSize);
-
-    //indices array size:
-    //  Top & bottom surfaces
-    //      NSurfaces
-    //      x (ChordPoints-1)quads
-    //      x2 triangles per/quad
-    //      x2 top and bottom surfaces
-    //      x3 indices/triangle
-    //  Tip patches
-    //      (CHORDPOINTS-1) quads
-    //      x2 triangles per/quad
-    //      x2 tip patches
-    //      x3 indices/triangle
-
-    m_iWingElems[iWing] =  pWing->m_Surface.count()* (CHORDPOINTS-1) *2 *2 *3
-                           + (CHORDPOINTS-1) *2 *2 *3;
-
-    m_WingIndicesArray[iWing].resize(m_iWingElems[iWing]);
-    QVector<ushort> &wingIndicesArray = m_WingIndicesArray[iWing];
-    int ii = 0;
-    ushort nV=0;
-    for (int j=0; j<pWing->m_Surface.count(); j++)
-    {
-        Surface const *pSurf = pWing->surface(j);
-        if(!pSurf) continue;
-
-        //topsurface
-        for (int l=0; l<CHORDPOINTS-1; l++)
-        {
-            Q_ASSERT(ii < m_iWingElems[iWing]);
-            //first triangle
-            wingIndicesArray[ii]   = nV;
-            wingIndicesArray[ii+1] = nV+1;
-            wingIndicesArray[ii+2] = nV+CHORDPOINTS;
-            //second triangle
-            wingIndicesArray[ii+3] = nV+CHORDPOINTS;
-            wingIndicesArray[ii+4] = nV+1;
-            wingIndicesArray[ii+5] = nV+CHORDPOINTS+1;
-            ii += 6;
-            nV++;
-        }
-        nV +=CHORDPOINTS+1;
-
-        //botsurface
-        for (int l=0; l<CHORDPOINTS-1; l++)
-        {
-            Q_ASSERT(ii < m_iWingElems[iWing]);
-            //first triangle
-            wingIndicesArray[ii]   = nV;
-            wingIndicesArray[ii+1] = nV+1;
-            wingIndicesArray[ii+2] = nV+CHORDPOINTS;
-            //second triangle
-            wingIndicesArray[ii+3] = nV+CHORDPOINTS;
-            wingIndicesArray[ii+4] = nV+1;
-            wingIndicesArray[ii+5] = nV+CHORDPOINTS+1;
-            ii += 6;
-            nV++;
-        }
-        nV +=CHORDPOINTS+1;
-    }
-
-    //TIP PATCHES
-    nV=0;
-    for (int j=0; j<pWing->m_Surface.count(); j++)
-    {
-        Surface const *pSurf = pWing->surface(j);
-        if(!pSurf) continue;
-
-        if(pSurf->isTipLeft())
-        {
-            Q_ASSERT(ii+5 < m_iWingElems[iWing]);
-            for (int l=0; l<CHORDPOINTS-1; l++)
-            {
-                //first triangle
-                wingIndicesArray[ii]   = nV;
-                wingIndicesArray[ii+1] = nV+1;
-                wingIndicesArray[ii+2] = nV+2*CHORDPOINTS;
-                //second triangle
-                wingIndicesArray[ii+3] = nV+2*CHORDPOINTS;
-                wingIndicesArray[ii+4] = nV+1;
-                wingIndicesArray[ii+5] = nV+2*CHORDPOINTS+1;
-                ii += 6;
-                nV++; //move one vertex
-            }
-            nV++; //skip the last vertex
-        }
-
-        if(pSurf->isTipRight())
-        {
-            if(!pSurf->isTipLeft()) nV += CHORDPOINTS;
-
-            Q_ASSERT(ii+5 < m_iWingElems[iWing]);
-            for (int l=0; l<CHORDPOINTS-1; l++)
-            {
-                //first triangle
-                wingIndicesArray[ii]   = nV;
-                wingIndicesArray[ii+1] = nV+1;
-                wingIndicesArray[ii+2] = nV+2*CHORDPOINTS;
-
-                //second triangle
-                wingIndicesArray[ii+3] = nV+2*CHORDPOINTS;
-                wingIndicesArray[ii+4] = nV+1;
-                wingIndicesArray[ii+5] = nV+2*CHORDPOINTS+1;
-                ii += 6;
-                nV++; //move one vertex
-            }
-            nV++; //skip the last vertex;
-            nV += CHORDPOINTS; //skip the bottom line of this wing section
-        }
-
-        if(pSurf->isTipLeft())
-        {
-            nV+= 3*CHORDPOINTS;
-        }
-        else if(pWing->m_Surface.at(j)->isTipRight())
-        {
-        }
-        else
-        {
-            nV +=4*CHORDPOINTS;
-        }
-    }
-    Q_ASSERT(ii==m_iWingElems[iWing]);
-
-    if(m_pWingBotLeftTexture[iWing])  delete m_pWingBotLeftTexture[iWing];
-    if(m_pWingTopLeftTexture[iWing])  delete m_pWingTopLeftTexture[iWing];
-    if(m_pWingBotRightTexture[iWing]) delete m_pWingBotRightTexture[iWing];
-    if(m_pWingTopRightTexture[iWing]) delete m_pWingTopRightTexture[iWing];
-
-
-    QString textureName;
-    switch(pWing->wingType())
-    {
-        case xfl::MAINWING:
-            textureName = "wing_";
-            break;
-        case xfl::SECONDWING:
-            textureName = "wing2_";
-            break;
-        case xfl::ELEVATOR:
-            textureName = "elevator_";
-            break;
-        case xfl::FIN:
-            textureName = "fin_";
-            break;
-        default:
-            textureName="wing_";
-            break;
-    }
-
-
-    QImage topLeftTexture;
-    getTextureFile(textureName+"top_left", topLeftTexture);
-    m_pWingTopLeftTexture[iWing] = new QOpenGLTexture(topLeftTexture);
-
-    QImage botLeftTexture;
-    getTextureFile(textureName+"bottom_left", botLeftTexture);
-    m_pWingBotLeftTexture[iWing] = new QOpenGLTexture(botLeftTexture);
-
-    QImage topRightTexture;
-    getTextureFile(textureName+"top_right", topRightTexture);
-    m_pWingTopRightTexture[iWing] = new QOpenGLTexture(topRightTexture);
-
-    QImage botRightTexture;
-    getTextureFile(textureName+"bottom_right", botRightTexture);
-    m_pWingBotRightTexture[iWing] = new QOpenGLTexture(botRightTexture);
-
-    m_vboWingSurface[iWing].destroy();
-    m_vboWingSurface[iWing].create();
-    m_vboWingSurface[iWing].bind();
-    m_vboWingSurface[iWing].allocate(wingVertexArray.data(), bufferSize * int(sizeof(GLfloat)));
-    m_vboWingSurface[iWing].release();
-
-
-    //make OUTLINE
-    //vertices array size:
-    // surface:
-    //     pWing->NSurfaces
-    //     x(CHORDPOINTS-1)*2 : segments from i to i+1, times two vertices
-    //                          so that we can make only one call to GL_LINES later on
-    //     x2  for A and B sides
-    //     x2  for top and bottom
-    // flaps
-    m_iWingOutlinePoints[iWing]  = pWing->m_Surface.count()*(CHORDPOINTS-1)*2*2*2;
-
-    // outline
-    //     2 points mLA & mLB for leading edge
-    //     2 points mTA & mTB for trailing edge
-    m_iWingOutlinePoints[iWing] += pWing->m_Surface.size()*2*2;
-
-    //TE flap outline....
-    for (int j=0; j<pWing->m_Surface.size(); j++)
-    {
-        Foil const *pFoilA = pWing->m_Surface.at(j)->m_pFoilA;
-        Foil const *pFoilB = pWing->m_Surface.at(j)->m_pFoilB;
-        if(pFoilA && pFoilB && pFoilA->m_bTEFlap && pFoilB->m_bTEFlap)
-        {
-            m_iWingOutlinePoints[iWing] += 4;//two vertices for the top line and two for the bottom line
-        }
-    }
-    //LE flap outline....
-    for (int j=0; j<pWing->m_Surface.size(); j++)
-    {
-        Foil const *pFoilA = pWing->m_Surface.at(j)->m_pFoilA;
-        Foil const *pFoilB = pWing->m_Surface.at(j)->m_pFoilB;
-        if(pFoilA && pFoilB && pFoilA->m_bLEFlap && pFoilB->m_bLEFlap)
-        {
-            m_iWingOutlinePoints[iWing] += 4;//two vertices for the top line and two for the bottom line
-        }
-    }
-
-    // x3  : for 3 vertex components
-    QVector<float> wingOutlineVertexArray(m_iWingOutlinePoints[iWing]*3, 0);
-
-    iv=0; //index of vertex components
-
-    //SECTIONS OUTLINE
-    for (int j=0; j<pWing->m_Surface.size(); j++)
-    {
-        Surface const *pSurf = pWing->surface(j);
-        pSurf->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, NormalA, NormalB, CHORDPOINTS);
-        //top surface
-        //left side vertices
-        for (int l=0; l<CHORDPOINTS-1; l++)
-        {
-            wingOutlineVertexArray[iv++] = PtTopLeft.at(l).xf();
-            wingOutlineVertexArray[iv++] = PtTopLeft.at(l).yf();
-            wingOutlineVertexArray[iv++] = PtTopLeft.at(l).zf();
-            wingOutlineVertexArray[iv++] = PtTopLeft.at(l+1).xf();
-            wingOutlineVertexArray[iv++] = PtTopLeft.at(l+1).yf();
-            wingOutlineVertexArray[iv++] = PtTopLeft.at(l+1).zf();
-        }
-        //right side vertices
-        for (int l=0; l<CHORDPOINTS-1; l++)
-        {
-            wingOutlineVertexArray[iv++] = PtTopRight.at(l).xf();
-            wingOutlineVertexArray[iv++] = PtTopRight.at(l).yf();
-            wingOutlineVertexArray[iv++] = PtTopRight.at(l).zf();
-            wingOutlineVertexArray[iv++] = PtTopRight.at(l+1).xf();
-            wingOutlineVertexArray[iv++] = PtTopRight.at(l+1).yf();
-            wingOutlineVertexArray[iv++] = PtTopRight.at(l+1).zf();
-        }
-
-
-        //bottom surface
-
-        //left side vertices
-        for (int l=0; l<CHORDPOINTS-1; l++)
-        {
-            wingOutlineVertexArray[iv++] = PtBotLeft.at(l).xf();
-            wingOutlineVertexArray[iv++] = PtBotLeft.at(l).yf();
-            wingOutlineVertexArray[iv++] = PtBotLeft.at(l).zf();
-            wingOutlineVertexArray[iv++] = PtBotLeft.at(l+1).xf();
-            wingOutlineVertexArray[iv++] = PtBotLeft.at(l+1).yf();
-            wingOutlineVertexArray[iv++] = PtBotLeft.at(l+1).zf();
-        }
-
-        //right side vertices
-        for (int l=0; l<CHORDPOINTS-1; l++)
-        {
-            wingOutlineVertexArray[iv++] = PtBotRight.at(l).xf();
-            wingOutlineVertexArray[iv++] = PtBotRight.at(l).yf();
-            wingOutlineVertexArray[iv++] = PtBotRight.at(l).zf();
-            wingOutlineVertexArray[iv++] = PtBotRight.at(l+1).xf();
-            wingOutlineVertexArray[iv++] = PtBotRight.at(l+1).yf();
-            wingOutlineVertexArray[iv++] = PtBotRight.at(l+1).zf();
-        }
-
-        //Leading edge
-        wingOutlineVertexArray[iv++] = PtTopLeft.first().xf();
-        wingOutlineVertexArray[iv++] = PtTopLeft.first().yf();
-        wingOutlineVertexArray[iv++] = PtTopLeft.first().zf();
-        wingOutlineVertexArray[iv++] = PtTopRight.first().xf();
-        wingOutlineVertexArray[iv++] = PtTopRight.first().yf();
-        wingOutlineVertexArray[iv++] = PtTopRight.first().zf();
-
-        //trailing edge
-        wingOutlineVertexArray[iv++] = PtTopLeft.at(CHORDPOINTS-1).xf();
-        wingOutlineVertexArray[iv++] = PtTopLeft.at(CHORDPOINTS-1).yf();
-        wingOutlineVertexArray[iv++] = PtTopLeft.at(CHORDPOINTS-1).zf();
-        wingOutlineVertexArray[iv++] = PtTopRight.at(CHORDPOINTS-1).xf();
-        wingOutlineVertexArray[iv++] = PtTopRight.at(CHORDPOINTS-1).yf();
-        wingOutlineVertexArray[iv++] = PtTopRight.at(CHORDPOINTS-1).zf();
-    }
-
-    //TE flap outline
-    for (int j=0; j<pWing->m_Surface.size(); j++)
-    {
-        Surface const *pSurf =  pWing->m_Surface[j];
-        Foil const *pFoilA =pSurf->m_pFoilA;
-        Foil const *pFoilB =pSurf->m_pFoilB;
-        if(pFoilA && pFoilB && pFoilA->m_bTEFlap && pFoilB->m_bTEFlap)
-        {
-           pSurf->getSurfacePoint(pSurf->m_pFoilA->m_TEXHinge/100.0,
-                                  pFoilA->m_TEXHinge/100.0,
-                                  0.0, TOPSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.xf();
-            wingOutlineVertexArray[iv++] = Pt.yf();
-            wingOutlineVertexArray[iv++] = Pt.zf();
-
-           pSurf->getSurfacePoint(pSurf->m_pFoilB->m_TEXHinge/100.0,
-                                  pFoilB->m_TEXHinge/100.0,
-                                  1.0, TOPSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.xf();
-            wingOutlineVertexArray[iv++] = Pt.yf();
-            wingOutlineVertexArray[iv++] = Pt.zf();
-
-
-           pSurf->getSurfacePoint(pSurf->m_pFoilA->m_TEXHinge/100.0,
-                                  pFoilA->m_TEXHinge/100.0,
-                                  0.0, BOTSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.xf();
-            wingOutlineVertexArray[iv++] = Pt.yf();
-            wingOutlineVertexArray[iv++] = Pt.zf();
-
-
-           pSurf->getSurfacePoint(pSurf->m_pFoilB->m_TEXHinge/100.0,
-                                  pFoilB->m_TEXHinge/100.0,
-                                  1.0, BOTSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.xf();
-            wingOutlineVertexArray[iv++] = Pt.yf();
-            wingOutlineVertexArray[iv++] = Pt.zf();
-        }
-    }
-    //LE flap outline....
-    for (int j=0; j<pWing->m_Surface.size(); j++)
-    {
-        Surface const *pSurf =  pWing->m_Surface.at(j);
-        Foil const *pFoilA = pSurf->m_pFoilA;
-        Foil const *pFoilB = pSurf->m_pFoilB;
-        if(pFoilA && pFoilB && pFoilA->m_bLEFlap && pFoilB->m_bLEFlap)
-        {
-            pSurf->getSurfacePoint(pFoilA->m_LEXHinge/100.0,
-                                   pFoilA->m_LEXHinge/100.0,
-                                   0.0, TOPSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.xf();
-            wingOutlineVertexArray[iv++] = Pt.yf();
-            wingOutlineVertexArray[iv++] = Pt.zf();
-
-            pSurf->getSurfacePoint(pFoilB->m_LEXHinge/100.0,
-                                   pFoilB->m_LEXHinge/100.0,
-                                   1.0, TOPSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.xf();
-            wingOutlineVertexArray[iv++] = Pt.yf();
-            wingOutlineVertexArray[iv++] = Pt.zf();
-
-            pSurf->getSurfacePoint(pFoilA->m_LEXHinge/100.0,
-                                   pFoilA->m_LEXHinge/100.0,
-                                   0.0, BOTSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.xf();
-            wingOutlineVertexArray[iv++] = Pt.yf();
-            wingOutlineVertexArray[iv++] = Pt.zf();
-
-            pSurf->getSurfacePoint(pFoilB->m_LEXHinge/100.0,
-                                   pFoilB->m_LEXHinge/100.0,
-                                   1.0, BOTSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.xf();
-            wingOutlineVertexArray[iv++] = Pt.yf();
-            wingOutlineVertexArray[iv++] = Pt.zf();
-        }
-    }
-
-    Q_ASSERT(iv==m_iWingOutlinePoints[iWing] * 3);
-
-    m_vboWingOutline[iWing].destroy();
-    m_vboWingOutline[iWing].create();
-    m_vboWingOutline[iWing].bind();
-    m_vboWingOutline[iWing].allocate(wingOutlineVertexArray.data(), m_iWingOutlinePoints[iWing] * 3 * int(sizeof(GLfloat)));
-    m_vboWingOutline[iWing].release();
-}
-
-
-void gl3dXflView::getTextureFile(QString const &surfaceName, QImage &textureImage)
-{
-    QString texture = m_TexturePath+QDir::separator()+surfaceName;
-
-    textureImage =  QImage(QString(texture+".png"));
-    if(textureImage.isNull())
-    {
-        textureImage  = QImage(QString(texture+".jpg"));
-        if(textureImage.isNull())
-        {
-            textureImage  = QImage(QString(texture+".jpeg"));
-            if(textureImage.isNull())
-            {
-                textureImage = QImage(QString(":/resources/default_textures/"+surfaceName+".png"));
-            }
-        }
-    }
+                 +Units::massUnitLabel(), massclr);
 }
 
 
@@ -1967,14 +1257,15 @@ void gl3dXflView::paintMesh(QOpenGLBuffer &vbo, bool bBackGround)
         {
             m_shadSurf.setUniformValue(m_locSurf.m_UniColor, DisplayOptions::backgroundColor());
             m_shadSurf.setUniformValue(m_locSurf.m_HasUniColor, 1);
+            m_shadSurf.setUniformValue(m_locSurf.m_HasTexture, 0);
 
             vbo.bind();
             {
                 m_shadSurf.enableAttributeArray(m_locSurf.m_attrVertex);
                 m_shadSurf.setAttributeBuffer(m_locSurf.m_attrVertex, GL_FLOAT, 0, 3, 6 * sizeof(GLfloat));
 
-
                 int nPanels = vbo.size()/3/6/int(sizeof(float)); // three vertices and 6 components
+                glDisable(GL_CULL_FACE);
                 glEnable(GL_POLYGON_OFFSET_FILL);
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 glPolygonOffset(DEPTHFACTOR, DEPTHUNITS);
@@ -1990,5 +1281,490 @@ void gl3dXflView::paintMesh(QOpenGLBuffer &vbo, bool bBackGround)
     }
 }
 
+
+void gl3dXflView::glMakeWingOutline(Wing const *pWing, Body const *pBody, QOpenGLBuffer &vboOutline) const
+{
+    int CHORDPOINTS = W3dPrefs::chordwiseRes();
+    QVector<Vector3d>NA(CHORDPOINTS), NB(CHORDPOINTS);
+    QVector<Vector3d>PtBotLeft(CHORDPOINTS), PtBotRight(CHORDPOINTS);
+    QVector<Vector3d>PtTopLeft(CHORDPOINTS), PtTopRight(CHORDPOINTS);
+
+    Vector3d Pt, N;
+
+    int stride = 3;
+    int nSegs = pWing->surfaceCount()
+                *(CHORDPOINTS-1)
+                *2                 // top and bottom
+                *2;                // left and right
+    nSegs += pWing->surfaceCount()
+             *2;                     //LE and TE
+
+
+    //TE flap outline
+    for (int j=0; j<pWing->m_Surface.size(); j++)
+    {
+        Foil const *pFoilA = pWing->m_Surface.at(j)->m_pFoilA;
+        Foil const *pFoilB = pWing->m_Surface.at(j)->m_pFoilB;
+        if(pFoilA && pFoilB && pFoilA->m_bTEFlap && pFoilB->m_bTEFlap)
+        {
+            nSegs +=2;
+        }
+    }
+    //LE flap outline
+    for (int j=0; j<pWing->m_Surface.size(); j++)
+    {
+        Foil const *pFoilA = pWing->m_Surface.at(j)->m_pFoilA;
+        Foil const *pFoilB = pWing->m_Surface.at(j)->m_pFoilB;
+        if(pFoilA && pFoilB && pFoilA->m_bLEFlap && pFoilB->m_bLEFlap)
+        {
+            nSegs +=2;
+        }
+    }
+
+
+    int buffersize = nSegs
+                *2                   // 2 vertices / segment
+                *stride;
+    QVector<float>OutlineVA(buffersize);
+
+    int iv=0; //index of outline vertex components
+
+
+    //SURFACE
+    for (int j=0; j<pWing->m_Surface.size(); j++)
+    {
+        Surface const *pSurf = pWing->surface(j);
+        if(!pSurf) continue;
+
+        pSurf->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, NA, NB, CHORDPOINTS);
+        pSurf->getSidePoints(BOTSURFACE, pBody, PtBotLeft, PtBotRight, NA, NB, CHORDPOINTS);
+
+        //OUTLINE
+        for(int l=0; l<CHORDPOINTS-1; l++)
+        {
+            OutlineVA[iv++] = PtBotLeft.at(l).xf();
+            OutlineVA[iv++] = PtBotLeft.at(l).yf();
+            OutlineVA[iv++] = PtBotLeft.at(l).zf();
+            OutlineVA[iv++] = PtBotLeft.at(l+1).xf();
+            OutlineVA[iv++] = PtBotLeft.at(l+1).yf();
+            OutlineVA[iv++] = PtBotLeft.at(l+1).zf();
+
+            OutlineVA[iv++] = PtTopLeft.at(l).xf();
+            OutlineVA[iv++] = PtTopLeft.at(l).yf();
+            OutlineVA[iv++] = PtTopLeft.at(l).zf();
+            OutlineVA[iv++] = PtTopLeft.at(l+1).xf();
+            OutlineVA[iv++] = PtTopLeft.at(l+1).yf();
+            OutlineVA[iv++] = PtTopLeft.at(l+1).zf();
+
+            OutlineVA[iv++] = PtBotRight.at(l).xf();
+            OutlineVA[iv++] = PtBotRight.at(l).yf();
+            OutlineVA[iv++] = PtBotRight.at(l).zf();
+            OutlineVA[iv++] = PtBotRight.at(l+1).xf();
+            OutlineVA[iv++] = PtBotRight.at(l+1).yf();
+            OutlineVA[iv++] = PtBotRight.at(l+1).zf();
+
+            OutlineVA[iv++] = PtTopRight.at(l).xf();
+            OutlineVA[iv++] = PtTopRight.at(l).yf();
+            OutlineVA[iv++] = PtTopRight.at(l).zf();
+            OutlineVA[iv++] = PtTopRight.at(l+1).xf();
+            OutlineVA[iv++] = PtTopRight.at(l+1).yf();
+            OutlineVA[iv++] = PtTopRight.at(l+1).zf();
+        }
+        //LE & TE
+        pSurf->getSidePoint(0.0, false, TOPSURFACE, Pt, N);
+        OutlineVA[iv++] = Pt.xf();
+        OutlineVA[iv++] = Pt.yf();
+        OutlineVA[iv++] = Pt.zf();
+        pSurf->getSidePoint(0.0, true, TOPSURFACE, Pt, N);
+        OutlineVA[iv++] = Pt.xf();
+        OutlineVA[iv++] = Pt.yf();
+        OutlineVA[iv++] = Pt.zf();
+
+        pSurf->getSidePoint(1.0, false, TOPSURFACE, Pt, N);
+        OutlineVA[iv++] = Pt.xf();
+        OutlineVA[iv++] = Pt.yf();
+        OutlineVA[iv++] = Pt.zf();
+        pSurf->getSidePoint(1.0, true, TOPSURFACE, Pt, N);
+        OutlineVA[iv++] = Pt.xf();
+        OutlineVA[iv++] = Pt.yf();
+        OutlineVA[iv++] = Pt.zf();
+
+
+        Foil const *pFoilA = pWing->m_Surface.at(j)->m_pFoilA;
+        Foil const *pFoilB = pWing->m_Surface.at(j)->m_pFoilB;
+        if(pFoilA && pFoilB && pFoilA->m_bTEFlap && pFoilB->m_bTEFlap)
+        {
+            pSurf->getSurfacePoint(pSurf->m_pFoilA->m_TEXHinge/100.0,
+                                   pFoilA->m_TEXHinge/100.0,
+                                   0.0, TOPSURFACE, Pt, N);
+            OutlineVA[iv++] = Pt.xf();
+            OutlineVA[iv++] = Pt.yf();
+            OutlineVA[iv++] = Pt.zf();
+
+            pSurf->getSurfacePoint(pSurf->m_pFoilB->m_TEXHinge/100.0,
+                                   pFoilB->m_TEXHinge/100.0,
+                                   1.0, TOPSURFACE, Pt, N);
+            OutlineVA[iv++] = Pt.xf();
+            OutlineVA[iv++] = Pt.yf();
+            OutlineVA[iv++] = Pt.zf();
+
+
+            pSurf->getSurfacePoint(pSurf->m_pFoilA->m_TEXHinge/100.0,
+                                   pFoilA->m_TEXHinge/100.0,
+                                   0.0, BOTSURFACE, Pt, N);
+            OutlineVA[iv++] = Pt.xf();
+            OutlineVA[iv++] = Pt.yf();
+            OutlineVA[iv++] = Pt.zf();
+
+
+            pSurf->getSurfacePoint(pSurf->m_pFoilB->m_TEXHinge/100.0,
+                                   pFoilB->m_TEXHinge/100.0,
+                                   1.0, BOTSURFACE, Pt, N);
+            OutlineVA[iv++] = Pt.xf();
+            OutlineVA[iv++] = Pt.yf();
+            OutlineVA[iv++] = Pt.zf();
+        }
+        if(pFoilA && pFoilB && pFoilA->m_bLEFlap && pFoilB->m_bLEFlap)
+        {
+            pSurf->getSurfacePoint(pSurf->m_pFoilA->m_LEXHinge/100.0,
+                                   pFoilA->m_TEXHinge/100.0,
+                                   0.0, TOPSURFACE, Pt, N);
+            OutlineVA[iv++] = Pt.xf();
+            OutlineVA[iv++] = Pt.yf();
+            OutlineVA[iv++] = Pt.zf();
+
+            pSurf->getSurfacePoint(pSurf->m_pFoilB->m_LEXHinge/100.0,
+                                   pFoilB->m_TEXHinge/100.0,
+                                   1.0, TOPSURFACE, Pt, N);
+            OutlineVA[iv++] = Pt.xf();
+            OutlineVA[iv++] = Pt.yf();
+            OutlineVA[iv++] = Pt.zf();
+
+
+            pSurf->getSurfacePoint(pSurf->m_pFoilA->m_LEXHinge/100.0,
+                                   pFoilA->m_TEXHinge/100.0,
+                                   0.0, BOTSURFACE, Pt, N);
+            OutlineVA[iv++] = Pt.xf();
+            OutlineVA[iv++] = Pt.yf();
+            OutlineVA[iv++] = Pt.zf();
+
+
+            pSurf->getSurfacePoint(pSurf->m_pFoilB->m_LEXHinge/100.0,
+                                   pFoilB->m_TEXHinge/100.0,
+                                   1.0, BOTSURFACE, Pt, N);
+            OutlineVA[iv++] = Pt.xf();
+            OutlineVA[iv++] = Pt.yf();
+            OutlineVA[iv++] = Pt.zf();
+        }
+    }
+    Q_ASSERT(iv==buffersize);
+
+
+    vboOutline.destroy();
+    vboOutline.create();
+    vboOutline.bind();
+    vboOutline.allocate(OutlineVA.data(), OutlineVA.size() * int(sizeof(GLfloat)));
+    vboOutline.release();
+}
+
+
+void gl3dXflView::glMakeWingSurface(Wing const *pWing, Body const *pBody, QOpenGLBuffer &vboSurf) const
+{
+    int CHORDPOINTS = W3dPrefs::chordwiseRes();
+
+    Vector3d N, Pt;
+    QVector<Vector3d>NormalA(CHORDPOINTS);
+    QVector<Vector3d>NormalB(CHORDPOINTS);
+    QVector<Vector3d>PtBotLeft( CHORDPOINTS);
+    QVector<Vector3d>PtBotRight(CHORDPOINTS);
+    QVector<Vector3d>PtTopLeft( CHORDPOINTS);
+    QVector<Vector3d>PtTopRight( CHORDPOINTS);
+
+    QVector<double>leftV(CHORDPOINTS);
+    QVector<double>rightV(CHORDPOINTS);
+
+    double leftU=0.0, rightU=1.0;
+
+    int stride = 8; //3 vertex components, 3 normal components, 2 texture components
+    int nTriangles = pWing->m_Surface.count()
+            *2                          // top and bottom
+            *(CHORDPOINTS-1)            // quad count
+            *2;                         // 2 triangles/quad
+    //tip patches
+    nTriangles += 2* (CHORDPOINTS-1) * 2; // four triangles are null, but who cares? Not OpenGL
+    int buffersize = nTriangles
+                    *3                          // 3 vertices /triangle
+                    *stride;
+    QVector<float>SurfaceVA(buffersize);
+
+
+    N.set(0.0, 0.0, 0.0);
+    int ivs=0; //index of surface vertex components
+
+    //SURFACE
+    for (int j=0; j<pWing->m_Surface.size(); j++)
+    {
+        Surface const *pSurf = pWing->surface(j);
+        if(!pSurf) continue;
+
+        //top surface
+        pSurf->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, NormalA, NormalB, CHORDPOINTS);
+        pWing->getTextureUV(j, leftV.data(), rightV.data(), leftU, rightU, CHORDPOINTS);
+
+        for(int l=0; l<CHORDPOINTS-1; l++)
+        {
+            // first triangle
+            SurfaceVA[ivs++] = PtTopLeft.at(l).xf();
+            SurfaceVA[ivs++] = PtTopLeft.at(l).yf();
+            SurfaceVA[ivs++] = PtTopLeft.at(l).zf();
+            SurfaceVA[ivs++] = NormalA.at(l).xf();
+            SurfaceVA[ivs++] = NormalA.at(l).yf();
+            SurfaceVA[ivs++] = NormalA.at(l).zf();
+            SurfaceVA[ivs++] = leftU;
+            SurfaceVA[ivs++] = leftV.at(l);
+
+            SurfaceVA[ivs++] = PtTopLeft.at(l+1).xf();
+            SurfaceVA[ivs++] = PtTopLeft.at(l+1).yf();
+            SurfaceVA[ivs++] = PtTopLeft.at(l+1).zf();
+            SurfaceVA[ivs++] = NormalA.at(l+1).xf();
+            SurfaceVA[ivs++] = NormalA.at(l+1).yf();
+            SurfaceVA[ivs++] = NormalA.at(l+1).zf();
+            SurfaceVA[ivs++] = leftU;
+            SurfaceVA[ivs++] = leftV.at(l+1);
+
+            SurfaceVA[ivs++] = PtTopRight.at(l).xf();
+            SurfaceVA[ivs++] = PtTopRight.at(l).yf();
+            SurfaceVA[ivs++] = PtTopRight.at(l).zf();
+            SurfaceVA[ivs++] = NormalB.at(l).xf();
+            SurfaceVA[ivs++] = NormalA.at(l).yf();
+            SurfaceVA[ivs++] = NormalB.at(l).zf();
+            SurfaceVA[ivs++] = rightU;
+            SurfaceVA[ivs++] = rightV.at(l);
+
+            // second triangle
+            SurfaceVA[ivs++] = PtTopLeft.at(l+1).xf();
+            SurfaceVA[ivs++] = PtTopLeft.at(l+1).yf();
+            SurfaceVA[ivs++] = PtTopLeft.at(l+1).zf();
+            SurfaceVA[ivs++] = NormalA.at(l+1).xf();
+            SurfaceVA[ivs++] = NormalA.at(l+1).yf();
+            SurfaceVA[ivs++] = NormalA.at(l+1).zf();
+            SurfaceVA[ivs++] = leftU;
+            SurfaceVA[ivs++] = leftV.at(l+1);
+
+            SurfaceVA[ivs++] = PtTopRight.at(l+1).xf();
+            SurfaceVA[ivs++] = PtTopRight.at(l+1).yf();
+            SurfaceVA[ivs++] = PtTopRight.at(l+1).zf();
+            SurfaceVA[ivs++] = NormalB.at(l+1).xf();
+            SurfaceVA[ivs++] = NormalB.at(l+1).yf();
+            SurfaceVA[ivs++] = NormalB.at(l+1).zf();
+            SurfaceVA[ivs++] = rightU;
+            SurfaceVA[ivs++] = rightV.at(l+1);
+
+            SurfaceVA[ivs++] = PtTopRight.at(l).xf();
+            SurfaceVA[ivs++] = PtTopRight.at(l).yf();
+            SurfaceVA[ivs++] = PtTopRight.at(l).zf();
+            SurfaceVA[ivs++] = NormalB.at(l).xf();
+            SurfaceVA[ivs++] = NormalA.at(l).yf();
+            SurfaceVA[ivs++] = NormalB.at(l).zf();
+            SurfaceVA[ivs++] = rightU;
+            SurfaceVA[ivs++] = rightV.at(l);
+        }
+
+        //bottom surface
+        pSurf->getSidePoints(BOTSURFACE, pBody, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPOINTS);
+        pWing->getTextureUV(j, leftV.data(), rightV.data(), leftU, rightU, CHORDPOINTS);
+
+        for(int l=0; l<CHORDPOINTS-1; l++)
+        {
+            // first triangle
+            SurfaceVA[ivs++] = PtBotLeft.at(l).xf();
+            SurfaceVA[ivs++] = PtBotLeft.at(l).yf();
+            SurfaceVA[ivs++] = PtBotLeft.at(l).zf();
+            SurfaceVA[ivs++] = NormalA.at(l).xf();
+            SurfaceVA[ivs++] = NormalA.at(l).yf();
+            SurfaceVA[ivs++] = NormalA.at(l).zf();
+            SurfaceVA[ivs++] = leftU;
+            SurfaceVA[ivs++] = leftV.at(l);
+
+            SurfaceVA[ivs++] = PtBotRight.at(l).xf();
+            SurfaceVA[ivs++] = PtBotRight.at(l).yf();
+            SurfaceVA[ivs++] = PtBotRight.at(l).zf();
+            SurfaceVA[ivs++] = NormalB.at(l).xf();
+            SurfaceVA[ivs++] = NormalA.at(l).yf();
+            SurfaceVA[ivs++] = NormalB.at(l).zf();
+            SurfaceVA[ivs++] = rightU;
+            SurfaceVA[ivs++] = rightV.at(l);
+
+            SurfaceVA[ivs++] = PtBotLeft.at(l+1).xf();
+            SurfaceVA[ivs++] = PtBotLeft.at(l+1).yf();
+            SurfaceVA[ivs++] = PtBotLeft.at(l+1).zf();
+            SurfaceVA[ivs++] = NormalA.at(l+1).xf();
+            SurfaceVA[ivs++] = NormalA.at(l+1).yf();
+            SurfaceVA[ivs++] = NormalA.at(l+1).zf();
+            SurfaceVA[ivs++] = leftU;
+            SurfaceVA[ivs++] = leftV.at(l+1);
+
+            // second triangle
+            SurfaceVA[ivs++] = PtBotLeft.at(l+1).xf();
+            SurfaceVA[ivs++] = PtBotLeft.at(l+1).yf();
+            SurfaceVA[ivs++] = PtBotLeft.at(l+1).zf();
+            SurfaceVA[ivs++] = NormalA.at(l+1).xf();
+            SurfaceVA[ivs++] = NormalA.at(l+1).yf();
+            SurfaceVA[ivs++] = NormalA.at(l+1).zf();
+            SurfaceVA[ivs++] = leftU;
+            SurfaceVA[ivs++] = leftV.at(l+1);
+
+            SurfaceVA[ivs++] = PtBotRight.at(l).xf();
+            SurfaceVA[ivs++] = PtBotRight.at(l).yf();
+            SurfaceVA[ivs++] = PtBotRight.at(l).zf();
+            SurfaceVA[ivs++] = NormalB.at(l).xf();
+            SurfaceVA[ivs++] = NormalA.at(l).yf();
+            SurfaceVA[ivs++] = NormalB.at(l).zf();
+            SurfaceVA[ivs++] = rightU;
+            SurfaceVA[ivs++] = rightV.at(l);
+
+            SurfaceVA[ivs++] = PtBotRight.at(l+1).xf();
+            SurfaceVA[ivs++] = PtBotRight.at(l+1).yf();
+            SurfaceVA[ivs++] = PtBotRight.at(l+1).zf();
+            SurfaceVA[ivs++] = NormalB.at(l+1).xf();
+            SurfaceVA[ivs++] = NormalB.at(l+1).yf();
+            SurfaceVA[ivs++] = NormalB.at(l+1).zf();
+            SurfaceVA[ivs++] = rightU;
+            SurfaceVA[ivs++] = rightV.at(l+1);
+        }
+
+        if(pSurf->isTipLeft())
+        {
+            for(int l=0; l<CHORDPOINTS-1; l++)
+            {
+                // first triangle
+                SurfaceVA[ivs++] = PtBotLeft.at(l).xf();
+                SurfaceVA[ivs++] = PtBotLeft.at(l).yf();
+                SurfaceVA[ivs++] = PtBotLeft.at(l).zf();
+                SurfaceVA[ivs++] = NormalA.at(l).xf();
+                SurfaceVA[ivs++] = NormalA.at(l).yf();
+                SurfaceVA[ivs++] = NormalA.at(l).zf();
+                SurfaceVA[ivs++] = leftU;
+                SurfaceVA[ivs++] = leftV.at(l);
+
+                SurfaceVA[ivs++] = PtBotLeft.at(l+1).xf();
+                SurfaceVA[ivs++] = PtBotLeft.at(l+1).yf();
+                SurfaceVA[ivs++] = PtBotLeft.at(l+1).zf();
+                SurfaceVA[ivs++] = NormalA.at(l).xf();
+                SurfaceVA[ivs++] = NormalA.at(l).yf();
+                SurfaceVA[ivs++] = NormalA.at(l).zf();
+                SurfaceVA[ivs++] = leftU;
+                SurfaceVA[ivs++] = leftV.at(l);
+
+                SurfaceVA[ivs++] = PtTopLeft.at(l).xf();
+                SurfaceVA[ivs++] = PtTopLeft.at(l).yf();
+                SurfaceVA[ivs++] = PtTopLeft.at(l).zf();
+                SurfaceVA[ivs++] = -NormalA.at(l).xf();
+                SurfaceVA[ivs++] = -NormalA.at(l).yf();
+                SurfaceVA[ivs++] = -NormalA.at(l).zf();
+                SurfaceVA[ivs++] = leftU;
+                SurfaceVA[ivs++] = leftV.at(l);
+
+                // second triangle
+                SurfaceVA[ivs++] = PtTopLeft.at(l).xf();
+                SurfaceVA[ivs++] = PtTopLeft.at(l).yf();
+                SurfaceVA[ivs++] = PtTopLeft.at(l).zf();
+                SurfaceVA[ivs++] = -NormalA.at(l).xf();
+                SurfaceVA[ivs++] = -NormalA.at(l).yf();
+                SurfaceVA[ivs++] = -NormalA.at(l).zf();
+                SurfaceVA[ivs++] = leftU;
+                SurfaceVA[ivs++] = leftV.at(l);
+
+                SurfaceVA[ivs++] = PtBotLeft.at(l+1).xf();
+                SurfaceVA[ivs++] = PtBotLeft.at(l+1).yf();
+                SurfaceVA[ivs++] = PtBotLeft.at(l+1).zf();
+                SurfaceVA[ivs++] = NormalA.at(l).xf();
+                SurfaceVA[ivs++] = NormalA.at(l).yf();
+                SurfaceVA[ivs++] = NormalA.at(l).zf();
+                SurfaceVA[ivs++] = leftU;
+                SurfaceVA[ivs++] = leftV.at(l);
+
+                SurfaceVA[ivs++] = PtTopLeft.at(l+1).xf();
+                SurfaceVA[ivs++] = PtTopLeft.at(l+1).yf();
+                SurfaceVA[ivs++] = PtTopLeft.at(l+1).zf();
+                SurfaceVA[ivs++] = -NormalA.at(l).xf();
+                SurfaceVA[ivs++] = -NormalA.at(l).yf();
+                SurfaceVA[ivs++] = -NormalA.at(l).zf();
+                SurfaceVA[ivs++] = leftU;
+                SurfaceVA[ivs++] = leftV.at(l);
+            }
+        }
+
+        if(pSurf->isTipRight())
+        {
+            for(int l=0; l<CHORDPOINTS-1; l++)
+            {
+                // first triangle
+                SurfaceVA[ivs++] = PtBotRight.at(l).xf();
+                SurfaceVA[ivs++] = PtBotRight.at(l).yf();
+                SurfaceVA[ivs++] = PtBotRight.at(l).zf();
+                SurfaceVA[ivs++] = NormalB.at(l).xf();
+                SurfaceVA[ivs++] = NormalB.at(l).yf();
+                SurfaceVA[ivs++] = NormalB.at(l).zf();
+                SurfaceVA[ivs++] = rightU;
+                SurfaceVA[ivs++] = rightV.at(l);
+
+                SurfaceVA[ivs++] = PtTopRight.at(l).xf();
+                SurfaceVA[ivs++] = PtTopRight.at(l).yf();
+                SurfaceVA[ivs++] = PtTopRight.at(l).zf();
+                SurfaceVA[ivs++] = -NormalB.at(l).xf();
+                SurfaceVA[ivs++] = -NormalB.at(l).yf();
+                SurfaceVA[ivs++] = -NormalB.at(l).zf();
+                SurfaceVA[ivs++] = rightU;
+                SurfaceVA[ivs++] = rightV.at(l);
+
+                SurfaceVA[ivs++] = PtBotRight.at(l+1).xf();
+                SurfaceVA[ivs++] = PtBotRight.at(l+1).yf();
+                SurfaceVA[ivs++] = PtBotRight.at(l+1).zf();
+                SurfaceVA[ivs++] = NormalB.at(l).xf();
+                SurfaceVA[ivs++] = NormalB.at(l).yf();
+                SurfaceVA[ivs++] = NormalB.at(l).zf();
+                SurfaceVA[ivs++] = rightU;
+                SurfaceVA[ivs++] = rightV.at(l);
+
+                // second triangle
+                SurfaceVA[ivs++] = PtTopRight.at(l).xf();
+                SurfaceVA[ivs++] = PtTopRight.at(l).yf();
+                SurfaceVA[ivs++] = PtTopRight.at(l).zf();
+                SurfaceVA[ivs++] = -NormalB.at(l).xf();
+                SurfaceVA[ivs++] = -NormalB.at(l).yf();
+                SurfaceVA[ivs++] = -NormalB.at(l).zf();
+                SurfaceVA[ivs++] = rightU;
+                SurfaceVA[ivs++] = rightV.at(l);
+
+                SurfaceVA[ivs++] = PtTopRight.at(l+1).xf();
+                SurfaceVA[ivs++] = PtTopRight.at(l+1).yf();
+                SurfaceVA[ivs++] = PtTopRight.at(l+1).zf();
+                SurfaceVA[ivs++] = -NormalB.at(l).xf();
+                SurfaceVA[ivs++] = -NormalB.at(l).yf();
+                SurfaceVA[ivs++] = -NormalB.at(l).zf();
+                SurfaceVA[ivs++] = rightU;
+                SurfaceVA[ivs++] = rightV.at(l);
+
+                SurfaceVA[ivs++] = PtBotRight.at(l+1).xf();
+                SurfaceVA[ivs++] = PtBotRight.at(l+1).yf();
+                SurfaceVA[ivs++] = PtBotRight.at(l+1).zf();
+                SurfaceVA[ivs++] = NormalB.at(l).xf();
+                SurfaceVA[ivs++] = NormalB.at(l).yf();
+                SurfaceVA[ivs++] = NormalB.at(l).zf();
+                SurfaceVA[ivs++] = rightU;
+                SurfaceVA[ivs++] = rightV.at(l);
+            }
+        }
+
+    }
+    Q_ASSERT(ivs==buffersize);
+
+    vboSurf.destroy();
+    vboSurf.create();
+    vboSurf.bind();
+    vboSurf.allocate(SurfaceVA.data(), SurfaceVA.size() * int(sizeof(GLfloat)));
+    vboSurf.release();
+}
 
 

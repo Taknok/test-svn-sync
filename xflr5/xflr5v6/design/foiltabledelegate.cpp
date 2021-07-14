@@ -25,7 +25,7 @@
 #include <design/afoil.h>
 #include <gui_objects/splinefoil.h>
 #include <xflobjects/objects2d/foil.h>
-#include <xdirect/objects2d.h>
+#include <xflobjects/objects2d/objects2d.h>
 #include <xflcore/xflcore.h>
 #include <xflcore/displayoptions.h>
 

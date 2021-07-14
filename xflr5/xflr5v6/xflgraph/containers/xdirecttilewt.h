@@ -1,7 +1,7 @@
 /****************************************************************************
 
     XDirectTileWidget Class
-        Copyright (C) 2015 André Deperrois
+        Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef XDIRECTTILEWIDGET_H
-#define XDIRECTTILEWIDGET_H
+#pragma once
 
 
 #include <QGridLayout>
@@ -28,33 +27,32 @@
 #include "graphtilewt.h"
 
 
-class OpPointWidget;
+class OpPointWt;
 
 class XDirectTileWidget : public GraphTileWidget
 {
     Q_OBJECT
 
-public:
-    XDirectTileWidget(QWidget *pParent = nullptr);
-    ~XDirectTileWidget();
+    public:
+        XDirectTileWidget(QWidget *pParent = nullptr);
+        ~XDirectTileWidget();
 
-public:
-    void connectSignals();
-    void adjustLayout();
-    void setGraphList(QVector<Graph *> pGraphList, int nGraphs, int iGraphWidget, Qt::Orientation orientation =Qt::Horizontal);
+    public:
+        void connectSignals() override;
+        void adjustLayout() override;
+        void setGraphList(QVector<Graph *> pGraphList, int nGraphs, int iGraphWidget, Qt::Orientation orientation =Qt::Horizontal) override;
 
-    OpPointWidget *opPointWidget() {return m_pOpPointWidget;}
+        OpPointWt *opPointWidget() {return m_pOpPointWidget;}
 
-public slots:
-    void onResetCurGraphScales();
+    public slots:
+        void onResetCurGraphScales();
 
-private:
-    void setupMainLayout();
+    private:
+        void setupMainLayout() override;
 
-    //    QStackedWidget *m_pLegendStack;
-    OpPointWidget *m_pOpPointWidget;
+        //    QStackedWidget *m_pLegendStack;
+        OpPointWt *m_pOpPointWidget;
 
-    QGridLayout *m_pMainGridLayout;
+        QGridLayout *m_pMainGridLayout;
 };
 
-#endif // XDIRECTTILEWIDGET_H

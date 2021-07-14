@@ -27,8 +27,7 @@
 #include <QPushButton>
 
 #include "w3dprefs.h"
-#include <xflwidgets/line/linepickerdlg.h>
-
+#include <xflwidgets/line/linemenu.h>
 #include <xflwidgets/line/linebtn.h>
 #include <xflwidgets/color/colorbtn.h>
 #include <xflwidgets/customwts/intedit.h>
@@ -57,7 +56,7 @@ LineStyle W3dPrefs::s_VDragStyle     = {true, Line::SOLID,   1, QColor(200,100,2
 LineStyle W3dPrefs::s_TopStyle       = {true, Line::SOLID,   1, QColor(171, 103, 220),   Line::NOSYMBOL};
 LineStyle W3dPrefs::s_BotStyle       = {true, Line::DASH,    1, QColor(171, 103, 220),   Line::NOSYMBOL};
 
-int W3dPrefs::s_iChordwiseRes = 73;
+int W3dPrefs::s_iChordwiseRes = 31;
 int W3dPrefs::s_iBodyAxialRes = 23;
 int W3dPrefs::s_iBodyHoopRes  = 17;
 bool W3dPrefs::s_bAnimateTransitions = true;
@@ -247,194 +246,163 @@ void W3dPrefs::setupLayout()
     m_pchAutoAdjustScale->setToolTip(tr("Automatically adjust the 3D scale to fit the plane in the display when switching between planes"));
     m_pchEnableClipPlane = new QCheckBox(tr("Enable clip plane"));
 
-    QHBoxLayout *pCommandButtons = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Close | QDialogButtonBox::RestoreDefaults);
     {
-        QPushButton *pOKButton = new QPushButton(tr("Close"));
-        pOKButton->setDefault(true);
-        QPushButton *pResetButton = new QPushButton(tr("Reset Defaults"));
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(pResetButton);
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(pOKButton);
-        pCommandButtons->addStretch(1);
-        connect(pResetButton, SIGNAL(clicked()), SLOT(onResetDefaults()));
-        connect(pOKButton,    SIGNAL(clicked()), SLOT(onOK()));
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
+
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        pMainLayout->addStretch(1);
         pMainLayout->addWidget(pColorPrefsBox);
-        pMainLayout->addStretch(1);
         pMainLayout->addWidget(pTessBox);
-        pMainLayout->addStretch(1);
         pMainLayout->addWidget(m_pchAnimateTransitions);
-        pMainLayout->addStretch(1);
         pMainLayout->addWidget(m_pchAutoAdjustScale);
-        pMainLayout->addStretch(1);
         pMainLayout->addWidget(m_pchEnableClipPlane);
-        pMainLayout->addSpacing(20);
-        pMainLayout->addLayout(pCommandButtons);
-        pMainLayout->addStretch(1);
+        pMainLayout->addWidget(m_pButtonBox);
     }
     setLayout(pMainLayout);
 }
 
 
+void W3dPrefs::onButton(QAbstractButton *pButton)
+{
+    if      (m_pButtonBox->button(QDialogButtonBox::Close)           == pButton)  onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::RestoreDefaults) == pButton)  onRestoreDefaults();
+}
+
+
 void W3dPrefs::onOutline()
 {
-    LinePickerDlg LPdlg(this);
-    LPdlg.setTheStyle(s_OutlineStyle);
-    LPdlg.initDialog(false);
-    if (QDialog::Accepted == LPdlg.exec())
-    {
-        s_OutlineStyle = LPdlg.theStyle();
-        m_plbOutline->setTheStyle(s_OutlineStyle);
-    }
+    LineMenu lm(nullptr, false);
+    //	lm.enableSubMenus(true, true, true, false);
+    lm.initMenu(s_OutlineStyle);
+    lm.exec(QCursor::pos());
+
+    s_OutlineStyle = lm.theStyle();
+    m_plbOutline->setTheStyle(s_OutlineStyle);
 }
+
 
 void W3dPrefs::on3DAxis()
 {
-    LinePickerDlg LPdlg(this);
-    LPdlg.setTheStyle(s_AxisStyle);
-    LPdlg.initDialog(false);
+    LineMenu lm(nullptr, false);
+    //	lm.enableSubMenus(true, true, true, false);
+    lm.initMenu(s_AxisStyle);
+    lm.exec(QCursor::pos());
 
-    if (QDialog::Accepted == LPdlg.exec())
-    {
-        s_AxisStyle = LPdlg.theStyle();
-        m_plbAxis->setTheStyle(s_AxisStyle);
-    }
+    s_AxisStyle = lm.theStyle();
+    m_plbAxis->setTheStyle(s_AxisStyle);
 }
+
 
 void W3dPrefs::onTopTrans()
 {
-    LinePickerDlg LPdlg(this);
-    LPdlg.setTheStyle(s_TopStyle);
-    LPdlg.initDialog(false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(s_TopStyle);
+    lm.exec(QCursor::pos());
 
-    if (QDialog::Accepted == LPdlg.exec())
-    {
-        s_TopStyle = LPdlg.theStyle();
-        m_plbTopTrans->setTheStyle(s_TopStyle);
-    }
+    s_TopStyle = lm.theStyle();
+    m_plbTopTrans->setTheStyle(s_TopStyle);
 }
+
 
 void W3dPrefs::onBotTrans()
 {
-    LinePickerDlg LPdlg(this);
-    LPdlg.setTheStyle(s_BotStyle);
-    LPdlg.initDialog(false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(s_BotStyle);
+    lm.exec(QCursor::pos());
 
-    if (QDialog::Accepted == LPdlg.exec())
-    {
-        s_BotStyle = LPdlg.theStyle();
-        m_plbBotTrans->setTheStyle(s_BotStyle);
-    }
+    s_BotStyle = lm.theStyle();
+    m_plbBotTrans->setTheStyle(s_BotStyle);
 }
+
 
 void W3dPrefs::onIDrag()
 {
-    LinePickerDlg LPdlg(this);
-    LPdlg.setTheStyle(s_IDragStyle);
-    LPdlg.initDialog(false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(s_IDragStyle);
+    lm.exec(QCursor::pos());
 
-    if (QDialog::Accepted == LPdlg.exec())
-    {
-        s_IDragStyle = LPdlg.theStyle();
-        m_plbInducedDrag->setTheStyle(s_IDragStyle);
-    }
+    s_IDragStyle = lm.theStyle();
+    m_plbInducedDrag->setTheStyle(s_IDragStyle);
 }
+
 
 void W3dPrefs::onVDrag()
 {
-    LinePickerDlg LPdlg(this);
-    LPdlg.setTheStyle(s_VDragStyle);
-    LPdlg.initDialog(false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(s_VDragStyle);
+    lm.exec(QCursor::pos());
 
-    if (QDialog::Accepted == LPdlg.exec())
-    {
-        s_VDragStyle = LPdlg.theStyle();
-        m_plbViscousDrag->setTheStyle(s_VDragStyle);
-    }
+    s_VDragStyle = lm.theStyle();
+    m_plbViscousDrag->setTheStyle(s_VDragStyle);
 }
+
 
 void W3dPrefs::onXCP()
 {
-    LinePickerDlg LPdlg(this);
-    LPdlg.setTheStyle(s_XCPStyle);
-    LPdlg.initDialog(false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(s_XCPStyle);
+    lm.exec(QCursor::pos());
 
-    if (QDialog::Accepted == LPdlg.exec())
-    {
-        s_XCPStyle = LPdlg.theStyle();
-        m_plbLift->setTheStyle(s_XCPStyle);
-    }
+    s_XCPStyle = lm.theStyle();
+    m_plbLift->setTheStyle(s_XCPStyle);
 }
+
 
 void W3dPrefs::onMoments()
 {
-    LinePickerDlg LPdlg(this);
-    LPdlg.setTheStyle(s_MomentStyle);
-    LPdlg.initDialog(false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(s_MomentStyle);
+    lm.exec(QCursor::pos());
 
-    if (QDialog::Accepted == LPdlg.exec())
-    {
-        s_MomentStyle = LPdlg.theStyle();
-        m_plbMoments->setTheStyle(s_MomentStyle);
-    }
+    s_MomentStyle = lm.theStyle();
+    m_plbMoments->setTheStyle(s_MomentStyle);
 }
+
 
 void W3dPrefs::onDownwash()
 {
-    LinePickerDlg LPdlg(this);
-    LPdlg.setTheStyle(s_DownwashStyle);
-    LPdlg.initDialog(false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(s_DownwashStyle);
+    lm.exec(QCursor::pos());
 
-    if (QDialog::Accepted == LPdlg.exec())
-    {
-        s_DownwashStyle = LPdlg.theStyle();
-        m_plbDownwash->setTheStyle(s_DownwashStyle);
-    }
+    s_DownwashStyle = lm.theStyle();
+    m_plbDownwash->setTheStyle(s_DownwashStyle);
 }
+
 
 void W3dPrefs::onStreamLines()
 {
-    LinePickerDlg LPdlg(this);
-    LPdlg.setTheStyle(s_StreamStyle);
-    LPdlg.initDialog(false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(s_StreamStyle);
+    lm.exec(QCursor::pos());
 
-    if (QDialog::Accepted == LPdlg.exec())
-    {
-        s_StreamStyle = LPdlg.theStyle();
-        m_plbStreamLines->setTheStyle(s_StreamStyle);
-    }
+    s_StreamStyle = lm.theStyle();
+    m_plbStreamLines->setTheStyle(s_StreamStyle);
 }
+
 
 void W3dPrefs::onWakePanels()
 {
-    LinePickerDlg LPdlg(this);
-    LPdlg.setTheStyle(s_WakeStyle);
-    LPdlg.initDialog(false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(s_WakeStyle);
+    lm.exec(QCursor::pos());
 
-    if (QDialog::Accepted == LPdlg.exec())
-    {
-        s_WakeStyle = LPdlg.theStyle();
-        m_plbWakePanels->setTheStyle(s_WakeStyle);
-    }
+    s_WakeStyle = lm.theStyle();
+    m_plbWakePanels->setTheStyle(s_WakeStyle);
 }
+
 
 void W3dPrefs::onVLMMesh()
 {
-    LinePickerDlg LPdlg(this);
-    LPdlg.setTheStyle(s_VLMStyle);
-    LPdlg.initDialog(false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(s_VLMStyle);
+    lm.exec(QCursor::pos());
 
-    if (QDialog::Accepted == LPdlg.exec())
-    {
-        s_VLMStyle = LPdlg.theStyle();
-        m_plbVLMMesh->setTheStyle(s_VLMStyle);
-    }
-    repaint();
+    s_VLMStyle = lm.theStyle();
+    m_plbVLMMesh->setTheStyle(s_VLMStyle);
 }
 
 
@@ -457,7 +425,7 @@ void W3dPrefs::onMasses()
 
 void W3dPrefs::saveSettings(QSettings &settings)
 {
-    settings.beginGroup("3dPrefs_2");
+    settings.beginGroup("W3dPrefs");
     {
         s_AxisStyle.loadSettings(  settings, "3DAxisStyle");
         s_VLMStyle.saveSettings(     settings, "VLMStyle");
@@ -494,9 +462,9 @@ void W3dPrefs::saveSettings(QSettings &settings)
 void W3dPrefs::loadSettings(QSettings &settings)
 {
     resetDefaults();
-    settings.beginGroup("3dPrefs_2");
+    settings.beginGroup("W3dPrefs");
     {
-        s_AxisStyle.loadSettings(  settings, "3DAxisStyle");
+        s_AxisStyle.loadSettings(    settings, "3DAxisStyle");
         s_VLMStyle.loadSettings(     settings, "VLMStyle");
         s_OutlineStyle .loadSettings(settings, "OutlineStyle");
         s_XCPStyle.loadSettings(     settings, "XCPStyle");
@@ -510,21 +478,21 @@ void W3dPrefs::loadSettings(QSettings &settings)
         s_BotStyle.loadSettings(     settings, "BotStyle");
         s_StreamStyle.loadSettings(  settings, "StreamLinesStyle");
 
-        s_MassColor = settings.value("MassColor", QColor(67, 151, 169)).value<QColor>();
-        s_bWakePanels = settings.value("showWakePanels", true).toBool();
-        s_bEnableClipPlane = settings.value("EnableClipPlane", false).toBool();
+        s_MassColor           = settings.value("MassColor",           s_MassColor).value<QColor>();
+        s_bWakePanels         = settings.value("showWakePanels",      s_bWakePanels).toBool();
+        s_bEnableClipPlane    = settings.value("EnableClipPlane",     s_bEnableClipPlane).toBool();
 
-        s_bAutoAdjustScale = settings.value("AutoAdjustScale", true).toBool();
-        s_bAnimateTransitions = settings.value("AnimateTransitions", true).toBool();
-        s_iChordwiseRes = settings.value("ChordwiseResolution", 50).toInt();
-        s_iBodyAxialRes = settings.value("BodyAxialRes", 23).toInt();
-        s_iBodyHoopRes = settings.value("BodyHoopRes", 17).toInt();
+        s_bAutoAdjustScale    = settings.value("AutoAdjustScale",     s_bAutoAdjustScale).toBool();
+        s_bAnimateTransitions = settings.value("AnimateTransitions",  s_bAnimateTransitions).toBool();
+        s_iChordwiseRes       = settings.value("ChordwiseResolution", s_iChordwiseRes).toInt();
+        s_iBodyAxialRes       = settings.value("BodyAxialRes",        s_iBodyAxialRes).toInt();
+        s_iBodyHoopRes        = settings.value("BodyHoopRes",         s_iBodyHoopRes).toInt();
     }
     settings.endGroup();
 }
 
 
-void W3dPrefs::onResetDefaults()
+void W3dPrefs::onRestoreDefaults()
 {
     resetDefaults();
     initDialog();
@@ -538,9 +506,9 @@ void W3dPrefs::resetDefaults()
     s_MassColor = QColor(67, 151, 169);
 
     s_bAnimateTransitions = false;
-    s_iChordwiseRes=29;
-    s_iBodyAxialRes=23;
-    s_iBodyHoopRes = 17;
+    s_iChordwiseRes = 31;
+    s_iBodyAxialRes = 23;
+    s_iBodyHoopRes  = 17;
 }
 
 

@@ -22,7 +22,7 @@
 #pragma once
 
 #include <QVector>
-#include "section2dwt.h"
+#include <xflwidgets/view/section2dwt.h>
 
 class Foil;
 class SplineFoil;

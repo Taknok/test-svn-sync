@@ -43,14 +43,14 @@
 #include <miarex/analysis/panelanalysisdlg.h>
 #include <miarex/analysis/stabpolardlg.h>
 #include <miarex/analysis/wpolardlg.h>
-#include <miarex/design/bodytransdlg.h>
-#include <miarex/design/editobjectdelegate.h>
-#include <miarex/design/gl3dbodydlg.h>
-#include <miarex/design/inertiadlg.h>
-#include <miarex/design/planedlg.h>
+#include <xflobjects/editors/bodytransdlg.h>
+#include <xflobjects/editors/editobjectdelegate.h>
+#include <xflobjects/editors/gl3dbodydlg.h>
+#include <xflobjects/editors/planedlg.h>
 #include <miarex/mgt/planetabledelegate.h>
 #include <miarex/miarex.h>
-#include <miarex/objects3d.h>
+#include <xflobjects/objects3d/objects3d.h>
+#include <miarex/planetreeview.h>
 #include <miarex/view/gl3dmiarexview.h>
 #include <miarex/view/gl3dscales.h>
 #include <miarex/view/stabviewdlg.h>
@@ -60,7 +60,7 @@
 #include <misc/options/preferencesdlg.h>
 #include <misc/options/saveoptions.h>
 #include <misc/options/settingswt.h>
-#include <misc/renamedlg.h>
+#include <xflobjects/editors/renamedlg.h>
 #include <twodwidgets/foildesignwt.h>
 #include <twodwidgets/inverseviewwt.h>
 #include <twodwidgets/wingwt.h>
@@ -78,7 +78,8 @@
 #include <xdirect/geometry/tegapdlg.h>
 #include <xdirect/geometry/twodpaneldlg.h>
 #include <xdirect/mgt/managefoilsdlg.h>
-#include <xdirect/objects2d.h>
+#include <xdirect/foiltreeview.h>
+#include <xflobjects/objects2d/objects2d.h>
 #include <xdirect/xdirect.h>
 #include <xfl3d/controls/w3dprefs.h>
 #include <xfl3d/glinfo/opengldlg.h>
@@ -94,6 +95,7 @@
 #include <xflgraph/containers/miarextilewt.h>
 #include <xflgraph/containers/xdirecttilewt.h>
 #include <xflgraph/controls/graphdlg.h>
+#include <xflobjects/editors/inertiadlg.h>
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects2d/polar.h>
 #include <xflobjects/objects3d/plane.h>
@@ -103,7 +105,6 @@
 #include <xflscript/xflscriptexec.h>
 #include <xflscript/xflscriptreader.h>
 #include <xflwidgets/color/colorpicker.h>
-#include <xflwidgets/customdlg/objectpropsdlg.h>
 #include <xflwidgets/customwts/plaintextoutput.h>
 #include <xflwidgets/customwts/popup.h>
 #include <xflwidgets/line/legendbtn.h>
@@ -155,6 +156,8 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     DisplayOptions::tableFont().setFamily(DisplayOptions::tableFont().defaultFamily());
     DisplayOptions::tableFont().setPointSize(8);*/
 
+    m_pdwMiarex = nullptr;
+    m_pdwPlaneTreeView = nullptr;
 
     setDefaultStaticFonts();
 
@@ -258,10 +261,10 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     s_bSaved     = true;
 
     m_iApp = xfl::NOAPP;
-    m_pctrlAFoilToolBar->hide();
-    m_pctrlXDirectToolBar->hide();
-    m_pctrlXInverseToolBar->hide();
-    m_pctrlMiarexToolBar->hide();
+    m_ptbAFoil->hide();
+    m_ptbXDirect->hide();
+    m_ptbXInverse->hide();
+    m_ptbMiarex->hide();
     m_pdwStabView->hide();
 
     setMenus();
@@ -416,13 +419,15 @@ void MainFrame::closeEvent (QCloseEvent * pEvent)
 
 
     m_pdwXDirect->close();
+    m_pdwFoilTreeView->close();
     m_pdwMiarex->close();
+    m_pdwPlaneTreeView->close();
     m_pdwAFoil->close();
     m_pdwXInverse->close();
     m_pdw3DScales->close();
     m_pdwStabView->close();
     m_pGL3DScales->close();
-    m_pctrlCentralWidget->close();
+    m_pswCentralWidget->close();
     deleteProject(true);
 
     saveSettings();
@@ -546,6 +551,7 @@ void MainFrame::createActions()
     connect(m_pExitAct, SIGNAL(triggered()), this, SLOT(close()));
 
     m_pOpenGLAct = new QAction(tr("OpenGL settings"), this);
+    m_pOpenGLAct->setShortcut(QKeySequence(Qt::CTRL+Qt::ALT+Qt::Key_O));
     connect(m_pOpenGLAct, SIGNAL(triggered()), this, SLOT(onOpenGLInfo()));
 
     m_pAboutAct = new QAction(tr("About"), this);
@@ -866,22 +872,22 @@ void MainFrame::createAFoilMenus()
 
 void MainFrame::createAFoilToolbar()
 {
-    m_pctrlAFoilToolBar = addToolBar(tr("Foil 1"));
-    m_pctrlAFoilToolBar->addAction(m_pNewProjectAct);
-    m_pctrlAFoilToolBar->addAction(m_pOpenAct);
-    m_pctrlAFoilToolBar->addAction(m_pSaveAct);
-    m_pctrlAFoilToolBar->addSeparator();
-    m_pctrlAFoilToolBar->addAction(m_pZoomInAct);
-    m_pctrlAFoilToolBar->addAction(m_pZoomLessAct);
-    m_pctrlAFoilToolBar->addAction(m_pResetXYScaleAct);
-    m_pctrlAFoilToolBar->addAction(m_pResetXScaleAct);
-    m_pctrlAFoilToolBar->addAction(m_pZoomYAct);
-    m_pctrlAFoilToolBar->addSeparator();
-    m_pctrlAFoilToolBar->addAction(m_pUndoAFoilAct);
-    m_pctrlAFoilToolBar->addAction(m_pRedoAFoilAct);
+    m_ptbAFoil = addToolBar(tr("Foil 1"));
+    m_ptbAFoil->addAction(m_pNewProjectAct);
+    m_ptbAFoil->addAction(m_pOpenAct);
+    m_ptbAFoil->addAction(m_pSaveAct);
+    m_ptbAFoil->addSeparator();
+    m_ptbAFoil->addAction(m_pZoomInAct);
+    m_ptbAFoil->addAction(m_pZoomLessAct);
+    m_ptbAFoil->addAction(m_pResetXYScaleAct);
+    m_ptbAFoil->addAction(m_pResetXScaleAct);
+    m_ptbAFoil->addAction(m_pZoomYAct);
+    m_ptbAFoil->addSeparator();
+    m_ptbAFoil->addAction(m_pUndoAFoilAct);
+    m_ptbAFoil->addAction(m_pRedoAFoilAct);
 
-    m_pctrlAFoilToolBar->addSeparator();
-    m_pctrlAFoilToolBar->addAction(m_pStoreSplineAct);
+    m_ptbAFoil->addSeparator();
+    m_ptbAFoil->addAction(m_pStoreSplineAct);
 }
 
 
@@ -898,8 +904,6 @@ void MainFrame::createDockWindows()
     XInverse::s_pMainFrame        = this;
     Miarex::s_pMainFrame          = this;
     gl3dXflView::s_pMainFrame     = this;
-    OpPointWidget::s_pMainFrame   = this;
-
 
     m_pdwXDirect = new QDockWidget(tr("Direct foil analysis"), this);
     m_pdwXDirect->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
@@ -928,21 +932,36 @@ void MainFrame::createDockWindows()
     m_pXDirect->setObjectName("XDirect ???");
     m_pdwXDirect->setWidget(m_pXDirect);
     m_pdwXDirect->setVisible(false);
-    m_pdwXDirect->setFloating(true);
+    m_pdwXDirect->setFloating(false);
     m_pdwXDirect->move(960,60);
+
+    m_pXDirect->m_pFoilTreeView = new FoilTreeView;
+    FoilTreeView::setXDirect(m_pXDirect);
+    FoilTreeView::setMainFrame(this);
+    m_pdwFoilTreeView = new QDockWidget(tr("Object explorer"), this);
+    m_pdwFoilTreeView->setWidget(m_pXDirect->m_pFoilTreeView);
+    m_pdwFoilTreeView->setAllowedAreas(Qt::LeftDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, m_pdwFoilTreeView);
+    m_pdwFoilTreeView->setVisible(false);
 
     m_pXInverse = new XInverse(this);
     m_pdwXInverse->setWidget(m_pXInverse);
     m_pdwXInverse->setVisible(false);
-    m_pdwXInverse->setFloating(true);
+    m_pdwXInverse->setFloating(false);
     m_pdwXInverse->move(960,60);
 
     m_pMiarex = new Miarex;
     m_pdwMiarex->setWidget(m_pMiarex);
     m_pdwMiarex->setVisible(false);
-    m_pdwMiarex->setFloating(true);
+    m_pdwMiarex->setFloating(false);
     m_pdwMiarex->move(960,60);
 
+    m_pMiarex->m_pPlaneTreeView = new PlaneTreeView;
+    m_pdwPlaneTreeView = new QDockWidget(tr("Object explorer"), this);
+    m_pdwPlaneTreeView->setWidget(m_pMiarex->m_pPlaneTreeView);
+    m_pdwPlaneTreeView->setAllowedAreas(Qt::LeftDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, m_pdwPlaneTreeView);
+    m_pdwPlaneTreeView->setVisible(false);
 
     m_pGL3DScales = new GL3DScales(this);
     GL3DScales::s_pMiarex      = m_pMiarex;
@@ -966,15 +985,15 @@ void MainFrame::createDockWindows()
     m_pdwStabView->setFloating(true);
     m_pdwStabView->move(60,60);
 
-    m_pctrlCentralWidget = new QStackedWidget;
-    m_pctrlCentralWidget->addWidget(&m_VoidWidget);
-    m_pctrlCentralWidget->addWidget(m_p2dWidget);
-    m_pctrlCentralWidget->addWidget(m_pgl3dMiarexView);
-    m_pctrlCentralWidget->addWidget(m_pDirect2dWidget);
-    m_pctrlCentralWidget->addWidget(m_pXDirectTileWidget);
-    m_pctrlCentralWidget->addWidget(m_pMiarexTileWidget);
+    m_pswCentralWidget = new QStackedWidget;
+    m_pswCentralWidget->addWidget(&m_VoidWidget);
+    m_pswCentralWidget->addWidget(m_p2dWidget);
+    m_pswCentralWidget->addWidget(m_pgl3dMiarexView);
+    m_pswCentralWidget->addWidget(m_pDirect2dWidget);
+    m_pswCentralWidget->addWidget(m_pXDirectTileWidget);
+    m_pswCentralWidget->addWidget(m_pMiarexTileWidget);
 
-    setCentralWidget(m_pctrlCentralWidget);
+    setCentralWidget(m_pswCentralWidget);
     setMainFrameCentralWidget();
 
     m_pAFoil  = new AFoil(this);
@@ -993,6 +1012,8 @@ void MainFrame::createDockWindows()
     m_pXDirect->m_poaPolar = Objects2d::pOAPolar();
     m_pXDirect->m_poaOpp   = Objects2d::pOAOpp();
     m_pXDirect->m_pOpPointWidget = m_pXDirectTileWidget->opPointWidget();
+    OpPointWt::setMainFrame(this);
+    OpPointWt::setXDirect(m_pXDirect);
 
     m_pAFoil->initDialog(m_pDirect2dWidget, &m_pXDirect->m_XFoil);
 
@@ -1086,8 +1107,6 @@ void MainFrame::createMenus()
         m_pGraphMenu->addAction(m_pAllGraphsScalesAct);
         m_pGraphMenu->addSeparator();
         m_pGraphMenu->addAction(m_pHighlightOppAct);
-        m_pGraphMenu->addSeparator();
-        m_pGraphMenu->addAction(m_pShowMousePosAct);
     }
 
     m_pHelpMenu = menuBar()->addMenu(tr("?"));
@@ -1153,13 +1172,6 @@ void MainFrame::createGraphActions()
     m_pAllGraphsSettings->setStatusTip(tr("Define the settings of all graphs"));
     connect(m_pAllGraphsSettings, SIGNAL(triggered()), m_pXDirectTileWidget, SLOT(onAllGraphSettings()));
     connect(m_pAllGraphsSettings, SIGNAL(triggered()), m_pMiarexTileWidget, SLOT(onAllGraphSettings()));
-
-    m_pShowMousePosAct     = new QAction(tr("Display mouse coordinates"), this);
-    m_pShowMousePosAct->setCheckable(true);
-    m_pShowMousePosAct->setChecked(DisplayOptions::bMousePos());
-    m_pShowMousePosAct->setStatusTip(tr("Display the coordinates of the mouse on the top right corner of the graph"));
-    connect(m_pShowMousePosAct, SIGNAL(triggered()), this, SLOT(onShowMousePos()));
-
 }
 
 
@@ -1470,16 +1482,6 @@ void MainFrame::createMiarexActions()
     m_pAadvancedSettings->setStatusTip(tr("Define the settings for LLT, VLM and Panel analysis"));
     connect(m_pAadvancedSettings, SIGNAL(triggered()), m_pMiarex, SLOT(onAdvancedSettings()));
 
-    m_pShowPolarProps = new QAction(tr("Properties"), this);
-    m_pShowPolarProps->setStatusTip(tr("Show the properties of the currently selected polar"));
-    m_pShowPolarProps->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
-    connect(m_pShowPolarProps, SIGNAL(triggered()), m_pMiarex, SLOT(onWPolarProperties()));
-
-    m_pShowWOppProps = new QAction(tr("Properties"), this);
-    m_pShowWOppProps->setStatusTip(tr("Show the properties of the currently selected operating point"));
-    m_pShowWOppProps->setShortcut(QKeySequence(Qt::ALT + Qt::SHIFT + Qt::Key_Return));
-    connect(m_pShowWOppProps, SIGNAL(triggered()), m_pMiarex, SLOT(onPlaneOppProperties()));
-
     m_pExportPlaneToXML = new QAction(tr("Export to xml file"), this);
     connect(m_pExportPlaneToXML, SIGNAL(triggered()), m_pMiarex, SLOT(onExportPlanetoXML()));
 
@@ -1563,7 +1565,6 @@ void MainFrame::createMiarexMenus()
     {
         m_pCurWPlrMenu = m_pMiarexWPlrMenu->addMenu(tr("Current Polar"));
         {
-            m_pCurWPlrMenu->addAction(m_pShowPolarProps);
             m_pCurWPlrMenu->addAction(m_pEditWPolarAct);
             m_pCurWPlrMenu->addAction(m_pEditWPolarObjectAct);
             m_pCurWPlrMenu->addAction(m_pEditWPolarPts);
@@ -1595,7 +1596,6 @@ void MainFrame::createMiarexMenus()
     {
         m_pCurWOppMenu = m_pMiarexWOppMenu->addMenu(tr("Current OpPoint"));
         {
-            m_pCurWOppMenu->addAction(m_pShowWOppProps);
             m_pCurWOppMenu->addAction(m_pExportCurWOpp);
             m_pCurWOppMenu->addAction(m_pDeleteCurWOpp);
         }
@@ -1672,7 +1672,6 @@ void MainFrame::createMiarexMenus()
         m_pWOppCtxMenu->addSeparator();
         m_pCurWPlrMenu_WOppCtxMenu = m_pWOppCtxMenu->addMenu(tr("Current Polar"));
         {
-            m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pShowPolarProps);
             m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pEditWPolarAct);
             m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pEditWPolarObjectAct);
             m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pEditWPolarPts);
@@ -1693,7 +1692,6 @@ void MainFrame::createMiarexMenus()
         m_pWOppCtxMenu->addSeparator();
         m_pCurWOppMenu_WOppCtxMenu = m_pWOppCtxMenu->addMenu(tr("Current OpPoint"));
         {
-            m_pCurWOppMenu_WOppCtxMenu->addAction(m_pShowWOppProps);
             m_pCurWOppMenu_WOppCtxMenu->addAction(m_pExportCurWOpp);
             m_pCurWOppMenu_WOppCtxMenu->addAction(m_pDeleteCurWOpp);
         }
@@ -1717,8 +1715,6 @@ void MainFrame::createMiarexMenus()
             pCurGraphCtxMenu->addAction(m_pCurGraphDlgAct);
             pCurGraphCtxMenu->addAction(m_pExportCurGraphAct);
         }
-        m_pWOppCtxMenu->addAction(m_pShowMousePosAct);
-        m_pWOppCtxMenu->addSeparator();
         m_pWOppCtxMenu->addAction(m_pViewLogFile);
         m_pWOppCtxMenu->addAction(m_pSaveViewToImageFileAct);
     }
@@ -1769,7 +1765,6 @@ void MainFrame::createMiarexMenus()
         m_pWCpCtxMenu->addSeparator();
         m_pCurWPlrMenu_WCpCtxMenu = m_pWCpCtxMenu->addMenu(tr("Current Polar"));
         {
-            m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pShowPolarProps);
             m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pEditWPolarAct);
             m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pEditWPolarObjectAct);
             m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pEditWPolarPts);
@@ -1790,7 +1785,6 @@ void MainFrame::createMiarexMenus()
         m_pWCpCtxMenu->addSeparator();
         m_pCurWOppMenu_WCpCtxMenu = m_pWCpCtxMenu->addMenu(tr("Current OpPoint"));
         {
-            m_pCurWOppMenu_WCpCtxMenu->addAction(m_pShowWOppProps);
             m_pCurWOppMenu_WCpCtxMenu->addAction(m_pExportCurWOpp);
             m_pCurWOppMenu_WCpCtxMenu->addAction(m_pDeleteCurWOpp);
         }
@@ -1851,7 +1845,6 @@ void MainFrame::createMiarexMenus()
         m_pWTimeCtxMenu->addSeparator();
         m_pCurWPlrMenu_WTimeCtxMenu = m_pWTimeCtxMenu->addMenu(tr("Current Polar"));
         {
-            m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pShowPolarProps);
             m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pEditWPolarAct);
             m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pEditWPolarObjectAct);
             m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pEditWPolarPts);
@@ -1871,7 +1864,6 @@ void MainFrame::createMiarexMenus()
         m_pWTimeCtxMenu->addSeparator();
         m_pCurWOppMenu_WTimeCtxMenu = m_pWTimeCtxMenu->addMenu(tr("Current OpPoint"));
         {
-            m_pCurWOppMenu_WTimeCtxMenu->addAction(m_pShowWOppProps);
             m_pCurWOppMenu_WTimeCtxMenu->addAction(m_pExportCurWOpp);
             m_pCurWOppMenu_WTimeCtxMenu->addAction(m_pDeleteCurWOpp);
         }
@@ -1940,7 +1932,6 @@ void MainFrame::createMiarexMenus()
         m_pWPlrCtxMenu->addSeparator();
         m_pCurWPlrMenu_WPlrCtxMenu = m_pWPlrCtxMenu->addMenu(tr("Current Polar"));
         {
-            m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pShowPolarProps);
             m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pEditWPolarAct);
             m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pEditWPolarObjectAct);
             m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pEditWPolarPts);
@@ -1968,8 +1959,6 @@ void MainFrame::createMiarexMenus()
             pCurGraphCtxMenu->addAction(m_pExportCurGraphAct);
             pCurGraphCtxMenu->addAction(m_pHighlightOppAct);
         }
-        m_pWPlrCtxMenu->addAction(m_pShowMousePosAct);
-        m_pWPlrCtxMenu->addSeparator();
         m_pWPlrCtxMenu->addAction(m_pViewLogFile);
         m_pWPlrCtxMenu->addAction(m_pSaveViewToImageFileAct);
     }
@@ -2021,7 +2010,6 @@ void MainFrame::createMiarexMenus()
         m_pW3DCtxMenu->addSeparator();
         m_pCurWPlrMenu_W3DCtxMenu = m_pW3DCtxMenu->addMenu(tr("Current Polar"));
         {
-            m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pShowPolarProps);
             m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pEditWPolarAct);
             m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pEditWPolarObjectAct);
             m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pEditWPolarPts);
@@ -2042,7 +2030,6 @@ void MainFrame::createMiarexMenus()
         m_pW3DCtxMenu->addSeparator();
         m_pCurWOppMenu_W3DCtxMenu = m_pW3DCtxMenu->addMenu(tr("Current OpPoint"));
         {
-            m_pCurWOppMenu_W3DCtxMenu->addAction(m_pShowWOppProps);
             m_pCurWOppMenu_W3DCtxMenu->addAction(m_pExportCurWOpp);
             m_pCurWOppMenu_W3DCtxMenu->addAction(m_pDeleteCurWOpp);
         }
@@ -2105,7 +2092,6 @@ void MainFrame::createMiarexMenus()
         m_pW3DStabCtxMenu->addSeparator();
         m_pCurWPlrMenu_W3DStabCtxMenu = m_pW3DStabCtxMenu->addMenu(tr("Current Polar"));
         {
-            m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pShowPolarProps);
             m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pEditWPolarAct);
             m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pEditWPolarObjectAct);
             m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pEditWPolarPts);
@@ -2123,15 +2109,13 @@ void MainFrame::createMiarexMenus()
             m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pExportAnalysisToXML);
         }
 
-        //m_pW3DStabCtxMenu->addMenu(m_pCurWPlrMenu);
         m_pW3DStabCtxMenu->addSeparator();
         m_pCurWOppMenu_W3DStabCtxMenu = m_pW3DStabCtxMenu->addMenu(tr("Current OpPoint"));
         {
-            m_pCurWOppMenu_W3DStabCtxMenu->addAction(m_pShowWOppProps);
             m_pCurWOppMenu_W3DStabCtxMenu->addAction(m_pExportCurWOpp);
             m_pCurWOppMenu_W3DStabCtxMenu->addAction(m_pDeleteCurWOpp);
         }
-        //m_pW3DStabCtxMenu->addMenu(m_pCurWOppMenu);
+
         m_pW3DStabCtxMenu->addSeparator();
         m_pW3DStabCtxMenu->addAction(m_pReset3DScale);
         m_pW3DStabCtxMenu->addAction(m_pW3DScalesAct);
@@ -2146,48 +2130,16 @@ void MainFrame::createMiarexMenus()
 
 void MainFrame::createMiarexToolbar()
 {
-    m_pcbPlane  = new QComboBox();
-    QStyledItemDelegate *pPlaneDelegate = new QStyledItemDelegate(this);
-    m_pcbPlane->setItemDelegate(pPlaneDelegate); //necessary to support stylesheets
-    m_pcbPlanePolar = new QComboBox;
-    QStyledItemDelegate *pPPolarDelegate = new QStyledItemDelegate(this);
-    m_pcbPlanePolar->setItemDelegate(pPPolarDelegate); //necessary to support stylesheets
-    m_pcbPlaneOpp   = new QComboBox;
-    QStyledItemDelegate *pPOppDelegate = new QStyledItemDelegate(this);
-    m_pcbPlaneOpp->setItemDelegate(pPOppDelegate); //necessary to support stylesheets
-
-    m_pcbPlane->setFocusPolicy(Qt::NoFocus);// to override keypressevent and key_F4
-    m_pcbPlanePolar->setFocusPolicy(Qt::NoFocus);
-    m_pcbPlaneOpp->setFocusPolicy(Qt::NoFocus);
-
-
-    m_pcbPlane->setMinimumWidth(150);
-    m_pcbPlanePolar->setMinimumWidth(150);
-    m_pcbPlaneOpp->setMinimumWidth(80);
-    m_pcbPlane->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    m_pcbPlanePolar->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    m_pcbPlaneOpp->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    m_pcbPlane->setMaxVisibleItems(23);
-    m_pcbPlanePolar->setMaxVisibleItems(23);
-    m_pcbPlaneOpp->setMaxVisibleItems(23);
-
-    m_pctrlMiarexToolBar = addToolBar(tr("Plane"));
-    m_pctrlMiarexToolBar->addAction(m_pNewProjectAct);
-    m_pctrlMiarexToolBar->addAction(m_pOpenAct);
-    m_pctrlMiarexToolBar->addAction(m_pSaveAct);
-    m_pctrlMiarexToolBar->addSeparator();
+    m_ptbMiarex = addToolBar(tr("Plane"));
+    m_ptbMiarex->addAction(m_pNewProjectAct);
+    m_ptbMiarex->addAction(m_pOpenAct);
+    m_ptbMiarex->addAction(m_pSaveAct);
+    m_ptbMiarex->addSeparator();
 
     // all miarex view actions are in action group
-    m_pctrlMiarexToolBar->addActions(m_pMiarexViewActGroup->actions());
+    m_ptbMiarex->addActions(m_pMiarexViewActGroup->actions());
 
-    m_pctrlMiarexToolBar->addSeparator();
-    m_pctrlMiarexToolBar->addWidget(m_pcbPlane);
-    m_pctrlMiarexToolBar->addWidget(m_pcbPlanePolar);
-    m_pctrlMiarexToolBar->addWidget(m_pcbPlaneOpp);
-
-    connect(m_pcbPlane,      SIGNAL(activated(int)), this, SLOT(onSelChangePlane(int)));
-    connect(m_pcbPlanePolar, SIGNAL(activated(int)), this, SLOT(onSelChangeWPolar(int)));
-    connect(m_pcbPlaneOpp,   SIGNAL(activated(int)), this, SLOT(onSelChangePlaneOpp(int)));
+    m_ptbMiarex->addSeparator();
 }
 
 
@@ -2211,45 +2163,15 @@ void MainFrame::createToolbars()
 
 void MainFrame::createXDirectToolbar()
 {
-    m_pcbFoil    = new QComboBox;
-    m_pcbPolar   = new QComboBox;
-    m_pcbOpPoint = new QComboBox;
-
-    QStyledItemDelegate *pFoilDelegate = new QStyledItemDelegate(this);
-    m_pcbFoil->setItemDelegate(pFoilDelegate); //necessary to support stylesheets
-
-    QStyledItemDelegate *pPolarDelegate = new QStyledItemDelegate(this);
-    m_pcbPolar->setItemDelegate(pPolarDelegate); //necessary to support stylesheets
-
-    QStyledItemDelegate *pOppDelegate = new QStyledItemDelegate(this);
-    m_pcbOpPoint->setItemDelegate(pOppDelegate); //necessary to support stylesheets
-
-    m_pcbFoil->setMaxVisibleItems(23);
-    m_pcbPolar->setMaxVisibleItems(23);
-    m_pcbOpPoint->setMaxVisibleItems(23);
-    m_pcbFoil->setMinimumWidth(150);
-    m_pcbPolar->setMinimumWidth(150);
-    m_pcbOpPoint->setMinimumWidth(80);
-    m_pcbFoil->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    m_pcbPolar->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    m_pcbOpPoint->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-
-    m_pctrlXDirectToolBar = addToolBar(tr("Foil 2"));
-    m_pctrlXDirectToolBar->addAction(m_pNewProjectAct);
-    m_pctrlXDirectToolBar->addAction(m_pOpenAct);
-    m_pctrlXDirectToolBar->addAction(m_pSaveAct);
-    m_pctrlXDirectToolBar->addSeparator();
+    m_ptbXDirect = addToolBar(tr("Foil 2"));
+    m_ptbXDirect->addAction(m_pNewProjectAct);
+    m_ptbXDirect->addAction(m_pOpenAct);
+    m_ptbXDirect->addAction(m_pSaveAct);
+    m_ptbXDirect->addSeparator();
     // all XDirect view actions are in action group
-    m_pctrlXDirectToolBar->addActions(m_pXDirectViewActGroup->actions());
+    m_ptbXDirect->addActions(m_pXDirectViewActGroup->actions());
 
-    m_pctrlXDirectToolBar->addSeparator();
-    m_pctrlXDirectToolBar->addWidget(m_pcbFoil);
-    m_pctrlXDirectToolBar->addWidget(m_pcbPolar);
-    m_pctrlXDirectToolBar->addWidget(m_pcbOpPoint);
-
-    connect(m_pcbFoil,    SIGNAL(activated(int)), this, SLOT(onSelChangeFoil(int)));
-    connect(m_pcbPolar,   SIGNAL(activated(int)), this, SLOT(onSelChangePolar(int)));
-    connect(m_pcbOpPoint, SIGNAL(activated(int)), this, SLOT(onSelChangeOpp(int)));
+    m_ptbXDirect->addSeparator();
 }
 
 
@@ -2292,9 +2214,6 @@ void MainFrame::createXDirectActions()
 
     m_pDirectDuplicateCurFoil = new QAction(tr("Duplicate"), this);
     connect(m_pDirectDuplicateCurFoil, SIGNAL(triggered()), m_pXDirect, SLOT(onDuplicateFoil()));
-
-    m_pSetCurFoilStyle = new QAction(tr("Set Style"), this);
-    connect(m_pSetCurFoilStyle, SIGNAL(triggered()), this, SLOT(onCurFoilStyle()));
 
     m_pDeleteFoilPolars = new QAction(tr("Delete associated polars"), this);
     m_pDeleteFoilPolars->setStatusTip(tr("Delete all the polars associated to this foil"));
@@ -2417,13 +2336,7 @@ void MainFrame::createXDirectActions()
     connect(m_pExportCurOpp, SIGNAL(triggered()), m_pXDirect, SLOT(onExportCurOpp()));
 
     m_pDeleteCurOpp = new QAction(tr("Delete"), this);
-    connect(m_pDeleteCurOpp, SIGNAL(triggered()), m_pXDirect, SLOT(onDelCurOpp()));
-
-    m_pGetOppProps = new QAction(tr("Properties"), this);
-    connect(m_pGetOppProps, SIGNAL(triggered()), m_pXDirect, SLOT(onOpPointProps()));
-
-    m_pGetPolarProps = new QAction(tr("Properties"), this);
-    connect(m_pGetPolarProps, SIGNAL(triggered()), m_pXDirect, SLOT(onPolarProps()));
+    connect(m_pDeleteCurOpp, SIGNAL(triggered()), m_pXDirect, SLOT(onDeleteCurOpp()));
 
     m_pViewXFoilAdvanced = new QAction(tr("XFoil Advanced Settings"), this);
     m_pBatchAnalysisAct->setStatusTip(tr("Tip : you don't want to use that option..."));
@@ -2517,7 +2430,6 @@ void MainFrame::createXDirectMenus()
         m_pXDirectFoilMenu->addSeparator();
         m_pCurrentFoilMenu = m_pXDirectFoilMenu->addMenu(tr("Current Foil"));
         {
-            m_pCurrentFoilMenu->addAction(m_pSetCurFoilStyle);
             m_pCurrentFoilMenu->addSeparator();
             m_pCurrentFoilMenu->addAction(m_pExportCurFoil);
             m_pCurrentFoilMenu->addAction(m_pRenameCurFoil);
@@ -2577,7 +2489,6 @@ void MainFrame::createXDirectMenus()
     {
         m_pCurrentPolarMenu = m_pPolarMenu->addMenu(tr("Current Polar"));
         {
-            m_pCurrentPolarMenu->addAction(m_pGetPolarProps);
             m_pCurrentPolarMenu->addAction(m_pEditCurPolar);
             m_pCurrentPolarMenu->addAction(m_pResetCurPolar);
             m_pCurrentPolarMenu->addAction(m_pDeletePolar);
@@ -2614,7 +2525,6 @@ void MainFrame::createXDirectMenus()
             m_pCurrentOppMenu->addAction(m_pExportCurOpp);
             m_pCurrentOppMenu->addAction(m_pExportBLData);
             m_pCurrentOppMenu->addAction(m_pDeleteCurOpp);
-            m_pCurrentOppMenu->addAction(m_pGetOppProps);
         }
         m_pOpPointMenu->addSeparator();
         m_pXDirectCpGraphMenu = m_pOpPointMenu->addMenu(tr("Cp Graph"));
@@ -2628,7 +2538,6 @@ void MainFrame::createXDirectMenus()
             m_pXDirectCpGraphMenu->addAction(m_pExportBLData);
             m_pXDirectCpGraphMenu->addAction(m_pExportCurGraphAct);
         }
-        m_pOpPointMenu->addAction(m_pShowMousePosAct);
         m_pOpPointMenu->addSeparator();
         m_pOpPointMenu->addAction(m_pShowCurOppOnly);
         m_pOpPointMenu->addAction(m_pHideAllOpPoints);
@@ -2640,7 +2549,6 @@ void MainFrame::createXDirectMenus()
     {
         m_pCurrentFoilMenu_OperFoilCtxMenu = m_pOperFoilCtxMenu->addMenu(tr("Current Foil"));
         {
-            m_pCurrentFoilMenu_OperFoilCtxMenu->addAction(m_pSetCurFoilStyle);
             m_pCurrentFoilMenu_OperFoilCtxMenu->addSeparator();
             m_pCurrentFoilMenu_OperFoilCtxMenu->addAction(m_pExportCurFoil);
             m_pCurrentFoilMenu_OperFoilCtxMenu->addAction(m_pRenameCurFoil);
@@ -2662,7 +2570,6 @@ void MainFrame::createXDirectMenus()
         m_pOperFoilCtxMenu->addSeparator();//_______________
         m_pCurrentPolarMenu_OperFoilCtxMenu = m_pOperFoilCtxMenu->addMenu(tr("Current Polar"));
         {
-            m_pCurrentPolarMenu_OperFoilCtxMenu->addAction(m_pGetPolarProps);
             m_pCurrentPolarMenu_OperFoilCtxMenu->addAction(m_pEditCurPolar);
             m_pCurrentPolarMenu_OperFoilCtxMenu->addAction(m_pResetCurPolar);
             m_pCurrentPolarMenu_OperFoilCtxMenu->addAction(m_pDeletePolar);
@@ -2701,9 +2608,7 @@ void MainFrame::createXDirectMenus()
             m_pCurOppCtxMenu->addAction(m_pExportCurOpp);
             m_pCurOppCtxMenu->addAction(m_pExportBLData);
             m_pCurOppCtxMenu->addAction(m_pDeleteCurOpp);
-            m_pCurOppCtxMenu->addAction(m_pGetOppProps);
         }
-        m_pOperFoilCtxMenu->addAction(m_pShowMousePosAct);
 
         m_pOperFoilCtxMenu->addSeparator();//_______________
         //    CurGraphCtxMenu = OperFoilCtxMenu->addMenu(tr("Cp graph"));
@@ -2746,7 +2651,6 @@ void MainFrame::createXDirectMenus()
     {
         m_pCurrentFoilMenu_OperPolarCtxMenu = m_pOperPolarCtxMenu->addMenu(tr("Current Foil"));
         {
-            m_pCurrentFoilMenu_OperPolarCtxMenu->addAction(m_pSetCurFoilStyle);
             m_pCurrentFoilMenu_OperPolarCtxMenu->addSeparator();
             m_pCurrentFoilMenu_OperPolarCtxMenu->addAction(m_pExportCurFoil);
             m_pCurrentFoilMenu_OperPolarCtxMenu->addAction(m_pRenameCurFoil);
@@ -2768,7 +2672,6 @@ void MainFrame::createXDirectMenus()
         //m_pOperPolarCtxMenu->addMenu(m_pCurrentFoilMenu);
         m_pCurrentPolarMenu_OperPolarCtxMenu = m_pOperPolarCtxMenu->addMenu(tr("Current Polar"));
         {
-            m_pCurrentPolarMenu_OperPolarCtxMenu->addAction(m_pGetPolarProps);
             m_pCurrentPolarMenu_OperPolarCtxMenu->addAction(m_pEditCurPolar);
             m_pCurrentPolarMenu_OperPolarCtxMenu->addAction(m_pResetCurPolar);
             m_pCurrentPolarMenu_OperPolarCtxMenu->addAction(m_pDeletePolar);
@@ -2792,7 +2695,6 @@ void MainFrame::createXDirectMenus()
         }
         m_pOperPolarCtxMenu->addAction(m_pAllGraphsSettings);
         m_pOperPolarCtxMenu->addAction(m_pAllGraphsScalesAct);
-        m_pOperPolarCtxMenu->addAction(m_pShowMousePosAct);
         m_pOperPolarCtxMenu->addSeparator();//_______________
         m_pOperPolarCtxMenu->addAction(m_pDefinePolarAct);
         m_pOperPolarCtxMenu->addAction(m_pBatchAnalysisAct);
@@ -2912,7 +2814,6 @@ void MainFrame::createXInverseMenus()
         m_pInverseContextMenu->addSeparator();
         m_pInverseContextMenu->addAction(m_pCurGraphDlgAct);
         m_pInverseContextMenu->addAction(m_pResetCurGraphScales);
-        m_pInverseContextMenu->addAction(m_pShowMousePosAct);
         m_pInverseContextMenu->addSeparator();
         m_pInverseContextMenu->addAction(m_pInverseInsertCtrlPt);
         m_pInverseContextMenu->addAction(m_pInverseRemoveCtrlPt);
@@ -2941,29 +2842,33 @@ void MainFrame::createXInverseToolbar()
     connect(m_prbFullInverse,  SIGNAL(clicked()), m_pXInverse, SLOT(onInverseApp()));
     connect(m_prbMixedInverse, SIGNAL(clicked()), m_pXInverse, SLOT(onInverseApp()));
 
-    m_pctrlXInverseToolBar = addToolBar(tr("XInverse"));
-    m_pctrlXInverseToolBar->addAction(m_pNewProjectAct);
-    m_pctrlXInverseToolBar->addAction(m_pOpenAct);
-    m_pctrlXInverseToolBar->addAction(m_pSaveAct);
-    m_pctrlXInverseToolBar->addSeparator();
-    m_pctrlXInverseToolBar->addWidget(m_prbFullInverse);
-    m_pctrlXInverseToolBar->addWidget(m_prbMixedInverse);
-    m_pctrlXInverseToolBar->addSeparator();
-    m_pctrlXInverseToolBar->addAction(m_pExtractFoil);
-    m_pctrlXInverseToolBar->addAction(m_pStoreFoil);
-    m_pctrlXInverseToolBar->addSeparator();
-    m_pctrlXInverseToolBar->addAction(m_pInverseZoomIn);
-    m_pctrlXInverseToolBar->addAction(m_pResetCurGraphScales);
-    m_pctrlXInverseToolBar->addAction(m_pXInverseResetFoilScale);
+    m_ptbXInverse = addToolBar(tr("XInverse"));
+    m_ptbXInverse->addAction(m_pNewProjectAct);
+    m_ptbXInverse->addAction(m_pOpenAct);
+    m_ptbXInverse->addAction(m_pSaveAct);
+    m_ptbXInverse->addSeparator();
+    m_ptbXInverse->addWidget(m_prbFullInverse);
+    m_ptbXInverse->addWidget(m_prbMixedInverse);
+    m_ptbXInverse->addSeparator();
+    m_ptbXInverse->addAction(m_pExtractFoil);
+    m_ptbXInverse->addAction(m_pStoreFoil);
+    m_ptbXInverse->addSeparator();
+    m_ptbXInverse->addAction(m_pInverseZoomIn);
+    m_ptbXInverse->addAction(m_pResetCurGraphScales);
+    m_ptbXInverse->addAction(m_pXInverseResetFoilScale);
 }
 
 
 
 void MainFrame::deleteProject(bool bClosing)
 {
+    //make sure the pointers are null before deleting the objects
+    m_pXDirect->setCurFoil(nullptr);
+    m_pXDirect->setCurPolar(nullptr);
+    m_pXDirect->setCurOpp(nullptr);
+
     // clear everything
     Objects3d::deleteObjects();
-
     Objects2d::deleteAllFoils();
 
     m_pMiarex->m_pCurPlane  = nullptr;
@@ -2973,31 +2878,13 @@ void MainFrame::deleteProject(bool bClosing)
 
     if(!bClosing)
     {
-        m_pcbPlane->clear();
-        m_pcbPlanePolar->clear();
-        m_pcbPlaneOpp->clear();
-        m_pcbFoil->clear();
-        m_pcbPolar->clear();
-        m_pcbOpPoint->clear();
-
-        m_pcbPlane->setEnabled(false);
-        m_pcbPlanePolar->setEnabled(false);
-        m_pcbPlaneOpp->setEnabled(false);
-        m_pcbFoil->setEnabled(false);
-        m_pcbPolar->setEnabled(false);
-        m_pcbOpPoint->setEnabled(false);
-
-
         m_pMiarex->setPlane();
+        m_pMiarex->m_pPlaneTreeView->fillModelView();
+        m_pMiarex->setControls();
 
-        if(m_iApp==xfl::MIAREX) m_pMiarex->setControls();
 
-        m_pXDirect->setCurFoil(nullptr);
-        m_pXDirect->setCurPolar(nullptr);
-        m_pXDirect->setCurOpp(nullptr);
         m_pXDirect->setFoil();
-
-        updateFoilListBox();
+        m_pXDirect->m_pFoilTreeView->fillModelView();
 
         if(m_pXDirect->m_bPolarView) m_pXDirect->createPolarCurves();
         else                         m_pXDirect->createOppCurves();
@@ -3403,9 +3290,6 @@ bool MainFrame::loadSettings()
     QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
 
-    bool bOK = false;
-    gl3dView::setOGLVersion(settings.value("OpenGL_Major", 2).toInt(&bOK), settings.value("OpenGL_Minor", 1).toInt(&bOK));
-
     settings.beginGroup("MainFrame");
     {
         int SettingsFormat = settings.value("SettingsFormat").toInt();
@@ -3689,17 +3573,19 @@ xfl::enumApp MainFrame::loadXFLR5File(QString pathname)
 
 void MainFrame::hideDockWindows()
 {
-    m_pctrlMiarexToolBar->hide();
-    m_pdwStabView->hide();
-    m_pctrlXDirectToolBar->hide();
-    m_pctrlXInverseToolBar->hide();
-    m_pctrlAFoilToolBar->hide();
+    m_ptbMiarex->hide();
+    m_ptbXDirect->hide();
+    m_ptbXInverse->hide();
+    m_ptbAFoil->hide();
 
     m_pdwAFoil->hide();
-    m_pdwMiarex->hide();
     m_pdwXDirect->hide();
+    m_pdwFoilTreeView->hide();
+    m_pdwMiarex->hide();
     m_pdwXInverse->hide();
     m_pdwXInverse->hide();
+    m_pdwPlaneTreeView->hide();
+    m_pdwStabView->hide();
 }
 
 
@@ -3712,35 +3598,12 @@ void MainFrame::onAFoil()
 
     m_iApp = xfl::DIRECTDESIGN;
 
-    m_pctrlAFoilToolBar->show();
+    m_ptbAFoil->show();
     m_pdwAFoil->show();
 
     setMainFrameCentralWidget();
     setMenus();
     m_pAFoil->setAFoilParams();
-    updateView();
-}
-
-
-void MainFrame::onCurFoilStyle()
-{
-    if(!XDirect::curFoil()) return;
-
-    LinePickerDlg dlg(this);
-    dlg.initDialog(XDirect::curFoil()->theStyle(), true, true);
-
-    if(QDialog::Accepted==dlg.exec())
-    {
-        XDirect::curFoil()->setTheStyle(dlg.theStyle());
-
-        if(DisplayOptions::isAlignedChildrenStyle())
-            Objects2d::setFoilChildrenStyle(XDirect::curFoil());
-
-        m_pXDirect->setControls();
-        m_pXDirect->m_bResetCurves = true;
-        setSaveState(false);
-    }
-
     updateView();
 }
 
@@ -3790,7 +3653,7 @@ void MainFrame::onInsertProject()
 
     if(m_iApp == xfl::MIAREX)
     {
-        updatePlaneListBox();
+        m_pMiarex->m_pPlaneTreeView->fillModelView();
         m_pMiarex->setPlane();
         Miarex::s_bResetCurves = true;
     }
@@ -3798,7 +3661,7 @@ void MainFrame::onInsertProject()
     {
         if(m_pXDirect->m_bPolarView) m_pXDirect->createPolarCurves();
         else                         m_pXDirect->createOppCurves();
-        updateFoilListBox();
+        m_pXDirect->m_pFoilTreeView->fillModelView();
     }
     else if(m_iApp == xfl::DIRECTDESIGN)
     {
@@ -3886,12 +3749,12 @@ void MainFrame::onLoadFile()
             if(m_pXDirect->m_bPolarView) m_pXDirect->createPolarCurves();
             else                         m_pXDirect->createOppCurves();
         }
-        updateFoilListBox();
+        m_pXDirect->m_pFoilTreeView->fillModelView();
         updateView();
     }
     else if(m_iApp==xfl::MIAREX)
     {
-        updatePlaneListBox();
+        m_pMiarex->m_pPlaneTreeView->fillModelView();
         m_pMiarex->setPlane();
         m_pMiarex->setScale();
         m_pMiarex->m_bIs2DScaleSet = false;
@@ -4000,9 +3863,10 @@ void MainFrame::onRestoreToolbars()
 {
     if(m_iApp==xfl::XFOILANALYSIS)
     {
-        m_pctrlXInverseToolBar->hide();
-        m_pctrlAFoilToolBar->hide();
-        m_pctrlMiarexToolBar->hide();
+        m_ptbXInverse->hide();
+        m_ptbAFoil->hide();
+        m_ptbMiarex->hide();
+        m_pdwPlaneTreeView->hide();
         m_pdwStabView->hide();
         m_pdw3DScales->hide();
 
@@ -4010,14 +3874,16 @@ void MainFrame::onRestoreToolbars()
         m_pdwXInverse->hide();
         m_pdwMiarex->hide();
 
-        m_pctrlXDirectToolBar->show();
+        m_ptbXDirect->show();
         m_pdwXDirect->show();
     }
     else if(m_iApp==xfl::DIRECTDESIGN)
     {
-        m_pctrlXInverseToolBar->hide();
-        m_pctrlMiarexToolBar->hide();
-        m_pctrlXDirectToolBar->hide();
+        m_ptbXInverse->hide();
+        m_ptbMiarex->hide();
+        m_ptbXDirect->hide();
+        m_pdwPlaneTreeView->hide();
+        m_pdwFoilTreeView->hide();
         m_pdw3DScales->hide();
 
         m_pdwXDirect->hide();
@@ -4025,41 +3891,41 @@ void MainFrame::onRestoreToolbars()
         m_pdwMiarex->hide();
         m_pdwStabView->hide();
 
-        m_pctrlAFoilToolBar->show();
+        m_ptbAFoil->show();
         m_pdwAFoil->show();
     }
     else if(m_iApp==xfl::INVERSEDESIGN)
     {
-        m_pctrlAFoilToolBar->hide();
-        m_pctrlMiarexToolBar->hide();
-        m_pctrlXDirectToolBar->hide();
-        m_pdw3DScales->hide();
+        m_ptbAFoil->hide();
+        m_ptbMiarex->hide();
+        m_ptbXDirect->hide();
+                m_pdw3DScales->hide();
         m_pdwStabView->hide();
 
         m_pdwAFoil->hide();
         m_pdwXDirect->hide();
         m_pdwMiarex->hide();
 
-        m_pctrlXInverseToolBar->show();
+        m_ptbXInverse->show();
         m_pdwXInverse->show();
     }
     else if(m_iApp==xfl::MIAREX)
     {
-        m_pctrlXInverseToolBar->hide();
-        m_pctrlAFoilToolBar->hide();
-        m_pctrlXDirectToolBar->hide();
+        m_ptbXInverse->hide();
+        m_ptbAFoil->hide();
+        m_ptbXDirect->hide();
         m_pdw3DScales->hide();
+        m_pdwPlaneTreeView->hide();
 
         m_pdwAFoil->hide();
         m_pdwXDirect->hide();
         m_pdwXInverse->hide();
         m_pdwMiarex->show();
-        m_pctrlMiarexToolBar->show();
+        m_ptbMiarex->show();
         //        if(pMiarex->m_iView==WSTABVIEW) m_pctrlStabViewWidget->show();
         //        else                            m_pctrlStabViewWidget->hide();
     }
 }
-
 
 
 void MainFrame::onSaveTimer()
@@ -4188,7 +4054,7 @@ void MainFrame::onSaveViewToImageFile()
                 {
                     QPixmap outPix = m_pgl3dMiarexView->grab();
                     QPainter painter(&outPix);
-                    if(!m_pMiarex->m_PixText.isNull())                  painter.drawPixmap(0,0, m_pMiarex->m_PixText);
+                    if(!m_pMiarex->m_PixText.isNull())                painter.drawPixmap(0,0, m_pMiarex->m_PixText);
                     if(!m_pgl3dMiarexView->m_PixTextOverlay.isNull()) painter.drawPixmap(0,0, m_pgl3dMiarexView->m_PixTextOverlay);
 
                     outPix.save(FileName);
@@ -4197,7 +4063,7 @@ void MainFrame::onSaveViewToImageFile()
                 {
                     QImage outImg = m_pgl3dMiarexView->grabFramebuffer();
                     QPainter painter(&outImg);
-                    if(!m_pMiarex->m_PixText.isNull())                  painter.drawPixmap(0,0, m_pMiarex->m_PixText);
+                    if(!m_pMiarex->m_PixText.isNull())                painter.drawPixmap(0,0, m_pMiarex->m_PixText);
                     if(!m_pgl3dMiarexView->m_PixTextOverlay.isNull()) painter.drawPixmap(0,0, m_pgl3dMiarexView->m_PixTextOverlay);
 
                     outImg.save(FileName);
@@ -4218,148 +4084,6 @@ void MainFrame::onSaveViewToImageFile()
 }
 
 
-void MainFrame::onSelChangePlane(int sel)
-{
-    // Gets the new selected wing name and notifies Miarex
-    // then updates WPolar combobox
-    // and selects either the current WPolar
-    // or the first one in the list, if any
-    m_pMiarex->stopAnimate();
-    QString strong;
-    //    int sel = m_pctrlPlane->currentIndex();
-    if (sel >=0) strong = m_pcbPlane->itemText(sel);
-    m_pMiarex->setPlane(strong);
-    m_pMiarex->updateView();
-}
-
-
-void MainFrame::onSelChangeWPolar(int sel)
-{
-    m_pMiarex->stopAnimate();
-
-    QString strong;
-    //    int sel = m_pctrlPlanePolar->currentIndex();
-    if (sel>=0) strong = m_pcbPlanePolar->itemText(sel);
-    m_iApp = xfl::MIAREX;
-    m_pMiarex->setWPolar(false, strong);
-    m_pMiarex->setControls();
-    m_pMiarex->updateView();
-}
-
-
-void MainFrame::onSelChangePlaneOpp(int sel)
-{
-    QString strong;
-    m_pMiarex->stopAnimate();
-
-    // Gets the new selected WOpp name and notifies Miarex
-    if(!m_pcbPlaneOpp->count())
-    {
-        Miarex::s_bResetCurves = true;
-        m_pMiarex->updateView();
-        return;
-    }
-
-    if (sel>=0) strong = m_pcbPlaneOpp->itemText(sel);
-    else
-    {
-        m_pcbPlaneOpp->setCurrentIndex(0);
-        strong = m_pcbPlaneOpp->itemText(0).trimmed();
-    }
-    if(strong.length())
-    {
-        bool bOK;
-        double x = locale().toDouble(strong, &bOK);
-        if(bOK)
-        {
-            m_iApp = xfl::MIAREX;
-            m_pMiarex->setPlaneOpp(false, x);
-            m_pMiarex->updateView();
-        }
-        else
-        {
-            QMessageBox::warning(window(), tr("Warning"), tr("Unidentified Operating Point"));
-            m_pMiarex->setPlaneOpp(true);
-        }
-    }
-}
-
-
-void MainFrame::onSelChangeFoil(int sel)
-{
-    // Gets the new selected foil name and notifies XDirect
-    // sets a polar, if any
-    // then updates the polar combobox
-
-    m_pXDirect->m_bAnimate = false;
-
-    QString strong;
-    //    int sel = m_pctrlFoil->currentIndex();
-    if (sel >=0) strong = m_pcbFoil->itemText(sel);
-
-    m_pXDirect->setCurFoil(Objects2d::foil(strong));
-    m_pXDirect->setFoil(XDirect::curFoil());
-    m_pXDirect->setPolar();
-    m_iApp = xfl::XFOILANALYSIS;
-    updatePolarListBox();
-    m_pXDirect->setControls();
-    updateView();
-}
-
-
-void MainFrame::onSelChangePolar(int sel)
-{
-    m_pXDirect->m_bAnimate = false;
-
-    // Gets the new selected polar name and notifies XDirect
-    QString strong;
-    //    int selNew = m_pctrlPolar->currentIndex();
-    if (sel>=0) strong = m_pcbPolar->itemText(sel);
-    m_iApp = xfl::XFOILANALYSIS;
-
-
-    m_pXDirect->setPolar(Objects2d::getPolar(XDirect::curFoil(), strong));
-    updateOppListBox();
-    m_pXDirect->setControls();
-    updateView();
-}
-
-
-void MainFrame::onSelChangeOpp(int sel)
-{
-    m_pXDirect->m_bAnimate = false;
-
-    // Gets the new selected Opp name and notifies XDirect
-    QString strong;
-
-    if (sel>=0) strong = m_pcbOpPoint->itemText(sel);
-    m_iApp = xfl::XFOILANALYSIS;
-
-    double Alpha=0;
-    bool bOK=false;
-    Alpha = locale().toDouble(strong, &bOK);
-
-    if(bOK)
-    {
-        m_pXDirect->setOpp(Alpha);
-    }
-    else
-    {
-        QMessageBox::warning(window(), tr("Warning"), tr("Unidentified Operating Point"));
-        m_pXDirect->setCurOpp(nullptr);
-        m_pXDirect->setOpp();
-    }
-    updateView();
-}
-
-
-void MainFrame::onShowMousePos()
-{
-    DisplayOptions::showMousePos(!DisplayOptions::bMousePos());
-    m_pShowMousePosAct->setChecked(DisplayOptions::bMousePos());
-}
-
-
 void MainFrame::onXDirect()
 {
     if(m_pMiarex) m_pMiarex->stopAnimate();
@@ -4367,11 +4091,15 @@ void MainFrame::onXDirect()
     m_iApp = xfl::XFOILANALYSIS;
 
     hideDockWindows();
-    m_pctrlXDirectToolBar->show();
+    m_ptbXDirect->show();
     m_pdwXDirect->show();
+    m_pdwFoilTreeView->show();
 
-    if(m_pXDirect) m_pXDirect->setFoil();
-    updateFoilListBox();
+    m_pXDirect->setFoil();
+    m_pXDirect->m_pFoilTreeView->fillModelView();
+    m_pMiarex->m_pPlaneTreeView->selectObjects();
+    m_pMiarex->m_pPlaneTreeView->setObjectProperties();
+
     setMainFrameCentralWidget();
     setMenus();
     checkGraphActions();
@@ -4388,18 +4116,25 @@ void MainFrame::onMiarex()
     m_iApp = xfl::MIAREX;
 
     hideDockWindows();
-    m_pctrlMiarexToolBar->show();
-    m_pdwMiarex->show();
+    m_ptbMiarex->show();
 
-    updatePlaneListBox();
+    m_pdwMiarex->show();
+    m_pdwPlaneTreeView->show();
+
+    m_pMiarex->m_pPlaneTreeView->fillModelView();
     m_pMiarex->setPlane();
+    m_pMiarex->setWPolar();
+    m_pMiarex->setPlaneOpp(nullptr);
+    m_pMiarex->updateTreeView();
+    m_pMiarex->m_pPlaneTreeView->selectObjects();
+    m_pMiarex->m_pPlaneTreeView->setObjectProperties();
 
     setMenus();
     setMainFrameCentralWidget();
     checkGraphActions();
     m_pMiarex->setControls();
 
-    m_pMiarex->setCurveParams();
+    m_pMiarex->setAnalysisParams();
     updateView();
 }
 
@@ -4407,13 +4142,13 @@ void MainFrame::onMiarex()
 void MainFrame::onXInverse()
 {
     if(m_pXDirect) m_pXDirect->stopAnimate();
-    if(m_pMiarex) m_pMiarex->stopAnimate();
+    if(m_pMiarex)  m_pMiarex->stopAnimate();
 
     //    pXInverse->SetScale();
     m_iApp = xfl::INVERSEDESIGN;
 
     hideDockWindows();
-    m_pctrlXInverseToolBar->show();
+    m_ptbXInverse->show();
     m_pdwXInverse->show();
 
     setMainFrameCentralWidget();
@@ -4433,7 +4168,7 @@ void MainFrame::onXInverseMixed()
     m_iApp = xfl::INVERSEDESIGN;
 
     hideDockWindows();
-    m_pctrlXInverseToolBar->show();
+    m_ptbXInverse->show();
     m_pdwXInverse->show();
 
     m_pXInverse->m_bFullInverse = false;
@@ -4468,7 +4203,6 @@ void MainFrame::onOpenRecentFile()
             if(m_pXDirect->bPolarView()) m_pXDirect->createPolarCurves();
             else                         m_pXDirect->createOppCurves();
         }
-        updateFoilListBox();
         onXDirect();
     }
     else if(m_iApp==xfl::MIAREX)
@@ -4623,7 +4357,7 @@ bool MainFrame::saveProject(QString PathName)
 void MainFrame::onSavePlaneAsProject()
 {
     QString strong;
-    if(m_pMiarex->m_pCurPlane) strong = m_pMiarex->m_pCurPlane->planeName();
+    if(m_pMiarex->m_pCurPlane) strong = m_pMiarex->m_pCurPlane->name();
     else
     {
         QMessageBox::warning(this, tr("Warning"), tr("Nothing to save"));
@@ -4673,7 +4407,7 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
     WPolar *pWPolar = nullptr;
     Polar *pPolar   = nullptr;
 
-    QString PlaneName = m_pMiarex->m_pCurPlane->planeName();
+    QString PlaneName = m_pMiarex->m_pCurPlane->name();
 
     bool bIsStoring = true;
     int i=0, iSize=0;
@@ -4816,9 +4550,6 @@ void MainFrame::saveSettings()
 #else
     QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
-    settings.setValue("OpenGL_Major", gl3dView::oglMajor());
-    settings.setValue("OpenGL_Minor", gl3dView::oglMinor());
-
     settings.beginGroup("MainFrame");
     {
         settings.setValue("SettingsFormat", SETTINGSFORMAT);
@@ -4885,11 +4616,12 @@ void MainFrame::saveSettings()
     }
     settings.endGroup();
 
-    Settings::saveSettings(settings);
     m_pAFoil->saveSettings(settings);
     m_pXDirect->saveSettings(settings);
     m_pMiarex->saveSettings(settings);
     m_pXInverse->saveSettings(settings);
+    Settings::saveSettings(settings);
+    gl3dView::saveSettings(settings);
     GL3DScales::saveSettings(settings);
     W3dPrefs::saveSettings(settings);
     Units::saveSettings(settings);
@@ -4901,248 +4633,49 @@ void MainFrame::setMainFrameCentralWidget()
 {
     if(m_iApp==xfl::NOAPP)
     {
-        m_pctrlCentralWidget->setCurrentWidget(&m_VoidWidget);
+        m_pswCentralWidget->setCurrentWidget(&m_VoidWidget);
     }
     else if(m_iApp==xfl::MIAREX)
     {
         if (m_pMiarex->m_iView==xfl::WOPPVIEW || m_pMiarex->m_iView==xfl::WPOLARVIEW || m_pMiarex->m_iView==xfl::WCPVIEW ||
             m_pMiarex->m_iView==xfl::STABPOLARVIEW  || m_pMiarex->m_iView==xfl::STABTIMEVIEW)
         {
-            m_pctrlCentralWidget->setCurrentWidget(m_pMiarexTileWidget);
+            m_pswCentralWidget->setCurrentWidget(m_pMiarexTileWidget);
             m_pMiarex->setGraphTiles();
             m_pMiarexTileWidget->setFocus();
         }
         else if(m_pMiarex->m_iView==xfl::W3DVIEW)
         {
-            m_pctrlCentralWidget->setCurrentWidget(m_pgl3dMiarexView);
+            m_pswCentralWidget->setCurrentWidget(m_pgl3dMiarexView);
             m_pgl3dMiarexView->setFocus();
         }
     }
     else if(m_iApp==xfl::DIRECTDESIGN)
     {
-        m_pctrlCentralWidget->setCurrentWidget(m_pDirect2dWidget);
+        m_pswCentralWidget->setCurrentWidget(m_pDirect2dWidget);
         m_pDirect2dWidget->setFocus();
     }
     else if(m_iApp==xfl::XFOILANALYSIS)
     {
-        m_pctrlCentralWidget->setCurrentWidget(m_pXDirectTileWidget);
+        m_pswCentralWidget->setCurrentWidget(m_pXDirectTileWidget);
         m_pXDirect->setGraphTiles();
         m_pXDirectTileWidget->setFocus();
     }
     else if(m_iApp==xfl::INVERSEDESIGN)
     {
-        m_pctrlCentralWidget->setCurrentWidget(m_p2dWidget);
+        m_pswCentralWidget->setCurrentWidget(m_p2dWidget);
         m_p2dWidget->setFocus();
     }
 }
 
 
-void MainFrame::selectFoil(Foil *pFoil)
-{
-    if(!m_pcbFoil->count()) return;
-
-    m_pcbFoil->blockSignals(true);
-
-    if (pFoil)
-    {
-        int pos = m_pcbFoil->findText(pFoil->name());
-
-        if (pos>=0) m_pcbFoil->setCurrentIndex(pos);
-        else        m_pcbFoil->setCurrentIndex(0);
-    }
-    else
-    {
-        m_pcbFoil->setCurrentIndex(0);
-    }
-    m_pcbFoil->blockSignals(false);
-}
-
-
-
-
-void MainFrame::selectPolar(Polar *pPolar)
-{
-    if(!m_pcbPolar->count()) return;
-
-    m_pcbPolar->blockSignals(true);
-
-    if (pPolar)
-    {
-        int pos = m_pcbPolar->findText(pPolar->polarName());
-
-        if (pos>=0) m_pcbPolar->setCurrentIndex(pos);
-        else        m_pcbPolar->setCurrentIndex(0);
-    }
-    else
-    {
-        m_pcbPolar->setCurrentIndex(0);
-    }
-
-    m_pcbPolar->blockSignals(false);
-}
-
-
-
-/**
- *Selects the operating point in the combobox and returns true
- *On error, selects the first and returns false
- */
-void MainFrame::selectOpPoint(OpPoint *pOpp)
-{
-    Polar *pCurPlr = m_pXDirect->curPolar();
-
-    if(!pOpp || !pCurPlr) return;
-    if(!m_pcbOpPoint->count()) return;
-
-    QString strange;
-    bool bOK;
-
-    m_pcbOpPoint->blockSignals(true);
-
-    for(int i=0; i<m_pcbOpPoint->count(); i++)
-    {
-        strange = m_pcbOpPoint->itemText(i).trimmed();
-
-        double val = locale().toDouble(strange, &bOK);
-
-        if(pCurPlr->polarType() == xfl::FIXEDAOAPOLAR)
-        {
-            if(bOK && qAbs(val-pOpp->Reynolds())<1.0)
-            {
-                m_pcbOpPoint->setCurrentIndex(i);
-                break;
-            }
-        }
-        else
-        {
-            if(bOK && qAbs(val-pOpp->aoa())<0.001)
-            {
-                m_pcbOpPoint->setCurrentIndex(i);
-                break;
-            }
-        }
-    }
-    m_pcbOpPoint->blockSignals(false);
-}
-
-
-void MainFrame::selectPlane(Plane *pPlane)
-{
-    if(!m_pcbPlane->count()) return;
-    m_pcbPlane->blockSignals(true);
-
-    if(pPlane)
-    {
-        int pos = m_pcbPlane->findText(pPlane->planeName());
-        if(pos>=0) m_pcbPlane->setCurrentIndex(pos);
-        else if(m_pcbPlane->count())
-            m_pcbPlane->setCurrentIndex(0);
-    }
-    else
-    {
-        m_pcbPlane->setCurrentIndex(0);
-    }
-
-    m_pcbPlane->blockSignals(false);
-}
-
-
-void MainFrame::selectWPolar(WPolar *pWPolar)
-{
-    if(!m_pcbPlanePolar->count()) return;
-
-    m_pcbPlanePolar->blockSignals(true);
-
-    if(pWPolar)
-    {
-        int pos = m_pcbPlanePolar->findText(pWPolar->polarName());
-        if (pos>=0) m_pcbPlanePolar->setCurrentIndex(pos);
-        else if(m_pcbPlanePolar->count())
-            m_pcbPlanePolar->setCurrentIndex(0);
-    }
-    else
-    {
-        m_pcbPlanePolar->setCurrentIndex(0);
-    }
-    m_pcbPlanePolar->blockSignals(false);
-}
-
-
-void MainFrame::selectPlaneOpp(PlaneOpp *pPlaneOpp)
-{
-    double x = 0.0;
-
-    if(pPlaneOpp)
-    {
-        if(pPlaneOpp->polarType()<xfl::FIXEDAOAPOLAR)        x = pPlaneOpp->m_Alpha;
-        else if(pPlaneOpp->polarType()==xfl::FIXEDAOAPOLAR)  x = pPlaneOpp->m_QInf;
-        else if(pPlaneOpp->polarType()==xfl::BETAPOLAR)      x = pPlaneOpp->m_Beta;
-        else if(pPlaneOpp->polarType()==xfl::STABILITYPOLAR) x = pPlaneOpp->m_Ctrl;
-    }
-    //Selects a pOpp in the combobox
-    WPolar *pCurWPlr = m_pMiarex->m_pCurWPolar;
-    if(!pCurWPlr)
-    {
-        m_pcbPlaneOpp->clear();
-        m_pcbPlaneOpp->setEnabled(false);
-        return;
-    }
-    double val=0;
-    bool bOK=false;
-    QString strange;
-
-    m_pcbPlaneOpp->blockSignals(true);
-    //    x = (double)qRound(x*100.0)/100.0;
-
-    for(int i=0; i<m_pcbPlaneOpp->count(); i++)
-    {
-        strange = m_pcbPlaneOpp->itemText(i);
-        val = locale().toDouble(strange, &bOK);
-
-        if(pCurWPlr->polarType()<xfl::FIXEDAOAPOLAR)
-        {
-            if(bOK && qAbs(val-x)<0.001)
-            {
-                m_pcbPlaneOpp->setCurrentIndex(i);
-                break;
-            }
-        }
-        else if(pCurWPlr->polarType()==xfl::FIXEDAOAPOLAR)
-        {
-            if(bOK && qAbs(val-x)<1.0)
-            {
-                m_pcbPlaneOpp->setCurrentIndex(i);
-                break;
-            }
-        }
-        else if(pCurWPlr->polarType()==xfl::BETAPOLAR)
-        {
-            if(bOK && qAbs(val-x)<0.001)
-            {
-                m_pcbPlaneOpp->setCurrentIndex(i);
-                break;
-            }
-        }
-        else if(pCurWPlr->polarType()==xfl::STABILITYPOLAR)
-        {
-            if(bOK && qAbs(val-x)<.001)
-            {
-                m_pcbPlaneOpp->setCurrentIndex(i);
-                break;
-            }
-        }
-    }
-    m_pcbPlaneOpp->blockSignals(false);
-}
-
-
 bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 {
-    WPolar *pWPolar = nullptr;
-    PlaneOpp *pPOpp = nullptr;
-    Plane *pPlane   = nullptr;
-    Polar *pPolar   = nullptr;
-    OpPoint *pOpp    = nullptr;
+    WPolar *pWPolar(nullptr);
+    PlaneOpp *pPOpp(nullptr);
+    Plane *pPlane(nullptr);
+    Polar *pPolar(nullptr);
+    OpPoint *pOpp(nullptr);
 
     int i=0, n=0;
     float f=0;
@@ -5238,7 +4771,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
     else
     {
         // LOADING CODE
-        int ArchiveFormat;
+        int ArchiveFormat(0);
         ar >> ArchiveFormat;
         if(ArchiveFormat<200001 || ArchiveFormat>200002) return false;
 
@@ -5568,7 +5101,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
             {
                 //create a plane with this wing
                 pPlane = new Plane();
-                pPlane->setPlaneName(pWing->wingName());
+                pPlane->setName(pWing->wingName());
                 pPlane->m_Wing[0].duplicate(pWing);
                 pPlane->setBody(nullptr);
                 pPlane->setWings(false, false, false);
@@ -5900,261 +5433,6 @@ QString MainFrame::shortenFileName(QString &PathName)
     return strong;
 }
 
-/**
-* Fills the combobox with  plane names.
-* then selects the current wing or plane, if any;
-* else selects the first, if any;
-* else disables the combobox.
-*/
-void MainFrame::updatePlaneListBox()
-{
-    int i=0;
-    Plane *pPlane=nullptr, *pCurPlane=nullptr;
-
-    m_pcbPlane->blockSignals(true);
-    m_pcbPlane->clear();
-
-    pCurPlane = m_pMiarex->m_pCurPlane;
-    QStringList PlaneNames;
-    for (i=0; i<Objects3d::s_oaPlane.size(); i++)
-    {
-        pPlane = Objects3d::planeAt(i);
-        PlaneNames.append(pPlane->planeName());
-    }
-
-#if QT_VERSION >= 0x050000
-    PlaneNames.sort(Qt::CaseInsensitive);
-#else
-    PlaneNames.sort();
-#endif
-
-    m_pcbPlane->addItems(PlaneNames);
-
-    //select the current Plane, if any...
-    if(pCurPlane) selectPlane(pCurPlane);
-
-    m_pcbPlane->setEnabled(m_pcbPlane->count());
-    m_pcbPlane->blockSignals(false);
-
-    updateWPolarListBox();
-}
-
-
-
-void MainFrame::updateWPolarListBox()
-{
-    //    fills the combobox with WPolar names associated to Miarex's current wing
-    //    then selects Miarex current WPolar if any, else selects the first, if any
-    //    else disables the combobox
-
-
-    m_pcbPlanePolar->blockSignals(true);
-    m_pcbPlanePolar->clear();
-
-    Plane  *pCurPlane = m_pMiarex->m_pCurPlane;
-    WPolar *pCurWPlr  = m_pMiarex->m_pCurWPolar;
-
-    QString PlaneName;
-    if(pCurPlane)      PlaneName = pCurPlane->planeName();
-    else               PlaneName = "";
-
-    if(!PlaneName.length())
-    {
-        m_pMiarex->m_pCurWPolar = nullptr;
-        m_pcbPlanePolar->setEnabled(false);
-        m_pcbPlaneOpp->setEnabled(false);
-        return;
-    }
-
-    for (int i=0; i<Objects3d::polarCount(); i++)
-    {
-        WPolar *pWPolar = Objects3d::polarAt(i);
-        if(pWPolar->planeName() == PlaneName)
-        {
-            m_pcbPlanePolar->addItem(pWPolar->polarName());
-        }
-    }
-
-    m_pcbPlanePolar->setEnabled(m_pcbPlanePolar->count());
-
-    if(pCurWPlr) selectWPolar(pCurWPlr);
-
-    m_pcbPlanePolar->blockSignals(false);
-    updatePOppListBox();
-}
-
-
-/**
- * Fills the combobox with the WOpp parameters associated to Miarex' current WPLr,
- * then selects the current WingOpp or PlaneOpp if any, else selects the first, if any,
- * else disables the combobox.
- */
-void MainFrame::updatePOppListBox()
-{
-    m_pcbPlaneOpp->blockSignals(true);
-
-    Plane  *pCurPlane   = m_pMiarex->m_pCurPlane;
-    WPolar *pCurWPlr    = m_pMiarex->m_pCurWPolar;
-
-    QString str;
-    m_pcbPlaneOpp->clear();
-
-
-    if (!pCurPlane || !pCurPlane->planeName().length() || !pCurWPlr || !pCurWPlr->polarName().length())
-    {
-        m_pcbPlaneOpp->setEnabled(false);
-        return;
-    }
-
-    for (int iPOpp=0; iPOpp<Objects3d::planeOppCount(); iPOpp++)
-    {
-        PlaneOpp *pPOpp = Objects3d::planeOppAt(iPOpp);
-        if (pPOpp->planeName()==pCurPlane->planeName() && pPOpp->polarName()==pCurWPlr->polarName())
-        {
-            if(pCurWPlr->polarType()<xfl::FIXEDAOAPOLAR)        str = QString("%L1").arg(pPOpp->m_Alpha,8,'f',3);
-            else if(pCurWPlr->polarType()==xfl::FIXEDAOAPOLAR)  str = QString("%L1").arg(pPOpp->m_QInf,8,'f',3);
-            else if(pCurWPlr->polarType()==xfl::BETAPOLAR)      str = QString("%L1").arg(pPOpp->m_Beta,8,'f',3);
-            else if(pCurWPlr->polarType()==xfl::STABILITYPOLAR) str = QString("%L1").arg(pPOpp->m_Ctrl,8,'f',3);
-            m_pcbPlaneOpp->addItem(str);
-        }
-    }
-
-    if(m_pMiarex->m_pCurPOpp) selectPlaneOpp(m_pMiarex->m_pCurPOpp);
-    else                    m_pcbPlaneOpp->setCurrentIndex(0);
-
-    // otherwise disable control
-    m_pcbPlaneOpp->setEnabled(m_pcbPlaneOpp->count());
-
-    m_pcbPlaneOpp->blockSignals(false);
-}
-
-
-/**
- * Fills the combobox with the Foil names,
- * then selects the current Foil if any, else selects the first, if any,
- * else disables the combobox
- */
-void MainFrame::updateFoilListBox()
-{
-    m_pcbFoil->blockSignals(true);
-    m_pcbFoil->clear();
-
-    QStringList foilList;
-    for (int iFoil=0; iFoil<Objects2d::foilCount(); iFoil++)
-    {
-        Foil *pFoil = Objects2d::foilAt(iFoil);
-        foilList.append(pFoil->name());
-    }
-
-#if QT_VERSION >= 0x050000
-    foilList.sort(Qt::CaseInsensitive);
-#else
-    foilList.sort();
-#endif
-
-    m_pcbFoil->addItems(foilList);
-    m_pcbFoil->setEnabled(m_pcbFoil->count());
-    selectFoil(XDirect::curFoil());
-
-    m_pcbFoil->blockSignals(false);
-
-    updatePolarListBox();
-}
-
-
-/**
- * Fills the combobox with polar names associated to the current foil,
- * then selects XDirect current polar if any, else selects the first, if any,
- * else disables the combobox,
- */
-void MainFrame::updatePolarListBox()
-{
-    m_pcbPolar->blockSignals(true);
-    m_pcbPolar->clear();
-
-    if(!XDirect::curFoil())
-    {
-    }
-    else
-    {
-        QStringList polarList;
-        for (int i=0; i<Objects2d::polarCount(); i++)
-        {
-            Polar *pPolar = Objects2d::polarAt(i);
-            if(pPolar->foilName() == XDirect::curFoil()->name())
-            {
-                polarList.append(pPolar->polarName());
-            }
-        }
-
-#if QT_VERSION >= 0x050000
-        polarList.sort(Qt::CaseInsensitive);
-#else
-        polarList.sort();
-#endif
-
-        m_pcbPolar->addItems(polarList);
-    }
-
-    m_pcbPolar->setEnabled(m_pcbPolar->count());
-    selectPolar(m_pXDirect->curPolar());
-
-    m_pcbPolar->blockSignals(false);
-
-    updateOppListBox();
-}
-
-
-/**
- * Fills the combobox with the OpPoint values associated to the current foil,
- * then selects the current OpPoint if any, else selects the first, if any,
- * else disables the combobox.
- */
-void MainFrame::updateOppListBox()
-{
-    m_pcbOpPoint->blockSignals(true);
-    m_pcbOpPoint->clear();
-
-    Polar *pCurPlr    = m_pXDirect->curPolar();
-
-    if (!XDirect::curFoil()  || !pCurPlr)
-    {
-        m_pcbOpPoint->clear();
-        m_pcbOpPoint->setEnabled(false);
-        m_pcbOpPoint->blockSignals(false);
-    }
-    else
-    {
-        QStringList oppList;
-        QString str;
-        for (int iOpp=0; iOpp<Objects2d::oppCount(); iOpp++)
-        {
-            OpPoint *pOpp = Objects2d::oppAt(iOpp);
-            if (pOpp->foilName()==XDirect::curFoil()->name() && pOpp->polarName()==pCurPlr->polarName())
-            {
-                if (pCurPlr->polarType() != xfl::FIXEDAOAPOLAR)
-                    str = QString("%L1").arg(pOpp->aoa(),8,'f',3);
-                else
-                    str = QString("%L1").arg(pOpp->Reynolds(),8,'f',0);
-                oppList.append(str);
-            }
-        }
-        /*
-#if QT_VERSION >= 0x050000
-        oppList.sort(Qt::CaseInsensitive);
-#else
-        oppList.sort();
-#endif
-*/
-        m_pcbOpPoint->addItems(oppList);
-    }
-
-    m_pcbOpPoint->setEnabled(m_pcbOpPoint->count());
-    selectOpPoint(XDirect::curOpp());
-
-    m_pcbOpPoint->blockSignals(false);
-}
-
 
 void MainFrame::updateRecentFileActions()
 {
@@ -6309,7 +5587,6 @@ void MainFrame::readStyleSheet(QString styleSheetName, QString &styleSheet)
 }
 
 
-
 void MainFrame::onProjectModified()
 {
     setSaveState(false);
@@ -6338,7 +5615,7 @@ void MainFrame::onManageFoils()
     if(m_iApp==xfl::XFOILANALYSIS)
     {
         m_pXDirect->setFoil(mfDlg.m_pFoil);
-        updateFoilListBox();
+        m_pXDirect->m_pFoilTreeView->fillModelView();
         m_pXDirect->setControls();
     }
     else if(m_iApp==xfl::DIRECTDESIGN)
@@ -6575,6 +5852,13 @@ void MainFrame::onLoadLastProject()
 }
 
 
+void MainFrame::loadLastProject()
+{
+    if(!m_RecentFiles.size()) return;
+    m_iApp = loadXFLR5File(m_RecentFiles.at(0));
+}
+
+
 void MainFrame::setNoApp()
 {
     hideDockWindows();
@@ -6700,12 +5984,40 @@ void MainFrame::onMakePlrFiles(QString const pathname) const
 }
 
 
-void MainFrame::showEvent(QShowEvent *pEvent)
+void MainFrame::showEvent(QShowEvent *)
 {
     // make sure the graph and foil scales have been initialized when we first display
     // the foil operating point view
-    m_pXDirect->m_CpGraph.initializeGraph(m_pctrlCentralWidget->width(), m_pctrlCentralWidget->height());
-    pEvent->ignore();
+    m_pXDirect->m_CpGraph.initializeGraph(m_pswCentralWidget->width(), m_pswCentralWidget->height());
+
+
+    switch(m_iApp)
+    {
+        case xfl::NOAPP: break;
+        case xfl::DIRECTDESIGN:
+        {
+            onAFoil();
+            break;
+        }
+        case xfl::INVERSEDESIGN:
+        {
+            if(m_pXInverse->m_bFullInverse) onXInverse();
+            else                            onXInverseMixed();
+            break;
+        }
+        case xfl::XFOILANALYSIS:
+        {
+            onXDirect();
+            break;
+        }
+        case xfl::MIAREX:
+        {
+            onXDirect();
+            onMiarex();
+            m_pMiarex->setScale();
+            break;
+        }
+    }
 }
 
 
@@ -6759,7 +6071,7 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         if(ArchiveFormat<100007)
         {
             int n;
-            ar >> n ; pFoil->theStyle().setStipple(n);
+            ar >> n; pFoil->theStyle().setStipple(n);
             ar >> pFoil->theStyle().m_Width;
 
             int r=0,g=0,blue=0,a=0;
@@ -6877,7 +6189,7 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         }
 
         ar >> n;
-        if(n==1)      pPolar->m_PolarType=xfl::FIXEDSPEEDPOLAR;
+        if     (n==1) pPolar->m_PolarType=xfl::FIXEDSPEEDPOLAR;
         else if(n==2) pPolar->m_PolarType=xfl::FIXEDLIFTPOLAR;
         else if(n==3) pPolar->m_PolarType=xfl::RUBBERCHORDPOLAR;
         else if(n==4) pPolar->m_PolarType=xfl::FIXEDAOAPOLAR;

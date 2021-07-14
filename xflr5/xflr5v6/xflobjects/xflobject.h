@@ -39,7 +39,7 @@ class XflObject
 
     public:
         virtual QString name() const {return m_Name;}
-        void setName(QString const & name) {m_Name=name;}
+        virtual void setName(QString const & name) {m_Name=name;}
 
         QColor const &lineColor() const {return m_theStyle.m_Color;}
         void setLineColor(QColor clr) {m_theStyle.m_Color=clr;}

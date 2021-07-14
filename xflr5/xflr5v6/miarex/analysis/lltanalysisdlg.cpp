@@ -1,7 +1,7 @@
 /****************************************************************************
 
     LLTAnalysisDlg Class
-    Copyright (C) 2009-2016 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 
 #include "lltanalysisdlg.h"
 #include <miarex/miarex.h>
-#include <miarex/objects3d.h>
+#include <xflobjects/objects3d/objects3d.h>
 #include <misc/options/settingswt.h>
 #include <xflanalysis/plane_analysis/lltanalysis.h>
 #include <xflanalysis/plane_analysis/planetask.h>
@@ -117,29 +117,29 @@ void LLTAnalysisDlg::initDialog()
     m_pIterGraph->setYMin(0.0);
     m_pIterGraph->setYMax(1.0);
 
-    m_pctrlLogFile->setChecked(Miarex::s_bLogFile);
+    m_pchLogFile->setChecked(Miarex::s_bLogFile);
 }
 
 
 void LLTAnalysisDlg::onLogFile()
 {
-    Miarex::s_bLogFile = m_pctrlLogFile->isChecked();
+    Miarex::s_bLogFile = m_pchLogFile->isChecked();
 }
 
 
 /** Overrides and handles the keyPressEvent sent by Qt */
-void LLTAnalysisDlg::keyPressEvent(QKeyEvent *event)
+void LLTAnalysisDlg::keyPressEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Escape:
         {
             onCancelAnalysis();
-            event->accept();
+            pEvent->accept();
             return;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
 
@@ -159,12 +159,12 @@ void LLTAnalysisDlg::onCancelAnalysis()
 */
 void LLTAnalysisDlg::setupLayout()
 {
-    m_pctrlTextOutput = new QTextEdit;
-    m_pctrlTextOutput->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+    m_pteTextOutput = new QTextEdit;
+    m_pteTextOutput->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 
-    m_pctrlTextOutput->setReadOnly(true);
-    m_pctrlTextOutput->setLineWrapMode(QTextEdit::NoWrap);
-    m_pctrlTextOutput->setWordWrapMode(QTextOption::NoWrap);
+    m_pteTextOutput->setReadOnly(true);
+    m_pteTextOutput->setLineWrapMode(QTextEdit::NoWrap);
+    m_pteTextOutput->setWordWrapMode(QTextOption::NoWrap);
 
     m_pGraphWidget = new GraphWt;
 
@@ -173,19 +173,19 @@ void LLTAnalysisDlg::setupLayout()
 
     QHBoxLayout *pctrlLayout = new QHBoxLayout;
     {
-        m_pctrlCancel = new QPushButton(tr("Cancel"));
-        connect(m_pctrlCancel, SIGNAL(clicked()), this, SLOT(onCancelAnalysis()));
+        m_ppbCancel = new QPushButton(tr("Cancel"));
+        connect(m_ppbCancel, SIGNAL(clicked()), this, SLOT(onCancelAnalysis()));
 
-        m_pctrlLogFile = new QCheckBox(tr("Keep this window opened on errors"));
-        connect(m_pctrlLogFile, SIGNAL(toggled(bool)), this, SLOT(onLogFile()));
-        pctrlLayout->addWidget(m_pctrlLogFile);
+        m_pchLogFile = new QCheckBox(tr("Keep this window opened on errors"));
+        connect(m_pchLogFile, SIGNAL(toggled(bool)), this, SLOT(onLogFile()));
+        pctrlLayout->addWidget(m_pchLogFile);
         pctrlLayout->addStretch();
-        pctrlLayout->addWidget(m_pctrlCancel);
+        pctrlLayout->addWidget(m_ppbCancel);
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        pMainLayout->addWidget(m_pctrlTextOutput,1);
+        pMainLayout->addWidget(m_pteTextOutput,1);
         pMainLayout->addWidget(m_pGraphWidget,1);
         pMainLayout->addLayout(pctrlLayout);
     }
@@ -206,7 +206,7 @@ void LLTAnalysisDlg::analyze()
 
     Wing *pWing = m_pTheTask->m_pPlane->wing();
 
-    m_pctrlCancel->setText(tr("Cancel"));
+    m_ppbCancel->setText(tr("Cancel"));
     m_bCancel     = false;
     m_bFinished   = false;
 
@@ -214,7 +214,7 @@ void LLTAnalysisDlg::analyze()
     m_Timer.setInterval(200);
     m_Timer.start();
 
-    m_pctrlTextOutput->clear();
+    m_pteTextOutput->clear();
 
     QString strange;
     strange = pWing->wingName()+"\n";
@@ -304,15 +304,15 @@ void LLTAnalysisDlg::cleanUp()
         QString str = dt.toString("dd.MM.yyyy  hh:mm:ss");
         outstream << str<<"\n";
 
-        outstream << m_pctrlTextOutput->toPlainText();
+        outstream << m_pteTextOutput->toPlainText();
         outstream.flush();
         pXFile->close();
     }
     delete pXFile;
 
     m_pTheTask = nullptr;
-    m_pctrlCancel->setText(tr("Close"));
-    m_pctrlCancel->setFocus();
+    m_ppbCancel->setText(tr("Close"));
+    m_ppbCancel->setFocus();
 }
 
 
@@ -346,8 +346,8 @@ void LLTAnalysisDlg::onProgress()
 */
 void LLTAnalysisDlg::updateOutput(QString &strong)
 {
-    m_pctrlTextOutput->insertPlainText(strong);
-    m_pctrlTextOutput->ensureCursorVisible();
+    m_pteTextOutput->insertPlainText(strong);
+    m_pteTextOutput->ensureCursorVisible();
 }
 
 
@@ -377,9 +377,9 @@ void LLTAnalysisDlg::customEvent(QEvent * pEvent)
 
 void LLTAnalysisDlg::onMessage(QString msg)
 {
-    m_pctrlTextOutput->insertPlainText(msg);
-    m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
-    m_pctrlTextOutput->ensureCursorVisible();
+    m_pteTextOutput->insertPlainText(msg);
+    m_pteTextOutput->textCursor().movePosition(QTextCursor::End);
+    m_pteTextOutput->ensureCursorVisible();
 }
 
 

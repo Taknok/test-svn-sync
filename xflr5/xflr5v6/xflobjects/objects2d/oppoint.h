@@ -55,7 +55,7 @@ class OpPoint : public XflObject
 {
     friend class Polar;
     friend class XDirect;
-    friend class OpPointWidget;
+    friend class OpPointWt;
 
     public:
         OpPoint();
@@ -66,7 +66,6 @@ class OpPoint : public XflObject
 
         bool serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
         bool serializeOppXFL(QDataStream &ar, bool bIsStoring);
-        void getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bData=false) const;
 
 
         QString const &foilName()  const {return m_FoilName;}
@@ -83,6 +82,10 @@ class OpPoint : public XflObject
         double aoa()      const {return m_Alpha;}
         double Reynolds() const {return m_Reynolds;}
         double Mach()     const {return m_Mach; }
+
+        QString properties(Foil *pFoil, bool bData=false) const;
+        void getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bData=false) const;
+
 
         static bool bStoreOpp() {return s_bStoreOpp;}
         static void setStoreOpp(bool b) {s_bStoreOpp=b;}

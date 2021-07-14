@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Panel Class
-    Copyright (C) 2006-2016 André Deperrois
+    Copyright (C) 2André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,8 +29,7 @@
  *
  */
 
-#ifndef PANEL_H
-#define PANEL_H
+#pragma once
 
 
 
@@ -72,94 +71,93 @@ class Panel
     friend class GL3dWingDlg;
     friend class gl3dSurfacePlot;
 
-public:
-    Panel();
+    public:
+        Panel();
 
-    void VLMCmn(Vector3d const &C, Vector3d &VTest, bool const &bAll);
-    void doubletNASA4023(Vector3d const &C, Vector3d &VTest, double &phi, bool bWake) const;
-    void sourceNASA4023(Vector3d const &C, Vector3d &VTest, double &phi) const;
+        void VLMCmn(Vector3d const &C, Vector3d &VTest, bool const &bAll);
+        void doubletNASA4023(Vector3d const &C, Vector3d &VTest, double &phi, bool bWake) const;
+        void sourceNASA4023(Vector3d const &C, Vector3d &VTest, double &phi) const;
 
-    void rotateBC(Vector3d const &HA, Quaternion & Qt);
-    void reset();
-    void setPanelFrame();
-    void setPanelFrame(Vector3d const &LA, Vector3d const &LB, Vector3d const &TA, Vector3d const &TB);
-    bool intersect(Vector3d const &A, Vector3d const &U, Vector3d &I, double &dist);
-    bool invert33(double *l);
-    void globalToLocal(Vector3d const &V, Vector3d &VLocal);
-    Vector3d globalToLocal(Vector3d const &VTest);
-    Vector3d globalToLocal(double const &Vx, double const &Vy, double const &Vz);
-    Vector3d localToGlobal(Vector3d const &VTest);
+        void rotateBC(Vector3d const &HA, Quaternion & Qt);
+        void reset();
+        void setPanelFrame();
+        void setPanelFrame(Vector3d const &LA, Vector3d const &LB, Vector3d const &TA, Vector3d const &TB);
+        bool intersect(Vector3d const &A, Vector3d const &U, Vector3d &I, double &dist);
+        bool invert33(double *l);
+        void globalToLocal(Vector3d const &V, Vector3d &VLocal);
+        Vector3d globalToLocal(Vector3d const &VTest);
+        Vector3d globalToLocal(double const &Vx, double const &Vy, double const &Vz);
+        Vector3d localToGlobal(Vector3d const &VTest);
 
-    double width() const;
-    double area() const {return Area;}
-    Vector3d ctrlPt() const {return CtrlPt;}
-    Vector3d collPt() const {return CollPt;}
-    Vector3d normal() const {return Normal;}
+        double width() const;
+        double area() const {return Area;}
+        Vector3d ctrlPt() const {return CtrlPt;}
+        Vector3d collPt() const {return CollPt;}
+        Vector3d normal() const {return Normal;}
 
-    bool isTopSurface() const {return m_Pos==TOPSURFACE;}
-    bool isBotSurface() const {return m_Pos==BOTSURFACE;}
-    bool isMidSurface() const {return m_Pos==MIDSURFACE;}
-    bool isSideSurface() const {return m_Pos==SIDESURFACE;}
-    bool isBodySurface() const {return m_Pos==BODYSURFACE;}
+        bool isTopSurface() const {return m_Pos==TOPSURFACE;}
+        bool isBotSurface() const {return m_Pos==BOTSURFACE;}
+        bool isMidSurface() const {return m_Pos==MIDSURFACE;}
+        bool isSideSurface() const {return m_Pos==SIDESURFACE;}
+        bool isBodySurface() const {return m_Pos==BODYSURFACE;}
 
-    void printPanel();
+        void printPanel();
 
-    static void setCoreSize(double CoreSize) { s_CoreSize=CoreSize;    }
-    static double coreSize() { return s_CoreSize; }
-
-
-protected:    
-    bool m_bIsInSymPlane;    /**< true if the panel lies in the plane's xz plane of symetry at y=0*/
-    bool m_bIsLeftPanel;     /**< true if the panel lies on the left (port) wing */
-    bool m_bIsWakePanel;     /**< true if the panel lies on the wake of a winf */
-
-    int m_iElement;          /**< panel identification number ; used when the panel array is re-arranged in non sequential order to reduce the matrix size in symetrical calculations */
-    int m_iPL;               /**< index of the panel which lies left of this panel, or -1 if none */
-    int m_iPR;               /**< index of the panel which lies right of this panel, or -1 if none */
-    int m_iPU;               /**< index of the panel which lies upstream of this panel, or -1 if none */
-    int m_iPD;               /**< index of the panel which lies downstream of this panel, or -1 if none */
-    int m_iWake;             /**< -1 if not followed by a wake panel, else equal to wake panel number */
-    int m_iWakeColumn;       /**< index of the wake column shed by this panel, numbered from left tip to right tip, or -1 if none */
-
-    //Local frame of refernce
-    Vector3d VortexPos;       /**< the absolute position of the mid point of the bound vortex at the panel's quarter chord */
-    Vector3d Vortex;          /**< the bound vortex vector at the panel's quarter chord */
-    Vector3d P1;              /**< the coordinates of the panel's corners, in local coordinates */
-    Vector3d P2;              /**< the coordinates of the panel's corners, in local coordinates */
-    Vector3d P3;              /**< the coordinates of the panel's corners, in local coordinates */
-    Vector3d P4;              /**< the coordinates of the panel's corners, in local coordinates */
-    Vector3d m, l;            /**< the unit vectors which lie in the panel's plane. Cf. document NACA 4023 */
-
-    double dl;               /**< The length of the bound vortex */
-    double Area;             /**< The panel's area; */
-    double SMP, SMQ;
-    double Size;             /**< = SMP + SMQ and provides an estimation of the panel's size.
-                                  This is used to determine if the far-field approximation can be used in
-                                  the evaluation of the source and doublet influent at a distant point */
-    double lij[9];           /**< The 3x3 matrix used to transform local coordinates in absolute coordinates */
-
-    static Vector3d *s_pNode;       /**< A static pointer to the global array of panel nodes */
-    static Vector3d *s_pWakeNode;   /**< A static pointer to the global array of wake panel nodes */
-
-    static double s_VortexPos; /**< Defines the relative position of the bound vortex in the streamwise direction. Usually the vortex is positioned at the panel's quarter chord i.e. s_VortexPos=0.25 */
-    static double s_CtrlPos;   /**< Defines the relative position of the panel's control point in VLM. Usually the control point is positioned at the panel's 3/4 chord : s_VortexPos=0.75 */
+        static void setCoreSize(double CoreSize) { s_CoreSize=CoreSize;    }
+        static double coreSize() { return s_CoreSize; }
 
 
-public:
-    enumPanelPosition m_Pos;   /**< defines if the panel is positioned on a top, middle, bottom, side or body surface */
-    bool m_bIsLeading;         /**< true if the panel is positioned on a leading edge */
-    bool m_bIsTrailing;        /**< true if the panel is positioned on a trailing edge */
-    int m_iLA;                 /**< index of the leading left node in the node array */
-    int m_iLB;                 /**< index of the leading right node in the node array */
-    int m_iTA;                 /**< index of the trailing left node in the node array */
-    int m_iTB;                 /**< index of the trailing right node in the node array */
-    Vector3d Normal;            /**< the unit vector normal to the panel */
-    Vector3d CtrlPt;            /**< the position of the control point for VLM analysis or 3D/Thin panels analysis */
-    Vector3d CollPt;            /**< the collocation point for 3d panel analysis */
-    Vector3d VA;                /**< the left end point of the bound quarter-chord vortex on this panel */
-    Vector3d VB;                /**< the rightt end point of the bound quarter-chord vortex on this panel */
+    protected:
+        bool m_bIsInSymPlane;    /**< true if the panel lies in the plane's xz plane of symetry at y=0*/
+        bool m_bIsLeftPanel;     /**< true if the panel lies on the left (port) wing */
+        bool m_bIsWakePanel;     /**< true if the panel lies on the wake of a winf */
 
-    static double s_CoreSize;
+        int m_iElement;          /**< panel identification number ; used when the panel array is re-arranged in non sequential order to reduce the matrix size in symetrical calculations */
+        int m_iPL;               /**< index of the panel which lies left of this panel, or -1 if none */
+        int m_iPR;               /**< index of the panel which lies right of this panel, or -1 if none */
+        int m_iPU;               /**< index of the panel which lies upstream of this panel, or -1 if none */
+        int m_iPD;               /**< index of the panel which lies downstream of this panel, or -1 if none */
+        int m_iWake;             /**< -1 if not followed by a wake panel, else equal to wake panel number */
+        int m_iWakeColumn;       /**< index of the wake column shed by this panel, numbered from left tip to right tip, or -1 if none */
+
+        //Local frame of refernce
+        Vector3d VortexPos;       /**< the absolute position of the mid point of the bound vortex at the panel's quarter chord */
+        Vector3d Vortex;          /**< the bound vortex vector at the panel's quarter chord */
+        Vector3d P1;              /**< the coordinates of the panel's corners, in local coordinates */
+        Vector3d P2;              /**< the coordinates of the panel's corners, in local coordinates */
+        Vector3d P3;              /**< the coordinates of the panel's corners, in local coordinates */
+        Vector3d P4;              /**< the coordinates of the panel's corners, in local coordinates */
+        Vector3d m, l;            /**< the unit vectors which lie in the panel's plane. Cf. document NACA 4023 */
+
+        double dl;               /**< The length of the bound vortex */
+        double Area;             /**< The panel's area; */
+        double SMP, SMQ;
+        double Size;             /**< = SMP + SMQ and provides an estimation of the panel's size.
+                                      This is used to determine if the far-field approximation can be used in
+                                      the evaluation of the source and doublet influent at a distant point */
+        double lij[9];           /**< The 3x3 matrix used to transform local coordinates in absolute coordinates */
+
+        static Vector3d *s_pNode;       /**< A static pointer to the global array of panel nodes */
+        static Vector3d *s_pWakeNode;   /**< A static pointer to the global array of wake panel nodes */
+
+        static double s_VortexPos; /**< Defines the relative position of the bound vortex in the streamwise direction. Usually the vortex is positioned at the panel's quarter chord i.e. s_VortexPos=0.25 */
+        static double s_CtrlPos;   /**< Defines the relative position of the panel's control point in VLM. Usually the control point is positioned at the panel's 3/4 chord : s_VortexPos=0.75 */
+
+
+    public:
+        enumPanelPosition m_Pos;   /**< defines if the panel is positioned on a top, middle, bottom, side or body surface */
+        bool m_bIsLeading;         /**< true if the panel is positioned on a leading edge */
+        bool m_bIsTrailing;        /**< true if the panel is positioned on a trailing edge */
+        int m_iLA;                 /**< index of the leading left node in the node array */
+        int m_iLB;                 /**< index of the leading right node in the node array */
+        int m_iTA;                 /**< index of the trailing left node in the node array */
+        int m_iTB;                 /**< index of the trailing right node in the node array */
+        Vector3d Normal;            /**< the unit vector normal to the panel */
+        Vector3d CtrlPt;            /**< the position of the control point for VLM analysis or 3D/Thin panels analysis */
+        Vector3d CollPt;            /**< the collocation point for 3d panel analysis */
+        Vector3d VA;                /**< the left end point of the bound quarter-chord vortex on this panel */
+        Vector3d VB;                /**< the rightt end point of the bound quarter-chord vortex on this panel */
+
+        static double s_CoreSize;
 };
 
-#endif

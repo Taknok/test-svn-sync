@@ -159,7 +159,7 @@ Plane * PlaneTask::setPlaneObject(Plane *pPlane)
 
             for (int j=0; j<pPlane->wing(iw)->m_Surface.size(); j++)
             {
-                pPlane->wing(iw)->m_Surface.at(j)->setSidePoints(pCurBody, dx, dz);
+                pPlane->wing(iw)->m_Surface.at(j)->setMeshSidePoints(pCurBody, dx, dz);
                 m_SurfaceList.append(pPlane->wing(iw)->m_Surface.at(j));
             }
 //            pPlane->wing(iw)->computeBodyAxisInertia(); // redundant with inertia calculation at plane level
@@ -820,8 +820,8 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
 int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, Surface *pSurface)
 {
     //TODO : for  a gap at the wing's center, need to separate m_iPL and m_iPR at the tips;
-    bool bNoJoinFlap=true;
-    int n0=0, n1=0, n2=0, n3=0;
+    bool bNoJoinFlap(true);
+    int n0(0), n1(0), n2(0), n3(0);
 
     int InitialSize = m_MatSize;
     enumPanelPosition side = MIDSURFACE;

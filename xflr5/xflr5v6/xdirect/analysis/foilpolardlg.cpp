@@ -60,13 +60,13 @@ void FoilPolarDlg::setupLayout()
         {
             QHBoxLayout *pAutoNameLayout = new QHBoxLayout;
             {
-                m_pctrlAuto1 = new QRadioButton(tr("Automatic"));
-                m_pctrlAuto2 = new QRadioButton(tr("User Defined"));
+                m_prbAuto1 = new QRadioButton(tr("Automatic"));
+                m_prbAuto2 = new QRadioButton(tr("User Defined"));
                 m_pleAnalysisName = new QLineEdit(tr("Analysis Name"));
                 pAutoNameLayout->addStretch(1);
-                pAutoNameLayout->addWidget(m_pctrlAuto1);
+                pAutoNameLayout->addWidget(m_prbAuto1);
                 pAutoNameLayout->addStretch(1);
-                pAutoNameLayout->addWidget(m_pctrlAuto2);
+                pAutoNameLayout->addWidget(m_prbAuto2);
                 pAutoNameLayout->addStretch(1);
             }
             pAnalysisLayout->addLayout(pAutoNameLayout);
@@ -262,8 +262,8 @@ void FoilPolarDlg::setupLayout()
 
 void FoilPolarDlg::connectSignals()
 {
-    connect(m_pctrlAuto1, SIGNAL(clicked()), this, SLOT(onAutoName()));
-    connect(m_pctrlAuto2, SIGNAL(clicked()), this, SLOT(onAutoName()));
+    connect(m_prbAuto1, SIGNAL(clicked()), this, SLOT(onAutoName()));
+    connect(m_prbAuto2, SIGNAL(clicked()), this, SLOT(onAutoName()));
 
     connect(m_rbtype1, SIGNAL(clicked()), this, SLOT(onPolarType()));
     connect(m_rbtype2, SIGNAL(clicked()), this, SLOT(onPolarType()));
@@ -354,7 +354,7 @@ void FoilPolarDlg::initDialog()
     m_plabLengthUnit1->setText(str);
     m_plabLengthUnit2->setText(str);
 
-    Units::getWeightUnitLabel(str);
+    Units::getMassUnitLabel(str);
     m_plabMassUnit->setText(str);
 
     m_prbFluidUnit1->setChecked(s_UnitType==1);
@@ -369,7 +369,7 @@ void FoilPolarDlg::initDialog()
     onPolarType();
 
     m_bAutoName = true;
-    m_pctrlAuto1->setChecked(true);
+    m_prbAuto1->setChecked(true);
 
 }
 
@@ -409,7 +409,7 @@ void FoilPolarDlg::keyPressEvent(QKeyEvent *pEvent)
 
 void FoilPolarDlg::onAutoName()
 {
-    if(m_pctrlAuto2->isChecked())
+    if(m_prbAuto2->isChecked())
     {
         m_bAutoName = false;
         m_pleAnalysisName->setFocus();
@@ -426,8 +426,8 @@ void FoilPolarDlg::onAutoName()
 void FoilPolarDlg::onNameChanged()
 {
     m_bAutoName = false;
-    m_pctrlAuto1->setChecked(false);
-    m_pctrlAuto2->setChecked(true);
+    m_prbAuto1->setChecked(false);
+    m_prbAuto2->setChecked(true);
 }
 
 
@@ -446,7 +446,6 @@ void FoilPolarDlg::onPolarType()
         m_plabReUnit->setText(" ");
         m_plabMach->setText(tr("Mach ="));
         m_pdeReynolds->setValue(s_RefPolar.m_Reynolds);
-//        m_pctrlReynolds->setPrecision(0);
         s_RefPolar.m_PolarType = xfl::FIXEDSPEEDPOLAR;
     }
     else if(m_rbtype2->isChecked())
@@ -455,7 +454,6 @@ void FoilPolarDlg::onPolarType()
         m_plabReUnit->setText(" ");
         m_plabMach->setText(tr("Ma.sqrt(Cl) ="));
         s_RefPolar.m_PolarType = xfl::FIXEDLIFTPOLAR;
-//        m_pctrlReynolds->setPrecision(0);
         onCalcReynolds();
     }
     else if(m_rbtype3->isChecked())
@@ -464,7 +462,6 @@ void FoilPolarDlg::onPolarType()
         m_plabReUnit->setText(" ");
         m_plabMach->setText(tr("Mach ="));
         m_pdeReynolds->setValue(s_RefPolar.m_Reynolds);
-//        m_pctrlReynolds->setPrecision(0);
         s_RefPolar.m_PolarType = xfl::RUBBERCHORDPOLAR;
     }
     else if(m_rbtype4->isChecked())
@@ -473,7 +470,6 @@ void FoilPolarDlg::onPolarType()
         m_plabReUnit->setText(QChar(0260));
         m_plabMach->setText(tr("Mach ="));
         m_pdeReynolds->setValue(s_RefPolar.m_ASpec);
-//        m_pctrlReynolds->setPrecision(3);
         s_RefPolar.m_PolarType = xfl::FIXEDAOAPOLAR;
     }
 
@@ -538,8 +534,6 @@ void FoilPolarDlg::readParams()
         s_RefPolar.m_Reynolds = locale().toDouble(str, &bOK);
 
     s_RefPolar.m_Mach     = m_pdeMach->value();
-//  m_pctrlMach->clear();
-//    m_pctrlMach->insert(str.setNum(m_Mach,'f',3));
 
     s_RefPolar.m_NCrit = m_pdeNCrit->value();
     s_RefPolar.m_XTop  = m_pdeTopTrans->value();
