@@ -111,7 +111,9 @@ void setOGLDefaultFormat(int version)
 
     if(gl3dView::defaultXflSurfaceFormat().samples()<0) gl3dView::setDefaultSamples(4);
 
+
     QSurfaceFormat::setDefaultFormat(gl3dView::defaultXflSurfaceFormat()); // for all QOpenGLWidgets
+//qDebug()<<gl3dView::defaultXflSurfaceFormat();
 }
 
 /**

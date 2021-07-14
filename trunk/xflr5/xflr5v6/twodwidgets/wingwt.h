@@ -37,11 +37,8 @@ class WingWidget : public QWidget
 
     public:
         WingWidget(QWidget *pParent = nullptr);
-        ~WingWidget();
 
-        void contextMenuEvent (QContextMenuEvent *pEvent) override;
         void keyPressEvent(QKeyEvent *pEvent) override;
-        void mouseDoubleClickEvent (QMouseEvent *pEvent) override;
         void mouseMoveEvent(QMouseEvent *pEvent) override;
         void mousePressEvent(QMouseEvent *pEvent) override;
         void mouseReleaseEvent(QMouseEvent *pEvent) override;

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     STLExportDialog
-    Copyright (C) 2016 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -42,8 +42,8 @@ STLExportDlg::STLExportDlg()
     connectSignals();
 
     setLabels();
-    m_pctrlBinary->setEnabled(false);
-    m_pctrlASCII->setEnabled(false);
+    m_prbBinary->setEnabled(false);
+    m_prbASCII->setEnabled(false);
 }
 
 
@@ -55,10 +55,10 @@ void STLExportDlg::setupLayout()
         {
             QHBoxLayout *pFormatLayout = new QHBoxLayout;
             {
-                m_pctrlBinary = new QRadioButton(tr("Binary"));
-                m_pctrlASCII  = new QRadioButton(tr("ASCII"));
-                pFormatLayout->addWidget(m_pctrlBinary);
-                pFormatLayout->addWidget(m_pctrlASCII);
+                m_prbBinary = new QRadioButton(tr("Binary"));
+                m_prbASCII  = new QRadioButton(tr("ASCII"));
+                pFormatLayout->addWidget(m_prbBinary);
+                pFormatLayout->addWidget(m_prbASCII);
             }
             pExportFormat->setLayout(pFormatLayout);
         }
@@ -87,24 +87,24 @@ void STLExportDlg::setupLayout()
             {
                 QHBoxLayout *pChordLayout = new QHBoxLayout;
                 {
-                    m_pctrlChordLabel = new QLabel("Chordwise panels");
-                    m_pctrlChordLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-                    m_pctrlChordPanels = new IntEdit(17);
-                    m_pctrlChordPanels->setAlignment(Qt::AlignRight);
+                    m_plabChordLabel = new QLabel("Chordwise panels");
+                    m_plabChordLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                    m_pieChordPanels = new IntEdit(17);
+                    m_pieChordPanels->setAlignment(Qt::AlignRight);
                     pChordLayout->addStretch();
-                    pChordLayout->addWidget(m_pctrlChordLabel);
-                    pChordLayout->addWidget(m_pctrlChordPanels);
+                    pChordLayout->addWidget(m_plabChordLabel);
+                    pChordLayout->addWidget(m_pieChordPanels);
                 }
 
                 QHBoxLayout *pSpanLayout = new QHBoxLayout;
                 {
-                    m_pctrlSpanLabel = new QLabel("Spanwise panels");
-                    m_pctrlSpanLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-                    m_pctrlSpanPanels = new IntEdit(17);
-                    m_pctrlSpanPanels->setAlignment(Qt::AlignRight);
+                    m_plabSpanLabel = new QLabel("Spanwise panels");
+                    m_plabSpanLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                    m_pieSpanPanels = new IntEdit(17);
+                    m_pieSpanPanels->setAlignment(Qt::AlignRight);
                     pSpanLayout->addStretch();
-                    pSpanLayout->addWidget(m_pctrlSpanLabel);
-                    pSpanLayout->addWidget(m_pctrlSpanPanels);
+                    pSpanLayout->addWidget(m_plabSpanLabel);
+                    pSpanLayout->addWidget(m_pieSpanPanels);
                 }
                 pResolutionLayout->addLayout(pChordLayout);
                 pResolutionLayout->addLayout(pSpanLayout);
@@ -129,8 +129,8 @@ void STLExportDlg::setupLayout()
 
 void STLExportDlg::connectSignals()
 {
-    connect(m_pctrlChordPanels, SIGNAL(editingFinished()), this, SLOT(onReadParams()));
-    connect(m_pctrlSpanPanels,  SIGNAL(editingFinished()), this, SLOT(onReadParams()));
+    connect(m_pieChordPanels, SIGNAL(editingFinished()), this, SLOT(onReadParams()));
+    connect(m_pieSpanPanels,  SIGNAL(editingFinished()), this, SLOT(onReadParams()));
 }
 
 
@@ -151,10 +151,10 @@ void STLExportDlg::accept()
 void STLExportDlg::initDialog(Plane *pPlane)
 {
 
-    m_pctrlBinary->setChecked(s_bBinary);
-    m_pctrlASCII->setChecked(!s_bBinary);
-    m_pctrlChordPanels->setValue(s_NChordPanels);
-    m_pctrlSpanPanels->setValue(s_NSpanPanels);
+    m_prbBinary->setChecked(s_bBinary);
+    m_prbASCII->setChecked(!s_bBinary);
+    m_pieChordPanels->setValue(s_NChordPanels);
+    m_pieSpanPanels->setValue(s_NSpanPanels);
 
     m_prb[0]->setEnabled(pPlane->hasBody());
     m_prb[2]->setEnabled(pPlane->hasSecondWing());
@@ -173,9 +173,9 @@ void STLExportDlg::initDialog(Plane *pPlane)
 
 void STLExportDlg::onReadParams()
 {
-    s_bBinary = m_pctrlBinary->isChecked();
-    s_NChordPanels = m_pctrlChordPanels->value();
-    s_NSpanPanels  = m_pctrlSpanPanels->value();
+    s_bBinary = m_prbBinary->isChecked();
+    s_NChordPanels = m_pieChordPanels->value();
+    s_NSpanPanels  = m_pieSpanPanels->value();
     for(int i=0; i<5; i++)
     {
         if(m_prb[i]->isChecked())
@@ -205,13 +205,13 @@ void STLExportDlg::setLabels()
 {
     if(s_iObject==0)
     {
-        m_pctrlChordLabel->setText(tr("Number of x-panels"));
-        m_pctrlSpanLabel->setText(tr("Number of hoop/y panels"));
+        m_plabChordLabel->setText(tr("Number of x-panels"));
+        m_plabSpanLabel->setText(tr("Number of hoop/y panels"));
     }
     else
     {
-        m_pctrlChordLabel->setText(tr("Number of chordwise panels"));
-        m_pctrlSpanLabel->setText(tr("Number of span panels per surface"));
+        m_plabChordLabel->setText(tr("Number of chordwise panels"));
+        m_plabSpanLabel->setText(tr("Number of span panels per surface"));
     }
 }
 

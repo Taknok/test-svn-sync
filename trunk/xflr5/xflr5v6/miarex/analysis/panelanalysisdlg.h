@@ -1,7 +1,7 @@
 /****************************************************************************
 
     PanelAnalysisDlg Class
-    Copyright (C) 2009-2018 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,8 +27,7 @@
  *
  */
 
-#ifndef PANELANALYSISDLG_H
-#define PANELANALYSISDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QElapsedTimer>
@@ -66,62 +65,62 @@ class PanelAnalysisDlg : public QDialog
     friend class Miarex;
     friend class MainFrame;
 
-public:
-    PanelAnalysisDlg(QWidget *pParent);
-    ~PanelAnalysisDlg() override;
+    public:
+        PanelAnalysisDlg(QWidget *pParent);
+        ~PanelAnalysisDlg() override;
 
-    void initDialog();
-    void setTask(PlaneTask *pTask){m_pTheTask = pTask;}
-    void deleteTask();
+        void initDialog();
+        void setTask(PlaneTask *pTask){m_pTheTask = pTask;}
+        void deleteTask();
 
-    QSize sizeHint() const override {return QSize(950,700);}
+        QSize sizeHint() const override {return QSize(950,700);}
 
-private slots:
-    void onCancelAnalysis();
-    void onProgress();
-    void onLogFile();
-    void onMessage(QString msg);
+    private slots:
+        void onCancelAnalysis();
+        void onProgress();
+        void onLogFile();
+        void onMessage(QString msg);
 
-private:
-    void showEvent(QShowEvent *event) override;
-    void hideEvent(QHideEvent *event) override;
-    void keyPressEvent(QKeyEvent *event) override;
+    private:
+        void showEvent(QShowEvent *event) override;
+        void hideEvent(QHideEvent *event) override;
+        void keyPressEvent(QKeyEvent *event) override;
 
-    void setupLayout();
-    void analyze();
-    void cleanUp();
+        void setupLayout();
+        void analyze();
+        void cleanUp();
 
-    void updateOutput(QString &strong);
-    void updateView();
+        void updateOutput(QString &strong);
+        void updateView();
 
-private:
-    QTextEdit *m_pctrlTextOutput;
-    QPushButton *m_pctrlCancel;
-    QCheckBox * m_pctrlLogFile;
-    QProgressBar *m_pctrlProgress;
+    private:
+        QTextEdit *m_pteOutput;
+        QPushButton *m_ppbCancel;
+        QCheckBox * m_pchLogFile;
+        QProgressBar *m_ppbProgress;
 
-    QElapsedTimer clock;
+        QElapsedTimer clock;
 
-    bool m_bIsFinished;         /**< true if the analysis is completed */
-    bool m_bPointOut;           /** true if an interpolation was outside the min or max Cl */
-    bool m_bSequence;           /** true if the calculation is should be performed for a range of aoa */
+        bool m_bIsFinished;         /**< true if the analysis is completed */
+        bool m_bPointOut;           /** true if an interpolation was outside the min or max Cl */
+        bool m_bSequence;           /** true if the calculation is should be performed for a range of aoa */
 
-    double m_Progress;          /**< A measure of the progress of the analysis, used to provide feedback to the user */
+        double m_Progress;          /**< A measure of the progress of the analysis, used to provide feedback to the user */
 
-    QString m_strOut;
+        QString m_strOut;
 
-    QTimer m_Timer;
+        QTimer m_Timer;
 
-public:
+    public:
 
-    bool m_bTrace;
+        bool m_bTrace;
 
-    PlaneTask *m_pTheTask; /**< a pointer to the one and only instance of the PlaneTask class */
+        PlaneTask *m_pTheTask; /**< a pointer to the one and only instance of the PlaneTask class */
 
-    static QByteArray s_Geometry;
+        static QByteArray s_Geometry;
 };
 
-#endif // PANELANALYSISDLG_H
+
 
 
 

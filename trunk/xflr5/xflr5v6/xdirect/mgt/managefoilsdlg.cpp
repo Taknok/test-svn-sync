@@ -30,9 +30,9 @@
 #include "managefoilsdlg.h"
 
 #include <design/foiltabledelegate.h>
-#include <misc/renamedlg.h>
+#include <xflobjects/editors/renamedlg.h>
 
-#include <xdirect/objects2d.h>
+#include <xflobjects/objects2d/objects2d.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 #include <xflobjects/objects2d/foil.h>

@@ -286,6 +286,7 @@ bool XFoilTask::alphaSequence()
                     OpPoint *pOpPoint = new OpPoint;
                     pOpPoint->setFoilName(m_pFoil->name());
                     pOpPoint->setPolarName(m_pPolar->name());
+                    pOpPoint->setTheStyle(m_pPolar->theStyle());
                     addXFoilData(pOpPoint, &m_XFoilInstance, m_pFoil);
                     m_pPolar->addOpPointData(pOpPoint); // store the data on the fly; a polar is only used by one task at a time
 

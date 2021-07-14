@@ -1,7 +1,7 @@
 /****************************************************************************
 
     EditPlrDlg Class
-    Copyright (C) 2009-2018 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -39,13 +39,14 @@ QByteArray EditPlrDlg::s_Geometry;
 EditPlrDlg::EditPlrDlg(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle(tr("Polar Points Edition"));
+
     m_pXDirect    = nullptr;
     m_pMiarex     = nullptr;
 
     m_pPolar      = nullptr;
     m_pWPolar     = nullptr;
 
-    m_pctrlPointTable = nullptr;
+    m_ptvPoints = nullptr;
     m_pPointModel     = nullptr;
     m_pFloatDelegate  = nullptr;
 
@@ -83,14 +84,14 @@ void EditPlrDlg::initDialog(XDirect *pXDirect, Polar* pPolar, Miarex *pMiarex, W
     m_pPointModel->setHeaderData(12, Qt::Horizontal, "Cpmn");
     m_pPointModel->setHeaderData(13, Qt::Horizontal, "Re");
 
-    m_pctrlPointTable->setModel(m_pPointModel);
+    m_ptvPoints->setModel(m_pPointModel);
 
 
-    QHeaderView *HorizontalHeader = m_pctrlPointTable->horizontalHeader();
+    QHeaderView *HorizontalHeader = m_ptvPoints->horizontalHeader();
     HorizontalHeader->setStretchLastSection(true);
 
     m_pFloatDelegate = new FloatEditDelegate(this);
-    m_pctrlPointTable->setItemDelegate(m_pFloatDelegate);
+    m_ptvPoints->setItemDelegate(m_pFloatDelegate);
 
     QVector<int>  m_precision(14, 3);
     m_precision.last() = 0;
@@ -151,8 +152,7 @@ void EditPlrDlg::fillPolarData()
         index = m_pPointModel->index(i, 13, QModelIndex());
         m_pPointModel->setData(index, m_pPolar->m_Re.at(i));
     }
-    m_pctrlPointTable->resizeRowsToContents();
-//    m_pctrlPointTable->resizeColumnsToContents();
+    m_ptvPoints->resizeRowsToContents();
 }
 
 
@@ -176,11 +176,8 @@ void EditPlrDlg::fillWPolarData()
         index = m_pPointModel->index(i, 3, QModelIndex());
         m_pPointModel->setData(index, m_pWPolar->m_GCm.at(i));
     }
-    m_pctrlPointTable->resizeRowsToContents();
-//    m_pctrlPointTable->resizeColumnsToContents();
+    m_ptvPoints->resizeRowsToContents();
 }
-
-
 
 
 void EditPlrDlg::keyPressEvent(QKeyEvent *event)
@@ -214,7 +211,7 @@ void EditPlrDlg::keyPressEvent(QKeyEvent *event)
 
 void EditPlrDlg::deletePoint()
 {
-    QModelIndex index = m_pctrlPointTable->currentIndex();
+    QModelIndex index = m_ptvPoints->currentIndex();
 
     if(m_pXDirect)
     {
@@ -236,7 +233,7 @@ void EditPlrDlg::deletePoint()
     {
         index = m_pPointModel->index(m_pPointModel->rowCount()-1,0);
     }
-    if(m_pPointModel->rowCount()) m_pctrlPointTable->setCurrentIndex(index);
+    if(m_pPointModel->rowCount()) m_ptvPoints->setCurrentIndex(index);
 }
 
 
@@ -264,22 +261,22 @@ void EditPlrDlg::setupLayout()
 {
     m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Discard);
     {
-        m_pctrlDeleteAllPoints = new QPushButton(tr("Delete All Points"));
-        m_pctrlDeletePoint       = new QPushButton(tr("Delete Point"));
-        m_pButtonBox->addButton(m_pctrlDeleteAllPoints, QDialogButtonBox::ActionRole);
-        m_pButtonBox->addButton(m_pctrlDeletePoint, QDialogButtonBox::ActionRole);
+        m_ppbDeleteAllPoints = new QPushButton(tr("Delete All Points"));
+        m_ppbDeletePoint       = new QPushButton(tr("Delete Point"));
+        m_pButtonBox->addButton(m_ppbDeleteAllPoints, QDialogButtonBox::ActionRole);
+        m_pButtonBox->addButton(m_ppbDeletePoint, QDialogButtonBox::ActionRole);
         connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
 
-    m_pctrlPointTable = new QTableView(this);
-    m_pctrlPointTable->setFont(DisplayOptions::tableFont());
-    m_pctrlPointTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_pctrlPointTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_pctrlPointTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_ptvPoints = new QTableView(this);
+    m_ptvPoints->setFont(DisplayOptions::tableFont());
+    m_ptvPoints->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_ptvPoints->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_ptvPoints->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QVBoxLayout * pMainLayout = new QVBoxLayout(this);
     {
-        pMainLayout->addWidget(m_pctrlPointTable);
+        pMainLayout->addWidget(m_ptvPoints);
         pMainLayout->addWidget(m_pButtonBox);
     }
 
@@ -291,8 +288,8 @@ void EditPlrDlg::onButton(QAbstractButton *pButton)
 {
     if      (pButton==m_pButtonBox->button(QDialogButtonBox::Save))     accept();
     else if (pButton== m_pButtonBox->button(QDialogButtonBox::Discard)) reject();
-    else if (pButton==m_pctrlDeletePoint)                               deletePoint();
-    else if (pButton==m_pctrlDeleteAllPoints)                           deleteAllPoints();
+    else if (pButton==m_ppbDeletePoint)                               deletePoint();
+    else if (pButton==m_ppbDeleteAllPoints)                           deleteAllPoints();
 }
 
 
@@ -310,13 +307,13 @@ void EditPlrDlg::hideEvent(QHideEvent*)
 
 void EditPlrDlg::resizeEvent(QResizeEvent*event)
 {
-    if(!m_pPointModel || !m_pctrlPointTable) return;
+    if(!m_pPointModel || !m_ptvPoints) return;
     int n = m_pPointModel->columnCount();
-    int w = m_pctrlPointTable->width();
+    int w = m_ptvPoints->width();
     int w14 = int(double(w)*0.9/double(n));
 
     for(int i=0; i<m_pPointModel->columnCount(); i++)
-        m_pctrlPointTable->setColumnWidth(i,w14);
+        m_ptvPoints->setColumnWidth(i,w14);
 
     event->accept();
 }

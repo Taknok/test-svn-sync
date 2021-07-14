@@ -178,6 +178,7 @@ class gl3dView : public QOpenGLWidget
         void glMakeUnitSphere(QOpenGLBuffer &vbo);
         void glMakeArcPoint(ArcBall const&arcball);
         void glMakeArcBall(ArcBall &arcball);
+        void glMakeLightSource();
 
         void glRenderText(Vector3d const &pos, const QString & str, const QColor &textcolor, bool bBackground=false, bool bBold=false) {glRenderText(pos.x, pos.y, pos.z, str, textcolor, bBackground, bBold);}
         void glRenderText(int x, int y, const QString & str, const QColor &backclr, const QColor &textcolor = QColor(Qt::white), bool bBold=false);
@@ -193,6 +194,7 @@ class gl3dView : public QOpenGLWidget
         void paintGL3();
         void paintArcBall();
         void paintAxes();
+        void paintPoints(QOpenGLBuffer &vbo, float width, int iShape, bool bLight, QColor const &clr, int stride);
         void paintSphere(const Vector3d &place, double radius, QColor sphereColor, bool bLight=true);
         void paintTriangles3Vtx(QOpenGLBuffer &vbo, const QColor &backclr, bool bTwoSided, bool bLight);
         void paintTriangles3VtxTexture(QOpenGLBuffer &vbo, const QColor &backclr, bool bTwoSided, bool bLight, QOpenGLTexture *pTexture);
@@ -232,14 +234,18 @@ class gl3dView : public QOpenGLWidget
 
         QOpenGLShaderProgram m_shadLine;
         QOpenGLShaderProgram m_shadSurf;
+        QOpenGLShaderProgram m_shadPoint;
+
+        ShaderLocations m_locSurf;
+        ShaderLocations m_locLine;
+        ShaderLocations m_locPoint;
 
         QOpenGLBuffer m_vboArcBall, m_vboArcPoint;
         QOpenGLBuffer m_vboSphere;
         QOpenGLBuffer m_vboAxes;
+        QOpenGLBuffer m_vboLightSource;
         QOpenGLBuffer m_vboCube, m_vboCubeEdges;
 
-        ShaderLocations m_locSurf;
-        ShaderLocations m_locLine;
 
         bool m_bLightVisible;
 
@@ -313,6 +319,6 @@ class gl3dView : public QOpenGLWidget
 };
 
 GLushort GLStipple(Line::enumLineStipple stipple);
-void GLLineStipple(int style);
+void GLLineStipple(Line::enumLineStipple stipple);
 
 

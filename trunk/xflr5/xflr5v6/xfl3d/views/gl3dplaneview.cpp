@@ -57,17 +57,9 @@ void gl3dPlaneView::glRenderView()
         Body const*pBody = m_pPlane->body();
         if(pBody)
         {
-            bool bTextures = pBody->hasTextures() && (m_pLeftBodyTexture && m_pRightBodyTexture);
-            if(bTextures)
-            {
-                paintTriangles3VtxTexture(m_vboFuseLeft,  pBody->color(), false, true, m_pLeftBodyTexture);
-                paintTriangles3VtxTexture(m_vboFuseRight, pBody->color(), false, true, m_pRightBodyTexture);
-            }
-            else
-            {
-                paintTriangles3VtxTexture(m_vboFuseLeft,  pBody->color(), false, true, nullptr);
-                paintTriangles3VtxTexture(m_vboFuseRight, pBody->color(), false, true, nullptr);
-            }
+            paintTriangles3VtxTexture(m_vboFuseLeft,  pBody->color(), false, true, nullptr);
+            paintTriangles3VtxTexture(m_vboFuseRight, pBody->color(), false, true, nullptr);
+
             if(pBody->isFlatPanelType())
                 paintSegments(m_vboFuseOutline, W3dPrefs::s_OutlineStyle);
             else
@@ -79,7 +71,12 @@ void gl3dPlaneView::glRenderView()
             Wing const* pWing = m_pPlane->wingAt(iw);
             if(pWing)
             {
-                paintWing(iw, pWing);
+                if(m_bSurfaces)
+                    paintTriangles3VtxTexture(m_vboWingSurface[iw], pWing->color(), false, true, nullptr);
+
+                if(m_bOutline)
+                    paintSegments(m_vboWingOutline[iw], W3dPrefs::s_OutlineStyle, false);
+
                 if(m_bFoilNames) paintFoilNames(pWing);
             }
         }
@@ -157,35 +154,44 @@ void gl3dPlaneView::glMake3dObjects()
 {
     if(!m_pPlane) return;
 
-    Body TranslatedBody;
-    if(m_pPlane->body())
-    {
-        TranslatedBody.duplicate(m_pPlane->body());
-        TranslatedBody.translate(m_pPlane->bodyPos());
-        if(m_bResetglPlane || m_bResetglBody)
-        {
-            if(TranslatedBody.isSplineType())
-            {
-                glMakeFuseSplines(&TranslatedBody);
-                glMakeFuseSplinesOutline(&TranslatedBody);
-            }
-            else if(TranslatedBody.isFlatPanelType())
-            {
-                glMakeFuseFlatPanels(&TranslatedBody);
-                glMakeFuseFlatPanelsOutline(&TranslatedBody);
-            }
-            m_bResetglBody = false;
-        }
-    }
-
-
     if(m_bResetglPlane)
     {
+        Body TranslatedBody;
+        if(m_pPlane->body())
+        {
+            TranslatedBody.duplicate(m_pPlane->body());
+            TranslatedBody.translate(m_pPlane->bodyPos());
+            if(m_bResetglPlane || m_bResetglBody)
+            {
+                if(TranslatedBody.isSplineType())
+                {
+                    glMakeFuseSplines(&TranslatedBody);
+                    glMakeFuseSplinesOutline(&TranslatedBody);
+                }
+                else if(TranslatedBody.isFlatPanelType())
+                {
+                    glMakeFuseFlatPanels(&TranslatedBody);
+                    glMakeFuseFlatPanelsOutline(&TranslatedBody);
+                }
+                m_bResetglBody = false;
+            }
+        }
         for(int iw=0; iw<MAXWINGS; iw++)
         {
             if(m_pPlane->wingAt(iw))
             {
-                glMakeWingGeometry(iw, m_pPlane->wingAt(iw), &TranslatedBody);
+                if(m_pPlane->body())
+                {
+    //                    glMakeWingGeometry(iw, pCurPlane->wing(iw), &translatedBody);
+                    glMakeWingSurface(m_pPlane->wingAt(iw), &TranslatedBody, m_vboWingSurface[iw]);
+                    glMakeWingOutline(m_pPlane->wingAt(iw), &TranslatedBody, m_vboWingOutline[iw]);
+                }
+                else
+                {
+    //                    glMakeWingGeometry(iw, pCurPlane->wing(iw), nullptr);
+                    glMakeWingSurface(m_pPlane->wingAt(iw), nullptr, m_vboWingSurface[iw]);
+                    glMakeWingOutline(m_pPlane->wingAt(iw), nullptr, m_vboWingOutline[iw]);
+                }
             }
         }
 

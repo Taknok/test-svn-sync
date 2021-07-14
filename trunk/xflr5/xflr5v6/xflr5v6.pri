@@ -1,5 +1,8 @@
 
 SOURCES += \
+    $$PWD/miarex/planetreeview.cpp \
+    $$PWD/xdirect/foiltreeview.cpp \
+    $$PWD/xdirect/oppointwt.cpp \
     design/afoil.cpp \
     design/afoiltabledlg.cpp \
     design/foiltabledelegate.cpp \
@@ -17,27 +20,9 @@ SOURCES += \
     miarex/analysis/stabpolardlg.cpp \
     miarex/analysis/wadvanceddlg.cpp \
     miarex/analysis/wpolardlg.cpp \
-    miarex/design/bodyscaledlg.cpp \
-    miarex/design/bodytransdlg.cpp \
-    miarex/design/editbodydlg.cpp \
-    miarex/design/editobjectdelegate.cpp \
-    miarex/design/editplanedlg.cpp \
-    miarex/design/gl3dbodydlg.cpp \
-    miarex/design/gl3dwingdlg.cpp \
-    miarex/design/inertiadlg.cpp \
-    miarex/design/planedlg.cpp \
-    miarex/design/wingdelegate.cpp \
-    miarex/design/wingscaledlg.cpp \
-    miarex/design/wingseldlg.cpp \
-    miarex/mgt/importobjectdlg.cpp \
     miarex/mgt/manageplanesdlg.cpp \
     miarex/mgt/planetabledelegate.cpp \
-    miarex/mgt/xmlplanereader.cpp \
-    miarex/mgt/xmlplanewriter.cpp \
-    miarex/mgt/xmlwpolarreader.cpp \
-    miarex/mgt/xmlwpolarwriter.cpp \
     miarex/miarex.cpp \
-    miarex/objects3d.cpp \
     miarex/view/gl3dmiarexview.cpp \
     miarex/view/gl3dscales.cpp \
     miarex/view/stabviewdlg.cpp \
@@ -50,15 +35,10 @@ SOURCES += \
     misc/options/saveoptions.cpp \
     misc/options/settingswt.cpp \
     misc/polarfilterdlg.cpp \
-    misc/renamedlg.cpp \
     misc/stlexportdialog.cpp \
-    twodwidgets/bodyframewt.cpp \
-    twodwidgets/bodylinewt.cpp \
     twodwidgets/foildesignwt.cpp \
     twodwidgets/foilwt.cpp \
     twodwidgets/inverseviewwt.cpp \
-    twodwidgets/oppointwt.cpp \
-    twodwidgets/section2dwt.cpp \
     twodwidgets/wingwt.cpp \
     xdirect/analysis/batchabstractdlg.cpp \
     xdirect/analysis/batchctrldlg.cpp \
@@ -79,7 +59,6 @@ SOURCES += \
     xdirect/geometry/tegapdlg.cpp \
     xdirect/geometry/twodpaneldlg.cpp \
     xdirect/mgt/managefoilsdlg.cpp \
-    xdirect/objects2d.cpp \
     xdirect/optim2d/gatask.cpp \
     xdirect/optim2d/mopsotask.cpp \
     xdirect/optim2d/mopsotask2d.cpp \
@@ -97,6 +76,9 @@ SOURCES += \
 
 
 HEADERS += \
+    $$PWD/miarex/planetreeview.h \
+    $$PWD/xdirect/foiltreeview.h \
+    $$PWD/xdirect/oppointwt.h \
     design/afoil.h \
     design/afoiltabledlg.h \
     design/foiltabledelegate.h \
@@ -113,27 +95,9 @@ HEADERS += \
     miarex/analysis/stabpolardlg.h \
     miarex/analysis/wadvanceddlg.h \
     miarex/analysis/wpolardlg.h \
-    miarex/design/bodyscaledlg.h \
-    miarex/design/bodytransdlg.h \
-    miarex/design/editbodydlg.h \
-    miarex/design/editobjectdelegate.h \
-    miarex/design/editplanedlg.h \
-    miarex/design/gl3dbodydlg.h \
-    miarex/design/gl3dwingdlg.h \
-    miarex/design/inertiadlg.h \
-    miarex/design/planedlg.h \
-    miarex/design/wingdelegate.h \
-    miarex/design/wingscaledlg.h \
-    miarex/design/wingseldlg.h \
-    miarex/mgt/importobjectdlg.h \
     miarex/mgt/manageplanesdlg.h \
     miarex/mgt/planetabledelegate.h \
-    miarex/mgt/xmlplanereader.h \
-    miarex/mgt/xmlplanewriter.h \
-    miarex/mgt/xmlwpolarreader.h \
-    miarex/mgt/xmlwpolarwriter.h \
     miarex/miarex.h \
-    miarex/objects3d.h \
     miarex/view/gl3dmiarexview.h \
     miarex/view/gl3dscales.h \
     miarex/view/stabviewdlg.h \
@@ -146,15 +110,10 @@ HEADERS += \
     misc/options/saveoptions.h \
     misc/options/settingswt.h \
     misc/polarfilterdlg.h \
-    misc/renamedlg.h \
     misc/stlexportdialog.h \
-    twodwidgets/bodyframewt.h \
-    twodwidgets/bodylinewt.h \
     twodwidgets/foildesignwt.h \
     twodwidgets/foilwt.h \
     twodwidgets/inverseviewwt.h \
-    twodwidgets/oppointwt.h \
-    twodwidgets/section2dwt.h \
     twodwidgets/wingwt.h \
     xdirect/analysis/batchabstractdlg.h \
     xdirect/analysis/batchctrldlg.h \
@@ -175,7 +134,6 @@ HEADERS += \
     xdirect/geometry/tegapdlg.h \
     xdirect/geometry/twodpaneldlg.h \
     xdirect/mgt/managefoilsdlg.h \
-    xdirect/objects2d.h \
     xdirect/optim2d/gatask.h \
     xdirect/optim2d/mopsotask.h \
     xdirect/optim2d/mopsotask2d.h \
@@ -197,7 +155,6 @@ HEADERS += \
 RESOURCES += \
     scripts.qrc \
     images.qrc \
-    textures.qrc \
 
 
 

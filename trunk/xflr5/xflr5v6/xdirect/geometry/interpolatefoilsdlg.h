@@ -58,7 +58,7 @@ class InterpolateFoilsDlg : public QDialog
 
 
     private:
-        QComboBox *m_pctrlFoil1, *m_pctrlFoil2;
+        QComboBox *m_pcbFoil1, *m_pcbFoil2;
         QLabel *m_plabCamb1, *m_plabCamb2, *m_plabThick1, *m_plabThick2;
         QLabel *m_plabCamb3, *m_plabThick3;
         QSlider *m_pslMix;

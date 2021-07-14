@@ -23,9 +23,11 @@
 
 #include "plane.h"
 
+#include <xflcore/units.h>
 #include <xflobjects/objects3d/surface.h>
 #include <xflobjects/objects_global.h>
-
+#include <xflobjects/objects3d/wpolar.h>
+#include <xflobjects/objects3d/planeopp.h>
 
 /** The public constructor. */
 Plane::Plane()
@@ -91,14 +93,12 @@ Plane::Plane()
 
     m_bBody         = false;
     m_bFin          = true;
-    m_bDoubleFin    = false;
-    m_bSymFin       = false;
     m_bStab         = true;
     m_bBiplane      = false;
 
     clearPointMasses();
 
-    m_PlaneName  = QObject::tr("Plane Name");
+    m_Name  = QObject::tr("Plane Name");
 }
 
 
@@ -106,6 +106,9 @@ Plane::~Plane()
 {
     clearPointMasses();
 }
+
+bool Plane::hasWPolar(WPolar const*pWPolar) const {return pWPolar->planeName().compare(m_Name)==0;}
+bool Plane::hasPOpp(PlaneOpp const*pPOpp)   const {return pPOpp->planeName().compare(m_Name)==0;}
 
 
 /**
@@ -326,8 +329,6 @@ void Plane::computePlane(void)
         m_TailVolume = ProjectedArea * SLA / area/m_Wing[0].m_MAChord ;
     }
     else m_TailVolume = 0.0;
-    m_Wing[3].m_bDoubleFin = m_bDoubleFin;
-    m_Wing[3].m_bSymFin    = m_bSymFin;
 }
 
 
@@ -338,13 +339,11 @@ void Plane::computePlane(void)
 */
 void Plane::duplicate(Plane const *pPlane)
 {
-    m_PlaneName        = pPlane->m_PlaneName;
+    m_Name        = pPlane->m_Name;
     m_PlaneDescription = pPlane->m_PlaneDescription;
     renameWings();
 
     m_bFin          = pPlane->m_bFin;
-    m_bSymFin       = pPlane->m_bSymFin;
-    m_bDoubleFin    = pPlane->m_bDoubleFin;
     m_bStab         = pPlane->m_bStab;
     m_bBiplane      = pPlane->m_bBiplane;
 
@@ -385,8 +384,8 @@ void Plane::setAutoBodyName()
     if(!m_bBody) m_BodyName.clear();
     else
     {
-        m_BodyName = m_PlaneName+"_body";
-        m_Body.m_BodyName = m_PlaneName+"_body";
+        m_BodyName = m_Name+"_body";
+        m_Body.m_BodyName = m_Name+"_body";
     }
 }
 
@@ -403,7 +402,7 @@ void Plane::setWings(bool bWing2, bool bStab, bool bFin)
 * Returns the plane's tail volume
 * @return the plane's tail volume
 */
-double Plane::tailVolume()
+double Plane::tailVolume() const
 {
     if(m_bStab) return m_TailVolume;
     else        return 0.0;
@@ -456,9 +455,9 @@ void Plane::renameWings()
  *Renames the plane and sets the automatic default name for its wings .
  *@param planeName the Plane's new name.
 */
-void Plane::setPlaneName(QString planeName)
+void Plane::setName(QString const &planeName)
 {
-    m_PlaneName = planeName;
+    m_Name = planeName;
     renameWings();
 }
 
@@ -469,7 +468,7 @@ void Plane::setPlaneName(QString planeName)
 void Plane::createSurfaces()
 {
     m_Wing[0].createSurfaces(m_WingLE[0],   0.0, m_WingTiltAngle[0]);
-    if(wing(1))    m_Wing[1].createSurfaces(m_WingLE[1],   0.0, m_WingTiltAngle[1]);
+    if(wing(1)) m_Wing[1].createSurfaces(m_WingLE[1],   0.0, m_WingTiltAngle[1]);
     if(wing(2)) m_Wing[2].createSurfaces(m_WingLE[2],   0.0, m_WingTiltAngle[2]);
     if(wing(3)) m_Wing[3].createSurfaces(m_WingLE[3], -90.0, m_WingTiltAngle[3]);
 
@@ -478,7 +477,7 @@ void Plane::createSurfaces()
         if(wing(iw))
         {
             for (int j=0; j<m_Wing[iw].m_Surface.size(); j++)
-                m_Wing[iw].m_Surface.at(j)->setSidePoints(body(), bodyPos().x, bodyPos().z);
+                m_Wing[iw].m_Surface.at(j)->setMeshSidePoints(body(), bodyPos().x, bodyPos().z);
             m_Wing[iw].computeBodyAxisInertia();
         }
     }
@@ -520,8 +519,10 @@ int Plane::VLMPanelTotal()
 
     if(fin())
     {
-        if(m_bDoubleFin ||m_bSymFin)  total += 2*fin()->VLMPanelTotal(true);
-        else                          total +=   fin()->VLMPanelTotal(true);
+        if(fin()->m_bDoubleFin || fin()->m_bSymFin)
+            total += 2*fin()->VLMPanelTotal(true);
+        else
+            total +=   fin()->VLMPanelTotal(true);
     }
 
     if(m_bBody) total += body()->m_nxPanels * body()->m_nhPanels * 2;
@@ -629,12 +630,12 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
         ar >> ArchiveFormat;
         if (ArchiveFormat <1001 || ArchiveFormat>1100)
         {
-            m_PlaneName = "";
+            m_Name = "";
             return false;
         }
 
-        readCString(ar,m_PlaneName);
-        if (m_PlaneName.length() ==0) return false;
+        readCString(ar,m_Name);
+        if (m_Name.length() ==0) return false;
 
         if(ArchiveFormat>=1011) readCString(ar, m_PlaneDescription);
 
@@ -651,11 +652,10 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
         if(ArchiveFormat>=1002)
         {
             ar >>k;
-            if(k) m_bDoubleFin = true;  else m_bDoubleFin = false;
-            m_Wing[3].m_bDoubleFin = m_bDoubleFin;
+            if(k) m_Wing[3].m_bDoubleFin = true;  else m_Wing[3].m_bDoubleFin = false;
+
             ar >>k;
-            if(k) m_bSymFin = true;  else m_bSymFin = false;
-            m_Wing[3].m_bSymFin = m_bSymFin;
+            if(k) m_Wing[3].m_bSymFin = true;  else m_Wing[3].m_bSymFin = false;
         }
         if(ArchiveFormat>=1005)
         {
@@ -771,18 +771,23 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
  */
 bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 {
-    int k=0;
-    double dble=0, mass=0, px=0, py=0, pz=0;
+    int k(0);
+    double dble(0), mass(0), px(0), py(0), pz(0);
     QString str;
 
-    int ArchiveFormat;// identifies the format of the file
+
+    int ArchiveFormat=100002;// identifies the format of the file
+    // 1000001: v648
+    // 1000002: v649, added the style
     if (bIsStoring)
     {
         // storing code
-        ar << 100001;
+        ar << ArchiveFormat;
 
-        ar << m_PlaneName;
+        ar << m_Name;
         ar << m_PlaneDescription;
+
+        m_theStyle.serializeFl5(ar, bIsStoring);
 
         m_Wing[0].serializeWingXFL(ar, bIsStoring);
         m_Wing[1].serializeWingXFL(ar, bIsStoring);
@@ -790,7 +795,7 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
         m_Wing[3].serializeWingXFL(ar, bIsStoring);
 
         bool bl = false;
-        ar << m_bBiplane<< m_bStab <<m_bFin << m_bDoubleFin << m_bSymFin << bl;//m_bDoubleSymFin;
+        ar << m_bBiplane<< m_bStab <<m_bFin << m_Wing[3].m_bDoubleFin << m_Wing[3].m_bSymFin << bl;//m_bDoubleSymFin;
 
         for(int iw=0; iw<MAXWINGS; iw++)
         {
@@ -829,8 +834,11 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
             return false;
         }
 
-        ar >> m_PlaneName;
+        ar >> m_Name;
         ar >> m_PlaneDescription;
+
+        if(ArchiveFormat>=100002)  m_theStyle.serializeFl5(ar, bIsStoring);
+
 
         m_Wing[0].serializeWingXFL(ar, bIsStoring);
         m_Wing[1].serializeWingXFL(ar, bIsStoring);
@@ -843,7 +851,7 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
         m_Wing[3].setWingType(xfl::FIN);
 
         bool bl;
-        ar >> m_bBiplane>> m_bStab >>m_bFin >> m_bDoubleFin >> m_bSymFin >> bl; // m_bDoubleSymFin;
+        ar >> m_bBiplane>> m_bStab >>m_bFin >> m_Wing[3].m_bDoubleFin >> m_Wing[3].m_bSymFin >> bl; // m_bDoubleSymFin;
 
         for(int iw=0; iw<MAXWINGS; iw++)
         {
@@ -890,4 +898,63 @@ int Plane::spanStationCount()
 }
 
 
+QString Plane::planeData(bool) const
+{
+    QString props;
+    QString str1, str, strong;
 
+    QString length, surface;
+    Units::getLengthUnitLabel(length);
+    Units::getAreaUnitLabel(surface);
+
+    str1 = QString(QObject::tr("Wing Span      =")+"%1 ").arg(planformSpan()*Units::mtoUnit(),10,'f',3);
+    str1 += length;
+    props += str1+"\n";
+
+    str1 = QString(QObject::tr("xyProj. Span   =")+"%1 ").arg(projectedSpan()*Units::mtoUnit(),10,'f',3);
+    str1 += length;
+    props += str1+"\n";
+
+    str1 = QString(QObject::tr("Wing Area      =")+"%1 ").arg(planformArea() * Units::m2toUnit(),10,'f',3);
+    str1 += surface;
+    props += str1+"\n";
+
+    str1 = QString(QObject::tr("xyProj. Area   =")+"%1 ").arg(projectedArea() * Units::m2toUnit(),10,'f',3);
+    str1 += surface;
+    props += str1+"\n";
+
+    Units::getMassUnitLabel(str);
+    str1 = QString(QObject::tr("Plane Mass     =")+"%1 ").arg(totalMass()*Units::kgtoUnit(),10,'f',3);
+    str1 += str;
+    props += str1+"\n";
+
+    Units::getAreaUnitLabel(strong);
+    str1 = QString(QObject::tr("Wing Load      =")+"%1 ").arg(totalMass()*Units::kgtoUnit()/projectedArea()/Units::m2toUnit(),10,'f',3);
+    str1 += str + "/" + strong;
+    props += str1+"\n";
+
+    if(m_bBiplane) str1 = QString(QObject::tr("Tail Volume    =")+"%1").arg(tailVolume(),10,'f',3);
+
+
+    str1 = QString(QObject::tr("Root Chord     =")+"%1 ").arg(m_Wing[0].rootChord()*Units::mtoUnit(), 10,'f', 3);
+    str1 = str1+length;
+    props += str1+"\n";
+
+    str1 = QString(QObject::tr("MAC            =")+"%1 ").arg(mac()*Units::mtoUnit(), 10,'f', 3);
+    str1 = str1+length;
+    props += str1+"\n";
+
+    str1 = QString(QObject::tr("TipTwist       =")+"%1").arg(m_Wing[0].tipTwist(), 10,'f', 3) + QChar(0260);
+    props += str1+"\n";
+
+    str1 = QString(QObject::tr("Aspect Ratio   =")+"%1").arg(aspectRatio(),10,'f',3);
+    props += str1+"\n";
+
+    str1 = QString(QObject::tr("Taper Ratio    =")+"%1").arg(taperRatio(),10,'f',3);
+    props += str1+"\n";
+
+    str1 = QString(QObject::tr("Root-Tip Sweep =")+"%1").arg(m_Wing[0].averageSweep(), 10,'f',3) + QChar(0260);
+    props += str1;
+
+    return props;
+}

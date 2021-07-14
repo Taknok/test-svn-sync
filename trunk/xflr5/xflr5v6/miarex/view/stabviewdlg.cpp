@@ -1,7 +1,7 @@
 /****************************************************************************
 
     StabViewDlg Class
-    Copyright (C) 2010-2016 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -74,31 +74,30 @@ StabViewDlg::~StabViewDlg()
 
 void StabViewDlg::connectSignals()
 {
-    connect(m_pctrlLongDynamics, SIGNAL(clicked()), s_pMiarex, SLOT(onStabilityDirection()));
-    connect(m_pctrlLatDynamics,  SIGNAL(clicked()), s_pMiarex, SLOT(onStabilityDirection()));
+    connect(m_prbLongDynamics, SIGNAL(clicked()), s_pMiarex, SLOT(onStabilityDirection()));
+    connect(m_prbLatDynamics,  SIGNAL(clicked()), s_pMiarex, SLOT(onStabilityDirection()));
 
     connect(m_ppbPlotStabGraph, SIGNAL(clicked()), this , SLOT(onPlotStabilityGraph()));
 
-    connect(m_pctrlRLMode1,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
-    connect(m_pctrlRLMode2,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
-    connect(m_pctrlRLMode3,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
-    connect(m_pctrlRLMode4,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
-    connect(m_pctrlTimeMode1, SIGNAL(clicked()), this, SLOT(onModeSelection()));
-    connect(m_pctrlTimeMode2, SIGNAL(clicked()), this, SLOT(onModeSelection()));
-    connect(m_pctrlTimeMode3, SIGNAL(clicked()), this, SLOT(onModeSelection()));
-    connect(m_pctrlTimeMode4, SIGNAL(clicked()), this, SLOT(onModeSelection()));
+    connect(m_prbRLMode1,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
+    connect(m_prbRLMode2,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
+    connect(m_prbRLMode3,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
+    connect(m_prbRLMode4,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
+    connect(m_prbTimeMode1, SIGNAL(clicked()), this, SLOT(onModeSelection()));
+    connect(m_prbTimeMode2, SIGNAL(clicked()), this, SLOT(onModeSelection()));
+    connect(m_prbTimeMode3, SIGNAL(clicked()), this, SLOT(onModeSelection()));
+    connect(m_prbTimeMode4, SIGNAL(clicked()), this, SLOT(onModeSelection()));
     
-    connect(m_pctrlAnimate,            SIGNAL(clicked()),         this, SLOT(onAnimate()));
-    connect(m_pctrlAnimationSpeed ,    SIGNAL(valueChanged(int)), this, SLOT(onAnimationSpeed(int)));
-    connect(m_pctrlAnimationAmplitude, SIGNAL(valueChanged(int)), this, SLOT(onAnimationAmplitude(int)));
-    connect(m_pctrlAnimateRestart,     SIGNAL(clicked()),         this, SLOT(onAnimateRestart()));
+    connect(m_ppbAnimate,            SIGNAL(clicked()),         this, SLOT(onAnimate()));
+    connect(m_pdAnimationSpeed ,    SIGNAL(valueChanged(int)), this, SLOT(onAnimationSpeed(int)));
+    connect(m_pdAnimationAmplitude, SIGNAL(valueChanged(int)), this, SLOT(onAnimationAmplitude(int)));
+    connect(m_ppbAnimateRestart,     SIGNAL(clicked()),         this, SLOT(onAnimateRestart()));
     connect(m_pdeDeltat,             SIGNAL(editingFinished()), this, SLOT(onReadData()));
-    connect(m_pctrlModeStep,           SIGNAL(editingFinished()), this, SLOT(onReadData()));
-//    connect(m_pCtrlDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
+    connect(m_pdeModeStep,           SIGNAL(editingFinished()), this, SLOT(onReadData()));
 
-    connect(m_pctrlInitCondResponse, SIGNAL(clicked()), this, SLOT(onResponseType()));
-    connect(m_pctrlForcedResponse,   SIGNAL(clicked()), this, SLOT(onResponseType()));
-    connect(m_pctrlModalResponse,    SIGNAL(clicked()), this, SLOT(onResponseType()));
+    connect(m_prbInitCondResponse, SIGNAL(clicked()), this, SLOT(onResponseType()));
+    connect(m_prbForcedResponse,   SIGNAL(clicked()), this, SLOT(onResponseType()));
+    connect(m_prbModalResponse,    SIGNAL(clicked()), this, SLOT(onResponseType()));
     
     connect(m_ppbAddCurve,    SIGNAL(clicked()),      this, SLOT(onAddCurve()));
     connect(m_ppbDeleteCurve, SIGNAL(clicked()),      this, SLOT(onDeleteCurve()));
@@ -110,15 +109,13 @@ void StabViewDlg::connectSignals()
     m_pControlModel->setColumnCount(2);
     m_pControlModel->setHeaderData(0, Qt::Horizontal, tr("Time (s)"));
     m_pControlModel->setHeaderData(1, Qt::Horizontal, tr("Angle ")+QString::fromUtf8("(°)"));
-//    m_pControlModel->setHeaderData(2, Qt::Horizontal, tr("Ramp (s)"));
 
 
-    m_pctrlControlTable->setModel(m_pControlModel);
-    m_pctrlControlTable->setWindowTitle(tr("Controls"));
-    m_pctrlControlTable->setColumnWidth(0,50);
-    m_pctrlControlTable->setColumnWidth(1,40);
-//    m_pctrlControlTable->setColumnWidth(2,60);
-    QHeaderView *HorizontalHeader = m_pctrlControlTable->horizontalHeader();
+    m_ptvControl->setModel(m_pControlModel);
+    m_ptvControl->setWindowTitle(tr("Controls"));
+    m_ptvControl->setColumnWidth(0,50);
+    m_ptvControl->setColumnWidth(1,40);
+    QHeaderView *HorizontalHeader = m_ptvControl->horizontalHeader();
     HorizontalHeader->setStretchLastSection(true);
 }
 
@@ -168,7 +165,7 @@ void StabViewDlg::fillEigenThings()
         eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenValue[m_iCurrentMode];
         if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%9.4f+%9.4fi", eigenvalue.real(), eigenvalue.imag());
         else                       strange = QString::asprintf("%9.4f-%9.4fi", eigenvalue.real(), eigenvalue.imag());
-        m_pctrlEigenValue->setText(strange);
+        m_pleEigenValue->setText(strange);
         ModeDescription.append("Lambda="+strange+"<br/>");
 
         modeProperties(eigenvalue, OmegaN, Omega1, Zeta);
@@ -178,19 +175,19 @@ void StabViewDlg::fillEigenThings()
 
         if(Omega1>PRECISION)
         {
-            m_pctrlFreq1->setValue(Omega1/2.0/PI);
+            m_pdeFreq1->setValue(Omega1/2.0/PI);
             strange = QString::asprintf("Fd=%6.3f Hz", Omega1/2.0/PI);
             ModeDescription.append(strange+"<br/>");
         }
         else
         {
-            m_pctrlFreq1->clear();
+            m_pdeFreq1->clear();
         }
 
         if(Omega1 > PRECISION)
         {
-            m_pctrlFreqN->setValue(OmegaN/2.0/PI);
-            m_pctrlZeta->setValue(Zeta);
+            m_pdeFreqN->setValue(OmegaN/2.0/PI);
+            m_pdeZeta->setValue(Zeta);
             strange = QString::asprintf("FN=%6.3f Hz",OmegaN/2.0/PI);
             ModeDescription.append(strange+"<br/>");
             strange = QString::asprintf("Zeta=%6.3f",Zeta);
@@ -198,28 +195,28 @@ void StabViewDlg::fillEigenThings()
         }
         else
         {
-            m_pctrlFreqN->clear();
-            m_pctrlZeta->clear();
+            m_pdeFreqN->clear();
+            m_pdeZeta->clear();
         }
 
         if(fabs(eigenvalue.real())>PRECISION && fabs(eigenvalue.imag())<PRECISION)
         {
             strange = QString::asprintf("T2=%6.3f s", log(2)/fabs(eigenvalue.real()));
             ModeDescription.append(strange+"<br/>");
-            m_pctrlT2->setValue(log(2)/fabs(eigenvalue.real()));
+            m_pdeT2->setValue(log(2)/fabs(eigenvalue.real()));
             if(eigenvalue.real()<0.0)
             {
-                m_pctrlTau->setValue(-1.0/eigenvalue.real());
+                m_pdeTau->setValue(-1.0/eigenvalue.real());
                 strange = QString::asprintf("tau=%6.3f", -1.0/eigenvalue.real());
                 ModeDescription.append(strange+"<br/>");
             }
             else
-                m_pctrlTau->clear();
+                m_pdeTau->clear();
         }
         else
         {
-            m_pctrlT2->clear();
-            m_pctrlTau->clear();
+            m_pdeT2->clear();
+            m_pdeTau->clear();
         }
 
 
@@ -229,25 +226,25 @@ void StabViewDlg::fillEigenThings()
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][0]/u0;
             if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
-            m_pctrlEigenVector1->setText(strange);
+            m_pleEigenVector1->setText(strange);
             ModeDescription.append("v1="+strange+"<br/>");
 
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][1]/u0;
             if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
-            m_pctrlEigenVector2->setText(strange);
+            m_pleEigenVector2->setText(strange);
             ModeDescription.append("v2="+strange+"<br/>");
 
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][2]/(2.0*u0/mac);
             if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
-            m_pctrlEigenVector3->setText(strange);
+            m_pleEigenVector3->setText(strange);
             ModeDescription.append("v3="+strange+"<br/>");
 
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3]/angle;
             if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
-            m_pctrlEigenVector4->setText(strange);
+            m_pleEigenVector4->setText(strange);
             ModeDescription.append("v4="+strange);
         }
         else if(!s_pMiarex->m_bLongitudinal && s_pMiarex->m_pCurPOpp)
@@ -257,51 +254,51 @@ void StabViewDlg::fillEigenThings()
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][0]/u0;
             if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
-            m_pctrlEigenVector1->setText(strange);
+            m_pleEigenVector1->setText(strange);
             ModeDescription.append("v1="+strange+"<br/>");
 
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][1]/(2.0*u0/span);
             if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
-            m_pctrlEigenVector2->setText(strange);
+            m_pleEigenVector2->setText(strange);
             ModeDescription.append("v2="+strange+"<br/>");
 
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][2]/(2.0*u0/span);
             if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
-            m_pctrlEigenVector3->setText(strange);
+            m_pleEigenVector3->setText(strange);
             ModeDescription.append("v3="+strange+"<br/>");
 
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3]/angle;
             if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
-            m_pctrlEigenVector4->setText(strange);
+            m_pleEigenVector4->setText(strange);
             ModeDescription.append("v4="+strange);
 
         }
         ModeDescription.append("</small>");
-        m_pctrlModeProperties->setText(ModeDescription);
+        m_plabModeProperties->setText(ModeDescription);
     }
     else
     {
-        m_pctrlEigenValue->clear();
-        m_pctrlEigenVector1->clear();
-        m_pctrlEigenVector2->clear();
-        m_pctrlEigenVector3->clear();
-        m_pctrlEigenVector4->clear();
-        m_pctrlFreqN->clear();
-        m_pctrlFreq1->clear();
-        m_pctrlZeta->clear();
-        m_pctrlT2->clear();
-        m_pctrlTau->clear();
-        m_pctrlModeProperties->clear();
+        m_pleEigenValue->clear();
+        m_pleEigenVector1->clear();
+        m_pleEigenVector2->clear();
+        m_pleEigenVector3->clear();
+        m_pleEigenVector4->clear();
+        m_pdeFreqN->clear();
+        m_pdeFreq1->clear();
+        m_pdeZeta->clear();
+        m_pdeT2->clear();
+        m_pdeTau->clear();
+        m_plabModeProperties->clear();
     }
 }
 
 
-void StabViewDlg::keyPressEvent(QKeyEvent *event)
+void StabViewDlg::keyPressEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Return:
         case Qt::Key_Enter:
@@ -313,30 +310,29 @@ void StabViewDlg::keyPressEvent(QKeyEvent *event)
         }
         case Qt::Key_Escape:
         {
-            if(m_pctrlAnimate->isChecked()) m_pctrlAnimate->setChecked(false);
+            if(m_ppbAnimate->isChecked()) m_ppbAnimate->setChecked(false);
             onAnimate();
             break;
         }
         default:
         {
-            s_pMiarex->keyPressEvent(event);
+            s_pMiarex->keyPressEvent(pEvent);
         }
-//        event->ignore();
     }
 }
 
 
 void StabViewDlg::onAnimate()
 {
-    if(m_pctrlAnimate->isChecked())
+    if(m_ppbAnimate->isChecked())
     {
 //        pMiarex->m_iView = WSTABVIEW;
         s_pMiarex->m_iView=xfl::W3DVIEW;
         s_pMiarex->setControls();
         
-        s_pMiarex->m_Modedt = m_pctrlModeStep->value();
+        s_pMiarex->m_Modedt = m_pdeModeStep->value();
         s_pMiarex->m_bAnimateMode  = true;
-        int speed = m_pctrlAnimationSpeed->value();
+        int speed = m_pdAnimationSpeed->value();
         s_pMiarex->m_pTimerMode->setInterval(400-speed);
         s_pMiarex->m_pTimerMode->start();
     }
@@ -480,17 +476,17 @@ void StabViewDlg::onModeSelection()
 {
     if(s_pMiarex->m_iView==xfl::STABTIMEVIEW)
     {
-        if(m_pctrlTimeMode1->isChecked())      m_iCurrentMode = 0;
-        else if(m_pctrlTimeMode2->isChecked()) m_iCurrentMode = 1;
-        else if(m_pctrlTimeMode3->isChecked()) m_iCurrentMode = 2;
-        else if(m_pctrlTimeMode4->isChecked()) m_iCurrentMode = 3;
+        if(m_prbTimeMode1->isChecked())      m_iCurrentMode = 0;
+        else if(m_prbTimeMode2->isChecked()) m_iCurrentMode = 1;
+        else if(m_prbTimeMode3->isChecked()) m_iCurrentMode = 2;
+        else if(m_prbTimeMode4->isChecked()) m_iCurrentMode = 3;
     }
     else if(s_pMiarex->m_iView==xfl::STABPOLARVIEW || s_pMiarex->m_iView==xfl::W3DVIEW)
     {
-        if(m_pctrlRLMode1->isChecked())      m_iCurrentMode = 0;
-        else if(m_pctrlRLMode2->isChecked()) m_iCurrentMode = 1;
-        else if(m_pctrlRLMode3->isChecked()) m_iCurrentMode = 2;
-        else if(m_pctrlRLMode4->isChecked()) m_iCurrentMode = 3;
+        if(m_prbRLMode1->isChecked())      m_iCurrentMode = 0;
+        else if(m_prbRLMode2->isChecked()) m_iCurrentMode = 1;
+        else if(m_prbRLMode3->isChecked()) m_iCurrentMode = 2;
+        else if(m_prbRLMode4->isChecked()) m_iCurrentMode = 3;
     }
     if(!s_pMiarex->m_bLongitudinal) m_iCurrentMode +=4;
     setMode(m_iCurrentMode);
@@ -505,7 +501,7 @@ void StabViewDlg::onModeSelection()
 
 void StabViewDlg::onReadData()
 {
-    s_pMiarex->m_Modedt = m_pctrlModeStep->value();
+    s_pMiarex->m_Modedt = m_pdeModeStep->value();
     s_pMiarex->m_Deltat = m_pdeDeltat->value();
 }
 
@@ -515,9 +511,9 @@ void StabViewDlg::onResponseType()
 {
     int type=0;
     
-    if(m_pctrlInitCondResponse->isChecked())    type=0;
-    else if(m_pctrlForcedResponse->isChecked()) type=1;
-    else if(m_pctrlModalResponse->isChecked())  type=2;
+    if(m_prbInitCondResponse->isChecked())    type=0;
+    else if(m_prbForcedResponse->isChecked()) type=1;
+    else if(m_prbModalResponse->isChecked())  type=2;
     
     if(type==s_pMiarex->m_StabilityResponseType) return;
     
@@ -538,10 +534,10 @@ void StabViewDlg::setMode(int iMode)
     }
     else if(m_iCurrentMode<0) m_iCurrentMode=0;
 
-    m_pctrlRLMode1->setChecked(m_iCurrentMode%4==0);
-    m_pctrlRLMode2->setChecked(m_iCurrentMode%4==1);
-    m_pctrlRLMode3->setChecked(m_iCurrentMode%4==2);
-    m_pctrlRLMode4->setChecked(m_iCurrentMode%4==3);
+    m_prbRLMode1->setChecked(m_iCurrentMode%4==0);
+    m_prbRLMode2->setChecked(m_iCurrentMode%4==1);
+    m_prbRLMode3->setChecked(m_iCurrentMode%4==2);
+    m_prbRLMode4->setChecked(m_iCurrentMode%4==3);
     fillEigenThings();
     PlaneOpp *pPOpp = s_pMiarex->m_pCurPOpp;
 
@@ -577,14 +573,14 @@ void StabViewDlg::setupLayout()
     //____________Stability direction__________
     QGroupBox *pStabilityDirBox = new QGroupBox(tr("Stability direction"));
     {
-        m_pctrlLongDynamics = new QRadioButton(tr("Longitudinal"));
-        m_pctrlLatDynamics = new QRadioButton(tr("Lateral"));
+        m_prbLongDynamics = new QRadioButton(tr("Longitudinal"));
+        m_prbLatDynamics = new QRadioButton(tr("Lateral"));
         QHBoxLayout *pStabilityDirLayout = new QHBoxLayout;
         {
             pStabilityDirLayout->addStretch(1);
-            pStabilityDirLayout->addWidget(m_pctrlLongDynamics);
+            pStabilityDirLayout->addWidget(m_prbLongDynamics);
             pStabilityDirLayout->addStretch(1);
-            pStabilityDirLayout->addWidget(m_pctrlLatDynamics);
+            pStabilityDirLayout->addWidget(m_prbLatDynamics);
             pStabilityDirLayout->addStretch(1);
         }
         pStabilityDirBox->setLayout(pStabilityDirLayout);
@@ -595,15 +591,15 @@ void StabViewDlg::setupLayout()
     {
         QVBoxLayout *pResponseTypeLayout = new QVBoxLayout;
         {
-            m_pctrlModalResponse = new QRadioButton(tr("Modal Response"));
-            m_pctrlModalResponse->setToolTip("Display the time response on a specific mode with normalized amplitude and random initial phase");
-            m_pctrlInitCondResponse = new QRadioButton(tr("Initial Conditions Response"));
-            m_pctrlInitCondResponse->setToolTip("Display the time response for specific initial conditions");
-            m_pctrlForcedResponse = new QRadioButton(tr("Forced Response"));
-            m_pctrlForcedResponse->setToolTip("Display the time response for a given control actuation in the form of a user-specified function of time");
-            pResponseTypeLayout->addWidget(m_pctrlInitCondResponse);
-            pResponseTypeLayout->addWidget(m_pctrlForcedResponse);
-            pResponseTypeLayout->addWidget(m_pctrlModalResponse);
+            m_prbModalResponse = new QRadioButton(tr("Modal Response"));
+            m_prbModalResponse->setToolTip("Display the time response on a specific mode with normalized amplitude and random initial phase");
+            m_prbInitCondResponse = new QRadioButton(tr("Initial Conditions Response"));
+            m_prbInitCondResponse->setToolTip("Display the time response for specific initial conditions");
+            m_prbForcedResponse = new QRadioButton(tr("Forced Response"));
+            m_prbForcedResponse->setToolTip("Display the time response for a given control actuation in the form of a user-specified function of time");
+            pResponseTypeLayout->addWidget(m_prbInitCondResponse);
+            pResponseTypeLayout->addWidget(m_prbForcedResponse);
+            pResponseTypeLayout->addWidget(m_prbModalResponse);
         }
 
 
@@ -644,22 +640,21 @@ void StabViewDlg::setupLayout()
         {
             QVBoxLayout *pForcedResponseLayout = new QVBoxLayout;
             QLabel *ForcedText = new QLabel(tr("Control function"));
-            m_pctrlControlTable = new QTableView(this);
-            m_pctrlControlTable->setFont(DisplayOptions::tableFont());
+            m_ptvControl = new QTableView(this);
+            m_ptvControl->setFont(DisplayOptions::tableFont());
 
-            m_pctrlControlTable->setToolTip(tr("Enter the function of the control vs. time"));
-            m_pctrlControlTable->setMinimumHeight(150);
-            m_pctrlControlTable->setSelectionMode(QAbstractItemView::SingleSelection);
-            m_pctrlControlTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-            m_pCtrlDelegate = new FloatEditDelegate(this);
+            m_ptvControl->setToolTip(tr("Enter the function of the control vs. time"));
+            m_ptvControl->setMinimumHeight(150);
+            m_ptvControl->setSelectionMode(QAbstractItemView::SingleSelection);
+            m_ptvControl->setSelectionBehavior(QAbstractItemView::SelectRows);
+            m_pControlDelegate = new FloatEditDelegate(this);
 
             QVector<int> m_precision(3, 3);
-            m_pCtrlDelegate->setPrecision(m_precision);
-            m_pctrlControlTable->setItemDelegate(m_pCtrlDelegate);
-//            m_pCtrlDelegate->m_pCtrlModel = m_pControlModel;
+            m_pControlDelegate->setPrecision(m_precision);
+            m_ptvControl->setItemDelegate(m_pControlDelegate);
 
             pForcedResponseLayout->addWidget(ForcedText);
-            pForcedResponseLayout->addWidget(m_pctrlControlTable);
+            pForcedResponseLayout->addWidget(m_ptvControl);
             pForcedResponseLayout->addStretch(1);
             pForcedResponseBox->setLayout(pForcedResponseLayout);
         }
@@ -667,25 +662,25 @@ void StabViewDlg::setupLayout()
         QGroupBox *pModalTimeBox = new QGroupBox(tr("Modal response"));
         {
             QVBoxLayout *pModalTimeLayout = new QVBoxLayout;
-            m_pctrlTimeMode1 = new QRadioButton("Mode 1");
-            m_pctrlTimeMode2 = new QRadioButton("Mode 2");
-            m_pctrlTimeMode3 = new QRadioButton("Mode 3");
-            m_pctrlTimeMode4 = new QRadioButton("Mode 4");
-            m_pctrlModeProperties = new QLabel("Mode Properties");
-            pModalTimeLayout->addWidget(m_pctrlTimeMode1);
-            pModalTimeLayout->addWidget(m_pctrlTimeMode2);
-            pModalTimeLayout->addWidget(m_pctrlTimeMode3);
-            pModalTimeLayout->addWidget(m_pctrlTimeMode4);
+            m_prbTimeMode1 = new QRadioButton("Mode 1");
+            m_prbTimeMode2 = new QRadioButton("Mode 2");
+            m_prbTimeMode3 = new QRadioButton("Mode 3");
+            m_prbTimeMode4 = new QRadioButton("Mode 4");
+            m_plabModeProperties = new QLabel("Mode Properties");
+            pModalTimeLayout->addWidget(m_prbTimeMode1);
+            pModalTimeLayout->addWidget(m_prbTimeMode2);
+            pModalTimeLayout->addWidget(m_prbTimeMode3);
+            pModalTimeLayout->addWidget(m_prbTimeMode4);
             pModalTimeLayout->addStretch(1);
-            pModalTimeLayout->addWidget(m_pctrlModeProperties);
+            pModalTimeLayout->addWidget(m_plabModeProperties);
             pModalTimeBox->setLayout(pModalTimeLayout);
         }
 
-        m_pctrlInitialConditionsWidget = new QStackedWidget;
-        m_pctrlInitialConditionsWidget->addWidget(pInitCondResponse);
-        m_pctrlInitialConditionsWidget->addWidget(pForcedResponseBox);
-        m_pctrlInitialConditionsWidget->addWidget(pModalTimeBox);
-        m_pctrlInitialConditionsWidget->setCurrentIndex(0);
+        m_pswInitialConditions = new QStackedWidget;
+        m_pswInitialConditions->addWidget(pInitCondResponse);
+        m_pswInitialConditions->addWidget(pForcedResponseBox);
+        m_pswInitialConditions->addWidget(pModalTimeBox);
+        m_pswInitialConditions->setCurrentIndex(0);
 
         m_pdeTotalTime = new DoubleEdit(5,3);
         m_pdeTotalTime->setToolTip(tr("Define the total time range for the graphs"));
@@ -739,7 +734,7 @@ void StabViewDlg::setupLayout()
         {
         //    TimeParamsLayout->addLayout(InitialConditionsLayout);
             pTimeParamsLayout->addLayout(pResponseTypeLayout);
-            pTimeParamsLayout->addWidget(m_pctrlInitialConditionsWidget);
+            pTimeParamsLayout->addWidget(m_pswInitialConditions);
             pTimeParamsLayout->addWidget(pCurveSettingsBox);
             pTimeParamsLayout->addStretch(5);
         }
@@ -753,18 +748,18 @@ void StabViewDlg::setupLayout()
         {
             QHBoxLayout *pRLModeLayout = new QHBoxLayout;
             {
-                m_pctrlRLMode1 = new QRadioButton("1");
-                m_pctrlRLMode2 = new QRadioButton("2");
-                m_pctrlRLMode3 = new QRadioButton("3");
-                m_pctrlRLMode4 = new QRadioButton("4");
-                m_pctrlRLMode1->setToolTip(tr("Press Ctrl+H to highlight the mode on the root locus plot"));
-                m_pctrlRLMode2->setToolTip(tr("Press Ctrl+H to highlight the mode on the root locus plot"));
-                m_pctrlRLMode3->setToolTip(tr("Press Ctrl+H to highlight the mode on the root locus plot"));
-                m_pctrlRLMode4->setToolTip(tr("Press Ctrl+H to highlight the mode on the root locus plot"));
-                pRLModeLayout->addWidget(m_pctrlRLMode1);
-                pRLModeLayout->addWidget(m_pctrlRLMode2);
-                pRLModeLayout->addWidget(m_pctrlRLMode3);
-                pRLModeLayout->addWidget(m_pctrlRLMode4);
+                m_prbRLMode1 = new QRadioButton("1");
+                m_prbRLMode2 = new QRadioButton("2");
+                m_prbRLMode3 = new QRadioButton("3");
+                m_prbRLMode4 = new QRadioButton("4");
+                m_prbRLMode1->setToolTip(tr("Press Ctrl+H to highlight the mode on the root locus plot"));
+                m_prbRLMode2->setToolTip(tr("Press Ctrl+H to highlight the mode on the root locus plot"));
+                m_prbRLMode3->setToolTip(tr("Press Ctrl+H to highlight the mode on the root locus plot"));
+                m_prbRLMode4->setToolTip(tr("Press Ctrl+H to highlight the mode on the root locus plot"));
+                pRLModeLayout->addWidget(m_prbRLMode1);
+                pRLModeLayout->addWidget(m_prbRLMode2);
+                pRLModeLayout->addWidget(m_prbRLMode3);
+                pRLModeLayout->addWidget(m_prbRLMode4);
             }
             pRLModeBox->setLayout(pRLModeLayout);
         }
@@ -785,38 +780,38 @@ void StabViewDlg::setupLayout()
             DsiLab->setFont(SymbolFont);
             tauLab->setFont(SymbolFont);
 
-            m_pctrlFreqN  = new DoubleEdit(0.0, 3);
-            m_pctrlFreq1  = new DoubleEdit(0.0, 3);
-            m_pctrlZeta   = new DoubleEdit(0.0, 3);
-            m_pctrlT2     = new DoubleEdit(0.0, 3);
-            m_pctrlTau    = new DoubleEdit(0.0, 3);
+            m_pdeFreqN  = new DoubleEdit(0.0, 3);
+            m_pdeFreq1  = new DoubleEdit(0.0, 3);
+            m_pdeZeta   = new DoubleEdit(0.0, 3);
+            m_pdeT2     = new DoubleEdit(0.0, 3);
+            m_pdeTau    = new DoubleEdit(0.0, 3);
 
             QString strong;
             strong = tr("Natural frequency");
             FreqNLab->setToolTip(strong);
-            m_pctrlFreqN->setToolTip(strong);
+            m_pdeFreqN->setToolTip(strong);
 
             strong = tr("Damped natural frequency");
             Freq1Lab->setToolTip(strong);
-            m_pctrlFreq1->setToolTip(strong);
+            m_pdeFreq1->setToolTip(strong);
 
             strong = tr("Damping ratio");
             DsiLab->setToolTip(strong);
-            m_pctrlZeta->setToolTip(strong);
+            m_pdeZeta->setToolTip(strong);
 
             strong = tr("Time to double");
             T2lab->setToolTip(strong);
-            m_pctrlT2->setToolTip(strong);
+            m_pdeT2->setToolTip(strong);
 
             strong = tr("Time constant") + "= (1-1/e)/|real(lambda)|";
             tauLab->setToolTip(strong);
-            m_pctrlTau->setToolTip(strong);
+            m_pdeTau->setToolTip(strong);
 
-            m_pctrlFreqN->setEnabled(false);
-            m_pctrlFreq1->setEnabled(false);
-            m_pctrlZeta->setEnabled(false);
-            m_pctrlT2->setEnabled(false);
-            m_pctrlTau->setEnabled(false);
+            m_pdeFreqN->setEnabled(false);
+            m_pdeFreq1->setEnabled(false);
+            m_pdeZeta->setEnabled(false);
+            m_pdeT2->setEnabled(false);
+            m_pdeTau->setEnabled(false);
             QLabel *FreqUnit1 = new QLabel("Hz");
             QLabel *FreqUnit2 = new QLabel("Hz");
             QLabel *T2Unit    = new QLabel("s");
@@ -827,11 +822,11 @@ void StabViewDlg::setupLayout()
                 pFreakLayout->addWidget(DsiLab,3,1);
                 pFreakLayout->addWidget(T2lab, 4, 1);
                 pFreakLayout->addWidget(tauLab, 5, 1);
-                pFreakLayout->addWidget(m_pctrlFreqN,1,2);
-                pFreakLayout->addWidget(m_pctrlFreq1,2,2);
-                pFreakLayout->addWidget(m_pctrlZeta,3,2);
-                pFreakLayout->addWidget(m_pctrlT2,4,2);
-                pFreakLayout->addWidget(m_pctrlTau,5,2);
+                pFreakLayout->addWidget(m_pdeFreqN,1,2);
+                pFreakLayout->addWidget(m_pdeFreq1,2,2);
+                pFreakLayout->addWidget(m_pdeZeta,3,2);
+                pFreakLayout->addWidget(m_pdeT2,4,2);
+                pFreakLayout->addWidget(m_pdeTau,5,2);
                 pFreakLayout->addWidget(FreqUnit1,1,3);
                 pFreakLayout->addWidget(FreqUnit2,2,3);
                 pFreakLayout->addWidget(T2Unit,4,3);
@@ -857,26 +852,26 @@ void StabViewDlg::setupLayout()
                 pEigenLayout->addWidget(LabVect2,3,1);
                 pEigenLayout->addWidget(LabVect3,4,1);
                 pEigenLayout->addWidget(LabVect4,5,1);
-                m_pctrlEigenValue = new QLineEdit("2+4i");
-                m_pctrlEigenVector1 = new QLineEdit("3-7i");
-                m_pctrlEigenVector2 = new QLineEdit("4-6i");
-                m_pctrlEigenVector3 = new QLineEdit("2.76-1.8782i");
-                m_pctrlEigenVector4 = new QLineEdit("3.4567+9.2746i");
-                m_pctrlEigenValue->setAlignment(Qt::AlignRight);
-                m_pctrlEigenVector1->setAlignment(Qt::AlignRight);
-                m_pctrlEigenVector2->setAlignment(Qt::AlignRight);
-                m_pctrlEigenVector3->setAlignment(Qt::AlignRight);
-                m_pctrlEigenVector4->setAlignment(Qt::AlignRight);
-                m_pctrlEigenValue->setEnabled(false);
-                m_pctrlEigenVector1->setEnabled(false);
-                m_pctrlEigenVector2->setEnabled(false);
-                m_pctrlEigenVector3->setEnabled(false);
-                m_pctrlEigenVector4->setEnabled(false);
-                pEigenLayout->addWidget(m_pctrlEigenValue,  1,2);
-                pEigenLayout->addWidget(m_pctrlEigenVector1,2,2);
-                pEigenLayout->addWidget(m_pctrlEigenVector2,3,2);
-                pEigenLayout->addWidget(m_pctrlEigenVector3,4,2);
-                pEigenLayout->addWidget(m_pctrlEigenVector4,5,2);
+                m_pleEigenValue = new QLineEdit("2+4i");
+                m_pleEigenVector1 = new QLineEdit("3-7i");
+                m_pleEigenVector2 = new QLineEdit("4-6i");
+                m_pleEigenVector3 = new QLineEdit("2.76-1.8782i");
+                m_pleEigenVector4 = new QLineEdit("3.4567+9.2746i");
+                m_pleEigenValue->setAlignment(Qt::AlignRight);
+                m_pleEigenVector1->setAlignment(Qt::AlignRight);
+                m_pleEigenVector2->setAlignment(Qt::AlignRight);
+                m_pleEigenVector3->setAlignment(Qt::AlignRight);
+                m_pleEigenVector4->setAlignment(Qt::AlignRight);
+                m_pleEigenValue->setEnabled(false);
+                m_pleEigenVector1->setEnabled(false);
+                m_pleEigenVector2->setEnabled(false);
+                m_pleEigenVector3->setEnabled(false);
+                m_pleEigenVector4->setEnabled(false);
+                pEigenLayout->addWidget(m_pleEigenValue,  1,2);
+                pEigenLayout->addWidget(m_pleEigenVector1,2,2);
+                pEigenLayout->addWidget(m_pleEigenVector2,3,2);
+                pEigenLayout->addWidget(m_pleEigenVector3,4,2);
+                pEigenLayout->addWidget(m_pleEigenVector4,5,2);
                 pEigenBox->setLayout(pEigenLayout);
             }
         }
@@ -888,47 +883,47 @@ void StabViewDlg::setupLayout()
             {
                 QLabel *LabSpeed = new QLabel(tr("Speed"));
                 LabSpeed->setAlignment(Qt::AlignCenter|Qt::AlignVCenter);
-                m_pctrlAnimationSpeed  = new QDial();
-                m_pctrlAnimationSpeed->setMinimum(0);
-                m_pctrlAnimationSpeed->setMaximum(400);
-                m_pctrlAnimationSpeed->setSliderPosition(m_ModeInterval);
-                m_pctrlAnimationSpeed->setNotchesVisible(true);
-                m_pctrlAnimationSpeed->setSingleStep(20);
-                m_pctrlAnimationSpeed->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+                m_pdAnimationSpeed  = new QDial();
+                m_pdAnimationSpeed->setMinimum(0);
+                m_pdAnimationSpeed->setMaximum(400);
+                m_pdAnimationSpeed->setSliderPosition(m_ModeInterval);
+                m_pdAnimationSpeed->setNotchesVisible(true);
+                m_pdAnimationSpeed->setSingleStep(20);
+                m_pdAnimationSpeed->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
 
-                pAnimSpeedLayout->addWidget(m_pctrlAnimationSpeed,1,1);
+                pAnimSpeedLayout->addWidget(m_pdAnimationSpeed,1,1);
                 pAnimSpeedLayout->addWidget(LabSpeed,2,1);
 
                 QLabel *LabAmplitude = new QLabel(tr("Amplitude"));
                 LabAmplitude->setAlignment(Qt::AlignCenter|Qt::AlignVCenter);
-                m_pctrlAnimationAmplitude  = new QDial();
-                m_pctrlAnimationAmplitude->setMinimum(0);
-                m_pctrlAnimationAmplitude->setMaximum(1000);
-                m_pctrlAnimationAmplitude->setSliderPosition(int(m_ModeAmplitude*500));
-                m_pctrlAnimationAmplitude->setNotchesVisible(true);
-                m_pctrlAnimationAmplitude->setSingleStep(20);
-                m_pctrlAnimationAmplitude->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-                pAnimSpeedLayout->addWidget(m_pctrlAnimationAmplitude,1,2);
+                m_pdAnimationAmplitude  = new QDial();
+                m_pdAnimationAmplitude->setMinimum(0);
+                m_pdAnimationAmplitude->setMaximum(1000);
+                m_pdAnimationAmplitude->setSliderPosition(int(m_ModeAmplitude*500));
+                m_pdAnimationAmplitude->setNotchesVisible(true);
+                m_pdAnimationAmplitude->setSingleStep(20);
+                m_pdAnimationAmplitude->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+                pAnimSpeedLayout->addWidget(m_pdAnimationAmplitude,1,2);
                 pAnimSpeedLayout->addWidget(LabAmplitude,2,2);
             }
 
             QVBoxLayout *pAnimationCommandsLayout = new QVBoxLayout;
             {
-                m_pctrlAnimate = new QPushButton(tr("Animate"));
-                m_pctrlAnimate->setCheckable(true);
-                m_pctrlAnimateRestart = new QPushButton(tr("Restart"));
-                pAnimationCommandsLayout->addWidget(m_pctrlAnimateRestart);
-                pAnimationCommandsLayout->addWidget(m_pctrlAnimate);
+                m_ppbAnimate = new QPushButton(tr("Animate"));
+                m_ppbAnimate->setCheckable(true);
+                m_ppbAnimateRestart = new QPushButton(tr("Restart"));
+                pAnimationCommandsLayout->addWidget(m_ppbAnimateRestart);
+                pAnimationCommandsLayout->addWidget(m_ppbAnimate);
             }
 
             QHBoxLayout *pStepLayout = new  QHBoxLayout;
             {
-                m_pctrlModeStep = new DoubleEdit(0.01,3);
+                m_pdeModeStep = new DoubleEdit(0.01,3);
                 QLabel *StepLabel = new QLabel(tr("Time Step ="));
                 QLabel *StepUnit  = new QLabel(tr("s"));
                 pStepLayout->addWidget(StepLabel);
-                pStepLayout->addWidget(m_pctrlModeStep);
+                pStepLayout->addWidget(m_pdeModeStep);
                 pStepLayout->addWidget(StepUnit);
             }
             QVBoxLayout *pAnimationLayout = new QVBoxLayout;
@@ -940,30 +935,30 @@ void StabViewDlg::setupLayout()
             pAnimationBox->setLayout(pAnimationLayout);
         }
 
-        m_pctrlModeViewType= new QStackedWidget;
-        m_pctrlModeViewType->addWidget(pEigenBox);
-        m_pctrlModeViewType->addWidget(pAnimationBox);
-        m_pctrlModeViewType->setCurrentIndex(0);
+        m_pswModeViewType= new QStackedWidget;
+        m_pswModeViewType->addWidget(pEigenBox);
+        m_pswModeViewType->addWidget(pAnimationBox);
+        m_pswModeViewType->setCurrentIndex(0);
 
         QVBoxLayout *pRLLayout = new QVBoxLayout;
         {
             pRLLayout->addWidget(pRLModeBox);
             pRLLayout->addWidget(pFreakBox);
-            pRLLayout->addWidget(m_pctrlModeViewType);
+            pRLLayout->addWidget(m_pswModeViewType);
 //            pRLLayout->addStretch(1);
             pModeBox->setLayout(pRLLayout);
         }
     }
 
     //___________________Main Layout____________
-    m_pctrlStackWidget = new QStackedWidget;
-    m_pctrlStackWidget->addWidget(TimeBox);
-    m_pctrlStackWidget->addWidget(pModeBox);
-    m_pctrlStackWidget->setCurrentIndex(0);
+    m_pswStack = new QStackedWidget;
+    m_pswStack->addWidget(TimeBox);
+    m_pswStack->addWidget(pModeBox);
+    m_pswStack->setCurrentIndex(0);
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     pMainLayout->addWidget(pStabilityDirBox);
-    pMainLayout->addWidget(m_pctrlStackWidget);
+    pMainLayout->addWidget(m_pswStack);
     setLayout(pMainLayout);
 }
 
@@ -976,8 +971,8 @@ void StabViewDlg::setControls()
 
     blockSignals(true);
 
-    m_pctrlLongDynamics->setChecked(s_pMiarex->m_bLongitudinal);
-    m_pctrlLatDynamics->setChecked(!s_pMiarex->m_bLongitudinal);
+    m_prbLongDynamics->setChecked(s_pMiarex->m_bLongitudinal);
+    m_prbLatDynamics->setChecked(!s_pMiarex->m_bLongitudinal);
 
     if(s_pMiarex->m_pCurWPolar && s_pMiarex->m_pCurWPolar->polarType()!=xfl::STABILITYPOLAR)
     {
@@ -986,22 +981,22 @@ void StabViewDlg::setControls()
 
     if(s_pMiarex->m_iView==xfl::STABTIMEVIEW)
     {
-        m_pctrlStackWidget->setCurrentIndex(0);
-        m_pctrlInitialConditionsWidget->setCurrentIndex(s_pMiarex->m_StabilityResponseType);
+        m_pswStack->setCurrentIndex(0);
+        m_pswInitialConditions->setCurrentIndex(s_pMiarex->m_StabilityResponseType);
         
-        m_pctrlInitCondResponse->setChecked(s_pMiarex->m_StabilityResponseType==0);
-        m_pctrlForcedResponse->setChecked(s_pMiarex->m_StabilityResponseType==1);
-        m_pctrlModalResponse->setChecked(s_pMiarex->m_StabilityResponseType==2);
+        m_prbInitCondResponse->setChecked(s_pMiarex->m_StabilityResponseType==0);
+        m_prbForcedResponse->setChecked(s_pMiarex->m_StabilityResponseType==1);
+        m_prbModalResponse->setChecked(s_pMiarex->m_StabilityResponseType==2);
     }
     else if(s_pMiarex->m_iView==xfl::STABPOLARVIEW)
     {
-        m_pctrlStackWidget->setCurrentIndex(1);
-        m_pctrlModeViewType->setCurrentIndex(0);
+        m_pswStack->setCurrentIndex(1);
+        m_pswModeViewType->setCurrentIndex(0);
     }
     else if(s_pMiarex->m_iView==xfl::W3DVIEW)
     {
-        m_pctrlStackWidget->setCurrentIndex(1);
-        m_pctrlModeViewType->setCurrentIndex(1);
+        m_pswStack->setCurrentIndex(1);
+        m_pswModeViewType->setCurrentIndex(1);
     }
     setMode(m_iCurrentMode);
 
@@ -1031,21 +1026,21 @@ void StabViewDlg::setControls()
     m_pdeTotalTime->setValue(s_pMiarex->m_TotalTime);
     m_pdeDeltat->setValue(s_pMiarex->m_Deltat);
 
-    m_pctrlTimeMode1->setChecked(m_iCurrentMode%4==0);
-    m_pctrlTimeMode2->setChecked(m_iCurrentMode%4==1);
-    m_pctrlTimeMode3->setChecked(m_iCurrentMode%4==2);
-    m_pctrlTimeMode4->setChecked(m_iCurrentMode%4==3);
-    m_pctrlRLMode1->setChecked(m_iCurrentMode%4==0);
-    m_pctrlRLMode2->setChecked(m_iCurrentMode%4==1);
-    m_pctrlRLMode3->setChecked(m_iCurrentMode%4==2);
-    m_pctrlRLMode4->setChecked(m_iCurrentMode%4==3);
+    m_prbTimeMode1->setChecked(m_iCurrentMode%4==0);
+    m_prbTimeMode2->setChecked(m_iCurrentMode%4==1);
+    m_prbTimeMode3->setChecked(m_iCurrentMode%4==2);
+    m_prbTimeMode4->setChecked(m_iCurrentMode%4==3);
+    m_prbRLMode1->setChecked(m_iCurrentMode%4==0);
+    m_prbRLMode2->setChecked(m_iCurrentMode%4==1);
+    m_prbRLMode3->setChecked(m_iCurrentMode%4==2);
+    m_prbRLMode4->setChecked(m_iCurrentMode%4==3);
 
 
     bool bStabPOpp = s_pMiarex->m_pCurWPolar && s_pMiarex->m_pCurWPolar->isStabilityPolar() && s_pMiarex->m_pCurPOpp && s_pMiarex->m_iView>=xfl::W3DVIEW;
-    m_pctrlRLMode1->setEnabled(bStabPOpp);
-    m_pctrlRLMode2->setEnabled(bStabPOpp);
-    m_pctrlRLMode3->setEnabled(bStabPOpp);
-    m_pctrlRLMode4->setEnabled(bStabPOpp);
+    m_prbRLMode1->setEnabled(bStabPOpp);
+    m_prbRLMode2->setEnabled(bStabPOpp);
+    m_prbRLMode3->setEnabled(bStabPOpp);
+    m_prbRLMode4->setEnabled(bStabPOpp);
 
     bool bEnableTimeCtrl = s_pMiarex->m_pCurPOpp && s_pMiarex->m_pCurPOpp->polarType()==xfl::STABILITYPOLAR && s_pMiarex->m_iView==xfl::STABTIMEVIEW;
     m_ppbAddCurve->setEnabled(bEnableTimeCtrl);
@@ -1055,10 +1050,10 @@ void StabViewDlg::setControls()
     m_pcbCurveList->setEnabled(m_pcbCurveList->count());
 
 
-    m_pctrlTimeMode1->setEnabled(bEnableTimeCtrl);
-    m_pctrlTimeMode2->setEnabled(bEnableTimeCtrl);
-    m_pctrlTimeMode3->setEnabled(bEnableTimeCtrl);
-    m_pctrlTimeMode4->setEnabled(bEnableTimeCtrl);
+    m_prbTimeMode1->setEnabled(bEnableTimeCtrl);
+    m_prbTimeMode2->setEnabled(bEnableTimeCtrl);
+    m_prbTimeMode3->setEnabled(bEnableTimeCtrl);
+    m_prbTimeMode4->setEnabled(bEnableTimeCtrl);
 
     m_pdeStabVar1->setEnabled(bEnableTimeCtrl);
     m_pdeStabVar2->setEnabled(bEnableTimeCtrl);
@@ -1071,12 +1066,12 @@ void StabViewDlg::setControls()
     //   - we have an active wopp
     //   - the StabilityView is 3
     bool bEnable3DAnimation = s_pMiarex->m_iView==xfl::W3DVIEW && s_pMiarex->m_pCurPOpp && s_pMiarex->m_pCurPOpp->polarType()==xfl::STABILITYPOLAR;
-    m_pctrlAnimate->setEnabled(bEnable3DAnimation);
-    m_pctrlAnimateRestart->setEnabled(bEnable3DAnimation);
-    m_pctrlAnimationAmplitude->setEnabled(bEnable3DAnimation);
-    m_pctrlAnimationSpeed->setEnabled(bEnable3DAnimation);
+    m_ppbAnimate->setEnabled(bEnable3DAnimation);
+    m_ppbAnimateRestart->setEnabled(bEnable3DAnimation);
+    m_pdAnimationAmplitude->setEnabled(bEnable3DAnimation);
+    m_pdAnimationSpeed->setEnabled(bEnable3DAnimation);
 
-    m_pctrlModeStep->setValue(s_pMiarex->m_Modedt);
+    m_pdeModeStep->setValue(s_pMiarex->m_Modedt);
 
     fillEigenThings();
 
@@ -1143,8 +1138,6 @@ void StabViewDlg::onSelChangeCurve(int sel)
     QString strong = m_pcbCurveList->itemText(sel);
     m_pCurve = s_pMiarex->m_TimeGraph[0]->curve(strong);
     m_pCurve->curveName(strong);
-    
-    s_pMiarex->setCurveParams();
 }
 
 
@@ -1177,7 +1170,6 @@ void StabViewDlg::onDeleteCurve()
     if(m_pcbCurveList->count()) m_pCurve = s_pMiarex->m_TimeGraph[0]->curve(m_pcbCurveList->itemText(0));
     else                          m_pCurve = nullptr;
 
-    s_pMiarex->setCurveParams();
     s_pMiarex->createStabilityCurves();
     s_pMiarex->updateView();
     s_pMiarex->setFocus();
@@ -1203,8 +1195,6 @@ void StabViewDlg::addCurve()
     m_ppbRenameCurve->setEnabled(  s_pMiarex->m_pCurPOpp && m_pcbCurveList->count());
     m_ppbDeleteCurve->setEnabled(  s_pMiarex->m_pCurPOpp && m_pcbCurveList->count());
     m_pcbCurveList->setEnabled(    s_pMiarex->m_pCurPOpp && m_pcbCurveList->count());
-
-    s_pMiarex->setCurveParams();
 }
 
 

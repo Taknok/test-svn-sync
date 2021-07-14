@@ -22,6 +22,7 @@
 #include <QRandomGenerator>
 
 #include "planeopp.h"
+#include <xflcore/units.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/wpolar.h>
 #include <xflobjects/objects_global.h>
@@ -103,7 +104,7 @@ PlaneOpp::PlaneOpp(Plane *pPlane, WPolar *pWPolar, int PanelArraySize)
 
     if(pPlane)
     {
-        m_PlaneName = pPlane->planeName();
+        m_PlaneName = pPlane->name();
         m_MAChord   = pPlane->mac();
         m_Span      = pPlane->span();
         m_NStation  = pPlane->m_Wing[0].m_NStation;
@@ -122,6 +123,19 @@ PlaneOpp::PlaneOpp(Plane *pPlane, WPolar *pWPolar, int PanelArraySize)
 }
 
 
+QString PlaneOpp::name() const
+{
+    QString strange;
+    QString format("%1");
+
+    if     (isT7Polar()) strange = QString(format).arg(ctrl(),  7, 'f', 3);
+    else if(isT5Polar()) strange = QString(format).arg(beta(),  7, 'f', 3);
+    else if(isT4Polar()) strange = QString(format).arg(QInf()*Units::mstoUnit(),  7, 'f', 3);
+    else                 strange = QString(format).arg(alpha(), 7, 'f', 3);
+    return strange;
+}
+
+
 /**
  * Adds a WingOpp to the PlaneOpp and initializes the data
  * @param iw the index of the wing for which a WingOpp is added
@@ -132,7 +146,6 @@ void PlaneOpp::addWingOpp(int iw, int PanelArraySize)
     //    m_bWing[iw] = true;
     m_pWOpp[iw] = new WingOpp(PanelArraySize);
 }
-
 
 
 /**
@@ -191,9 +204,9 @@ void PlaneOpp::releaseMemory()
  */
 bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 {
-    int ArchiveFormat;
-    int a, k;
-    float f, h;
+    int ArchiveFormat(0);
+    int a(0), k(0);
+    float f(0), h(0);
 
     if(bIsStoring)
     {
@@ -523,10 +536,10 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
  */
 bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 {
-    bool boolean;
-    int k, n;
-    float f0, f1, f2;
-    double dble, dbl1, dbl2;
+    bool boolean(false);
+    int k(0), n(0);
+    float f0(0), f1(0), f2(0);
+    double dble(0), dbl1(0), dbl2(0);
 
     // 200002: added new format LineStyle
     int ArchiveFormat = 200002;
@@ -642,7 +655,7 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
         {
             ar >> n; m_theStyle.setStipple(n);
             ar >> m_theStyle.m_Width;
-            int a,r,g,b;
+            int a(0),r(0),g(0),b(0);
             readQColor(ar, r, g, b, a);
             m_theStyle.m_Color = {r,g,b,a};
 
@@ -775,7 +788,7 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 }
 
 
-void PlaneOpp::getPlaneOppProperties(QString &planeOppProperties, QString lengthUnitLabel, QString massUnitLabel, QString speedUnitLabel,
+void PlaneOpp::getProperties(QString &planeOppProperties, QString lengthUnitLabel, QString massUnitLabel, QString speedUnitLabel,
                                      double mtoUnit, double kgtoUnit, double mstoUnit)
 {
     QString strong, strange;

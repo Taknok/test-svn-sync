@@ -492,7 +492,7 @@ bool PanelAnalysis::initializeAnalysis()
     strange = "Launching the 3D Panel Analysis....\n";
     traceLog(strange);
 
-    traceLog(m_pPlane->planeName()+"\n");
+    traceLog(m_pPlane->name()+"\n");
 
     if(m_pWPolar->isFixedSpeedPolar())     strange = "Type 1 - Fixed speed polar";
     else if(m_pWPolar->isFixedLiftPolar()) strange = "Type 2 - Fixed lift polar";

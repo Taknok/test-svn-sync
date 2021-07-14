@@ -26,13 +26,13 @@
 #include "xdirectstyledlg.h"
 #include <xdirect/xdirect.h>
 #include <xflwidgets/line/linepickerdlg.h>
-#include <twodwidgets/oppointwt.h>
-
+#include <xdirect/oppointwt.h>
+#include <xflwidgets/line/linemenu.h>
 
 #include <xflwidgets/line/linebtn.h>
 
 
-XDirectStyleDlg::XDirectStyleDlg(OpPointWidget *pParent) : QDialog(pParent)
+XDirectStyleDlg::XDirectStyleDlg(OpPointWt *pParent) : QDialog(pParent)
 {
     setWindowTitle(tr("XDirect Styles"));
     m_pOpPointWt = pParent;
@@ -56,42 +56,31 @@ void XDirectStyleDlg::setupLayout()
         m_plbNeutral  = new LineBtn(this);
         m_plbBL       = new LineBtn(this);
         m_plbPressure = new LineBtn(this);
-        QLabel *lab1 = new QLabel(tr("Neutral Line"));
-        QLabel *lab2 = new QLabel(tr("Boundary Layer"));
-        QLabel *lab3 = new QLabel(tr("Pressure"));
-        pStyleLayout->addWidget(lab1,1,1);
-        pStyleLayout->addWidget(lab2,2,1);
-        pStyleLayout->addWidget(lab3,3,1);
+        QLabel *plab1 = new QLabel(tr("Neutral Line"));
+        QLabel *plab2 = new QLabel(tr("Boundary Layer"));
+        QLabel *plab3 = new QLabel(tr("Pressure"));
+        pStyleLayout->addWidget(plab1,1,1);
+        pStyleLayout->addWidget(plab2,2,1);
+        pStyleLayout->addWidget(plab3,3,1);
         pStyleLayout->addWidget(m_plbNeutral,1,2);
         pStyleLayout->addWidget(m_plbBL,2,2);
         pStyleLayout->addWidget(m_plbPressure,3,2);
-        connect(m_plbNeutral,  SIGNAL(clickedLB()),this, SLOT(onNeutralStyle()));
-        connect(m_plbBL,       SIGNAL(clickedLB()),this, SLOT(onBLStyle()));
-        connect(m_plbPressure, SIGNAL(clickedLB()),this, SLOT(onPressureStyle()));
+        connect(m_plbNeutral,  SIGNAL(clickedLB(LineStyle)), SLOT(onNeutralStyle()));
+        connect(m_plbBL,       SIGNAL(clickedLB(LineStyle)), SLOT(onBLStyle()));
+        connect(m_plbPressure, SIGNAL(clickedLB(LineStyle)), SLOT(onPressureStyle()));
     }
 
-    QHBoxLayout *pCommandButtons = new QHBoxLayout;
+
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Close | QDialogButtonBox::RestoreDefaults);
     {
-        m_ppbOKButton = new QPushButton(tr("OK"));
-        QPushButton *DefaultsButton = new QPushButton(tr("Defaults"));
-        QPushButton *CancelButton   = new QPushButton(tr("Cancel"));
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(m_ppbOKButton);
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(DefaultsButton);
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(CancelButton);
-        pCommandButtons->addStretch(1);
-        connect(m_ppbOKButton, SIGNAL(clicked()),this, SLOT(accept()));
-        connect(DefaultsButton, SIGNAL(clicked()),this, SLOT(onRestoreDefaults()));
-        connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
         pMainLayout->addLayout(pStyleLayout);
         pMainLayout->addStretch(1);
-        pMainLayout->addLayout(pCommandButtons);
+        pMainLayout->addWidget(m_pButtonBox);
         pMainLayout->addStretch(1);
     }
 
@@ -99,47 +88,43 @@ void XDirectStyleDlg::setupLayout()
 }
 
 
+void XDirectStyleDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Close)           == pButton)  accept();
+    else if (m_pButtonBox->button(QDialogButtonBox::RestoreDefaults) == pButton)  onRestoreDefaults();
+}
+
 
 void XDirectStyleDlg::onNeutralStyle()
 {
-    LinePickerDlg dlg(this);
-    dlg.initDialog(m_NeutralStyle, false, false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(m_NeutralStyle);
+    lm.exec(QCursor::pos());
 
-    if(QDialog::Accepted==dlg.exec())
-    {
-        m_NeutralStyle = dlg.theStyle();
-        m_plbNeutral->setTheStyle(m_NeutralStyle);
-    }
-    m_ppbOKButton->setFocus();
+    m_NeutralStyle = lm.theStyle();
+    m_plbNeutral->setTheStyle(m_NeutralStyle);
 }
 
 
 void XDirectStyleDlg::onPressureStyle()
 {
-    LinePickerDlg dlg(this);
-    dlg.initDialog(m_PressureStyle, false, false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(m_PressureStyle);
+    lm.exec(QCursor::pos());
 
-    if(QDialog::Accepted==dlg.exec())
-    {
-        m_PressureStyle = dlg.theStyle();
-        m_plbPressure->setTheStyle(m_PressureStyle);
-    }
-    m_ppbOKButton->setFocus();
+    m_PressureStyle = lm.theStyle();
+    m_plbPressure->setTheStyle(m_PressureStyle);
 }
 
 
 void XDirectStyleDlg::onBLStyle()
 {
-    LinePickerDlg dlg(this);
-    dlg.initDialog(m_BLStyle, false, false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(m_BLStyle);
+    lm.exec(QCursor::pos());
 
-    if(QDialog::Accepted==dlg.exec())
-    {
-        m_BLStyle = dlg.theStyle();
-        m_plbBL->setTheStyle(m_BLStyle);
-    }
-
-    m_ppbOKButton->setFocus();
+    m_BLStyle = lm.theStyle();
+    m_plbBL->setTheStyle(m_BLStyle);
 }
 
 
@@ -164,9 +149,9 @@ void XDirectStyleDlg::keyPressEvent(QKeyEvent *pEvent)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!m_ppbOKButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                m_ppbOKButton->setFocus();
+                m_pButtonBox->setFocus();
                 return;
             }
             else

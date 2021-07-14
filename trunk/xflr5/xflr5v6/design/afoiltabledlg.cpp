@@ -1,7 +1,7 @@
 /****************************************************************************
 
     AFoilTableDlg Class
-    Copyright (C) 2009 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -55,14 +55,10 @@ void AFoilTableDlg::keyPressEvent(QKeyEvent *pEvent)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!m_pOKButton->hasFocus() && !m_pCancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                m_pOKButton->setFocus();
+                m_pButtonBox->setFocus();
                 //                m_bApplied  = true;
-            }
-            else
-            {
-                QDialog::accept();
             }
             break;
         }
@@ -74,18 +70,18 @@ void AFoilTableDlg::keyPressEvent(QKeyEvent *pEvent)
 
 void AFoilTableDlg::initDialog()
 {
-    m_pctrlFoilName->setChecked(m_bFoilName);
-    m_pctrlThickness->setChecked(m_bThickness);
-    m_pctrlThicknessAt->setChecked(m_bThicknessAt);
-    m_pctrlCamber->setChecked(m_bCamber);
-    m_pctrlCamberAt->setChecked(m_bCamberAt);
-    m_pctrlPoints->setChecked(m_bPoints);
-    m_pctrlTEFlapAngle->setChecked(m_bTEFlapAngle);
-    m_pctrlTEXHinge->setChecked(m_bTEXHinge);
-    m_pctrlTEYHinge->setChecked(m_bTEYHinge);
-    m_pctrlLEFlapAngle->setChecked(m_bLEFlapAngle);
-    m_pctrlLEXHinge->setChecked(m_bLEXHinge);
-    m_pctrlLEYHinge->setChecked(m_bLEYHinge);
+    m_pchFoilName->setChecked(m_bFoilName);
+    m_pchThickness->setChecked(m_bThickness);
+    m_pchThicknessAt->setChecked(m_bThicknessAt);
+    m_pchCamber->setChecked(m_bCamber);
+    m_pchCamberAt->setChecked(m_bCamberAt);
+    m_pchPoints->setChecked(m_bPoints);
+    m_pchTEFlapAngle->setChecked(m_bTEFlapAngle);
+    m_pchTEXHinge->setChecked(m_bTEXHinge);
+    m_pchTEYHinge->setChecked(m_bTEYHinge);
+    m_pchLEFlapAngle->setChecked(m_bLEFlapAngle);
+    m_pchLEXHinge->setChecked(m_bLEXHinge);
+    m_pchLEYHinge->setChecked(m_bLEYHinge);
 }
 
 
@@ -93,68 +89,61 @@ void AFoilTableDlg::setupLayout()
 {
     QVBoxLayout *pColumnsLayout = new QVBoxLayout;
     {
-        m_pctrlFoilName    = new QCheckBox(tr("Foil Name"));
-        m_pctrlThickness   = new QCheckBox(tr("Thickness"));
-        m_pctrlThicknessAt = new QCheckBox(tr("Thickness max. position"));
-        m_pctrlCamber      = new QCheckBox(tr("Camber"));
-        m_pctrlCamberAt    = new QCheckBox(tr("Camber max. position"));
-        m_pctrlPoints      = new QCheckBox(tr("Number of points"));
-        m_pctrlTEFlapAngle = new QCheckBox(tr("Trailing edge flap angle"));
-        m_pctrlTEXHinge    = new QCheckBox(tr("Trailing edge hinge x-position"));
-        m_pctrlTEYHinge    = new QCheckBox(tr("Trailing edge hinge y-position"));
-        m_pctrlLEFlapAngle = new QCheckBox(tr("Leading edge flap angle"));
-        m_pctrlLEXHinge    = new QCheckBox(tr("Leading edge hinge x-position"));
-        m_pctrlLEYHinge    = new QCheckBox(tr("Leading edge hinge y-position"));
+        m_pchFoilName    = new QCheckBox(tr("Foil Name"));
+        m_pchThickness   = new QCheckBox(tr("Thickness"));
+        m_pchThicknessAt = new QCheckBox(tr("Thickness max. position"));
+        m_pchCamber      = new QCheckBox(tr("Camber"));
+        m_pchCamberAt    = new QCheckBox(tr("Camber max. position"));
+        m_pchPoints      = new QCheckBox(tr("Number of points"));
+        m_pchTEFlapAngle = new QCheckBox(tr("Trailing edge flap angle"));
+        m_pchTEXHinge    = new QCheckBox(tr("Trailing edge hinge x-position"));
+        m_pchTEYHinge    = new QCheckBox(tr("Trailing edge hinge y-position"));
+        m_pchLEFlapAngle = new QCheckBox(tr("Leading edge flap angle"));
+        m_pchLEXHinge    = new QCheckBox(tr("Leading edge hinge x-position"));
+        m_pchLEYHinge    = new QCheckBox(tr("Leading edge hinge y-position"));
 
-        pColumnsLayout->addWidget(m_pctrlFoilName);
-        pColumnsLayout->addWidget(m_pctrlThickness);
-        pColumnsLayout->addWidget(m_pctrlThicknessAt);
-        pColumnsLayout->addWidget(m_pctrlCamber);
-        pColumnsLayout->addWidget(m_pctrlCamberAt);
-        pColumnsLayout->addWidget(m_pctrlPoints);
-        pColumnsLayout->addWidget(m_pctrlTEFlapAngle);
-        pColumnsLayout->addWidget(m_pctrlTEXHinge);
-        pColumnsLayout->addWidget(m_pctrlTEYHinge);
-        pColumnsLayout->addWidget(m_pctrlLEFlapAngle);
-        pColumnsLayout->addWidget(m_pctrlLEXHinge);
-        pColumnsLayout->addWidget(m_pctrlLEYHinge);
+        pColumnsLayout->addWidget(m_pchFoilName);
+        pColumnsLayout->addWidget(m_pchThickness);
+        pColumnsLayout->addWidget(m_pchThicknessAt);
+        pColumnsLayout->addWidget(m_pchCamber);
+        pColumnsLayout->addWidget(m_pchCamberAt);
+        pColumnsLayout->addWidget(m_pchPoints);
+        pColumnsLayout->addWidget(m_pchTEFlapAngle);
+        pColumnsLayout->addWidget(m_pchTEXHinge);
+        pColumnsLayout->addWidget(m_pchTEYHinge);
+        pColumnsLayout->addWidget(m_pchLEFlapAngle);
+        pColumnsLayout->addWidget(m_pchLEXHinge);
+        pColumnsLayout->addWidget(m_pchLEYHinge);
     }
 
-    QHBoxLayout *pCommandButtons = new QHBoxLayout;
-    {
-        m_pOKButton      = new QPushButton(tr("OK"));
-        m_pCancelButton  = new QPushButton(tr("Cancel"));
-        pCommandButtons->addWidget(m_pOKButton);
-        pCommandButtons->addWidget(m_pCancelButton);
-    }
+
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+    connect(m_pButtonBox, &QDialogButtonBox::rejected, this, &AFoilTableDlg::onOK);
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
         pMainLayout->addLayout(pColumnsLayout);
         pMainLayout->addStretch(1);
-        pMainLayout->addLayout(pCommandButtons);
+        pMainLayout->addWidget(m_pButtonBox);
     }
     setLayout(pMainLayout);
-
-    connect(m_pOKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-    connect(m_pCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 
 void AFoilTableDlg::onOK()
 {
-    m_bFoilName    = m_pctrlFoilName->isChecked();
-    m_bThickness   = m_pctrlThickness->isChecked();
-    m_bThicknessAt = m_pctrlThicknessAt->isChecked();
-    m_bCamber      = m_pctrlCamber->isChecked();
-    m_bCamberAt    = m_pctrlCamberAt->isChecked();
-    m_bPoints      = m_pctrlPoints->isChecked();
-    m_bTEFlapAngle = m_pctrlTEFlapAngle->isChecked();
-    m_bTEXHinge    = m_pctrlTEXHinge->isChecked();
-    m_bTEYHinge    = m_pctrlTEYHinge->isChecked();
-    m_bLEFlapAngle = m_pctrlLEFlapAngle->isChecked();
-    m_bLEXHinge    = m_pctrlLEXHinge->isChecked();
-    m_bLEYHinge    = m_pctrlLEYHinge->isChecked();
+    m_bFoilName    = m_pchFoilName->isChecked();
+    m_bThickness   = m_pchThickness->isChecked();
+    m_bThicknessAt = m_pchThicknessAt->isChecked();
+    m_bCamber      = m_pchCamber->isChecked();
+    m_bCamberAt    = m_pchCamberAt->isChecked();
+    m_bPoints      = m_pchPoints->isChecked();
+    m_bTEFlapAngle = m_pchTEFlapAngle->isChecked();
+    m_bTEXHinge    = m_pchTEXHinge->isChecked();
+    m_bTEYHinge    = m_pchTEYHinge->isChecked();
+    m_bLEFlapAngle = m_pchLEFlapAngle->isChecked();
+    m_bLEXHinge    = m_pchLEXHinge->isChecked();
+    m_bLEYHinge    = m_pchLEYHinge->isChecked();
 
     accept();
 }

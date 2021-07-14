@@ -30,7 +30,7 @@
 #include "batchthreaddlg.h"
 
 #include <xdirect/analysis/xfoiltask.h>
-#include <xdirect/objects2d.h>
+#include <xflobjects/objects2d/objects2d.h>
 #include <xdirect/xdirect.h>
 
 

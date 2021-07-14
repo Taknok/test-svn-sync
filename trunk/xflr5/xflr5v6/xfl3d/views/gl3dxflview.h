@@ -51,10 +51,8 @@ class gl3dXflView : public gl3dView
     public:
         gl3dXflView(QWidget *pParent = nullptr);
         ~gl3dXflView();
-        void setTexturePath(QString const &path) {m_TexturePath=path;}
 
     protected:
-        void getTextureFile(const QString &surfaceName, QImage & textureImage);
         void glMakeWingEditMesh(QOpenGLBuffer &vbo, const Wing *pWing);
         void glMakeFuseFlatPanels(const Body *pBody);
         void glMakeFuseFlatPanelsOutline(const Body *pBody);
@@ -62,23 +60,24 @@ class gl3dXflView : public gl3dView
         void glMakeFuseSplinesOutline(const Body *pBody);
         void glMakeBodyFrameHighlight(Body const *pBody, Vector3d const&bodyPos, int iFrame);
         void glMakeEditBodyMesh(Body *pBody, const Vector3d &pos);
-        void glMakeWingGeometry(int iWing, Wing const *pWing, Body const *pBody);
+
+        void glMakeWingSurface(Wing const *pWing, Body const *pBody, QOpenGLBuffer &vboSurf) const;
+        void glMakeWingOutline(Wing const *pWing, Body const *pBody, QOpenGLBuffer &vboOutline) const;
 
         void paintMasses(double volumeMass, Vector3d const&pos, QString const&tag, QVector<PointMass *> const &ptMasses);
         void paintMasses(Plane const *pPlane);
         void paintEditWingMesh(QOpenGLBuffer &vbo);
         void paintSectionHighlight();
-        void paintWing(int iWing, const Wing *pWing);
         void paintFoilNames(const Wing *pWing);
         void paintNormals(QOpenGLBuffer &vbo);
         void paintMesh(QOpenGLBuffer &vbo, bool bBackGround);
         void setSpanStations(Plane const *pPlane, WPolar const *pWPolar, PlaneOpp const *pPOpp);
 
     protected slots:
-        void onSurfaces(bool bChecked);
-        void onPanels(bool bChecked);
-        void onOutline(bool bChecked);
-        void onFoilNames(bool bChecked);
+        void onSurfaces(  bool bChecked);
+        void onPanels(    bool bChecked);
+        void onOutline(   bool bChecked);
+        void onFoilNames( bool bChecked);
         void onShowMasses(bool bChecked);
 
     protected:
@@ -92,21 +91,9 @@ class gl3dXflView : public gl3dView
         QOpenGLBuffer m_vboBody;
         QOpenGLBuffer m_vboFuseLeft, m_vboFuseRight, m_vboFuseOutline;
 
-        QString m_TexturePath;
-
-        QOpenGLTexture *m_pLeftBodyTexture, *m_pRightBodyTexture;
-        QOpenGLTexture *m_pWingTopLeftTexture[MAXWINGS], *m_pWingTopRightTexture[MAXWINGS], *m_pWingBotLeftTexture[MAXWINGS], *m_pWingBotRightTexture[MAXWINGS];
-        unsigned short *m_WingMeshIndicesArray;
-        QVector<ushort> m_WingIndicesArray[MAXWINGS];
-
-
-        int m_iWingElems[MAXWINGS], m_iWingMeshElems;
-
         int m_Ny[MAXWINGS];
         int m_nHighlightLines, m_HighlightLineSize;
 
-        int m_iBodyMeshLines;
-        int m_iWingOutlinePoints[MAXWINGS];
         int m_iMomentPoints;
 
         bool m_bOutline;                   /**< true if the surface outlines are to be displayed in the 3D view*/

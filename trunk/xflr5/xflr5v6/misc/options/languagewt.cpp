@@ -1,7 +1,7 @@
 /****************************************************************************
 
     LanguageWt Class
-    Copyright (C) 2018 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,13 +46,13 @@ LanguageWt::LanguageWt(QWidget *pParent): QWidget(pParent)
 void LanguageWt::setupLayout()
 {
     QLabel *lab = new QLabel(tr("Select the application's default language:"));
-    m_pctrlLanguageList = new QListWidget;
-    connect(m_pctrlLanguageList, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(readLanguage()));
+    m_plwLanguageList = new QListWidget;
+    connect(m_plwLanguageList, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(readLanguage()));
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
         pMainLayout->addWidget(lab);
-        pMainLayout->addWidget(m_pctrlLanguageList);
+        pMainLayout->addWidget(m_plwLanguageList);
     }
 
     setLayout(pMainLayout);
@@ -65,21 +65,21 @@ void LanguageWt::initWidget()
     qmFiles.sort();
 
     qmFileForLanguage.insert("English", "English");
-    m_pctrlLanguageList->clear();
+    m_plwLanguageList->clear();
 
     for (int i=0; i<qmFiles.count(); ++i)
     {
         QString language = languageName(qmFiles[i]);
         qmFileForLanguage.insert(language, qmFiles[i]);
-        m_pctrlLanguageList->addItem(language);
+        m_plwLanguageList->addItem(language);
     }
 
-    m_pctrlLanguageList->setCurrentRow(0);
+    m_plwLanguageList->setCurrentRow(0);
     for (int i=0; i<qmFiles.count(); ++i)
     {
         if(qmFiles[i]==MainFrame::s_LanguageFilePath)
         {
-            m_pctrlLanguageList->setCurrentRow(i);
+            m_plwLanguageList->setCurrentRow(i);
             break;
         }
     }
@@ -119,7 +119,7 @@ QString LanguageWt::languageName(const QString &qmFile)
 void LanguageWt::readLanguage()
 {
     //read user language selection
-    QListWidgetItem *pItem =  m_pctrlLanguageList->currentItem();
+    QListWidgetItem *pItem =  m_plwLanguageList->currentItem();
     if(pItem)
     {
         if(pItem->text()=="English") MainFrame::s_LanguageFilePath = "";

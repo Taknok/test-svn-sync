@@ -788,7 +788,7 @@ void setAutoWPolarName(WPolar *pWPolar, Plane *pPlane)
         if(pWPolar->isStabilityPolar()&&fabs(pWPolar->m_inertiaGain[0])>PRECISION)
             str = QString::asprintf("/%0.2f", pWPolar->m_inertiaGain[0]*Units::kgtoUnit());
         else str.clear();
-        name += strong + str + Units::weightUnitLabel();
+        name += strong + str + Units::massUnitLabel();
 
         strong = QString::asprintf("-x%.1f", pWPolar->CoG().x*Units::mtoUnit());
         if(pWPolar->isStabilityPolar()&&fabs(pWPolar->m_inertiaGain[1])>PRECISION)

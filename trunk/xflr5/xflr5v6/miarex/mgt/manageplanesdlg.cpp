@@ -1,7 +1,7 @@
 /****************************************************************************
 
     ManagePlanesDlg Class
-    Copyright (C) 2009-2019 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include <QKeyEvent>
 
 #include "manageplanesdlg.h"
-#include <miarex/objects3d.h>
+#include <xflobjects/objects3d/objects3d.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
 #include <xflcore/displayoptions.h>
@@ -44,16 +44,15 @@ ManagePlanesDlg::ManagePlanesDlg(QWidget *pParent) : QDialog(pParent)
     m_pPlane     = nullptr;
     //    m_pSelectionModel = nullptr;
     m_pPlaneDelegate = nullptr;
-    m_pPrecision = nullptr;
 
     m_bChanged = false;
 
     setupLayout();
 
-    connect(m_pctrlDelete, SIGNAL(clicked()),this, SLOT(onDelete()));
-    connect(m_pctrlRename, SIGNAL(clicked()),this, SLOT(onRename()));
-    connect(m_pctrlPlaneTable, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(onDoubleClickTable(const QModelIndex &)));
-    connect(m_pctrlDescription, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
+    connect(m_ppbDelete, SIGNAL(clicked()),this, SLOT(onDelete()));
+    connect(m_ppbRename, SIGNAL(clicked()),this, SLOT(onRename()));
+    connect(m_ptvPlanes, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(onDoubleClickTable(const QModelIndex &)));
+    connect(m_pteDescription, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
 }
 
 
@@ -68,7 +67,6 @@ ManagePlanesDlg::~ManagePlanesDlg()
 {
     //    if(m_pSelectionModel)   delete m_pSelectionModel;
     if(m_pPlaneDelegate)    delete m_pPlaneDelegate;
-    if(m_pPrecision)        delete [] m_pPrecision;
     if(m_pPlaneModel)       delete m_pPlaneModel;
 }
 
@@ -104,14 +102,14 @@ void ManagePlanesDlg::initDialog(QString &PlaneName)
 
                 if(strong == PlaneName)
                 {
-                    m_pctrlPlaneTable->selectRow(i);
+                    m_ptvPlanes->selectRow(i);
                     break;
                 }
             }
         }
         else
         {
-            m_pctrlPlaneTable->selectRow(0);
+            m_ptvPlanes->selectRow(0);
             QStandardItem *pItem = m_pPlaneModel->item(0,0);
             if(pItem) PlaneName = pItem->text();
             else      PlaneName.clear();
@@ -159,34 +157,34 @@ void ManagePlanesDlg::setupLayout()
     {
         QVBoxLayout *pLeftLayout = new QVBoxLayout;
         {
-            m_pctrlPlaneTable = new QTableView(this);
-            m_pctrlPlaneTable->setFont(DisplayOptions::tableFont());
+            m_ptvPlanes = new QTableView(this);
+            m_ptvPlanes->setFont(DisplayOptions::tableFont());
 
-            m_pctrlPlaneTable->setSelectionMode(QAbstractItemView::SingleSelection);
-            m_pctrlPlaneTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-            m_pctrlPlaneTable->horizontalHeader()->setStretchLastSection(true);
+            m_ptvPlanes->setSelectionMode(QAbstractItemView::SingleSelection);
+            m_ptvPlanes->setSelectionBehavior(QAbstractItemView::SelectRows);
+            m_ptvPlanes->horizontalHeader()->setStretchLastSection(true);
 
             QSizePolicy szPolicyExpanding;
             szPolicyExpanding.setHorizontalPolicy(QSizePolicy::MinimumExpanding);
             szPolicyExpanding.setVerticalPolicy(QSizePolicy::Expanding);
-            m_pctrlPlaneTable->setSizePolicy(szPolicyExpanding);
-            m_pctrlPlaneTable->setMinimumWidth(800);
+            m_ptvPlanes->setSizePolicy(szPolicyExpanding);
+            m_ptvPlanes->setMinimumWidth(800);
 
-            m_pctrlDescription = new QTextEdit;
+            m_pteDescription = new QTextEdit;
             //    m_pctrlDescription->setEnabled(false);
             QLabel *Description = new QLabel(tr("Description:"));
-            pLeftLayout->addWidget(m_pctrlPlaneTable);
+            pLeftLayout->addWidget(m_ptvPlanes);
             pLeftLayout->addWidget(Description);
-            pLeftLayout->addWidget(m_pctrlDescription);
-            pLeftLayout->setStretchFactor(m_pctrlPlaneTable, 5);
-            pLeftLayout->setStretchFactor(m_pctrlDescription, 1);
+            pLeftLayout->addWidget(m_pteDescription);
+            pLeftLayout->setStretchFactor(m_ptvPlanes, 5);
+            pLeftLayout->setStretchFactor(m_pteDescription, 1);
         }
         QVBoxLayout *pCmdLayout = new QVBoxLayout;
         {
-            m_pctrlDelete = new QPushButton(tr("Delete"));
-            m_pctrlRename = new QPushButton(tr("Rename"));
-            pCmdLayout->addWidget(m_pctrlRename);
-            pCmdLayout->addWidget(m_pctrlDelete);
+            m_ppbDelete = new QPushButton(tr("Delete"));
+            m_ppbRename = new QPushButton(tr("Rename"));
+            pCmdLayout->addWidget(m_ppbRename);
+            pCmdLayout->addWidget(m_ppbDelete);
             pCmdLayout->addStretch();
         }
         pPlaneLayout->addLayout(pLeftLayout);
@@ -204,19 +202,17 @@ void ManagePlanesDlg::setupLayout()
     m_pPlaneModel->setRowCount(10);//temporary
     m_pPlaneModel->setColumnCount(8);
 
-    m_pctrlPlaneTable->setModel(m_pPlaneModel);
-    m_pctrlPlaneTable->setWindowTitle(tr("Planes"));
+    m_ptvPlanes->setModel(m_pPlaneModel);
+    m_ptvPlanes->setWindowTitle(tr("Planes"));
 
-    //    m_pSelectionModel = new QItemSelectionModel(m_pPlaneModel);
-    //    m_pctrlPlaneTable->setSelectionModel(m_pSelectionModel);
-    connect(m_pctrlPlaneTable->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onTableRowChanged(QModelIndex)));
+    connect(m_ptvPlanes->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onTableRowChanged(QModelIndex)));
 
     m_pPlaneDelegate = new PlaneTableDelegate;
 
-    m_pctrlPlaneTable->setItemDelegate(m_pPlaneDelegate);
+    m_ptvPlanes->setItemDelegate(m_pPlaneDelegate);
     m_pPlaneDelegate->m_pPlaneModel = m_pPlaneModel;
 
-    m_pPrecision = new int[12];
+    QVector<int> m_pPrecision(12);
     m_pPrecision[0]  = 2;
     m_pPrecision[1]  = 3;
     m_pPrecision[2]  = 3;
@@ -256,8 +252,8 @@ void ManagePlanesDlg::fillPlaneRow(int row)
     Wing *pWing = pPlane->wing();
 
     ind = m_pPlaneModel->index(row, 0, QModelIndex());
-    m_pPlaneModel->setData(ind,pPlane->planeName());
-    if(pPlane->planeDescription().length()) m_pPlaneModel->setData(ind, pPlane->planeDescription(), Qt::ToolTipRole);
+    m_pPlaneModel->setData(ind,pPlane->name());
+    if(pPlane->description().length()) m_pPlaneModel->setData(ind, pPlane->description(), Qt::ToolTipRole);
 
     ind = m_pPlaneModel->index(row, 1, QModelIndex());
     m_pPlaneModel->setData(ind, pWing->m_PlanformSpan*Units::mtoUnit());
@@ -284,7 +280,7 @@ void ManagePlanesDlg::fillPlaneRow(int row)
 
 void ManagePlanesDlg::onRename()
 {
-    if(m_pPlane)      Objects3d::renamePlane(m_pPlane->planeName());
+    if(m_pPlane)      Objects3d::renamePlane(m_pPlane->name());
 
     fillPlaneTable();
 
@@ -298,7 +294,7 @@ void ManagePlanesDlg::onDelete()
     if(!m_pPlane) return;
 
     QString strong;
-    if(m_pPlane) strong = tr("Are you sure you want to delete the plane :\n") +  m_pPlane->planeName() +"?\n";
+    if(m_pPlane) strong = tr("Are you sure you want to delete the plane :\n") +  m_pPlane->name() +"?\n";
 
     if (QMessageBox::Yes != QMessageBox::question(window(), tr("Question"), strong,
                                                   QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel,
@@ -309,14 +305,14 @@ void ManagePlanesDlg::onDelete()
         Objects3d::deletePlaneResults(m_pPlane, true);
         Objects3d::deletePlane(m_pPlane);
     }
-    QModelIndex index = m_pctrlPlaneTable->currentIndex();
+    QModelIndex index = m_ptvPlanes->currentIndex();
     int sel = std::max(index.row()-1,0);
 
     fillPlaneTable();
 
     if(m_pPlaneModel->rowCount()>0)
     {
-        m_pctrlPlaneTable->selectRow(sel);
+        m_ptvPlanes->selectRow(sel);
         QString PlaneName;
 
         QStandardItem *pItem = m_pPlaneModel->item(sel,0);
@@ -341,14 +337,14 @@ void ManagePlanesDlg::selectPlane()
         for(int irow=0; irow<m_pPlaneModel->rowCount(); irow++)
         {
             QStandardItem *pItem = m_pPlaneModel->item(irow,0);
-            if(pItem && pItem->text().compare(m_pPlane->planeName())==0)
+            if(pItem && pItem->text().compare(m_pPlane->name())==0)
             {
-                m_pctrlPlaneTable->selectRow(irow);
+                m_ptvPlanes->selectRow(irow);
                 return;
             }
         }
     }
-    if(m_pPlaneModel->rowCount()>0)  m_pctrlPlaneTable->selectRow(0);
+    if(m_pPlaneModel->rowCount()>0)  m_ptvPlanes->selectRow(0);
 }
 
 
@@ -362,7 +358,7 @@ void ManagePlanesDlg::onDescriptionChanged()
 {
     if(m_pPlane)
     {
-        m_pPlane->setPlaneDescription(m_pctrlDescription->toPlainText());
+        m_pPlane->setDescription(m_pteDescription->toPlainText());
     }
     m_bChanged = true;
 }
@@ -376,24 +372,24 @@ void ManagePlanesDlg::onTableRowChanged(QModelIndex index)
     else      PlaneName.clear();
 
     m_pPlane = Objects3d::getPlane(PlaneName);
-    if(m_pPlane) m_pctrlDescription->setText(m_pPlane->planeDescription());
+    if(m_pPlane) m_pteDescription->setText(m_pPlane->description());
 }
 
 
 void ManagePlanesDlg::resizeEvent(QResizeEvent *event)
 {
-    int w = m_pctrlPlaneTable->width();
+    int w = m_ptvPlanes->width();
     int w8 = (int)((double)w/12.0);
 
-    m_pctrlPlaneTable->setColumnWidth(1,w8);
-    m_pctrlPlaneTable->setColumnWidth(3,w8);
-    m_pctrlPlaneTable->setColumnWidth(2,w8);
-    m_pctrlPlaneTable->setColumnWidth(4,w8);
-    m_pctrlPlaneTable->setColumnWidth(5,w8);
-    m_pctrlPlaneTable->setColumnWidth(6,w8);
-    m_pctrlPlaneTable->setColumnWidth(7,w8);
+    m_ptvPlanes->setColumnWidth(1,w8);
+    m_ptvPlanes->setColumnWidth(3,w8);
+    m_ptvPlanes->setColumnWidth(2,w8);
+    m_ptvPlanes->setColumnWidth(4,w8);
+    m_ptvPlanes->setColumnWidth(5,w8);
+    m_ptvPlanes->setColumnWidth(6,w8);
+    m_ptvPlanes->setColumnWidth(7,w8);
 
-    m_pctrlPlaneTable->setColumnWidth(0,w-7*w8-40);
+    m_ptvPlanes->setColumnWidth(0,w-7*w8-40);
     event->accept();
 }
 

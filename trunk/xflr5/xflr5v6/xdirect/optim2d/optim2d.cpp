@@ -37,7 +37,7 @@
 #include <xflgraph/containers/graphwt.h>
 #include <twodwidgets/foilwt.h>
 #include <xdirect/analysis/xfoiltask.h>
-#include <xdirect/objects2d.h>
+#include <xflobjects/objects2d/objects2d.h>
 #include <xdirect/optim2d/gatask.h>
 #include <xdirect/optim2d/mopsotask2d.h>
 //#include <xdirect/optim2d/optimevent.h>

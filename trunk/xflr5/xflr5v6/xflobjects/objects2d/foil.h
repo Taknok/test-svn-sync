@@ -53,7 +53,6 @@ Also it mixes the construction methods and the GUI; would be better to move the 
 */
 class Foil : public XflObject
 {
-
     public:
         Foil();
 
@@ -110,6 +109,7 @@ class Foil : public XflObject
 
         void displayCoords(bool bBaseCoords=false) const;
 
+        QString properties() const;
 
     public:
         // Base geometry;

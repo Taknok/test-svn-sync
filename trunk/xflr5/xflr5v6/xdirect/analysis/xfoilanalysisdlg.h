@@ -91,7 +91,7 @@ class XFoilAnalysisDlg : public QDialog
         QPushButton *m_ppbSkip;
         QDialogButtonBox *m_pButtonBox;
 
-        bool m_bAlpha;                 /**< true if the analysis should be performed for a range of aoa, false if for a range of licf coefficient.>*/
+        bool m_bAlpha;                 /**< true if the analysis should be performed for a range of aoa, false if for a range of lift coefficient.>*/
         bool m_bErrors;                /**< true if some points are unconverged. Used by the calling class to know if the window should be kept visible at the end of the analysis.>*/
 
         double m_ReMin, m_ReMax, m_ReDelta;  /**< The range of Re values to analyze>*/
@@ -102,6 +102,7 @@ class XFoilAnalysisDlg : public QDialog
 
         XFoilTask *m_pXFoilTask;       /**< A pointer to the instance of the XFoilTask associated to this analysis. >*/
 
+        static bool s_bSequence;
         static double s_Alpha, s_AlphaMax, s_AlphaDelta;  /**< The range of aoa for a Type 1/2/3 Polar >*/
         static double s_Cl, s_ClMax, s_ClDelta;           /**< The range of lift coefficient for a Type 1/2/3 Polar>*/
 

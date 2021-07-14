@@ -1,7 +1,7 @@
 /****************************************************************************
 
     StabViewDlg Class
-    Copyright (C) 200-2016 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,8 +20,7 @@
 *****************************************************************************/
 
 
-#ifndef STABVIEWDLG_H
-#define STABVIEWDLG_H
+#pragma once
 
 #include <QWidget>
 #include <QLabel>
@@ -47,81 +46,78 @@ class StabViewDlg : public QWidget
     friend class Miarex;
     friend class MainFrame;
 
-public:
-    StabViewDlg(QWidget *parent);
-    ~StabViewDlg();
+    public:
+        StabViewDlg(QWidget *parent);
+        ~StabViewDlg();
 
 
-private slots:
-    void onAnimate();
-    void onAnimateRestart();
-    void onAnimationSpeed(int val);
-    void onAnimationAmplitude(int val);
-    void onCellChanged(QWidget *);
-    void onModeSelection();
-    void onPlotStabilityGraph();
-    void onReadData();
-    void onResponseType();
-    void onAddCurve();
-    void onDeleteCurve();
-    void onRenameCurve();
-    void onSelChangeCurve(int sel);
-    
-private:
-    void keyPressEvent(QKeyEvent *event);
-    
-    void addCurve();
-    void connectSignals();
-//    void FillControlNames();
-    void fillEigenThings();
-    void fillCurveList();
-    double getControlInput(const double &time);
-    void setMode(int iMode=-1);
-    void setupLayout();
-    void setControls();
-    void setTimeCurveStyle(QColor const &Color, int const&Style, int const &Width, bool const& bCurve, const int &PointStyle);
-    void readControlModelData();
-    void updateControlModelData();
+    private slots:
+        void onAnimate();
+        void onAnimateRestart();
+        void onAnimationSpeed(int val);
+        void onAnimationAmplitude(int val);
+        void onCellChanged(QWidget *);
+        void onModeSelection();
+        void onPlotStabilityGraph();
+        void onReadData();
+        void onResponseType();
+        void onAddCurve();
+        void onDeleteCurve();
+        void onRenameCurve();
+        void onSelChangeCurve(int sel);
 
-    static Miarex *s_pMiarex;
+    private:
+        void keyPressEvent(QKeyEvent *pEvent) override;
 
-    QRadioButton *m_pctrlLongDynamics,*m_pctrlLatDynamics;
-    QRadioButton *m_pctrlRLMode1,*m_pctrlRLMode2,*m_pctrlRLMode3,*m_pctrlRLMode4;
-    QRadioButton *m_pctrlTimeMode1,*m_pctrlTimeMode2,*m_pctrlTimeMode3,*m_pctrlTimeMode4;
-    QLineEdit *m_pctrlEigenValue, *m_pctrlEigenVector1, *m_pctrlEigenVector2, *m_pctrlEigenVector3, *m_pctrlEigenVector4;
+        void addCurve();
+        void connectSignals();
+    //    void FillControlNames();
+        void fillEigenThings();
+        void fillCurveList();
+        double getControlInput(const double &time);
+        void setMode(int iMode=-1);
+        void setupLayout();
+        void setControls();
+        void setTimeCurveStyle(QColor const &Color, int const&Style, int const &Width, bool const& bCurve, const int &PointStyle);
+        void readControlModelData();
+        void updateControlModelData();
 
-    QLabel *m_pctrlModeProperties;
-//    QSlider *m_pctrlAnimationSpeed, *m_pctrlAnimationAmplitude;
-    QDial *m_pctrlAnimationSpeed, *m_pctrlAnimationAmplitude;
-    QPushButton *m_pctrlAnimate, *m_pctrlAnimateRestart;
-    DoubleEdit *m_pctrlModeStep;
-    
-    QLabel *m_plabStab1, *m_plabStab2, *m_plabStab3;
-    DoubleEdit  *m_pdeStabVar1, *m_pdeStabVar2, *m_pdeStabVar3;
-    DoubleEdit *m_pdeTotalTime, *m_pdeDeltat;
-    QPushButton *m_ppbPlotStabGraph;
-    QPushButton *m_ppbAddCurve, *m_ppbDeleteCurve, *m_ppbRenameCurve;
-    QComboBox *m_pcbCurveList;
+        static Miarex *s_pMiarex;
 
-    QLabel *m_plabUnit1, *m_plabUnit2, *m_plabUnit3;
-    DoubleEdit *m_pctrlFreqN, *m_pctrlFreq1, *m_pctrlZeta, *m_pctrlT2, *m_pctrlTau;
-    QStackedWidget *m_pctrlStackWidget, *m_pctrlInitialConditionsWidget, *m_pctrlModeViewType;
+        QRadioButton *m_prbLongDynamics, *m_prbLatDynamics;
+        QRadioButton *m_prbRLMode1, *m_prbRLMode2,*m_prbRLMode3,*m_prbRLMode4;
+        QRadioButton *m_prbTimeMode1, *m_prbTimeMode2, *m_prbTimeMode3, *m_prbTimeMode4;
+        QLineEdit *m_pleEigenValue, *m_pleEigenVector1, *m_pleEigenVector2, *m_pleEigenVector3, *m_pleEigenVector4;
 
+        QLabel *m_plabModeProperties;
+        QDial *m_pdAnimationSpeed, *m_pdAnimationAmplitude;
+        QPushButton *m_ppbAnimate, *m_ppbAnimateRestart;
+        DoubleEdit *m_pdeModeStep;
 
-    QRadioButton *m_pctrlModalResponse, *m_pctrlInitCondResponse, *m_pctrlForcedResponse;
+        QLabel *m_plabStab1, *m_plabStab2, *m_plabStab3;
+        DoubleEdit  *m_pdeStabVar1, *m_pdeStabVar2, *m_pdeStabVar3;
+        DoubleEdit *m_pdeTotalTime, *m_pdeDeltat;
+        QPushButton *m_ppbPlotStabGraph;
+        QPushButton *m_ppbAddCurve, *m_ppbDeleteCurve, *m_ppbRenameCurve;
+        QComboBox *m_pcbCurveList;
 
-    QTableView *m_pctrlControlTable;
-    QStandardItemModel *m_pControlModel;
-    FloatEditDelegate *m_pCtrlDelegate;
+        QLabel *m_plabUnit1, *m_plabUnit2, *m_plabUnit3;
+        DoubleEdit *m_pdeFreqN, *m_pdeFreq1, *m_pdeZeta, *m_pdeT2, *m_pdeTau;
+        QStackedWidget *m_pswStack, *m_pswInitialConditions, *m_pswModeViewType;
 
-    int m_ModeInterval;
-    double m_ModeAmplitude;
-    double m_vabs[4], m_phi[4];
+        QRadioButton *m_prbModalResponse, *m_prbInitCondResponse, *m_prbForcedResponse;
 
-public:
-    int m_iCurrentMode;    
-    Curve *m_pCurve;
-    double m_Time[20], m_Amplitude[20];
+        QTableView *m_ptvControl;
+        QStandardItemModel *m_pControlModel;
+        FloatEditDelegate *m_pControlDelegate;
+
+        int m_ModeInterval;
+        double m_ModeAmplitude;
+        double m_vabs[4], m_phi[4];
+
+    public:
+        int m_iCurrentMode;
+        Curve *m_pCurve;
+        double m_Time[20], m_Amplitude[20];
 };
 
-#endif // STABVIEWDLG_H

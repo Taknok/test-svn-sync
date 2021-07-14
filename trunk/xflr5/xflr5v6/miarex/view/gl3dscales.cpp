@@ -1,7 +1,7 @@
 /****************************************************************************
 
     GL3DScales Class
-    Copyright (C) 2009-2016 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -45,12 +45,11 @@ double GL3DScales::s_XOffset = 0.0;
 double GL3DScales::s_ZOffset = 0.0;
 
 
-GL3DScales::GL3DScales(QWidget *)
+GL3DScales::GL3DScales(QWidget *pParent) : QWidget(pParent)
 {
     setAttribute(Qt::WA_DeleteOnClose, false);
     setWindowTitle(tr("3D Scales Settings"));
 
-    m_pParent = nullptr;
     s_pos       = 1;
     s_NX        =   30;
     s_XFactor   = 1.10;
@@ -60,19 +59,19 @@ GL3DScales::GL3DScales(QWidget *)
 
     setupLayout();
 
-    connect(ApplyButton, SIGNAL(clicked()),this, SLOT(onApply()));
+    connect(m_ppbApply, SIGNAL(clicked()),this, SLOT(onApply()));
 
-    connect(m_pctrlAutoCpScale, SIGNAL(clicked()), this, SLOT(onCpScale()));
-    connect(m_pctrlLegendMin, SIGNAL(editingFinished()), this, SLOT(onCpScale()));
-    connect(m_pctrlLegendMax, SIGNAL(editingFinished()), this, SLOT(onCpScale()));
+    connect(m_pchAutoCpScale, SIGNAL(clicked()), this, SLOT(onCpScale()));
+    connect(m_pdeLegendMin, SIGNAL(editingFinished()), this, SLOT(onCpScale()));
+    connect(m_pdeLegendMax, SIGNAL(editingFinished()), this, SLOT(onCpScale()));
 
-    connect(m_pctrlLiftScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onLiftScale()));
-    connect(m_pctrlDragScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onDragScale()));
-    connect(m_pctrlVelocityScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onVelocityScale()));
+    connect(m_peslLiftScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onLiftScale()));
+    connect(m_peslDragScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onDragScale()));
+    connect(m_peslVelocityScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onVelocityScale()));
 
-    connect(m_pctrlLiftScale, SIGNAL(editingFinished()), this, SLOT(onLiftEdit()));
-    connect(m_pctrlDragScale, SIGNAL(editingFinished()), this, SLOT(onDragEdit()));
-    connect(m_pctrlVelocityScale, SIGNAL(editingFinished()), this, SLOT(onVelocityEdit()));
+    connect(m_pdeLiftScale, SIGNAL(editingFinished()), this, SLOT(onLiftEdit()));
+    connect(m_pdeDragScale, SIGNAL(editingFinished()), this, SLOT(onDragEdit()));
+    connect(m_pdeVelocityScale, SIGNAL(editingFinished()), this, SLOT(onVelocityEdit()));
 
 }
 
@@ -93,20 +92,20 @@ void GL3DScales::setupLayout()
     {
         QGridLayout *pCpScaleLayout = new QGridLayout;
         {
-            m_pctrlAutoCpScale = new QCheckBox(tr("Auto Scales"));
-            m_pctrlLegendMin = new DoubleEdit(-1.0);
-            m_pctrlLegendMax = new DoubleEdit(1.0);
-            m_pctrlLegendMin->setDigits(2);
-            m_pctrlLegendMax->setDigits(2);
+            m_pchAutoCpScale = new QCheckBox(tr("Auto Scales"));
+            m_pdeLegendMin = new DoubleEdit(-1.0);
+            m_pdeLegendMax = new DoubleEdit(1.0);
+            m_pdeLegendMin->setDigits(2);
+            m_pdeLegendMax->setDigits(2);
             QLabel *lab0 = new QLabel(tr("Min"));
             QLabel *lab1 = new QLabel(tr("Max"));
             lab0->setAlignment(Qt::AlignVCenter |Qt::AlignRight);
             lab1->setAlignment(Qt::AlignVCenter |Qt::AlignRight);
-            pCpScaleLayout->addWidget(m_pctrlAutoCpScale,1,2);
+            pCpScaleLayout->addWidget(m_pchAutoCpScale,1,2);
             pCpScaleLayout->addWidget(lab1,2,1);
-            pCpScaleLayout->addWidget(m_pctrlLegendMax,2,2);
+            pCpScaleLayout->addWidget(m_pdeLegendMax,2,2);
             pCpScaleLayout->addWidget(lab0,3,1);
-            pCpScaleLayout->addWidget(m_pctrlLegendMin,3,2);
+            pCpScaleLayout->addWidget(m_pdeLegendMin,3,2);
         }
         pCpScaleBox->setLayout(pCpScaleLayout);
     }
@@ -123,42 +122,42 @@ void GL3DScales::setupLayout()
                 int w = 6 * fm.averageCharWidth();
                 QHBoxLayout *pLiftScaleLayout = new QHBoxLayout;
                 {
-                    m_pctrlLiftScaleSlider  = new ExponentialSlider(false, 3.0, Qt::Horizontal);
-                    m_pctrlLiftScaleSlider->setMinimum(0);
-                    m_pctrlLiftScaleSlider->setMaximum(100);
-                    m_pctrlLiftScaleSlider->setSliderPosition(50);
-                    m_pctrlLiftScaleSlider->setTickInterval(5);
-                    m_pctrlLiftScaleSlider->setTickPosition(QSlider::TicksBelow);
-                    m_pctrlLiftScale = new DoubleEdit(0,1);
-                    m_pctrlLiftScale->setMaximumWidth(w);
-                    pLiftScaleLayout->addWidget(m_pctrlLiftScaleSlider);
-                    pLiftScaleLayout->addWidget(m_pctrlLiftScale);
+                    m_peslLiftScaleSlider  = new ExponentialSlider(false, 3.0, Qt::Horizontal);
+                    m_peslLiftScaleSlider->setMinimum(0);
+                    m_peslLiftScaleSlider->setMaximum(100);
+                    m_peslLiftScaleSlider->setSliderPosition(50);
+                    m_peslLiftScaleSlider->setTickInterval(5);
+                    m_peslLiftScaleSlider->setTickPosition(QSlider::TicksBelow);
+                    m_pdeLiftScale = new DoubleEdit(0,1);
+                    m_pdeLiftScale->setMaximumWidth(w);
+                    pLiftScaleLayout->addWidget(m_peslLiftScaleSlider);
+                    pLiftScaleLayout->addWidget(m_pdeLiftScale);
                 }
                 QHBoxLayout *pDragScaleLayout = new QHBoxLayout;
                 {
-                    m_pctrlDragScaleSlider = new ExponentialSlider(false, 3.0, Qt::Horizontal);
-                    m_pctrlDragScaleSlider->setMinimum(0);
-                    m_pctrlDragScaleSlider->setMaximum(100);
-                    m_pctrlDragScaleSlider->setSliderPosition(50);
-                    m_pctrlDragScaleSlider->setTickInterval(5);
-                    m_pctrlDragScaleSlider->setTickPosition(QSlider::TicksBelow);
-                    m_pctrlDragScale = new DoubleEdit(0,1);
-                    m_pctrlDragScale->setMaximumWidth(w);
-                    pDragScaleLayout->addWidget(m_pctrlDragScaleSlider);
-                    pDragScaleLayout->addWidget(m_pctrlDragScale);
+                    m_peslDragScaleSlider = new ExponentialSlider(false, 3.0, Qt::Horizontal);
+                    m_peslDragScaleSlider->setMinimum(0);
+                    m_peslDragScaleSlider->setMaximum(100);
+                    m_peslDragScaleSlider->setSliderPosition(50);
+                    m_peslDragScaleSlider->setTickInterval(5);
+                    m_peslDragScaleSlider->setTickPosition(QSlider::TicksBelow);
+                    m_pdeDragScale = new DoubleEdit(0,1);
+                    m_pdeDragScale->setMaximumWidth(w);
+                    pDragScaleLayout->addWidget(m_peslDragScaleSlider);
+                    pDragScaleLayout->addWidget(m_pdeDragScale);
                 }
                 QHBoxLayout *pVelocityScaleLayout = new QHBoxLayout;
                 {
-                    m_pctrlVelocityScaleSlider  = new ExponentialSlider(false, 3.0, Qt::Horizontal);
-                    m_pctrlVelocityScaleSlider->setMinimum(0);
-                    m_pctrlVelocityScaleSlider->setMaximum(100);
-                    m_pctrlVelocityScaleSlider->setSliderPosition(50);
-                    m_pctrlVelocityScaleSlider->setTickInterval(5);
-                    m_pctrlVelocityScaleSlider->setTickPosition(QSlider::TicksBelow);
-                    m_pctrlVelocityScale = new DoubleEdit(0,1);
-                    m_pctrlVelocityScale->setMaximumWidth(w);
-                    pVelocityScaleLayout->addWidget(m_pctrlVelocityScaleSlider);
-                    pVelocityScaleLayout->addWidget(m_pctrlVelocityScale);
+                    m_peslVelocityScaleSlider  = new ExponentialSlider(false, 3.0, Qt::Horizontal);
+                    m_peslVelocityScaleSlider->setMinimum(0);
+                    m_peslVelocityScaleSlider->setMaximum(100);
+                    m_peslVelocityScaleSlider->setSliderPosition(50);
+                    m_peslVelocityScaleSlider->setTickInterval(5);
+                    m_peslVelocityScaleSlider->setTickPosition(QSlider::TicksBelow);
+                    m_pdeVelocityScale = new DoubleEdit(0,1);
+                    m_pdeVelocityScale->setMaximumWidth(w);
+                    pVelocityScaleLayout->addWidget(m_peslVelocityScaleSlider);
+                    pVelocityScaleLayout->addWidget(m_pdeVelocityScale);
                 }
                 pSliderLayout->addLayout(pLiftScaleLayout);
                 pSliderLayout->addLayout(pDragScaleLayout);
@@ -185,10 +184,10 @@ void GL3DScales::setupLayout()
 
     QGroupBox *pLengthBox = new QGroupBox(tr("Streamline length"));
     {
-        m_pctrlNXPoint = new IntEdit(0);
-        m_pctrlDeltaL = new DoubleEdit(12.34,2);
-        m_pctrlXFactor       = new DoubleEdit(1.23,2);
-        m_pctrlLengthUnit1 = new QLabel("miles");
+        m_pieNXPoint = new IntEdit(0);
+        m_pdeDeltaL = new DoubleEdit(12.34,2);
+        m_pdeXFactor       = new DoubleEdit(1.23,2);
+        m_plabLengthUnit1 = new QLabel("miles");
         QLabel *lab5 = new QLabel(tr("X-axis points"));
         QLabel *lab6 = new QLabel(tr("1st segment"));
         QLabel *lab7 = new QLabel(tr("X factor"));
@@ -198,12 +197,12 @@ void GL3DScales::setupLayout()
         QGridLayout *pLengthLayout = new QGridLayout;
         {
             pLengthLayout->addWidget(lab5, 1, 1);
-            pLengthLayout->addWidget(m_pctrlNXPoint , 1, 2);
+            pLengthLayout->addWidget(m_pieNXPoint , 1, 2);
             pLengthLayout->addWidget(lab6, 2, 1);
-            pLengthLayout->addWidget(m_pctrlDeltaL, 2, 2);
-            pLengthLayout->addWidget(m_pctrlLengthUnit1, 2, 3);
+            pLengthLayout->addWidget(m_pdeDeltaL, 2, 2);
+            pLengthLayout->addWidget(m_plabLengthUnit1, 2, 3);
             pLengthLayout->addWidget(lab7, 3, 1);
-            pLengthLayout->addWidget(m_pctrlXFactor, 3, 2);
+            pLengthLayout->addWidget(m_pdeXFactor, 3, 2);
         }
         pLengthBox->setLayout(pLengthLayout);
     }
@@ -212,31 +211,31 @@ void GL3DScales::setupLayout()
     {
         QVBoxLayout *pStartLayout = new QVBoxLayout;
         {
-            m_pctrlXOffset       = new DoubleEdit(4.56,3);
-            m_pctrlZOffset       = new DoubleEdit(7.89,3);
-            m_pctrlLengthUnit2 = new QLabel("km");
-            m_pctrlLengthUnit3 = new QLabel("m");
-            m_pctrlLE = new QRadioButton(tr("L.E."));
-            m_pctrlTE = new QRadioButton(tr("T.E."));
-            m_pctrlLine = new QRadioButton(tr("Y-Line"));
+            m_pdeXOffset       = new DoubleEdit(4.56,3);
+            m_pdeZOffset       = new DoubleEdit(7.89,3);
+            m_plabLengthUnit2 = new QLabel("km");
+            m_plabLengthUnit3 = new QLabel("m");
+            m_prbLE = new QRadioButton(tr("L.E."));
+            m_pebTE = new QRadioButton(tr("T.E."));
+            m_prbLine = new QRadioButton(tr("Y-Line"));
             QLabel *lab8 = new QLabel(tr("X-Offset"));
             QLabel *lab9 = new QLabel(tr("Z-Offset"));
             lab8->setAlignment(Qt::AlignVCenter |Qt::AlignRight);
             lab9->setAlignment(Qt::AlignVCenter |Qt::AlignRight);
             QHBoxLayout *pLineLayout = new QHBoxLayout;
             {
-                pLineLayout->addWidget(m_pctrlLE);
-                pLineLayout->addWidget(m_pctrlTE);
-                pLineLayout->addWidget(m_pctrlLine);
+                pLineLayout->addWidget(m_prbLE);
+                pLineLayout->addWidget(m_pebTE);
+                pLineLayout->addWidget(m_prbLine);
             }
             QGridLayout *pOffsetLayout = new QGridLayout;
             {
                 pOffsetLayout->addWidget(lab8,1,1);
-                pOffsetLayout->addWidget(m_pctrlXOffset,1,2);
-                pOffsetLayout->addWidget(m_pctrlLengthUnit2,1,3);
+                pOffsetLayout->addWidget(m_pdeXOffset,1,2);
+                pOffsetLayout->addWidget(m_plabLengthUnit2,1,3);
                 pOffsetLayout->addWidget(lab9,2,1);
-                pOffsetLayout->addWidget(m_pctrlZOffset,2,2);
-                pOffsetLayout->addWidget(m_pctrlLengthUnit3,2,3);
+                pOffsetLayout->addWidget(m_pdeZOffset,2,2);
+                pOffsetLayout->addWidget(m_plabLengthUnit3,2,3);
             }
             pStartLayout->addLayout(pLineLayout);
             pStartLayout->addLayout(pOffsetLayout);
@@ -246,12 +245,12 @@ void GL3DScales::setupLayout()
 
     QGroupBox *pStreamBox = new QGroupBox(tr("Streamlines"));
     {
-        ApplyButton = new QPushButton(tr("Apply"));
+        m_ppbApply = new QPushButton(tr("Apply"));
         QVBoxLayout *StreamLayout = new QVBoxLayout;
         StreamLayout->addWidget(pLengthBox);
         StreamLayout->addWidget(pStartBox);
         StreamLayout->addStretch(1);
-        StreamLayout->addWidget(ApplyButton);
+        StreamLayout->addWidget(m_ppbApply);
         StreamLayout->addStretch(1);
         pStreamBox->setLayout(StreamLayout);
     }
@@ -278,47 +277,47 @@ void GL3DScales::initDialog()
     QString str;
 
     Units::getLengthUnitLabel(str);
-    m_pctrlLengthUnit1->setText(str);
-    m_pctrlLengthUnit2->setText(str);
-    m_pctrlLengthUnit3->setText(str);
+    m_plabLengthUnit1->setText(str);
+    m_plabLengthUnit2->setText(str);
+    m_plabLengthUnit3->setText(str);
 
-    m_pctrlAutoCpScale->setChecked(gl3dMiarexView::s_bAutoCpScale);
-    m_pctrlLegendMin->setValue(gl3dMiarexView::s_LegendMin);
-    m_pctrlLegendMax->setValue(gl3dMiarexView::s_LegendMax);
-    m_pctrlLegendMin->setEnabled(!gl3dMiarexView::s_bAutoCpScale);
-    m_pctrlLegendMax->setEnabled(!gl3dMiarexView::s_bAutoCpScale);
+    m_pchAutoCpScale->setChecked(gl3dMiarexView::s_bAutoCpScale);
+    m_pdeLegendMin->setValue(gl3dMiarexView::s_LegendMin);
+    m_pdeLegendMax->setValue(gl3dMiarexView::s_LegendMax);
+    m_pdeLegendMin->setEnabled(!gl3dMiarexView::s_bAutoCpScale);
+    m_pdeLegendMax->setEnabled(!gl3dMiarexView::s_bAutoCpScale);
 
-    m_pctrlLiftScaleSlider->setExpValue(gl3dMiarexView::s_LiftScale);
-    m_pctrlDragScaleSlider->setExpValue(gl3dMiarexView::s_DragScale);
-    m_pctrlVelocityScaleSlider->setExpValue(gl3dMiarexView::s_VelocityScale);
+    m_peslLiftScaleSlider->setExpValue(gl3dMiarexView::s_LiftScale);
+    m_peslDragScaleSlider->setExpValue(gl3dMiarexView::s_DragScale);
+    m_peslVelocityScaleSlider->setExpValue(gl3dMiarexView::s_VelocityScale);
 
-    m_pctrlLiftScale->setValue(gl3dMiarexView::s_LiftScale);
-    m_pctrlDragScale->setValue(gl3dMiarexView::s_DragScale);
-    m_pctrlVelocityScale->setValue(gl3dMiarexView::s_VelocityScale);
+    m_pdeLiftScale->setValue(gl3dMiarexView::s_LiftScale);
+    m_pdeDragScale->setValue(gl3dMiarexView::s_DragScale);
+    m_pdeVelocityScale->setValue(gl3dMiarexView::s_VelocityScale);
 
 
-    if(s_pos==0)        m_pctrlLE->setChecked(true);
-    else if(s_pos==1)    m_pctrlTE->setChecked(true);
-    else if(s_pos==2)    m_pctrlLine->setChecked(true);
+    if(s_pos==0)        m_prbLE->setChecked(true);
+    else if(s_pos==1)    m_pebTE->setChecked(true);
+    else if(s_pos==2)    m_prbLine->setChecked(true);
 
-    m_pctrlDeltaL->setValue(s_DeltaL* Units::mtoUnit());
-    m_pctrlXOffset->setValue(s_XOffset* Units::mtoUnit());
-    m_pctrlZOffset->setValue(s_ZOffset* Units::mtoUnit());
-    m_pctrlXFactor->setValue(s_XFactor);
-    m_pctrlNXPoint->setValue(s_NX);
+    m_pdeDeltaL->setValue(s_DeltaL* Units::mtoUnit());
+    m_pdeXOffset->setValue(s_XOffset* Units::mtoUnit());
+    m_pdeZOffset->setValue(s_ZOffset* Units::mtoUnit());
+    m_pdeXFactor->setValue(s_XFactor);
+    m_pieNXPoint->setValue(s_NX);
 }
 
 
 void GL3DScales::onCpScale()
 {
-    gl3dMiarexView::s_bAutoCpScale = m_pctrlAutoCpScale->isChecked();
+    gl3dMiarexView::s_bAutoCpScale = m_pchAutoCpScale->isChecked();
     if(!gl3dMiarexView::s_bAutoCpScale)
     {
-        gl3dMiarexView::s_LegendMax = m_pctrlLegendMax->value();
-        gl3dMiarexView::s_LegendMin = m_pctrlLegendMin->value();
+        gl3dMiarexView::s_LegendMax = m_pdeLegendMax->value();
+        gl3dMiarexView::s_LegendMin = m_pdeLegendMin->value();
     }
-    m_pctrlLegendMin->setEnabled(!gl3dMiarexView::s_bAutoCpScale);
-    m_pctrlLegendMax->setEnabled(!gl3dMiarexView::s_bAutoCpScale);
+    m_pdeLegendMin->setEnabled(!gl3dMiarexView::s_bAutoCpScale);
+    m_pdeLegendMax->setEnabled(!gl3dMiarexView::s_bAutoCpScale);
 
     gl3dMiarexView::s_bResetglPanelCp = true;
     gl3dMiarexView::s_bResetglLegend = true;
@@ -329,9 +328,9 @@ void GL3DScales::onCpScale()
 
 void GL3DScales::onApply()
 {
-    gl3dMiarexView::s_LegendMax = m_pctrlLegendMax->value();
-    gl3dMiarexView::s_LegendMin = m_pctrlLegendMin->value();
-    gl3dMiarexView::s_bAutoCpScale = m_pctrlAutoCpScale->isChecked();
+    gl3dMiarexView::s_LegendMax = m_pdeLegendMax->value();
+    gl3dMiarexView::s_LegendMin = m_pdeLegendMin->value();
+    gl3dMiarexView::s_bAutoCpScale = m_pchAutoCpScale->isChecked();
     readStreamParams();
     gl3dMiarexView::s_bResetglStream = true;
     s_pMiarex->updateView();
@@ -341,8 +340,8 @@ void GL3DScales::onApply()
 
 void GL3DScales::onLiftEdit()
 {
-    gl3dMiarexView::s_LiftScale = m_pctrlLiftScale->value();
-    m_pctrlLiftScaleSlider->setValue(int(gl3dMiarexView::s_LiftScale));
+    gl3dMiarexView::s_LiftScale = m_pdeLiftScale->value();
+    m_peslLiftScaleSlider->setValue(int(gl3dMiarexView::s_LiftScale));
     gl3dMiarexView::s_bResetglLift = true;
     gl3dMiarexView::s_bResetglPanelForce = true;
     s_pMiarex->updateView();
@@ -351,8 +350,8 @@ void GL3DScales::onLiftEdit()
 
 void GL3DScales::onDragEdit()
 {
-    gl3dMiarexView::s_DragScale = m_pctrlDragScale->value();
-    m_pctrlDragScaleSlider->setValue(int(gl3dMiarexView::s_DragScale));
+    gl3dMiarexView::s_DragScale = m_pdeDragScale->value();
+    m_peslDragScaleSlider->setValue(int(gl3dMiarexView::s_DragScale));
     gl3dMiarexView::s_bResetglDrag = true;
     s_pMiarex->updateView();
 }
@@ -360,8 +359,8 @@ void GL3DScales::onDragEdit()
 
 void GL3DScales::onVelocityEdit()
 {
-    gl3dMiarexView::s_VelocityScale = m_pctrlVelocityScale->value();
-    m_pctrlVelocityScaleSlider->setValue(int(gl3dMiarexView::s_VelocityScale));
+    gl3dMiarexView::s_VelocityScale = m_pdeVelocityScale->value();
+    m_peslVelocityScaleSlider->setValue(int(gl3dMiarexView::s_VelocityScale));
     gl3dMiarexView::s_bResetglDownwash = true;
     gl3dMiarexView::s_bResetglSurfVelocities = true;
     s_pMiarex->updateView();
@@ -371,8 +370,8 @@ void GL3DScales::onVelocityEdit()
 
 void GL3DScales::onLiftScale()
 {
-    gl3dMiarexView::s_LiftScale    = m_pctrlLiftScaleSlider->expValue();
-    m_pctrlLiftScale->setValue(gl3dMiarexView::s_LiftScale);
+    gl3dMiarexView::s_LiftScale    = m_peslLiftScaleSlider->expValue();
+    m_pdeLiftScale->setValue(gl3dMiarexView::s_LiftScale);
     gl3dMiarexView::s_bResetglLift = true;
     gl3dMiarexView::s_bResetglPanelForce = true;
     s_pMiarex->updateView();
@@ -381,8 +380,8 @@ void GL3DScales::onLiftScale()
 
 void GL3DScales::onDragScale()
 {
-    gl3dMiarexView::s_DragScale    = m_pctrlDragScaleSlider->expValue();
-    m_pctrlDragScale->setValue(gl3dMiarexView::s_DragScale);
+    gl3dMiarexView::s_DragScale    = m_peslDragScaleSlider->expValue();
+    m_pdeDragScale->setValue(gl3dMiarexView::s_DragScale);
     gl3dMiarexView::s_bResetglDrag = true;
     s_pMiarex->updateView();
 }
@@ -390,8 +389,8 @@ void GL3DScales::onDragScale()
 
 void GL3DScales::onVelocityScale()
 {
-    gl3dMiarexView::s_VelocityScale    = m_pctrlVelocityScaleSlider->expValue();
-    m_pctrlVelocityScale->setValue(gl3dMiarexView::s_VelocityScale);
+    gl3dMiarexView::s_VelocityScale    = m_peslVelocityScaleSlider->expValue();
+    m_pdeVelocityScale->setValue(gl3dMiarexView::s_VelocityScale);
     gl3dMiarexView::s_bResetglDownwash = true;
     gl3dMiarexView::s_bResetglSurfVelocities = true;
     s_pMiarex->updateView();
@@ -414,15 +413,15 @@ void GL3DScales::hideEvent(QHideEvent *event)
 
 void GL3DScales::readStreamParams()
 {
-    s_NX = m_pctrlNXPoint->value();
-    s_XOffset = m_pctrlXOffset->value() / Units::mtoUnit();
-    s_ZOffset = m_pctrlZOffset->value() / Units::mtoUnit();
-    s_DeltaL  = m_pctrlDeltaL->value()  / Units::mtoUnit();
-    s_XFactor = m_pctrlXFactor->value();
+    s_NX = m_pieNXPoint->value();
+    s_XOffset = m_pdeXOffset->value() / Units::mtoUnit();
+    s_ZOffset = m_pdeZOffset->value() / Units::mtoUnit();
+    s_DeltaL  = m_pdeDeltaL->value()  / Units::mtoUnit();
+    s_XFactor = m_pdeXFactor->value();
 
-    if(m_pctrlLE->isChecked())            s_pos=0;
-    else if(m_pctrlTE->isChecked())     s_pos=1;
-    else if(m_pctrlLine->isChecked())   s_pos=2;
+    if(m_prbLE->isChecked())            s_pos=0;
+    else if(m_pebTE->isChecked())     s_pos=1;
+    else if(m_prbLine->isChecked())   s_pos=2;
 }
 
 
@@ -464,20 +463,6 @@ bool GL3DScales::saveSettings(QSettings &settings)
     return true;
 }
 
-
-void GL3DScales::keyPressEvent(QKeyEvent *event)
-{
-    switch (event->key())
-    {
-        case Qt::Key_Escape:
-        {
-            if(m_pParent) m_pParent->setVisible(false);
-            return;
-        }
-        default:
-            event->ignore();
-    }
-}
 
 
 

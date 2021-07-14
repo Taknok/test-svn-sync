@@ -39,7 +39,6 @@ int GLLightDlg::s_iShininess = 3;
 
 GLLightDlg::GLLightDlg(QWidget *pParent) : QDialog(pParent)
 {
-    m_ModelSize = 3.0f; //meters
     m_pglView = nullptr;
 
     setWindowTitle(tr("OpenGL Light Options"));
@@ -179,7 +178,7 @@ void GLLightDlg::setupLayout()
             m_pslGreen->setTickPosition(QSlider::TicksBelow);
             m_pslBlue->setTickPosition(QSlider::TicksBelow);
 
-            m_pctrlLightRed   = new QLabel;
+            m_plabLightRed   = new QLabel;
             m_plabLightGreen = new QLabel;
             m_plabLightBlue  = new QLabel;
 
@@ -189,7 +188,7 @@ void GLLightDlg::setupLayout()
             pLightColor->addWidget(m_pslRed,1,2);
             pLightColor->addWidget(m_pslGreen,2,2);
             pLightColor->addWidget(m_pslBlue,3,2);
-            pLightColor->addWidget(m_pctrlLightRed,1,3);
+            pLightColor->addWidget(m_plabLightRed,1,3);
             pLightColor->addWidget(m_plabLightGreen,2,3);
             pLightColor->addWidget(m_plabLightBlue,3,3);
             pLightColorBox->setLayout(pLightColor);
@@ -350,6 +349,12 @@ void GLLightDlg::setParams(void)
     m_peslLightDiffuse->setExpValue( double(s_Light.m_Diffuse)  *20.0);
     m_peslLightSpecular->setExpValue(double(s_Light.m_Specular) *20.0);
 
+    m_peslXLight->setRange(-int(LIGHTREFLENGTH*100), int(LIGHTREFLENGTH*100));
+    m_peslYLight->setRange(-int(LIGHTREFLENGTH*100), int(LIGHTREFLENGTH*100));
+    m_peslZLight->setRange(-int(LIGHTREFLENGTH*100), int(LIGHTREFLENGTH*100));
+    m_peslXLight->setTickInterval(int(LIGHTREFLENGTH*10.0));
+    m_peslYLight->setTickInterval(int(LIGHTREFLENGTH*10.0));
+    m_peslZLight->setTickInterval(int(LIGHTREFLENGTH*10.0));
     m_peslXLight->setExpValue(double(s_Light.m_X)*100.0);
     m_peslYLight->setExpValue(double(s_Light.m_Y)*100.0);
     m_peslZLight->setExpValue(double(s_Light.m_Z)*100.0);
@@ -385,7 +390,7 @@ void GLLightDlg::setLabels()
     m_plabPosYValue->setText(strong + Units::lengthUnitLabel());
     strong = QString::asprintf("%7.1f", double(s_Light.m_Z)*Units::mtoUnit());
     m_plabPosZValue->setText(strong + Units::lengthUnitLabel());    strong = QString::asprintf("%7.1f", double(s_Light.m_Red));
-    m_pctrlLightRed->setText(strong);
+    m_plabLightRed->setText(strong);
     strong = QString::asprintf("%7.1f", double(s_Light.m_Green));
     m_plabLightGreen->setText(strong);
     strong = QString::asprintf("%7.1f", double(s_Light.m_Blue));
@@ -426,17 +431,10 @@ bool GLLightDlg::loadSettings(QSettings &settings)
     return true;
 }
 
-
-void GLLightDlg::setModelSize(double span)
-{
-    m_ModelSize = float(span); //meters
-}
-
-
 void GLLightDlg::setDefaults()
 {
     Light &s_Light = gl3dView::s_Light;
-    s_Light.setDefaults(m_ModelSize);
+    s_Light.setDefaults(LIGHTREFLENGTH);
 
     s_iShininess = 5;
 

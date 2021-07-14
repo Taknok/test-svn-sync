@@ -29,5 +29,10 @@
         <file>resources/images/splash.png</file>
         <file>resources/images/xflr5_full.png</file>
         <file>resources/images/xflr5_64.png</file>
+        <file>resources/images/level-.png</file>
+        <file>resources/images/level+.png</file>
+        <file>resources/images/level0.png</file>
+        <file>resources/images/level1.png</file>
+        <file>resources/images/level2.png</file>
     </qresource>
 </RCC>

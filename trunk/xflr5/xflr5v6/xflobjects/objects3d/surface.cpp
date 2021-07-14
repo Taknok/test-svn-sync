@@ -483,13 +483,13 @@ void Surface::getSidePoints(enumPanelPosition pos,
                             Body const*pBody,
                             QVector<Vector3d> &PtA, QVector<Vector3d> &PtB, QVector<Vector3d> &NA, QVector<Vector3d> &NB, int nPoints) const
 {
-    double xRelA=0, xRelB=0;
+    double xRelA(0), xRelB(0);
     Vector3d A4, B4, TA4, TB4, I;
     Vector3d Ux(1,0,0);
     Vector3d V = Normal * NormalA;
-    Vector3d Ua = (m_TA - m_LA).normalized();
+    Vector3d Ua = (m_LA - m_TA).normalized();
     //    double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
-    double sindA = -V.dot(Ua);
+    double sindA = V.dot(Ua);
     if(sindA> 1.0) sindA = 1.0;
     if(sindA<-1.0) sindA = -1.0;
     double alpha_dA = asin(sindA);
@@ -497,9 +497,9 @@ void Surface::getSidePoints(enumPanelPosition pos,
     alpha_dA *= 180.0/PI;
 
     V = Normal * NormalB;
-    Vector3d Ub = (m_TB-m_LB).normalized();
+    Vector3d Ub = (m_LB-m_TB).normalized();
     //    double sindB = -V.dot(Vector3d(1.0,0.0,0.0));
-    double sindB = -V.dot(Ub);
+    double sindB = V.dot(Ub);
     if(sindB> 1.0) sindB = 1.0;
     if(sindB<-1.0) sindB = -1.0;
     double alpha_dB = asin(sindB);
@@ -1038,169 +1038,6 @@ void Surface::setNormal()
 
 
 /**
- * Creates the master points on the left and right ends.
- * One of the most difficult part of the code to implement.
- * @param pBody a pointer to the Body object, or NULL if none.
- * @param dx the x-component of the translation to apply to the body.
- * @param dz the z-component of the translation to apply to the body.
- */
-void Surface::setSidePoints(Body * pBody, double dx, double dz)
-{
-    int l;
-    double alpha_dA, alpha_dB, cosdA, cosdB;
-    Vector3d N, A4, B4, TA4, TB4, I;
-    Body TBody;
-    if(pBody)
-    {
-        TBody.duplicate(pBody);
-        TBody.translate(dx, 0.0, dz);
-    }
-
-    Vector3d V = Normal * NormalA;
-    Vector3d U = (m_TA - m_LA).normalized();
-    //    double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
-    double sindA = -V.dot(U);
-    if(sindA> 1.0) sindA = 1.0;
-    if(sindA<-1.0) sindA = -1.0;
-    alpha_dA = asin(sindA);
-    cosdA = cos(alpha_dA);
-    alpha_dA *= 180.0/PI;
-
-    V = Normal * NormalB;
-    U = (m_TB-m_LB).normalized();
-    double sindB = -V.dot(U);
-    //    double sindB = V.VAbs();
-    if(sindB> 1.0) sindB = 1.0;
-    if(sindB<-1.0) sindB = -1.0;
-    alpha_dB = asin(sindB);
-    cosdB = cos(alpha_dB);
-    alpha_dB *= 180.0/PI;
-
-    //create the quarter chord centers of rotation for the twist
-    A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;
-    B4 = m_LB *3.0/4.0 + m_TB * 1/4.0;
-
-    // create the vectors perpendicular to the side Normals and to the x-axis
-    TA4.x = 0.0;
-    TA4.y = +NormalA.z;
-    TA4.z = -NormalA.y;
-
-    TB4.x = 0.0;
-    TB4.y = +NormalB.z;
-    TB4.z = -NormalB.y;
-
-    m_SideA.clear();
-    m_SideA_T.clear();
-    m_SideA_B.clear();
-    m_SideB.clear();
-    m_SideB_T.clear();
-    m_SideB_B.clear();
-
-    for(int i=0; i<m_NXPanels+1; i++)
-    {
-        m_SideA.append(Vector3d(0,0,0));
-        m_SideA_B.append(Vector3d(0,0,0));
-        m_SideA_T.append(Vector3d(0,0,0));
-        m_SideB.append(Vector3d(0,0,0));
-        m_SideB_B.append(Vector3d(0,0,0));
-        m_SideB_T.append(Vector3d(0,0,0));
-    }
-
-    for (l=0; l<=m_NXPanels; l++)
-    {
-        getSidePoint(m_xPointA[l], false, MIDSURFACE, m_SideA[l], N);
-        getSidePoint(m_xPointA[l], false, TOPSURFACE, m_SideA_T[l], N);
-        getSidePoint(m_xPointA[l], false, BOTSURFACE, m_SideA_B[l], N);
-
-        //scale the thickness
-        double Ox = m_xPointA[l];
-        double Oy = m_LA.y * (1.0-Ox) +  m_TA.y * Ox;
-        double Oz = m_LA.z * (1.0-Ox) +  m_TA.z * Ox;
-        m_SideA[l].y   = Oy +(m_SideA[l].y   - Oy)/cosdA;
-        m_SideA[l].z   = Oz +(m_SideA[l].z   - Oz)/cosdA;
-        m_SideA_T[l].y = Oy +(m_SideA_T[l].y - Oy)/cosdA;
-        m_SideA_T[l].z = Oz +(m_SideA_T[l].z - Oz)/cosdA;
-        m_SideA_B[l].y = Oy +(m_SideA_B[l].y - Oy)/cosdA;
-        m_SideA_B[l].z = Oz +(m_SideA_B[l].z - Oz)/cosdA;
-
-        //rotate the point about the foil's neutral line to account for dihedral
-        m_SideA[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
-        m_SideA_T[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
-        m_SideA_B[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
-
-        getSidePoint(m_xPointB[l], true, MIDSURFACE, m_SideB[l], N);
-        getSidePoint(m_xPointB[l], true, TOPSURFACE, m_SideB_T[l], N);
-        getSidePoint(m_xPointB[l], true, BOTSURFACE, m_SideB_B[l], N);
-
-        //scale the thickness
-        Ox = m_xPointB[l];
-        Oy = m_LB.y * (1.0-Ox) +  m_TB.y * Ox;
-        Oz = m_LB.z * (1.0-Ox) +  m_TB.z * Ox;
-        m_SideB[l].y   = Oy +(m_SideB[l].y   - Oy)/cosdB;
-        m_SideB[l].z   = Oz +(m_SideB[l].z   - Oz)/cosdB;
-        m_SideB_T[l].y = Oy +(m_SideB_T[l].y - Oy)/cosdB;
-        m_SideB_T[l].z = Oz +(m_SideB_T[l].z - Oz)/cosdB;
-        m_SideB_B[l].y = Oy +(m_SideB_B[l].y - Oy)/cosdB;
-        m_SideB_B[l].z = Oz +(m_SideB_B[l].z - Oz)/cosdB;
-
-        //rotate the point about the foil's neutral line to account for dihedral
-        m_SideB[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
-        m_SideB_T[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
-        m_SideB_B[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
-
-
-        if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
-        {
-            if(TBody.intersect(m_SideA_B[l], m_SideB_B[l], I, false))
-            {
-                m_SideB_B[l] = I;
-                m_bJoinRight = false;
-            }
-            if(TBody.intersect(m_SideA_T[l], m_SideB_T[l], I, false))
-            {
-                m_SideB_T[l] = I;
-                m_bJoinRight = false;
-            }
-            if(TBody.intersect(m_SideA[l], m_SideB[l], I, false))
-            {
-                m_SideB[l] = I;
-                m_bJoinRight = false;
-            }
-        }
-        else if(pBody && m_bIsCenterSurf && m_bIsRightSurf)
-        {
-            if(TBody.intersect(m_SideA_B[l], m_SideB_B[l], I, true))
-            {
-                m_SideA_B[l] = I;
-            }
-            if(TBody.intersect(m_SideA_T[l], m_SideB_T[l], I, true))
-            {
-                m_SideA_T[l] = I;
-            }
-            if(TBody.intersect(m_SideA[l], m_SideB[l], I, true))
-            {
-                m_SideA[l] = I;
-            }
-        }
-    }
-
-    //merge trailing edge nodes in case the foil has a T.E. gap
-
-    Vector3d Node;
-
-    Node = (m_SideA_B[0] + m_SideA_T[0])/2.0;
-    m_SideA_B[0].set(Node);
-    m_SideA_T[0].set(Node);
-
-    Node = (m_SideB_B[0] + m_SideB_T[0])/2.0;
-    m_SideB_B[0].set(Node);
-    m_SideB_T[0].set(Node);
-}
-
-
-
-
-/**
  * Translates the entire Surface.
  * @param T the translation vector.
  */
@@ -1363,9 +1200,162 @@ void Surface::setPanelPointers(Panel *pPanel, Vector3d *pNode)
 }
 
 
+/**
+ * Creates the master points on the left and right ends.
+ * One of the most difficult part of the code to implement.
+ * @param pBody a pointer to the Body object, or NULL if none.
+ * @param dx the x-component of the translation to apply to the body.
+ * @param dz the z-component of the translation to apply to the body.
+ */
+void Surface::setMeshSidePoints(Body * pBody, double dx, double dz)
+{
+    double alpha_dA(0), alpha_dB(0), cosdA(0), cosdB(0);
+    Vector3d N, A4, B4, TA4, TB4, I;
+    Vector3d V, Ua, Ub;
+    Body TBody;
+    if(pBody)
+    {
+        TBody.duplicate(pBody);
+        TBody.translate(dx, 0.0, dz);
+    }
+
+    V = Normal * NormalA;
+    Ua = (m_TA - m_LA).normalized();
+    //    double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
+    double sindA = -V.dot(Ua);
+    if(sindA> 1.0) sindA = 1.0;
+    if(sindA<-1.0) sindA = -1.0;
+    alpha_dA = asin(sindA);
+    cosdA = cos(alpha_dA);
+    alpha_dA *= 180.0/PI;
+
+    V = Normal * NormalB;
+    Ub = (m_TB-m_LB).normalized();
+    double sindB = -V.dot(Ub);
+    //    double sindB = V.VAbs();
+    if(sindB> 1.0) sindB = 1.0;
+    if(sindB<-1.0) sindB = -1.0;
+    alpha_dB = asin(sindB);
+    cosdB = cos(alpha_dB);
+    alpha_dB *= 180.0/PI;
+
+    //create the quarter chord centers of rotation for the twist
+    A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;
+    B4 = m_LB *3.0/4.0 + m_TB * 1/4.0;
+
+    // create the vectors perpendicular to the side Normals and to the x-axis
+    TA4.x = 0.0;
+    TA4.y = +NormalA.z;
+    TA4.z = -NormalA.y;
+
+    TB4.x = 0.0;
+    TB4.y = +NormalB.z;
+    TB4.z = -NormalB.y;
+
+    m_SideA.clear();
+    m_SideA_T.clear();
+    m_SideA_B.clear();
+    m_SideB.clear();
+    m_SideB_T.clear();
+    m_SideB_B.clear();
+
+    m_SideA.resize(  m_NXPanels+1);
+    m_SideA_B.resize(m_NXPanels+1);
+    m_SideA_T.resize(m_NXPanels+1);
+    m_SideB.resize(  m_NXPanels+1);
+    m_SideB_B.resize(m_NXPanels+1);
+    m_SideB_T.resize(m_NXPanels+1);
+
+    for (int l=0; l<=m_NXPanels; l++)
+    {
+        getSidePoint(m_xPointA[l], false, MIDSURFACE, m_SideA[l], N);
+        getSidePoint(m_xPointA[l], false, TOPSURFACE, m_SideA_T[l], N);
+        getSidePoint(m_xPointA[l], false, BOTSURFACE, m_SideA_B[l], N);
+
+        //scale the thickness
+        double Ox = m_xPointA[l];
+        double Oy = m_LA.y * (1.0-Ox) +  m_TA.y * Ox;
+        double Oz = m_LA.z * (1.0-Ox) +  m_TA.z * Ox;
+        m_SideA[l].y   = Oy +(m_SideA[l].y   - Oy)/cosdA;
+        m_SideA[l].z   = Oz +(m_SideA[l].z   - Oz)/cosdA;
+        m_SideA_T[l].y = Oy +(m_SideA_T[l].y - Oy)/cosdA;
+        m_SideA_T[l].z = Oz +(m_SideA_T[l].z - Oz)/cosdA;
+        m_SideA_B[l].y = Oy +(m_SideA_B[l].y - Oy)/cosdA;
+        m_SideA_B[l].z = Oz +(m_SideA_B[l].z - Oz)/cosdA;
+
+        //rotate the point about the foil's neutral line to account for dihedral
+        m_SideA[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
+        m_SideA_T[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
+        m_SideA_B[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
+
+        getSidePoint(m_xPointB[l], true, MIDSURFACE, m_SideB[l], N);
+        getSidePoint(m_xPointB[l], true, TOPSURFACE, m_SideB_T[l], N);
+        getSidePoint(m_xPointB[l], true, BOTSURFACE, m_SideB_B[l], N);
+
+        //scale the thickness
+        Ox = m_xPointB[l];
+        Oy = m_LB.y * (1.0-Ox) +  m_TB.y * Ox;
+        Oz = m_LB.z * (1.0-Ox) +  m_TB.z * Ox;
+        m_SideB[l].y   = Oy +(m_SideB[l].y   - Oy)/cosdB;
+        m_SideB[l].z   = Oz +(m_SideB[l].z   - Oz)/cosdB;
+        m_SideB_T[l].y = Oy +(m_SideB_T[l].y - Oy)/cosdB;
+        m_SideB_T[l].z = Oz +(m_SideB_T[l].z - Oz)/cosdB;
+        m_SideB_B[l].y = Oy +(m_SideB_B[l].y - Oy)/cosdB;
+        m_SideB_B[l].z = Oz +(m_SideB_B[l].z - Oz)/cosdB;
+
+        //rotate the point about the foil's neutral line to account for dihedral
+        m_SideB[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
+        m_SideB_T[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
+        m_SideB_B[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
 
 
+        if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
+        {
+            if(TBody.intersect(m_SideA_B[l], m_SideB_B[l], I, false))
+            {
+                m_SideB_B[l] = I;
+                m_bJoinRight = false;
+            }
+            if(TBody.intersect(m_SideA_T[l], m_SideB_T[l], I, false))
+            {
+                m_SideB_T[l] = I;
+                m_bJoinRight = false;
+            }
+            if(TBody.intersect(m_SideA[l], m_SideB[l], I, false))
+            {
+                m_SideB[l] = I;
+                m_bJoinRight = false;
+            }
+        }
+        else if(pBody && m_bIsCenterSurf && m_bIsRightSurf)
+        {
+            if(TBody.intersect(m_SideA_B[l], m_SideB_B[l], I, true))
+            {
+                m_SideA_B[l] = I;
+            }
+            if(TBody.intersect(m_SideA_T[l], m_SideB_T[l], I, true))
+            {
+                m_SideA_T[l] = I;
+            }
+            if(TBody.intersect(m_SideA[l], m_SideB[l], I, true))
+            {
+                m_SideA[l] = I;
+            }
+        }
+    }
 
+    //merge trailing edge nodes in case the foil has a T.E. gap
+
+    Vector3d Node;
+
+    Node = (m_SideA_B[0] + m_SideA_T[0])/2.0;
+    m_SideA_B[0].set(Node);
+    m_SideA_T[0].set(Node);
+
+    Node = (m_SideB_B[0] + m_SideB_T[0])/2.0;
+    m_SideB_B[0].set(Node);
+    m_SideB_T[0].set(Node);
+}
 
 
 

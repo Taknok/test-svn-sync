@@ -23,7 +23,7 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include "interpolatefoilsdlg.h"
-#include <xdirect/objects2d.h>
+#include <xflobjects/objects2d/objects2d.h>
 
 #include <xfoil.h>
 #include <xflobjects/objects2d/foil.h>
@@ -43,8 +43,8 @@ InterpolateFoilsDlg::InterpolateFoilsDlg(QWidget *pParent) : QDialog(pParent)
 
     setupLayout();
 
-    connect(m_pctrlFoil1,  SIGNAL(activated(int)),    this, SLOT(onSelChangeFoil1(int)));
-    connect(m_pctrlFoil2,  SIGNAL(activated(int)),    this, SLOT(onSelChangeFoil2(int)));
+    connect(m_pcbFoil1,  SIGNAL(activated(int)),    this, SLOT(onSelChangeFoil1(int)));
+    connect(m_pcbFoil2,  SIGNAL(activated(int)),    this, SLOT(onSelChangeFoil2(int)));
     connect(m_pdeFrac,   SIGNAL(editingFinished()), this, SLOT(onFrac()));
     connect(m_pslMix, SIGNAL(sliderMoved(int)),  this, SLOT(onVScroll(int)));
 }
@@ -54,9 +54,9 @@ void InterpolateFoilsDlg::setupLayout()
 {
     QVBoxLayout *pLeftSide = new QVBoxLayout;
     {
-        m_pctrlFoil1 = new QComboBox;
-        m_pctrlFoil1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        m_pctrlFoil2 = new QComboBox;
+        m_pcbFoil1 = new QComboBox;
+        m_pcbFoil1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        m_pcbFoil2 = new QComboBox;
         m_plabCamb1 = new QLabel(tr("Camb1"));
         m_plabCamb2 = new QLabel(tr("Camb2"));
         m_plabThick1 = new QLabel(tr("Thick1"));
@@ -65,11 +65,11 @@ void InterpolateFoilsDlg::setupLayout()
         m_plabCamb2->setMinimumWidth(250);
         m_plabThick1->setMinimumWidth(250);
         m_plabThick2->setMinimumWidth(250);
-        pLeftSide->addWidget(m_pctrlFoil1);
+        pLeftSide->addWidget(m_pcbFoil1);
         pLeftSide->addWidget(m_plabCamb1);
         pLeftSide->addWidget(m_plabThick1);
         pLeftSide->addStretch(1);
-        pLeftSide->addWidget(m_pctrlFoil2);
+        pLeftSide->addWidget(m_pcbFoil2);
         pLeftSide->addWidget(m_plabCamb2);
         pLeftSide->addWidget(m_plabThick2);
     }
@@ -127,19 +127,19 @@ void InterpolateFoilsDlg::setupLayout()
 void InterpolateFoilsDlg::initDialog()
 {
     Foil const* pFoil;
-    m_pctrlFoil1->clear();
-    m_pctrlFoil2->clear();
+    m_pcbFoil1->clear();
+    m_pcbFoil2->clear();
     for (int i=0; i<Objects2d::foilCount(); i++)
     {
         pFoil = Objects2d::foilAt(i);
         if(pFoil)
         {
-            m_pctrlFoil1->addItem(pFoil->name());
-            m_pctrlFoil2->addItem(pFoil->name());
+            m_pcbFoil1->addItem(pFoil->name());
+            m_pcbFoil2->addItem(pFoil->name());
         }
     }
-    m_pctrlFoil1->setCurrentIndex(0);
-    m_pctrlFoil2->setCurrentIndex(1);
+    m_pcbFoil1->setCurrentIndex(0);
+    m_pcbFoil2->setCurrentIndex(1);
 
     m_Frac = 0.0;
     m_pdeFrac->setValue(100);
@@ -179,7 +179,7 @@ void InterpolateFoilsDlg::keyPressEvent(QKeyEvent *event)
 
 void InterpolateFoilsDlg::onSelChangeFoil1(int)
 {
-    QString strong  = m_pctrlFoil1->currentText();
+    QString strong  = m_pcbFoil1->currentText();
 
     Foil* pFoil = Objects2d::foil(strong);
 
@@ -208,7 +208,7 @@ void InterpolateFoilsDlg::onSelChangeFoil1(int)
 
 void InterpolateFoilsDlg::onSelChangeFoil2(int)
 {
-    QString strong  = m_pctrlFoil2->currentText();
+    QString strong  = m_pcbFoil2->currentText();
 
     Foil* pFoil = Objects2d::foil(strong);
 
@@ -237,10 +237,10 @@ void InterpolateFoilsDlg::update()
 {
     QString strong;
 
-    strong = m_pctrlFoil1->currentText();
+    strong = m_pcbFoil1->currentText();
     Foil* pFoil1 = Objects2d::foil(strong);
 
-    strong = m_pctrlFoil2->currentText();
+    strong = m_pcbFoil2->currentText();
     Foil* pFoil2 = Objects2d::foil(strong);
 
     if(!pFoil1 || !pFoil2) return;

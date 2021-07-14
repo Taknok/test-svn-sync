@@ -126,61 +126,21 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
 #endif
 #endif
     }
-    // Load preferred OpenGL version
-    // and set the default format before any 3d view is created
-    int OGLMajor = 3;
-    int OGLMinor = 3;
-    if(QFile(settings.fileName()).exists())
-    {
-        int vM = settings.value("OpenGL_Major", 4).toInt(&bOK);
-        if(bOK) OGLMajor = vM;
-        int vm = settings.value("OpenGL_Minor", 4).toInt(&bOK);
-        if(bOK) OGLMinor = vm;
-    }
-
-    // choose between the version passed as option if valid and the saved setting
-    QString msg;
-
-    if(OGLversion==-1)
-    {
-    }
-    else
-    {
-        OGLMajor = OGLversion/10;
-        OGLMinor = OGLversion - 10*OGLMajor;
-    }
-    msg = QString::asprintf("Requesting OpenGL %d.%d with the core profile", OGLMajor, OGLMinor);
-    Trace(msg);
-
-    QSurfaceFormat defaultformat;
-    defaultformat.setVersion(OGLMajor, OGLMinor); // in Linux/OpenSuse, version>=3.1 forces the core profile
-    // Force the core profile, to ensure that the app does not use any compatibility
-    // function which could be unsupported by some GPU vendors at some future point
-    defaultformat.setProfile(QSurfaceFormat::CoreProfile);
-#ifdef QT_DEBUG
-    defaultformat.setOption(QSurfaceFormat::DebugContext);
-#endif
-    QSurfaceFormat::setDefaultFormat(defaultformat);
-
 
     QPoint pt(a,b);
     QSize sz(c,d);
 
     if(StyleName.length())    qApp->setStyle(StyleName);
-    MainFrame *m_pMainFrame = MainFrame::self();
+    MainFrame *pMainFrame = MainFrame::self();
     MainFrame::self()->resize(sz);
     MainFrame::self()->move(pt);
 
     if(bScript)
     {
-        m_pMainFrame->executeScript(scriptPathName, bShowProgress);
+        pMainFrame->executeScript(scriptPathName, bShowProgress);
         m_bDone = true;
         return;
     }
-
-    if(bMaximized)  MainFrame::self()->showMaximized();
-    else            MainFrame::self()->show();
-    splash.finish(m_pMainFrame);
 
 
 #ifndef Q_OS_MAC
@@ -197,18 +157,18 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
             Extension.compare("plr",Qt::CaseInsensitive)==0 || Extension.compare("dat",Qt::CaseInsensitive)==0)
         {
             bProjectFile = true;
-            int iApp = m_pMainFrame->loadXFLR5File(PathName);
+            int iApp = pMainFrame->loadXFLR5File(PathName);
 
-            if      (iApp == xfl::MIAREX)        m_pMainFrame->onMiarex();
-            else if (iApp == xfl::XFOILANALYSIS) m_pMainFrame->onXDirect();
+            if      (iApp == xfl::MIAREX)        pMainFrame->onMiarex();
+            else if (iApp == xfl::XFOILANALYSIS) pMainFrame->onXDirect();
         }
     }
 
     if(!bProjectFile)
     {
-        if(m_pMainFrame->bAutoLoadLast())
+        if(pMainFrame->bAutoLoadLast())
         {
-            m_pMainFrame->onLoadLastProject();
+            pMainFrame->loadLastProject();
         }
     }
 #else
@@ -220,6 +180,12 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
 #endif
 
     addStandardBtnStrings();
+
+
+    if(bMaximized)  pMainFrame->showMaximized();
+    else            pMainFrame->show();
+    splash.finish(pMainFrame);
+
 }
 
 

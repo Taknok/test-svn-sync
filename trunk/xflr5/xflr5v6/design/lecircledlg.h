@@ -1,7 +1,7 @@
 /****************************************************************************
 
     LECircleDlg Class
-    Copyright (C) 2009 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,42 +20,41 @@
 *****************************************************************************/
 
 
-#ifndef LECIRCLEDLG_H
-#define LECIRCLEDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QCheckBox>
 #include <QPushButton>
 
 class DoubleEdit;
+class QDialogButtonBox;
 
 class LECircleDlg : public QDialog
 {
     Q_OBJECT
     friend class AFoil;
 
+    public:
+        LECircleDlg(QWidget *pParent);
 
-public:
-    LECircleDlg(QWidget *pParent);
+        void setupLayout();
+        void initDialog();
 
-    void setupLayout();
-    void InitDialog();
-
-private slots:
-    void OnOK();
-
-
-private:
-    void keyPressEvent(QKeyEvent *event);
+    private slots:
+        void onOK();
 
 
-private:
-    QCheckBox *m_pctrlShow;
-    DoubleEdit *m_pctrlRadius;
-    QPushButton *OKButton, *CancelButton;
+    private:
+        void keyPressEvent(QKeyEvent *event) override;
 
-    double m_Radius;
-    bool m_bShowRadius;
+
+    private:
+        QCheckBox *m_pchShow;
+        DoubleEdit *m_pdeRadius;
+
+        QDialogButtonBox *m_pButtonBox;
+
+        double m_Radius;
+        bool m_bShowRadius;
 };
 
-#endif // LECIRCLEDLG_H

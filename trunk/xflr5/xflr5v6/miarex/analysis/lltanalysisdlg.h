@@ -1,7 +1,7 @@
 /****************************************************************************
 
     LLTAnalysisDlg Class
-    Copyright (C) 2009-2016 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,8 +27,7 @@
  *
  */
 
-#ifndef LLTANALYSISDLG_H
-#define LLTANALYSISDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QTimer>
@@ -69,57 +68,57 @@ class LLTAnalysisDlg : public QDialog
 
     friend class Wing;
 
-public:
-    LLTAnalysisDlg(QWidget *pParent);
-    ~LLTAnalysisDlg() override;
+    public:
+        LLTAnalysisDlg(QWidget *pParent);
+        ~LLTAnalysisDlg() override;
 
-    QSize sizeHint() const override {return QSize(900,700);}
-    void initDialog();
-    void setTask(PlaneTask *pTask) {m_pTheTask = pTask;}
-    void deleteTask();
-    void analyze();
-    void cleanUp();
+        QSize sizeHint() const override {return QSize(900,700);}
+        void initDialog();
+        void setTask(PlaneTask *pTask) {m_pTheTask = pTask;}
+        void deleteTask();
+        void analyze();
+        void cleanUp();
 
-    Graph* iterGraph() const {return m_pIterGraph;}
+        Graph* iterGraph() const {return m_pIterGraph;}
 
-private slots:
-    void onCancelAnalysis();
-    void onProgress();
-    void onLogFile();
-    void onMessage(QString msg);
+    private slots:
+        void onCancelAnalysis();
+        void onProgress();
+        void onLogFile();
+        void onMessage(QString msg);
 
-private:
-    void keyPressEvent(QKeyEvent *event) override;
-    void showEvent(QShowEvent *pEvent) override;
-    void hideEvent(QHideEvent *pEvent) override;
-    void customEvent(QEvent * pEvent) override;
+    private:
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void showEvent(QShowEvent *pEvent) override;
+        void hideEvent(QHideEvent *pEvent) override;
+        void customEvent(QEvent * pEvent) override;
 
-    bool AlphaLoop();
-    bool QInfLoop();
-    void setupLayout();
-    void updateView();
-    void updateOutput(QString &strong);
+        bool AlphaLoop();
+        bool QInfLoop();
+        void setupLayout();
+        void updateView();
+        void updateOutput(QString &strong);
 
-private:
-    PlaneTask *m_pTheTask; /**< a pointer to the one and only instance of the PlaneTask class */
+    private:
+        PlaneTask *m_pTheTask; /**< a pointer to the one and only instance of the PlaneTask class */
 
-    bool m_bCancel;             /**< true if the user has cancelled the analysis */
-    bool m_bFinished;           /**< true if the analysis is completed, false if it is running */
-    Graph *m_pIterGraph;         /**< A pointer to the QGraph object where the progress of the iterations are displayed */
-    QPoint m_LegendPlace;       /**< The position where the legend should be diplayed in the output graph */
-    QRect m_ViscRect;           /**< The rectangle in the client area where the graph is displayed */
+        bool m_bCancel;             /**< true if the user has cancelled the analysis */
+        bool m_bFinished;           /**< true if the analysis is completed, false if it is running */
+        Graph *m_pIterGraph;         /**< A pointer to the QGraph object where the progress of the iterations are displayed */
+        QPoint m_LegendPlace;       /**< The position where the legend should be diplayed in the output graph */
+        QRect m_ViscRect;           /**< The rectangle in the client area where the graph is displayed */
 
-    QString m_strOut;
+        QString m_strOut;
 
-    QTimer m_Timer;
+        QTimer m_Timer;
 
-    //GUI widget variables
-    QPushButton *m_pctrlCancel;
-    GraphWt * m_pGraphWidget;
-    QTextEdit *m_pctrlTextOutput;
-    QCheckBox * m_pctrlLogFile;
+        //GUI widget variables
+        QPushButton *m_ppbCancel;
+        GraphWt * m_pGraphWidget;
+        QTextEdit *m_pteTextOutput;
+        QCheckBox * m_pchLogFile;
 
-    static QByteArray s_Geometry;
+        static QByteArray s_Geometry;
 };
 
-#endif
+

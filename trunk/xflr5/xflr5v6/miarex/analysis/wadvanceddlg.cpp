@@ -1,7 +1,7 @@
 /****************************************************************************
 
     WAdvancedDlg Class
-    Copyright (C) 2009-2016 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -76,10 +76,10 @@ void WAdvancedDlg::setupLayout()
     {
         QHBoxLayout *pAllLayout = new QHBoxLayout;
         {
-            m_pctrlLogFile     = new QCheckBox(tr("View Log File after errors"));
-            m_pctrlKeepOutOpps = new QCheckBox(tr("Store points outside the polar mesh"));
-            pAllLayout->addWidget(m_pctrlLogFile);
-            pAllLayout->addWidget(m_pctrlKeepOutOpps);
+            m_pchLogFile     = new QCheckBox(tr("View Log File after errors"));
+            m_pchKeepOutOpps = new QCheckBox(tr("Store points outside the polar mesh"));
+            pAllLayout->addWidget(m_pchLogFile);
+            pAllLayout->addWidget(m_pchKeepOutOpps);
         }
         pAllBox->setLayout(pAllLayout);
     }
@@ -90,28 +90,28 @@ void WAdvancedDlg::setupLayout()
         {
             QHBoxLayout *pWingPanelLayout = new QHBoxLayout;
             {
-                m_pctrlMinPanelSize = new DoubleEdit(1.00,5);
-                m_pctrlLength  = new QLabel("");
-                QLabel *lab5 = new QLabel(tr("Ignore wing panels with span width <"));
-                lab5->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                m_pdeMinPanelSize = new DoubleEdit(1.00,5);
+                QLabel *plabLength  = new QLabel(Units::lengthUnitLabel());
+                QLabel *plab5 = new QLabel(tr("Ignore wing panels with span width <"));
+                plab5->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
                 pWingPanelLayout->addStretch(1);
-                pWingPanelLayout->addWidget(lab5);
-                pWingPanelLayout->addWidget(m_pctrlMinPanelSize);
-                pWingPanelLayout->addWidget(m_pctrlLength);
+                pWingPanelLayout->addWidget(plab5);
+                pWingPanelLayout->addWidget(m_pdeMinPanelSize);
+                pWingPanelLayout->addWidget(plabLength);
             }
             QHBoxLayout *pCoreSizeLayout = new QHBoxLayout;
             {
-                m_pctrlLength2 = new QLabel("");
-                m_pctrlCoreSize     = new DoubleEdit(.0001, 4);
-                m_pctrlCoreSize->setToolTip("The radius of the cylinder around the trailing vortices\n"
+                QLabel *plabLength  = new QLabel(Units::lengthUnitLabel());
+                m_pdeCoreSize = new DoubleEdit(.0001, 4);
+                m_pdeCoreSize->setToolTip("The radius of the cylinder around the trailing vortices\n"
                                             "under which the influence of the vortex is ignored, in order\n"
                                             "to prevent numerical errors.");
                 QLabel *lab10 = new QLabel(tr("Core Size"));
                 lab10->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
                 pCoreSizeLayout->addStretch(1);
                 pCoreSizeLayout->addWidget(lab10);
-                pCoreSizeLayout->addWidget(m_pctrlCoreSize);
-                pCoreSizeLayout->addWidget(m_pctrlLength2);
+                pCoreSizeLayout->addWidget(m_pdeCoreSize);
+                pCoreSizeLayout->addWidget(plabLength);
             }
             pVLMPanelLayout->addLayout(pWingPanelLayout);
             pVLMPanelLayout->addLayout(pCoreSizeLayout);
@@ -123,8 +123,8 @@ void WAdvancedDlg::setupLayout()
     {
         QGridLayout *pVLMLayout = new QGridLayout;
         {
-            m_pctrlVortexPos    = new DoubleEdit(25.0, 2);
-            m_pctrlControlPos   = new DoubleEdit(75.0, 2);
+            m_pdeVortexPos    = new DoubleEdit(25.0, 2);
+            m_pdeControlPos   = new DoubleEdit(75.0, 2);
             QLabel *lab6 = new QLabel(tr("Vortex Position"));
             QLabel *lab7 = new QLabel(tr("Control Point Position"));
             QLabel *lab8 = new QLabel("%");
@@ -135,8 +135,8 @@ void WAdvancedDlg::setupLayout()
             lab9->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
             pVLMLayout->addWidget(lab6,1,1);
             pVLMLayout->addWidget(lab7,2,1);
-            pVLMLayout->addWidget(m_pctrlVortexPos,1,2);
-            pVLMLayout->addWidget(m_pctrlControlPos,2,2);
+            pVLMLayout->addWidget(m_pdeVortexPos,1,2);
+            pVLMLayout->addWidget(m_pdeControlPos,2,2);
             pVLMLayout->addWidget(lab8,1,3);
             pVLMLayout->addWidget(lab9,2,3);
         }
@@ -147,10 +147,10 @@ void WAdvancedDlg::setupLayout()
     {
         QGridLayout *pLLTLayout = new QGridLayout;
         {
-            m_pctrlNStation     = new IntEdit(20, this);
-            m_pctrlRelax        = new DoubleEdit(20,1);
-            m_pctrlAlphaPrec    = new DoubleEdit(.01, 4);
-            m_pctrlIterMax      = new IntEdit(100, this);
+            m_pieNStation     = new IntEdit(20, this);
+            m_pdeRelax        = new DoubleEdit(20,1);
+            m_pdeAlphaPrec    = new DoubleEdit(.01, 4);
+            m_pieIterMax      = new IntEdit(100, this);
             QLabel *lab1 = new QLabel(tr("Number of spanwise stations"));
             QLabel *lab2 = new QLabel(tr("Relax. factor"));
             QLabel *lab3 = new QLabel(tr("Alpha Precision"));
@@ -163,10 +163,10 @@ void WAdvancedDlg::setupLayout()
             pLLTLayout->addWidget(lab2,2,1);
             pLLTLayout->addWidget(lab3,3,1);
             pLLTLayout->addWidget(lab4,4,1);
-            pLLTLayout->addWidget(m_pctrlNStation,1,2);
-            pLLTLayout->addWidget(m_pctrlRelax,2,2);
-            pLLTLayout->addWidget(m_pctrlAlphaPrec,3,2);
-            pLLTLayout->addWidget(m_pctrlIterMax,4,2);
+            pLLTLayout->addWidget(m_pieNStation,1,2);
+            pLLTLayout->addWidget(m_pdeRelax,2,2);
+            pLLTLayout->addWidget(m_pdeAlphaPrec,3,2);
+            pLLTLayout->addWidget(m_pieIterMax,4,2);
         }
         pLLTBox->setLayout(pLLTLayout);
     }
@@ -175,10 +175,10 @@ void WAdvancedDlg::setupLayout()
     {
         QVBoxLayout *pPanelBCLayout = new QVBoxLayout;
         {
-            m_pctrlDirichlet = new QRadioButton("Dirichlet (Recommended)");
-            m_pctrlNeumann = new QRadioButton("Neumann");
-            pPanelBCLayout->addWidget(m_pctrlDirichlet);
-            pPanelBCLayout->addWidget(m_pctrlNeumann);
+            m_prbDirichlet = new QRadioButton("Dirichlet (Recommended)");
+            m_prbNeumann = new QRadioButton("Neumann");
+            pPanelBCLayout->addWidget(m_prbDirichlet);
+            pPanelBCLayout->addWidget(m_prbNeumann);
         }
         pPanelBCBox->setLayout((pPanelBCLayout));
     }
@@ -266,20 +266,14 @@ void WAdvancedDlg::initDialog()
 {
     setParams();
 
-    QString len;
-    Units::getLengthUnitLabel(len);
-
-    m_pctrlLength->setText(len);
-    m_pctrlLength2->setText(len);
-
-    m_pctrlVortexPos->setEnabled(false);
-    m_pctrlControlPos->setEnabled(false);
+    m_pdeVortexPos->setEnabled(false);
+    m_pdeControlPos->setEnabled(false);
 
     m_bDirichlet = true;
-    m_pctrlDirichlet->setChecked(m_bDirichlet);
-    m_pctrlNeumann->setChecked(!m_bDirichlet);
-    m_pctrlDirichlet->setEnabled(false);
-    m_pctrlNeumann->setEnabled(false);
+    m_prbDirichlet->setChecked(m_bDirichlet);
+    m_prbNeumann->setChecked(!m_bDirichlet);
+    m_prbDirichlet->setEnabled(false);
+    m_prbNeumann->setEnabled(false);
 }
 
 
@@ -312,37 +306,37 @@ void WAdvancedDlg::onResetDefaults()
 
 void WAdvancedDlg::readParams()
 {
-    m_Relax           = m_pctrlRelax->value();
-    m_AlphaPrec       = m_pctrlAlphaPrec->value();
-    m_CoreSize        = m_pctrlCoreSize->value() / Units::mtoUnit();
-    m_MinPanelSize    = m_pctrlMinPanelSize->value() / Units::mtoUnit();
-    m_VortexPos       = m_pctrlVortexPos->value()/100.0;
-    m_ControlPos      = m_pctrlControlPos->value()/100.0;
-    m_Iter            = m_pctrlIterMax->value();
-    m_NLLTStation     = m_pctrlNStation->value();
-    m_bDirichlet      = m_pctrlDirichlet->isChecked();
+    m_Relax           = m_pdeRelax->value();
+    m_AlphaPrec       = m_pdeAlphaPrec->value();
+    m_CoreSize        = m_pdeCoreSize->value() / Units::mtoUnit();
+    m_MinPanelSize    = m_pdeMinPanelSize->value() / Units::mtoUnit();
+    m_VortexPos       = m_pdeVortexPos->value()/100.0;
+    m_ControlPos      = m_pdeControlPos->value()/100.0;
+    m_Iter            = m_pieIterMax->value();
+    m_NLLTStation     = m_pieNStation->value();
+    m_bDirichlet      = m_prbDirichlet->isChecked();
     m_bTrefftz        = true;
-    m_bKeepOutOpps    = m_pctrlKeepOutOpps->isChecked();
-    m_bLogFile        = m_pctrlLogFile->isChecked();
+    m_bKeepOutOpps    = m_pchKeepOutOpps->isChecked();
+    m_bLogFile        = m_pchLogFile->isChecked();
 }
 
 
 void WAdvancedDlg::setParams()
 {
-    m_pctrlIterMax->setValue(m_Iter);
-    m_pctrlRelax->setValue(m_Relax);
-    m_pctrlAlphaPrec->setValue(m_AlphaPrec);
-    m_pctrlNStation->setValue(m_NLLTStation);
+    m_pieIterMax->setValue(m_Iter);
+    m_pdeRelax->setValue(m_Relax);
+    m_pdeAlphaPrec->setValue(m_AlphaPrec);
+    m_pieNStation->setValue(m_NLLTStation);
 
-    m_pctrlCoreSize->setValue(m_CoreSize* Units::mtoUnit());
+    m_pdeCoreSize->setValue(m_CoreSize* Units::mtoUnit());
 
-    m_pctrlMinPanelSize->setValue(m_MinPanelSize * Units::mtoUnit());
+    m_pdeMinPanelSize->setValue(m_MinPanelSize * Units::mtoUnit());
 
-    m_pctrlLogFile->setChecked(m_bLogFile);
-    m_pctrlKeepOutOpps->setChecked(m_bKeepOutOpps);
+    m_pchLogFile->setChecked(m_bLogFile);
+    m_pchKeepOutOpps->setChecked(m_bKeepOutOpps);
 
-    m_pctrlControlPos->setValue(m_ControlPos*100.0);
-    m_pctrlVortexPos->setValue(m_VortexPos*100.0);
+    m_pdeControlPos->setValue(m_ControlPos*100.0);
+    m_pdeVortexPos->setValue(m_VortexPos*100.0);
 }
 
 

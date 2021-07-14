@@ -1,6 +1,7 @@
 /****************************************************************************
 
-    Miarex    Copyright (C) 2008-2019 André Deperrois
+    Miarex
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,19 +24,19 @@
 
 class MainFrame;
 
-
-#include <QWidget>
-#include <QPixmap>
-#include <QLabel>
 #include <QCheckBox>
+#include <QDialog>
+#include <QGroupBox>
+#include <QLabel>
+#include <QPixmap>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSettings>
 #include <QSlider>
 #include <QStackedWidget>
 #include <QToolButton>
-#include <QPushButton>
-#include <QRadioButton>
 #include <QVector>
-#include <QDialog>
-#include <QSettings>
+#include <QWidget>
 
 #include <xflcore/core_enums.h>
 
@@ -56,16 +57,18 @@ class LLTAnalysisDlg;
 class LineBtn;
 class LineCbBox;
 class LineDelegate;
+class LinePickerWt;
 class MinTextEdit;
 class PanelAnalysisDlg;
 class Plane;
-class PlaneTask;
 class PlaneOpp;
+class PlaneTask;
+class PlaneTreeView;
 class WPolar;
 class Wing;
 class WingOpp;
 class gl3dMiarexView;
-class LinePickerWt;
+
 /**
  *@class QMiarex
  *@brief This is the class associated to the 3D calculations
@@ -90,6 +93,7 @@ class Miarex : public QWidget
     friend class PanelAnalysisDlg;
     friend class Plane;
     friend class PlaneDlg;
+    friend class PlaneTreeView;
     friend class Settings;
     friend class StabPolarDlg;
     friend class StabViewDlg;
@@ -107,8 +111,20 @@ class Miarex : public QWidget
         Miarex(QWidget *parent = nullptr);
         ~Miarex();
 
+        bool isPOppView()      const {return m_iView==xfl::WOPPVIEW;}
+        bool isPolarView()     const {return m_iView==xfl::WPOLARVIEW;}
+        bool isCpView()        const {return m_iView==xfl::WCPVIEW;}
+        bool is3dView()        const {return m_iView==xfl::W3DVIEW;}
+        bool isStabPolarView() const {return m_iView==xfl::STABPOLARVIEW;}
+        bool isStabTimeView()  const {return m_iView==xfl::STABTIMEVIEW;}
+        bool isStabilityView() const {return isStabPolarView() || isStabTimeView();}
+
+        static void resetCurves() {s_bResetCurves = true;}
+
+
     signals:
         void projectModified();
+
 
     private slots:
         void on3DCp();
@@ -126,7 +142,6 @@ class Miarex : public QWidget
         void onCpSectionSlider(int pos);
         void onCpPosition();
         void onCpView();
-        void onCurveStyle(LineStyle ls);
         void onCurWOppOnly();
         void onDefineStabPolar();
         void onDefineWPolar();
@@ -174,7 +189,6 @@ class Miarex : public QWidget
         void onNewPlane();
         void onNewPlaneObject();
         void onPanelForce();
-        void onPlaneOppProperties();
         void onPlaneInertia();
         void onPolarFilter();
         void onReadAnalysisData();
@@ -189,7 +203,6 @@ class Miarex : public QWidget
         void onShowAllWOpps();
         void onShowAllWPlrOpps();
         void onShowAllWPolars();
-        void onShowCurve();
         void onShowFlapMoments();
         void onShowTargetCurve();
         void onShowLift();
@@ -211,7 +224,6 @@ class Miarex : public QWidget
         void onWing2Curve();
         void onWOppView();
         void onWPolarView();
-        void onWPolarProperties();
 
     public:
         //overrides
@@ -219,7 +231,6 @@ class Miarex : public QWidget
         void keyReleaseEvent(QKeyEvent *event) override;
         void showEvent(QShowEvent *event) override;
 
-    public:
         //class methods
         WPolar* addWPolar(WPolar* pWPolar);
         void connectSignals();
@@ -235,12 +246,10 @@ class Miarex : public QWidget
         void exportAVLWing_Old(Wing *pWing, QTextStream &out, int index, double y, double Thetay);
         void exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, double Thetay);
         void exportToTextStream(const WPolar *pWPolar, QTextStream &out, xfl::enumTextFileType FileType, bool bDataOnly=false);
-        void fillComboBoxes(bool bEnable = true);
         void fillWPlrCurve(Curve *pCurve, const WPolar *pWPolar, int XVar, int YVar);
         void fillWOppCurve(WingOpp const*pWOpp, Graph *pGraph, Curve *pCurve);
         void fillStabCurve(Curve *pCurve, WPolar const *pWPolar, int iMode);
         void getPolarProperties(WPolar const *pWPolar, QString &polarProps, bool bData=false);
-        QString getTexturePath(Plane const*pPlane);
         void importPlaneFromXML(QFile &xmlFile);
         void importWPolarFromXML(QFile &xmlFile);
         bool intersectObject(Vector3d O,  Vector3d U, Vector3d &I);
@@ -251,32 +260,33 @@ class Miarex : public QWidget
         void paintCpLegendText(QPainter &painter);
         void paintPanelForceLegendText(QPainter &painter);
         void panelAnalyze(double V0, double VMax, double VDelta, bool bSequence);
-        void paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar, QRect drawRect);
+        void paintPlaneLegend(QPainter &painter, const Plane *pPlane, const WPolar *pWPolar, const QRect &drawRect, float devicePixelRatio);
         void paintPlaneOppLegend(QPainter &painter, QRect drawRect);
         QString POppTitle(PlaneOpp *pPOpp);
         void renamePlane(QString PlaneName);
         bool saveSettings(QSettings &settings);
         void setAnalysisParams();
         void setControls();
-        void setCurveParams();
         void setGraphTiles();
-        bool setPlaneOpp(bool bCurrent, double x = 0.0);
-        PlaneOpp* setPlaneOppObject(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pCurPOpp, bool bCurrent, double x);
+        bool setPlaneOpp(PlaneOpp *pPOpp);
+        bool setPlaneOpp(bool bCurrent, double x);
         void setScale();
         void setStabGraphTitles();
+        void setPlane(Plane*pPlane);
         void setPlane(const QString &PlaneName="");
         void setupLayout();
         void setViewControls();
         void setView(xfl::enumGraphView eView);
         void setWGraphScale();
         void setWGraphTitles(Graph* pGraph);
-        void setWPolar(bool bCurrent = true, QString WPlrName = "");
+        void setWPolar(WPolar*pWPolar=nullptr);
+        void setWPolar(bool bCurrent, QString const&WPlrName);
         void snapClient(QString const &FileName);
         void stopAnimate();
         void updateCurve();
         void updateUnits();
         void updateView();
-
+        void updateTreeView();
 
         static QString WPolarVariableName(int iVar);
 
@@ -299,6 +309,7 @@ class Miarex : public QWidget
 
         PlaneTask m_theTask;
 
+        PlaneTreeView *m_pPlaneTreeView;
 
         // Widget variables ... self explicit, not documented
         QPushButton *m_ppbKeepCpSection, *m_ppbResetCpSection;
@@ -316,9 +327,6 @@ class Miarex : public QWidget
         QSlider *m_pslAnimateWOppSpeed;
         QCheckBox *m_pchMoment,  *m_pchDownwash, *m_pchCp,*m_pchSurfVel, *m_pchStream;
 
-        QCheckBox *m_pchShowCurve, *m_pchAlignChildren;
-        LinePickerWt *m_pLinePicker;
-
         QCheckBox *m_pchAxes, *m_pchLight, *m_pchSurfaces, *m_pchOutline, *m_pchPanels;
         QCheckBox *m_pchFoilNames, *m_pchMasses;
 
@@ -332,9 +340,8 @@ class Miarex : public QWidget
         QLabel *m_plabParameterName;
 
         //stability widgets
-        MinTextEdit *m_pmtePolarProps;
-        QStackedWidget *m_pswBottomControls, *m_pswMiddleControls;
-
+        QFrame *m_pswBottomControls;
+        QGroupBox *m_pThreeDViewBox, *m_pCpBox;
 
     public:
 

@@ -1,6 +1,7 @@
 
 
 HEADERS += \
+    $$PWD/mathelem.h \
     xflcore/constants.h \
     xflcore/core_enums.h \
     xflcore/displayoptions.h \
@@ -16,6 +17,7 @@ HEADERS += \
 
 
 SOURCES += \
+    $$PWD/mathelem.cpp \
     xflcore/displayoptions.cpp \
     xflcore/matrix.cpp \
     xflcore/trace.cpp \

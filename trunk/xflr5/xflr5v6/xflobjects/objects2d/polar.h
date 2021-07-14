@@ -63,6 +63,7 @@ class Polar : public XflObject
         void copySpecification(Polar const*pPolar);
         void copyPolar(Polar const*pPolar);
 
+        bool hasOpp(OpPoint const *pOpp) const;
 
         void replaceOppDataAt(int pos, const OpPoint *pOpp);
         void insertOppDataAt(int pos, OpPoint const*pOpp);
@@ -84,7 +85,9 @@ class Polar : public XflObject
 
         void setAutoPolarName();
 
-        void getPolarProperties(QString &polarProps) const;
+        void getProperties(QString &polarProps) const;
+        QString properties() const;
+
         QVector<double> const &getPlrVariable(int iVar) const;
 
 

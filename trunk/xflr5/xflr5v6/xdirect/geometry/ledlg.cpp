@@ -1,7 +1,7 @@
 /****************************************************************************
 
     LEDlg Class
-    Copyright (C) 2008-2019 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,12 +19,14 @@
 
 *****************************************************************************/
 
-#include "ledlg.h"
-#include <xfoil.h>
 #include <QMessageBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QDialogButtonBox>
 
+
+#include "ledlg.h"
+#include <xfoil.h>
 
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflobjects/objects2d/foil.h>
@@ -44,11 +46,8 @@ LEDlg::LEDlg(QWidget *pParent) : QDialog(pParent)
 
     setupLayout();
 
-    connect(m_pctrlLE, SIGNAL(editingFinished()), this, SLOT(onChanged()));
-    connect(m_pctrlBlend, SIGNAL(editingFinished()), this, SLOT(onChanged()));
-    connect(ApplyButton, SIGNAL(clicked()),this, SLOT(onApply()));
-    connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-    connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(m_pdeLE, SIGNAL(editingFinished()), this, SLOT(onChanged()));
+    connect(m_pdeBlend, SIGNAL(editingFinished()), this, SLOT(onChanged()));
 
 }
 
@@ -56,43 +55,33 @@ void LEDlg::setupLayout()
 {
     QHBoxLayout *pLEValue = new QHBoxLayout;
     {
-        QLabel *lab1 = new QLabel(tr("Approximate new/old ratio for L.E. radius"));
-        lab1->setMinimumWidth(200);
-        lab1->setAlignment(Qt::AlignRight);
-        QLabel *lab2 = new QLabel(tr("ratio"));
-        lab2->setMinimumWidth(80);
-        m_pctrlLE = new DoubleEdit;
-        pLEValue->addWidget(lab1);
-        pLEValue->addWidget(m_pctrlLE);
-        pLEValue->addWidget(lab2);
+        QLabel *plab1 = new QLabel(tr("Approximate new/old ratio for L.E. radius"));
+        plab1->setAlignment(Qt::AlignRight);
+        QLabel *plab2 = new QLabel(tr("ratio"));
+        m_pdeLE = new DoubleEdit;
+        pLEValue->addWidget(plab1);
+        pLEValue->addWidget(m_pdeLE);
+        pLEValue->addWidget(plab2);
     }
 
     QHBoxLayout *pBlendValue = new QHBoxLayout;
     {
-        QLabel *lab3 = new QLabel(tr("Blending Distance from L.E."));
-        lab3->setMinimumWidth(200);
-        lab3->setAlignment(Qt::AlignRight);
-        QLabel *lab4 = new QLabel(tr("% chord"));
-        lab4->setMinimumWidth(80);
-        m_pctrlBlend = new DoubleEdit;
-        pBlendValue->addWidget(lab3);
-        pBlendValue->addWidget(m_pctrlBlend);
-        pBlendValue->addWidget(lab4);
+        QLabel *plab3 = new QLabel(tr("Blending Distance from L.E."));
+
+        plab3->setAlignment(Qt::AlignRight);
+        QLabel *plab4 = new QLabel(tr("% chord"));
+
+        m_pdeBlend = new DoubleEdit;
+        pBlendValue->addWidget(plab3);
+        pBlendValue->addWidget(m_pdeBlend);
+        pBlendValue->addWidget(plab4);
     }
 
-    QHBoxLayout *pCommandButtons = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel);
     {
-        OKButton     = new QPushButton(tr("OK"));
-        CancelButton = new QPushButton(tr("Cancel"));
-        ApplyButton  = new QPushButton(tr("Apply"));
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(ApplyButton);
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(OKButton);
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(CancelButton);
-        pCommandButtons->addStretch(1);
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButton(QAbstractButton*)));
     }
+
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
@@ -101,11 +90,19 @@ void LEDlg::setupLayout()
         pMainLayout->addStretch(1);
         pMainLayout->addLayout(pBlendValue);
         pMainLayout->addStretch(1);
-        pMainLayout->addLayout(pCommandButtons);
+        pMainLayout->addWidget(m_pButtonBox);
         pMainLayout->addStretch(1);
     }
 
     setLayout(pMainLayout);
+}
+
+
+void LEDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)     == pButton)  onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
+    else if (m_pButtonBox->button(QDialogButtonBox::Apply)  == pButton)  onApply();
 }
 
 
@@ -122,15 +119,10 @@ void LEDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                onApply();
-                OKButton->setFocus();
-                m_bApplied  = true;
-            }
-            else
-            {
-                QDialog::accept();
+                m_pButtonBox->setFocus();
+                return;
             }
             break;
         }
@@ -143,14 +135,14 @@ void LEDlg::keyPressEvent(QKeyEvent *event)
 
 void LEDlg::initDialog()
 {
-    m_pctrlLE->setMin(  0.0);
-    m_pctrlLE->setMax(100.0);
+    m_pdeLE->setMin(  0.0);
+    m_pdeLE->setMax(100.0);
 
-    m_pctrlBlend->setMin(  0.001);
-    m_pctrlBlend->setMax(100.0);
+    m_pdeBlend->setMin(  0.001);
+    m_pdeBlend->setMax(100.0);
 
-    m_pctrlLE->setValue(m_LErfac);
-    m_pctrlBlend->setValue(m_Blend*100.0);
+    m_pdeLE->setValue(m_LErfac);
+    m_pdeBlend->setValue(m_Blend*100.0);
 }
 
 
@@ -193,8 +185,8 @@ void LEDlg::onApply()
         return;
     }
 
-    m_LErfac = m_pctrlLE->value();
-    m_Blend = m_pctrlBlend->value()/100.0;
+    m_LErfac = m_pdeLE->value();
+    m_Blend = m_pdeBlend->value()/100.0;
 
     s_pXFoil->lerad(m_LErfac,m_Blend);
 

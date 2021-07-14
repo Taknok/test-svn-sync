@@ -1479,3 +1479,27 @@ void Foil::setEditStyle()
     setLineWidth(1);
     setVisible(true);
 }
+
+
+QString Foil::properties() const
+{
+    QString props, str1;
+    props = m_Name + "\n";
+
+    str1 = QString(QObject::tr("Thickness         = %1")).arg(thickness()*100.0, 6, 'f', 2);
+    props += str1 + "%\n";
+
+    str1 = QString(QObject::tr("Max. Thick.pos.   = %1")).arg(xThickness()*100.0, 6, 'f', 2);
+    props += str1 + "%\n";
+
+    str1 = QString(QObject::tr("Max. Camber       = %1")).arg( camber()*100.0, 6, 'f', 2);
+    props += str1 + "%\n";
+
+    str1 = QString(QObject::tr("Max. Camber pos.  = %1")).arg(xCamber()*100.0, 6, 'f', 2);
+    props += str1 + "%\n";
+
+    str1 = QString(QObject::tr("Number of Panels  =  %1")).arg( m_n);
+    props += str1;
+
+    return props;
+}

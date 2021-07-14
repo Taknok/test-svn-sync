@@ -1,7 +1,7 @@
 /****************************************************************************
 
     PanelAnalysisDlg Class
-    Copyright (C) 2009-2016 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 
 #include "panelanalysisdlg.h"
 #include <miarex/miarex.h>
-#include <miarex/objects3d.h>
+#include <xflobjects/objects3d/objects3d.h>
 
 #include <xflanalysis/plane_analysis/panelanalysis.h>
 #include <xflanalysis/plane_analysis/planetask.h>
@@ -77,9 +77,9 @@ PanelAnalysisDlg::~PanelAnalysisDlg()
 void PanelAnalysisDlg::initDialog()
 {
     m_Progress = 0.0;
-    m_pctrlProgress->setValue(int(m_Progress));
-    m_pctrlTextOutput->clear();
-    m_pctrlLogFile->setChecked(Miarex::s_bLogFile);
+    m_ppbProgress->setValue(int(m_Progress));
+    m_pteOutput->clear();
+    m_pchLogFile->setChecked(Miarex::s_bLogFile);
 }
 
 
@@ -115,7 +115,7 @@ void PanelAnalysisDlg::onCancelAnalysis()
 
 void PanelAnalysisDlg::onLogFile()
 {
-    Miarex::s_bLogFile = m_pctrlLogFile->isChecked();
+    Miarex::s_bLogFile = m_pchLogFile->isChecked();
 }
 
 
@@ -126,13 +126,13 @@ void PanelAnalysisDlg::onProgress()
     QString str = dt.toString("hh:mm:ss.zzz");
     qDebug() << str;*/
 
-    m_pctrlProgress->setMaximum(int(m_pTheTask->m_pthePanelAnalysis->m_TotalTime));
-    m_pctrlProgress->setValue(int(m_pTheTask->m_pthePanelAnalysis->m_Progress));
+    m_ppbProgress->setMaximum(int(m_pTheTask->m_pthePanelAnalysis->m_TotalTime));
+    m_ppbProgress->setValue(int(m_pTheTask->m_pthePanelAnalysis->m_Progress));
     if(m_strOut.length())
     {
-        m_pctrlTextOutput->insertPlainText(m_strOut);
-        m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
-        m_pctrlTextOutput->ensureCursorVisible();
+        m_pteOutput->insertPlainText(m_strOut);
+        m_pteOutput->textCursor().movePosition(QTextCursor::End);
+        m_pteOutput->ensureCursorVisible();
         m_strOut.clear();
     }
 }
@@ -140,35 +140,35 @@ void PanelAnalysisDlg::onProgress()
 
 void PanelAnalysisDlg::setupLayout()
 {
-    m_pctrlTextOutput = new QTextEdit(this);
-    m_pctrlTextOutput->setReadOnly(true);
-    m_pctrlTextOutput->setLineWrapMode(QTextEdit::NoWrap);
-    m_pctrlTextOutput->setWordWrapMode(QTextOption::NoWrap);
-    m_pctrlTextOutput->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+    m_pteOutput = new QTextEdit(this);
+    m_pteOutput->setReadOnly(true);
+    m_pteOutput->setLineWrapMode(QTextEdit::NoWrap);
+    m_pteOutput->setWordWrapMode(QTextOption::NoWrap);
+    m_pteOutput->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 
-    m_pctrlProgress = new QProgressBar(this);
-    m_pctrlProgress->setOrientation(Qt::Horizontal);
-    m_pctrlProgress->setMinimum(0);
-    m_pctrlProgress->setMaximum(100);
-    m_pctrlProgress->setValue(0);
+    m_ppbProgress = new QProgressBar(this);
+    m_ppbProgress->setOrientation(Qt::Horizontal);
+    m_ppbProgress->setMinimum(0);
+    m_ppbProgress->setMaximum(100);
+    m_ppbProgress->setValue(0);
 
 
     QHBoxLayout *pctrlLayout = new QHBoxLayout;
     {
-        m_pctrlCancel = new QPushButton(tr("Cancel"));
-        connect(m_pctrlCancel, SIGNAL(clicked()), this, SLOT(onCancelAnalysis()));
+        m_ppbCancel = new QPushButton(tr("Cancel"));
+        connect(m_ppbCancel, SIGNAL(clicked()), this, SLOT(onCancelAnalysis()));
 
-        m_pctrlLogFile = new QCheckBox(tr("Keep this window opened on errors"));
-        connect(m_pctrlLogFile, SIGNAL(toggled(bool)), this, SLOT(onLogFile()));
-        pctrlLayout->addWidget(m_pctrlLogFile);
+        m_pchLogFile = new QCheckBox(tr("Keep this window opened on errors"));
+        connect(m_pchLogFile, SIGNAL(toggled(bool)), this, SLOT(onLogFile()));
+        pctrlLayout->addWidget(m_pchLogFile);
         pctrlLayout->addStretch();
-        pctrlLayout->addWidget(m_pctrlCancel);
+        pctrlLayout->addWidget(m_ppbCancel);
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        pMainLayout->addWidget(m_pctrlTextOutput);
-        pMainLayout->addWidget(m_pctrlProgress);
+        pMainLayout->addWidget(m_pteOutput);
+        pMainLayout->addWidget(m_ppbProgress);
         pMainLayout->addLayout(pctrlLayout);
     }
     setLayout(pMainLayout);
@@ -208,10 +208,10 @@ void PanelAnalysisDlg::analyze()
 
     qApp->processEvents();
 
-    m_pctrlCancel->setText(tr("Cancel"));
+    m_ppbCancel->setText(tr("Cancel"));
     m_bIsFinished = false;
 
-    m_pctrlProgress->setMaximum(100000);
+    m_ppbProgress->setMaximum(100000);
 
     clock.start(); // put some pressure
 
@@ -293,7 +293,7 @@ void PanelAnalysisDlg::cleanUp()
     {
         QTextStream outstream(pXFile);
 
-        outstream << m_pctrlTextOutput->toPlainText();
+        outstream << m_pteOutput->toPlainText();
         outstream << "\n";
         QDateTime dt = QDateTime::currentDateTime();
         QString str = dt.toString(Qt::DefaultLocaleLongDate);
@@ -307,8 +307,8 @@ void PanelAnalysisDlg::cleanUp()
 
     m_pTheTask = nullptr;
 
-    m_pctrlCancel->setText(tr("Close"));
-    m_pctrlCancel->setFocus();
+    m_ppbCancel->setText(tr("Close"));
+    m_ppbCancel->setFocus();
 }
 
 
@@ -318,20 +318,17 @@ void PanelAnalysisDlg::cleanUp()
 */
 void PanelAnalysisDlg::updateOutput(QString &strong)
 {
-    m_pctrlTextOutput->insertPlainText(strong);
-    m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
-    m_pctrlTextOutput->ensureCursorVisible();
+    m_pteOutput->insertPlainText(strong);
+    m_pteOutput->textCursor().movePosition(QTextCursor::End);
+    m_pteOutput->ensureCursorVisible();
 }
 
 
 void PanelAnalysisDlg::onMessage(QString msg)
 {
-    /*    m_pctrlTextOutput->insertPlainText(msg);
-    m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
-    m_pctrlTextOutput->ensureCursorVisible();*/
-    m_pctrlTextOutput->insertPlainText(msg);
-    m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
-    m_pctrlTextOutput->ensureCursorVisible();
+    m_pteOutput->insertPlainText(msg);
+    m_pteOutput->textCursor().movePosition(QTextCursor::End);
+    m_pteOutput->ensureCursorVisible();
 }
 
 

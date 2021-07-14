@@ -1,7 +1,7 @@
 /****************************************************************************
 
     WAdvancedDlg Class
-    Copyright (C) 2009-2016 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef WADVANCEDDLG_H
-#define WADVANCEDDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QCheckBox>
@@ -37,53 +36,50 @@ class WAdvancedDlg : public QDialog
     friend class Miarex;
     friend class MainFrame;
 
-public:
-    WAdvancedDlg(QWidget *pParent);
-    void initDialog();
+    public:
+        WAdvancedDlg(QWidget *pParent);
+        void initDialog();
 
-private slots:
-    void onOK();
-    void onResetDefaults();
-    void onButton(QAbstractButton *pButton);
+    private slots:
+        void onOK();
+        void onResetDefaults();
+        void onButton(QAbstractButton *pButton);
 
-private:
-    void keyPressEvent(QKeyEvent *event) override;
-    void readParams();
-    void setParams();
-    void setupLayout();
+    private:
+        void keyPressEvent(QKeyEvent *event) override;
+        void readParams();
+        void setParams();
+        void setupLayout();
 
-    QDialogButtonBox *m_pButtonBox;
+        QDialogButtonBox *m_pButtonBox;
 
-    QLabel *m_pctrlLength, *m_pctrlLength2;
+        QCheckBox *m_pchLogFile;
+        QCheckBox *m_pchKeepOutOpps;
+        QRadioButton *m_prbDirichlet, *m_prbNeumann;
+        DoubleEdit *m_pdeRelax;
+        DoubleEdit *m_pdeAlphaPrec;
+        DoubleEdit *m_pdeMinPanelSize;
+        IntEdit *m_pieNStation;
+        IntEdit *m_pieIterMax;
+        DoubleEdit *m_pdeCoreSize;
+        DoubleEdit *m_pdeVortexPos;
+        DoubleEdit *m_pdeControlPos;
 
-    QCheckBox *m_pctrlLogFile;
-    QCheckBox *m_pctrlKeepOutOpps;
-    QRadioButton *m_pctrlDirichlet, *m_pctrlNeumann;
-    DoubleEdit *m_pctrlRelax;
-    DoubleEdit *m_pctrlAlphaPrec;
-    DoubleEdit *m_pctrlMinPanelSize;
-    IntEdit *m_pctrlNStation;
-    IntEdit *m_pctrlIterMax;
-    DoubleEdit *m_pctrlCoreSize;
-    DoubleEdit *m_pctrlVortexPos;
-    DoubleEdit *m_pctrlControlPos;
+        bool m_bLogFile;
+        bool m_bDirichlet;
+        bool m_bTrefftz;
+        bool m_bKeepOutOpps;
 
-    bool m_bLogFile;
-    bool m_bDirichlet;
-    bool m_bTrefftz;
-    bool m_bKeepOutOpps;
+        int m_Iter;
+        int m_NLLTStation;
+        int m_WakeInterNodes;
+        int m_MaxWakeIter;
+        int m_InducedDragPoint;
 
-    int m_Iter;
-    int m_NLLTStation;
-    int m_WakeInterNodes;
-    int m_MaxWakeIter;
-    int m_InducedDragPoint;
-
-    double m_ControlPos, m_VortexPos;
-    double m_Relax, m_AlphaPrec;
-    double m_CoreSize;
-    double m_MinPanelSize;
+        double m_ControlPos, m_VortexPos;
+        double m_Relax, m_AlphaPrec;
+        double m_CoreSize;
+        double m_MinPanelSize;
 
 };
 
-#endif // WADVANCEDDLG_H

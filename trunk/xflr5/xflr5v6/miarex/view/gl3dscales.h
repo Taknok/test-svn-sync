@@ -1,7 +1,7 @@
 /****************************************************************************
 
     GL3DScales Class
-    Copyright (C) 2009-2016 André Deperrois 
+    Copyright (C) André Deperrois
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef GL3DSCALES_H
-#define GL3DSCALES_H
+#pragma once
 
 #include <QWidget>
 #include <QPushButton>
@@ -40,54 +39,51 @@ class GL3DScales : public QWidget
     friend class MainFrame;
     friend class Miarex;
 
-public:
-    GL3DScales(QWidget *);
-    void initDialog();
+    public:
+        GL3DScales(QWidget *);
+        void initDialog();
 
-private slots:
-    void onCpScale();
-    void onApply();
-    void onLiftEdit();
-    void onDragEdit();
-    void onVelocityEdit();
-    void onLiftScale();
-    void onDragScale();
-    void onVelocityScale();
+    private slots:
+        void onCpScale();
+        void onApply();
+        void onLiftEdit();
+        void onDragEdit();
+        void onVelocityEdit();
+        void onLiftScale();
+        void onDragScale();
+        void onVelocityScale();
 
 
-private:
-    void showEvent(QShowEvent *event);
-    void hideEvent(QHideEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+    private:
+        void showEvent(QShowEvent *event) override;
+        void hideEvent(QHideEvent *event) override;
 
-    void setupLayout();
-    void readStreamParams();
+        void setupLayout();
+        void readStreamParams();
 
-    static bool loadSettings(QSettings &settings);
-    static bool saveSettings(QSettings &settings);
+        static bool loadSettings(QSettings &settings);
+        static bool saveSettings(QSettings &settings);
 
-    ExponentialSlider *m_pctrlLiftScaleSlider, *m_pctrlDragScaleSlider, *m_pctrlVelocityScaleSlider;
-    DoubleEdit *m_pctrlLiftScale, *m_pctrlDragScale, *m_pctrlVelocityScale;
-    QPushButton *ApplyButton;
-    QCheckBox *m_pctrlAutoCpScale;
-    DoubleEdit    *m_pctrlLegendMin, *m_pctrlLegendMax;
+        ExponentialSlider *m_peslLiftScaleSlider, *m_peslDragScaleSlider, *m_peslVelocityScaleSlider;
+        DoubleEdit *m_pdeLiftScale, *m_pdeDragScale, *m_pdeVelocityScale;
+        QPushButton *m_ppbApply;
+        QCheckBox *m_pchAutoCpScale;
+        DoubleEdit *m_pdeLegendMin, *m_pdeLegendMax;
 
-    IntEdit *m_pctrlNXPoint;
-    DoubleEdit *m_pctrlDeltaL, *m_pctrlXFactor, *m_pctrlXOffset, *m_pctrlZOffset;
-    QRadioButton *m_pctrlLE, *m_pctrlTE, *m_pctrlLine;
+        IntEdit *m_pieNXPoint;
+        DoubleEdit *m_pdeDeltaL, *m_pdeXFactor, *m_pdeXOffset, *m_pdeZOffset;
+        QRadioButton *m_prbLE, *m_pebTE, *m_prbLine;
 
-    QLabel *m_pctrlLengthUnit1, *m_pctrlLengthUnit2, *m_pctrlLengthUnit3;
+        QLabel *m_plabLengthUnit1, *m_plabLengthUnit2, *m_plabLengthUnit3;
 
-    static Miarex *s_pMiarex;
+        static Miarex *s_pMiarex;
 
-    QWidget *m_pParent;
-    
-public:
-    static int s_pos;
-    static int s_NX;
-    static double s_DeltaL;
-    static double s_XFactor;
-    static double s_XOffset, s_ZOffset;
+
+    public:
+        static int s_pos;
+        static int s_NX;
+        static double s_DeltaL;
+        static double s_XFactor;
+        static double s_XOffset, s_ZOffset;
 };
 
-#endif // GL3DSCALES_H

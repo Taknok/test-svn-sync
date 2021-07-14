@@ -1391,11 +1391,11 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
  */
 bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 {
-    bool boolean=false;
-    int i=0, k=0, n=0;
-    double dble=0;
-    double r0=0, r1=0, r2=0, r3=0, r4=0, r5=0, r6=0, r7=0;
-    double i0=0, i1=0, i2=0, i3=0, i4=0, i5=0, i6=0, i7=0;
+    bool boolean(false);
+    int i(0), k(0), n(0);
+    double dble(0);
+    double r0(0), r1(0), r2(0), r3(0), r4(0), r5(0), r6(0), r7(0);
+    double i0(0), i1(0), i2(0), i3(0), i4(0), i5(0), i6(0), i7(0);
 
     m_PolarFormat = 200014;
     // 200011: v0.00
@@ -1418,7 +1418,7 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
         else if(m_AnalysisMethod==xfl::PANEL4METHOD) ar<<3;
         else if(m_AnalysisMethod==xfl::TRILINMETHOD) ar<<4;
         else if(m_AnalysisMethod==xfl::TRIUNIMETHOD) ar<<5;
-        else                                           ar<<0;
+        else                                         ar<<0;
 
         if     (m_WPolarType==xfl::FIXEDSPEEDPOLAR) ar<<1;
         else if(m_WPolarType==xfl::FIXEDLIFTPOLAR)  ar<<2;
@@ -1631,6 +1631,306 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
     return true;
 }
 
+
+bool WPolar::hasPOpp(const PlaneOpp *pPOpp) const
+{
+    return (pPOpp->polarName().compare(m_Name)==0) && (pPOpp->planeName().compare(m_PlaneName)==0);
+}
+
+QString WPolar::getProperties(QString &PolarProps, const Plane *pPlane,
+                   double lenunit, double massunit, double speedunit, double areaunit,
+                   QString const &lenlab, const QString &masslab, QString const &speedlab, QString const &arealab) const
+{
+    QString inertiaunit = masslab+"."+lenlab+QString::fromUtf8("²");
+    QString strong;
+    PolarProps.clear();
+
+    if(polarType()==xfl::FIXEDSPEEDPOLAR)     strong = "Type 1: "+QObject::tr("Fixed speed") +"\n";
+    else if(polarType()==xfl::FIXEDLIFTPOLAR) strong = "Type 2: "+QObject::tr("Fixed lift") +"\n";
+    else if(polarType()==xfl::FIXEDAOAPOLAR)  strong = "Type 4: "+QObject::tr("Fixed angle of attack") +"\n";
+    else if(polarType()==xfl::STABILITYPOLAR) strong = "Type 7: "+QObject::tr("Stability analysis") +"\n";
+    else if(polarType()==xfl::BETAPOLAR)      strong = "Type 5: "+QObject::tr("Sideslip analysis") +"\n";
+    PolarProps += strong;
+
+    if(polarType()==xfl::FIXEDSPEEDPOLAR)
+    {
+        strong  = QString(QObject::tr("VInf =")+"%1 ").arg(velocity()*speedunit,7,'g',2);
+        PolarProps += strong + speedlab+"\n";
+    }
+    else if(polarType()==xfl::FIXEDAOAPOLAR)
+    {
+        strong  = QString(QObject::tr("Alpha =")+"%1").arg(Alpha(),7,'f',2);
+        PolarProps += strong +QChar(0260)+"\n";
+    }
+    else if(polarType()==xfl::BETAPOLAR)
+    {
+        strong  = QString(QObject::tr("Alpha =")+"%1").arg(Alpha(),7,'f',2);
+        PolarProps += strong +QChar(0260)+"\n";
+        strong  = QString(QObject::tr("VInf =")+"%1 ").arg(velocity()*speedunit,7,'g',2);
+        PolarProps += strong + speedlab+"\n";
+    }
+
+    if(polarType() != xfl::BETAPOLAR && qAbs(Beta())>PRECISION)
+    {
+        strong  = QString(QObject::tr("Beta")+" = %1").arg(Beta(),7,'f',2);
+        PolarProps += strong +QChar(0260)+"\n";
+    }
+
+    //    PolarProperties += QObject::tr("Method")+" = ";
+    if(analysisMethod()==xfl::LLTMETHOD)                                       PolarProps +=QObject::tr("LLT");
+    else if(analysisMethod()==xfl::PANEL4METHOD && !bThinSurfaces())   PolarProps +=QObject::tr("3D-Panels");
+    else if(analysisMethod()==xfl::PANEL4METHOD && bVLM1())            PolarProps +=QObject::tr("3D-Panels/VLM1");
+    else if(analysisMethod()==xfl::PANEL4METHOD && !bVLM1())           PolarProps +=QObject::tr("3D-Panels/VLM2");
+    PolarProps +="\n";
+
+
+    //Control data
+    //Mass and inertia controls
+    QString strInertia;
+    strInertia = masslab+"."+lenlab+QString::fromUtf8("²");
+
+    //Angle controls
+    if(m_ControlGain.size()<m_nControls && polarType()==xfl::STABILITYPOLAR && pPlane)
+    {
+        int j;
+        int iCtrl = 0;
+
+        strong = "AVL type controls\n";
+        PolarProps +=strong;
+
+
+        if(!pPlane->isWing())
+        {
+            if(qAbs(m_ControlGain[iCtrl])>PRECISION)
+            {
+                strong = QString::fromUtf8("Wing Tilt: gain=%1°/unit\n").arg(m_ControlGain[iCtrl],0,'f',2);
+                PolarProps +=strong;
+            }
+            iCtrl=1;
+            if(pPlane->stab())
+            {
+                if(qAbs(m_ControlGain[iCtrl])>PRECISION)
+                {
+                    strong = QString::fromUtf8("Elev. Tilt: gain=%1°/unit\n").arg(m_ControlGain[iCtrl],0,'f',2);
+                    PolarProps +=strong;
+                }
+                iCtrl=2;
+            }
+        }
+
+        Wing const*pStab(nullptr);
+        Wing const*pFin(nullptr);
+        Wing const*pWing(nullptr);
+
+        if(pPlane)
+        {
+            pWing = pPlane->wing();
+            pStab = pPlane->stab();
+            pFin  = pPlane->fin();
+        }
+
+        // flap controls
+        //wing first
+        int nFlap = 0;
+        if(pWing)
+        {
+            for (j=0; j<pWing->m_Surface.size(); j++)
+            {
+                if(pWing->m_Surface.at(j)->m_bTEFlap)
+                {
+                    if(qAbs(m_ControlGain[iCtrl])>PRECISION)
+                    {
+                        strong = QString(QString::fromUtf8("Wing Flap %1: g=%2°/unit\n"))
+                                .arg(nFlap+1)
+                                .arg(m_ControlGain[iCtrl],5,'f',2);
+                        PolarProps +=strong;
+                    }
+                    nFlap++;
+                    iCtrl++;
+                }
+            }
+        }
+
+        //elevator next
+        nFlap = 0;
+        if(pStab)
+        {
+            for (j=0; j<pStab->m_Surface.size(); j++)
+            {
+                if(pStab->m_Surface.at(j)->m_bTEFlap)
+                {
+                    if(qAbs(m_ControlGain[iCtrl])>PRECISION)
+                    {
+                        strong = QString(QString::fromUtf8("Elev. Flap %1: gain=%2°/unit\n"))
+                                .arg(nFlap+1)
+                                .arg(m_ControlGain[iCtrl],5,'f',2);
+                        PolarProps +=strong;
+                    }
+                    nFlap++;
+                    iCtrl++;
+                }
+            }
+        }
+
+        nFlap = 0;
+        if(pFin)
+        {
+            for (j=0; j<pFin->m_Surface.size(); j++)
+            {
+                if(pFin->m_Surface.at(j)->m_bTEFlap)
+                {
+                    if(qAbs(m_ControlGain[iCtrl])>PRECISION)
+                    {
+                        strong = QString(QString::fromUtf8("Fin Flap %1: gain=%2°/unit\n"))
+                                .arg(nFlap+1)
+                                .arg(m_ControlGain[iCtrl],5,'f',2);
+                        PolarProps +=strong;
+                    }
+                    nFlap++;
+                    iCtrl++;
+                }
+            }
+        }
+    }
+
+
+    if(bAutoInertia())
+    {
+        PolarProps += "Using plane inertia\n";
+    }
+
+    strong  = QString(QObject::tr("Mass")+" = %1 ").arg(mass()*massunit,7,'f',3);
+    PolarProps += strong + masslab;
+    if(qAbs(m_inertiaGain[0])>PRECISION)
+    {
+        strong = QString::fromUtf8(" - g=%1").arg(m_inertiaGain[0]*massunit, 0,'f',2);
+        strong += masslab + "/ctrl\n";
+        PolarProps +=strong;
+    }
+    else PolarProps +="\n";
+
+    strong  = QString(QObject::tr("CoG.x")+" = %1 ").arg(CoG().x*lenunit,7,'g',4);
+    PolarProps += strong + lenlab;
+
+    if(qAbs(m_inertiaGain[1])>PRECISION)
+    {
+        strong = QString::fromUtf8(" - g=%1").arg(m_inertiaGain[1]*lenunit, 0,'f',2);
+        strong += lenlab + "/ctrl\n";
+        PolarProps +=strong;
+    }
+    else PolarProps +="\n";
+
+    strong  = QString(QObject::tr("CoG.z")+" = %1 ").arg(CoG().z*lenunit,7,'g',4);
+    PolarProps += strong + lenlab + "\n";
+    if(qAbs(m_inertiaGain[2])>PRECISION)
+    {
+        strong = QString::fromUtf8(" - g=%1").arg(m_inertiaGain[2]*lenunit, 0,'f',2);
+        strong += lenlab + "/ctrl";
+        PolarProps +=strong;
+    }
+    else PolarProps +="\n";
+
+    if(polarType()==xfl::STABILITYPOLAR)
+    {
+        strong  = QString("Ixx = %1 ").arg(CoGIxx()*lenunit*lenunit*massunit,7,'g',4);
+        PolarProps += strong + inertiaunit;
+        if(qAbs(m_inertiaGain[3])>PRECISION)
+        {
+            strong = QString(QString::fromUtf8(" - g=%1")).arg(m_inertiaGain[3]*massunit*lenunit*lenunit,0,'f',2);
+            PolarProps += strInertia + "/ctrl";
+            PolarProps +=strong;
+        }
+        else PolarProps +="\n";
+
+        strong  = QString("Iyy = %1 ").arg(CoGIyy()*lenunit*lenunit*massunit,7,'g',4);
+        PolarProps += strong + inertiaunit;
+        if(qAbs(m_inertiaGain[4])>PRECISION)
+        {
+            strong = QString(QString::fromUtf8(" - g=%1")).arg(m_inertiaGain[4]*massunit*lenunit*lenunit,0,'f',2);
+            PolarProps += strInertia + "/ctrl";
+            PolarProps +=strong;
+        }
+        else PolarProps +="\n";
+
+        strong  = QString("Izz = %1 ").arg(CoGIzz()*lenunit*lenunit*massunit,7,'g',4);
+        PolarProps += strong + inertiaunit;
+        if(qAbs(m_inertiaGain[5])>PRECISION)
+        {
+            strong = QString(QString::fromUtf8(" - g=%1")).arg(m_inertiaGain[5]*massunit*lenunit*lenunit,0,'f',2);
+            PolarProps += strInertia + "/ctrl";
+            PolarProps +=strong;
+        }
+        else PolarProps +="\n";
+
+        strong  = QString("Ixz = %1 ").arg(CoGIxz()*lenunit*lenunit*massunit,7,'g',4);
+        PolarProps += strong + inertiaunit;
+        if(qAbs(m_inertiaGain[6])>PRECISION)
+        {
+            strong = QString(QString::fromUtf8(" - g=%1")).arg(m_inertiaGain[6]*massunit*lenunit*lenunit,0,'f',2);
+            PolarProps += strInertia + "/ctrl";
+            PolarProps +=strong;
+        }
+        else PolarProps +="\n";
+    }
+
+
+    if(analysisMethod() !=xfl::LLTMETHOD)
+    {
+        if(boundaryCondition()==xfl::DIRICHLET)  strong  = QObject::tr("B.C. = Dirichlet");
+        else                                                strong  = QObject::tr("B.C. = Neumann");
+        PolarProps += strong +"\n";
+    }
+
+    PolarProps += QObject::tr("Analysis type")+" = ";
+    if(bViscous()) PolarProps += QObject::tr("Viscous")+"\n";
+    else                    PolarProps += QObject::tr("Inviscid")+"\n";
+
+    if(pPlane && pPlane->body())
+    {
+        PolarProps += QObject::tr("Body panels")+" = ";
+        if(bIgnoreBodyPanels()) PolarProps += QObject::tr("ignored");
+        else                             PolarProps += QObject::tr("included");
+        PolarProps += "\n";
+    }
+
+    if(referenceDim()==xfl::PLANFORMREFDIM)       PolarProps += QObject::tr("Ref. dimensions = ")+QObject::tr("Planform")+"\n";
+    else if(referenceDim()==xfl::PROJECTEDREFDIM) PolarProps += QObject::tr("Ref. dimensions = ")+QObject::tr("Projected")+"\n";
+
+    PolarProps += QObject::tr("Ref. area  =") + QString("%1").arg(referenceArea()*areaunit,7,'f',3) + arealab +"\n";
+    PolarProps += QObject::tr("Ref. span  =") + QString("%1").arg(referenceSpanLength()*lenunit,7,'f',3) +lenlab +"\n";
+    PolarProps += QObject::tr("Ref. chord =") + QString("%1").arg(referenceChordLength()*lenunit,7,'f',3) + lenlab +"\n";
+
+
+    if(bTilted()) PolarProps += QObject::tr("Tilted geometry")+"\n";
+
+    if(bGround())
+    {
+        strong = QString(QObject::tr("Ground height")+" = %1").arg(m_Height*lenunit)+lenlab+"\n";
+        PolarProps += strong;
+    }
+
+    strong  = QString(QObject::tr("Density =")+"%1 kg/m3\n").arg(density(),0,'g',4);
+    PolarProps += strong;
+
+    strong  = QString(QObject::tr("Viscosity =")+"%1").arg(viscosity(),0,'g',4);
+    strong += QString::fromUtf8("m²/s\n");
+    PolarProps += strong;
+
+    strong = QString(QObject::tr("Data points") +" = %1\n").arg(dataSize());
+    PolarProps += "\n"+strong;
+
+    for(int ix=0; ix<MAXEXTRADRAG; ix++)
+    {
+        if(fabs(m_ExtraDragArea[ix])>PRECISION && fabs(m_ExtraDragCoef[ix])>PRECISION)
+        {
+            strong = QString("Extra drag: area=%1 ").arg(m_ExtraDragArea[ix]*areaunit, 7,'f',3)+arealab;
+            strong +="  //  ";
+            strong += QString("coeff.=%1").arg(m_ExtraDragCoef[ix], 7,'f',3);
+            PolarProps += "\n"+strong;
+        }
+    }
+    return PolarProps;
+}
 
 
 

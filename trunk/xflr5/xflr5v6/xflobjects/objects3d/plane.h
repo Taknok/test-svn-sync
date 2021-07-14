@@ -39,11 +39,13 @@
 * Angular data is stored in degrees
 */
 
-#include "wing.h"
-#include "body.h"
+#include <xflobjects/xflobject.h>
+#include <xflobjects/objects3d/wing.h>
+#include <xflobjects/objects3d/body.h>
 
+class PlaneOpp;
 
-class Plane
+class Plane : public XflObject
 {
     friend class PlaneDlg;
     friend class Miarex;
@@ -54,7 +56,7 @@ class Plane
 
         //    double VolumeMass() {return m_VolumeMass;}
         double totalMass() const;
-        double tailVolume();
+        double tailVolume() const;
 
         void duplicate(const Plane *pPlane);
         void computePlane(void);
@@ -74,7 +76,12 @@ class Plane
         bool serializePlaneXFL(QDataStream &ar, bool bIsStoring);
 
 
+        bool hasWPolar(const WPolar *pWPolar) const;
+        bool hasPOpp(const PlaneOpp *pPOpp) const;
+
         int VLMPanelTotal();
+
+        void setName(QString const &planeName) override;
 
         /**
     * Returns the translation to be applied to the Body object.
@@ -101,13 +108,9 @@ class Plane
         /** Returns true if the plane has a secondary main wing, false otherwise.*/
         bool biPlane() const {return m_bBiplane;}
 
-        /** Returns the Plane's name. */
-        const QString& planeName() const {return m_PlaneName;}
-        void setPlaneName(QString planeName);
-
         /** Returns the Plane's description. */
-        const QString& planeDescription() const {return m_PlaneDescription;}
-        void setPlaneDescription(QString desc) {m_PlaneDescription=desc;}
+        const QString& description() const {return m_PlaneDescription;}
+        void setDescription(QString desc) {m_PlaneDescription=desc;}
 
         Wing *mainWing() {return &m_Wing[0];}
 
@@ -178,7 +181,14 @@ class Plane
         void setSecondWing(bool bBiPlane) {m_bBiplane=bBiPlane;}
         void setFin(bool bFin)            {m_bFin = bFin;}
 
-        QString bodyName()    const {return m_BodyName;}
+        void setDoubleFin(bool b) {m_Wing[3].m_bDoubleFin=b;}
+        void setSymFin(   bool b) {m_Wing[3].m_bSymFin=b;}
+        bool bDoubleFin() const {return m_Wing[3].m_bDoubleFin;}
+        bool bSymFin() const {return m_Wing[3].m_bSymFin;}
+
+        QString const &bodyName()    const {return m_BodyName;}
+
+        QString planeData(bool ) const;
 
     public:
         Wing m_Wing[MAXWINGS];                      /**< the array of Wing objects used to define this Plane */
@@ -192,7 +202,6 @@ class Plane
         bool m_bFin;                                /**< true if this Plane has a fin*/
         bool m_bStab;                               /**< true if this Plane has an elevator */
 
-        QString m_PlaneName;                        /**< the Plane's name; this name is used to identify the object and as a reference for child WPolar and PlaneOpp objects. */
         QString m_PlaneDescription;                 /**< a free description */
         double m_TailVolume;                        /**< the tail volume, i.e lever_arm_elev x Area_Elev / MAC_wing / Area_wing */
         Vector3d m_CoG;                             /**< the position of the CoG */
@@ -211,8 +220,5 @@ class Plane
         double m_CoGIyy;                            /**< the Iyy component of the inertia tensor, calculated at the CoG */
         double m_CoGIzz;                            /**< the Izz component of the inertia tensor, calculated at the CoG */
         double m_CoGIxz;                            /**< the Ixz component of the inertia tensor, calculated at the CoG */
-
-        bool m_bDoubleFin;                          /**< true if the plane has a double fin, i.e. left and right */
-        bool m_bSymFin;                             /**< true if the plane has a symetric fin, i.e. top and bottom */
 };
 

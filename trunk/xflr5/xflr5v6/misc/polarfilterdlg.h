@@ -1,7 +1,7 @@
 /****************************************************************************
 
     PolarFilterDlg Class
-    Copyright (C) 2009 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,8 +20,7 @@
 *****************************************************************************/
 
 
-#ifndef POLARFILTERDLG_H
-#define POLARFILTERDLG_H
+#pragma once
 
 #include <QDialog>
 #include <QCheckBox>
@@ -36,23 +35,22 @@ class PolarFilterDlg : public QDialog
     friend class Miarex;
     friend class XDirect;
 
-public:
-    PolarFilterDlg(QWidget *pParent=nullptr);
-    void initDialog();
+    public:
+        PolarFilterDlg(QWidget *pParent=nullptr);
+        void initDialog();
 
-private slots:
-    void onClose();
+    private slots:
+        void onClose();
 
-private:
-    void setupLayout();
+    private:
+        void setupLayout();
 
-    QCheckBox *m_pctrlType1, *m_pctrlType2, *m_pctrlType3, *m_pctrlType4, *m_pctrlType7;
-    bool m_bType1, m_bType2, m_bType3, m_bType4, m_bType7;
-    bool m_bMiarex;
+        QCheckBox *m_pchType1, *m_pchType2, *m_pchType3, *m_pchType4, *m_pchType7;
+        bool m_bType1, m_bType2, m_bType3, m_bType4, m_bType7;
+        bool m_bMiarex;
 };
 
 
-#endif // POLARFILTERDLG_H
 
 
 

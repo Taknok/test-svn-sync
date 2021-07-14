@@ -24,7 +24,7 @@
 /**@file This file contains the definitions of methods used throughout the program and not specific to one application. */
 
 
-#include <QtDebug>
+#include <QDebug>
 #include <QFile>
 #include <QTextStream>
 #include <QByteArray>
@@ -33,60 +33,6 @@
 
 #include <xflcore/matrix.h>
 #include <xflanalysis/analysis3d_globals.h>
-
-/**
-* Tests if a given integer is between two other integers
-*@param f the integer to test
-*@param f1 the first bound
-*@param f2 the second bound
-*@return true if f1<f<f2 or f2<f<f1
-*/
-bool isBetween(int f, int f1, int f2)
-{
-    if (f2 < f1)
-    {
-        int tmp = f2;
-        f2 = f1;
-        f1 = tmp;
-    }
-    if(f<f1) return false;
-    else if(f>f2) return false;
-    return true;
-}
-
-
-/**
-* Tests if a given integer is between two double values
-*@param f the integer to test
-*@param f1 the first bound
-*@param f2 the second bound
-*@return true if f1<f<f2 or f2<f<f1
-*/
-bool isBetween(int f, double f1, double f2)
-{
-    double ff = f;
-    if (f2 < f1)
-    {
-        double tmp = f2;
-        f2 = f1;
-        f1 = tmp;
-    }
-    if(ff<f1)       return false;
-    else if(ff>f2) return false;
-    return true;
-}
-
-
-/**
-* Tests if a given integer is an even number
-*@param n the integer to test
-*@return true if n is an even number
-*/
-bool isEven(int n)
-{
-    return n%2==0;
-}
-
 
 
 

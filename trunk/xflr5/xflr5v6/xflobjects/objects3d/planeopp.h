@@ -64,6 +64,7 @@ class PlaneOpp : public XflObject
         PlaneOpp(Plane *pPlane=nullptr, WPolar *pWPolar=nullptr, int PanelArraySize=0);
         ~PlaneOpp();
 
+        QString name() const override;
 
         void addWingOpp(int iw, int PanelArraySize);
         WingOpp const *wingOpp(int index) const {if(index<0||index>=MAXWINGS) return nullptr; else return m_pWOpp[index];}
@@ -95,12 +96,17 @@ class PlaneOpp : public XflObject
 
         bool isOut() const {return m_bOut;}
 
+        bool isT1Polar() const {return m_WPolarType==xfl::FIXEDSPEEDPOLAR;}   /**< returns true if the polar is of the FIXEDSPEEDPOLAR type, false otherwise >*/
+        bool isT2Polar() const {return m_WPolarType==xfl::FIXEDLIFTPOLAR;}   /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/
+        bool isT4Polar() const {return m_WPolarType==xfl::FIXEDAOAPOLAR;}   /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/
+        bool isT5Polar() const {return m_WPolarType==xfl::BETAPOLAR;}   /**< returns true if the polar is of the STABILITYPOLAR type, false otherwise >*/
+        bool isT7Polar() const {return m_WPolarType==xfl::STABILITYPOLAR;}   /**< returns true if the polar is of the STABILITYPOLAR type, false otherwise >*/
 
         bool serializePOppWPA(QDataStream &ar, bool bIsStoring);
         bool serializePOppXFL(QDataStream &ar, bool bIsStoring);
 
-        void getPlaneOppProperties(QString &PlaneOppProperties, QString lengthUnitLabel, QString massUnitLabel, QString speedUnitLabel,
-                                   double mtoUnit, double kgtoUnit, double mstoUnit);
+        void getProperties(QString &PlaneOppProperties, QString lengthUnitLabel, QString massUnitLabel, QString speedUnitLabel,
+                           double mtoUnit, double kgtoUnit, double mstoUnit);
 
 
         bool isStabilityPOpp() const {return m_WPolarType==xfl::STABILITYPOLAR;}

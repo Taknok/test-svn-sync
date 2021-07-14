@@ -32,7 +32,7 @@
 #include "xfoilanalysisdlg.h"
 #include <misc/options/settingswt.h>
 #include <xdirect/analysis/xfoiltask.h>
-#include <xdirect/objects2d.h>
+#include <xflobjects/objects2d/objects2d.h>
 #include <xdirect/xdirect.h>
 #include <xflcore/gui_params.h>
 #include <xflgraph/containers/graphwt.h>
@@ -44,6 +44,7 @@
 XDirect *XFoilAnalysisDlg::s_pXDirect;
 QByteArray XFoilAnalysisDlg::s_Geometry;
 
+bool XFoilAnalysisDlg::s_bSequence(false);
 double XFoilAnalysisDlg::s_Alpha      = 0.0;
 double XFoilAnalysisDlg::s_AlphaMax   = 1.0;
 double XFoilAnalysisDlg::s_AlphaDelta = 0.5;
@@ -159,8 +160,16 @@ void XFoilAnalysisDlg::initDialog()
 
     m_pXFoilTask->m_OutStream.setDevice(m_pXFile);
 
-    if(m_bAlpha) m_pXFoilTask->setSequence(true,  s_Alpha, s_AlphaMax, s_AlphaDelta);
-    else         m_pXFoilTask->setSequence(false, s_Cl, s_ClMax, s_ClDelta);
+    if(m_bAlpha)
+    {
+        if(s_bSequence) m_pXFoilTask->setSequence(true,  s_Alpha, s_AlphaMax, s_AlphaDelta);
+        else            m_pXFoilTask->setSequence(true,  s_Alpha, s_Alpha, s_AlphaDelta);
+    }
+    else
+    {
+        if(s_bSequence) m_pXFoilTask->setSequence(false, s_Cl, s_ClMax, s_ClDelta);
+        else            m_pXFoilTask->setSequence(false, s_Cl, s_Cl, s_ClDelta);
+    }
 
     m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReDelta);
     m_pXFoilTask->initializeXFoilTask(XDirect::curFoil(), XDirect::curPolar(),
@@ -376,7 +385,6 @@ void XFoilAnalysisDlg::onProgress()
 }
 
 
-
 void XFoilAnalysisDlg::customEvent(QEvent * pEvent)
 {
     if(pEvent->type() == XFOIL_END_TASK_EVENT)
@@ -413,6 +421,7 @@ void XFoilAnalysisDlg::loadSettings(QSettings &settings)
     {
         s_Geometry = settings.value("WindowGeom", QByteArray()).toByteArray();
 
+        s_bSequence  = settings.value("Sequence", false).toBool();
         s_Alpha      = settings.value("AlphaMin",   s_Alpha).toDouble();
         s_AlphaMax   = settings.value("AlphaMax",   s_AlphaMax).toDouble();
         s_AlphaDelta = settings.value("AlphaDelta", s_AlphaDelta).toDouble();
@@ -431,6 +440,7 @@ void XFoilAnalysisDlg::saveSettings(QSettings &settings)
     {
         settings.setValue("WindowGeom", s_Geometry);
 
+        settings.setValue("Sequence",   s_bSequence);
         settings.setValue("AlphaMin",   s_Alpha);
         settings.setValue("AlphaMax",   s_AlphaMax);
         settings.setValue("AlphaDelta", s_AlphaDelta);

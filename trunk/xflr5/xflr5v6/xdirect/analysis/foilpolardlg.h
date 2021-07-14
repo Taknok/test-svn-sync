@@ -69,8 +69,7 @@ class FoilPolarDlg : public QDialog
 
     public:
 
-        QRadioButton *m_pctrlAuto1;
-        QRadioButton *m_pctrlAuto2;
+        QRadioButton *m_prbAuto1, *m_prbAuto2;
 
         QLabel *m_plabRe, *m_plabReUnit;
         QLabel *m_plabMach;
@@ -107,7 +106,7 @@ class FoilPolarDlg : public QDialog
         static double s_Viscosity, s_Density;
         static double s_Chord, s_Span, s_Mass;
 
-        static Polar s_RefPolar;    /**< Used a static reference to store default data */
+        static Polar s_RefPolar;    /**< Using a static reference to store default data */
 
         static QByteArray s_WindowGeometry;
 

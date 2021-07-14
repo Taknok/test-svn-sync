@@ -1,7 +1,7 @@
 /****************************************************************************
 
     UFOTableDelegate Class
-    Copyright (C) 2009 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 
 
 #include "planetabledelegate.h"
-#include <miarex/objects3d.h>
+#include <xflobjects/objects3d/objects3d.h>
 #include <xflwidgets/customwts/doubleedit.h>
 
 

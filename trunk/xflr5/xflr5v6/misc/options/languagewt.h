@@ -1,7 +1,7 @@
 /****************************************************************************
 
     LanguageWt Class
-    Copyright (C) 2018 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,24 +32,24 @@ class LanguageWt : public QWidget
     Q_OBJECT
 
     friend class MainFrame;
-public:
-    LanguageWt(QWidget *pParent);
+    public:
+        LanguageWt(QWidget *pParent);
 
-    void hideEvent(QHideEvent *pEvent);
+        void hideEvent(QHideEvent *pEvent) override;
 
-public slots:
-    void readLanguage();
+    public slots:
+        void readLanguage();
 
-private:
-    void setupLayout();
-    void initWidget();
-    QStringList findQmFiles();
-    QString languageName(const QString &qmFile);
+    private:
+        void setupLayout();
+        void initWidget();
+        QStringList findQmFiles();
+        QString languageName(const QString &qmFile);
 
-    QListWidget *m_pctrlLanguageList;
-    QMap<QString, QString> qmFileForLanguage;
+        QListWidget *m_plwLanguageList;
+        QMap<QString, QString> qmFileForLanguage;
 
-    bool m_bChanged;
+        bool m_bChanged;
 
 };
 

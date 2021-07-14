@@ -36,6 +36,8 @@ class DoubleEdit;
 
 #include <xfl3d/controls/light.h>
 
+#define LIGHTREFLENGTH  10.0 //meters
+
 class GLLightDlg : public QDialog
 {
     Q_OBJECT
@@ -47,7 +49,6 @@ class GLLightDlg : public QDialog
         void apply();
         void readParams(void);
         void setDefaults();
-        void setModelSize(double span);
         void setParams(void);
         void setgl3dView(gl3dView*pglView) {m_pglView = pglView;}
 
@@ -80,7 +81,7 @@ class GLLightDlg : public QDialog
         QCheckBox *m_plabLight;
         QLabel *m_plabLightAmbient, *m_plabLightDiffuse, *m_plabLightSpecular;
         QLabel *m_plabPosXValue, *m_plabPosYValue, *m_plabPosZValue;
-        QLabel *m_pctrlLightRed, *m_plabLightGreen, *m_plabLightBlue;
+        QLabel *m_plabLightRed, *m_plabLightGreen, *m_plabLightBlue;
         QLabel *m_plabMatShininess;
 
         QPushButton *m_ppbDefaults, *m_ppbClose;
@@ -93,7 +94,6 @@ class GLLightDlg : public QDialog
 
         static Attenuation s_Attenuation;
         static int s_iShininess;
-        float m_ModelSize;
 
 };
 

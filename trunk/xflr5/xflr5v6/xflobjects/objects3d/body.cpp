@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Body Class
-    Copyright (C) 2007-2016 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,9 +46,6 @@ Body::Body()
 
     m_pBodyPanel = nullptr;
     m_NElements = m_nxPanels * m_nhPanels * 2;
-
-
-    m_bTextures = false;
 
     //    m_BodyLEPosition.Set(0.0,0.0,0.0);
     m_CoG.set(0.0,0.0,0.0);
@@ -202,7 +199,6 @@ void Body::duplicate(Body const *pBody)
 
     m_BodyName        = pBody->m_BodyName;
     m_BodyColor       = pBody->m_BodyColor;
-    m_bTextures       = pBody->m_bTextures;
     m_nxPanels        = pBody->m_nxPanels;
     m_nhPanels        = pBody->m_nhPanels;
     m_LineType        = pBody->m_LineType;
@@ -1654,7 +1650,7 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
         }
 
         // space allocation for the future storage of more data, without need to change the format
-        if(m_bTextures) ar << 1; else ar <<0;
+        ar << 1; //formerly bTextures
         for (int i=1; i<18; i++) ar << 0;
         ar << m_SplineSurface.uDegree()<<m_SplineSurface.vDegree();
         double dble=0.0;
@@ -1721,8 +1717,8 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
         }
 
         // space allocation
-        ar >>k;
-        if(k) m_bTextures = true; else m_bTextures = false;
+        ar >>k; // formerly bTextures
+
         for (int i=1; i<18; i++) ar >> k;
         ar >> k; m_SplineSurface.setuDegree(std::max(k,3));
         ar >> k; m_SplineSurface.setvDegree(std::max(k,3));

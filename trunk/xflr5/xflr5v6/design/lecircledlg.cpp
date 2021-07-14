@@ -1,7 +1,7 @@
 /****************************************************************************
 
     LECircleDlg Class
-    Copyright (C) 2009-2016 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -41,49 +42,37 @@ void LECircleDlg::setupLayout()
     {
         QHBoxLayout *pLERadius = new QHBoxLayout;
         {
-            m_pctrlRadius = new DoubleEdit(0.0,3);
+            m_pdeRadius = new DoubleEdit(0.0,3);
             QLabel *lab0 = new QLabel(tr("r="));
             QLabel *lab1 = new QLabel(tr("% Chord"));
             lab0->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
             pLERadius->addStretch(1);
             pLERadius->addWidget(lab0);
-            pLERadius->addWidget(m_pctrlRadius);
+            pLERadius->addWidget(m_pdeRadius);
             pLERadius->addWidget(lab1);
         }
 
-        m_pctrlShow = new QCheckBox(tr("Show"));
+        m_pchShow = new QCheckBox(tr("Show"));
 
-        QHBoxLayout *pCommandButtons = new QHBoxLayout;
-        {
-            OKButton     = new QPushButton(tr("OK"));
-            CancelButton = new QPushButton(tr("Cancel"));
+        QDialogButtonBox *m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+        connect(m_pButtonBox, &QDialogButtonBox::rejected, this, &LECircleDlg::onOK);
 
-            pCommandButtons->addStretch(1);
-            pCommandButtons->addWidget(OKButton);
-            pCommandButtons->addStretch(1);
-            pCommandButtons->addWidget(CancelButton);
-            pCommandButtons->addStretch(1);
-        }
-
-        pMainLayout->addWidget(m_pctrlShow);
+        pMainLayout->addWidget(m_pchShow);
         pMainLayout->addStretch(1);
         pMainLayout->addLayout(pLERadius);
         pMainLayout->addStretch(1);
-        pMainLayout->addLayout(pCommandButtons);
+        pMainLayout->addWidget(m_pButtonBox);
         pMainLayout->addStretch(1);
     }
 
     setLayout(pMainLayout);
-
-    connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
-    connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 
-void LECircleDlg::InitDialog()
+void LECircleDlg::initDialog()
 {
-    m_pctrlRadius->setValue(m_Radius);
-    m_pctrlShow->setChecked(m_bShowRadius);
+    m_pdeRadius->setValue(m_Radius);
+    m_pchShow->setChecked(m_bShowRadius);
 }
 
 
@@ -100,13 +89,9 @@ void LECircleDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                OKButton->setFocus();
-            }
-            else
-            {
-                OnOK();
+                m_pButtonBox->setFocus();
             }
             break;
         }
@@ -117,10 +102,10 @@ void LECircleDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void LECircleDlg::OnOK()
+void LECircleDlg::onOK()
 {
-    m_Radius = m_pctrlRadius->value();
-    m_bShowRadius = m_pctrlShow->isChecked();
+    m_Radius = m_pdeRadius->value();
+    m_bShowRadius = m_pchShow->isChecked();
     accept();
 }
 
