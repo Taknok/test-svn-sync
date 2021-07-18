@@ -153,8 +153,8 @@ HEADERS += \
 
 
 RESOURCES += \
-    resources\images.qrc \
-    resources\qss.qrc \
+    resources/images.qrc \
+    resources/qss.qrc \
 
 
 
