@@ -326,16 +326,10 @@ void LLTAnalysisDlg::updateView()
     repaint();
 }
 
+
 /**Updates the progress of the analysis in the slider widget */
 void LLTAnalysisDlg::onProgress()
 {
-    /*    if(m_strOut.length())
-    {
-        m_pctrlTextOutput->insertPlainText(m_strOut);
-        m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
-        m_pctrlTextOutput->ensureCursorVisible();
-    }
-    m_strOut.clear();*/
     m_pGraphWidget->update();
 }
 

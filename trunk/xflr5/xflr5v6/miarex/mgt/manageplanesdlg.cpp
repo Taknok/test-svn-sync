@@ -171,7 +171,6 @@ void ManagePlanesDlg::setupLayout()
             m_ptvPlanes->setMinimumWidth(800);
 
             m_pteDescription = new QTextEdit;
-            //    m_pctrlDescription->setEnabled(false);
             QLabel *Description = new QLabel(tr("Description:"));
             pLeftLayout->addWidget(m_ptvPlanes);
             pLeftLayout->addWidget(Description);

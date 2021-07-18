@@ -22,4 +22,4 @@
 #define PI         3.14159265358979
 #define LARGEVALUE 1.0e10
 #define PRECISION  0.00000001  /**< Values are assumed 0 if less than this value. This is to avoid comparing the equality of two floating point numbers */
-
+#define LENGTHPRECISION 1.0e-6

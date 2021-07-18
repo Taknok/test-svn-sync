@@ -44,6 +44,7 @@ class OpenGlDlg : public QDialog
         void onButton(QAbstractButton *pButton);
         void onApply();
         void reject() override;
+        void onViewType();
 
 
     private:
@@ -56,6 +57,8 @@ class OpenGlDlg : public QDialog
         void readFormat(QSurfaceFormat &fmt);
         void readVersion(QPair<int, int> &oglversion);
 
+        gl3dTestGLView *getView(int iView);
+
         void printFormat(const QSurfaceFormat &format, QString &log, bool bFull=true);
         void setupLayout();
 
@@ -65,6 +68,7 @@ class OpenGlDlg : public QDialog
 //-----------Variables ----------------
 
         QPushButton *m_ppbApply;
+        QPushButton *m_ppbTestView;
 
         QDialogButtonBox *m_pButtonBox;
         QComboBox *m_pcbVersion;

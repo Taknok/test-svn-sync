@@ -30,18 +30,19 @@ class gl3dTestGLView : public gl3dView
 
     public:
         gl3dTestGLView(QWidget *pParent = nullptr);
-        void glRenderView() override;
         bool intersectTheObject(Vector3d const &,  Vector3d const &, Vector3d &) override {return false;}
 
+
+    protected:
+        void glRenderView() override;
         void glMake3dObjects() override {}
+        void showEvent(QShowEvent *pEvent) override;
 
     signals:
         void ready() const;
 
-    public slots:
-        void on3dReset() override;
 
-    private:
+    protected:
         bool m_bInitialized;
 
 };

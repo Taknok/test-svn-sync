@@ -209,7 +209,7 @@ double Foil::deRotate()
         m_y[i] -= m_LE.y;
     }
 
-    m_LE.set(0.0,0.0,0.0);
+    m_LE.set(0.0,0.0);
     m_TE.x  -= m_LE.x;
     m_TE.y  -= m_LE.y;
 
@@ -435,12 +435,12 @@ double Foil::length() const
 * @param x the chordwise position
 * @return the position on the mid line
 */
-Vector3d Foil::midYRel(double sRel) const
+Vector2d Foil::midYRel(double sRel) const
 {
     if(sRel>=1.0)      return m_rpMid[MIDPOINTCOUNT-1];
     else if(sRel<=0.0) return m_rpMid[0];
 
-    Vector3d midY;
+    Vector2d midY;
     sRel *= (MIDPOINTCOUNT-1);
     int iRel = int(sRel);
     double frac = sRel-iRel;
@@ -455,7 +455,7 @@ Vector3d Foil::midYRel(double sRel) const
 * @param x the chordwise position
 * @return the position on the upper surface
 */
-Vector3d Foil::upperYRel(double xRel, double &normx, double &normy) const
+Vector2d Foil::upperYRel(double xRel, double &normx, double &normy) const
 {
     double x = m_rpExtrados[0].x + xRel*(m_rpExtrados[m_iExt].x-m_rpExtrados[0].x);
 
@@ -490,7 +490,7 @@ Vector3d Foil::upperYRel(double xRel, double &normx, double &normy) const
 * @param x the chordwise position
 * @return the position on the upper surface
 */
-Vector3d Foil::lowerYRel(double xRel, double &normx, double &normy) const
+Vector2d Foil::lowerYRel(double xRel, double &normx, double &normy) const
 {
     double x = m_rpIntrados[0].x + xRel*(m_rpIntrados[m_iInt].x-m_rpIntrados[0].x);
 
@@ -715,16 +715,14 @@ bool Foil::initFoil()
 *ABCD are assumed to lie in the xy plane
 *@return true and intersection point M if AB and CD intersect inside, false and intersection point M if AB and CD intersect outside
 */
-bool Foil::intersect(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d const &D, Vector3d *M) const
+bool Foil::intersect(Vector2d const &A, Vector2d const &B, Vector2d const &C, Vector2d const &D, Vector2d *M) const
 {
     double Det, Det1, Det2, t, u;
-    Vector3d AB, CD;
+    Vector2d AB, CD;
 
-    M->x = 0.0;
-    M->y = 0.0;
-    M->z = 0.0;
-    AB.set(B.x-A.x, B.y-A.y, B.z-A.z);
-    CD.set(D.x-C.x, D.y-C.y, D.z-C.z);
+    M->set(0,0);
+    AB.set(B.x-A.x, B.y-A.y);
+    CD.set(D.x-C.x, D.y-C.y);
 
     //Cramer's rule
 
@@ -750,9 +748,9 @@ bool Foil::intersect(Vector3d const &A, Vector3d const &B, Vector3d const &C, Ve
 
 /**
 *Returns the index of foil's point which coincides with the input point, if any, otherwise returns -10.
-*@param &Real the Vector3d which defines the input point
+*@param &Real the Vector2d which defines the input point
 */
-int Foil::isPoint(Vector3d const &Real) const
+int Foil::isPoint(Vector2d const &Real) const
 {
     for (int k=0; k<m_n; k++)
     {
@@ -901,7 +899,7 @@ void Foil::setLEFlap()
     int j=0, k=0;
 
     double xh=0, yh=0, dx=0, dy=0;
-    Vector3d M;
+    Vector2d M;
     bool bIntersect=false;
 
     double cosa = cos(m_LEFlapAngle*PI/180.0);
@@ -1154,7 +1152,7 @@ void Foil::setTEFlap()
 {
     int j{0};
     double xh{0}, yh{0}, dx{0}, dy{0};
-    Vector3d M;
+    Vector2d M;
     bool bIntersect{false};
 
     double cosa = cos(m_TEFlapAngle*PI/180.0);
@@ -1431,7 +1429,7 @@ void Foil::setFlap()
         double ymax = baseUpperY(xh);
         double yh = ymin + m_TEYHinge/100.0 * (ymax-ymin);
 
-        Vector3d hinge(xh, yh, 0.0);
+        Vector2d hinge(xh, yh);
 
         while(im<MIDPOINTCOUNT)
         {

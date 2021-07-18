@@ -48,17 +48,16 @@ void LogWt::setupLayout()
 {
     QVBoxLayout *pMainLayout = new QVBoxLayout();
     {
-        m_pctrlLogView = new QPlainTextEdit;
-        //		m_pctrlLogView->setFont(DisplayOptions::tableFont());
+        m_ppteLogView = new QPlainTextEdit;
         QHBoxLayout *pCtrlLayout = new QHBoxLayout;
         {
-            m_pctrlButton = new QPushButton("Cancel/Close");
-            connect(m_pctrlButton, SIGNAL(clicked(bool)), this, SLOT(onCancelClose()));
+            m_ppbButton = new QPushButton("Cancel/Close");
+            connect(m_ppbButton, SIGNAL(clicked(bool)), this, SLOT(onCancelClose()));
             pCtrlLayout->addStretch();
-            pCtrlLayout->addWidget(m_pctrlButton);
+            pCtrlLayout->addWidget(m_ppbButton);
             pCtrlLayout->addStretch();
         }
-        pMainLayout->addWidget(m_pctrlLogView);
+        pMainLayout->addWidget(m_ppteLogView);
         pMainLayout->addLayout(pCtrlLayout);
     }
     setLayout(pMainLayout);
@@ -67,9 +66,9 @@ void LogWt::setupLayout()
 
 void LogWt::onUpdate(QString msg)
 {
-    m_pctrlLogView->insertPlainText(msg);
-    m_pctrlLogView->textCursor().movePosition(QTextCursor::End);
-    m_pctrlLogView->ensureCursorVisible();
+    m_ppteLogView->insertPlainText(msg);
+    m_ppteLogView->textCursor().movePosition(QTextCursor::End);
+    m_ppteLogView->ensureCursorVisible();
 }
 
 
@@ -81,8 +80,8 @@ void LogWt::onCancelClose()
     }
     else
     {
-        m_pctrlButton->setText(tr("Cancelling..."));
-        m_pctrlButton->setEnabled(false);
+        m_ppbButton->setText(tr("Cancelling..."));
+        m_ppbButton->setEnabled(false);
         onUpdate("\n_____________Cancel request emitted_____________\n\n");
         qApp->processEvents();
     }
@@ -94,7 +93,7 @@ void LogWt::keyPressEvent(QKeyEvent *event)
     switch (event->key())
     {
     case Qt::Key_Escape:
-        m_pctrlButton->animateClick();
+        m_ppbButton->animateClick();
         event->accept();
         break;
     default:
@@ -118,8 +117,8 @@ void LogWt::hideEvent(QHideEvent*)
 
 void LogWt::setCancelButton(bool bCancel)
 {
-    if(bCancel) m_pctrlButton->setText(tr("Cancel"));
-    else        m_pctrlButton->setText(tr("Close"));
+    if(bCancel) m_ppbButton->setText(tr("Cancel"));
+    else        m_ppbButton->setText(tr("Close"));
 }
 
 
@@ -128,9 +127,9 @@ void LogWt::setFinished(bool bFinished)
     m_bFinished = bFinished;
     if(bFinished)
     {
-        m_pctrlButton->setText(tr("Close"));
-        m_pctrlButton->setEnabled(true);
-        m_pctrlButton->setFocus();
+        m_ppbButton->setText(tr("Close"));
+        m_ppbButton->setEnabled(true);
+        m_ppbButton->setFocus();
     }
 }
 

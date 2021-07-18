@@ -91,10 +91,6 @@ void GraphDlg::connectSignals()
     connect(m_pcbGraphBack,     SIGNAL(clicked()),            SLOT(onGraphBackColor()));
     connect(m_plbBorderStyle,   SIGNAL(clicked()),            SLOT(onBorderStyle()));
 
-    /*    connect(m_pctrlXSel, SIGNAL(itemActivated ( QListWidgetItem*)), SLOT(OnVariableChanged()));
-    connect(m_pctrlYSel, SIGNAL(itemActivated ( QListWidgetItem*)), SLOT(OnVariableChanged()));
-    connect(m_pctrlXSel, SIGNAL(itemClicked ( QListWidgetItem*)), SLOT(OnVariableChanged()));
-    connect(m_pctrlYSel, SIGNAL(itemClicked ( QListWidgetItem*)), SLOT(OnVariableChanged()));*/
     connect(m_plwXSel, SIGNAL(itemSelectionChanged()), SLOT(onVariableChanged()));
     connect(m_plwYSel, SIGNAL(itemSelectionChanged()), SLOT(onVariableChanged()));
 

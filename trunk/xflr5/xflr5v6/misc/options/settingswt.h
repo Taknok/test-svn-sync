@@ -54,8 +54,13 @@ class Settings : public QWidget
         static void loadSettings(QSettings &settings);
         static void saveSettings(QSettings &settings);
 
-        static QString &styleName(){return s_StyleName;}
+        static void setStyleName(QString const &name){s_StyleName=name;}
+        static QString const &styleName()  {return s_StyleName;}
+
         static void setColorList();
+
+        static void setStyleSheetOverride(bool bSheet){s_bStyleSheet=bSheet;}
+        static bool bStyleSheeOverride() {return s_bStyleSheet;}
 
 
     private slots:
@@ -68,6 +73,7 @@ class Settings : public QWidget
         void onTextColor();
         void onTextFont();
         void onTheme();
+        void onStyleSheet(bool bSheet);
 
     private:
         void setupLayout();
@@ -83,6 +89,7 @@ class Settings : public QWidget
         QCheckBox *m_pchAlignChildrenStyle;
 
         QComboBox *m_pcbStyles;
+        QCheckBox *m_pchStyleSheetOverride;
 
         QRadioButton *m_prbDark, *m_prbLight, *m_prbCustom;
 
@@ -94,7 +101,7 @@ class Settings : public QWidget
         //settings variables used throughout the program
         static QString s_StyleName, s_StyleSheetName;
 
-        static bool s_bStyleSheets;
+        static bool s_bStyleSheet;
 
         static xfl::enumTextFileType s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
         static Graph s_RefGraph;//Reference setttings

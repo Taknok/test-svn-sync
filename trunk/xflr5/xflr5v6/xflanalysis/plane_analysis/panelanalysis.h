@@ -214,8 +214,8 @@ class PanelAnalysis : QObject
         double *m_pRHS, *m_qRHS, *m_rRHS;
         double *m_cRHS;
         double *m_uWake, *m_wWake;
-        Vector3d *m_uVl, *m_wVl;
         int *m_Index;               /**< a pointer to the array of indexes used in matrix LU decomposition */
+        QVector<Vector3d> m_uVl, m_wVl;
 
 
         // pointers to the geometry input data

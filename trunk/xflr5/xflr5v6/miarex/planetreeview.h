@@ -74,7 +74,6 @@ class PlaneTreeView : public QWidget
         Qt::CheckState planeState(const Plane *pPlane) const;
         Qt::CheckState wPolarState(const WPolar *pWPolar) const;
 
-        static void setDefaultWidth(int width) {s_Width=width;}
         static void setMainFrame(MainFrame*pMainFrame) {s_pMainFrame = pMainFrame;}
         static void setMiarex(Miarex*pMiarex) {s_pMiarex = pMiarex;}
         static void loadSettings(QSettings &settings);
@@ -85,8 +84,6 @@ class PlaneTreeView : public QWidget
         void keyPressEvent(QKeyEvent *pEvent) override;
         void showEvent(QShowEvent *event) override;
         void hideEvent(QHideEvent *event) override;
-        void resizeEvent(QResizeEvent *pEvent) override;
-        QSize sizeHint() const override {return QSize(s_Width, 0);}
 
     private slots:
         void onItemClicked(const QModelIndex &filteredindex);
@@ -113,7 +110,6 @@ class PlaneTreeView : public QWidget
         PlainTextOutput *m_pptObjectProps;
 
         static QByteArray s_SplitterSizes;
-        static int s_Width;
         static MainFrame *s_pMainFrame;
         static Miarex *s_pMiarex;
 };

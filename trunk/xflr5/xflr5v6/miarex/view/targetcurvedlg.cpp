@@ -21,6 +21,7 @@
 
 #include "targetcurvedlg.h"
 
+#include <QDialogButtonBox>
 #include <QGroupBox>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -87,17 +88,17 @@ void TargetCurveDlg::setupLayout()
             }
             pctrlCLBox->setLayout(pCLLayout);
         }
+
+        QDialogButtonBox *pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
+        connect(pButtonBox, &QDialogButtonBox::accepted, this, &TargetCurveDlg::onOK);
+
         pMainLayout->addLayout(pEllLayout);
         pMainLayout->addLayout(pBellLayout);
         pMainLayout->addLayout(pExpLayout);
-        pMainLayout->addSpacing(20);
         pMainLayout->addWidget(pctrlCLBox);
-        pMainLayout->addSpacing(20);
+        pMainLayout->addWidget(pButtonBox);
     }
-    QPushButton *pOKButton = new QPushButton(tr("Close"));
-    connect(pOKButton, SIGNAL(clicked()), this, SLOT(onOK()));
-    pMainLayout->addStretch();
-    pMainLayout->addWidget(pOKButton);
+
     setLayout(pMainLayout);
 }
 

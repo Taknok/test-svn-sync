@@ -71,7 +71,6 @@ class StabViewDlg : public QWidget
 
         void addCurve();
         void connectSignals();
-    //    void FillControlNames();
         void fillEigenThings();
         void fillCurveList();
         double getControlInput(const double &time);
@@ -82,6 +81,7 @@ class StabViewDlg : public QWidget
         void readControlModelData();
         void updateControlModelData();
 
+    private:
         static Miarex *s_pMiarex;
 
         QRadioButton *m_prbLongDynamics, *m_prbLatDynamics;

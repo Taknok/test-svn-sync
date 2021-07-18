@@ -1196,7 +1196,7 @@ void StabPolarDlg::setWPolarName()
 {
     if(!m_bAutoName || !m_pPlane) return;
 
-    setAutoWPolarName(&s_StabWPolar, m_pPlane);
+    xfl::setAutoWPolarName(&s_StabWPolar, m_pPlane);
     m_pleWPolarName->setText(s_StabWPolar.polarName());
 }
 

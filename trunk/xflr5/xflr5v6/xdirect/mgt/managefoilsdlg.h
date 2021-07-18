@@ -67,8 +67,8 @@ class ManageFoilsDlg : public QDialog
     private:
         QDialogButtonBox *m_pButtonBox;
 
-        QPushButton *m_pctrlRename, *m_pctrlDelete, *m_pctrlSelect, *m_pctrlExport;
-        QTableView *m_pctrlFoilTable;
+        QPushButton *m_ppbRename, *m_ppbDelete, *m_ppbSelect, *m_ppbExport;
+        QTableView *m_ptvFoils;
         QStandardItemModel *m_pFoilModel;
         FoilTableDelegate *m_pFoilDelegate;
 

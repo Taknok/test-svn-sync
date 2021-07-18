@@ -22,6 +22,7 @@
 #include "wingopp.h"
 
 #include "plane.h"
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects_global.h>
 #include <xflobjects/objects3d/wpolar.h>
 
@@ -84,11 +85,12 @@ WingOpp::WingOpp(int PanelArraySize)
     memset(m_XTrTop,        0, sizeof(m_XTrTop));
     memset(m_XTrBot,        0, sizeof(m_XTrBot));
     memset(m_BendingMoment, 0, sizeof(m_BendingMoment));
-    memset(m_Vd,            0, sizeof(m_Vd));
-    memset(m_F,             0, sizeof(m_F));
 
-    memset(m_oldEigenValue, 0, sizeof(m_oldEigenValue)); //four longitudinal and four lateral modes
-    memset(m_oldEigenVector, 0, sizeof(m_oldEigenVector));
+    m_F.resize(MAXSPANSTATIONS+1);
+    m_Vd.resize(MAXSPANSTATIONS+1);
+
+//    memset(m_oldEigenValue, 0, sizeof(m_oldEigenValue)); //four longitudinal and four lateral modes
+//    memset(m_oldEigenVector, 0, sizeof(m_oldEigenVector));
 
     m_FlapMoment.clear();
 }
@@ -389,8 +391,8 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
         ar >> ArchiveFormat;
         if(ArchiveFormat<1001|| ArchiveFormat>1100) return false;
         //read variables
-        readCString(ar, m_WingName);
-        readCString(ar, m_PlrName);
+        xfl::readCString(ar, m_WingName);
+        xfl::readCString(ar, m_PlrName);
 
         ar >> a;
         if (a!=0 && a!=1) return false;
@@ -433,7 +435,7 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
 //        ar >> m_Style >> m_Width;
         ar>> k>>l;
         int r,g,b;
-        readCOLORREF(ar,r,g,b);
+        xfl::readCOLORREF(ar,r,g,b);
 
         ar >>k;
 /*        if(k==1)      m_WPolarType = FIXEDSPEEDPOLAR;

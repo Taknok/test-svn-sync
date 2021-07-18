@@ -37,13 +37,13 @@ void ExpandableTreeView::initETV()
 {
 //    m_pCollapseAll  = new QAction(QIcon(":/icons/level--.png"), tr("Collapse all"),           this);
 //    m_pExpandAll    = new QAction(QIcon(":/icons/level++.png"), tr("Expand all"),             this);
-    m_pLevelMinus   = new QAction(QIcon(":/resources/images/level-.png"),  tr("Collapse selected item"), this);
-    m_pLevelPlus    = new QAction(QIcon(":/resources/images/level+.png"),  tr("Expand selected item"),   this);
-    m_pLevel0Action = new QAction(QIcon(":/resources/images/level0.png"),  tr("Object level"),           this);
-    m_pLevel1Action = new QAction(QIcon(":/resources/images/level1.png"),  tr("Polar level"),            this);
-    m_pLevel2Action = new QAction(QIcon(":/resources/images/level2.png"),  tr("Operating Point level"),  this);
+    m_pLevelMinus   = new QAction(QIcon(":/images/level-.png"),  tr("Collapse selected item"), this);
+    m_pLevelPlus    = new QAction(QIcon(":/images/level+.png"),  tr("Expand selected item"),   this);
+    m_pLevel0Action = new QAction(QIcon(":/images/level0.png"),  tr("Object level"),           this);
+    m_pLevel1Action = new QAction(QIcon(":/images/level1.png"),  tr("Polar level"),            this);
+    m_pLevel2Action = new QAction(QIcon(":/images/level2.png"),  tr("Operating Point level"),  this);
 
-    m_pCtrlWidget = new QWidget;
+    m_pfrControls = new QFrame;
     {
         m_pleFilter = new QLineEdit;
         m_pleFilter->setClearButtonEnabled(true);
@@ -80,7 +80,7 @@ void ExpandableTreeView::initETV()
             pHLayout->addWidget(m_pleFilter);
             pHLayout->addWidget(m_pchHideShowAll);
         }
-        m_pCtrlWidget->setLayout(pHLayout);
+        m_pfrControls->setLayout(pHLayout);
     }
 
     connect(m_pLevel0Action,  SIGNAL(triggered(bool)), SLOT(onObjectLevel()));

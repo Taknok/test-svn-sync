@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Surface Class
-    Copyright (C) 2005-2016 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 
 *****************************************************************************/
 
-#include <QtDebug>
 
 #include "surface.h"
 #include <xflobjects/objects2d/foil.h>
@@ -91,17 +90,16 @@ Surface::Surface()
  * Adds the reference of thE input panel to the array of flap panel indexes.
  * @param pPanel the pointer of the panel to add to the flap panel list.
  */
-void Surface::addFlapPanel(Panel *pPanel)
+void Surface::addFlapPanel(Panel const &panel)
 {
     bool bFound = false;
-    int i;
 
     //Add Nodes
 
-    for (i=0; i<m_nFlapNodes; i++)
+    for (int i=0; i<m_nFlapNodes; i++)
     {
-        bFound = bFound && pPanel->m_iLA==m_FlapNode[i];
-        if(pPanel->m_iLA== m_FlapNode[i])
+        bFound = bFound && panel.m_iLA==m_FlapNode[i];
+        if(panel.m_iLA== m_FlapNode[i])
         {
             bFound = true;
             break;
@@ -109,14 +107,14 @@ void Surface::addFlapPanel(Panel *pPanel)
     }
     if(!bFound)
     {
-        m_FlapNode[m_nFlapNodes] = pPanel->m_iLA;
+        m_FlapNode[m_nFlapNodes] = panel.m_iLA;
         m_nFlapNodes++;
     }
 
     bFound = false;
-    for (i=0; i< m_nFlapNodes; i++)
+    for (int i=0; i< m_nFlapNodes; i++)
     {
-        if(pPanel->m_iLB== m_FlapNode[i])
+        if(panel.m_iLB== m_FlapNode[i])
         {
             bFound = true;
             break;
@@ -124,13 +122,13 @@ void Surface::addFlapPanel(Panel *pPanel)
     }
     if(!bFound)
     {
-        m_FlapNode[m_nFlapNodes] = pPanel->m_iLB;
+        m_FlapNode[m_nFlapNodes] = panel.m_iLB;
         m_nFlapNodes++;
     }
 
-    for (i=0; i< m_nFlapNodes; i++)
+    for (int i=0; i< m_nFlapNodes; i++)
     {
-        if(pPanel->m_iTA== m_FlapNode[i])
+        if(panel.m_iTA== m_FlapNode[i])
         {
             bFound = true;
             break;
@@ -138,14 +136,14 @@ void Surface::addFlapPanel(Panel *pPanel)
     }
     if(!bFound)
     {
-        m_FlapNode[m_nFlapNodes] = pPanel->m_iTA;
+        m_FlapNode[m_nFlapNodes] = panel.m_iTA;
         m_nFlapNodes++;
     }
 
     bFound = false;
-    for (i=0; i< m_nFlapNodes; i++)
+    for (int i=0; i< m_nFlapNodes; i++)
     {
-        if(pPanel->m_iTB== m_FlapNode[i])
+        if(panel.m_iTB== m_FlapNode[i])
         {
             bFound = true;
             break;
@@ -153,15 +151,15 @@ void Surface::addFlapPanel(Panel *pPanel)
     }
     if(!bFound)
     {
-        m_FlapNode[m_nFlapNodes] = pPanel->m_iTB;
+        m_FlapNode[m_nFlapNodes] = panel.m_iTB;
         m_nFlapNodes++;
     }
 
     //Add panel;
     bFound=false;
-    for(i=0; i<m_nFlapPanels; i++)
+    for(int i=0; i<m_nFlapPanels; i++)
     {
-        if(pPanel->m_iElement==m_FlapPanel[i])
+        if(panel.m_iElement==m_FlapPanel[i])
         {
             bFound =true;
             break;
@@ -169,7 +167,7 @@ void Surface::addFlapPanel(Panel *pPanel)
     }
     if(!bFound)
     {
-        m_FlapPanel[m_nFlapPanels] = pPanel->m_iElement;
+        m_FlapPanel[m_nFlapPanels] = panel.m_iElement;
         m_nFlapPanels++;
     }
 }
@@ -235,11 +233,11 @@ void Surface::copy(Surface const*pSurface)
  */
 void Surface::getC4(int k, Vector3d &Pt, double &tau)
 {
-    getPanel(k,m_NXPanels-1,MIDSURFACE);
+    getPanel(k,m_NXPanels-1, xfl::MIDSURFACE);
     double xl = (LA.x+LB.x)/2.0;
     double yl = (LA.y+LB.y)/2.0;
     double zl = (LA.z+LB.z)/2.0;
-    getPanel(k,0,MIDSURFACE);
+    getPanel(k,0,xfl::MIDSURFACE);
     double xt = (TA.x+TB.x)/2.0;
     double yt = (TA.y+TB.y)/2.0;
     double zt = (TA.z+TB.z)/2.0;
@@ -333,7 +331,7 @@ void Surface::getNormal(double yrel, Vector3d &N) const
  */
 void Surface::getLeadingPt(int k, Vector3d &C)
 {
-    getPanel(k,m_NXPanels-1, MIDSURFACE);
+    getPanel(k,m_NXPanels-1, xfl::MIDSURFACE);
 
     C.x    = (LA.x+LB.x)/2.0;
     C.y    = (LA.y+LB.y)/2.0;
@@ -349,7 +347,7 @@ void Surface::getLeadingPt(int k, Vector3d &C)
  */
 void Surface::getTrailingPt(int k, Vector3d &C)
 {
-    getPanel(k,0,MIDSURFACE);
+    getPanel(k,0,xfl::MIDSURFACE);
 
     C.x    = (TA.x+TB.x)/2.0;
     C.y    = (TA.y+TB.y)/2.0;
@@ -367,11 +365,11 @@ void Surface::getTrailingPt(int k, Vector3d &C)
  * @param l the index of the panel in the chordwise direction. 0<=l<m_NXPanels
  * @param pos defines on which surface (BOTSURFACE, TOPSURFACE, MIDSURFACE) the node positions should be calculated.
  */
-void Surface::getPanel(int const &k, int const &l, enumPanelPosition pos) const
+void Surface::getPanel(int const &k, int const &l, xfl::enumSurfacePosition pos) const
 {
     double y1=0, y2=0;
     getYDist(k,y1,y2);
-    if(pos==MIDSURFACE)
+    if(pos==xfl::MIDSURFACE)
     {
         LA.x = m_SideA[l+1].x * (1.0-y1) + m_SideB[l+1].x* y1;
         LA.y = m_SideA[l+1].y * (1.0-y1) + m_SideB[l+1].y* y1;
@@ -386,7 +384,7 @@ void Surface::getPanel(int const &k, int const &l, enumPanelPosition pos) const
         TB.y = m_SideA[l].y   * (1.0-y2) + m_SideB[l].y  * y2;
         TB.z = m_SideA[l].z   * (1.0-y2) + m_SideB[l].z  * y2;
     }
-    else if (pos==BOTSURFACE)
+    else if (pos==xfl::BOTSURFACE)
     {
         LA = m_SideA_B[l+1] * (1.0-y1) + m_SideB_B[l+1]* y1;
         TA = m_SideA_B[l]   * (1.0-y1) + m_SideB_B[l]  * y1;
@@ -406,7 +404,7 @@ void Surface::getPanel(int const &k, int const &l, enumPanelPosition pos) const
         TB.y = m_SideA_B[l].y   * (1.0-y2) + m_SideB_B[l].y  * y2;
         TB.z = m_SideA_B[l].z   * (1.0-y2) + m_SideB_B[l].z  * y2;
     }
-    else if (pos==TOPSURFACE)
+    else if (pos==xfl::TOPSURFACE)
     {
         LA.x = m_SideA_T[l+1].x * (1.0-y1) + m_SideB_T[l+1].x* y1;
         LA.y = m_SideA_T[l+1].y * (1.0-y1) + m_SideB_T[l+1].y* y1;
@@ -431,7 +429,7 @@ void Surface::getPanel(int const &k, int const &l, enumPanelPosition pos) const
  */
 double Surface::stripWidth(int k) const
 {
-    getPanel(k, 0, MIDSURFACE);
+    getPanel(k, 0, xfl::MIDSURFACE);
     return fabs(LA.y-LB.y);
 }
 
@@ -444,24 +442,24 @@ double Surface::stripWidth(int k) const
  * @param Point a reference to the requested point's position
  * @param PtNormal a reference to the vector normal to the surface at that point
  */
-void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const
+void Surface::getSidePoint(double xRel, bool bRight, xfl::enumSurfacePosition pos, Vector3d &Point, Vector3d &PtNormal) const
 {
-    Vector3d foilPt(xRel,0.0,0.0);
+    Vector2d foilPt(xRel,0.0);
 
     if(!bRight)
     {
-        if(pos==MIDSURFACE && m_pFoilA)      foilPt = m_pFoilA->midYRel(xRel);
-        else if(pos==TOPSURFACE && m_pFoilA) foilPt = m_pFoilA->upperYRel(xRel, PtNormal.x, PtNormal.z);
-        else if(pos==BOTSURFACE && m_pFoilA) foilPt = m_pFoilA->lowerYRel(xRel, PtNormal.x, PtNormal.z);
+        if     (pos==xfl::MIDSURFACE && m_pFoilA) foilPt = m_pFoilA->midYRel(xRel);
+        else if(pos==xfl::TOPSURFACE && m_pFoilA) foilPt = m_pFoilA->upperYRel(xRel, PtNormal.x, PtNormal.z);
+        else if(pos==xfl::BOTSURFACE && m_pFoilA) foilPt = m_pFoilA->lowerYRel(xRel, PtNormal.x, PtNormal.z);
 
         Point = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
         Point +=  Normal * foilPt.y*chord(0.0);
     }
     else
     {
-        if(pos==MIDSURFACE && m_pFoilB)      foilPt = m_pFoilB->midYRel(xRel);
-        else if(pos==TOPSURFACE && m_pFoilB) foilPt = m_pFoilB->upperYRel(xRel, PtNormal.x, PtNormal.z);
-        else if(pos==BOTSURFACE && m_pFoilB) foilPt = m_pFoilB->lowerYRel(xRel, PtNormal.x, PtNormal.z);
+        if     (pos==xfl::MIDSURFACE && m_pFoilB) foilPt = m_pFoilB->midYRel(xRel);
+        else if(pos==xfl::TOPSURFACE && m_pFoilB) foilPt = m_pFoilB->upperYRel(xRel, PtNormal.x, PtNormal.z);
+        else if(pos==xfl::BOTSURFACE && m_pFoilB) foilPt = m_pFoilB->lowerYRel(xRel, PtNormal.x, PtNormal.z);
 
         Point = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
         Point +=  Normal * foilPt.y*chord(1.0);
@@ -479,7 +477,7 @@ void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, Vect
  * @param N a pointer to the array to fill with the vectors normal to the surface
  * @param nPoints the number of side points to define on each tip
  */
-void Surface::getSidePoints(enumPanelPosition pos,
+void Surface::getSidePoints(xfl::enumSurfacePosition pos,
                             Body const*pBody,
                             QVector<Vector3d> &PtA, QVector<Vector3d> &PtB, QVector<Vector3d> &NA, QVector<Vector3d> &NB, int nPoints) const
 {
@@ -596,11 +594,12 @@ void Surface::getSidePoints(enumPanelPosition pos,
  * @param pos defines on which surface (BOTSURFACE, TOPSURFACE, MIDSURFACE) the point is calculated
  */
 void Surface::getSurfacePoint(double xArel, double xBrel, double yrel,
-                              enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const
+                              xfl::enumSurfacePosition pos, Vector3d &Point, Vector3d &PtNormal) const
 {
-    Vector3d APt, BPt, foilPt;
+    Vector2d foilPt;
+    Vector3d APt, BPt;
     double nx(0), ny(0);
-    if(pos==MIDSURFACE && m_pFoilA && m_pFoilB)
+    if(pos==xfl::MIDSURFACE && m_pFoilA && m_pFoilB)
     {
         foilPt = m_pFoilA->midYRel(xArel);
         APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
@@ -611,7 +610,7 @@ void Surface::getSurfacePoint(double xArel, double xBrel, double yrel,
         BPt +=  Normal * foilPt.y*chord(1.0);
 
     }
-    else if(pos==TOPSURFACE && m_pFoilA && m_pFoilB)
+    else if(pos==xfl::TOPSURFACE && m_pFoilA && m_pFoilB)
     {
         foilPt = m_pFoilA->upperYRel(xArel, nx, ny);
         APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
@@ -622,7 +621,7 @@ void Surface::getSurfacePoint(double xArel, double xBrel, double yrel,
         BPt +=  Normal * foilPt.y*chord(1.0);
 
     }
-    else if(pos==BOTSURFACE && m_pFoilA && m_pFoilB)
+    else if(pos==xfl::BOTSURFACE && m_pFoilA && m_pFoilB)
     {
         foilPt = m_pFoilA->lowerYRel(xArel, nx, ny);
         APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
@@ -685,7 +684,7 @@ double Surface::stripSpanPos(int k)
 
     for(int l=0; l<m_NXPanels; l++)
     {
-        getPanel(k,l, MIDSURFACE);
+        getPanel(k,l, xfl::MIDSURFACE);
         YPos += (LA.y+LB.y+TA.y+TB.y)/4.0;
         ZPos += (LA.z+LB.z+TA.z+TB.z)/4.0;
     }
@@ -816,7 +815,7 @@ bool Surface::isFlapPanel(int p) const
  * @param pPanel a pointer to the panel object
  * @return true if the panel is located on the T.E. flap
  */
-bool Surface::isFlapPanel(Panel *pPanel) const
+bool Surface::isFlapPanel(Panel const *pPanel) const
 {
     int pp;
     for(pp=0; pp<m_nFlapPanels; pp++)
@@ -871,20 +870,16 @@ bool Surface::rotateFlap(double Angle)
     //The average angle between the two tip foil is cancelled
     //Instead, the Panels are rotated by Angle around the hinge point and hinge vector
 
-    int k,l,p;
-    double alpha0;
+    double alpha0(0);
     Quaternion Quat;
     Vector3d R, S;
-
-    p = 0;
 
     if(m_pFoilA && m_pFoilB)
     {
         //get the approximate initial angle
         if(qAbs(m_pFoilA->m_TEFlapAngle - m_pFoilB->m_TEFlapAngle)>0.1)
         {
-            QString error = QObject::tr("Continuous foils for surface do not have the same initial flap angle... aborting\n");
-
+//            QString error = QObject::tr("Continuous foils for surface do not have the same initial flap angle... aborting\n");
             return false;
         }
         alpha0 = (m_pFoilA->m_TEFlapAngle + m_pFoilB->m_TEFlapAngle)/2.0;
@@ -892,7 +887,7 @@ bool Surface::rotateFlap(double Angle)
         Quat.set(Angle-alpha0, m_HingeVector);
 
 
-        for (k=0; k<m_nFlapNodes; k++)
+        for (int k=0; k<m_nFlapNodes; k++)
         {
             R.x = s_pNode[m_FlapNode[k]].x - m_HingePoint.x;
             R.y = s_pNode[m_FlapNode[k]].y - m_HingePoint.y;
@@ -904,28 +899,27 @@ bool Surface::rotateFlap(double Angle)
             s_pNode[m_FlapNode[k]].z = S.z + m_HingePoint.z;
         }
 
-        for(l=0; l<m_nFlapPanels; l++)
+        for(int l=0; l<m_nFlapPanels; l++)
         {
-            k = m_FlapPanel[l];
-            if(s_pPanel[k].m_Pos==BOTSURFACE)
+            int k = m_FlapPanel[l];
+            if(s_pPanel[k].m_Pos==xfl::BOTSURFACE)
             {
                 s_pPanel[k].setPanelFrame(
                             s_pNode[s_pPanel[k].m_iLB],
-                        s_pNode[s_pPanel[k].m_iLA],
-                        s_pNode[s_pPanel[k].m_iTB],
-                        s_pNode[s_pPanel[k].m_iTA]);
+                            s_pNode[s_pPanel[k].m_iLA],
+                            s_pNode[s_pPanel[k].m_iTB],
+                            s_pNode[s_pPanel[k].m_iTA]);
             }
             else
             {
                 s_pPanel[k].setPanelFrame(
                             s_pNode[s_pPanel[k].m_iLA],
-                        s_pNode[s_pPanel[k].m_iLB],
-                        s_pNode[s_pPanel[k].m_iTA],
-                        s_pNode[s_pPanel[k].m_iTB]);
+                            s_pNode[s_pPanel[k].m_iLB],
+                            s_pNode[s_pPanel[k].m_iTA],
+                            s_pNode[s_pPanel[k].m_iTB]);
             }
         }
     }
-    else p+= m_NYPanels * m_NXPanels;
 
     return true;
 }
@@ -969,6 +963,7 @@ void Surface::rotateY(Vector3d const &O, double YTilt)
     NormalB.rotateY(YTilt);
     m_HingeVector.rotateY(YTilt);
 }
+
 
 /**
  * Rotates the entire surface around the z-axis
@@ -1018,8 +1013,8 @@ void Surface::setFlap()
     {
         Vector3d HB;
         //create a hinge unit vector and initialize hinge moment
-        getSurfacePoint(m_posATE, m_posBTE, 0.0, MIDSURFACE, m_HingePoint,N);
-        getSurfacePoint(m_posATE, m_posBTE, 1.0, MIDSURFACE, HB, N);
+        getSurfacePoint(m_posATE, m_posBTE, 0.0, xfl::MIDSURFACE, m_HingePoint,N);
+        getSurfacePoint(m_posATE, m_posBTE, 1.0, xfl::MIDSURFACE, HB, N);
         m_HingeVector = HB-m_HingePoint;
         m_HingeVector.normalize();
     }
@@ -1071,10 +1066,9 @@ void Surface::translate(double tx, double ty, double tz)
  */
 void Surface::createXPoints()
 {
-    int l;
-    int NXFlapA, NXFlapB, NXLeadA, NXLeadB;
-    double dl, dl2;
-    double xHingeA, xHingeB;
+    int NXFlapA(0), NXFlapB(0), NXLeadA(0), NXLeadB(0);
+    double dl(0), dl2(0);
+    double xHingeA(0), xHingeB(0);
     if(m_pFoilA && m_pFoilA->m_bTEFlap) xHingeA=m_pFoilA->m_TEXHinge/100.0; else xHingeA=1.0;
     if(m_pFoilB && m_pFoilB->m_bTEFlap) xHingeB=m_pFoilB->m_TEXHinge/100.0; else xHingeB=1.0;
 
@@ -1099,7 +1093,7 @@ void Surface::createXPoints()
     if(m_NXFlap>m_NXPanels/2) m_NXFlap=int(m_NXPanels/2);
     m_NXLead  = m_NXPanels - m_NXFlap;
 
-    for(l=0; l<NXFlapA; l++)
+    for(int l=0; l<NXFlapA; l++)
     {
         dl =  double(l);
         dl2 = double(NXFlapA);
@@ -1109,7 +1103,7 @@ void Surface::createXPoints()
             m_xPointA[l] = 1.0 - (1.0-xHingeA) * (dl/dl2);
     }
 
-    for(l=0; l<NXLeadA; l++)
+    for(int l=0; l<NXLeadA; l++)
     {
         dl =  double(l);
         dl2 = double(NXLeadA);
@@ -1119,7 +1113,7 @@ void Surface::createXPoints()
             m_xPointA[l+NXFlapA] = xHingeA - (xHingeA) * (dl/dl2);
     }
 
-    for(l=0; l<NXFlapB; l++)
+    for(int l=0; l<NXFlapB; l++)
     {
         dl =  double(l);
         dl2 = double(NXFlapB);
@@ -1129,7 +1123,7 @@ void Surface::createXPoints()
             m_xPointB[l] = 1.0 - (1.0-xHingeB) * (dl/dl2);
     }
 
-    for(l=0; l<NXLeadB; l++)
+    for(int l=0; l<NXLeadB; l++)
     {
         dl =  double(l);
         dl2 = double(NXLeadB);
@@ -1220,9 +1214,9 @@ void Surface::setMeshSidePoints(Body * pBody, double dx, double dz)
     }
 
     V = Normal * NormalA;
-    Ua = (m_TA - m_LA).normalized();
+    Ua = (m_LA - m_TA).normalized();
     //    double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
-    double sindA = -V.dot(Ua);
+    double sindA = V.dot(Ua);
     if(sindA> 1.0) sindA = 1.0;
     if(sindA<-1.0) sindA = -1.0;
     alpha_dA = asin(sindA);
@@ -1230,8 +1224,8 @@ void Surface::setMeshSidePoints(Body * pBody, double dx, double dz)
     alpha_dA *= 180.0/PI;
 
     V = Normal * NormalB;
-    Ub = (m_TB-m_LB).normalized();
-    double sindB = -V.dot(Ub);
+    Ub = (m_LB-m_TB).normalized();
+    double sindB = V.dot(Ub);
     //    double sindB = V.VAbs();
     if(sindB> 1.0) sindB = 1.0;
     if(sindB<-1.0) sindB = -1.0;
@@ -1240,8 +1234,8 @@ void Surface::setMeshSidePoints(Body * pBody, double dx, double dz)
     alpha_dB *= 180.0/PI;
 
     //create the quarter chord centers of rotation for the twist
-    A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;
-    B4 = m_LB *3.0/4.0 + m_TB * 1/4.0;
+    A4 = m_LA *3.0/4.0 + m_TA * 1.0/4.0;
+    B4 = m_LB *3.0/4.0 + m_TB * 1.0/4.0;
 
     // create the vectors perpendicular to the side Normals and to the x-axis
     TA4.x = 0.0;
@@ -1252,13 +1246,6 @@ void Surface::setMeshSidePoints(Body * pBody, double dx, double dz)
     TB4.y = +NormalB.z;
     TB4.z = -NormalB.y;
 
-    m_SideA.clear();
-    m_SideA_T.clear();
-    m_SideA_B.clear();
-    m_SideB.clear();
-    m_SideB_T.clear();
-    m_SideB_B.clear();
-
     m_SideA.resize(  m_NXPanels+1);
     m_SideA_B.resize(m_NXPanels+1);
     m_SideA_T.resize(m_NXPanels+1);
@@ -1268,60 +1255,60 @@ void Surface::setMeshSidePoints(Body * pBody, double dx, double dz)
 
     for (int l=0; l<=m_NXPanels; l++)
     {
-        getSidePoint(m_xPointA[l], false, MIDSURFACE, m_SideA[l], N);
-        getSidePoint(m_xPointA[l], false, TOPSURFACE, m_SideA_T[l], N);
-        getSidePoint(m_xPointA[l], false, BOTSURFACE, m_SideA_B[l], N);
+        getSidePoint(m_xPointA.at(l), false, xfl::MIDSURFACE, m_SideA[l], N);
+        getSidePoint(m_xPointA.at(l), false, xfl::TOPSURFACE, m_SideA_T[l], N);
+        getSidePoint(m_xPointA.at(l), false, xfl::BOTSURFACE, m_SideA_B[l], N);
 
         //scale the thickness
-        double Ox = m_xPointA[l];
+        double Ox = m_xPointA.at(l);
         double Oy = m_LA.y * (1.0-Ox) +  m_TA.y * Ox;
         double Oz = m_LA.z * (1.0-Ox) +  m_TA.z * Ox;
-        m_SideA[l].y   = Oy +(m_SideA[l].y   - Oy)/cosdA;
-        m_SideA[l].z   = Oz +(m_SideA[l].z   - Oz)/cosdA;
-        m_SideA_T[l].y = Oy +(m_SideA_T[l].y - Oy)/cosdA;
-        m_SideA_T[l].z = Oz +(m_SideA_T[l].z - Oz)/cosdA;
-        m_SideA_B[l].y = Oy +(m_SideA_B[l].y - Oy)/cosdA;
-        m_SideA_B[l].z = Oz +(m_SideA_B[l].z - Oz)/cosdA;
+        m_SideA[l].y   = Oy +(m_SideA.at(l).y   - Oy)/cosdA;
+        m_SideA[l].z   = Oz +(m_SideA.at(l).z   - Oz)/cosdA;
+        m_SideA_T[l].y = Oy +(m_SideA_T.at(l).y - Oy)/cosdA;
+        m_SideA_T[l].z = Oz +(m_SideA_T.at(l).z - Oz)/cosdA;
+        m_SideA_B[l].y = Oy +(m_SideA_B.at(l).y - Oy)/cosdA;
+        m_SideA_B[l].z = Oz +(m_SideA_B.at(l).z - Oz)/cosdA;
 
         //rotate the point about the foil's neutral line to account for dihedral
-        m_SideA[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
-        m_SideA_T[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
-        m_SideA_B[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
+        m_SideA[  l].rotate(m_LA, Ua, alpha_dA);
+        m_SideA_T[l].rotate(m_LA, Ua, alpha_dA);
+        m_SideA_B[l].rotate(m_LA, Ua, alpha_dA);
 
-        getSidePoint(m_xPointB[l], true, MIDSURFACE, m_SideB[l], N);
-        getSidePoint(m_xPointB[l], true, TOPSURFACE, m_SideB_T[l], N);
-        getSidePoint(m_xPointB[l], true, BOTSURFACE, m_SideB_B[l], N);
+        getSidePoint(m_xPointB[l], true, xfl::MIDSURFACE, m_SideB[l], N);
+        getSidePoint(m_xPointB[l], true, xfl::TOPSURFACE, m_SideB_T[l], N);
+        getSidePoint(m_xPointB[l], true, xfl::BOTSURFACE, m_SideB_B[l], N);
 
         //scale the thickness
         Ox = m_xPointB[l];
         Oy = m_LB.y * (1.0-Ox) +  m_TB.y * Ox;
         Oz = m_LB.z * (1.0-Ox) +  m_TB.z * Ox;
-        m_SideB[l].y   = Oy +(m_SideB[l].y   - Oy)/cosdB;
-        m_SideB[l].z   = Oz +(m_SideB[l].z   - Oz)/cosdB;
-        m_SideB_T[l].y = Oy +(m_SideB_T[l].y - Oy)/cosdB;
-        m_SideB_T[l].z = Oz +(m_SideB_T[l].z - Oz)/cosdB;
-        m_SideB_B[l].y = Oy +(m_SideB_B[l].y - Oy)/cosdB;
-        m_SideB_B[l].z = Oz +(m_SideB_B[l].z - Oz)/cosdB;
+        m_SideB[l].y   = Oy +(m_SideB.at(l).y   - Oy)/cosdB;
+        m_SideB[l].z   = Oz +(m_SideB.at(l).z   - Oz)/cosdB;
+        m_SideB_T[l].y = Oy +(m_SideB_T.at(l).y - Oy)/cosdB;
+        m_SideB_T[l].z = Oz +(m_SideB_T.at(l).z - Oz)/cosdB;
+        m_SideB_B[l].y = Oy +(m_SideB_B.at(l).y - Oy)/cosdB;
+        m_SideB_B[l].z = Oz +(m_SideB_B.at(l).z - Oz)/cosdB;
 
         //rotate the point about the foil's neutral line to account for dihedral
-        m_SideB[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
-        m_SideB_T[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
-        m_SideB_B[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
+        m_SideB[  l].rotate(m_LB, Ub, alpha_dB);
+        m_SideB_T[l].rotate(m_LB, Ub, alpha_dB);
+        m_SideB_B[l].rotate(m_LB, Ub, alpha_dB);
 
 
         if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
         {
-            if(TBody.intersect(m_SideA_B[l], m_SideB_B[l], I, false))
+            if(TBody.intersect(m_SideA_B.at(l), m_SideB_B.at(l), I, false))
             {
                 m_SideB_B[l] = I;
                 m_bJoinRight = false;
             }
-            if(TBody.intersect(m_SideA_T[l], m_SideB_T[l], I, false))
+            if(TBody.intersect(m_SideA_T.at(l), m_SideB_T.at(l), I, false))
             {
                 m_SideB_T[l] = I;
                 m_bJoinRight = false;
             }
-            if(TBody.intersect(m_SideA[l], m_SideB[l], I, false))
+            if(TBody.intersect(m_SideA.at(l), m_SideB.at(l), I, false))
             {
                 m_SideB[l] = I;
                 m_bJoinRight = false;
@@ -1329,15 +1316,15 @@ void Surface::setMeshSidePoints(Body * pBody, double dx, double dz)
         }
         else if(pBody && m_bIsCenterSurf && m_bIsRightSurf)
         {
-            if(TBody.intersect(m_SideA_B[l], m_SideB_B[l], I, true))
+            if(TBody.intersect(m_SideA_B.at(l), m_SideB_B.at(l), I, true))
             {
                 m_SideA_B[l] = I;
             }
-            if(TBody.intersect(m_SideA_T[l], m_SideB_T[l], I, true))
+            if(TBody.intersect(m_SideA_T.at(l), m_SideB_T.at(l), I, true))
             {
                 m_SideA_T[l] = I;
             }
-            if(TBody.intersect(m_SideA[l], m_SideB[l], I, true))
+            if(TBody.intersect(m_SideA.at(l), m_SideB.at(l), I, true))
             {
                 m_SideA[l] = I;
             }

@@ -376,7 +376,7 @@ void AFoil::onAFoilDerotateFoil()
     //then duplicate the buffer foil and add it
     Foil *pNewFoil = new Foil();
     pNewFoil->copyFoil(m_pBufferFoil);
-    setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+    xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
     pNewFoil->setLineStipple(Line::SOLID);
     pNewFoil->setLineWidth(1);
 
@@ -429,7 +429,7 @@ void AFoil::onAFoilCadd()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
@@ -493,7 +493,7 @@ void AFoil::onAFoilPanels()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
@@ -542,7 +542,7 @@ void AFoil::onAFoilFoilCoordinates()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setHighLight(-1);
@@ -584,7 +584,7 @@ void AFoil::onAFoilFoilGeom()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
@@ -632,7 +632,7 @@ void AFoil::onAFoilSetTEGap()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
@@ -681,7 +681,7 @@ void AFoil::onAFoilSetLERadius()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
@@ -735,7 +735,7 @@ void AFoil::onAFoilInterpolateFoils()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
@@ -786,7 +786,7 @@ void AFoil::onAFoilNacaFoils()
 
         Foil *pNewFoil    = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
         pNewFoil->setPointStyle(Line::NOSYMBOL);
@@ -834,7 +834,7 @@ void AFoil::onAFoilSetFlap()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setLineStipple(Line::SOLID);
         pNewFoil->setLineWidth(1);
 
@@ -886,7 +886,7 @@ void AFoil::onDuplicate()
     if(!Objects2d::curFoil()) return;
     Foil *pNewFoil = new Foil;
     pNewFoil->copyFoil(Objects2d::curFoil());
-    setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+    xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
     pNewFoil->initFoil();
 
     addNewFoil(pNewFoil);
@@ -1291,7 +1291,6 @@ void AFoil::saveSettings(QSettings &settings)
  */
 void AFoil::onFoilTableCtxMenu(const QPoint &)
 {
-    //    m_CurrentColumn = m_pctrlFoilTable->columnAt(position.x());
     s_pMainFrame->m_pAFoilTableCtxMenu->exec(cursor().pos());
 }
 
@@ -1309,7 +1308,6 @@ void AFoil::setupLayout()
     m_ptvFoil->setFont(DisplayOptions::tableFont());
     m_ptvFoil->horizontalHeader()->setFont(DisplayOptions::tableFont());
 
-    //    connect(m_pctrlFoilTable, SIGNAL(pressed(const QModelIndex &)), this, SLOT(OnFoilClicked(const QModelIndex&)));
     connect(m_ptvFoil, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(onFoilTableCtxMenu(const QPoint &)));
 
     QHBoxLayout *pMainLayout = new QHBoxLayout;

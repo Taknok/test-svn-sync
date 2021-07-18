@@ -72,9 +72,9 @@ NURBSSurface::~NURBSSurface()
  */
 double NURBSSurface::getu(double pos, double v) const
 {
-    if(pos<=m_pFrame.first()->m_Position[m_uAxis]) return 0.0;
-    if(pos>=m_pFrame.last()->m_Position[m_uAxis])  return 1.0;
-    if(qAbs(m_pFrame.last()->m_Position[m_uAxis] - m_pFrame.first()->m_Position[m_uAxis])<0.0000001) return 0.0;
+    if(pos<=m_pFrame.first()->m_Position.coord(m_uAxis)) return 0.0;
+    if(pos>=m_pFrame.last()->m_Position.coord(m_uAxis))  return 1.0;
+    if(qAbs(m_pFrame.last()->m_Position.coord(m_uAxis) - m_pFrame.first()->m_Position.coord(m_uAxis))<0.0000001) return 0.0;
 
     int iter=0;
     double u2, u1, b, c, u,  zz, zh;
@@ -91,7 +91,7 @@ double NURBSSurface::getu(double pos, double v) const
             for(int jv=0; jv<framePointCount(); jv++)
             {
                 c =  splineBlend(jv, m_ivDegree, v, m_vKnots);
-                zh += m_pFrame[iu]->m_Position[m_uAxis] * c;
+                zh += m_pFrame[iu]->m_Position.coord(m_uAxis) * c;
             }
             b = splineBlend(iu, m_iuDegree, u, m_uKnots);
             zz += zh * b;
@@ -576,7 +576,7 @@ void NURBSSurface::insertFrame(Frame *pNewFrame)
 {
     for(int ifr=0; ifr<frameCount(); ifr++)
     {
-        if(pNewFrame->m_Position[m_uAxis] < m_pFrame.at(ifr)->m_Position[m_uAxis])
+        if(pNewFrame->m_Position.coord(m_uAxis) < m_pFrame.at(ifr)->m_Position.coord(m_uAxis))
         {
             m_pFrame.insert(ifr, pNewFrame);
             return;

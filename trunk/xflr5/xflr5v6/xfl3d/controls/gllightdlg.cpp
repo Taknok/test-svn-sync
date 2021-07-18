@@ -44,7 +44,7 @@ GLLightDlg::GLLightDlg(QWidget *pParent) : QDialog(pParent)
     setWindowTitle(tr("OpenGL Light Options"));
     setModal(false);
     setWindowFlag(Qt::WindowStaysOnTopHint);
-    setAttribute(Qt::WA_DeleteOnClose);
+//    setAttribute(Qt::WA_DeleteOnClose);
 
     setupLayout();
     connectSignals();

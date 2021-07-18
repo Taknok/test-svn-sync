@@ -38,7 +38,7 @@ void RenameDlg::onButton(QAbstractButton *pButton)
 {
     if      (m_pButtonBox->button(QDialogButtonBox::Ok) == pButton)       onOK();
     else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
-    else if (m_pctrlOverwrite==pButton)                                   onOverwrite();
+    else if (m_ppbOverwrite==pButton)                                   onOverwrite();
 }
 
 
@@ -46,9 +46,9 @@ void RenameDlg::setupLayout()
 {
     m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Discard);
     {
-        m_pctrlOverwrite = new QPushButton(tr("Overwrite"));
-        m_pctrlOverwrite->setAutoDefault(false);
-        m_pButtonBox->addButton(m_pctrlOverwrite, QDialogButtonBox::ActionRole);
+        m_ppbOverwrite = new QPushButton(tr("Overwrite"));
+        m_ppbOverwrite->setAutoDefault(false);
+        m_pButtonBox->addButton(m_ppbOverwrite, QDialogButtonBox::ActionRole);
         connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButton(QAbstractButton*)));
     }
 
@@ -56,24 +56,24 @@ void RenameDlg::setupLayout()
     {
         QLabel *pLabelNote = new QLabel;
         pLabelNote->setText(tr("Note : Overwrite will delete operating points and reset polars"));
-        m_pctrlMessage = new QLabel("A Message here");
+        m_plabMessage = new QLabel("A Message here");
 
-        m_pctrlName = new QLineEdit("");
+        m_pleName = new QLineEdit("");
         QLabel* NameListLabel = new QLabel(tr("Existing Names:"));
-        m_pctrlNameList = new QListWidget;
+        m_plwNameList = new QListWidget;
 
-        pMainLayout->setStretchFactor(m_pctrlMessage, 1);
-        pMainLayout->setStretchFactor(m_pctrlName, 1);
+        pMainLayout->setStretchFactor(m_plabMessage, 1);
+        pMainLayout->setStretchFactor(m_pleName, 1);
         pMainLayout->setStretchFactor(NameListLabel, 1);
-        pMainLayout->setStretchFactor(m_pctrlNameList, 5);
+        pMainLayout->setStretchFactor(m_plwNameList, 5);
         pMainLayout->setStretchFactor(m_pButtonBox, 1);
         pMainLayout->setStretchFactor(pLabelNote, 1);
 
-        pMainLayout->addWidget(m_pctrlMessage);
-        pMainLayout->addWidget(m_pctrlName);
+        pMainLayout->addWidget(m_plabMessage);
+        pMainLayout->addWidget(m_pleName);
 
         pMainLayout->addWidget(NameListLabel);
-        pMainLayout->addWidget(m_pctrlNameList);
+        pMainLayout->addWidget(m_plwNameList);
 
         pMainLayout->addWidget(m_pButtonBox);
         pMainLayout->addWidget(pLabelNote);
@@ -81,33 +81,33 @@ void RenameDlg::setupLayout()
 
     setLayout(pMainLayout);
 
-    connect(m_pctrlNameList, SIGNAL(currentRowChanged(int)), this, SLOT(onSelChangeList(int)));
-    connect(m_pctrlNameList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(onDoubleClickList(QListWidgetItem *)));
+    connect(m_plwNameList, SIGNAL(currentRowChanged(int)), this, SLOT(onSelChangeList(int)));
+    connect(m_plwNameList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(onDoubleClickList(QListWidgetItem *)));
 //    connect(m_pOverwriteButton, SIGNAL(clicked()), this, SLOT(onOverwrite()));
 }
 
 
 void RenameDlg::initDialog(QStringList *pStrList, QString startName, QString question)
 {
-    m_pctrlNameList->clear();
+    m_plwNameList->clear();
 
     m_strQuestion = question;
 
-    if(!m_bEnableOverwrite) m_pctrlOverwrite->setEnabled(false);
+    if(!m_bEnableOverwrite) m_ppbOverwrite->setEnabled(false);
 
     if(m_strQuestion.length())
     {
-        m_pctrlMessage->setText(m_strQuestion);
+        m_plabMessage->setText(m_strQuestion);
     }
     else
     {
-        m_pctrlMessage->setText(tr("Enter a name"));
+        m_plabMessage->setText(tr("Enter a name"));
     }
 
     m_strName = startName;
-    m_pctrlName->setText(startName);
-    m_pctrlName->setFocus();
-    m_pctrlName->selectAll();
+    m_pleName->setText(startName);
+    m_pleName->setFocus();
+    m_pleName->selectAll();
 
     m_strArray.clear();
 
@@ -116,13 +116,13 @@ void RenameDlg::initDialog(QStringList *pStrList, QString startName, QString que
         for (int i=0; i<pStrList->size(); i++)
         {
             m_strArray.append(pStrList->at(i));
-            m_pctrlNameList->addItem(pStrList->at(i));
+            m_plwNameList->addItem(pStrList->at(i));
         }
     }
     else
     {
-        m_pctrlNameList->setEnabled(false);
-        m_pctrlOverwrite->setEnabled(false);
+        m_plwNameList->setEnabled(false);
+        m_ppbOverwrite->setEnabled(false);
     }
 }
 
@@ -151,18 +151,18 @@ void RenameDlg::keyPressEvent(QKeyEvent *event)
 void RenameDlg::onOverwrite()
 {
     m_bExists = true;
-    m_strName = m_pctrlName->text();
+    m_strName = m_pleName->text();
     done(10);
 }
 
 
 void RenameDlg::onOK()
 {
-    m_strName = m_pctrlName->text();
+    m_strName = m_pleName->text();
     if (!m_strName.length())
     {
         QMessageBox::warning(this, tr("Warning"), tr("Must enter a name"));
-        m_pctrlName->setFocus();
+        m_pleName->setFocus();
         return;
     }
 
@@ -193,13 +193,13 @@ void RenameDlg::onOK()
 
 void RenameDlg::onSelChangeList(int)
 {
-    QListWidgetItem *pItem =  m_pctrlNameList->currentItem();
+    QListWidgetItem *pItem =  m_plwNameList->currentItem();
 
     if(pItem)
     {
         QString str = pItem->text();
-        m_pctrlName->setText(str);
-        m_pctrlName->selectAll();
+        m_pleName->setText(str);
+        m_pleName->selectAll();
     }
 }
 
@@ -207,12 +207,10 @@ void RenameDlg::onSelChangeList(int)
 
 void RenameDlg::onDoubleClickList(QListWidgetItem *pItem)
 {
-//    QListWidgetItem *pItem =  m_pctrlNameList->currentItem();
-
     if(pItem)
     {
         QString str = pItem->text();
-        m_pctrlName->setText(str);
+        m_pleName->setText(str);
         onOK();
     }
 }

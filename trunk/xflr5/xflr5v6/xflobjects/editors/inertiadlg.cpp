@@ -680,7 +680,6 @@ void InertiaDlg::onInsertMassRow()
 
     QModelIndex index = m_pMassModel->index(sel, 0, QModelIndex());
     m_ptvMass->setCurrentIndex(index);
-    //    m_pctrlMassTable->openPersistentEditor(index);
 }
 
 

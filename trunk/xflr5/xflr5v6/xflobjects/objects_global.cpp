@@ -28,193 +28,91 @@
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects2d/polar.h>
 #include <xflobjects/objects3d/wpolar.h>
+#include <xflobjects/objects2d/objects2d.h>
+#include <xflobjects/objects3d/objects3d.h>
 
 
-/**
-* Reads a sequence of characters from a binary stream and returns a QString. Inherited from the MFC versions of XFLR5.
-*@param ar the binary datastream
-*@param strong the QString read from the stream
-*/
-void readCString(QDataStream &ar, QString &strong)
+
+
+QColor xfl::getObjectColor(int type)
 {
-    qint8 qi, ch;
-    char c;
-
-    ar >> qi;
-    strong.clear();
-    for(int j=0; j<qi;j++)
+    //type
+    // 0=Foil
+    // 1=Polar
+    // 2=Opp
+    // 3=Wing (unused)
+    // 4=WPolar
+    // 5=WOpp
+    // 6=POpp
+    int i=0,j=0;
+    bool bFound = false;
+    switch (type)
     {
-        strong += " ";
-        ar >> ch;
-        c = char(ch);
-        strong[j] = c;
+        case 0:
+        {
+            Foil *pFoil;
+            for (j=0; j<s_ColorList.size(); j++)
+            {
+                for (i=0; i<Objects2d::foilCount(); i++)
+                {
+                    pFoil = Objects2d::foilAt(i);
+                    bFound = false;
+                    if(pFoil->color() == s_ColorList.at(j))
+                    {
+                        bFound = true;
+                        break;
+                    }
+                }
+                if(!bFound) return s_ColorList.at(j);
+            }
+            break;
+        }
+        case 1:
+        {
+            Polar *pPolar;
+            for (j=0; j<s_ColorList.size(); j++)
+            {
+                for (i=0; i<Objects2d::polarCount(); i++)
+                {
+                    pPolar = Objects2d::polarAt(i);
+                    bFound = false;
+                    if(pPolar->color() == s_ColorList.at(j))
+                    {
+                        bFound = true;
+                        break;
+                    }
+                }
+                if(!bFound)
+                    return s_ColorList.at(j);
+            }
+            break;
+        }
+        case 2:
+        {
+            OpPoint *pOpPoint;
+            for (j=0; j<s_ColorList.size(); j++){
+                for (i=0; i<Objects2d::oppCount(); i++)
+                {
+                    pOpPoint = Objects2d::oppAt(i);
+                    bFound = false;
+                    QColor clr = pOpPoint->color();
+                    if(clr == s_ColorList.at(j))
+                    {
+                        bFound = true;
+                        break;
+                    }
+                }
+                if(!bFound) return s_ColorList.at(j);
+            }
+            break;
+        }
+
+        default:
+        {
+        }
     }
+    return xfl::randomColor(false);
 }
-
-/**
-* Writes a sequence of characters from a QStrinf to a binary stream. Inherited from the MFC versions of XFLR5.
-*@param ar the binary datastream
-*@param strong the QString to output to the stream
-*/
-void writeCString(QDataStream &ar, QString const &strong)
-{
-    qint8 qi = qint8(strong.length());
-
-    QByteArray textline;
-    char *text;
-    textline = strong.toLatin1();
-    text = textline.data();
-    ar << qi;
-    ar.writeRawData(text, qi);
-}
-
-void readFloat(QDataStream &inStream, float &f)
-{
-    char buffer[4];
-    inStream.readRawData(buffer, 4);
-    memcpy(&f, buffer, sizeof(float));
-}
-
-
-void writeFloat(QDataStream &outStream, float f)
-{
-    char buffer[4];
-    memcpy(buffer, &f, sizeof(float));
-    outStream.writeRawData(buffer, 4);
-}
-
-
-
-/**
-* Reads the RGB int values of a color from binary datastream and returns a QColor. Inherited from the MFC versions of XFLR5.
-* @param ar the binary datastream
-* @param r the red component
-* @param g the green component
-* @param b the blue component
-* @param a the alpha component
-*/
-void readQColor(QDataStream &ar, int &r, int &g, int &b, int &a)
-{
-    uchar byte=0;
-
-    ar>>byte;//probably a format identificator
-    ar>>byte>>byte;
-    a = int(byte);
-    ar>>byte>>byte;
-    r = int(byte);
-    ar>>byte>>byte;
-    g = int(byte);
-    ar>>byte>>byte;
-    b = int(byte);
-    ar>>byte>>byte; //
-}
-
-
-/**
-* Writes the RGB int values of a color to a binary datastream. Inherited from the MFC versions of XFLR5.
-* @param ar the binary datastream
-* @param r the red component
-* @param g the green component
-* @param b the blue component
-* @param a the alpha component
-*/
-void writeQColor(QDataStream &ar, int r, int g, int b, int a)
-{
-    uchar byte;
-
-    byte = 1;
-    ar<<byte;
-    byte = a & 0xFF;
-    ar << byte<<byte;
-    byte = r & 0xFF;
-    ar << byte<<byte;
-    byte = g & 0xFF;
-    ar << byte<<byte;
-    byte = b & 0xFF;
-    ar << byte<<byte;
-    byte = 0;
-    ar << byte<<byte;
-}
-
-
-/**
-*Reads one line from an AVL-format text file
-*@deprecated the option to map AVL data was too comlplex and has been disabled.
-*/
-bool ReadAVLString(QTextStream &in, int &Line, QString &strong)
-{
-    bool isCommentLine = true;
-    int pos=0;
-    if(in.atEnd()) return false;
-
-    while(isCommentLine && !in.atEnd())
-    {
-        isCommentLine = false;
-
-        strong = in.readLine();
-
-        strong = strong.trimmed();
-        pos = strong.indexOf("#",0);
-        if(pos>=0) strong = strong.left(pos);
-        pos = strong.indexOf("!",0);
-        if(pos>=0) strong = strong.left(pos);
-
-        if(strong.isEmpty()) isCommentLine = true;
-
-        Line++;
-    }
-
-    return true;
-}
-
-
-/**
-* Reads the RGB int values of a color from binary datastream and returns a QColor. Inherited from the MFC versions of XFLR5.
-*@param ar the binary datastream
-*@param r the red component
-*@param g the green component
-*@param b the blue component
-*/
-void readCOLORREF(QDataStream &ar, int &r, int &g, int &b)
-{
-    qint32 colorref;
-
-    ar >> colorref;
-    b = int(colorref/256/256);
-    colorref -= b*256*256;
-    g = int(colorref/256);
-    r = colorref - g*256;
-}
-
-
-void modeProperties(std::complex<double> lambda, double &omegaN, double &omega1, double &zeta)
-{
-    omega1 = fabs(lambda.imag());
-
-    if(omega1 > PRECISION)
-    {
-        omegaN = sqrt(lambda.real()*lambda.real()+omega1*omega1);
-        zeta = -lambda.real()/omegaN;
-    }
-    else
-    {
-        omegaN = 0.0;
-        zeta = 0.0;
-    }
-
-/*    double sum, prod, sigma1;
-    sum  = lambda.real() * 2.0;                         // is a real number
-    prod = lambda.real()*lambda.real() + lambda.imag()*lambda.imag();  // is a positive real number
-    omegaN = fabs(lambda.imag());
-    if(omegaN>PRECISION)    omega1 = sqrt(prod);
-    else                    omega1 = 0.0;
-    sigma1 = sum /2.0;
-    if(omega1>PRECISION) dsi = -sigma1/omega1;
-    else                 dsi = 0.0;
-    qDebug("old   %13.7f  %13.7f  %13.7f", omegaN/2/PI, omega1/2/PI, dsi);*/
-}
-
-
 
 
 /**
@@ -228,7 +126,7 @@ void modeProperties(std::complex<double> lambda, double &omegaN, double &omega1,
 *    dist = |AI|
 *    The return value is true if the intersection inside the quadrangle, false otherwise
 **/
-bool Intersect(Vector3d const &LA, Vector3d const &LB, Vector3d const &TA, Vector3d const &TB, Vector3d const &Normal,
+bool xfl::intersect(Vector3d const &LA, Vector3d const &LB, Vector3d const &TA, Vector3d const &TB, Vector3d const &Normal,
                Vector3d const &A,  Vector3d const &U,  Vector3d &I, double &dist)
 {
     Vector3d P, W, V, T;
@@ -305,7 +203,7 @@ bool Intersect(Vector3d const &LA, Vector3d const &LB, Vector3d const &TA, Vecto
 
 
 
-Foil *readFoilFile(QFile &xFoilFile)
+Foil *xfl::readFoilFile(QFile &xFoilFile)
 {
     QString strong;
     QString tempStr;
@@ -444,7 +342,7 @@ Foil *readFoilFile(QFile &xFoilFile)
  * @param ar the binary stream
  * @return the pointer to the Foil object which has been created, or NULL if failure.
  */
-Foil* readPolarFile(QFile &plrFile, QVector<Polar*> &polarList)
+Foil* xfl::readPolarFile(QFile &plrFile, QVector<Polar*> &polarList)
 {
     Foil* pFoil = nullptr;
     Polar *pPolar = nullptr;
@@ -516,7 +414,7 @@ Foil* readPolarFile(QFile &plrFile, QVector<Polar*> &polarList)
  * @param scaley the scaling factor in the y-direction
  * @param Offset the foil offset in the client area
  */
-void drawFoil(QPainter &painter, Foil const*pFoil, double alpha, double scalex, double scaley, QPointF const &Offset)
+void xfl::drawFoil(QPainter &painter, Foil const*pFoil, double alpha, double scalex, double scaley, QPointF const &Offset)
 {
     double xa(0), ya(0), sina(0), cosa(0);
     QPointF From, To;
@@ -560,7 +458,7 @@ void drawFoil(QPainter &painter, Foil const*pFoil, double alpha, double scalex, 
  * @param scaley the scaling factor in the y-direction
  * @param Offset the foil offset in the client area
  */
-void drawMidLine(QPainter &painter, const Foil *pFoil, double scalex, double scaley, QPointF const &Offset)
+void xfl::drawMidLine(QPainter &painter, const Foil *pFoil, double scalex, double scaley, QPointF const &Offset)
 {
     QPointF From, To;
 
@@ -585,7 +483,7 @@ void drawMidLine(QPainter &painter, const Foil *pFoil, double scalex, double sca
         From = To;
     }
 }
-void drawFoilPoints(QPainter &painter, Foil const*pFoil, double alpha, double scalex, double scaley,
+void xfl::drawFoilPoints(QPainter &painter, Foil const*pFoil, double alpha, double scalex, double scaley,
                 QPointF const &Offset, const QColor &backColor)
 {
     QPen FoilPen, HighPen;
@@ -626,7 +524,7 @@ void drawFoilPoints(QPainter &painter, Foil const*pFoil, double alpha, double sc
     }
 }
 
-void setAutoWPolarName(WPolar *pWPolar, Plane *pPlane)
+void xfl::setAutoWPolarName(WPolar *pWPolar, Plane *pPlane)
 {
     if(!pPlane) return;
     QString str, strong;
@@ -830,7 +728,7 @@ void setAutoWPolarName(WPolar *pWPolar, Plane *pPlane)
 }
 
 
-void setRandomFoilColor(Foil *pFoil, bool bLightTheme)
+void xfl::setRandomFoilColor(Foil *pFoil, bool bLightTheme)
 {
     QColor clr = xfl::randomColor(!bLightTheme);
     pFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
@@ -843,7 +741,7 @@ void setRandomFoilColor(Foil *pFoil, bool bLightTheme)
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
+bool xfl::serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
 {
     // saves or loads the foil to the archive ar
 
@@ -986,7 +884,7 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
+bool xfl::serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
 {
     int i=0, j=0, n=0, l=0, k=0;
     // identifies the format of the file

@@ -602,7 +602,7 @@ void Optim2d::onStoreBestFoil()
         iter++;
     }
     pNewFoil->setName(name);
-    pNewFoil->setColor(xfl::randomColor(true));
+    pNewFoil->setColor(xfl::randomColor(DisplayOptions::isLightTheme()));
     Objects2d::insertThisFoil(pNewFoil); // overwrites existing
     outputText("Saved the foil with name: "+name+"\n");
     m_bSaved = true;
@@ -678,7 +678,7 @@ void Optim2d::onMakeSwarm(bool bShow)
     // debug helper
     if(bShow)
     {
-        QColor clr = xfl::randomColor(true);
+        QColor clr = xfl::randomColor(DisplayOptions::isLightTheme());
         if(s_bPSO)
         {
             for (int isw=0; isw<m_pPSOTask->swarmSize(); isw++)

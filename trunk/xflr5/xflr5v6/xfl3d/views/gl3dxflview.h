@@ -73,6 +73,9 @@ class gl3dXflView : public gl3dView
         void paintMesh(QOpenGLBuffer &vbo, bool bBackGround);
         void setSpanStations(Plane const *pPlane, WPolar const *pWPolar, PlaneOpp const *pPOpp);
 
+    private:
+        void enterEvent(QEvent *pEvent) override;
+
     protected slots:
         void onSurfaces(  bool bChecked);
         void onPanels(    bool bChecked);

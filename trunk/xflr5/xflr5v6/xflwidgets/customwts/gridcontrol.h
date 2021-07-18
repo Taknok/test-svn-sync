@@ -1,6 +1,6 @@
 /****************************************************************************
 
-    xflwidgets Library
+    xflr5 v6
     Copyright (C) André Deperrois 
     GNU General Public License v3
 
@@ -50,7 +50,7 @@ class GridControl : public QWidget
         Grid *m_pGrid;
 
         QCheckBox  *m_pchXAxisShow, *m_pchYAxisShow, *m_pchXMajShow, *m_pchYMajShow, *m_pchXMinShow, *m_pchYMinShow;
-        LineBtn *m_plbXAxisStyle, *m_plbYAxisStyle, *m_plbXMajStyle, *m_pclbYMajStyle, *m_pctrlXMinStyle, *m_plbYMinStyle;
+        LineBtn *m_plbXAxisStyle, *m_plbYAxisStyle, *m_plbXMajStyle, *m_plbYMajStyle, *m_plbXMinStyle, *m_plbYMinStyle;
 
 };
 

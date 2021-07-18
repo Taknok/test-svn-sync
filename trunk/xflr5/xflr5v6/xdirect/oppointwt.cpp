@@ -519,9 +519,9 @@ void OpPointWt::paintOpPoint(QPainter &painter)
     double Alpha = 0.0;
     if(Objects2d::curOpp()) Alpha = Objects2d::curOpp()->aoa();
 
-    drawFoil(painter, pCurFoil, -Alpha, m_fScale, m_fScale*m_fYScale, m_FoilOffset);
+    xfl::drawFoil(painter, pCurFoil, -Alpha, m_fScale, m_fScale*m_fYScale, m_FoilOffset);
     if(pCurFoil->pointStyle()>0)
-        drawFoilPoints(painter, pCurFoil, -Alpha, m_fScale,m_fScale*m_fYScale, m_FoilOffset, DisplayOptions::backgroundColor());
+        xfl::drawFoilPoints(painter, pCurFoil, -Alpha, m_fScale,m_fScale*m_fYScale, m_FoilOffset, DisplayOptions::backgroundColor());
 
     if(m_bPressure && Objects2d::curOpp()) paintPressure(painter, m_fScale, m_fScale*m_fYScale);
     if(m_bBL && Objects2d::curOpp())       paintBL(painter, Objects2d::curOpp(), m_fScale, m_fScale*m_fYScale);

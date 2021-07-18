@@ -42,7 +42,7 @@
 #include <xflwidgets/color/colorbtn.h>
 
 
-bool Settings::s_bStyleSheets = true;
+bool Settings::s_bStyleSheet = false;
 QString Settings::s_StyleName;
 QString Settings::s_StyleSheetName;
 
@@ -86,35 +86,35 @@ Settings::Settings(QWidget *pParent) : QWidget(pParent)
 
 void Settings::setupLayout()
 {
-    m_pcbStyles = new QComboBox;
-
-    QRegExp regExp("Q(.*)Style");
-    QString defaultStyle = QApplication::style()->metaObject()->className();
-    if (defaultStyle == QLatin1String("QMacStyle"))
-        defaultStyle = QLatin1String("Macintosh (Aqua)");
-    else if (defaultStyle == QLatin1String("OxygenStyle"))
-        defaultStyle = QLatin1String("Oxygen");
-    else if (regExp.exactMatch(defaultStyle))
-        defaultStyle = regExp.cap(1);
-
-    m_pcbStyles->addItems(QStyleFactory::keys());
-    m_pcbStyles->setCurrentIndex(m_pcbStyles->findText(defaultStyle));
-
-    // add custom style sheets
-    QString fileName = "*.qss";
-    QStringList filesList = MainFrame::s_StylesheetDir.entryList(QStringList(fileName), QDir::Files | QDir::NoSymLinks);
-    for(int is=0; is<filesList.count(); is++)
-    {
-        QString styleSheetName = filesList.at(is);
-        int len = styleSheetName.length();
-        styleSheetName = styleSheetName.left(len-4);
-        m_pcbStyles->addItem(styleSheetName);
-    }
-
     QGroupBox *pWidgetStyleBox = new QGroupBox(tr("Widget Style"));
     {
-        QHBoxLayout *pWidgetStyleLayout = new QHBoxLayout;
-        pWidgetStyleLayout->addWidget(m_pcbStyles);
+        QVBoxLayout *pWidgetStyleLayout = new QVBoxLayout;
+        {
+            m_pcbStyles = new QComboBox;
+
+            QRegExp regExp("Q(.*)Style");
+            QString defaultStyle = QApplication::style()->metaObject()->className();
+            if (defaultStyle == QLatin1String("QMacStyle"))
+                defaultStyle = QLatin1String("Macintosh (Aqua)");
+            else if (defaultStyle == QLatin1String("OxygenStyle"))
+                defaultStyle = QLatin1String("Oxygen");
+            else if (regExp.exactMatch(defaultStyle))
+                defaultStyle = regExp.cap(1);
+
+            m_pcbStyles->addItems(QStyleFactory::keys());
+            m_pcbStyles->setCurrentIndex(m_pcbStyles->findText(defaultStyle));
+
+
+            m_pchStyleSheetOverride = new QCheckBox("Application dark mode override");
+            m_pchStyleSheetOverride->setToolTip("Set a dark mode for the application's buttons, menus, toolbars and other widgets.\n"
+                                                "Customize by editing the text file xflr5_dark.qss located in the application's directory.\n"
+                                                "Intended primarily for Windows OS which does not support dark mode for 3rd party apps.\n"
+                                                "This option should be used together with the UI dark theme activated.");
+            connect(m_pchStyleSheetOverride, SIGNAL(clicked(bool)), SLOT(onStyleSheet(bool)));
+
+            pWidgetStyleLayout->addWidget(m_pcbStyles);
+            pWidgetStyleLayout->addWidget(m_pchStyleSheetOverride);
+        }
         pWidgetStyleBox->setLayout(pWidgetStyleLayout);
     }
 
@@ -213,6 +213,8 @@ void Settings::initWidget()
     m_prbCustom->setChecked(true);
     m_prbCustom->setEnabled(false);
 
+    m_pchStyleSheetOverride->setChecked(s_bStyleSheet);
+
     m_MemGraph.copySettings(&s_RefGraph);
 
     m_pcbBackColor->setColor(DisplayOptions::s_BackgroundColor);
@@ -242,34 +244,12 @@ void Settings::initWidget()
 }
 
 
-
 void Settings::onStyleChanged(const QString &StyleName)
 {
-    //test for style sheet
-    QString fileName = "*.qss";
-    QStringList filesList = MainFrame::s_StylesheetDir.entryList(QStringList(fileName), QDir::Files | QDir::NoSymLinks);
-
-    for(int is=0; is<filesList.count(); is++)
-    {
-        QString styleSheetName = filesList.at(is);
-        int len = styleSheetName.length();
-        styleSheetName = styleSheetName.left(len-4);
-        if(styleSheetName.compare(StyleName)==0)
-        {
-            s_bStyleSheets = true;
-            s_StyleSheetName = styleSheetName;
-            s_StyleName.clear();
-            QString styleSheet;
-            MainFrame::readStyleSheet(styleSheetName, styleSheet);
-            return;
-        }
-    }
-
-    s_bStyleSheets = false;
-    s_StyleSheetName.clear();
-    qApp->setStyleSheet(styleSheet());
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     qApp->setStyle(StyleName);
     s_StyleName = StyleName;
+    QApplication::restoreOverrideCursor();
 }
 
 
@@ -363,6 +343,8 @@ void Settings::saveSettings(QSettings &settings)
         settings.setValue("XMLDirName",  xfl::s_xmlDirName);
         settings.setValue("PlrDirName",  xfl::s_plrDirName);
 
+        settings.setValue("bStyleSheet", s_bStyleSheet);
+
         settings.setValue("BackgroundColor", DisplayOptions::s_BackgroundColor);
         settings.setValue("TextColor", DisplayOptions::s_TextColor);
 
@@ -376,7 +358,7 @@ void Settings::saveSettings(QSettings &settings)
         settings.setValue("ShowMousePos", DisplayOptions::s_bShowMousePos);
         settings.setValue("AligneChildrenStyle", DisplayOptions::s_bAlignChildrenStyle);
 
-        settings.setValue("ShowStyleSheets", s_bStyleSheets);
+        settings.setValue("ShowStyleSheets", s_bStyleSheet);
         settings.setValue("StyleSheetName", s_StyleSheetName);
 
         if(DisplayOptions::isLightTheme()) settings.setValue("Theme",0);
@@ -397,6 +379,8 @@ void Settings::loadSettings(QSettings &settings)
         xfl::s_xmlDirName  = settings.value("XMLDirName", QDir::homePath()).toString();
         xfl::s_plrDirName  = settings.value("PlrDirName", QDir::homePath()).toString();
 
+        s_bStyleSheet = settings.value("bStyleSheet", false).toBool();
+
         DisplayOptions::s_BackgroundColor = settings.value("BackgroundColor", QColor(5,11,13)).value<QColor>();
 
         DisplayOptions::s_TextColor = settings.value("TextColor", QColor(237,237,237)).value<QColor>();
@@ -411,7 +395,7 @@ void Settings::loadSettings(QSettings &settings)
 
         DisplayOptions::s_bShowMousePos = settings.value("ShowMousePos", true).toBool();
 
-        s_bStyleSheets   = settings.value("ShowStyleSheets", false).toBool();
+        s_bStyleSheet   = settings.value("ShowStyleSheets", false).toBool();
         s_StyleSheetName = settings.value("StyleSheetName", "xflr5_style").toString();
 
         int iTheme = settings.value("Theme",1).toInt();
@@ -658,6 +642,35 @@ void Settings::setButtonFonts()
                                     DisplayOptions::tableFont().family().toStdString().c_str(),
                                     DisplayOptions::tableFont().pointSize());
     m_ppbTableFont->setStyleSheet(stylestring);
+}
+
+
+void Settings::onStyleSheet(bool bSheet)
+{
+    s_bStyleSheet = bSheet;
+    QFile stylefile;
+    if(bSheet)
+    {
+        QString qssPathName =  qApp->applicationDirPath() + QDir::separator() +"/xflr5_dark.qss";
+        QFileInfo fi(qssPathName);
+        if(fi.exists())
+            stylefile.setFileName(qssPathName);
+        else
+            stylefile.setFileName(QStringLiteral(":/qss/xflr5_dark.qss"));
+    }
+    else
+    {
+        stylefile.setFileName(QStringLiteral(":/qss/default.qss"));
+    }
+
+    if (stylefile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QString qsStylesheet = QString::fromLatin1(stylefile.readAll());
+        qApp->setStyleSheet(qsStylesheet);
+        stylefile.close();
+        QApplication::restoreOverrideCursor();
+    }
 }
 
 

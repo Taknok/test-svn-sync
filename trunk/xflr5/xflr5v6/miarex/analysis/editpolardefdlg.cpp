@@ -181,7 +181,7 @@ void EditPolarDefDlg::onItemChanged()
     readData();
 
     m_pWPolar->setPolarName("a wing polar name");
-    setAutoWPolarName(m_pWPolar, m_pPlane);
+    xfl::setAutoWPolarName(m_pWPolar, m_pPlane);
 
     QModelIndex indexLevel = m_pModel->index(0,0);
 
@@ -285,7 +285,7 @@ void EditPolarDefDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     m_pPlane  = pPlane;
     m_pWPolar = pWPolar;
 
-    setAutoWPolarName(m_pWPolar, m_pPlane);
+    xfl::setAutoWPolarName(m_pWPolar, m_pPlane);
 
     showWPolar();
     m_pStruct->expandAll();

@@ -6,10 +6,11 @@
 
 *****************************************************************************/
 
+#include <QMenu>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QCoreApplication>
-
+#include <QAction>
 #include <QGroupBox>
 #include <QMessageBox>
 #include <QHBoxLayout>
@@ -28,6 +29,14 @@
 #include <xflwidgets/customwts/plaintextoutput.h>
 #include <xflwidgets/customwts/intedit.h>
 #include <xfl3d/testgl/gl3dtestglview.h>
+#include <xfl3d/testgl/gl3dattractor.h>
+#include <xfl3d/testgl/gl3dattractors.h>
+#include <xfl3d/testgl/gl3dboids.h>
+#include <xfl3d/testgl/gl3doptim2d.h>
+#include <xfl3d/testgl/gl3dhydrogen.h>
+#include <xfl3d/testgl/gl3dsolarsys.h>
+#include <xfl3d/testgl/gl3dsagittarius.h>
+#include <xfl3d/testgl/gl3dspace.h>
 #include <xflcore/trace.h>
 
 QByteArray OpenGlDlg::s_Geometry;
@@ -362,7 +371,54 @@ void OpenGlDlg::setupLayout()
             m_ppbApply->setEnabled(false); // until something changes
             connect(m_ppbApply, SIGNAL(clicked()), SLOT(onApply()));
 
+            m_ppbTestView = new QPushButton("View type");
+
+            QMenu *pViewSelMenu = new QMenu;
+            {
+                QAction *pSphereAct      = new QAction("Spheres",            this);
+                QAction *pLorenzAct      = new QAction("Lorenz attractor",   this);
+                QAction *pAttractorsAct  = new QAction("Attractors",         this);
+                QAction *pBoidsAct       = new QAction("Boids",              this);
+                QAction *pPSOAct         = new QAction("2d optimization",    this);
+                QAction *pHydrogenAct    = new QAction("Hydrogen atom",      this);
+                QAction *pSolarSysAct    = new QAction("Solar system",       this);
+                QAction *pSagittariusAct = new QAction("Sagittarius A*",     this);
+                QAction *pSpaceAct       = new QAction("The final frontier", this);
+
+                pSphereAct->setData(     0);
+                pLorenzAct->setData(     1);
+                pAttractorsAct->setData( 2);
+                pBoidsAct->setData(      3);
+                pPSOAct->setData(        4);
+                pHydrogenAct->setData(   5);
+                pSolarSysAct->setData(   6);
+                pSagittariusAct->setData(7);
+                pSpaceAct->setData(      8);
+
+                connect(pSphereAct,      SIGNAL(triggered()), SLOT(onViewType()));
+                connect(pLorenzAct,      SIGNAL(triggered()), SLOT(onViewType()));
+                connect(pAttractorsAct,  SIGNAL(triggered()), SLOT(onViewType()));
+                connect(pBoidsAct,       SIGNAL(triggered()), SLOT(onViewType()));
+                connect(pPSOAct,         SIGNAL(triggered()), SLOT(onViewType()));
+                connect(pHydrogenAct,    SIGNAL(triggered()), SLOT(onViewType()));
+                connect(pSolarSysAct,    SIGNAL(triggered()), SLOT(onViewType()));
+                connect(pSagittariusAct, SIGNAL(triggered()), SLOT(onViewType()));
+                connect(pSpaceAct,       SIGNAL(triggered()), SLOT(onViewType()));
+
+                pViewSelMenu->addAction(pSphereAct);
+                pViewSelMenu->addAction(pLorenzAct);
+                pViewSelMenu->addAction(pAttractorsAct);
+                pViewSelMenu->addAction(pBoidsAct);
+                pViewSelMenu->addAction(pPSOAct);
+                pViewSelMenu->addAction(pHydrogenAct);
+                pViewSelMenu->addAction(pSolarSysAct);
+                pViewSelMenu->addAction(pSagittariusAct);
+                pViewSelMenu->addAction(pSpaceAct);
+
+                m_ppbTestView->setMenu(pViewSelMenu);
+            }
             m_pButtonBox->addButton(m_ppbApply,    QDialogButtonBox::ActionRole);
+            m_pButtonBox->addButton(m_ppbTestView, QDialogButtonBox::ActionRole);
             connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
         }
 
@@ -396,7 +452,7 @@ void OpenGlDlg::onCreateContext()
     m_pptglOutput->clear();
     m_pStackWt->removeWidget(m_pgl3dTestView);
     delete m_pgl3dTestView;
-    m_pgl3dTestView = new gl3dTestGLView;
+    m_pgl3dTestView = getView(s_iView);
     connect(m_pgl3dTestView, SIGNAL(ready()), SLOT(onRenderWindowReady()));
 
     m_pStackWt->addWidget(m_pgl3dTestView);
@@ -410,6 +466,25 @@ void OpenGlDlg::onCreateContext()
         m_pptglOutput->appendPlainText(tr("Failed to create context"));
         return;
     }
+}
+
+
+gl3dTestGLView *OpenGlDlg::getView(int iView)
+{
+    switch(iView)
+    {
+        default:
+        case 0: return new gl3dTestGLView;
+        case 1: return new gl3dAttractor;
+        case 2: return new gl3dAttractors;
+        case 3: return new gl3dBoids;
+        case 4: return new gl3dOptim2d;
+        case 5: return new gl3dHydrogen;
+        case 6: return new gl3dSolarSys;
+        case 7: return new gl3dSagittarius;
+        case 8: return new gl3dSpace;
+    }
+    return nullptr;
 }
 
 
@@ -633,11 +708,21 @@ void OpenGlDlg::onRenderWindowError(const QString &msg)
 }
 
 
+void OpenGlDlg::onViewType()
+{
+    QAction *pSenderAction = qobject_cast<QAction *>(sender());
+    if (!pSenderAction) return;
+    s_iView = pSenderAction->data().toInt();
+
+    onCreateContext();
+}
+
+
 void OpenGlDlg::showEvent(QShowEvent *)
 {
     restoreGeometry(s_Geometry);
     if(s_HSplitterSizes.length()>0) m_pHSplitter->restoreState(s_HSplitterSizes);
-    if(m_pgl3dTestView) m_pgl3dTestView->on3dReset();
+    if(m_pgl3dTestView) m_pgl3dTestView->reset3dScale();
 }
 
 

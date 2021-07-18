@@ -255,7 +255,7 @@ class Miarex : public QWidget
         bool intersectObject(Vector3d O,  Vector3d U, Vector3d &I);
         void LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, bool bInitCalc);
         bool loadSettings(QSettings &settings);
-        int  matSize() {return m_theTask.m_MatSize;}
+        int  matSize() {return m_theTask.matSize();}
         void drawColorGradient(QPainter &painter, QRect const & gradientRect);
         void paintCpLegendText(QPainter &painter);
         void paintPanelForceLegendText(QPainter &painter);

@@ -269,9 +269,9 @@ void EditBodyDlg::setupLayout()
 
             m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Discard);
             {
-                m_pctrlRedraw = new QPushButton(tr("Regenerate") + "\t(F4)");
+                m_ppbRedraw = new QPushButton(tr("Regenerate") + "\t(F4)");
 
-                m_pctrlMenuButton = new QPushButton(tr("Actions"));
+                m_ppbMenu = new QPushButton(tr("Actions"));
 
                 QMenu *pBodyMenu = new QMenu(tr("Actions..."),this);
 
@@ -285,9 +285,9 @@ void EditBodyDlg::setupLayout()
                 pBodyMenu->addAction(m_pTranslateBody);
                 pBodyMenu->addAction(m_pScaleBody);
                 pBodyMenu->addSeparator();
-                m_pctrlMenuButton->setMenu(pBodyMenu);
-                m_pButtonBox->addButton(m_pctrlRedraw, QDialogButtonBox::ActionRole);
-                m_pButtonBox->addButton(m_pctrlMenuButton, QDialogButtonBox::ActionRole);
+                m_ppbMenu->setMenu(pBodyMenu);
+                m_pButtonBox->addButton(m_ppbRedraw, QDialogButtonBox::ActionRole);
+                m_pButtonBox->addButton(m_ppbMenu, QDialogButtonBox::ActionRole);
                 connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButton(QAbstractButton*)));
             }
 
@@ -327,48 +327,48 @@ void EditBodyDlg::setupLayout()
 
                     QHBoxLayout *pAxisViewLayout = new QHBoxLayout;
                     {
-                        m_pctrlX          = new QToolButton;
-                        m_pctrlY          = new QToolButton;
-                        m_pctrlZ          = new QToolButton;
-                        m_pctrlIso        = new QToolButton;
-                        m_pctrlFlip       = new QToolButton;
+                        m_ptbX          = new QToolButton;
+                        m_ptbY          = new QToolButton;
+                        m_ptbZ          = new QToolButton;
+                        m_ptbIso        = new QToolButton;
+                        m_ptbFlip       = new QToolButton;
                         int iconSize =32;
-                        if(m_pctrlX->iconSize().height()<=iconSize)
+                        if(m_ptbX->iconSize().height()<=iconSize)
                         {
-                            m_pctrlX->setIconSize(QSize(iconSize,iconSize));
-                            m_pctrlY->setIconSize(QSize(iconSize,iconSize));
-                            m_pctrlZ->setIconSize(QSize(iconSize,iconSize));
-                            m_pctrlIso->setIconSize(QSize(iconSize,iconSize));
-                            m_pctrlFlip->setIconSize(QSize(iconSize,iconSize));
+                            m_ptbX->setIconSize(QSize(iconSize,iconSize));
+                            m_ptbY->setIconSize(QSize(iconSize,iconSize));
+                            m_ptbZ->setIconSize(QSize(iconSize,iconSize));
+                            m_ptbIso->setIconSize(QSize(iconSize,iconSize));
+                            m_ptbFlip->setIconSize(QSize(iconSize,iconSize));
                         }
-                        m_pXView    = new QAction(QIcon(":/resources/images/OnXView.png"), tr("X View"), this);
-                        m_pYView    = new QAction(QIcon(":/resources/images/OnYView.png"), tr("Y View"), this);
-                        m_pZView    = new QAction(QIcon(":/resources/images/OnZView.png"), tr("Z View"), this);
-                        m_pIsoView  = new QAction(QIcon(":/resources/images/OnIsoView.png"), tr("Iso View"), this);
-                        m_pFlipView = new QAction(QIcon(":/resources/images/OnFlipView.png"), tr("Flip View"), this);
+                        m_pXView    = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
+                        m_pYView    = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
+                        m_pZView    = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
+                        m_pIsoView  = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
+                        m_pFlipView = new QAction(QIcon(":/images/OnFlipView.png"), tr("Flip View"), this);
                         m_pXView->setCheckable(true);
                         m_pYView->setCheckable(true);
                         m_pZView->setCheckable(true);
                         m_pIsoView->setCheckable(true);
 
-                        m_pctrlX->setDefaultAction(m_pXView);
-                        m_pctrlY->setDefaultAction(m_pYView);
-                        m_pctrlZ->setDefaultAction(m_pZView);
-                        m_pctrlIso->setDefaultAction(m_pIsoView);
-                        m_pctrlFlip->setDefaultAction(m_pFlipView);
-                        pAxisViewLayout->addWidget(m_pctrlX);
-                        pAxisViewLayout->addWidget(m_pctrlY);
-                        pAxisViewLayout->addWidget(m_pctrlZ);
-                        pAxisViewLayout->addWidget(m_pctrlIso);
-                        pAxisViewLayout->addWidget(m_pctrlFlip);
+                        m_ptbX->setDefaultAction(m_pXView);
+                        m_ptbY->setDefaultAction(m_pYView);
+                        m_ptbZ->setDefaultAction(m_pZView);
+                        m_ptbIso->setDefaultAction(m_pIsoView);
+                        m_ptbFlip->setDefaultAction(m_pFlipView);
+                        pAxisViewLayout->addWidget(m_ptbX);
+                        pAxisViewLayout->addWidget(m_ptbY);
+                        pAxisViewLayout->addWidget(m_ptbZ);
+                        pAxisViewLayout->addWidget(m_ptbIso);
+                        pAxisViewLayout->addWidget(m_ptbFlip);
                     }
 
-                    m_pctrlReset = new QPushButton(tr("Reset scale"));
+                    m_ppbReset = new QPushButton(tr("Reset scale"));
                     pThreeDViewControlsLayout->addLayout(pThreeDParamsLayout);
                     pThreeDViewControlsLayout->addStretch();
                     pThreeDViewControlsLayout->addLayout(pAxisViewLayout);
                     pThreeDViewControlsLayout->addStretch();
-                    pThreeDViewControlsLayout->addWidget(m_pctrlReset);
+                    pThreeDViewControlsLayout->addWidget(m_ppbReset);
 
                 }
                 p3DCtrlBox->setLayout(pThreeDViewControlsLayout);
@@ -431,7 +431,7 @@ void EditBodyDlg::onButton(QAbstractButton *pButton)
 {
     if (m_pButtonBox->button(QDialogButtonBox::Save) == pButton)          accept();
     else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
-    else if(m_pctrlRedraw==pButton) onRedraw();
+    else if(m_ppbRedraw==pButton) onRedraw();
 }
 
 
@@ -538,9 +538,9 @@ void EditBodyDlg::connectSignals()
     connect(m_pInsertAfter,    SIGNAL(triggered()), SLOT(onInsertAfter()));
     connect(m_pDeleteItem,     SIGNAL(triggered()), SLOT(onDelete()));
 
-    connect(m_pctrlRedraw,     SIGNAL(clicked()), SLOT(onRedraw()));
+    connect(m_ppbRedraw,     SIGNAL(clicked()), SLOT(onRedraw()));
 
-    connect(m_pctrlReset,      SIGNAL(clicked()), m_pglBodyView, SLOT(on3DReset()));
+    connect(m_ppbReset,      SIGNAL(clicked()), m_pglBodyView, SLOT(on3DReset()));
 
     connect(m_pchAxes,       SIGNAL(clicked(bool)), m_pglBodyView, SLOT(onAxes(bool)));
     connect(m_pchPanels,     SIGNAL(clicked(bool)), m_pglBodyView, SLOT(onPanels(bool)));
@@ -548,11 +548,11 @@ void EditBodyDlg::connectSignals()
     connect(m_pchOutline,    SIGNAL(clicked(bool)), m_pglBodyView, SLOT(onOutline(bool)));
     connect(m_pchShowMasses, SIGNAL(clicked(bool)), m_pglBodyView, SLOT(onShowMasses(bool)));
 
-    connect(m_pctrlIso,        SIGNAL(clicked()), m_pglBodyView, SLOT(on3DIso()));
-    connect(m_pctrlX,          SIGNAL(clicked()), m_pglBodyView, SLOT(on3DFront()));
-    connect(m_pctrlY,          SIGNAL(clicked()), m_pglBodyView, SLOT(on3DLeft()));
-    connect(m_pctrlZ,          SIGNAL(clicked()), m_pglBodyView, SLOT(on3DTop()));
-    connect(m_pctrlFlip,       SIGNAL(clicked()), m_pglBodyView, SLOT(on3DFlip()));
+    connect(m_ptbIso,        SIGNAL(clicked()), m_pglBodyView, SLOT(on3DIso()));
+    connect(m_ptbX,          SIGNAL(clicked()), m_pglBodyView, SLOT(on3DFront()));
+    connect(m_ptbY,          SIGNAL(clicked()), m_pglBodyView, SLOT(on3DLeft()));
+    connect(m_ptbZ,          SIGNAL(clicked()), m_pglBodyView, SLOT(on3DTop()));
+    connect(m_ptbFlip,       SIGNAL(clicked()), m_pglBodyView, SLOT(on3DFlip()));
 
     connect(m_pHorizontalSplitter, SIGNAL(splitterMoved(int,int)), SLOT(onResize()));
 
@@ -565,10 +565,10 @@ void EditBodyDlg::connectSignals()
  */
 void EditBodyDlg::onCheckViewIcons()
 {
-    m_pctrlIso->setChecked(false);
-    m_pctrlX->setChecked(false);
-    m_pctrlY->setChecked(false);
-    m_pctrlZ->setChecked(false);
+    m_ptbIso->setChecked(false);
+    m_ptbX->setChecked(false);
+    m_ptbY->setChecked(false);
+    m_ptbZ->setChecked(false);
 }
 
 

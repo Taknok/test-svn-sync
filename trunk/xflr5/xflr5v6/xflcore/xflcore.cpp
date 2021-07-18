@@ -48,6 +48,17 @@ QString xfl::s_xmlDirName  = QDir::homePath();
 QString xfl::s_plrDirName  = QDir::homePath();
 
 
+QVector <QColor> xfl::s_ColorList = {{ 85, 170, 255},
+                                     {215,  75,  65},
+                                     {125, 195, 105},
+                                     {215, 135, 135},
+                                     { 85,  85, 170},
+                                     {255, 70,  200},
+                                     {165,  55, 255},
+                                     { 70, 125, 255},
+                                     {153,  85,  36},
+                                     {215, 215,  75}};
+
 
 /**
 * Returns the red component of a color scale depending on an input parameter with value between 0 and 1.
@@ -282,6 +293,76 @@ QString xfl::wingType(xfl::enumWingType wingType)
         case xfl::OTHERWING:  return "OTHERWING";
     }
     return "OTHERWING";
+}
+
+/**
+* Reads the RGB int values of a color from binary datastream and returns a QColor. Inherited from the MFC versions of XFLR5.
+* @param ar the binary datastream
+* @param r the red component
+* @param g the green component
+* @param b the blue component
+* @param a the alpha component
+*/
+void xfl::readQColor(QDataStream &ar, int &r, int &g, int &b, int &a)
+{
+    uchar byte=0;
+
+    ar>>byte;//probably a format identificator
+    ar>>byte>>byte;
+    a = int(byte);
+    ar>>byte>>byte;
+    r = int(byte);
+    ar>>byte>>byte;
+    g = int(byte);
+    ar>>byte>>byte;
+    b = int(byte);
+    ar>>byte>>byte; //
+}
+
+
+/**
+* Writes the RGB int values of a color to a binary datastream. Inherited from the MFC versions of XFLR5.
+* @param ar the binary datastream
+* @param r the red component
+* @param g the green component
+* @param b the blue component
+* @param a the alpha component
+*/
+void xfl::writeQColor(QDataStream &ar, int r, int g, int b, int a)
+{
+    uchar byte;
+
+    byte = 1;
+    ar<<byte;
+    byte = a & 0xFF;
+    ar << byte<<byte;
+    byte = r & 0xFF;
+    ar << byte<<byte;
+    byte = g & 0xFF;
+    ar << byte<<byte;
+    byte = b & 0xFF;
+    ar << byte<<byte;
+    byte = 0;
+    ar << byte<<byte;
+}
+
+
+/**
+* Reads the RGB int values of a color from binary datastream and returns a QColor. Inherited from the MFC versions of XFLR5.
+*@param ar the binary datastream
+*@param r the red component
+*@param g the green component
+*@param b the blue component
+*/
+void xfl::readCOLORREF(QDataStream &ar, int &r, int &g, int &b)
+{
+    qint32 colorref;
+
+    ar >> colorref;
+    b = int(colorref/256/256);
+    colorref -= b*256*256;
+    g = int(colorref/256);
+    r = colorref - g*256;
 }
 
 /**

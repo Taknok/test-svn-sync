@@ -85,5 +85,10 @@ namespace xfl
     /** used for GUI conversions to/from strings */
     typedef enum {BOOLVALUE, INTEGER, DOUBLEVALUE, STRING, PANELDISTRIBUTION, FOILNAME, BODYTYPE, FUSEDRAG,
                   POLARTYPE, ANALYSISMETHOD, REFDIMENSIONS, WINGTYPE, BOUNDARYCONDITION} enumDataType;
+    /**
+     * enumeration used to identify the type of surface on which the panel lies.
+     * May be on a bottom, mid, top, side, or body surface.
+     */
+    typedef enum {BOTSURFACE, MIDSURFACE, TOPSURFACE, SIDESURFACE, BODYSURFACE, NOSURFACE} enumSurfacePosition;
 
 }

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     TEGapDlg Class
-    Copyright (C) 2008 André Deperrois 
+    Copyright (C)  André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,12 +20,11 @@
 *****************************************************************************/
 
 
-#ifndef TEGAPDlg_H
-#define TEGAPDlg_H
+#pragma once
 
 #include <QDialog>
 #include <QPushButton>
-
+#include <QDialogButtonBox>
 
 class XFoil;
 class Foil;
@@ -37,31 +36,32 @@ class TEGapDlg : public QDialog
     friend class XDirect;
     friend class AFoil;
 
-public:
-    TEGapDlg(QWidget *pParent);
-    void setupLayout();
-    void initDialog();
+    public:
+        TEGapDlg(QWidget *pParent);
+        void setupLayout();
+        void initDialog();
 
-private slots:
-    void onChanged();
-    void onOK();
-    void onApply();
+    private slots:
+        void onChanged();
+        void onOK();
+        void onApply();
+        void onButton(QAbstractButton *pButton);
 
-private:
-    void keyPressEvent(QKeyEvent *event);
+    private:
+        void keyPressEvent(QKeyEvent *event);
 
-public:
-    QPushButton *OKButton, *CancelButton, *ApplyButton;
-    DoubleEdit *m_pctrlBlend, *m_pctrlGap;
+    public:
+        QDialogButtonBox *m_pButtonBox;
+        DoubleEdit *m_pdeBlend, *m_pdeGap;
 
-    bool m_bApplied, m_bModified;
-    double m_Gap, m_Blend;
+        bool m_bApplied, m_bModified;
+        double m_Gap, m_Blend;
 
-    QWidget *m_pParent;
+        QWidget *m_pParent;
 
-    Foil* m_pBufferFoil;
-    Foil const*m_pMemFoil;
-    static XFoil* s_pXFoil;
+        Foil* m_pBufferFoil;
+        Foil const*m_pMemFoil;
+        static XFoil* s_pXFoil;
 };
 
-#endif // TEGAPDLG_H
+

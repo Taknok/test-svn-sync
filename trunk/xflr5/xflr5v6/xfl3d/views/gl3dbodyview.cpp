@@ -92,12 +92,6 @@ void gl3dBodyView::contextMenuEvent (QContextMenuEvent *)
 }
 
 
-void gl3dBodyView::on3dReset()
-{
-    startResetTimer(m_pBody->length());
-}
-
-
 /**
 * Creates the VertexBufferObjects for OpenGL 3.0
 */
@@ -142,6 +136,11 @@ bool gl3dBodyView::intersectTheObject(Vector3d const &AA,  Vector3d const &BB, V
 }
 
 
+void gl3dBodyView::on3dReset()
+{
+    setReferenceLength(m_pBody->length());
+    gl3dXflView::on3dReset();
+}
 
 
 void gl3dBodyView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, const Vector3d *pNode, const Panel *pPanel)

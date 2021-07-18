@@ -25,7 +25,7 @@
 #include "foil.h"
 #include "polar.h"
 #include <xflobjects/objects_global.h>
-
+#include <xflcore/xflcore.h>
 
 bool OpPoint::s_bStoreOpp = true;
 
@@ -304,8 +304,8 @@ bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
         if(ArchiveFormat>=100002) ar>>Format;
         else Format = 0;
         //read variables
-        readCString(ar, m_FoilName);
-        readCString(ar, m_PlrName);
+        xfl::readCString(ar, m_FoilName);
+        xfl::readCString(ar, m_PlrName);
 
         ar >> f; m_Reynolds =double(f);
         ar >> f; m_Mach = double(f);
@@ -365,7 +365,7 @@ bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
             m_theStyle.setStipple(n);
             ar>>m_theStyle.m_Width;
             int r,g,b;
-            readCOLORREF(ar, r,g,b);
+            xfl::readCOLORREF(ar, r,g,b);
             m_theStyle.m_Color={r,g,b};
             ar >> a ;
             if(a!=0 && a!=1) return false;
@@ -446,7 +446,7 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring)
             m_theStyle.setStipple(n);
             ar >> m_theStyle.m_Width;
             int r,g,b,a;
-            readQColor(ar, r,g,b,a);
+            xfl::readQColor(ar, r,g,b,a);
             m_theStyle.m_Color = {r,g,b,a};
             ar >> m_theStyle.m_bIsVisible >> boolean;
         }

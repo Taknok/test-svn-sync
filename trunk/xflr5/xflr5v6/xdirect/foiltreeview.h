@@ -44,8 +44,6 @@ class FoilTreeView : public QWidget
 
         void showEvent(QShowEvent *event) override;
         void hideEvent(QHideEvent *event) override;
-        QSize sizeHint() const override {return QSize(s_Width, 0);}
-        void resizeEvent(QResizeEvent *pEvent) override;
 
         void setupLayout();
 
@@ -69,6 +67,7 @@ class FoilTreeView : public QWidget
         QString removeFoil(Foil* pFoil);
         QString removeFoil(QString foilName);
 
+        void selectObjects();
         void setObjectProperties();
 
         void setCurveParams();
@@ -79,7 +78,6 @@ class FoilTreeView : public QWidget
 
         static void setXDirect(XDirect *pXDirect) {s_pXDirect = pXDirect;}
         static void setMainFrame(MainFrame*pMainFrame) {s_pMainFrame = pMainFrame;}
-        static void setDefaultWidth(int width) {s_Width=width;}
 
     private:
         Qt::CheckState foilState(const Foil *pFoil) const;
@@ -107,8 +105,6 @@ class FoilTreeView : public QWidget
         xfl::enumFoilSelectionType m_Selection;
 
         PlainTextOutput *m_pptoObjectProps;
-
-        static int s_Width;
 
     private:
         ExpandableTreeView *m_pStruct;

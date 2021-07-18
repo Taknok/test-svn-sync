@@ -51,9 +51,9 @@ void BodyTransDlg::initDialog()
 
     m_pdeYTransFactor->setEnabled(false);
 
-    m_pctrlFrameOnly->setChecked(m_bFrameOnly);
-    m_pctrlFrameID->setValue(m_FrameID+1);
-    m_pctrlFrameID->setEnabled(m_bFrameOnly);
+    m_pchFrameOnly->setChecked(m_bFrameOnly);
+    m_pieFrameID->setValue(m_FrameID+1);
+    m_pieFrameID->setEnabled(m_bFrameOnly);
 }
 
 
@@ -91,8 +91,8 @@ void BodyTransDlg::onButton(QAbstractButton *pButton)
 
 void BodyTransDlg::onOK()
 {
-    m_bFrameOnly = m_pctrlFrameOnly->isChecked();
-    m_FrameID    = m_pctrlFrameID->value()-1;
+    m_bFrameOnly = m_pchFrameOnly->isChecked();
+    m_FrameID    = m_pieFrameID->value()-1;
     m_XTrans     = m_pdeXTransFactor->value() / Units::mtoUnit();
     m_YTrans     = m_pdeYTransFactor->value() / Units::mtoUnit();
     m_ZTrans     = m_pdeZTransFactor->value() / Units::mtoUnit();
@@ -103,8 +103,8 @@ void BodyTransDlg::onOK()
 
 void BodyTransDlg::onFrameOnly()
 {
-    m_bFrameOnly = m_pctrlFrameOnly->isChecked();
-    m_pctrlFrameID->setEnabled(m_bFrameOnly);
+    m_bFrameOnly = m_pchFrameOnly->isChecked();
+    m_pieFrameID->setEnabled(m_bFrameOnly);
 }
 
 
@@ -113,10 +113,10 @@ void BodyTransDlg::setupLayout()
 {
     QHBoxLayout *pFrameIDLayout = new QHBoxLayout;
     {
-        m_pctrlFrameOnly = new QCheckBox(tr("Frame Only"));
-        m_pctrlFrameID = new IntEdit(0);
-        pFrameIDLayout->addWidget(m_pctrlFrameOnly);
-        pFrameIDLayout->addWidget(m_pctrlFrameID);
+        m_pchFrameOnly = new QCheckBox(tr("Frame Only"));
+        m_pieFrameID = new IntEdit(0);
+        pFrameIDLayout->addWidget(m_pchFrameOnly);
+        pFrameIDLayout->addWidget(m_pieFrameID);
     }
 
     QGridLayout *pTransLayout = new QGridLayout;
@@ -158,7 +158,7 @@ void BodyTransDlg::setupLayout()
 
     setLayout(pMainLayout);
 
-    connect(m_pctrlFrameOnly, SIGNAL(clicked()), SLOT(onFrameOnly()));
+    connect(m_pchFrameOnly, SIGNAL(clicked()), SLOT(onFrameOnly()));
 
 }
 

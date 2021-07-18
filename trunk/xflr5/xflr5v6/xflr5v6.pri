@@ -1,8 +1,5 @@
 
 SOURCES += \
-    $$PWD/miarex/planetreeview.cpp \
-    $$PWD/xdirect/foiltreeview.cpp \
-    $$PWD/xdirect/oppointwt.cpp \
     design/afoil.cpp \
     design/afoiltabledlg.cpp \
     design/foiltabledelegate.cpp \
@@ -23,6 +20,7 @@ SOURCES += \
     miarex/mgt/manageplanesdlg.cpp \
     miarex/mgt/planetabledelegate.cpp \
     miarex/miarex.cpp \
+    miarex/planetreeview.cpp \
     miarex/view/gl3dmiarexview.cpp \
     miarex/view/gl3dscales.cpp \
     miarex/view/stabviewdlg.cpp \
@@ -49,6 +47,7 @@ SOURCES += \
     xdirect/analysis/xfoiladvanceddlg.cpp \
     xdirect/analysis/xfoilanalysisdlg.cpp \
     xdirect/analysis/xfoiltask.cpp \
+    xdirect/foiltreeview.cpp \
     xdirect/geometry/cadddlg.cpp \
     xdirect/geometry/flapdlg.cpp \
     xdirect/geometry/foilcoorddlg.cpp \
@@ -59,6 +58,7 @@ SOURCES += \
     xdirect/geometry/tegapdlg.cpp \
     xdirect/geometry/twodpaneldlg.cpp \
     xdirect/mgt/managefoilsdlg.cpp \
+    xdirect/oppointwt.cpp \
     xdirect/optim2d/gatask.cpp \
     xdirect/optim2d/mopsotask.cpp \
     xdirect/optim2d/mopsotask2d.cpp \
@@ -76,9 +76,6 @@ SOURCES += \
 
 
 HEADERS += \
-    $$PWD/miarex/planetreeview.h \
-    $$PWD/xdirect/foiltreeview.h \
-    $$PWD/xdirect/oppointwt.h \
     design/afoil.h \
     design/afoiltabledlg.h \
     design/foiltabledelegate.h \
@@ -98,6 +95,7 @@ HEADERS += \
     miarex/mgt/manageplanesdlg.h \
     miarex/mgt/planetabledelegate.h \
     miarex/miarex.h \
+    miarex/planetreeview.h \
     miarex/view/gl3dmiarexview.h \
     miarex/view/gl3dscales.h \
     miarex/view/stabviewdlg.h \
@@ -124,6 +122,7 @@ HEADERS += \
     xdirect/analysis/xfoiladvanceddlg.h \
     xdirect/analysis/xfoilanalysisdlg.h \
     xdirect/analysis/xfoiltask.h \
+    xdirect/foiltreeview.h \
     xdirect/geometry/cadddlg.h \
     xdirect/geometry/flapdlg.h \
     xdirect/geometry/foilcoorddlg.h \
@@ -134,6 +133,7 @@ HEADERS += \
     xdirect/geometry/tegapdlg.h \
     xdirect/geometry/twodpaneldlg.h \
     xdirect/mgt/managefoilsdlg.h \
+    xdirect/oppointwt.h \
     xdirect/optim2d/gatask.h \
     xdirect/optim2d/mopsotask.h \
     xdirect/optim2d/mopsotask2d.h \
@@ -153,8 +153,10 @@ HEADERS += \
 
 
 RESOURCES += \
-    scripts.qrc \
-    images.qrc \
+    resources\images.qrc \
+    resources\qss.qrc \
+
+
 
 
 

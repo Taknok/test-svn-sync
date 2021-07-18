@@ -72,6 +72,13 @@ gl3dXflView::~gl3dXflView()
 }
 
 
+void gl3dXflView::enterEvent(QEvent *pEvent)
+{
+    setFocus();
+    gl3dView::enterEvent(pEvent);
+}
+
+
 void gl3dXflView::onSurfaces(bool bChecked)
 {
     m_bSurfaces = bChecked;
@@ -942,10 +949,10 @@ void gl3dXflView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing const *pWing)
         {
             for (int l=0; l<pSurf->NXPanels(); l++)
             {
-                pSurf->getPanel(0,l,TOPSURFACE);
+                pSurf->getPanel(0,l,xfl::TOPSURFACE);
                 A = pSurf->TA;
                 B = pSurf->LA;
-                pSurf->getPanel(0,l,BOTSURFACE);
+                pSurf->getPanel(0,l,xfl::BOTSURFACE);
                 C = pSurf->LA;
                 D = pSurf->TA;
 
@@ -976,10 +983,10 @@ void gl3dXflView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing const *pWing)
         {
             for (int l=0; l<pSurf->NXPanels(); l++)
             {
-                pSurf->getPanel(pSurf->NYPanels()-1,l,TOPSURFACE);
+                pSurf->getPanel(pSurf->NYPanels()-1,l,xfl::TOPSURFACE);
                 A = pSurf->TB;
                 B = pSurf->LB;
-                pSurf->getPanel(pSurf->NYPanels()-1,l,BOTSURFACE);
+                pSurf->getPanel(pSurf->NYPanels()-1,l,xfl::BOTSURFACE);
                 C = pSurf->LB;
                 D = pSurf->TB;
 
@@ -1016,7 +1023,7 @@ void gl3dXflView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing const *pWing)
         {
             for (int l=0; l<pSurf->NXPanels(); l++)
             {
-                pSurf->getPanel(k,l,TOPSURFACE);
+                pSurf->getPanel(k,l,xfl::TOPSURFACE);
 
                 // first triangle
                 meshVertexArray[iv++] = pSurf->LA.xf();
@@ -1043,7 +1050,7 @@ void gl3dXflView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing const *pWing)
 
             for (int l=0; l<pSurf->NXPanels(); l++)
             {
-                pSurf->getPanel(k,l,BOTSURFACE);
+                pSurf->getPanel(k,l,xfl::BOTSURFACE);
                 //first triangle
                 meshVertexArray[iv++] = pSurf->TB.xf();
                 meshVertexArray[iv++] = pSurf->TB.yf();
@@ -1336,8 +1343,8 @@ void gl3dXflView::glMakeWingOutline(Wing const *pWing, Body const *pBody, QOpenG
         Surface const *pSurf = pWing->surface(j);
         if(!pSurf) continue;
 
-        pSurf->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, NA, NB, CHORDPOINTS);
-        pSurf->getSidePoints(BOTSURFACE, pBody, PtBotLeft, PtBotRight, NA, NB, CHORDPOINTS);
+        pSurf->getSidePoints(xfl::TOPSURFACE, pBody, PtTopLeft, PtTopRight, NA, NB, CHORDPOINTS);
+        pSurf->getSidePoints(xfl::BOTSURFACE, pBody, PtBotLeft, PtBotRight, NA, NB, CHORDPOINTS);
 
         //OUTLINE
         for(int l=0; l<CHORDPOINTS-1; l++)
@@ -1371,20 +1378,20 @@ void gl3dXflView::glMakeWingOutline(Wing const *pWing, Body const *pBody, QOpenG
             OutlineVA[iv++] = PtTopRight.at(l+1).zf();
         }
         //LE & TE
-        pSurf->getSidePoint(0.0, false, TOPSURFACE, Pt, N);
+        pSurf->getSidePoint(0.0, false, xfl::TOPSURFACE, Pt, N);
         OutlineVA[iv++] = Pt.xf();
         OutlineVA[iv++] = Pt.yf();
         OutlineVA[iv++] = Pt.zf();
-        pSurf->getSidePoint(0.0, true, TOPSURFACE, Pt, N);
+        pSurf->getSidePoint(0.0, true, xfl::TOPSURFACE, Pt, N);
         OutlineVA[iv++] = Pt.xf();
         OutlineVA[iv++] = Pt.yf();
         OutlineVA[iv++] = Pt.zf();
 
-        pSurf->getSidePoint(1.0, false, TOPSURFACE, Pt, N);
+        pSurf->getSidePoint(1.0, false, xfl::TOPSURFACE, Pt, N);
         OutlineVA[iv++] = Pt.xf();
         OutlineVA[iv++] = Pt.yf();
         OutlineVA[iv++] = Pt.zf();
-        pSurf->getSidePoint(1.0, true, TOPSURFACE, Pt, N);
+        pSurf->getSidePoint(1.0, true, xfl::TOPSURFACE, Pt, N);
         OutlineVA[iv++] = Pt.xf();
         OutlineVA[iv++] = Pt.yf();
         OutlineVA[iv++] = Pt.zf();
@@ -1396,14 +1403,14 @@ void gl3dXflView::glMakeWingOutline(Wing const *pWing, Body const *pBody, QOpenG
         {
             pSurf->getSurfacePoint(pSurf->m_pFoilA->m_TEXHinge/100.0,
                                    pFoilA->m_TEXHinge/100.0,
-                                   0.0, TOPSURFACE, Pt, N);
+                                   0.0, xfl::TOPSURFACE, Pt, N);
             OutlineVA[iv++] = Pt.xf();
             OutlineVA[iv++] = Pt.yf();
             OutlineVA[iv++] = Pt.zf();
 
             pSurf->getSurfacePoint(pSurf->m_pFoilB->m_TEXHinge/100.0,
                                    pFoilB->m_TEXHinge/100.0,
-                                   1.0, TOPSURFACE, Pt, N);
+                                   1.0, xfl::TOPSURFACE, Pt, N);
             OutlineVA[iv++] = Pt.xf();
             OutlineVA[iv++] = Pt.yf();
             OutlineVA[iv++] = Pt.zf();
@@ -1411,7 +1418,7 @@ void gl3dXflView::glMakeWingOutline(Wing const *pWing, Body const *pBody, QOpenG
 
             pSurf->getSurfacePoint(pSurf->m_pFoilA->m_TEXHinge/100.0,
                                    pFoilA->m_TEXHinge/100.0,
-                                   0.0, BOTSURFACE, Pt, N);
+                                   0.0, xfl::BOTSURFACE, Pt, N);
             OutlineVA[iv++] = Pt.xf();
             OutlineVA[iv++] = Pt.yf();
             OutlineVA[iv++] = Pt.zf();
@@ -1419,7 +1426,7 @@ void gl3dXflView::glMakeWingOutline(Wing const *pWing, Body const *pBody, QOpenG
 
             pSurf->getSurfacePoint(pSurf->m_pFoilB->m_TEXHinge/100.0,
                                    pFoilB->m_TEXHinge/100.0,
-                                   1.0, BOTSURFACE, Pt, N);
+                                   1.0, xfl::BOTSURFACE, Pt, N);
             OutlineVA[iv++] = Pt.xf();
             OutlineVA[iv++] = Pt.yf();
             OutlineVA[iv++] = Pt.zf();
@@ -1428,14 +1435,14 @@ void gl3dXflView::glMakeWingOutline(Wing const *pWing, Body const *pBody, QOpenG
         {
             pSurf->getSurfacePoint(pSurf->m_pFoilA->m_LEXHinge/100.0,
                                    pFoilA->m_TEXHinge/100.0,
-                                   0.0, TOPSURFACE, Pt, N);
+                                   0.0, xfl::TOPSURFACE, Pt, N);
             OutlineVA[iv++] = Pt.xf();
             OutlineVA[iv++] = Pt.yf();
             OutlineVA[iv++] = Pt.zf();
 
             pSurf->getSurfacePoint(pSurf->m_pFoilB->m_LEXHinge/100.0,
                                    pFoilB->m_TEXHinge/100.0,
-                                   1.0, TOPSURFACE, Pt, N);
+                                   1.0, xfl::TOPSURFACE, Pt, N);
             OutlineVA[iv++] = Pt.xf();
             OutlineVA[iv++] = Pt.yf();
             OutlineVA[iv++] = Pt.zf();
@@ -1443,7 +1450,7 @@ void gl3dXflView::glMakeWingOutline(Wing const *pWing, Body const *pBody, QOpenG
 
             pSurf->getSurfacePoint(pSurf->m_pFoilA->m_LEXHinge/100.0,
                                    pFoilA->m_TEXHinge/100.0,
-                                   0.0, BOTSURFACE, Pt, N);
+                                   0.0, xfl::BOTSURFACE, Pt, N);
             OutlineVA[iv++] = Pt.xf();
             OutlineVA[iv++] = Pt.yf();
             OutlineVA[iv++] = Pt.zf();
@@ -1451,7 +1458,7 @@ void gl3dXflView::glMakeWingOutline(Wing const *pWing, Body const *pBody, QOpenG
 
             pSurf->getSurfacePoint(pSurf->m_pFoilB->m_LEXHinge/100.0,
                                    pFoilB->m_TEXHinge/100.0,
-                                   1.0, BOTSURFACE, Pt, N);
+                                   1.0, xfl::BOTSURFACE, Pt, N);
             OutlineVA[iv++] = Pt.xf();
             OutlineVA[iv++] = Pt.yf();
             OutlineVA[iv++] = Pt.zf();
@@ -1483,7 +1490,7 @@ void gl3dXflView::glMakeWingSurface(Wing const *pWing, Body const *pBody, QOpenG
     QVector<double>leftV(CHORDPOINTS);
     QVector<double>rightV(CHORDPOINTS);
 
-    double leftU=0.0, rightU=1.0;
+    double leftU(0), rightU(1);
 
     int stride = 8; //3 vertex components, 3 normal components, 2 texture components
     int nTriangles = pWing->m_Surface.count()
@@ -1508,7 +1515,7 @@ void gl3dXflView::glMakeWingSurface(Wing const *pWing, Body const *pBody, QOpenG
         if(!pSurf) continue;
 
         //top surface
-        pSurf->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, NormalA, NormalB, CHORDPOINTS);
+        pSurf->getSidePoints(xfl::TOPSURFACE, pBody, PtTopLeft, PtTopRight, NormalA, NormalB, CHORDPOINTS);
         pWing->getTextureUV(j, leftV.data(), rightV.data(), leftU, rightU, CHORDPOINTS);
 
         for(int l=0; l<CHORDPOINTS-1; l++)
@@ -1571,7 +1578,7 @@ void gl3dXflView::glMakeWingSurface(Wing const *pWing, Body const *pBody, QOpenG
         }
 
         //bottom surface
-        pSurf->getSidePoints(BOTSURFACE, pBody, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPOINTS);
+        pSurf->getSidePoints(xfl::BOTSURFACE, pBody, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPOINTS);
         pWing->getTextureUV(j, leftV.data(), rightV.data(), leftU, rightU, CHORDPOINTS);
 
         for(int l=0; l<CHORDPOINTS-1; l++)

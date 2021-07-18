@@ -12,3 +12,6 @@ SOURCES += \
     xflscript/xflscriptexec.cpp \
     xflscript/xflscriptreader.cpp \
 
+
+RESOURCES += \
+    xflscript/script.qrc \

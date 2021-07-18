@@ -38,6 +38,7 @@
 #include <xflcore/displayoptions.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
+#include <xflcore/mathelem.h>
 #include <xflgraph/curve.h>
 #include <xflobjects/objects3d/wpolar.h>
 #include <xflobjects/objects_global.h>
@@ -45,7 +46,7 @@
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/customwts/floateditdelegate.h>
 
-Miarex *StabViewDlg::s_pMiarex;
+Miarex *StabViewDlg::s_pMiarex(nullptr);
 
 
 StabViewDlg::StabViewDlg(QWidget *parent) : QWidget(parent)
@@ -54,6 +55,7 @@ StabViewDlg::StabViewDlg(QWidget *parent) : QWidget(parent)
 
     setWindowTitle(tr("Stability View Params"));
     setWindowFlags(Qt::Tool);
+
     m_iCurrentMode = 0;
     m_ModeAmplitude = 1.0;
     m_ModeInterval = 200;
@@ -74,42 +76,41 @@ StabViewDlg::~StabViewDlg()
 
 void StabViewDlg::connectSignals()
 {
-    connect(m_prbLongDynamics, SIGNAL(clicked()), s_pMiarex, SLOT(onStabilityDirection()));
-    connect(m_prbLatDynamics,  SIGNAL(clicked()), s_pMiarex, SLOT(onStabilityDirection()));
+    connect(m_prbLongDynamics,       SIGNAL(clicked()), s_pMiarex, SLOT(onStabilityDirection()));
+    connect(m_prbLatDynamics,        SIGNAL(clicked()), s_pMiarex, SLOT(onStabilityDirection()));
 
-    connect(m_ppbPlotStabGraph, SIGNAL(clicked()), this , SLOT(onPlotStabilityGraph()));
+    connect(m_ppbPlotStabGraph,      SIGNAL(clicked()),            SLOT(onPlotStabilityGraph()));
 
-    connect(m_prbRLMode1,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
-    connect(m_prbRLMode2,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
-    connect(m_prbRLMode3,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
-    connect(m_prbRLMode4,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
-    connect(m_prbTimeMode1, SIGNAL(clicked()), this, SLOT(onModeSelection()));
-    connect(m_prbTimeMode2, SIGNAL(clicked()), this, SLOT(onModeSelection()));
-    connect(m_prbTimeMode3, SIGNAL(clicked()), this, SLOT(onModeSelection()));
-    connect(m_prbTimeMode4, SIGNAL(clicked()), this, SLOT(onModeSelection()));
+    connect(m_prbRLMode1,            SIGNAL(clicked()),            SLOT(onModeSelection()));
+    connect(m_prbRLMode2,            SIGNAL(clicked()),            SLOT(onModeSelection()));
+    connect(m_prbRLMode3,            SIGNAL(clicked()),            SLOT(onModeSelection()));
+    connect(m_prbRLMode4,            SIGNAL(clicked()),            SLOT(onModeSelection()));
+    connect(m_prbTimeMode1,          SIGNAL(clicked()),            SLOT(onModeSelection()));
+    connect(m_prbTimeMode2,          SIGNAL(clicked()),            SLOT(onModeSelection()));
+    connect(m_prbTimeMode3,          SIGNAL(clicked()),            SLOT(onModeSelection()));
+    connect(m_prbTimeMode4,          SIGNAL(clicked()),            SLOT(onModeSelection()));
     
-    connect(m_ppbAnimate,            SIGNAL(clicked()),         this, SLOT(onAnimate()));
-    connect(m_pdAnimationSpeed ,    SIGNAL(valueChanged(int)), this, SLOT(onAnimationSpeed(int)));
-    connect(m_pdAnimationAmplitude, SIGNAL(valueChanged(int)), this, SLOT(onAnimationAmplitude(int)));
-    connect(m_ppbAnimateRestart,     SIGNAL(clicked()),         this, SLOT(onAnimateRestart()));
-    connect(m_pdeDeltat,             SIGNAL(editingFinished()), this, SLOT(onReadData()));
-    connect(m_pdeModeStep,           SIGNAL(editingFinished()), this, SLOT(onReadData()));
+    connect(m_ppbAnimate,            SIGNAL(clicked()),            SLOT(onAnimate()));
+    connect(m_pdAnimationSpeed ,     SIGNAL(valueChanged(int)),    SLOT(onAnimationSpeed(int)));
+    connect(m_pdAnimationAmplitude,  SIGNAL(valueChanged(int)),    SLOT(onAnimationAmplitude(int)));
+    connect(m_ppbAnimateRestart,     SIGNAL(clicked()),            SLOT(onAnimateRestart()));
+    connect(m_pdeDeltat,             SIGNAL(editingFinished()),    SLOT(onReadData()));
+    connect(m_pdeModeStep,           SIGNAL(editingFinished()),    SLOT(onReadData()));
 
-    connect(m_prbInitCondResponse, SIGNAL(clicked()), this, SLOT(onResponseType()));
-    connect(m_prbForcedResponse,   SIGNAL(clicked()), this, SLOT(onResponseType()));
-    connect(m_prbModalResponse,    SIGNAL(clicked()), this, SLOT(onResponseType()));
+    connect(m_prbInitCondResponse,   SIGNAL(clicked()),            SLOT(onResponseType()));
+    connect(m_prbForcedResponse,     SIGNAL(clicked()),            SLOT(onResponseType()));
+    connect(m_prbModalResponse,      SIGNAL(clicked()),            SLOT(onResponseType()));
     
-    connect(m_ppbAddCurve,    SIGNAL(clicked()),      this, SLOT(onAddCurve()));
-    connect(m_ppbDeleteCurve, SIGNAL(clicked()),      this, SLOT(onDeleteCurve()));
-    connect(m_ppbRenameCurve, SIGNAL(clicked()),      this, SLOT(onRenameCurve()));
-    connect(m_pcbCurveList,   SIGNAL(activated(int)), this, SLOT(onSelChangeCurve(int)));
+    connect(m_ppbAddCurve,           SIGNAL(clicked()),            SLOT(onAddCurve()));
+    connect(m_ppbDeleteCurve,        SIGNAL(clicked()),            SLOT(onDeleteCurve()));
+    connect(m_ppbRenameCurve,        SIGNAL(clicked()),            SLOT(onRenameCurve()));
+    connect(m_pcbCurveList,          SIGNAL(activated(int)),       SLOT(onSelChangeCurve(int)));
     
     m_pControlModel = new QStandardItemModel(this);
     m_pControlModel->setRowCount(20);//temporary
     m_pControlModel->setColumnCount(2);
     m_pControlModel->setHeaderData(0, Qt::Horizontal, tr("Time (s)"));
     m_pControlModel->setHeaderData(1, Qt::Horizontal, tr("Angle ")+QString::fromUtf8("(°)"));
-
 
     m_ptvControl->setModel(m_pControlModel);
     m_ptvControl->setWindowTitle(tr("Controls"));
@@ -945,7 +946,7 @@ void StabViewDlg::setupLayout()
             pRLLayout->addWidget(pRLModeBox);
             pRLLayout->addWidget(pFreakBox);
             pRLLayout->addWidget(m_pswModeViewType);
-//            pRLLayout->addStretch(1);
+            pRLLayout->addStretch();
             pModeBox->setLayout(pRLLayout);
         }
     }

@@ -24,7 +24,7 @@
 
 #include "body.h"
 #include <xflobjects/objects_global.h>
-
+#include <xflcore/xflcore.h>
 
 /**
  * The public constructor
@@ -568,7 +568,7 @@ int Body::insertFrame(Vector3d Real)
  * @param bRight true if the intersection was found on the right side, false if found on the left side.
  * @return true if an intersection point has been found, false otherwise.
  */
-bool Body::intersect(Vector3d A, Vector3d B, Vector3d &I, bool bRight) const
+bool Body::intersect(Vector3d const &A, Vector3d const &B, Vector3d &I, bool bRight) const
 {
     if(m_LineType==xfl::BODYPANELTYPE)
     {
@@ -1494,10 +1494,10 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
         ar >> ArchiveFormat;
         if(ArchiveFormat<1000 || ArchiveFormat>1100) return false;
 
-        readCString(ar, m_BodyName);
-        if(ArchiveFormat>=1003) readCString(ar, m_BodyDescription);
+        xfl::readCString(ar, m_BodyName);
+        if(ArchiveFormat>=1003) xfl::readCString(ar, m_BodyDescription);
 
-        readCOLORREF(ar, r,g,b);
+        xfl::readCOLORREF(ar, r,g,b);
         m_BodyColor = QColor(r,g,b);
         ar >> k;
         if(k==1) m_LineType = xfl::BODYPANELTYPE;
@@ -1573,7 +1573,7 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
             for(int im=0; im<nMass; im++)
             {
                 tag.append("");
-                readCString(ar, tag[im]);
+                xfl::readCString(ar, tag[im]);
             }
 
             clearPointMasses();
@@ -1608,9 +1608,9 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
 bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 {
     int ArchiveFormat;
-    int i,k,n,p;
+    int i(0),k(0),n(0),p(0);
 
-    double dble,m,px,py,pz;
+    double dble(0),m(0),px(0),py(0),pz(0);
     QString str;
 
     if(bIsStoring)
@@ -1620,7 +1620,7 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
         ar << m_BodyName;
         ar << m_BodyDescription;
 
-        writeQColor(ar, m_BodyColor.red(), m_BodyColor.green(), m_BodyColor.blue(), m_BodyColor.alpha());
+        xfl::writeQColor(ar, m_BodyColor.red(), m_BodyColor.green(), m_BodyColor.blue(), m_BodyColor.alpha());
 
         if(m_LineType==xfl::BODYPANELTYPE) ar << 1;
         else                                 ar << 2;
@@ -1665,7 +1665,7 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
         ar >> m_BodyDescription;
 
         int a,r,g,b;
-        readQColor(ar, r, g, b, a);
+        xfl::readQColor(ar, r, g, b, a);
         m_BodyColor = QColor(r,g,b,a);
 
         ar >> k;
@@ -1726,8 +1726,6 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
     }
     return true;
 }
-
-
 
 
 /**
@@ -1827,7 +1825,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
     xo = yo = zo = 0.0;
 
     Line = 0;
-    bRead  = ReadAVLString(inStream, Line, strong);
+    bRead  = xfl::readAVLString(inStream, Line, strong);
     m_BodyName = strong.trimmed();
     m_SplineSurface.clearFrames();
     m_xPanels.clear();
@@ -1837,11 +1835,11 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
     bRead = true;
     while (bRead)
     {
-        bRead  = ReadAVLString(inStream, Line, strong);
+        bRead  = xfl::readAVLString(inStream, Line, strong);
         if(!bRead) break;
         if (strong.indexOf("BODYTYPE") >=0)
         {
-            bRead  = ReadAVLString(inStream, Line, strong);
+            bRead  = xfl::readAVLString(inStream, Line, strong);
             if(!bRead) break;
             res = strong.toInt(&bOK);
 
@@ -1853,7 +1851,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
         }
         else if (strong.indexOf("OFFSET") >=0)
         {
-            bRead  = ReadAVLString(inStream, Line, strong);
+            bRead  = xfl::readAVLString(inStream, Line, strong);
             if(!bRead) break;
 
             //Do this the C++ way
@@ -1936,7 +1934,7 @@ int Body::readFrame(QTextStream &in, int &Line, Frame *pFrame, double const &Uni
 
     while (bRead)
     {
-        if(!ReadAVLString(in, Line,  strong)) bRead = false;
+        if(!xfl::readAVLString(in, Line,  strong)) bRead = false;
 
         if(readValues(strong, x,y,z)!=3)
         {
@@ -1979,7 +1977,7 @@ void Body::exportSTLBinary(QDataStream &outStream, int nXPanels, int nHoopPanels
     //    80 character header, avoid word "solid"
     //                       0123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789
     QString strong =     "binary STL file                                                                ";
-    writeCString(outStream, strong);
+    xfl::writeCString(outStream, strong);
 
     if(m_LineType==xfl::BODYSPLINETYPE) exportSTLBinarySplines(outStream, nXPanels, nHoopPanels, unit);
     else                                  exportSTLBinaryFlatPanels(outStream, unit);
@@ -2036,41 +2034,41 @@ void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoo
             N.normalize();
 
             //1st triangle
-            writeFloat(outStream, N.xf());
-            writeFloat(outStream, N.yf());
-            writeFloat(outStream, N.zf());
+            xfl::writeFloat(outStream, N.xf());
+            xfl::writeFloat(outStream, N.yf());
+            xfl::writeFloat(outStream, N.zf());
             Pt = m_T[p];
-            writeFloat(outStream, Pt.xf()*unitf);
-            writeFloat(outStream, Pt.yf()*unitf);
-            writeFloat(outStream, Pt.zf()*unitf);
+            xfl::writeFloat(outStream, Pt.xf()*unitf);
+            xfl::writeFloat(outStream, Pt.yf()*unitf);
+            xfl::writeFloat(outStream, Pt.zf()*unitf);
             Pt = m_T[p+nHoopPanels+1];
-            writeFloat(outStream, Pt.xf()*unitf);
-            writeFloat(outStream, Pt.yf()*unitf);
-            writeFloat(outStream, Pt.zf()*unitf);
+            xfl::writeFloat(outStream, Pt.xf()*unitf);
+            xfl::writeFloat(outStream, Pt.yf()*unitf);
+            xfl::writeFloat(outStream, Pt.zf()*unitf);
             Pt = m_T[p+1];
-            writeFloat(outStream, Pt.xf()*unitf);
-            writeFloat(outStream, Pt.yf()*unitf);
-            writeFloat(outStream, Pt.zf()*unitf);
+            xfl::writeFloat(outStream, Pt.xf()*unitf);
+            xfl::writeFloat(outStream, Pt.yf()*unitf);
+            xfl::writeFloat(outStream, Pt.zf()*unitf);
 
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
 
             //2nd triangle
-            writeFloat(outStream, N.xf());
-            writeFloat(outStream, N.yf());
-            writeFloat(outStream, N.zf());
+            xfl::writeFloat(outStream, N.xf());
+            xfl::writeFloat(outStream, N.yf());
+            xfl::writeFloat(outStream, N.zf());
             Pt = m_T[p+nHoopPanels+1];
-            writeFloat(outStream, Pt.xf()*unitf);
-            writeFloat(outStream, Pt.yf()*unitf);
-            writeFloat(outStream, Pt.zf()*unitf);
+            xfl::writeFloat(outStream, Pt.xf()*unitf);
+            xfl::writeFloat(outStream, Pt.yf()*unitf);
+            xfl::writeFloat(outStream, Pt.zf()*unitf);
             Pt = m_T[p+nHoopPanels+2];
-            writeFloat(outStream, Pt.xf()*unitf);
-            writeFloat(outStream, Pt.yf()*unitf);
-            writeFloat(outStream, Pt.zf()*unitf);
+            xfl::writeFloat(outStream, Pt.xf()*unitf);
+            xfl::writeFloat(outStream, Pt.yf()*unitf);
+            xfl::writeFloat(outStream, Pt.zf()*unitf);
             Pt = m_T[p+1];
-            writeFloat(outStream, Pt.xf()*unitf);
-            writeFloat(outStream, Pt.yf()*unitf);
-            writeFloat(outStream, Pt.zf()*unitf);
+            xfl::writeFloat(outStream, Pt.xf()*unitf);
+            xfl::writeFloat(outStream, Pt.yf()*unitf);
+            xfl::writeFloat(outStream, Pt.zf()*unitf);
 
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
@@ -2092,41 +2090,41 @@ void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoo
             N = TALB * LATB;
             N.normalize();
             //1st triangle
-            writeFloat(outStream, -N.xf());
-            writeFloat(outStream, -N.yf());
-            writeFloat(outStream, -N.zf());
+            xfl::writeFloat(outStream, -N.xf());
+            xfl::writeFloat(outStream, -N.yf());
+            xfl::writeFloat(outStream, -N.zf());
             Pt = m_T[p];
-            writeFloat(outStream,  Pt.xf()*unitf);
-            writeFloat(outStream, -Pt.yf()*unitf);
-            writeFloat(outStream,  Pt.zf()*unitf);
+            xfl::writeFloat(outStream,  Pt.xf()*unitf);
+            xfl::writeFloat(outStream, -Pt.yf()*unitf);
+            xfl::writeFloat(outStream,  Pt.zf()*unitf);
             Pt = m_T[p+1];
-            writeFloat(outStream,  Pt.xf()*unitf);
-            writeFloat(outStream, -Pt.yf()*unitf);
-            writeFloat(outStream,  Pt.zf()*unitf);
+            xfl::writeFloat(outStream,  Pt.xf()*unitf);
+            xfl::writeFloat(outStream, -Pt.yf()*unitf);
+            xfl::writeFloat(outStream,  Pt.zf()*unitf);
             Pt = m_T[p+nHoopPanels+1];
-            writeFloat(outStream,  Pt.xf()*unitf);
-            writeFloat(outStream, -Pt.yf()*unitf);
-            writeFloat(outStream,  Pt.zf()*unitf);
+            xfl::writeFloat(outStream,  Pt.xf()*unitf);
+            xfl::writeFloat(outStream, -Pt.yf()*unitf);
+            xfl::writeFloat(outStream,  Pt.zf()*unitf);
 
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
 
             //2nd triangle
-            writeFloat(outStream, -N.xf());
-            writeFloat(outStream, -N.yf());
-            writeFloat(outStream, -N.zf());
+            xfl::writeFloat(outStream, -N.xf());
+            xfl::writeFloat(outStream, -N.yf());
+            xfl::writeFloat(outStream, -N.zf());
             Pt = m_T[p+nHoopPanels+1];
-            writeFloat(outStream,  Pt.xf()*unitf);
-            writeFloat(outStream, -Pt.yf()*unitf);
-            writeFloat(outStream,  Pt.zf()*unitf);
+            xfl::writeFloat(outStream,  Pt.xf()*unitf);
+            xfl::writeFloat(outStream, -Pt.yf()*unitf);
+            xfl::writeFloat(outStream,  Pt.zf()*unitf);
             Pt = m_T[p+1];
-            writeFloat(outStream,  Pt.xf()*unitf);
-            writeFloat(outStream, -Pt.yf()*unitf);
-            writeFloat(outStream,  Pt.zf()*unitf);
+            xfl::writeFloat(outStream,  Pt.xf()*unitf);
+            xfl::writeFloat(outStream, -Pt.yf()*unitf);
+            xfl::writeFloat(outStream,  Pt.zf()*unitf);
             Pt = m_T[p+nHoopPanels+2];
-            writeFloat(outStream,  Pt.xf()*unitf);
-            writeFloat(outStream, -Pt.yf()*unitf);
-            writeFloat(outStream,  Pt.zf()*unitf);
+            xfl::writeFloat(outStream,  Pt.xf()*unitf);
+            xfl::writeFloat(outStream, -Pt.yf()*unitf);
+            xfl::writeFloat(outStream,  Pt.zf()*unitf);
 
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
@@ -2193,21 +2191,21 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unitd) const
                 N.normalize();
 
                 // 1st triangle
-                writeFloat(outStream, N.xf());
-                writeFloat(outStream, N.yf());
-                writeFloat(outStream, N.zf());
+                xfl::writeFloat(outStream, N.xf());
+                xfl::writeFloat(outStream, N.yf());
+                xfl::writeFloat(outStream, N.zf());
 
-                writeFloat(outStream, P1.xf()*unitf);
-                writeFloat(outStream, P1.yf()*unitf);
-                writeFloat(outStream, P1.zf()*unitf);
+                xfl::writeFloat(outStream, P1.xf()*unitf);
+                xfl::writeFloat(outStream, P1.yf()*unitf);
+                xfl::writeFloat(outStream, P1.zf()*unitf);
 
-                writeFloat(outStream, P2.xf()*unitf);
-                writeFloat(outStream, P2.yf()*unitf);
-                writeFloat(outStream, P2.zf()*unitf);
+                xfl::writeFloat(outStream, P2.xf()*unitf);
+                xfl::writeFloat(outStream, P2.yf()*unitf);
+                xfl::writeFloat(outStream, P2.zf()*unitf);
 
-                writeFloat(outStream, P4.xf()*unitf);
-                writeFloat(outStream, P4.yf()*unitf);
-                writeFloat(outStream, P4.zf()*unitf);
+                xfl::writeFloat(outStream, P4.xf()*unitf);
+                xfl::writeFloat(outStream, P4.yf()*unitf);
+                xfl::writeFloat(outStream, P4.zf()*unitf);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
@@ -2216,21 +2214,21 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unitd) const
             // 2nd triangle
             if(!P4.isSame(P2) && !P2.isSame(P3) && !P3.isSame(P4))
             {
-                writeFloat(outStream, N.xf());
-                writeFloat(outStream, N.yf());
-                writeFloat(outStream, N.zf());
+                xfl::writeFloat(outStream, N.xf());
+                xfl::writeFloat(outStream, N.yf());
+                xfl::writeFloat(outStream, N.zf());
 
-                writeFloat(outStream, P4.xf()*unitf);
-                writeFloat(outStream, P4.yf()*unitf);
-                writeFloat(outStream, P4.zf()*unitf);
+                xfl::writeFloat(outStream, P4.xf()*unitf);
+                xfl::writeFloat(outStream, P4.yf()*unitf);
+                xfl::writeFloat(outStream, P4.zf()*unitf);
 
-                writeFloat(outStream, P2.xf()*unitf);
-                writeFloat(outStream, P2.yf()*unitf);
-                writeFloat(outStream, P2.zf()*unitf);
+                xfl::writeFloat(outStream, P2.xf()*unitf);
+                xfl::writeFloat(outStream, P2.yf()*unitf);
+                xfl::writeFloat(outStream, P2.zf()*unitf);
 
-                writeFloat(outStream, P3.xf()*unitf);
-                writeFloat(outStream, P3.yf()*unitf);
-                writeFloat(outStream, P3.zf()*unitf);
+                xfl::writeFloat(outStream, P3.xf()*unitf);
+                xfl::writeFloat(outStream, P3.yf()*unitf);
+                xfl::writeFloat(outStream, P3.zf()*unitf);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
@@ -2262,21 +2260,21 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unitd) const
                 N.normalize();
 
                 // 1st triangle
-                writeFloat(outStream, -N.xf());
-                writeFloat(outStream, -N.yf());
-                writeFloat(outStream, -N.zf());
+                xfl::writeFloat(outStream, -N.xf());
+                xfl::writeFloat(outStream, -N.yf());
+                xfl::writeFloat(outStream, -N.zf());
 
-                writeFloat(outStream, P2.xf()*unitf);
-                writeFloat(outStream, P2.yf()*unitf);
-                writeFloat(outStream, P2.zf()*unitf);
+                xfl::writeFloat(outStream, P2.xf()*unitf);
+                xfl::writeFloat(outStream, P2.yf()*unitf);
+                xfl::writeFloat(outStream, P2.zf()*unitf);
 
-                writeFloat(outStream, P1.xf()*unitf);
-                writeFloat(outStream, P1.yf()*unitf);
-                writeFloat(outStream, P1.zf()*unitf);
+                xfl::writeFloat(outStream, P1.xf()*unitf);
+                xfl::writeFloat(outStream, P1.yf()*unitf);
+                xfl::writeFloat(outStream, P1.zf()*unitf);
 
-                writeFloat(outStream, P4.xf()*unitf);
-                writeFloat(outStream, P4.yf()*unitf);
-                writeFloat(outStream, P4.zf()*unitf);
+                xfl::writeFloat(outStream, P4.xf()*unitf);
+                xfl::writeFloat(outStream, P4.yf()*unitf);
+                xfl::writeFloat(outStream, P4.zf()*unitf);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
@@ -2285,21 +2283,21 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unitd) const
             // 2nd triangle
             if(!P4.isSame(P2) && !P2.isSame(P3) && !P3.isSame(P4))
             {
-                writeFloat(outStream, -N.xf());
-                writeFloat(outStream, -N.yf());
-                writeFloat(outStream, -N.zf());
+                xfl::writeFloat(outStream, -N.xf());
+                xfl::writeFloat(outStream, -N.yf());
+                xfl::writeFloat(outStream, -N.zf());
 
-                writeFloat(outStream, P2.xf()*unitf);
-                writeFloat(outStream, P2.yf()*unitf);
-                writeFloat(outStream, P2.zf()*unitf);
+                xfl::writeFloat(outStream, P2.xf()*unitf);
+                xfl::writeFloat(outStream, P2.yf()*unitf);
+                xfl::writeFloat(outStream, P2.zf()*unitf);
 
-                writeFloat(outStream, P4.xf()*unitf);
-                writeFloat(outStream, P4.yf()*unitf);
-                writeFloat(outStream, P4.zf()*unitf);
+                xfl::writeFloat(outStream, P4.xf()*unitf);
+                xfl::writeFloat(outStream, P4.yf()*unitf);
+                xfl::writeFloat(outStream, P4.zf()*unitf);
 
-                writeFloat(outStream, P3.xf()*unitf);
-                writeFloat(outStream, P3.yf()*unitf);
-                writeFloat(outStream, P3.zf()*unitf);
+                xfl::writeFloat(outStream, P3.xf()*unitf);
+                xfl::writeFloat(outStream, P3.yf()*unitf);
+                xfl::writeFloat(outStream, P3.zf()*unitf);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
@@ -2443,7 +2441,7 @@ int Body::makePanels(int nFirst, Vector3d const &pos, QVector<Panel> &panels, QV
                         panel.m_bIsInSymPlane  = false;
                         panel.m_bIsLeading     = false;
                         panel.m_bIsTrailing    = false;
-                        panel.m_Pos = BODYSURFACE;
+                        panel.m_Pos = xfl::BODYSURFACE;
                         panel.m_iElement = nPanels;
                         panel.m_bIsLeftPanel  = true;
                         panel.setPanelFrame(LA, LB, TA, TB);
@@ -2554,7 +2552,7 @@ int Body::makePanels(int nFirst, Vector3d const &pos, QVector<Panel> &panels, QV
                 panel.m_bIsInSymPlane  = false;
                 panel.m_bIsLeading     = false;
                 panel.m_bIsTrailing    = false;
-                panel.m_Pos = BODYSURFACE;
+                panel.m_Pos = xfl::BODYSURFACE;
                 panel.m_iElement = nPanels;
                 panel.m_bIsLeftPanel  = true;
                 panel.setPanelFrame(LA, LB, TA, TB);
@@ -2651,7 +2649,7 @@ int Body::makePanels(int nFirst, Vector3d const &pos, QVector<Panel> &panels, QV
             panel.m_bIsInSymPlane  = false;
             panel.m_bIsLeading     = false;
             panel.m_bIsTrailing    = false;
-            panel.m_Pos = BODYSURFACE;
+            panel.m_Pos = xfl::BODYSURFACE;
             panel.m_iElement = nPanels;
             panel.m_bIsLeftPanel  = false;
             panel.setPanelFrame(LA, LB, TA, TB);

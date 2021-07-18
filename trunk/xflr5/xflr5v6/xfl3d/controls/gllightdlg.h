@@ -36,7 +36,6 @@ class DoubleEdit;
 
 #include <xfl3d/controls/light.h>
 
-#define LIGHTREFLENGTH  10.0 //meters
 
 class GLLightDlg : public QDialog
 {

@@ -35,7 +35,6 @@
 MainFrame *FoilTreeView::s_pMainFrame = nullptr;
 XDirect *FoilTreeView::s_pXDirect   = nullptr;
 
-int FoilTreeView::s_Width=351;
 
 FoilTreeView::FoilTreeView(QWidget *pParent) : QWidget(pParent)
 {
@@ -90,26 +89,18 @@ FoilTreeView::~FoilTreeView()
 }
 
 
-void FoilTreeView::showEvent(QShowEvent *event)
+void FoilTreeView::showEvent(QShowEvent *pEvent)
 {
     m_pMainSplitter->restoreState(m_SplitterSizes);
-    event->accept();
+    QWidget::showEvent(pEvent);
 }
 
 
 void FoilTreeView::hideEvent(QHideEvent *pEvent)
 {
     m_SplitterSizes = m_pMainSplitter->saveState();
-    s_Width = width();
+
     QWidget::hideEvent(pEvent);
-}
-
-
-void FoilTreeView::resizeEvent(QResizeEvent *pEvent)
-{
-    s_Width = width();
-    updateGeometry(); // Notifies the layout system that the sizeHint() has changed
-    pEvent->accept();
 }
 
 
@@ -477,6 +468,15 @@ void FoilTreeView::onItemDoubleClicked(const QModelIndex &index)
     if(m_Selection==xfl::POLAR)
         s_pXDirect->onEditCurPolar();
 }
+
+
+void FoilTreeView::selectObjects()
+{
+    if     (s_pXDirect->curOpp())   selectOpPoint();
+    else if(s_pXDirect->curPolar()) selectPolar(s_pXDirect->curPolar());
+    else                            selectFoil(s_pXDirect->curFoil());
+}
+
 
 
 void FoilTreeView::selectFoil(Foil*pFoil)
@@ -975,7 +975,17 @@ void FoilTreeView::setCurveParams()
                 LineStyle ls(pPolar->theStyle());
                 ls.m_bIsEnabled = true;
                 pPolarItem->setTheStyle(ls);
-                pPolarItem->setCheckState(polarState(pPolar));
+
+                if(s_pXDirect->isPolarView())
+                {
+                    bool bCheck = pPolar->isVisible();
+                    bCheck = bCheck && (s_pXDirect->isPolarView() || s_pXDirect->isOppView()) ;
+                    pPolarItem->setCheckState(bCheck ? Qt::Checked : Qt::Unchecked);
+                }
+                else
+                {
+                    pPolarItem->setCheckState(polarState(pPolar));
+                }
 
                 for(int i2=0; i2<pPolarItem->rowCount(); i2++)
                 {
@@ -990,12 +1000,13 @@ void FoilTreeView::setCurveParams()
                         if(!pOpp) continue;
 
                         LineStyle ls(pOpp->theStyle());
-                        ls.m_bIsEnabled = true;
+                        ls.m_bIsEnabled = s_pXDirect->isOppView();
                         pOppItem->setTheStyle(ls);
-                        pOppItem->setCheckState(pOpp->isVisible() ? Qt::Checked : Qt::Unchecked);
+
+                        bool bCheck = pOpp->isVisible()&& s_pXDirect->isOppView();
+                        pOppItem->setCheckState(bCheck ? Qt::Checked : Qt::Unchecked);
                     }
                 }
-
             }
         }
     }
@@ -1033,7 +1044,6 @@ Qt::CheckState FoilTreeView::checkState(Polar *pPolar)
     for(int i=0; i<Objects2d::oppCount(); i++)
     {
         OpPoint *pOpp = Objects2d::oppAt(i);
-//        if(pOpp->isPolarOpp(pPolar))
         if(pPolar->hasOpp(pOpp))
         {
             bAllVisible = bAllVisible && pOpp->isVisible();

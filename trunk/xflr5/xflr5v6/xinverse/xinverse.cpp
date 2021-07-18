@@ -144,9 +144,7 @@ XInverse::XInverse(QWidget *parent)
     }
 }
 
-/**
- * The public destructor
- */
+
 XInverse::~XInverse()
 {
     delete m_pModFoil;
@@ -156,8 +154,9 @@ XInverse::~XInverse()
     //    delete m_pXInverseStyleDlg;
 }
 
+
 /**
- * Cancels the existing modification limits on the velocity curve
+ * Cancels the existing modification limits to the velocity curve
  */
 void XInverse::cancelMark()
 {
@@ -1266,7 +1265,6 @@ void XInverse::mouseReleaseEvent(QMouseEvent *event)
             }
             else if(m_bMark)
             {
-                //                m_pctrlOutput->append(" ");
                 if (m_Pos1 == m_Pos2) return;
 
                 m_Mk1 = m_Pos1;
@@ -1386,13 +1384,11 @@ void XInverse::onExecute()
     {
         setTAngle(m_pdeTAngle->value());
         setTGap(m_pdeTGapx->value(), m_pdeTGapy->value());
-        //        m_pctrlOutput->append("\n");
         execMDES();
     }
     else
     {
         m_pXFoil->niterq = m_pieIter->value();
-        //        m_pctrlOutput->append("\n");
         execQDES();
     }
     updateView();
@@ -2008,7 +2004,7 @@ void XInverse::paintFoil(QPainter &painter)
         FoilPen.setWidth(m_pRefFoil->lineWidth());
         painter.setPen(FoilPen);
 
-        drawFoil(painter, m_pRefFoil, -alpha, m_fScale, m_fScale*m_fYScale, m_ptOffset);
+        xfl::drawFoil(painter, m_pRefFoil, -alpha, m_fScale, m_fScale*m_fYScale, m_ptOffset);
         painter.drawLine(20, m_rGraphRect.bottom()+20, 40, m_rGraphRect.bottom()+20);
         painter.setPen(TextPen);
         painter.drawText(50, m_rGraphRect.bottom()+25, m_pRefFoil->name());
@@ -2021,7 +2017,7 @@ void XInverse::paintFoil(QPainter &painter)
         ModPen.setWidth(m_pModFoil->lineWidth());
         painter.setPen(ModPen);
 
-        drawFoil(painter, m_pModFoil, -alpha, m_fScale, m_fScale*m_fYScale, m_ptOffset);
+        xfl::drawFoil(painter, m_pModFoil, -alpha, m_fScale, m_fScale*m_fYScale, m_ptOffset);
         painter.drawLine(20, m_rGraphRect.bottom()+35, 40, m_rGraphRect.bottom()+35);
         painter.setPen(TextPen);
         painter.drawText(50, m_rGraphRect.bottom()+40, m_pModFoil->name());
@@ -2034,7 +2030,7 @@ void XInverse::paintFoil(QPainter &painter)
         ModPen.setWidth(m_pOverlayFoil->lineWidth());
         painter.setPen(ModPen);
 
-        drawFoil(painter, m_pOverlayFoil, -alpha, m_fScale, m_fScale*m_fYScale, m_ptOffset);
+        xfl::drawFoil(painter, m_pOverlayFoil, -alpha, m_fScale, m_fScale*m_fYScale, m_ptOffset);
         painter.drawLine(20, m_rGraphRect.bottom()+50, 40, m_rGraphRect.bottom()+50);
         painter.setPen(TextPen);
         painter.drawText(50, m_rGraphRect.bottom()+55, m_pOverlayFoil->name());
@@ -2047,7 +2043,7 @@ void XInverse::paintFoil(QPainter &painter)
         CtrlPen.setWidth(m_pRefFoil->lineWidth());
         painter.setPen(CtrlPen);
 
-        drawFoilPoints(painter, m_pRefFoil, -alpha, 1.0,  1.0, m_ptOffset, DisplayOptions::backgroundColor());
+        xfl::drawFoilPoints(painter, m_pRefFoil, -alpha, 1.0,  1.0, m_ptOffset, DisplayOptions::backgroundColor());
     }
 
     painter.setFont(DisplayOptions::textFont());
@@ -2750,10 +2746,8 @@ void XInverse::setupLayout()
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
         pMainLayout->addWidget(m_pswInv);
-        //        pMainLayout->addStretch(1);
 
         m_pmteOutput = new MinTextEdit(this);
-        //        m_pctrlOutput->setEnabled(true);
         m_pmteOutput->setAcceptRichText(true);
         pMainLayout->addWidget(m_pmteOutput);
     }

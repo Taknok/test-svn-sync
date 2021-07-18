@@ -23,6 +23,8 @@
 
 #include "planeopp.h"
 #include <xflcore/units.h>
+#include <xflcore/xflcore.h>
+#include <xflcore/mathelem.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/wpolar.h>
 #include <xflobjects/objects_global.h>
@@ -226,8 +228,8 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
         ar >> ArchiveFormat;
         if(ArchiveFormat<1000 || ArchiveFormat>1100) return false;
         //read variables
-        readCString(ar, m_PlaneName);
-        readCString(ar, m_WPlrName);
+        xfl::readCString(ar, m_PlaneName);
+        xfl::readCString(ar, m_WPlrName);
 
         //always a main wing
         if(m_pWOpp[0]!=nullptr) delete m_pWOpp[0];
@@ -285,7 +287,7 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
         ar >> m_theStyle.m_Width;
 
         int r,g,b;
-        readCOLORREF(ar, r,g,b);
+        xfl::readCOLORREF(ar, r,g,b);
 
         ar >>k;
         if(k==1)      m_WPolarType = xfl::FIXEDSPEEDPOLAR;
@@ -656,7 +658,7 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
             ar >> n; m_theStyle.setStipple(n);
             ar >> m_theStyle.m_Width;
             int a(0),r(0),g(0),b(0);
-            readQColor(ar, r, g, b, a);
+            xfl::readQColor(ar, r, g, b, a);
             m_theStyle.m_Color = {r,g,b,a};
 
             ar >> m_theStyle.m_bIsVisible >> boolean;

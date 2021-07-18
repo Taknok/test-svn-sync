@@ -45,12 +45,26 @@ class Vector2d
         float yf() const {return float(y);}
 
         //inline operators
-        double &operator[](int i)
+        double & coord(int i)
+        {
+            if      (i==0) return x;
+            else if (i==1) return y;
+            return x;
+        }
+
+        double const& coord(int i) const
+        {
+            if      (i==0) return x;
+            else if (i==1) return y;
+            return x;
+        }
+
+/*        double &operator[](int i)
         {
             if(i==0) return x;
             if(i==1) return y;
             return x;
-        }
+        }*/
 
         bool operator ==(Vector2d const &V)
         {
