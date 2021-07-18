@@ -20,13 +20,12 @@ class ColorMenuBtn : public QPushButton
         ColorMenuBtn(QWidget *pParent = nullptr, bool bShowLeft=false);
         ~ColorMenuBtn();
 
-        void paintEvent (QPaintEvent * pEvent);
-
-        void mousePressEvent(QMouseEvent *pEvent);
+        void paintEvent (QPaintEvent * pEvent) override;
+        void mousePressEvent(QMouseEvent *pEvent) override;
 
         void showLeft() {m_bShowLeft=true;}
 
-        QColor color() const {return m_Color;}
+        QColor const &color() const {return m_Color;}
         void setColor(QColor const & color);
 
         bool isCurrent() const {return m_bIsCurrent;}

@@ -438,9 +438,9 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
     if(pCurBody->isFlatPanelType())
     {
         nx = 0;
-        for(int i=0; i<pCurBody->frameCount()-1; i++) nx+=pCurBody->m_xPanels[i];
+        for(int i=0; i<pCurBody->frameCount()-1; i++) nx+=pCurBody->m_xPanels.at(i);
         nh = 0;
-        for(int i=0; i<pCurBody->sideLineCount()-1; i++) nh+=pCurBody->m_hPanels[i];
+        for(int i=0; i<pCurBody->sideLineCount()-1; i++) nh+=pCurBody->m_hPanels.at(i);
         FullSize = nx*nh*2;
         pCurBody->setNXPanels(nx);
         pCurBody->setNHPanels(nh);
@@ -449,36 +449,36 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
         {
             for (int j=0; j<pCurBody->m_xPanels[i]; j++)
             {
-                dj  = double( j) /double(pCurBody->m_xPanels[i]);
-                dj1 = double(j+1)/double(pCurBody->m_xPanels[i]);
+                dj  = double( j) /double(pCurBody->m_xPanels.at(i));
+                dj1 = double(j+1)/double(pCurBody->m_xPanels.at(i));
 
                 //body left side
                 lnh = 0;
                 for (int k=0; k<pCurBody->sideLineCount()-1; k++)
                 {
                     //build the four corner points of the strips
-                    PLB.x =  (1.0- dj) * pCurBody->framePosition(i)             +  dj * pCurBody->framePosition(i+1)              +dpx;
-                    PLB.y = -(1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k].y   -  dj * pCurBody->frame(i+1)->m_CtrlPoint[k].y;
-                    PLB.z =  (1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k].z   +  dj * pCurBody->frame(i+1)->m_CtrlPoint[k].z    +dpz;
+                    PLB.x =  (1.0- dj) * pCurBody->framePosition(i)                +  dj * pCurBody->framePosition(i+1)                 +dpx;
+                    PLB.y = -(1.0- dj) * pCurBody->frame(i)->m_CtrlPoint.at(k).y   -  dj * pCurBody->frame(i+1)->m_CtrlPoint.at(k).y;
+                    PLB.z =  (1.0- dj) * pCurBody->frame(i)->m_CtrlPoint.at(k).z   +  dj * pCurBody->frame(i+1)->m_CtrlPoint.at(k).z    +dpz;
 
-                    PTB.x =  (1.0-dj1) * pCurBody->framePosition(i)             + dj1 * pCurBody->framePosition(i+1)              +dpx;
-                    PTB.y = -(1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k].y   - dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k].y;
-                    PTB.z =  (1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k].z   + dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k].z    +dpz;
+                    PTB.x =  (1.0-dj1) * pCurBody->framePosition(i)                + dj1 * pCurBody->framePosition(i+1)                 +dpx;
+                    PTB.y = -(1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint.at(k).y   - dj1 * pCurBody->frame(i+1)->m_CtrlPoint.at(k).y;
+                    PTB.z =  (1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint.at(k).z   + dj1 * pCurBody->frame(i+1)->m_CtrlPoint.at(k).z    +dpz;
 
-                    PLA.x =  (1.0- dj) * pCurBody->framePosition(i)             +  dj * pCurBody->framePosition(i+1)              +dpx;
-                    PLA.y = -(1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k+1].y -  dj * pCurBody->frame(i+1)->m_CtrlPoint[k+1].y;
-                    PLA.z =  (1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k+1].z +  dj * pCurBody->frame(i+1)->m_CtrlPoint[k+1].z  +dpz;
+                    PLA.x =  (1.0- dj) * pCurBody->framePosition(i)                +  dj * pCurBody->framePosition(i+1)                 +dpx;
+                    PLA.y = -(1.0- dj) * pCurBody->frame(i)->m_CtrlPoint.at(k+1).y -  dj * pCurBody->frame(i+1)->m_CtrlPoint.at(k+1).y;
+                    PLA.z =  (1.0- dj) * pCurBody->frame(i)->m_CtrlPoint.at(k+1).z +  dj * pCurBody->frame(i+1)->m_CtrlPoint.at(k+1).z  +dpz;
 
-                    PTA.x =  (1.0-dj1) * pCurBody->framePosition(i)             + dj1 * pCurBody->framePosition(i+1)              +dpx;
-                    PTA.y = -(1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k+1].y - dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k+1].y;
-                    PTA.z =  (1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k+1].z + dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k+1].z  +dpz;
+                    PTA.x =  (1.0-dj1) * pCurBody->framePosition(i)                + dj1 * pCurBody->framePosition(i+1)                 +dpx;
+                    PTA.y = -(1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint.at(k+1).y - dj1 * pCurBody->frame(i+1)->m_CtrlPoint.at(k+1).y;
+                    PTA.z =  (1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint.at(k+1).z + dj1 * pCurBody->frame(i+1)->m_CtrlPoint.at(k+1).z  +dpz;
 
                     LB = PLB;
                     TB = PTB;
 
-                    for (int l=0; l<pCurBody->m_hPanels[k]; l++)
+                    for (int l=0; l<pCurBody->m_hPanels.at(k); l++)
                     {
-                        dl1  = double(l+1) / double(pCurBody->m_hPanels[k]);
+                        dl1  = double(l+1) / double(pCurBody->m_hPanels.at(k));
                         LA = PLB * (1.0- dl1) + PLA * dl1;
                         TA = PTB * (1.0- dl1) + PTA * dl1;
 
@@ -487,65 +487,68 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
                         n2 = isNode(LB);
                         n3 = isNode(TB);
 
+                        m_Panel.push_back(Panel());
+                        Panel &panel = m_Panel.back();
+
                         if(n0>=0) {
-                            m_Panel[m_MatSize].m_iLA = n0;
+                            panel.m_iLA = n0;
                         }
                         else {
-                            m_Panel[m_MatSize].m_iLA = m_Node.size();
+                            panel.m_iLA = m_Node.size();
                             m_Node.push_back(LA);
                         }
 
                         if(n1>=0) {
-                            m_Panel[m_MatSize].m_iTA = n1;
+                            panel.m_iTA = n1;
                         }
                         else {
-                            m_Panel[m_MatSize].m_iTA = m_Node.size();
+                            panel.m_iTA = m_Node.size();
                             m_Node.push_back(TA);
                         }
 
                         if(n2>=0) {
-                            m_Panel[m_MatSize].m_iLB = n2;
+                            panel.m_iLB = n2;
                         }
                         else {
-                            m_Panel[m_MatSize].m_iLB = m_Node.size();
+                            panel.m_iLB = m_Node.size();
                             m_Node.push_back(LB);
                         }
 
                         if(n3 >=0) {
-                            m_Panel[m_MatSize].m_iTB = n3;
+                            panel.m_iTB = n3;
                         }
                         else {
-                            m_Panel[m_MatSize].m_iTB = m_Node.size();
+                            panel.m_iTB = m_Node.size();
                             m_Node.push_back(TB);
                         }
 
                         LATB = TB - LA;
                         TALB = LB - TA;
-                        m_Panel[m_MatSize].Normal = LATB * TALB;
-                        m_Panel[m_MatSize].Area =  m_Panel[m_MatSize].Normal.norm()/2.0;
-                        m_Panel[m_MatSize].Normal.normalize();
+                        panel.Normal = LATB * TALB;
+                        panel.Area =  panel.Normal.norm()/2.0;
+                        panel.Normal.normalize();
 
-                        m_Panel[m_MatSize].m_bIsInSymPlane  = false;
-                        m_Panel[m_MatSize].m_bIsLeading     = false;
-                        m_Panel[m_MatSize].m_bIsTrailing    = false;
-                        m_Panel[m_MatSize].m_Pos = xfl::BODYSURFACE;
-                        m_Panel[m_MatSize].m_iElement = m_MatSize;
-                        m_Panel[m_MatSize].m_bIsLeftPanel  = true;
-                        m_Panel[m_MatSize].setPanelFrame(LA, LB, TA, TB);
+                        panel.m_bIsInSymPlane  = false;
+                        panel.m_bIsLeading     = false;
+                        panel.m_bIsTrailing    = false;
+                        panel.m_Pos = xfl::BODYSURFACE;
+                        panel.m_iElement = m_MatSize;
+                        panel.m_bIsLeftPanel  = true;
+                        panel.setPanelFrame(LA, LB, TA, TB);
 
                         // set neighbour panels
 
-                        m_Panel[m_MatSize].m_iPD = m_MatSize + nh;
-                        m_Panel[m_MatSize].m_iPU = m_MatSize - nh;
+                        panel.m_iPD = m_MatSize + nh;
+                        panel.m_iPU = m_MatSize - nh;
 
-                        if(lnx==0)      m_Panel[m_MatSize].m_iPU = -1;// no panel downstream
-                        if(lnx==nx-1)    m_Panel[m_MatSize].m_iPD = -1;// no panel upstream
+                        if(lnx==0)      panel.m_iPU = -1;// no panel downstream
+                        if(lnx==nx-1)   panel.m_iPD = -1;// no panel upstream
 
-                        m_Panel[m_MatSize].m_iPL = m_MatSize + 1;
-                        m_Panel[m_MatSize].m_iPR = m_MatSize - 1;
+                        panel.m_iPL = m_MatSize + 1;
+                        panel.m_iPR = m_MatSize - 1;
 
-                        if(lnh==0)     m_Panel[m_MatSize].m_iPR = InitialSize + FullSize - p - 1;
-                        if(lnh==nh-1)  m_Panel[m_MatSize].m_iPL = InitialSize + FullSize - p - 1;
+                        if(lnh==0)     panel.m_iPR = InitialSize + FullSize - p - 1;
+                        if(lnh==nh-1)  panel.m_iPL = InitialSize + FullSize - p - 1;
 
                         m_MatSize++;
                         p++;
@@ -564,8 +567,8 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
         //start with left side... same as for wings
         for (int k=0; k<nx; k++)
         {
-            uk  = pCurBody->m_XPanelPos[k];
-            uk1 = pCurBody->m_XPanelPos[k+1];
+            uk  = pCurBody->m_XPanelPos.at(k);
+            uk1 = pCurBody->m_XPanelPos.at(k+1);
 
             pCurBody->getPoint(uk,  0, false, LB);
             pCurBody->getPoint(uk1, 0, false, TB);
@@ -592,65 +595,68 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
                 n2 = isNode(LB);
                 n3 = isNode(TB);
 
+                m_Panel.push_back(Panel());
+                Panel &panel = m_Panel.back();
+
                 if(n0>=0) {
-                    m_Panel[m_MatSize].m_iLA = n0;
+                    panel.m_iLA = n0;
                 }
                 else {
-                    m_Panel[m_MatSize].m_iLA = m_Node.size();
+                    panel.m_iLA = m_Node.size();
                     m_Node.push_back(LA);
                 }
 
                 if(n1>=0) {
-                    m_Panel[m_MatSize].m_iTA = n1;
+                    panel.m_iTA = n1;
                 }
                 else {
-                    m_Panel[m_MatSize].m_iTA = m_Node.size();
+                    panel.m_iTA = m_Node.size();
                     m_Node.push_back(TA);
                 }
 
                 if(n2>=0) {
-                    m_Panel[m_MatSize].m_iLB = n2;
+                    panel.m_iLB = n2;
                 }
                 else {
-                    m_Panel[m_MatSize].m_iLB = m_Node.size();
+                    panel.m_iLB = m_Node.size();
                     m_Node.push_back(LB);
                 }
 
                 if(n3 >=0) {
-                    m_Panel[m_MatSize].m_iTB = n3;
+                    panel.m_iTB = n3;
                 }
                 else {
-                    m_Panel[m_MatSize].m_iTB = m_Node.size();
+                    panel.m_iTB = m_Node.size();
                     m_Node.push_back(TB);
                 }
 
                 LATB = TB - LA;
                 TALB = LB - TA;
-                m_Panel[m_MatSize].Normal = LATB * TALB;
-                m_Panel[m_MatSize].Area =  m_Panel[m_MatSize].Normal.norm()/2.0;
-                m_Panel[m_MatSize].Normal.normalize();
+                panel.Normal = LATB * TALB;
+                panel.Area =  panel.Normal.norm()/2.0;
+                panel.Normal.normalize();
 
-                m_Panel[m_MatSize].m_bIsInSymPlane  = false;
-                m_Panel[m_MatSize].m_bIsLeading     = false;
-                m_Panel[m_MatSize].m_bIsTrailing    = false;
-                m_Panel[m_MatSize].m_Pos = xfl::BODYSURFACE;
-                m_Panel[m_MatSize].m_iElement = m_MatSize;
-                m_Panel[m_MatSize].m_bIsLeftPanel  = true;
-                m_Panel[m_MatSize].setPanelFrame(LA, LB, TA, TB);
+                panel.m_bIsInSymPlane  = false;
+                panel.m_bIsLeading     = false;
+                panel.m_bIsTrailing    = false;
+                panel.m_Pos = xfl::BODYSURFACE;
+                panel.m_iElement = m_MatSize;
+                panel.m_bIsLeftPanel  = true;
+                panel.setPanelFrame(LA, LB, TA, TB);
 
                 // set neighbour panels
 
-                m_Panel[m_MatSize].m_iPD = m_MatSize + nh;
-                m_Panel[m_MatSize].m_iPU = m_MatSize - nh;
+                panel.m_iPD = m_MatSize + nh;
+                panel.m_iPU = m_MatSize - nh;
 
-                if(k==0)    m_Panel[m_MatSize].m_iPU = -1;// no panel downstream
-                if(k==nx-1) m_Panel[m_MatSize].m_iPD = -1;// no panel upstream
+                if(k==0)    panel.m_iPU = -1;// no panel downstream
+                if(k==nx-1) panel.m_iPD = -1;// no panel upstream
 
-                m_Panel[m_MatSize].m_iPL = m_MatSize + 1;
-                m_Panel[m_MatSize].m_iPR = m_MatSize - 1;
+                panel.m_iPL = m_MatSize + 1;
+                panel.m_iPR = m_MatSize - 1;
 
-                if(l==0)     m_Panel[m_MatSize].m_iPR = InitialSize + FullSize - p - 1;
-                if(l==nh-1)  m_Panel[m_MatSize].m_iPL = InitialSize + FullSize - p - 1;
+                if(l==0)     panel.m_iPR = InitialSize + FullSize - p - 1;
+                if(l==nh-1)  panel.m_iPL = InitialSize + FullSize - p - 1;
 
                 LB = LA;
                 TB = TA;
@@ -683,66 +689,69 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
             n2 = isNode(LB);
             n3 = isNode(TB);
 
+            m_Panel.push_back(Panel());
+            Panel &panel = m_Panel.back();
+
             if(n0>=0) {
-                m_Panel[m_MatSize].m_iLA = n0;
+                panel.m_iLA = n0;
             }
             else {
-                m_Panel[m_MatSize].m_iLA = m_Node.size();
+                panel.m_iLA = m_Node.size();
                 m_Node.push_back(LA);
             }
 
             if(n1>=0) {
-                m_Panel[m_MatSize].m_iTA = n1;
+                panel.m_iTA = n1;
             }
             else {
-                m_Panel[m_MatSize].m_iTA = m_Node.size();
+                panel.m_iTA = m_Node.size();
                 m_Node.push_back(TA);
             }
 
             if(n2>=0) {
-                m_Panel[m_MatSize].m_iLB = n2;
+                panel.m_iLB = n2;
             }
             else {
-                m_Panel[m_MatSize].m_iLB = m_Node.size();
+                panel.m_iLB = m_Node.size();
                 m_Node.push_back(LB);
             }
 
             if(n3 >=0) {
-                m_Panel[m_MatSize].m_iTB = n3;
+                panel.m_iTB = n3;
             }
             else {
-                m_Panel[m_MatSize].m_iTB = m_Node.size();
+                panel.m_iTB = m_Node.size();
                 m_Node.push_back(TB);
             }
 
             LATB = TB - LA;
             TALB = LB - TA;
-            m_Panel[m_MatSize].Normal = LATB * TALB;
-            m_Panel[m_MatSize].Area =  m_Panel[m_MatSize].Normal.norm()/2.0;
-            m_Panel[m_MatSize].Normal.normalize();
+            panel.Normal = LATB * TALB;
+            panel.Area =  panel.Normal.norm()/2.0;
+            panel.Normal.normalize();
 
-            m_Panel[m_MatSize].m_bIsInSymPlane  = false;
-            m_Panel[m_MatSize].m_bIsLeading     = false;
-            m_Panel[m_MatSize].m_bIsTrailing    = false;
-            m_Panel[m_MatSize].m_Pos = xfl::BODYSURFACE;
-            m_Panel[m_MatSize].m_iElement = m_MatSize;
-            m_Panel[m_MatSize].m_bIsLeftPanel  = false;
-            m_Panel[m_MatSize].setPanelFrame(LA, LB, TA, TB);
+            panel.m_bIsInSymPlane  = false;
+            panel.m_bIsLeading     = false;
+            panel.m_bIsTrailing    = false;
+            panel.m_Pos = xfl::BODYSURFACE;
+            panel.m_iElement = m_MatSize;
+            panel.m_bIsLeftPanel  = false;
+            panel.setPanelFrame(LA, LB, TA, TB);
 
             // set neighbour panels
             // valid only for Panel Analysis
 
-            m_Panel[m_MatSize].m_iPD = m_MatSize - nh;
-            m_Panel[m_MatSize].m_iPU = m_MatSize + nh;
+            panel.m_iPD = m_MatSize - nh;
+            panel.m_iPU = m_MatSize + nh;
 
-            if(k==0)    m_Panel[m_MatSize].m_iPU = -1;// no panel downstream
-            if(k==nx-1)    m_Panel[m_MatSize].m_iPD = -1;// no panel upstream
+            if(k==0)    panel.m_iPU = -1;// no panel downstream
+            if(k==nx-1)    panel.m_iPD = -1;// no panel upstream
 
-            m_Panel[m_MatSize].m_iPL = m_MatSize + 1;
-            m_Panel[m_MatSize].m_iPR = m_MatSize - 1;
+            panel.m_iPL = m_MatSize + 1;
+            panel.m_iPR = m_MatSize - 1;
 
-            if(l==0)     m_Panel[m_MatSize].m_iPL = InitialSize + FullSize - p - 1;
-            if(l==nh-1)  m_Panel[m_MatSize].m_iPR = InitialSize + FullSize - p - 1;
+            if(l==0)     panel.m_iPL = InitialSize + FullSize - p - 1;
+            if(l==nh-1)  panel.m_iPR = InitialSize + FullSize - p - 1;
 
             LB = LA;
             TB = TA;
