@@ -635,6 +635,7 @@ void PlaneDlg::onPlaneName()
 void PlaneDlg::onOK()
 {
     readParams();
+qDebug()<<"PlaneDlg::onOK"<<m_pPlane->m_WingLE[0].listCoords();
 
     m_pPlane->m_PlaneDescription = m_ptePlaneDescription->toPlainText();
 
@@ -648,35 +649,6 @@ void PlaneDlg::onOK()
         QMessageBox::warning(this, tr("Warning"), strange);
         return;
     }
-
-
-    /*    //check the number of surfaces
-    int nSurfaces = 0;
-    for (int j=0; j<m_pPlane->wing()->NWingSection()-1; j++)
-    {
-        if(qAbs(m_pPlane->wing()->YPosition(j)-m_pPlane->wing()->YPosition(j+1)) > Wing::s_MinPanelSize) nSurfaces+=2;
-    }
-    if(m_pPlane->stab())
-    {
-        for (int j=0; j<m_pPlane->stab()->NWingSection()-1; j++)
-        {
-            if(qAbs(m_pPlane->stab()->YPosition(j)-m_pPlane->stab()->YPosition(j+1)) > Wing::s_MinPanelSize) nSurfaces+=2;
-        }
-    }
-
-    if(m_pPlane->fin())
-    {
-        for (int j=0; j<m_pPlane->fin()->NWingSection()-1; j++)
-        {
-            if(qAbs(m_pPlane->fin()->YPosition(j)-m_pPlane->fin()->YPosition(j+1)) > Wing::s_MinPanelSize)
-            {
-                if((m_pPlane->m_bSymFin) || m_pPlane->m_bDoubleFin)
-                    nSurfaces += 2;
-                else
-                    nSurfaces += 1;
-            }
-        }
-    }*/
 
     m_pPlane->computeBodyAxisInertia();
 
@@ -735,8 +707,6 @@ void PlaneDlg::onSymFin()
     m_pglPlaneView->resetPlane();
     m_pglPlaneView->update();
 }
-
-
 
 
 void PlaneDlg::readParams()

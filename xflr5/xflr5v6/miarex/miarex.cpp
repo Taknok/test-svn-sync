@@ -3516,7 +3516,6 @@ void Miarex::onEditCurObject()
 }
 
 
-
 /**
  * The user has requested an edition of the current Plane
  * Launches the dialog box, and maps the data depending on whether the user wants to overwrite, create a new object, or has cancelled the request.
@@ -3527,6 +3526,7 @@ void Miarex::onEditCurPlane()
     m_pgl3dMiarexView->m_bArcball = false;
     if(!m_pCurPlane) return;
 
+    qDebug()<<"onEditCurPlane"<<m_pCurPlane->m_WingLE[0].listCoords();
 
     WPolar *pWPolar = nullptr;
     PlaneOpp* pPOpp = nullptr;

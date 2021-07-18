@@ -772,6 +772,7 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
  */
 bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 {
+    bool bl(false);
     int k(0);
     double dble(0), mass(0), px(0), py(0), pz(0);
     QString str;
@@ -840,7 +841,6 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 
         if(ArchiveFormat>=100002)  m_theStyle.serializeFl5(ar, bIsStoring);
 
-
         m_Wing[0].serializeWingXFL(ar, bIsStoring);
         m_Wing[1].serializeWingXFL(ar, bIsStoring);
         m_Wing[2].serializeWingXFL(ar, bIsStoring);
@@ -851,12 +851,30 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
         m_Wing[2].setWingType(xfl::ELEVATOR);
         m_Wing[3].setWingType(xfl::FIN);
 
-        bool bl;
         ar >> m_bBiplane>> m_bStab >>m_bFin >> m_Wing[3].m_bDoubleFin >> m_Wing[3].m_bSymFin >> bl; // m_bDoubleSymFin;
 
         for(int iw=0; iw<MAXWINGS; iw++)
         {
-            ar >> m_WingLE[iw].x >> m_WingLE[iw].y >> m_WingLE[iw].z >> m_WingTiltAngle[iw];
+            ar >> px >> py >> pz >> dble;
+            // correcting past errors
+/*            qDebug()<<qIsFinite(px)<<qIsFinite(py)<<qIsFinite(pz);
+            qDebug()<<qIsInf(px)<<qIsInf(py)<<qIsInf(pz);
+            qDebug()<<qIsNaN(px)<<qIsNaN(py)<<qIsNaN(pz);*/
+            if(std::isnan(px))   px = 0.0;
+            if(std::isnan(py))   py = 0.0;
+            if(std::isnan(pz))   pz = 0.0;
+            if(std::isnan(dble)) dble = 0.0;
+            if(fabs(px)  <LENGTHPRECISION) px = 0.0;
+            if(fabs(py)  <LENGTHPRECISION) py = 0.0;
+            if(fabs(pz)  <LENGTHPRECISION) pz = 0.0;
+            if(fabs(dble)<LENGTHPRECISION) dble = 0.0;
+            if(fabs(px)  >1000.0) px = 0.0;
+            if(fabs(py)  >1000.0) py = 0.0;
+            if(fabs(pz)  >1000.0) pz = 0.0;
+            if(fabs(dble)>1000.0) dble = 0.0;
+
+            m_WingLE[iw].set(px, py, pz);
+            m_WingTiltAngle[iw] = dble;
         }
 
         ar >> m_bBody;

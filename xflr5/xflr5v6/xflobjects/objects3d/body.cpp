@@ -1664,9 +1664,10 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
         ar >> m_BodyName;
         ar >> m_BodyDescription;
 
-        int a,r,g,b;
+/*        int a,r,g,b;
         xfl::readQColor(ar, r, g, b, a);
-        m_BodyColor = QColor(r,g,b,a);
+        m_BodyColor = QColor(r,g,b,a); */
+        ar >> m_BodyColor;
 
         ar >> k;
         if(k==1) m_LineType = xfl::BODYPANELTYPE;

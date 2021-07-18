@@ -29,7 +29,7 @@ QSize ColorBtn::sizeHint() const
 {
     QFont font; // the application's default font, avoid custom font to ensure fixed size widget
     QFontMetrics fm(font);
-    int w = std::max(25, 3*fm.averageCharWidth());
+    int w = 11*fm.averageCharWidth();
     int h = fm.height();
     return QSize(w, h);
 }

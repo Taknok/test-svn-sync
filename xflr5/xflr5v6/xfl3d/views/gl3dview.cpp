@@ -512,7 +512,6 @@ void gl3dView::mouseReleaseEvent(QMouseEvent * pEvent )
     m_ArcBall.getRotationMatrix(m_MatOut, true);
     setViewportTranslation();
 
-
     if(s_bSpinAnimation)
     {
         int movetime = m_MoveTime.elapsed();

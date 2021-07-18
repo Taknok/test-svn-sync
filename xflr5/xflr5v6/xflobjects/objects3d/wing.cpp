@@ -2461,11 +2461,11 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 {
     QString tag;
     QString rightfoil, leftfoil;
-    int nx=0, ny=0;
-    int k=0, n=0, is=0;
-    int ArchiveFormat=0;// identifies the format of the file
-    double dble=0, dm=0, px=0, py=0, pz=0;
-    double chord=0, twist=0, pos=0, dihedral=0, offset=0;
+    int nx(0), ny(0);
+    int k(0), n(0), is(0);
+    int ArchiveFormat(0);// identifies the format of the file
+    double dble(0), dm(0), px(0), py(0), pz(0);
+    double chord(0), twist(0), pos(0), dihedral(0), offset(0);
     xfl::enumPanelDistribution xDist, yDist;
 
     if(bIsStoring)
@@ -2568,9 +2568,11 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
         ar >> m_WingName;
         ar >> m_WingDescription;
 
-        int a,r,g,b;
+/*        int a,r,g,b;
         xfl::readQColor(ar, r, g, b, a);
         m_Color = {r,g,b,a};
+*/
+        ar >> m_Color;
 
         ar >> m_bSymetric;
 
@@ -2595,7 +2597,7 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
             else           xDist = xfl::UNIFORM;
 
             ar >> k;
-            if(k==1)       yDist = xfl::COSINE;
+            if     (k== 1) yDist = xfl::COSINE;
             else if(k== 2) yDist = xfl::SINE;
             else if(k==-2) yDist = xfl::INVERSESINE;
             else           yDist = xfl::UNIFORM;
@@ -2644,9 +2646,6 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
         return true;
     }
 }
-
-
-
 
 
 /**
