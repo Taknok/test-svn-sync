@@ -49,12 +49,11 @@ ManageFoilsDlg::ManageFoilsDlg(QWidget *pParent) : QDialog(pParent)
     m_pFoil = nullptr;
     setupLayout();
 
-    connect(m_pctrlDelete, SIGNAL(clicked()),this, SLOT(onDelete()));
-    connect(m_pctrlRename, SIGNAL(clicked()),this, SLOT(onRename()));
-    connect(m_pctrlExport, SIGNAL(clicked()),this, SLOT(onExport()));
-    connect(m_pctrlFoilTable, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(onDoubleClickTable(const QModelIndex &)));
+    connect(m_ppbDelete, SIGNAL(clicked()),this, SLOT(onDelete()));
+    connect(m_ppbRename, SIGNAL(clicked()),this, SLOT(onRename()));
+    connect(m_ppbExport, SIGNAL(clicked()),this, SLOT(onExport()));
+    connect(m_ptvFoils, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(onDoubleClickTable(const QModelIndex &)));
 }
-
 
 
 void ManageFoilsDlg::initDialog(QString FoilName)
@@ -74,14 +73,14 @@ void ManageFoilsDlg::initDialog(QString FoilName)
 
                 if(strong == FoilName)
                 {
-                    m_pctrlFoilTable->selectRow(i);
+                    m_ptvFoils->selectRow(i);
                     break;
                 }
             }
         }
         else
         {
-            m_pctrlFoilTable->selectRow(0);
+            m_ptvFoils->selectRow(0);
             QStandardItem *pItem = m_pFoilModel->item(0,0);
             FoilName = pItem->text();
         }
@@ -134,9 +133,9 @@ void ManageFoilsDlg::setupLayout()
 {
     QVBoxLayout *pCommandButtons = new QVBoxLayout;
     {
-        m_pctrlDelete     = new QPushButton(tr("Delete"));
-        m_pctrlRename     = new QPushButton(tr("Rename"));
-        m_pctrlExport     = new QPushButton(tr("Export Foil"));
+        m_ppbDelete     = new QPushButton(tr("Delete"));
+        m_ppbRename     = new QPushButton(tr("Rename"));
+        m_ppbExport     = new QPushButton(tr("Export Foil"));
 
         m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Close);
         {
@@ -144,37 +143,37 @@ void ManageFoilsDlg::setupLayout()
         }
 
         pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(m_pctrlDelete);
-        pCommandButtons->addWidget(m_pctrlRename);
-        pCommandButtons->addWidget(m_pctrlExport);
+        pCommandButtons->addWidget(m_ppbDelete);
+        pCommandButtons->addWidget(m_ppbRename);
+        pCommandButtons->addWidget(m_ppbExport);
         pCommandButtons->addStretch(2);
         pCommandButtons->addWidget(m_pButtonBox);
         pCommandButtons->addStretch(1);
     }
 
-    m_pctrlFoilTable   = new QTableView(this);
-    m_pctrlFoilTable->setFont(DisplayOptions::tableFont());
-    m_pctrlFoilTable->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_pctrlFoilTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_pctrlFoilTable->horizontalHeader()->setStretchLastSection(true);
+    m_ptvFoils   = new QTableView(this);
+    m_ptvFoils->setFont(DisplayOptions::tableFont());
+    m_ptvFoils->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_ptvFoils->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_ptvFoils->horizontalHeader()->setStretchLastSection(true);
 
     QSizePolicy szPolicyExpanding;
     szPolicyExpanding.setHorizontalPolicy(QSizePolicy::MinimumExpanding);
     szPolicyExpanding.setVerticalPolicy(QSizePolicy::Expanding);
-    m_pctrlFoilTable->setSizePolicy(szPolicyExpanding);
+    m_ptvFoils->setSizePolicy(szPolicyExpanding);
 
     QHBoxLayout * pMainLayout = new QHBoxLayout(this);
     {
-        pMainLayout->addWidget(m_pctrlFoilTable);
+        pMainLayout->addWidget(m_ptvFoils);
         pMainLayout->addLayout(pCommandButtons);
 
-        pMainLayout->setStretchFactor(m_pctrlFoilTable,1);
+        pMainLayout->setStretchFactor(m_ptvFoils,1);
     }
     setLayout(pMainLayout);
 
 
-    connect(m_pctrlFoilTable, SIGNAL(clicked(const QModelIndex &)), SLOT(onFoilClicked(const QModelIndex&)));
-    connect(m_pctrlFoilTable, SIGNAL(pressed(const QModelIndex &)), SLOT(onFoilClicked(const QModelIndex&)));
+    connect(m_ptvFoils, SIGNAL(clicked(const QModelIndex &)), SLOT(onFoilClicked(const QModelIndex&)));
+    connect(m_ptvFoils, SIGNAL(pressed(const QModelIndex &)), SLOT(onFoilClicked(const QModelIndex&)));
 
 
     m_pFoilModel = new QStandardItemModel(this);
@@ -194,12 +193,12 @@ void ManageFoilsDlg::setupLayout()
     m_pFoilModel->setHeaderData(10, Qt::Horizontal, tr("LE XHinge"));
     m_pFoilModel->setHeaderData(11, Qt::Horizontal, tr("LE YHinge"));
 
-    m_pctrlFoilTable->setModel(m_pFoilModel);
-    m_pctrlFoilTable->setWindowTitle(tr("Foils"));
+    m_ptvFoils->setModel(m_pFoilModel);
+    m_ptvFoils->setWindowTitle(tr("Foils"));
 
     m_pFoilDelegate = new FoilTableDelegate(this);
     m_pFoilDelegate->m_pManageFoils = this;
-    m_pctrlFoilTable->setItemDelegate(m_pFoilDelegate);
+    m_ptvFoils->setItemDelegate(m_pFoilDelegate);
     m_pFoilDelegate->m_pFoilModel = m_pFoilModel;
 
     QVector<int> m_precision(12,2);
@@ -334,14 +333,14 @@ void ManageFoilsDlg::onDelete()
 
     Objects2d::deleteFoil(m_pFoil);
 
-    QModelIndex index = m_pctrlFoilTable->currentIndex();
+    QModelIndex index = m_ptvFoils->currentIndex();
     int sel = qMax(index.row()-1,0);
 
     fillFoilTable();
 
     if(m_pFoilModel->rowCount()>0)
     {
-        m_pctrlFoilTable->selectRow(sel);
+        m_ptvFoils->selectRow(sel);
 
         QStandardItem *pItem = m_pFoilModel->item(sel,0);
         QString FoilName = pItem->text();
@@ -374,25 +373,25 @@ void ManageFoilsDlg::onFoilClicked(const QModelIndex& index)
 
 void ManageFoilsDlg::resizeEvent(QResizeEvent *pEvent)
 {
-    int w = m_pctrlFoilTable->width();
+    int w = m_ptvFoils->width();
     int w12 = int(double(w)/13.0);
     int w14 = int(double(w)/15.0);
 
-    m_pctrlFoilTable->setColumnWidth(1,w12);
-    m_pctrlFoilTable->setColumnWidth(2,w12);
-    m_pctrlFoilTable->setColumnWidth(3,w12);
-    m_pctrlFoilTable->setColumnWidth(4,w12);
-    m_pctrlFoilTable->setColumnWidth(5,w14);//points
+    m_ptvFoils->setColumnWidth(1,w12);
+    m_ptvFoils->setColumnWidth(2,w12);
+    m_ptvFoils->setColumnWidth(3,w12);
+    m_ptvFoils->setColumnWidth(4,w12);
+    m_ptvFoils->setColumnWidth(5,w14);//points
 
-    m_pctrlFoilTable->setColumnWidth(6,w14);//TE Flap
-    m_pctrlFoilTable->setColumnWidth(7,w12);//TE XHinge
-    m_pctrlFoilTable->setColumnWidth(8,w12);//TE YHinge
+    m_ptvFoils->setColumnWidth(6,w14);//TE Flap
+    m_ptvFoils->setColumnWidth(7,w12);//TE XHinge
+    m_ptvFoils->setColumnWidth(8,w12);//TE YHinge
 
-    m_pctrlFoilTable->setColumnWidth(9, w14);//LE Flap
-    m_pctrlFoilTable->setColumnWidth(10,w12);//LE XHinge
-    m_pctrlFoilTable->setColumnWidth(11,w12);//LE YHinge
+    m_ptvFoils->setColumnWidth(9, w14);//LE Flap
+    m_ptvFoils->setColumnWidth(10,w12);//LE XHinge
+    m_ptvFoils->setColumnWidth(11,w12);//LE YHinge
 
-    m_pctrlFoilTable->setColumnWidth(0,w-8*w12-3*w14-40);
+    m_ptvFoils->setColumnWidth(0,w-8*w12-3*w14-40);
     pEvent->accept();
 }
 

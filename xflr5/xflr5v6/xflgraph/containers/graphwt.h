@@ -50,6 +50,9 @@ class GraphWt : public QWidget
 
         void setOverlayedRect(bool bShow, double tlx, double tly, double brx, double bry);
 
+        void setDefaultSize(QSize sz) {m_DefaultSize = sz;}
+        void setMinSize(QSize sz){m_MinSize = sz;}
+
         static QColor const& textFontColor() {return s_TextColor;}
         static void setTextColor(QColor textcolor) {s_TextColor=textcolor;}
         static void setBackgroundColor(QColor bkcolor) {s_BackgroundColor=bkcolor;}
@@ -68,6 +71,7 @@ class GraphWt : public QWidget
         void mouseReleaseEvent(QMouseEvent *pEvent) override;
         void wheelEvent (QWheelEvent *pEvent) override;
 
+        QSize sizeHint() const override {return m_DefaultSize;}
 
     signals:
         void graphChanged(Graph *);
@@ -78,6 +82,9 @@ class GraphWt : public QWidget
         void onResetGraphScales();
 
     protected:
+
+        QSize m_DefaultSize;
+        QSize m_MinSize;
 
         QPoint m_TitlePosition;
         QString m_GraphTitle;

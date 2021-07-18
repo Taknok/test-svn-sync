@@ -40,7 +40,7 @@ class LogWt : public QWidget
         void keyPressEvent(QKeyEvent *event);
         void showEvent(QShowEvent *event);
         void hideEvent(QHideEvent *event);
-        QPushButton *ctrlButton() {return m_pctrlButton;}
+        QPushButton *ctrlButton() {return m_ppbButton;}
 
         QSize sizeHint() const {return QSize(900,550);}
 
@@ -62,8 +62,8 @@ class LogWt : public QWidget
 
         bool m_bFinished;
 
-        QPlainTextEdit *m_pctrlLogView;
-        QPushButton *m_pctrlButton;
+        QPlainTextEdit *m_ppteLogView;
+        QPushButton *m_ppbButton;
 
         QTimer m_Timer;
 

@@ -149,11 +149,11 @@ class GL3dWingDlg: public QDialog
         gl3dWingView *m_pglWingView;              /**< a pointer to the openGL 3.0 widget where 3d calculations and rendering are performed */
 
         QLineEdit *m_pleWingName;
-        QTextEdit *m_pctrlWingDescription;
+        QTextEdit *m_pteWingDescription;
         QCheckBox *m_pchSymetric;
         QRadioButton *m_prbLeftSide, *m_prbRightSide;
         ColorBtn *m_pcbWingColor;
-        QPushButton *m_pctrlResetMesh;
+        QPushButton *m_ppbResetMesh;
         QPushButton *m_ppbInsertBefore, *m_ppbInsertAfter, *m_ppbDeleteSection;
         QLabel *m_plabWingSpan, *m_plabWingArea, *m_plabMAC, *m_plabGeomChord;
         QLabel *m_plabAspectRatio, *m_plabTaperRatio, *m_plabSweep, *m_plabNFlaps;
@@ -179,11 +179,9 @@ class GL3dWingDlg: public QDialog
 
         QAction *m_pResetScales;
 
-
         QMenu *m_pContextMenu;
         QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteSection, *m_pResetSection;
 
-        QWidget *m_pctrlControlsWidget;
         QSplitter *m_pspLeftSide;
         QSplitter *m_pspHorizontal;
 

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     RenameDlg Class
-        Copyright (C) André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -62,10 +62,10 @@ class RenameDlg : public QDialog
         bool m_bEnableOverwrite;
         bool m_bExists;
 
-        QLabel      *m_pctrlMessage;
-        QLineEdit   *m_pctrlName;
-        QListWidget *m_pctrlNameList;
-        QPushButton *m_pctrlOverwrite;
+        QLabel      *m_plabMessage;
+        QLineEdit   *m_pleName;
+        QListWidget *m_plwNameList;
+        QPushButton *m_ppbOverwrite;
         QDialogButtonBox *m_pButtonBox;
 };
 

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Units Class
-    Copyright (C) 2015-2018 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -91,24 +91,24 @@ class Units : public QWidget
         void onSelChanged(const QString &);
 
     private:
-        QComboBox    *m_pctrlMoment;
-        QComboBox    *m_pctrlSurface;
-        QComboBox    *m_pctrlWeight;
-        QComboBox    *m_pctrlSpeed;
-        QComboBox    *m_pctrlLength;
-        QComboBox    *m_pctrlForce;
-        QComboBox   *m_pctrlPressure;
-        QComboBox   *m_pctrlInertia;
-        QLabel *m_pctrlForceFactor,    *m_pctrlForceInvFactor;
-        QLabel *m_pctrlLengthFactor,   *m_pctrlLengthInvFactor;
-        QLabel *m_pctrlSpeedFactor,    *m_pctrlSpeedInvFactor;
-        QLabel *m_pctrlSurfaceFactor,  *m_pctrlSurfaceInvFactor;
-        QLabel *m_pctrlWeightFactor,   *m_pctrlWeightInvFactor;
-        QLabel *m_pctrlMomentFactor,   *m_pctrlMomentInvFactor;
-        QLabel *m_pctrlPressureFactor, *m_pctrlPressureInvFactor;
-        QLabel *m_pctrlInertiaFactor, *m_pctrlInertiaInvFactor;
+        QComboBox  *m_pcbMoment;
+        QComboBox  *m_pcbSurface;
+        QComboBox  *m_pcbWeight;
+        QComboBox  *m_pcbSpeed;
+        QComboBox  *m_pcbLength;
+        QComboBox  *m_pcbForce;
+        QComboBox  *m_pcbPressure;
+        QComboBox  *m_pcbInertia;
+        QLabel *m_plabForceFactor,    *m_plabForceInvFactor;
+        QLabel *m_plabLengthFactor,   *m_plabLengthInvFactor;
+        QLabel *m_plabSpeedFactor,    *m_plabSpeedInvFactor;
+        QLabel *m_plabSurfaceFactor,  *m_plabSurfaceInvFactor;
+        QLabel *m_plabWeightFactor,   *m_plabWeightInvFactor;
+        QLabel *m_plabMomentFactor,   *m_plabMomentInvFactor;
+        QLabel *m_plabPressureFactor, *m_plabPressureInvFactor;
+        QLabel *m_plabInertiaFactor,  *m_plabInertiaInvFactor;
 
-        QLabel *m_pctrlQuestion;
+        QLabel *m_plabQuestion;
 
     private:
         void setupLayout();

@@ -85,12 +85,6 @@ void gl3dPlaneView::glRenderView()
 }
 
 
-void gl3dPlaneView::on3dReset()
-{
-    startResetTimer(m_pPlane->span());
-}
-
-
 bool gl3dPlaneView::intersectTheObject(Vector3d const &AA,  Vector3d const &BB, Vector3d &I)
 {
     Vector3d U = (BB-AA).normalized();

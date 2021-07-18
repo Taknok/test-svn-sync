@@ -52,11 +52,6 @@ void gl3dWingView::setWing(Wing const*pWing)
     }*/
 }
 
-void gl3dWingView::on3dReset()
-{
-    startResetTimer(m_pWing->planformSpan());
-}
-
 
 bool gl3dWingView::intersectTheObject(Vector3d const &AA,  Vector3d const &BB, Vector3d &I)
 {
@@ -97,7 +92,7 @@ void gl3dWingView::glMakeWingSectionHighlight(Wing const*pWing, int iSectionHigh
             for (int lx=0; lx<CHORDPOINTS; lx++)
             {
                 double xRel = double(lx)/double(CHORDPOINTS-1);
-                pSurf->getSidePoint(xRel, true, TOPSURFACE, Point, Normal);
+                pSurf->getSidePoint(xRel, true, xfl::TOPSURFACE, Point, Normal);
 
                 pHighlightVertexArray[iv++] = Point.xf();
                 pHighlightVertexArray[iv++] = Point.yf();
@@ -106,7 +101,7 @@ void gl3dWingView::glMakeWingSectionHighlight(Wing const*pWing, int iSectionHigh
             for (int lx=CHORDPOINTS-1; lx>=0; lx--)
             {
                 double xRel = double(lx)/double(CHORDPOINTS-1);
-                pSurf->getSidePoint(xRel, true, BOTSURFACE, Point, Normal);
+                pSurf->getSidePoint(xRel, true, xfl::BOTSURFACE, Point, Normal);
                 pHighlightVertexArray[iv++] = Point.xf();
                 pHighlightVertexArray[iv++] = Point.yf();
                 pHighlightVertexArray[iv++] = Point.zf();
@@ -126,7 +121,7 @@ void gl3dWingView::glMakeWingSectionHighlight(Wing const*pWing, int iSectionHigh
                 for (int lx=0; lx<CHORDPOINTS; lx++)
                 {
                     double xRel = double(lx)/double(CHORDPOINTS-1);
-                    pSurf->getSidePoint(xRel, true, TOPSURFACE, Point, Normal);
+                    pSurf->getSidePoint(xRel, true, xfl::TOPSURFACE, Point, Normal);
                     pHighlightVertexArray[iv++] = Point.xf();
                     pHighlightVertexArray[iv++] = Point.yf();
                     pHighlightVertexArray[iv++] = Point.zf();
@@ -134,7 +129,7 @@ void gl3dWingView::glMakeWingSectionHighlight(Wing const*pWing, int iSectionHigh
                 for (int lx=CHORDPOINTS-1; lx>=0; lx--)
                 {
                     double xRel = double(lx)/double(CHORDPOINTS-1);
-                    pSurf->getSidePoint(xRel, true, BOTSURFACE, Point, Normal);
+                    pSurf->getSidePoint(xRel, true, xfl::BOTSURFACE, Point, Normal);
                     pHighlightVertexArray[iv++] = Point.xf();
                     pHighlightVertexArray[iv++] = Point.yf();
                     pHighlightVertexArray[iv++] = Point.zf();
@@ -154,7 +149,7 @@ void gl3dWingView::glMakeWingSectionHighlight(Wing const*pWing, int iSectionHigh
                 for (int lx=0; lx<CHORDPOINTS; lx++)
                 {
                     double xRel = double(lx)/double(CHORDPOINTS-1);
-                    pSurf->getSidePoint(xRel, false, TOPSURFACE, Point, Normal);
+                    pSurf->getSidePoint(xRel, false, xfl::TOPSURFACE, Point, Normal);
                     pHighlightVertexArray[iv++] = Point.xf();
                     pHighlightVertexArray[iv++] = Point.yf();
                     pHighlightVertexArray[iv++] = Point.zf();
@@ -163,7 +158,7 @@ void gl3dWingView::glMakeWingSectionHighlight(Wing const*pWing, int iSectionHigh
                 for (int lx=CHORDPOINTS-1; lx>=0; lx--)
                 {
                     double xRel = double(lx)/double(CHORDPOINTS-1);
-                    pSurf->getSidePoint(xRel, false, BOTSURFACE, Point, Normal);
+                    pSurf->getSidePoint(xRel, false, xfl::BOTSURFACE, Point, Normal);
                     pHighlightVertexArray[iv++] = Point.xf();
                     pHighlightVertexArray[iv++] = Point.yf();
                     pHighlightVertexArray[iv++] = Point.zf();

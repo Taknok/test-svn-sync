@@ -505,14 +505,7 @@ void Miarex::onCheckViewIcons()
 void Miarex::setControls()
 {
     blockSignals(true);
-/*
-    if     (m_iView==xfl::W3DVIEW)       m_pswBottomControls->setCurrentIndex(0);
-    else if(m_iView==xfl::WPOLARVIEW)    m_pswBottomControls->setCurrentIndex(1);
-    else if(m_iView==xfl::WCPVIEW)       m_pswBottomControls->setCurrentIndex(2);
-    else if(m_iView==xfl::STABTIMEVIEW ) m_pswBottomControls->setCurrentIndex(1);
-    else if(m_iView==xfl::STABPOLARVIEW) m_pswBottomControls->setCurrentIndex(1);
-    else                                 m_pswBottomControls->setCurrentIndex(0);
-*/
+
     m_pCpBox->setVisible(m_iView==xfl::WCPVIEW);
     m_pThreeDViewBox->setVisible(m_iView==xfl::W3DVIEW);
 
@@ -527,14 +520,6 @@ void Miarex::setControls()
 
 
     m_pchInitLLTCalc->setEnabled(m_pCurWPolar && m_pCurWPolar->analysisMethod()==xfl::LLTMETHOD);
-
-/*    s_pMainFrame->m_pWOppAct->setChecked(m_iView==XFLR5::WOPPVIEW);
-    s_pMainFrame->m_pWPolarAct->setChecked(m_iView==XFLR5::WPOLARVIEW);
-    s_pMainFrame->m_pW3DAct->setChecked(m_iView==XFLR5::W3DVIEW);
-    s_pMainFrame->m_pCpViewAct->setChecked(m_iView==XFLR5::WCPVIEW);
-
-    s_pMainFrame->m_pStabTimeAct->setChecked(m_iView==XFLR5::STABTIMEVIEW);
-    s_pMainFrame->m_pRootLocusAct->setChecked(m_iView==XFLR5::STABPOLARVIEW);*/
 
     s_pMainFrame->m_pShowWing2Curve->setChecked(m_bShowWingCurve[1]);
     s_pMainFrame->m_pShowStabCurve->setChecked(m_bShowWingCurve[2]);
@@ -649,9 +634,9 @@ void Miarex::setControls()
     m_pchFoilNames->setEnabled(m_pCurPlane);
 
     m_pchPanels->setChecked(m_pgl3dMiarexView->m_bVLMPanels);
-    //    m_pctrlPanels->setEnabled(m_pCurPlane && m_pCurWPolar &&  !m_pCurWPolar->isLLTMethod());
 
     setAnalysisParams();
+    m_pPlaneTreeView->setCurveParams();
 
     blockSignals(false);
     update();
@@ -730,7 +715,7 @@ void Miarex::createCpCurves()
         SpanInc = -m_pCurPlane->planformSpan()/2.0;
         for (int p=0; p<m_pCurPlane->m_Wing[0].m_MatSize; p++)
         {
-            if(m_pCurPlane->m_Wing[0].m_pWingPanel[p].m_bIsTrailing && m_pCurPlane->m_Wing[0].m_pWingPanel[p].m_Pos<=MIDSURFACE)
+            if(m_pCurPlane->m_Wing[0].m_pWingPanel[p].m_bIsTrailing && m_pCurPlane->m_Wing[0].m_pWingPanel[p].m_Pos<=xfl::MIDSURFACE)
             {
                 SpanInc += m_pCurPlane->m_Wing[0].m_pWingPanel[p].width();
                 if(SpanPos<=SpanInc || qAbs(SpanPos-SpanInc)/m_pCurPlane->planformSpan()<0.001)
@@ -751,7 +736,7 @@ void Miarex::createCpCurves()
                 SpanInc = -pWing(iw)->m_PlanformSpan/2.0;
                 for (p=0; p<pWing(iw)->m_MatSize; p++)
                 {
-                    if(pWing(iw)->m_pWingPanel[p].m_bIsTrailing && pWing(iw)->m_pWingPanel[p].m_Pos<=MIDSURFACE)
+                    if(pWing(iw)->m_pWingPanel[p].m_bIsTrailing && pWing(iw)->m_pWingPanel[p].m_Pos<=xfl::MIDSURFACE)
                     {
                         SpanInc += pWing(iw)->m_pWingPanel[p].width();
                         if(SpanPos<=SpanInc || qAbs(SpanPos-SpanInc)/pWing(iw)->m_PlanformSpan<0.001)
@@ -1919,10 +1904,6 @@ bool Miarex::loadSettings(QSettings &settings)
         }
         pStabView->updateControlModelData();
 
-        PlaneDlg::s_Geometry = settings.value("PlaneDlgGeometry").toByteArray();
-        WPolarDlg::s_Geometry = settings.value("WPolarDlgGeometry").toByteArray();
-        StabPolarDlg::s_Geometry = settings.value("StabPolarDlgGeometry").toByteArray();
-
 
         StabPolarDlg::s_StabWPolar.m_bAutoInertia = settings.value("StabPolarAutoInertia", true).toBool();
         StabPolarDlg::s_StabWPolar.setMass(settings.value("StabPolarMass", 0.0).toDouble());
@@ -1957,8 +1938,9 @@ bool Miarex::loadSettings(QSettings &settings)
         AeroDataDlg::s_Temperature = settings.value("Temperature", 288.15).toDouble();
         AeroDataDlg::s_Altitude    = settings.value("Altitude", 0.0).toDouble();
 
-        StabPolarDlg::s_Geometry = settings.value("StabPolarDlgGeom").toByteArray();
-        WPolarDlg::s_Geometry    = settings.value("WPolarDlgGeom").toByteArray();
+        PlaneDlg::s_Geometry     = settings.value("PlaneDlgGeometry"    ).toByteArray();
+        StabPolarDlg::s_Geometry = settings.value("StabPolarDlgGeometry").toByteArray();
+        WPolarDlg::s_Geometry    = settings.value("WPolarDlgGeometry"   ).toByteArray();
     }
 
     settings.endGroup();
@@ -2180,7 +2162,7 @@ void Miarex::onAnalyze()
     {
         LLTAnalyze(V0, VMax, VDelta, m_bSequence, m_bInitLLTCalc);
     }
-    else if(m_theTask.m_MatSize>0 && m_theTask.m_Panel && m_theTask.m_Node)
+    else if(m_theTask.matSize()>0)
     {
         panelAnalyze(V0, VMax, VDelta, m_bSequence);
     }
@@ -2610,7 +2592,7 @@ void Miarex::onDefineStabPolar()
 
         WPolar* pNewStabPolar = new WPolar;
         pNewStabPolar->setPlaneName(m_pCurPlane->name());
-        QColor clr = MainFrame::getColor(4);
+        QColor clr = xfl::getObjectColor(4);
         pNewStabPolar->setColor(clr);
         pNewStabPolar->setWidth(2);
         pNewStabPolar->setPointStyle(Line::LITTLECIRCLE);
@@ -2699,7 +2681,7 @@ void Miarex::onDefineWPolar()
         else             pNewWPolar->setBoundaryCondition(xfl::NEUMANN);
 
 
-        QColor clr = MainFrame::getColor(4);
+        QColor clr = xfl::getObjectColor(4);
         pNewWPolar->setColor(clr);
 
         m_pCurWPolar = Objects3d::insertNewWPolar(pNewWPolar, m_pCurPlane);
@@ -2741,7 +2723,7 @@ void Miarex::onDefineWPolarObject()
     pNewWPolar->setReferenceArea(m_pCurPlane->planformArea());
     pNewWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
     pNewWPolar->setReferenceChordLength(m_pCurPlane->mac());
-    QColor clr = MainFrame::getColor(4);
+    QColor clr = xfl::getObjectColor(4);
     pNewWPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 
     EditPolarDefDlg vpDlg(s_pMainFrame);
@@ -2834,7 +2816,7 @@ void Miarex::onEditCurWPolar()
 
         //        pNewWPolar->bDirichlet() = m_bDirichlet;
 
-        QColor clr = MainFrame::getColor(4);
+        QColor clr = xfl::getObjectColor(4);
         pNewWPolar->setColor(clr);
         pNewWPolar->setVisible(true);
 
@@ -2883,7 +2865,7 @@ void Miarex::onEditCurWPolarObject()
 
         //        pNewWPolar->bDirichlet() = m_bDirichlet;
 
-        QColor clr = MainFrame::getColor(4);
+        QColor clr = xfl::getObjectColor(4);
         pNewWPolar->setColor(clr);
         pNewWPolar->setVisible(true);
 
@@ -4120,7 +4102,7 @@ void Miarex::onExportCurPOpp()
 
                         for(l=0; l<pWing(iw)->m_Surface.at(j)->m_NXPanels * coef; l++)
                         {
-                            if(pWing(iw)->m_pWingPanel[p].m_Pos==MIDSURFACE)
+                            if(pWing(iw)->m_pWingPanel[p].m_Pos==xfl::MIDSURFACE)
                             {
                                 strong = QString(Format).arg(p,4)
                                         .arg(pWing(iw)->m_pWingPanel[p].CtrlPt.x,11,'e',3)
@@ -4693,15 +4675,12 @@ void Miarex::onGL3DScale()
 {
     if(m_iView != xfl::W3DVIEW)
     {
-        //        m_pctrl3DSettings->setChecked(false);
         return;
     }
     if(s_pMainFrame->m_pdw3DScales->isVisible()) s_pMainFrame->m_pdw3DScales->hide();
     else                                                 s_pMainFrame->m_pdw3DScales->show();
 
     s_pMainFrame->m_pW3DScalesAct->setChecked(s_pMainFrame->m_pdw3DScales->isVisible());
-    //    if(m_pctrl3DSettings->isChecked()) s_pMainFrame->m_pctrl3DScalesWidget->show();
-    //    else                               s_pMainFrame->m_pctrl3DScalesWidget->hide();
 }
 
 
@@ -4978,7 +4957,6 @@ void Miarex::onKeepCpSection()
     createCpCurves();
     updateView();
 }
-
 
 
 /**
@@ -5780,6 +5758,7 @@ void Miarex::onSetupLight()
     if(m_iView!=xfl::W3DVIEW) return;
 
     GLLightDlg *pdlg = new GLLightDlg;
+    pdlg->setAttribute(Qt::WA_DeleteOnClose);
 //    pdlg->setModelSize(m_pCurPlane->planformSpan());
     pdlg->setgl3dView(m_pgl3dMiarexView);
     m_pgl3dMiarexView->setLightVisible(true);
@@ -5949,7 +5928,6 @@ void Miarex::onWOppView()
 }
 
 
-
 /**
  * The user has requested to switch to the polar view
  */
@@ -5965,11 +5943,9 @@ void Miarex::onWPolarView()
         updateView();
         return;
     }
+
     m_iView=xfl::WPOLARVIEW;
     setGraphTiles();
-
-    //    if(!m_pCurWPlrGraph) m_pCurGraph = nullptr;
-    //    else                 m_pCurGraph = m_pCurWPlrGraph;
 
     s_pMainFrame->setMainFrameCentralWidget();
 
@@ -5978,8 +5954,6 @@ void Miarex::onWPolarView()
     s_bResetCurves = true;
     updateView();
 }
-
-
 
 
 /**
@@ -6540,9 +6514,6 @@ bool Miarex::saveSettings(QSettings &settings)
             settings.setValue(strong, pStabView->m_Amplitude[i]);
         }
 
-        settings.setValue("PlaneDlgGeometry",     PlaneDlg::s_Geometry);
-        settings.setValue("WPolarDlgGeometry",    WPolarDlg::s_Geometry);
-        settings.setValue("StabPolarDlgGeometry", StabPolarDlg::s_Geometry);
 
         settings.setValue("StabPolarAutoInertia", StabPolarDlg::s_StabWPolar.m_bAutoInertia);
         settings.setValue("StabPolarMass",   StabPolarDlg::s_StabWPolar.mass());
@@ -6555,10 +6526,11 @@ bool Miarex::saveSettings(QSettings &settings)
         settings.setValue("StabPolarCoGIxz", StabPolarDlg::s_StabWPolar.m_CoGIxz);
 
         settings.setValue("Temperature", AeroDataDlg::s_Temperature);
-        settings.setValue("Altitude", AeroDataDlg::s_Altitude);
+        settings.setValue("Altitude",    AeroDataDlg::s_Altitude);
 
-        settings.setValue("StabPolarDlgGeom", StabPolarDlg::s_Geometry);
-        settings.setValue("WPolarDlgGeom",    WPolarDlg::s_Geometry);
+        settings.setValue("PlaneDlgGeometry",     PlaneDlg::s_Geometry);
+        settings.setValue("StabPolarDlgGeometry", StabPolarDlg::s_Geometry);
+        settings.setValue("WPolarDlgGeometry",    WPolarDlg::s_Geometry);
     }
     settings.endGroup();
 
@@ -6582,7 +6554,6 @@ bool Miarex::saveSettings(QSettings &settings)
 }
 
 
-
 /**
  * Sets the scale for the 3d view
  */
@@ -6592,7 +6563,7 @@ void Miarex::setScale()
     {
         double bodyLength = 0.0;
         if(m_pCurPlane->body()) bodyLength = m_pCurPlane->body()->length();
-        m_pgl3dMiarexView->set3dScale(std::max(m_pCurPlane->span(), bodyLength));
+        m_pgl3dMiarexView->setReferenceLength(std::max(m_pCurPlane->span(), bodyLength));
     }
 }
 
@@ -6757,9 +6728,6 @@ void Miarex::setPlane(Plane *pPlane)
 
     if(m_pCurPlane->body()) gl3dMiarexView::s_bResetglBody   = true;
     else                    gl3dMiarexView::s_bResetglBody   = false;
-
-
-    setWPolar(m_pCurWPolar);
 
 
     setScale();
@@ -6930,7 +6898,6 @@ void Miarex::setupLayout()
             QGridLayout *pThreeDParamsLayout = new QGridLayout;
             {
                 m_pchAxes         = new QCheckBox(tr("Axes"), this);
-                //                m_pctrlLight      = new QCheckBox(tr("Light"), this);
                 m_pchSurfaces     = new QCheckBox(tr("Surfaces"), this);
                 m_pchOutline      = new QCheckBox(tr("Outline"), this);
                 m_pchPanels       = new QCheckBox(tr("Panels"), this);
@@ -6963,11 +6930,11 @@ void Miarex::setupLayout()
                         m_ptbIso->setIconSize(QSize(iconSize,iconSize));
                         m_ptbFlip->setIconSize(QSize(iconSize,iconSize));
                     }
-                    m_pXView    = new QAction(QIcon(":/resources/images/OnXView.png"), tr("X View"), this);
-                    m_pYView    = new QAction(QIcon(":/resources/images/OnYView.png"), tr("Y View"), this);
-                    m_pZView    = new QAction(QIcon(":/resources/images/OnZView.png"), tr("Z View"), this);
-                    m_pIsoView  = new QAction(QIcon(":/resources/images/OnIsoView.png"), tr("Iso View"), this);
-                    m_pFlipView = new QAction(QIcon(":/resources/images/OnFlipView.png"), tr("Flip View"), this);
+                    m_pXView    = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
+                    m_pYView    = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
+                    m_pZView    = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
+                    m_pIsoView  = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
+                    m_pFlipView = new QAction(QIcon(":/images/OnFlipView.png"), tr("Flip View"), this);
                     m_pXView->setCheckable(true);
                     m_pYView->setCheckable(true);
                     m_pZView->setCheckable(true);
@@ -7072,6 +7039,26 @@ void Miarex::setWGraphScale()
 }
 
 
+void Miarex::setWPolar(bool bCurrent, const QString &WPlrName)
+{
+    if(!m_pCurPlane) return;
+
+    WPolar *pWPolar(nullptr);
+    if(bCurrent)
+    {
+        //if we already know which WPolar object
+        pWPolar = m_pCurWPolar;
+    }
+
+    if(!pWPolar && WPlrName.length())
+    {
+        //if we know its name
+        pWPolar = Objects3d::getWPolar(m_pCurPlane, WPlrName);
+    }
+    setWPolar(pWPolar);
+}
+
+
 void Miarex::setWPolar(WPolar*pWPolar)
 {
     m_bResetTextLegend = true;
@@ -7085,11 +7072,14 @@ void Miarex::setWPolar(WPolar*pWPolar)
         return;
     }
 
+    if(pWPolar && pWPolar->planeName()!=m_pCurPlane->name())
+        pWPolar = nullptr;
+
     m_pCurWPolar = pWPolar;
 
     if(!pWPolar)
     {
-        //if we don't know anything, find the first for this plane
+        //if we don't know anything, find the first polar for this plane
         for (int i=0; i<Objects3d::polarCount(); i++)
         {
             WPolar *pOldWPolar = Objects3d::polarAt(i);
@@ -7114,17 +7104,7 @@ void Miarex::setWPolar(WPolar*pWPolar)
         return;
     }
 
-    double x = 0.0;
-    if(m_pCurPOpp)
-    {
-        if(m_pCurWPolar && !m_pCurWPolar->isBetaPolar())
-            x = m_pCurPOpp->alpha();
-        else if(m_pCurWPolar && m_pCurWPolar->isBetaPolar())
-            x = m_pCurPOpp->m_Beta;
-    }
-
     setControls();
-    setPlaneOpp(false, x);
 
 
     if(m_pCurPlane && m_pCurWPolar)
@@ -7179,27 +7159,6 @@ void Miarex::setWPolar(WPolar*pWPolar)
         pStabView->show();
     }
 }
-
-
-void Miarex::setWPolar(bool bCurrent, const QString &WPlrName)
-{
-    if(!m_pCurPlane) return;
-
-    WPolar *pWPolar(nullptr);
-    if(bCurrent)
-    {
-        //if we already know which WPolar object
-        pWPolar = m_pCurWPolar;
-    }
-
-    if(!pWPolar && WPlrName.length())
-    {
-        //if we know its name
-        pWPolar = Objects3d::getWPolar(m_pCurPlane, WPlrName);
-    }
-    setWPolar(pWPolar);
-}
-
 
 
 /**
@@ -8052,18 +8011,18 @@ void Miarex::onImportSTLFile()
     char buffer[12];
     for (int j=0; j<nTriangles; j++)
     {
-        readFloat(inStream, f);
-        readFloat(inStream, g);
-        readFloat(inStream, h);
-        readFloat(inStream, f);
-        readFloat(inStream, g);
-        readFloat(inStream, h);
-        readFloat(inStream, f);
-        readFloat(inStream, g);
-        readFloat(inStream, h);
-        readFloat(inStream, f);
-        readFloat(inStream, g);
-        readFloat(inStream, h);
+        xfl::readFloat(inStream, f);
+        xfl::readFloat(inStream, g);
+        xfl::readFloat(inStream, h);
+        xfl::readFloat(inStream, f);
+        xfl::readFloat(inStream, g);
+        xfl::readFloat(inStream, h);
+        xfl::readFloat(inStream, f);
+        xfl::readFloat(inStream, g);
+        xfl::readFloat(inStream, h);
+        xfl::readFloat(inStream, f);
+        xfl::readFloat(inStream, g);
+        xfl::readFloat(inStream, h);
         inStream.readRawData(buffer, 2);
         if(j>2) break;
     }

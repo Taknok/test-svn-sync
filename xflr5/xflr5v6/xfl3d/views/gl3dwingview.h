@@ -42,8 +42,6 @@ class gl3dWingView : public gl3dXflView
         bool intersectTheObject(Vector3d const &AA,  Vector3d const &BB, Vector3d &I) override;
         void glMake3dObjects() override;
 
-    public slots:
-        void on3dReset() override;
 
     private:
         Wing const*m_pWing;

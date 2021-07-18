@@ -61,7 +61,7 @@ PanelAnalysis::PanelAnalysis()
     m_aij = m_aijWake = nullptr;
     m_uRHS = m_vRHS = m_wRHS = m_pRHS = m_qRHS = m_rRHS = nullptr;
     m_cRHS = m_uWake = m_wWake = nullptr;
-    m_uVl = m_wVl = nullptr;
+
     m_Index = nullptr;
 
     m_RHS = m_RHSRef = m_SigmaRef = m_Sigma = m_Mu = m_Cp = nullptr;
@@ -187,8 +187,8 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
         m_uWake = new double[ulong(matSize)];
         m_wWake = new double[ulong(matSize)];
 
-        m_uVl   = new Vector3d[ulong(matSize)];
-        m_wVl   = new Vector3d[ulong(matSize)];
+        m_uVl.resize(matSize);
+        m_wVl.resize(matSize);
         m_Index = new int[ulong(matSize)];
     }
     catch(std::exception & )
@@ -224,8 +224,8 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
     memset(m_uWake, 0, ulong(matSize)*sizeof(double));
     memset(m_wWake, 0, ulong(matSize)*sizeof(double));
 
-    memset(m_uVl,   0, ulong(matSize)*sizeof(Vector3d));
-    memset(m_wVl,   0, ulong(matSize)*sizeof(Vector3d));
+    m_uVl.fill(Vector3d());
+    m_wVl.fill(Vector3d());
 
     memset(m_Index, 0, ulong(matSize)*sizeof(int));
 
@@ -314,10 +314,6 @@ void PanelAnalysis::releaseArrays()
 
     if(m_3DQInf) delete [] m_3DQInf;
     m_3DQInf = nullptr;
-
-    if(m_uVl) delete [] m_uVl;
-    if(m_wVl) delete [] m_wVl;
-    m_uVl = m_wVl = nullptr;
 
     if(m_uRHS)  delete [] m_uRHS;
     if(m_vRHS)  delete [] m_vRHS;
@@ -746,7 +742,7 @@ void PanelAnalysis::buildInfluenceMatrix()
         //        if(!m_b3DSymetric || m_pPanel[p].m_bIsLeftPanel)
         //        {
         //for each Boundary Condition point
-        if(m_pPanel[p].m_Pos!=MIDSURFACE)
+        if(m_pPanel[p].m_Pos!=xfl::MIDSURFACE)
         {
             //Thick surfaces, 3D-panel type BC, use collocation point
             C = m_pPanel[p].CollPt;
@@ -778,7 +774,7 @@ void PanelAnalysis::buildInfluenceMatrix()
                         phi += phiSym;
                     }*/
 
-            if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==MIDSURFACE) m_aij[m*Size+mm] = V.dot(m_pPanel[p].Normal);
+            if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==xfl::MIDSURFACE) m_aij[m*Size+mm] = V.dot(m_pPanel[p].Normal);
             else if(m_pWPolar->bDirichlet())                              m_aij[m*Size+mm] = phi;
 
             mm++;
@@ -820,7 +816,7 @@ void PanelAnalysis::createSourceStrength(double Alpha0, double AlphaDelta, int n
         for (pp=0; pp<m_MatSize; pp++)
         {
             if(s_bCancel) return;
-            if(m_pPanel[pp].m_Pos!=MIDSURFACE) m_Sigma[p] = -1.0/4.0/PI* WindDirection.dot(m_pPanel[pp].Normal);
+            if(m_pPanel[pp].m_Pos!=xfl::MIDSURFACE) m_Sigma[p] = -1.0/4.0/PI* WindDirection.dot(m_pPanel[pp].Normal);
             else                               m_Sigma[p] =  0.0;
             p++;
         }
@@ -856,21 +852,21 @@ void PanelAnalysis::createRHS(double *RHS, Vector3d VInf, double *VField)
 
         //        if(!m_b3DSymetric || m_pPanel[p].m_bIsLeftPanel)
         //        {
-        if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==MIDSURFACE)
+        if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==xfl::MIDSURFACE)
         {
             // first term of RHS is -V.n
             RHS[m] = - m_pPanel[p].Normal.dot(VPanel);
             //                if(RHS[m]<PRECISION) RHS[m] = 0.0;
         }
         else if(m_pWPolar->bDirichlet()) RHS[m] = 0.0;
-        if(m_pPanel[p].m_Pos!=MIDSURFACE) C = m_pPanel[p].CollPt;
+        if(m_pPanel[p].m_Pos!=xfl::MIDSURFACE) C = m_pPanel[p].CollPt;
         else                              C = m_pPanel[p].CtrlPt;
 
         for (int pp=0; pp<m_MatSize; pp++)
         {
             // Consider only the panels positioned on thick surfaces,
             // since the source strength is zero on thin surfaces
-            if(m_pPanel[pp].m_Pos!=MIDSURFACE)
+            if(m_pPanel[pp].m_Pos!=xfl::MIDSURFACE)
             {
                 // Define the source strength on panel pp
                 sigmapp = -1.0/4.0/PI * m_pPanel[pp].Normal.dot(VPanel);
@@ -878,7 +874,7 @@ void PanelAnalysis::createRHS(double *RHS, Vector3d VInf, double *VField)
                 // Add to RHS the source influence of panel pp on panel p
                 getSourceInfluence(C, m_pPanel+pp, V, phi);
 
-                if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==MIDSURFACE)
+                if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==xfl::MIDSURFACE)
                 {
                     // Apply Neumann B.C.
                     // NASA4023 eq. (22) and (23)
@@ -998,10 +994,10 @@ void PanelAnalysis::createWakeContribution()
                     // Get trailing point where the jup in potential is evaluated v6.02
                     TrPt = (m_pNode[m_pPanel[pp].m_iTA] + m_pNode[m_pPanel[pp].m_iTB])/2.0;
 
-                    if(m_pPanel[pp].m_Pos==MIDSURFACE)
+                    if(m_pPanel[pp].m_Pos==xfl::MIDSURFACE)
                     {
                         //The panel shedding a wake is on a thin surface
-                        if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==MIDSURFACE)
+                        if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==xfl::MIDSURFACE)
                         {
                             //then add the velocity contribution of the wake column to the matrix coefficient
                             m_aijWake[m*Size+mm] += VHC[m_pPanel[pp].m_iWakeColumn].dot(m_pPanel[p].Normal);
@@ -1014,10 +1010,10 @@ void PanelAnalysis::createWakeContribution()
                             //we do not add the term Phi_inf_KWPUM - Phi_inf_KWPLM (eq. 44) since it is 0, thin edge
                         }
                     }
-                    else if(m_pPanel[pp].m_Pos==BOTSURFACE)
+                    else if(m_pPanel[pp].m_Pos==xfl::BOTSURFACE)
                     {
                         //the panel sedding a wake is on the bottom side, substract
-                        if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==MIDSURFACE)
+                        if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==xfl::MIDSURFACE)
                         {
                             //use Neumann B.C.
                             m_aijWake[m*Size+mm] -= VHC[m_pPanel[pp].m_iWakeColumn].dot(m_pPanel[p].Normal);
@@ -1032,10 +1028,10 @@ void PanelAnalysis::createWakeContribution()
                             m_wWake[m] +=  TrPt.z * PHC[m_pPanel[pp].m_iWakeColumn];
                         }
                     }
-                    else if(m_pPanel[pp].m_Pos==TOPSURFACE)
+                    else if(m_pPanel[pp].m_Pos==xfl::TOPSURFACE)
                     {
                         //the panel sedding a wake is on the top side, add
-                        if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==MIDSURFACE)
+                        if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==xfl::MIDSURFACE)
                         {
                             //use Neumann B.C.
                             m_aijWake[m*Size+mm] += VHC[m_pPanel[pp].m_iWakeColumn].dot(m_pPanel[p].Normal);
@@ -1140,10 +1136,10 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, const Vector3d 
                 TrPt = (m_pNode[m_pPanel[pp].m_iTA] + m_pNode[m_pPanel[pp].m_iTB])/2.0;
                 // If so, we need to add the contributions of the wake column
                 // shedded by this panel to the RHS and to the Matrix
-                if(m_pPanel[pp].m_Pos==MIDSURFACE)
+                if(m_pPanel[pp].m_Pos==xfl::MIDSURFACE)
                 {
                     //The panel shedding a wake is on a thin surface
-                    if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==MIDSURFACE)
+                    if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==xfl::MIDSURFACE)
                     {
                         //then add the velocity contribution of the wake column to the matrix coefficient
                         //we do not add the term Phi_inf_KWPUM - Phi_inf_KWPLM (eq. 44) since it is 0, thin edge
@@ -1154,10 +1150,10 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, const Vector3d 
                         //we do not add the term Phi_inf_KWPUM - Phi_inf_KWPLM (eq. 44) since it is 0, thin edge
                     }
                 }
-                else if(m_pPanel[pp].m_Pos==BOTSURFACE)//bottom side, substract
+                else if(m_pPanel[pp].m_Pos==xfl::BOTSURFACE)//bottom side, substract
                 {
                     //evaluate the potential on the bottom side panel pp which is shedding a wake
-                    if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==MIDSURFACE)
+                    if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==xfl::MIDSURFACE)
                     {
                         //use Neumann B.C.
                         pWakeContrib[m] -= TrPt.dot(WindDirection) * VHC[m_pPanel[pp].m_iWakeColumn].dot(m_pPanel[p].Normal);
@@ -1167,10 +1163,10 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, const Vector3d 
                         pWakeContrib[m] += TrPt.dot(WindDirection) * PHC[m_pPanel[pp].m_iWakeColumn];
                     }
                 }
-                else if(m_pPanel[pp].m_Pos==TOPSURFACE)  //top side, add
+                else if(m_pPanel[pp].m_Pos==xfl::TOPSURFACE)  //top side, add
                 {
                     //evaluate the potential on the top side panel pp which is shedding a wake
-                    if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==MIDSURFACE)
+                    if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==xfl::MIDSURFACE)
                     {
                         //use Neumann B.C.
                         pWakeContrib[m] += TrPt.dot(WindDirection) * VHC[m_pPanel[pp].m_iWakeColumn].dot(m_pPanel[p].Normal);
@@ -1835,7 +1831,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
 
             for (int p=0; p<m_MatSize; p++)
             {
-                if(m_pPanel[p].m_Pos!=MIDSURFACE)
+                if(m_pPanel[p].m_Pos!=xfl::MIDSURFACE)
                 {
                     m_pPanel[p].globalToLocal(VInf, VLocal);
                     VLocal += m_uVl[p]*cosa*m_3DQInf[q] + m_wVl[p]*sina*m_3DQInf[q];
@@ -1866,7 +1862,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
             {
                 if(s_bCancel) break;
 
-                if(m_pPanel[p].m_Pos!=MIDSURFACE) getDoubletDerivative(p, Mu, Cp[p], VLocal, m_3DQInf[q], VInf.x, VInf.y, VInf.z);
+                if(m_pPanel[p].m_Pos!=xfl::MIDSURFACE) getDoubletDerivative(p, Mu, Cp[p], VLocal, m_3DQInf[q], VInf.x, VInf.y, VInf.z);
                 else                              getVortexCp(p, Mu, Cp, WindDirection);
             }
 
@@ -1899,7 +1895,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
 */
 void PanelAnalysis::getDoubletInfluence(Vector3d const &C, Panel const *pPanel, Vector3d &V, double &phi, bool bWake, bool bAll) const
 {
-    if(pPanel->m_Pos!=MIDSURFACE || pPanel->m_bIsWakePanel)
+    if(pPanel->m_Pos!=xfl::MIDSURFACE || pPanel->m_bIsWakePanel)
         pPanel->doubletNASA4023(C, V, phi, bWake);
     else
     {
@@ -1913,7 +1909,7 @@ void PanelAnalysis::getDoubletInfluence(Vector3d const &C, Panel const *pPanel, 
         Vector3d VG;
         Vector3d CG(C.x, C.y, -C.z-2.0*m_pWPolar->m_Height);
 
-        if(pPanel->m_Pos!=MIDSURFACE || pPanel->m_bIsWakePanel)    pPanel->doubletNASA4023(CG, VG, phiG, bWake);
+        if(pPanel->m_Pos!=xfl::MIDSURFACE || pPanel->m_bIsWakePanel)    pPanel->doubletNASA4023(CG, VG, phiG, bWake);
         else
         {
             VLMGetVortexInfluence(pPanel, CG, VG, bAll);
@@ -1973,7 +1969,7 @@ void PanelAnalysis::getSpeedVector(Vector3d const &C, double const *Mu, double c
     {
         if(s_bCancel) return;
 
-        if(m_pPanel[pp].m_Pos!=MIDSURFACE) //otherwise Sigma[pp] =0.0, so contribution is zero also
+        if(m_pPanel[pp].m_Pos!=xfl::MIDSURFACE) //otherwise Sigma[pp] =0.0, so contribution is zero also
         {
             getSourceInfluence(C, m_pPanel+pp, V, phi);
             VT += V * Sigma[pp] ;
@@ -1983,10 +1979,10 @@ void PanelAnalysis::getSpeedVector(Vector3d const &C, double const *Mu, double c
         VT += V * Mu[pp];
 
         // Is the panel pp shedding a wake ?
-        if(m_pPanel[pp].m_bIsTrailing && m_pPanel[pp].m_Pos!=MIDSURFACE)
+        if(m_pPanel[pp].m_bIsTrailing && m_pPanel[pp].m_Pos!=xfl::MIDSURFACE)
         {
             //If so, we need to add the contribution of the wake column shedded by this panel
-            if(m_pPanel[pp].m_Pos==BOTSURFACE) sign=-1.0; else sign=1.0;
+            if(m_pPanel[pp].m_Pos==xfl::BOTSURFACE) sign=-1.0; else sign=1.0;
             pw = m_pPanel[pp].m_iWake;
             for(lw=0; lw<m_pWPolar->m_NXWakePanels; lw++)
             {
@@ -2106,7 +2102,6 @@ bool PanelAnalysis::QInfLoop()
 }
 
 
-
 /**
 * Solves the linear system for the two unit RHS, using LU decomposition.
 * Calculates the local velocities on each panel for the two unit RHS
@@ -2151,7 +2146,7 @@ bool PanelAnalysis::solveUnitRHS()
 
     for (int p=0; p<m_MatSize; p++)
     {
-        if(m_pPanel[p].m_Pos!=MIDSURFACE)
+        if(m_pPanel[p].m_Pos!=xfl::MIDSURFACE)
         {
             getDoubletDerivative(p, m_uRHS, Cp, m_uVl[p], 1.0, u.x, u.y, u.z);
             getDoubletDerivative(p, m_wRHS, Cp, m_wVl[p], 1.0, w.x, w.y, w.z);
@@ -2994,7 +2989,7 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, Vector3d Vin
             }
 
             //Get the strip's lifting force
-            if(m_pPanel[p].m_Pos!=MIDSURFACE)
+            if(m_pPanel[p].m_Pos!=xfl::MIDSURFACE)
             {
                 StripArea /=2.0;
                 //FF force
@@ -3625,7 +3620,7 @@ void PanelAnalysis::computeStabilityDerivativesOld()
     for (p=0; p<m_MatSize; p++)
     {
         //re-use existing memory to define the velocity field
-        if(m_pPanel[p].m_Pos==MIDSURFACE) CGM = m_pPanel[p].VortexPos - m_CoG;
+        if(m_pPanel[p].m_Pos==xfl::MIDSURFACE) CGM = m_pPanel[p].VortexPos - m_CoG;
         else                              CGM = m_pPanel[p].CollPt    - m_CoG;
 
         // a rotation of the plane about a vector is the opposite of a rotation of the freestream about this vector
@@ -3956,7 +3951,7 @@ void PanelAnalysis::computeStabilityDerivatives()
     for (p=0; p<m_MatSize; p++)
     {
         //re-use existing memory to define the velocity field
-        if(m_pPanel[p].m_Pos==MIDSURFACE) CGM = m_pPanel[p].VortexPos - m_CoG;
+        if(m_pPanel[p].m_Pos==xfl::MIDSURFACE) CGM = m_pPanel[p].VortexPos - m_CoG;
         else                              CGM = m_pPanel[p].CollPt    - m_CoG;
 
         // a rotation of the plane about a vector is the opposite of a rotation of the freestream about this vector
@@ -4350,7 +4345,7 @@ double PanelAnalysis::computeCm(double Alpha) const
     for(int p=0; p<m_MatSize; p++)
     {
         //write vector operations in-line, more efficient
-        if(m_pPanel[p].m_Pos!=MIDSURFACE)
+        if(m_pPanel[p].m_Pos!=xfl::MIDSURFACE)
         {
             //first calculate Cp for this angle
             m_pPanel[p].globalToLocal(VInf, VLocal);
@@ -4744,8 +4739,8 @@ void PanelAnalysis::rotateGeomY(double Alpha, Vector3d const &P, int NXWakePanel
         LATB = m_pNode[iLA] - m_pNode[iTB];
         TALB = m_pNode[iTA] - m_pNode[iLB];
 
-        if(m_pPanel[p].m_Pos==MIDSURFACE || m_pPanel[p].m_Pos==TOPSURFACE) m_pPanel[p].setPanelFrame(m_pNode[iLA], m_pNode[iLB], m_pNode[iTA], m_pNode[iTB]);
-        else if (m_pPanel[p].m_Pos==BOTSURFACE)                            m_pPanel[p].setPanelFrame(m_pNode[iLB], m_pNode[iLA], m_pNode[iTB], m_pNode[iTA]);
+        if(m_pPanel[p].m_Pos==xfl::MIDSURFACE || m_pPanel[p].m_Pos==xfl::TOPSURFACE) m_pPanel[p].setPanelFrame(m_pNode[iLA], m_pNode[iLB], m_pNode[iTA], m_pNode[iTB]);
+        else if (m_pPanel[p].m_Pos==xfl::BOTSURFACE)                                 m_pPanel[p].setPanelFrame(m_pNode[iLB], m_pNode[iLA], m_pNode[iTB], m_pNode[iTA]);
     }
 
     // the wake array is not rotated but translated to remain at the wing's trailing edge
@@ -4820,8 +4815,8 @@ void PanelAnalysis::rotateGeomZ(double Beta, Vector3d const &P, int NXWakePanels
         iTA = m_pPanel[p].m_iTA; iTB = m_pPanel[p].m_iTB;
 
         //set the new panel geometry
-        if(m_pPanel[p].m_Pos>=MIDSURFACE)       m_pPanel[p].setPanelFrame(m_pNode[iLA], m_pNode[iLB], m_pNode[iTA], m_pNode[iTB]);
-        else if (m_pPanel[p].m_Pos==BOTSURFACE) m_pPanel[p].setPanelFrame(m_pNode[iLB], m_pNode[iLA], m_pNode[iTB], m_pNode[iTA]);
+        if(m_pPanel[p].m_Pos>=xfl::MIDSURFACE)       m_pPanel[p].setPanelFrame(m_pNode[iLA], m_pNode[iLB], m_pNode[iTA], m_pNode[iTB]);
+        else if (m_pPanel[p].m_Pos==xfl::BOTSURFACE) m_pPanel[p].setPanelFrame(m_pNode[iLB], m_pNode[iLA], m_pNode[iTB], m_pNode[iTA]);
     }
 
     // the wake array is not rotated but translated to remain at the wing's trailing edge and aligned with the freestream velocity vector

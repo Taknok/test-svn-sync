@@ -182,7 +182,7 @@ class GL3dBodyDlg : public QDialog
         QPushButton *m_ppbMenuButton;
         QMenu *BodyMenu;
 
-        QTableView *m_pctrlFrameTable, *m_pctrlPointTable;
+        QTableView *m_ptvFrames, *m_ptvPoints;
         QStandardItemModel *m_pFrameModel, *m_pPointModel;
         BodyTableDelegate *m_pFrameDelegate, *m_pPointDelegate;
         QItemSelectionModel *m_pSelectionModelPoint, *m_pSelectionModelFrame;

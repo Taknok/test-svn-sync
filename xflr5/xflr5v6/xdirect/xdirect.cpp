@@ -221,6 +221,8 @@ OpPoint* XDirect::curOpp()   {return Objects2d::curOpp();}
 /** Sets the state of the window's widgets i.a.w. the state of the active ojbects and views. */
 void XDirect::setControls()
 {
+    m_pFoilTreeView->setCurveParams();
+
     m_pDisplayBox->setVisible(!m_bPolarView);
 
     s_pMainFrame->m_pOpPointsAct->setChecked(!m_bPolarView);
@@ -229,7 +231,6 @@ void XDirect::setControls()
     //    s_pMainFrame->m_pShowPanels->setChecked(m_bShowPanels);
     s_pMainFrame->m_pShowNeutralLine->setChecked(m_bNeutralLine);
     s_pMainFrame->m_pShowInviscidCurve->setChecked(m_bShowInviscid);
-    s_pMainFrame->m_pShowCurOppOnly->setChecked(m_bCurOppOnly);
 
     s_pMainFrame->m_psetCpVarGraph->setChecked(m_CpGraph.yVariable()==0);
     s_pMainFrame->m_psetQVarGraph->setChecked(m_CpGraph.yVariable()==1);
@@ -237,10 +238,11 @@ void XDirect::setControls()
     s_pMainFrame->m_pExportBLData->setEnabled(Objects2d::curOpp());
 
     m_pchShowPressure->setEnabled(!m_bPolarView && Objects2d::curOpp());
+    m_pchActiveOppOnly->setEnabled(!m_bPolarView);
+    m_pchActiveOppOnly->setChecked(m_bCurOppOnly);
     m_pchShowBL->setEnabled(!m_bPolarView && Objects2d::curOpp());
     m_pchAnimate->setEnabled(!m_bPolarView && Objects2d::curOpp());
     m_pslAnimateSpeed->setEnabled(!m_bPolarView && Objects2d::curOpp() && m_pchAnimate->isChecked());
-    //    m_pctrlHighlightOpp->setEnabled(m_bPolar);
 
     s_pMainFrame->m_pCurrentFoilMenu->setEnabled(Objects2d::curFoil());
     s_pMainFrame->m_pCurrentFoilMenu_OperFoilCtxMenu->setEnabled(Objects2d::curFoil());
@@ -292,24 +294,24 @@ void XDirect::connectSignals()
 {
     connect(this, SIGNAL(projectModified()), s_pMainFrame, SLOT(onProjectModified()));
 
-    connect(m_prbSpec1,       SIGNAL(clicked()),            SLOT(onSpec()));
-    connect(m_prbSpec2,       SIGNAL(clicked()),            SLOT(onSpec()));
-    connect(m_prbSpec3,       SIGNAL(clicked()),            SLOT(onSpec()));
-    connect(m_ppbAnalyze,     SIGNAL(clicked()),            SLOT(onAnalyze()));
-    connect(m_pdeAlphaMin,    SIGNAL(editingFinished()),    SLOT(onInputChanged()));
-    connect(m_pdeAlphaMax,    SIGNAL(editingFinished()),    SLOT(onInputChanged()));
-    connect(m_pdeAlphaDelta,  SIGNAL(editingFinished()),    SLOT(onInputChanged()));
-    connect(m_pchSequence,    SIGNAL(clicked()),            SLOT(onSequence()));
-    connect(m_pchViscous,     SIGNAL(clicked()),            SLOT(onViscous()));
-    connect(m_pchStoreOpp,    SIGNAL(clicked()),            SLOT(onStoreOpp()));
+    connect(m_prbSpec1,         SIGNAL(clicked()),            SLOT(onSpec()));
+    connect(m_prbSpec2,         SIGNAL(clicked()),            SLOT(onSpec()));
+    connect(m_prbSpec3,         SIGNAL(clicked()),            SLOT(onSpec()));
+    connect(m_ppbAnalyze,       SIGNAL(clicked()),            SLOT(onAnalyze()));
+    connect(m_pdeAlphaMin,      SIGNAL(editingFinished()),    SLOT(onInputChanged()));
+    connect(m_pdeAlphaMax,      SIGNAL(editingFinished()),    SLOT(onInputChanged()));
+    connect(m_pdeAlphaDelta,    SIGNAL(editingFinished()),    SLOT(onInputChanged()));
+    connect(m_pchSequence,      SIGNAL(clicked()),            SLOT(onSequence()));
+    connect(m_pchViscous,       SIGNAL(clicked()),            SLOT(onViscous()));
+    connect(m_pchStoreOpp,      SIGNAL(clicked()),            SLOT(onStoreOpp()));
 
-    connect(m_pchAnimate,      SIGNAL(clicked(bool)),    SLOT(onAnimate(bool)));
-    connect(m_pslAnimateSpeed, SIGNAL(sliderMoved(int)), SLOT(onAnimateSpeed(int)));
-    connect(m_pAnimateTimer,   SIGNAL(timeout()),        SLOT(onAnimateSingle()));
+    connect(m_pchAnimate,       SIGNAL(clicked(bool)),    SLOT(onAnimate(bool)));
+    connect(m_pslAnimateSpeed,  SIGNAL(sliderMoved(int)), SLOT(onAnimateSpeed(int)));
+    connect(m_pAnimateTimer,    SIGNAL(timeout()),        SLOT(onAnimateSingle()));
 
-
-    connect(m_pchShowBL,       SIGNAL(clicked(bool)), s_pMainFrame->m_pXDirectTileWidget->opPointWidget(), SLOT(onShowBL(bool)));
-    connect(m_pchShowPressure, SIGNAL(clicked(bool)), s_pMainFrame->m_pXDirectTileWidget->opPointWidget(), SLOT(onShowPressure(bool)));
+    connect(m_pchActiveOppOnly, SIGNAL(clicked(bool)), SLOT(onCurOppOnly()));
+    connect(m_pchShowBL,        SIGNAL(clicked(bool)), s_pMainFrame->m_pXDirectTileWidget->opPointWidget(), SLOT(onShowBL(bool)));
+    connect(m_pchShowPressure,  SIGNAL(clicked(bool)), s_pMainFrame->m_pXDirectTileWidget->opPointWidget(), SLOT(onShowPressure(bool)));
 }
 
 
@@ -977,48 +979,6 @@ void XDirect::keyPressEvent(QKeyEvent *pEvent)
         case Qt::Key_Y:
             m_bYPressed = true;
             break;
-            /*        case Qt::Key_1:
-            if(bCtrl)
-            {
-                s_pMainFrame->onAFoil();
-                pEvent->accept();
-                return;
-            }
-            break;
-        case Qt::Key_2:
-            if(bCtrl)
-            {
-                s_pMainFrame->onAFoil();
-                pEvent->accept();
-                return;
-            }
-            break;
-        case Qt::Key_3:
-            if(bCtrl)
-            {
-                s_pMainFrame->onXInverse();
-                pEvent->accept();
-                return;
-            }
-            break;
-        case Qt::Key_4:
-            if(bCtrl)
-            {
-                s_pMainFrame->onXInverseMixed();
-                pEvent->accept();
-                return;
-            }
-        case Qt::Key_5:
-            break;
-        case Qt::Key_6:
-            if(bCtrl)
-            {
-                s_pMainFrame->onMiarex();
-                pEvent->accept();
-                return;
-            }
-            break;*/
-
         case Qt::Key_F2:
         {
             if(bShift) onRenameCurPolar();
@@ -1037,13 +997,6 @@ void XDirect::keyPressEvent(QKeyEvent *pEvent)
             onOpPointView();
             break;
         }
-/*        case Qt::Key_F6:
-        {
-            if (pEvent->modifiers().testFlag(Qt::ShiftModifier))        onBatchAnalysis();
-            else if (pEvent->modifiers().testFlag(Qt::ControlModifier)) onMultiThreadedBatchAnalysis();
-            else                                                        onDefinePolar();
-            break;
-        }*/
         case Qt::Key_F8:
         {
             if(m_bPolarView) return;
@@ -1076,7 +1029,6 @@ void XDirect::keyPressEvent(QKeyEvent *pEvent)
 
     pEvent->accept();
 }
-
 
 
 /**
@@ -1547,7 +1499,6 @@ void XDirect::onCpi()
 void XDirect::onCurOppOnly()
 {
     m_bCurOppOnly = !m_bCurOppOnly;
-    s_pMainFrame->m_pShowCurOppOnly->setChecked(m_bCurOppOnly);
 
     if(Objects2d::curOpp()) Objects2d::curOpp()->setVisible(true);
     m_bResetCurves = true;
@@ -1591,6 +1542,7 @@ void XDirect::onDefinePolar()
         setPolar(Objects2d::curPolar());
 
         m_pFoilTreeView->insertPolar(Objects2d::curPolar());
+        m_pFoilTreeView->selectPolar(Objects2d::curPolar());
         updateView();
         emit projectModified();
     }
@@ -1859,7 +1811,7 @@ void XDirect::onCadd()
     if(QDialog::Accepted == caDlg.exec())
     {
         pNewFoil->setPointStyle(psState);
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         setCurOpp(pOpPoint);
 
         if(addNewFoil(pNewFoil))
@@ -1895,7 +1847,7 @@ void XDirect::onDerotateFoil()
     Foil *pCurFoil = curFoil();
     Foil *pNewFoil = new Foil;
     pNewFoil->copyFoil(Objects2d::curFoil());
-    setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+    xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
     setCurFoil(pNewFoil);
     updateView();
 
@@ -1930,7 +1882,7 @@ void XDirect::onNormalizeFoil()
     Foil *pCurFoil = curFoil();
     Foil *pNewFoil = new Foil;
     pNewFoil->copyFoil(Objects2d::curFoil());
-    setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+    xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
     setCurFoil(pNewFoil);
     updateView();
 
@@ -2538,7 +2490,7 @@ void XDirect::onFoilCoordinates()
         pNewFoil->m_TEXHinge = Xh;
         pNewFoil->m_TEYHinge = Yh;
 
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
 
         setCurOpp(pOpPoint);
 
@@ -2601,7 +2553,7 @@ void XDirect::onFoilGeom()
 
     if(fgeDlg.exec() == QDialog::Accepted)
     {
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         setCurOpp(pOpPoint);
 
         if(addNewFoil(pNewFoil))
@@ -2779,8 +2731,8 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     bool bOK, bOK2, bRead;
     Line = 0;
 
-    bRead  = ReadAVLString(in, Line, strong);// XFoil or XFLR5 version
-    bRead  = ReadAVLString(in, Line, strong);// Foil Name
+    bRead  = xfl::readAVLString(in, Line, strong);// XFoil or XFLR5 version
+    bRead  = xfl::readAVLString(in, Line, strong);// Foil Name
 
     FoilName = strong.right(strong.length()-22);
     FoilName = FoilName.trimmed();
@@ -2795,7 +2747,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     }
     pPolar->setFoilName(FoilName);
 
-    bRead  = ReadAVLString(in, Line, strong);// analysis type
+    bRead  = xfl::readAVLString(in, Line, strong);// analysis type
 
     pPolar->setReType(strong.midRef(0,2).toInt(&bOK));
     pPolar->setMaType(strong.midRef(2,2).toInt(&bOK2));
@@ -2812,7 +2764,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     else                                                  pPolar->setPolarType(xfl::FIXEDSPEEDPOLAR);
 
 
-    ReadAVLString(in, Line, strong);
+    xfl::readAVLString(in, Line, strong);
     if(strong.length() < 34)
     {
         str = QString("Error reading line %1. The polar(s) will not be stored").arg(Line);
@@ -2840,7 +2792,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     }
 
     // Mach     Re     NCrit
-    ReadAVLString(in, Line, strong);// blank line
+    xfl::readAVLString(in, Line, strong);// blank line
     if(strong.length() < 50)
     {
         str = QString("Error reading line %1. The polar(s) will not be stored").arg(Line);
@@ -2878,12 +2830,12 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     }
     pPolar->setReynolds(Re);
 
-    bRead  = ReadAVLString(in, Line, strong);// column titles
-    bRead  = ReadAVLString(in, Line, strong);// underscores
+    bRead  = xfl::readAVLString(in, Line, strong);// column titles
+    bRead  = xfl::readAVLString(in, Line, strong);// underscores
 
     while(bRead)
     {
-        bRead  = ReadAVLString(in, Line, strong);// polar data
+        bRead  = xfl::readAVLString(in, Line, strong);// polar data
         if(bRead)
         {
             if(strong.length())
@@ -2939,7 +2891,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         strange += str + "_Imported";
 
         pPolar->setPolarName(strange);
-        QColor clr = MainFrame::getColor(1);
+        QColor clr = getColor(1);
         pPolar->setColor(clr.red(), clr.green(), clr.blue());
     */
 
@@ -3002,7 +2954,7 @@ void XDirect::onImportJavaFoilPolar()
     double alpha, CL, CD, CM, Xt,  Xb;
 
     Line = 0;
-    if(!ReadAVLString(in, Line, FoilName)) return;
+    if(!xfl::readAVLString(in, Line, FoilName)) return;
 
 
     FoilName = FoilName.trimmed();
@@ -3014,11 +2966,11 @@ void XDirect::onImportJavaFoilPolar()
         QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
         return;
     }
-    if(!ReadAVLString(in, Line, strong)) return; //blank line
+    if(!xfl::readAVLString(in, Line, strong)) return; //blank line
 
     while(bIsReading)
     {
-        if(!ReadAVLString(in, Line, strong)) break; //Re number
+        if(!xfl::readAVLString(in, Line, strong)) break; //Re number
 
         strong = strong.right(strong.length()-4);
         Re = strong.toDouble(&bOK);
@@ -3036,19 +2988,19 @@ void XDirect::onImportJavaFoilPolar()
                                  .arg(pPolar->Reynolds()/1000000.0,0,'f',2)
                                  .arg(pPolar->Mach(),0,'f',2));
 
-            QColor clr = MainFrame::getColor(1);
+            QColor clr = xfl::getObjectColor(1);
             pPolar->setColor(clr.red(), clr.green(), clr.blue());
             Objects2d::addPolar(pPolar);
             setCurPolar(pPolar);
             NPolars++;
 
-            if(!ReadAVLString(in, Line, strong)) break;//?    Cl    Cd    Cm 0.25    TU    TL    SU    SL    L/D
-            if(!ReadAVLString(in, Line, strong)) break;//[?]    [-]    [-]    [-]    [-]    [-]    [-]    [-]    [-]
+            if(!xfl::readAVLString(in, Line, strong)) break;//?    Cl    Cd    Cm 0.25    TU    TL    SU    SL    L/D
+            if(!xfl::readAVLString(in, Line, strong)) break;//[?]    [-]    [-]    [-]    [-]    [-]    [-]    [-]    [-]
 
             res = 6;
             while(res==6)
             {
-                bIsReading  = ReadAVLString(in, Line, strong);//values
+                bIsReading  = xfl::readAVLString(in, Line, strong);//values
                 if(!bIsReading) break;
                 strong = strong.trimmed();
                 if(strong.length())
@@ -3105,7 +3057,7 @@ void XDirect::onInterpolateFoils()
 
     if(ifDlg.exec() == QDialog::Accepted)
     {
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         pNewFoil->setName(ifDlg.m_NewFoilName);
 
         if(addNewFoil(pNewFoil))
@@ -3174,7 +3126,7 @@ void XDirect::onNacaFoils()
             str = QString("%1").arg(nacaDlg.s_Digits);
         str = "NACA "+ str;
 
-        setRandomFoilColor(pNacaFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNacaFoil, !DisplayOptions::isLightTheme());
         pNacaFoil->setName(str);
 
         setCurOpp(pCurOpp);
@@ -3296,7 +3248,7 @@ void XDirect::onRefinePanelsGlobally()
     if(QDialog::Accepted == tdpDlg.exec())
     {
         pNewFoil->setPointStyle(psState);
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         setCurOpp(pOpPoint);
         if(addNewFoil(pNewFoil))
         {
@@ -3537,7 +3489,7 @@ void XDirect::onSetFlap()
     if(QDialog::Accepted == flpDlg.exec())
     {
         //        pNewFoil->copyFoil(curFoil());
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
 
         setCurOpp(pOpPoint);
 
@@ -3587,7 +3539,7 @@ void XDirect::onSetLERadius()
 
     if(QDialog::Accepted == lDlg.exec())
     {
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
         setCurOpp(pOpPoint);
 
         if(addNewFoil(pNewFoil))
@@ -3636,7 +3588,7 @@ void XDirect::onSetTEGap()
 
     if(QDialog::Accepted == tegDlg.exec())
     {
-        setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
+        xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
 
         if(addNewFoil(pNewFoil))
         {
@@ -3662,14 +3614,11 @@ void XDirect::onSetTEGap()
  */
 void XDirect::onShowAllOpps()
 {
-    OpPoint *pOpp;
-
     m_bCurOppOnly = false;
-    (s_pMainFrame)->m_pShowCurOppOnly->setChecked(m_bCurOppOnly);
 
     for (int i=0; i<m_poaOpp->size(); i++)
     {
-        pOpp = m_poaOpp->at(i);
+        OpPoint *pOpp = m_poaOpp->at(i);
         pOpp->setVisible(true);
     }
     emit projectModified();
@@ -3684,10 +3633,9 @@ void XDirect::onShowAllOpps()
  */
 void XDirect::onShowAllPolars()
 {
-    Polar *pPolar;
     for (int i=0; i<m_poaPolar->size(); i++)
     {
-        pPolar = m_poaPolar->at(i);
+        Polar *pPolar = m_poaPolar->at(i);
         pPolar->setVisible(true);
     }
     emit projectModified();
@@ -3704,10 +3652,9 @@ void XDirect::onShowFoilPolarsOnly()
 {
     if(!Objects2d::curFoil()) return;
 
-    Polar *pPolar;
     for (int i=0; i<m_poaPolar->size(); i++)
     {
-        pPolar = m_poaPolar->at(i);
+        Polar *pPolar = m_poaPolar->at(i);
         pPolar->setVisible((pPolar->foilName() == Objects2d::curFoil()->name()));
     }
     emit projectModified();
@@ -3723,10 +3670,10 @@ void XDirect::onShowFoilPolarsOnly()
 void XDirect::onShowFoilPolars()
 {
     if(!Objects2d::curFoil()) return;
-    Polar *pPolar;
+
     for (int i=0; i<m_poaPolar->size(); i++)
     {
-        pPolar = m_poaPolar->at(i);
+        Polar *pPolar = m_poaPolar->at(i);
         if(pPolar->foilName() == Objects2d::curFoil()->name())
         {
             pPolar->setVisible(true);
@@ -3747,7 +3694,6 @@ void XDirect::onShowFoilOpps()
     if(!Objects2d::curFoil() || !Objects2d::curPolar()) return;
 
     m_bCurOppOnly = false;
-    (s_pMainFrame)->m_pShowCurOppOnly->setChecked(m_bCurOppOnly);
 
     for(int i=0; i<m_poaOpp->size(); i++)
     {
@@ -3771,7 +3717,6 @@ void XDirect::onShowPolarOpps()
     if(!Objects2d::curFoil() || !Objects2d::curPolar()) return;
 
     m_bCurOppOnly = false;
-    (s_pMainFrame)->m_pShowCurOppOnly->setChecked(m_bCurOppOnly);
 
     for(int i=0; i<m_poaOpp->size(); i++)
     {
@@ -4423,6 +4368,7 @@ void XDirect::setupLayout()
     {
         QVBoxLayout *pDisplayGroup = new QVBoxLayout;
         {
+            m_pchActiveOppOnly = new QCheckBox(tr("Active operating point only"));
             m_pchShowBL        = new QCheckBox(tr("Displacement thickness"));
             m_pchShowPressure  = new QCheckBox(tr("Pressure"));
             m_pchAnimate       = new QCheckBox(tr("Animate"));
@@ -4432,6 +4378,7 @@ void XDirect::setupLayout()
             m_pslAnimateSpeed->setSliderPosition(500);
             m_pslAnimateSpeed->setTickInterval(50);
             m_pslAnimateSpeed->setTickPosition(QSlider::TicksBelow);
+            pDisplayGroup->addWidget(m_pchActiveOppOnly);
             pDisplayGroup->addWidget(m_pchShowBL);
             pDisplayGroup->addWidget(m_pchShowPressure);
             pDisplayGroup->addWidget(m_pchAnimate);

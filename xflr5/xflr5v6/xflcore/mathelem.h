@@ -60,3 +60,5 @@ double bunchedParameter(double bunchdist, double bunchamp, double t);
 bool linearRegression(int n, double const *x, double const*y, double &a, double &b);
 
 double HH(double x, double t1, double t2, double xmin, double xmax);
+
+void modeProperties(std::complex<double> lambda, double &omegaN, double &omega1, double &zeta);

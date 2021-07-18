@@ -28,7 +28,7 @@ class ExpandableTreeView : public QTreeView
         ExpandableTreeView(QWidget *pParent = nullptr);
 
         void setOverallCheckedState(Qt::CheckState state);
-        QWidget * cmdWidget() {return m_pCtrlWidget;}
+        QWidget * cmdWidget() {return m_pfrControls;}
 
         int sizeHintForColumn(int column) const override;
         QSize sizeHint() const override;
@@ -62,7 +62,7 @@ class ExpandableTreeView : public QTreeView
         QAction *m_pCollapseAll, *m_pExpandAll;
         CrossCheckBox *m_pchHideShowAll;
 
-        QWidget *m_pCtrlWidget;
+        QFrame *m_pfrControls;
 
         static FontStruct s_TreeFontStruct;
 };

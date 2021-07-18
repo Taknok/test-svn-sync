@@ -33,15 +33,10 @@
 
 
 
-
+#include <xflcore/core_enums.h>
 #include <xflgeom/geom3d/quaternion.h>
 #include <xflgeom/geom3d/vector3d.h>
 
-/**
- * enumeration used to identify the type of surface on which the panel lies.
- * May be on a bottom, mid, top, side, or body surface.
- */
-typedef enum {BOTSURFACE, MIDSURFACE, TOPSURFACE, SIDESURFACE, BODYSURFACE} enumPanelPosition;
 
 /**
 *@class Panel
@@ -95,11 +90,11 @@ class Panel
         Vector3d collPt() const {return CollPt;}
         Vector3d normal() const {return Normal;}
 
-        bool isTopSurface() const {return m_Pos==TOPSURFACE;}
-        bool isBotSurface() const {return m_Pos==BOTSURFACE;}
-        bool isMidSurface() const {return m_Pos==MIDSURFACE;}
-        bool isSideSurface() const {return m_Pos==SIDESURFACE;}
-        bool isBodySurface() const {return m_Pos==BODYSURFACE;}
+        bool isTopSurface()  const {return m_Pos==xfl::TOPSURFACE;}
+        bool isBotSurface()  const {return m_Pos==xfl::BOTSURFACE;}
+        bool isMidSurface()  const {return m_Pos==xfl::MIDSURFACE;}
+        bool isSideSurface() const {return m_Pos==xfl::SIDESURFACE;}
+        bool isBodySurface() const {return m_Pos==xfl::BODYSURFACE;}
 
         void printPanel();
 
@@ -137,15 +132,15 @@ class Panel
                                       the evaluation of the source and doublet influent at a distant point */
         double lij[9];           /**< The 3x3 matrix used to transform local coordinates in absolute coordinates */
 
-        static Vector3d *s_pNode;       /**< A static pointer to the global array of panel nodes */
-        static Vector3d *s_pWakeNode;   /**< A static pointer to the global array of wake panel nodes */
+        static Vector3d const *s_pNode;       /**< A static pointer to the global array of panel nodes */
+        static Vector3d const *s_pWakeNode;   /**< A static pointer to the global array of wake panel nodes */
 
         static double s_VortexPos; /**< Defines the relative position of the bound vortex in the streamwise direction. Usually the vortex is positioned at the panel's quarter chord i.e. s_VortexPos=0.25 */
         static double s_CtrlPos;   /**< Defines the relative position of the panel's control point in VLM. Usually the control point is positioned at the panel's 3/4 chord : s_VortexPos=0.75 */
 
 
     public:
-        enumPanelPosition m_Pos;   /**< defines if the panel is positioned on a top, middle, bottom, side or body surface */
+        xfl::enumSurfacePosition m_Pos;   /**< defines if the panel is positioned on a top, middle, bottom, side or body surface */
         bool m_bIsLeading;         /**< true if the panel is positioned on a leading edge */
         bool m_bIsTrailing;        /**< true if the panel is positioned on a trailing edge */
         int m_iLA;                 /**< index of the leading left node in the node array */

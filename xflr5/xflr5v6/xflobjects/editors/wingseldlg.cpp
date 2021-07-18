@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QDebug>
@@ -39,23 +40,27 @@ WingSelDlg::WingSelDlg(QWidget *pParent) : QDialog(pParent)
 
 void WingSelDlg::setupLayout()
 {
-    QVBoxLayout *pWingLayout = new QVBoxLayout;
-    {
-        m_pchBody = new QCheckBox(tr("BODY"));
-        pWingLayout->addWidget(m_pchBody);
-        for(int iw=xfl::MAINWING; iw!=xfl::OTHERWING; iw++)
-        {
-            xfl::enumWingType wType = xfl::enumWingType(iw);
-            m_pchWing[iw] = new QCheckBox(wingType(wType));
-            pWingLayout->addWidget(m_pchWing[iw]);
-        }
-        m_pchWing[0]->setEnabled(false);
-    }
     QVBoxLayout *pMainLayout = new QVBoxLayout;
-    QPushButton *pOKButton = new QPushButton(tr("OK"));
-    connect(pOKButton, SIGNAL(clicked()), this, SLOT(onOK()));
-    pMainLayout->addLayout(pWingLayout);
-    pMainLayout->addWidget(pOKButton);
+    {
+        QVBoxLayout *pWingLayout = new QVBoxLayout;
+        {
+            m_pchBody = new QCheckBox(tr("BODY"));
+            pWingLayout->addWidget(m_pchBody);
+            for(int iw=xfl::MAINWING; iw!=xfl::OTHERWING; iw++)
+            {
+                xfl::enumWingType wType = xfl::enumWingType(iw);
+                m_pchWing[iw] = new QCheckBox(wingType(wType));
+                pWingLayout->addWidget(m_pchWing[iw]);
+            }
+            m_pchWing[0]->setEnabled(false);
+        }
+
+        QDialogButtonBox *pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
+        connect(pButtonBox, &QDialogButtonBox::accepted, this, &WingSelDlg::onOK);
+
+        pMainLayout->addLayout(pWingLayout);
+        pMainLayout->addWidget(pButtonBox);
+    }
     setLayout(pMainLayout);
 }
 
@@ -69,6 +74,7 @@ void WingSelDlg::initDialog(Plane *pPlane)
     }
     m_pchBody->setChecked(m_pPlane->hasBody());
 }
+
 
 void WingSelDlg::onOK()
 {

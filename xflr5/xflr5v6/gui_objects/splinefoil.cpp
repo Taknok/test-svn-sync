@@ -195,9 +195,9 @@ void SplineFoil::exportToFile(QTextStream &out)
  */
 bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
 {
-    float f,x,y;
-    int ArchiveFormat,k,n;
-    int r,g,b;
+    float f(0),x(0),y(0);
+    int ArchiveFormat(0),k(0),n(0);
+    int r(0),g(0),b(0);
 
     if(bIsStoring)
     {
@@ -207,9 +207,9 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
     {
         ar >> ArchiveFormat;
         if(ArchiveFormat < 100000 || ArchiveFormat > 110000) return false;
-        readCString(ar, m_Name);
+        xfl::readCString(ar, m_Name);
         m_Name = QObject::tr("Spline Foil");
-        readCOLORREF(ar, r,g,b);
+        xfl::readCOLORREF(ar, r,g,b);
         ar >> n;
         m_theStyle.setStipple(n);
         ar >> m_theStyle.m_Width;

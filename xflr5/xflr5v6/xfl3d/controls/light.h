@@ -9,6 +9,8 @@
 
 #pragma once
 
+#define LIGHTREFLENGTH  10.0 //meters
+
 
 struct Attenuation
 {

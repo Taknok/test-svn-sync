@@ -346,7 +346,7 @@ void gl2dFractal::makeQuad()
 void gl2dFractal::initializeGL()
 {
     QString strange, vsrc, fsrc;
-    vsrc = ":/shaders/fractal/fractal_VS.glsl";
+    vsrc = ":/resources/shaders/fractal/fractal_VS.glsl";
     m_shadFrac.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
     if(m_shadFrac.log().length())
     {
@@ -354,7 +354,7 @@ void gl2dFractal::initializeGL()
         Trace(strange);
     }
 
-    fsrc = ":/shaders/fractal/fractal_FS.glsl";
+    fsrc = ":/resources/shaders/fractal/fractal_FS.glsl";
     m_shadFrac.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
     if(m_shadFrac.log().length())
     {

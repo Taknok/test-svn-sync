@@ -53,11 +53,12 @@ class BodyTransDlg : public QDialog
         DoubleEdit *m_pdeXTransFactor;
         DoubleEdit *m_pdeYTransFactor;
         DoubleEdit *m_pdeZTransFactor;
-        IntEdit *m_pctrlFrameID;
-        QCheckBox *m_pctrlFrameOnly;
+        IntEdit *m_pieFrameID;
+        QCheckBox *m_pchFrameOnly;
         QDialogButtonBox *m_pButtonBox;
 
-        double m_XTrans, m_YTrans, m_ZTrans; bool   m_bFrameOnly;
+        double m_XTrans, m_YTrans, m_ZTrans;
+        bool   m_bFrameOnly;
         int    m_FrameID;
 
 };

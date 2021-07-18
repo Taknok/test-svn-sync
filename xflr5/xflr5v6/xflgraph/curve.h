@@ -49,6 +49,7 @@ class Curve
          * Resets the content of the curve.
          */
         void clear() {m_x.clear(); m_y.clear();}
+        void reset() {clear();}
         void resizePoints(int n) {m_x.resize(n); m_y.resize(n);}
 
         int     closestPoint(double xs, double ys, double &dist) const;

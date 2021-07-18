@@ -33,7 +33,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 VERSION = 6.44
 
 CONFIG += qt
-QT += opengl network xml svg
+QT += widgets opengl network xml svg
 
 TEMPLATE = app
 TARGET = xflr5

@@ -159,8 +159,8 @@ public:
     double m_CmAirf[MAXSPANSTATIONS+1];          /**< the airfoil pitching moment coefficient about 1/4 chord point, at span stations */
     double m_BendingMoment[MAXSPANSTATIONS+1];   /**< the bending moment at span stations */
 
-    Vector3d m_Vd[MAXSPANSTATIONS];          /**< the downwash at the trailing edge */
-    Vector3d m_F[MAXSPANSTATIONS];           /**< the force acting on the chordwise = sum of the panel forces on this strip*/
+    QVector<Vector3d> m_Vd;          /**< the downwash at the trailing edge */
+    QVector<Vector3d> m_F;           /**< the force acting on the chordwise = sum of the panel forces on this strip*/
 
     std::complex<double> m_oldEigenValue[8];      /**< the eigenvalues of the four longitudinal and four lateral modes. @deprecated, kept for compatibility with former .wpa files */
     std::complex<double> m_oldEigenVector[8][4];  /**< the longitudinal and lateral eigenvectors (4 longitudinal + 4 lateral) x 4 components. @deprecated, kept for compatibility with former .wpa files */

@@ -32,7 +32,6 @@ class CtrlTableDelegate : public QItemDelegate
         void setEditable(QVector<bool> const &editable) {m_bEditable=editable;}
 
     private:
-        //	QStandardItemModel *m_pCtrlModel;
         QVector<int> m_Precision; ///table of float precisions for each column
         QVector<bool> m_bEditable;
 };

@@ -23,6 +23,8 @@
 
 #include "wpolar.h"
 
+#include <xflcore/mathelem.h>
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/surface.h>
 #include <xflobjects/objects_global.h>
@@ -1037,8 +1039,8 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
             m_Name ="";
             return false;
         }
-        readCString(ar, m_PlaneName);
-        readCString(ar, m_Name);
+        xfl::readCString(ar, m_PlaneName);
+        xfl::readCString(ar, m_Name);
 
         ar>> f;
         m_referenceArea = double(f);
@@ -1057,7 +1059,7 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 
         if (m_theStyle.m_Width<0 || m_theStyle.m_Width> 10) return false;
 
-        readCOLORREF(ar, r,g,b);
+        xfl::readCOLORREF(ar, r,g,b);
 
         ar>>k;
         if(k==1)      m_AnalysisMethod=xfl::LLTMETHOD;
@@ -1506,7 +1508,7 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
             ar >> m_theStyle.m_Width;
 
             int a,r,g,b;
-            readQColor(ar, r, g, b, a);
+            xfl::readQColor(ar, r, g, b, a);
             m_theStyle.m_Color = {r,g,b,a};
 
             ar >> m_theStyle.m_bIsVisible >> boolean;

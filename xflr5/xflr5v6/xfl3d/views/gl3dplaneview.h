@@ -45,7 +45,7 @@ class gl3dPlaneView : public gl3dXflView
         void glMake3dObjects() override;
 
     public slots:
-        void on3dReset() override;
+
 
     private:
         Plane const* m_pPlane;

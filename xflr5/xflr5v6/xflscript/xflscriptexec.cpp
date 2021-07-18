@@ -210,7 +210,7 @@ bool XflScriptExec::makeFoils()
         }
         else
         {
-            Foil *pFoil = readFoilFile(datFile);
+            Foil *pFoil = xfl::readFoilFile(datFile);
             if(pFoil)
             {
                 pFoil->setLineWidth(2);

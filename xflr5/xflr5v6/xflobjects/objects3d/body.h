@@ -60,7 +60,7 @@ class Body
 
         bool isInNURBSBody(double x, double z) const;
         bool isInNURBSBodyOld(Vector3d Pt);
-        bool intersect(Vector3d A, Vector3d B, Vector3d &I, bool bRight) const;
+        bool intersect(const Vector3d &A, const Vector3d &B, Vector3d &I, bool bRight) const;
         bool intersectFlatPanels(const Vector3d &A, const Vector3d &B, Vector3d &I) const;
         bool intersectNURBS(Vector3d A, Vector3d B, Vector3d &I, bool bRight) const;
 

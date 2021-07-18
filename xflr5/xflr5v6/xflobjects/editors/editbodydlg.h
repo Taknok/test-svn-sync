@@ -144,15 +144,15 @@ class EditBodyDlg : public QDialog
 
 
         QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
-        QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso, *m_pctrlFlip;
+        QToolButton *m_ptbX, *m_ptbY, *m_ptbZ, *m_ptbIso, *m_ptbFlip;
 
         QMenu *m_pContextMenu;
         QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteItem;
 
         QSplitter *m_pHorizontalSplitter, *m_pLeftSplitter, *m_pMiddleSplitter;
 
-        QPushButton *m_pctrlRedraw, *m_pctrlMenuButton;
-        QPushButton *m_pctrlReset;
+        QPushButton *m_ppbRedraw, *m_ppbMenu;
+        QPushButton *m_ppbReset;
 
         QDialogButtonBox *m_pButtonBox;
 

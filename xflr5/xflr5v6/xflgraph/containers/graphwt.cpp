@@ -42,6 +42,11 @@ QColor GraphWt::s_TextColor = Qt::white;
 GraphWt::GraphWt(QWidget *pParent) : QWidget(pParent)
 {
     setMouseTracking(true);
+    setFocusPolicy(Qt::WheelFocus);
+
+    m_DefaultSize = QSize(700,500);
+    m_MinSize = QSize(30, 30);
+
     m_bOverlayRectangle = false;
 
     m_TitlePosition.setX(0);

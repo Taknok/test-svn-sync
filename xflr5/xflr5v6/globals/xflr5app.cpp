@@ -72,6 +72,7 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
 
     bool bMaximized = true;
     bool bOK= false;
+    bool bSheet = false;
     int k=0;
     settings.beginGroup("MainFrame");
     {
@@ -94,6 +95,9 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
 
             str = settings.value("StyleName").toString();
             if(str.length()) StyleName = str;
+
+
+            bSheet = settings.value("bStyleSheet", false).toBool();
         }
     }
     settings.endGroup();
@@ -105,6 +109,26 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
     }
 
 
+    if(StyleName.length())	qApp->setStyle(StyleName);
+    if(bSheet)
+    {
+        QFile stylefile;
+        QString qssPathName =  qApp->applicationDirPath() + QDir::separator() +"/xflr5_dark.qss";
+
+        QFileInfo fi(qssPathName);
+        if(fi.exists())
+            stylefile.setFileName(qssPathName);
+        else
+            stylefile.setFileName(QStringLiteral(":/qss/xflr5_dark.qss"));
+
+        if (stylefile.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            QString qsStylesheet = QString::fromLatin1(stylefile.readAll());
+            qApp->setStyleSheet(qsStylesheet);
+            stylefile.close();
+        }
+    }
+
     int OGLversion = -1;
     bool bScript=false, bShowProgress=false;
     QString scriptPathName;
@@ -112,7 +136,7 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
     parseCmdLine(*this, scriptPathName, bScript, bShowProgress, OGLversion);
 
     QPixmap pixmap;
-    pixmap.load(":/resources/images/splash.png");
+    pixmap.load(":/images/splash.png");
     QSplashScreen splash(pixmap);
     splash.setWindowFlags(Qt::SplashScreen);
     if(!bScript)

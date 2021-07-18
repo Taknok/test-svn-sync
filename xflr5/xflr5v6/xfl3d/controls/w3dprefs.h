@@ -112,6 +112,7 @@ class W3dPrefs : public QDialog
         static int s_iChordwiseRes,s_iBodyAxialRes, s_iBodyHoopRes;
         static bool s_bAnimateTransitions;
         static bool s_bEnableClipPlane;
+
 };
 
 

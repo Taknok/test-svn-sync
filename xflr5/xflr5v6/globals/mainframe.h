@@ -50,7 +50,6 @@ class AFoil;
 class Foil;
 class FoilDesignWt;
 class GL3DScales;
-class GLLightDlg;
 class Graph;
 class Miarex;
 class MiarexTileWidget;
@@ -213,12 +212,8 @@ class MainFrame : public QMainWindow
 
         static QString const &projectName() {return s_ProjectName;}
         void setSaveState(bool bSave);
-        static void readStyleSheet(QString styleSheetName, QString &styleSheet);
-        static QColor getColor(int type);
 
-
-
-        /*___________________________________________Variables_______________________________*/
+/*___________________________________________Variables_______________________________*/
 
     private:
 
@@ -353,7 +348,7 @@ class MainFrame : public QMainWindow
         QAction *m_pRestoreToolbarsAct;
         QAction *m_pExportCurPolar, *m_pHideFoilPolars, *m_pShowFoilPolars, *m_pShowFoilPolarsOnly, *m_pSaveFoilPolars,*m_pDeleteFoilPolars;
         QAction *m_pExportPolarsTxt, *m_pExportFoilPlrs;
-        QAction *m_pShowAllPolars, *m_pHideAllPolars, *m_pShowCurOppOnly, *m_pShowAllOpPoints, *m_pHideAllOpPoints, *m_pExportPolarOpps;
+        QAction *m_pShowAllPolars, *m_pHideAllPolars, *m_pShowAllOpPoints, *m_pHideAllOpPoints, *m_pExportPolarOpps;
         QAction *m_pHideFoilOpps, *m_pShowFoilOpps, *m_pDeleteFoilOpps;
         QAction *m_pHidePolarOpps, *m_pShowPolarOpps, *m_pDeletePolarOpps;
         QAction *m_pExportCurOpp, *m_pDeleteCurOpp;
@@ -402,7 +397,6 @@ class MainFrame : public QMainWindow
         QString m_ExportLastDirName, m_ImageDirName;
         QString m_FileName;         /**< The absolute path to the file of the current project. */
 
-        static QVector <QColor> s_ColorList;
 
         QString m_GraphExportFilter;
 

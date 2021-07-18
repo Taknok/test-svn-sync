@@ -15,6 +15,7 @@
 #include <miarex/miarex.h>
 
 #include <miarex/view/stabviewdlg.h>
+#include <xflcore/mathelem.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/objects3d.h>
@@ -32,7 +33,6 @@
 
 MainFrame *PlaneTreeView::s_pMainFrame = nullptr;
 Miarex *PlaneTreeView::s_pMiarex = nullptr;
-int PlaneTreeView::s_Width=351;
 QByteArray PlaneTreeView::s_SplitterSizes;
 
 PlaneTreeView::PlaneTreeView(QWidget *pParent) : QWidget(pParent)
@@ -42,7 +42,6 @@ PlaneTreeView::PlaneTreeView(QWidget *pParent) : QWidget(pParent)
 
     m_Selection = xfl::NOOBJECT;
     m_pptObjectProps = new PlainTextOutput;
-    m_Selection = xfl::NOOBJECT;
 
     setupLayout();
 
@@ -92,17 +91,10 @@ void PlaneTreeView::showEvent(QShowEvent *pEvent)
 }
 
 
-void PlaneTreeView::hideEvent(QHideEvent *)
+void PlaneTreeView::hideEvent(QHideEvent *pEvent)
 {
-    s_Width = width();
     s_SplitterSizes = m_pMainSplitter->saveState();
-}
-
-
-void PlaneTreeView::resizeEvent(QResizeEvent *pEvent)
-{
-    updateGeometry(); // Notifies the layout system that the sizeHint() has changed
-    pEvent->accept();
+    QWidget::hideEvent(pEvent);
 }
 
 

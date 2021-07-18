@@ -41,9 +41,9 @@ class gl3dBodyView : public gl3dXflView
         void glMake3dObjects() override;
         void glMakePanels(QOpenGLBuffer &vbo, int nPanels, const Vector3d *pNode, const Panel *pPanel);
 
-    public slots:
-        void on3dReset() override;
 
+    private slots:
+        void on3dReset();
 
     public:
         Body *m_pBody;

@@ -23,6 +23,7 @@
 #include <QFile>
 #include <QRandomGenerator>
 
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/wing.h>
 #include <xflobjects/objects3d/wpolar.h>
 #include <xflobjects/objects3d/surface.h>
@@ -517,10 +518,10 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
                 xrel  = 1.0 - 1.0/2.0 * (1.0-cos(double(l)   *PI /double(NXSTATIONS)));
                 xrel1 = 1.0 - 1.0/2.0 * (1.0-cos(double(l+1)*PI /double(NXSTATIONS)));
 
-                m_Surface.at(j)->getSurfacePoint(xrel, xrel, yrel,  TOPSURFACE, ATop, N);
-                m_Surface.at(j)->getSurfacePoint(xrel, xrel, yrel,  BOTSURFACE, ABot, N);
-                m_Surface.at(j)->getSurfacePoint(xrel1, xrel1, yrel, TOPSURFACE, CTop, N);
-                m_Surface.at(j)->getSurfacePoint(xrel1, xrel1, yrel, BOTSURFACE, CBot, N);
+                m_Surface.at(j)->getSurfacePoint(xrel,  xrel, yrel,  xfl::TOPSURFACE, ATop, N);
+                m_Surface.at(j)->getSurfacePoint(xrel,  xrel, yrel,  xfl::BOTSURFACE, ABot, N);
+                m_Surface.at(j)->getSurfacePoint(xrel1, xrel1, yrel, xfl::TOPSURFACE, CTop, N);
+                m_Surface.at(j)->getSurfacePoint(xrel1, xrel1, yrel, xfl::BOTSURFACE, CBot, N);
                 PtVolume[p] = (ATop+ABot+CTop+CBot)/4.0;
                 Diag1 = ATop - CBot;
                 Diag2 = ABot - CTop;
@@ -1328,7 +1329,7 @@ double Wing::totalMass() const
 }
 
 
-void Wing::surfacePoint(double xRel, double ypos, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const
+void Wing::surfacePoint(double xRel, double ypos, xfl::enumSurfacePosition pos, Vector3d &Point, Vector3d &PtNormal) const
 {
     Surface *pSurface = nullptr;
     double fy = qAbs(ypos);
@@ -1705,7 +1706,7 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double cons
             for (int l=0; l<coef*pSurf->m_NXPanels; l++)
             {
                 // Get the force acting on the panel
-                if(m_pWingPanel[p].m_Pos!=MIDSURFACE)
+                if(m_pWingPanel[p].m_Pos!=xfl::MIDSURFACE)
                 {
                     ForcePt = m_pWingPanel[p].CollPt;
                     panelforce = m_pWingPanel[p].Normal * (-Cp[p]) * m_pWingPanel[p].Area;      // Newtons/q
@@ -2121,7 +2122,7 @@ bool Wing::intersectWing(Vector3d O,  Vector3d U, Vector3d &I) const
 
     for(int j=0; j<m_Surface.count(); j++)
     {
-        if(Intersect(m_Surface.at(j)->m_LA, m_Surface.at(j)->m_LB,
+        if(xfl::intersect(m_Surface.at(j)->m_LA, m_Surface.at(j)->m_LB,
                      m_Surface.at(j)->m_TA, m_Surface.at(j)->m_TB,
                      m_Surface.at(j)->Normal,
                      O, U, I, dist)) return true;
@@ -2249,12 +2250,12 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             return false;
         }
 
-        readCString(ar,m_WingName);
+        xfl::readCString(ar,m_WingName);
         if (m_WingName.length() ==0) return false;
 
         if (ArchiveFormat >=1008)
         {
-            readCString(ar, m_WingDescription);
+            xfl::readCString(ar, m_WingDescription);
         }
 
         ar >> k;
@@ -2283,12 +2284,12 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
 
         for (int is=0; is<=NPanel; is++)
         {
-            readCString(ar, strFoil);
+            xfl::readCString(ar, strFoil);
             m_Section[is]->m_RightFoilName = strFoil;
         }
         for (int is=0; is<=NPanel; is++)
         {
-            readCString(ar, strFoil);
+            xfl::readCString(ar, strFoil);
             m_Section[is]->m_LeftFoilName = strFoil;
         }
 
@@ -2401,7 +2402,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
         if(ArchiveFormat>=1006)
         {
             int r,g,b;
-            readCOLORREF(ar, r,g,b);
+            xfl::readCOLORREF(ar, r,g,b);
         }
 
         if(ArchiveFormat>=1009)
@@ -2427,7 +2428,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             for(int im=0; im<nMass; im++)
             {
                 tag.append("");
-                readCString(ar, tag[im]);
+                xfl::readCString(ar, tag[im]);
             }
 
             clearPointMasses();
@@ -2473,7 +2474,7 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
         ar << m_WingName;
         ar << m_WingDescription;
 
-        writeQColor(ar, m_Color.red(), m_Color.green(), m_Color.blue(), m_Color.alpha());
+        xfl::writeQColor(ar, m_Color.red(), m_Color.green(), m_Color.blue(), m_Color.alpha());
 
         ar << m_bSymetric;
 
@@ -2568,7 +2569,7 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
         ar >> m_WingDescription;
 
         int a,r,g,b;
-        readQColor(ar, r, g, b, a);
+        xfl::readQColor(ar, r, g, b, a);
         m_Color = {r,g,b,a};
 
         ar >> m_bSymetric;
@@ -2720,14 +2721,14 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
     QVector<Vector3d> PtBotLeft(CHORDPANELS+1);
     QVector<Vector3d> PtBotRight(CHORDPANELS+1);
 
-    memset(NormalA.data(), 0, ulong(CHORDPANELS+1) * sizeof(Vector3d));
-    memset(NormalB.data(), 0, ulong(CHORDPANELS+1) * sizeof(Vector3d));
+    NormalA.fill(Vector3d());
+    NormalB.fill(Vector3d());
 
 
     //    80 character header, avoid word "solid"
     //                       0123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789
     QString strong =     "binary STL file                                                                ";
-    writeCString(outStream, strong);
+    xfl::writeCString(outStream, strong);
 
     //Number of triangles
     // nSurfaces
@@ -2756,7 +2757,7 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
         //top surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft, PtRight,
+            m_Surface.at(j)->getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft, PtRight,
                                            NormalA, NormalB, CHORDPANELS+1);
 
             double tauA = double(is)   /double(SPANPANELS);
@@ -2767,42 +2768,42 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
                 //left side vertices
                 N = NormalA[ic] * (1.0-tau) + NormalB[ic] * tau;
                 //1st triangle
-                writeFloat(outStream, N.xf());
-                writeFloat(outStream, N.yf());
-                writeFloat(outStream, N.zf());
+                xfl::writeFloat(outStream, N.xf());
+                xfl::writeFloat(outStream, N.yf());
+                xfl::writeFloat(outStream, N.zf());
                 Pt = PtLeft[ic]   * (1.0-tauA) + PtRight[ic]   * tauA;
-                writeFloat(outStream, Pt.xf()*unit);
-                writeFloat(outStream, Pt.yf()*unit);
-                writeFloat(outStream, Pt.zf()*unit);
+                xfl::writeFloat(outStream, Pt.xf()*unit);
+                xfl::writeFloat(outStream, Pt.yf()*unit);
+                xfl::writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
-                writeFloat(outStream, Pt.xf()*unit);
-                writeFloat(outStream, Pt.yf()*unit);
-                writeFloat(outStream, Pt.zf()*unit);
+                xfl::writeFloat(outStream, Pt.xf()*unit);
+                xfl::writeFloat(outStream, Pt.yf()*unit);
+                xfl::writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
-                writeFloat(outStream, Pt.xf()*unit);
-                writeFloat(outStream, Pt.yf()*unit);
-                writeFloat(outStream, Pt.zf()*unit);
+                xfl::writeFloat(outStream, Pt.xf()*unit);
+                xfl::writeFloat(outStream, Pt.yf()*unit);
+                xfl::writeFloat(outStream, Pt.zf()*unit);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
 
 
                 //2nd triangle
-                writeFloat(outStream, N.xf());
-                writeFloat(outStream, N.yf());
-                writeFloat(outStream, N.zf());
+                xfl::writeFloat(outStream, N.xf());
+                xfl::writeFloat(outStream, N.yf());
+                xfl::writeFloat(outStream, N.zf());
                 Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
-                writeFloat(outStream, Pt.xf()*unit);
-                writeFloat(outStream, Pt.yf()*unit);
-                writeFloat(outStream, Pt.zf()*unit);
+                xfl::writeFloat(outStream, Pt.xf()*unit);
+                xfl::writeFloat(outStream, Pt.yf()*unit);
+                xfl::writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic+1] * (1.0-tauB) + PtRight[ic+1] * tauB;
-                writeFloat(outStream, Pt.xf()*unit);
-                writeFloat(outStream, Pt.yf()*unit);
-                writeFloat(outStream, Pt.zf()*unit);
+                xfl::writeFloat(outStream, Pt.xf()*unit);
+                xfl::writeFloat(outStream, Pt.yf()*unit);
+                xfl::writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
-                writeFloat(outStream, Pt.xf()*unit);
-                writeFloat(outStream, Pt.yf()*unit);
-                writeFloat(outStream, Pt.zf()*unit);
+                xfl::writeFloat(outStream, Pt.xf()*unit);
+                xfl::writeFloat(outStream, Pt.yf()*unit);
+                xfl::writeFloat(outStream, Pt.zf()*unit);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
@@ -2815,7 +2816,7 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
         //bottom surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtLeft, PtRight,
+            m_Surface.at(j)->getSidePoints(xfl::BOTSURFACE, nullptr, PtLeft, PtRight,
                                            NormalA, NormalB, CHORDPANELS+1);
 
             double tauA = double(is)   / double(SPANPANELS);
@@ -2826,41 +2827,41 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
                 N = NormalA[ic] * (1.0-tau) + NormalB[ic] * tau;
 
                 //1st triangle
-                writeFloat(outStream, N.xf()*unit);
-                writeFloat(outStream, N.yf()*unit);
-                writeFloat(outStream, N.zf()*unit);
+                xfl::writeFloat(outStream, N.xf()*unit);
+                xfl::writeFloat(outStream, N.yf()*unit);
+                xfl::writeFloat(outStream, N.zf()*unit);
                 Pt = PtLeft[ic]   * (1.0-tauA) + PtRight[ic]   * tauA;
-                writeFloat(outStream, Pt.xf()*unit);
-                writeFloat(outStream, Pt.yf()*unit);
-                writeFloat(outStream, Pt.zf()*unit);
+                xfl::writeFloat(outStream, Pt.xf()*unit);
+                xfl::writeFloat(outStream, Pt.yf()*unit);
+                xfl::writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
-                writeFloat(outStream, Pt.xf()*unit);
-                writeFloat(outStream, Pt.yf()*unit);
-                writeFloat(outStream, Pt.zf()*unit);
+                xfl::writeFloat(outStream, Pt.xf()*unit);
+                xfl::writeFloat(outStream, Pt.yf()*unit);
+                xfl::writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
-                writeFloat(outStream, Pt.xf()*unit);
-                writeFloat(outStream, Pt.yf()*unit);
-                writeFloat(outStream, Pt.zf()*unit);
+                xfl::writeFloat(outStream, Pt.xf()*unit);
+                xfl::writeFloat(outStream, Pt.yf()*unit);
+                xfl::writeFloat(outStream, Pt.zf()*unit);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
 
                 //2nd triangle
-                writeFloat(outStream, N.xf()*unit);
-                writeFloat(outStream, N.yf()*unit);
-                writeFloat(outStream, N.zf()*unit);
+                xfl::writeFloat(outStream, N.xf()*unit);
+                xfl::writeFloat(outStream, N.yf()*unit);
+                xfl::writeFloat(outStream, N.zf()*unit);
                 Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
-                writeFloat(outStream, Pt.xf()*unit);
-                writeFloat(outStream, Pt.yf()*unit);
-                writeFloat(outStream, Pt.zf()*unit);
+                xfl::writeFloat(outStream, Pt.xf()*unit);
+                xfl::writeFloat(outStream, Pt.yf()*unit);
+                xfl::writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic+1] * (1.0-tauB) + PtRight[ic+1] * tauB;
-                writeFloat(outStream, Pt.xf()*unit);
-                writeFloat(outStream, Pt.yf()*unit);
-                writeFloat(outStream, Pt.zf()*unit);
+                xfl::writeFloat(outStream, Pt.xf()*unit);
+                xfl::writeFloat(outStream, Pt.yf()*unit);
+                xfl::writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
-                writeFloat(outStream, Pt.xf()*unit);
-                writeFloat(outStream, Pt.yf()*unit);
-                writeFloat(outStream, Pt.zf()*unit);
+                xfl::writeFloat(outStream, Pt.xf()*unit);
+                xfl::writeFloat(outStream, Pt.yf()*unit);
+                xfl::writeFloat(outStream, Pt.zf()*unit);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
@@ -2878,27 +2879,27 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
     {
         if(m_Surface.at(j)->isTipLeft())
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft, PtRight,
+            m_Surface.at(j)->getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft, PtRight,
                                            NormalA, NormalB, CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft, PtBotRight,
+            m_Surface.at(j)->getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight,
                                            NormalA, NormalB, CHORDPANELS+1);
 
             N = m_Surface.at(j)->Normal;
             N.rotateX(90.0);
 
             //L.E. triangle
-            writeFloat(outStream, N.xf());
-            writeFloat(outStream, N.yf());
-            writeFloat(outStream, N.zf());
-            writeFloat(outStream, PtBotLeft[0].xf()*unit);
-            writeFloat(outStream, PtBotLeft[0].yf()*unit);
-            writeFloat(outStream, PtBotLeft[0].zf()*unit);
-            writeFloat(outStream, PtLeft[1].xf()*unit);
-            writeFloat(outStream, PtLeft[1].yf()*unit);
-            writeFloat(outStream, PtLeft[1].zf()*unit);
-            writeFloat(outStream, PtBotLeft[1].xf()*unit);
-            writeFloat(outStream, PtBotLeft[1].yf()*unit);
-            writeFloat(outStream, PtBotLeft[1].zf()*unit);
+            xfl::writeFloat(outStream, N.xf());
+            xfl::writeFloat(outStream, N.yf());
+            xfl::writeFloat(outStream, N.zf());
+            xfl::writeFloat(outStream, PtBotLeft[0].xf()*unit);
+            xfl::writeFloat(outStream, PtBotLeft[0].yf()*unit);
+            xfl::writeFloat(outStream, PtBotLeft[0].zf()*unit);
+            xfl::writeFloat(outStream, PtLeft[1].xf()*unit);
+            xfl::writeFloat(outStream, PtLeft[1].yf()*unit);
+            xfl::writeFloat(outStream, PtLeft[1].zf()*unit);
+            xfl::writeFloat(outStream, PtBotLeft[1].xf()*unit);
+            xfl::writeFloat(outStream, PtBotLeft[1].yf()*unit);
+            xfl::writeFloat(outStream, PtBotLeft[1].zf()*unit);
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
 
@@ -2907,34 +2908,34 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
             for(int ic=1; ic<CHORDPANELS-1; ic++)
             {
                 //1st triangle
-                writeFloat(outStream, N.xf());
-                writeFloat(outStream, N.yf());
-                writeFloat(outStream, N.zf());
-                writeFloat(outStream, PtBotLeft[ic].xf()*unit);
-                writeFloat(outStream, PtBotLeft[ic].yf()*unit);
-                writeFloat(outStream, PtBotLeft[ic].zf()*unit);
-                writeFloat(outStream, PtLeft[ic].xf()*unit);
-                writeFloat(outStream, PtLeft[ic].yf()*unit);
-                writeFloat(outStream, PtLeft[ic].zf()*unit);
-                writeFloat(outStream, PtLeft[ic+1].xf()*unit);
-                writeFloat(outStream, PtLeft[ic+1].yf()*unit);
-                writeFloat(outStream, PtLeft[ic+1].zf()*unit);
+                xfl::writeFloat(outStream, N.xf());
+                xfl::writeFloat(outStream, N.yf());
+                xfl::writeFloat(outStream, N.zf());
+                xfl::writeFloat(outStream, PtBotLeft[ic].xf()*unit);
+                xfl::writeFloat(outStream, PtBotLeft[ic].yf()*unit);
+                xfl::writeFloat(outStream, PtBotLeft[ic].zf()*unit);
+                xfl::writeFloat(outStream, PtLeft[ic].xf()*unit);
+                xfl::writeFloat(outStream, PtLeft[ic].yf()*unit);
+                xfl::writeFloat(outStream, PtLeft[ic].zf()*unit);
+                xfl::writeFloat(outStream, PtLeft[ic+1].xf()*unit);
+                xfl::writeFloat(outStream, PtLeft[ic+1].yf()*unit);
+                xfl::writeFloat(outStream, PtLeft[ic+1].zf()*unit);
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
 
                 //2nd triangle
-                writeFloat(outStream, N.xf());
-                writeFloat(outStream, N.yf());
-                writeFloat(outStream, N.zf());
-                writeFloat(outStream, PtBotLeft[ic].xf()*unit);
-                writeFloat(outStream, PtBotLeft[ic].yf()*unit);
-                writeFloat(outStream, PtBotLeft[ic].zf()*unit);
-                writeFloat(outStream, PtLeft[ic+1].xf()*unit);
-                writeFloat(outStream, PtLeft[ic+1].yf()*unit);
-                writeFloat(outStream, PtLeft[ic+1].zf()*unit);
-                writeFloat(outStream, PtBotLeft[ic+1].xf()*unit);
-                writeFloat(outStream, PtBotLeft[ic+1].yf()*unit);
-                writeFloat(outStream, PtBotLeft[ic+1].zf()*unit);
+                xfl::writeFloat(outStream, N.xf());
+                xfl::writeFloat(outStream, N.yf());
+                xfl::writeFloat(outStream, N.zf());
+                xfl::writeFloat(outStream, PtBotLeft[ic].xf()*unit);
+                xfl::writeFloat(outStream, PtBotLeft[ic].yf()*unit);
+                xfl::writeFloat(outStream, PtBotLeft[ic].zf()*unit);
+                xfl::writeFloat(outStream, PtLeft[ic+1].xf()*unit);
+                xfl::writeFloat(outStream, PtLeft[ic+1].yf()*unit);
+                xfl::writeFloat(outStream, PtLeft[ic+1].zf()*unit);
+                xfl::writeFloat(outStream, PtBotLeft[ic+1].xf()*unit);
+                xfl::writeFloat(outStream, PtBotLeft[ic+1].yf()*unit);
+                xfl::writeFloat(outStream, PtBotLeft[ic+1].zf()*unit);
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
 
@@ -2943,18 +2944,18 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
 
             //T.E. triangle
             int ic = CHORDPANELS-1;
-            writeFloat(outStream, N.xf());
-            writeFloat(outStream, N.yf());
-            writeFloat(outStream, N.zf());
-            writeFloat(outStream, PtBotLeft[ic].xf()*unit);
-            writeFloat(outStream, PtBotLeft[ic].yf()*unit);
-            writeFloat(outStream, PtBotLeft[ic].zf()*unit);
-            writeFloat(outStream, PtLeft[ic].xf()*unit);
-            writeFloat(outStream, PtLeft[ic].yf()*unit);
-            writeFloat(outStream, PtLeft[ic].zf()*unit);
-            writeFloat(outStream, PtBotLeft[ic+1].xf()*unit);
-            writeFloat(outStream, PtBotLeft[ic+1].yf()*unit);
-            writeFloat(outStream, PtBotLeft[ic+1].zf()*unit);
+            xfl::writeFloat(outStream, N.xf());
+            xfl::writeFloat(outStream, N.yf());
+            xfl::writeFloat(outStream, N.zf());
+            xfl::writeFloat(outStream, PtBotLeft[ic].xf()*unit);
+            xfl::writeFloat(outStream, PtBotLeft[ic].yf()*unit);
+            xfl::writeFloat(outStream, PtBotLeft[ic].zf()*unit);
+            xfl::writeFloat(outStream, PtLeft[ic].xf()*unit);
+            xfl::writeFloat(outStream, PtLeft[ic].yf()*unit);
+            xfl::writeFloat(outStream, PtLeft[ic].zf()*unit);
+            xfl::writeFloat(outStream, PtBotLeft[ic+1].xf()*unit);
+            xfl::writeFloat(outStream, PtBotLeft[ic+1].yf()*unit);
+            xfl::writeFloat(outStream, PtBotLeft[ic+1].zf()*unit);
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
 
@@ -2963,27 +2964,27 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
 
         if(m_Surface.at(j)->isTipRight())
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft, PtRight,
+            m_Surface.at(j)->getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft, PtRight,
                                            NormalA, NormalB, CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft, PtBotRight,
+            m_Surface.at(j)->getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight,
                                            NormalA, NormalB, CHORDPANELS+1);
 
             N = m_Surface.at(j)->Normal;
             N.rotateX(-90.0);
 
             //L.E. triangle
-            writeFloat(outStream, N.xf());
-            writeFloat(outStream, N.yf());
-            writeFloat(outStream, N.zf());
-            writeFloat(outStream, PtBotRight[0].xf()*unit);
-            writeFloat(outStream, PtBotRight[0].yf()*unit);
-            writeFloat(outStream, PtBotRight[0].zf()*unit);
-            writeFloat(outStream, PtRight[1].xf()*unit);
-            writeFloat(outStream, PtRight[1].yf()*unit);
-            writeFloat(outStream, PtRight[1].zf()*unit);
-            writeFloat(outStream, PtBotRight[1].xf()*unit);
-            writeFloat(outStream, PtBotRight[1].yf()*unit);
-            writeFloat(outStream, PtBotRight[1].zf()*unit);
+            xfl::writeFloat(outStream, N.xf());
+            xfl::writeFloat(outStream, N.yf());
+            xfl::writeFloat(outStream, N.zf());
+            xfl::writeFloat(outStream, PtBotRight[0].xf()*unit);
+            xfl::writeFloat(outStream, PtBotRight[0].yf()*unit);
+            xfl::writeFloat(outStream, PtBotRight[0].zf()*unit);
+            xfl::writeFloat(outStream, PtRight[1].xf()*unit);
+            xfl::writeFloat(outStream, PtRight[1].yf()*unit);
+            xfl::writeFloat(outStream, PtRight[1].zf()*unit);
+            xfl::writeFloat(outStream, PtBotRight[1].xf()*unit);
+            xfl::writeFloat(outStream, PtBotRight[1].yf()*unit);
+            xfl::writeFloat(outStream, PtBotRight[1].zf()*unit);
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
             iTriangles +=1;
@@ -2991,34 +2992,34 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
             for(int ic=1; ic<CHORDPANELS-1; ic++)
             {
                 //1st triangle
-                writeFloat(outStream, N.xf());
-                writeFloat(outStream, N.yf());
-                writeFloat(outStream, N.zf());
-                writeFloat(outStream, PtBotRight[ic].xf()*unit);
-                writeFloat(outStream, PtBotRight[ic].yf()*unit);
-                writeFloat(outStream, PtBotRight[ic].zf()*unit);
-                writeFloat(outStream, PtRight[ic].xf()*unit);
-                writeFloat(outStream, PtRight[ic].yf()*unit);
-                writeFloat(outStream, PtRight[ic].zf()*unit);
-                writeFloat(outStream, PtRight[ic+1].xf()*unit);
-                writeFloat(outStream, PtRight[ic+1].yf()*unit);
-                writeFloat(outStream, PtRight[ic+1].zf()*unit);
+                xfl::writeFloat(outStream, N.xf());
+                xfl::writeFloat(outStream, N.yf());
+                xfl::writeFloat(outStream, N.zf());
+                xfl::writeFloat(outStream, PtBotRight[ic].xf()*unit);
+                xfl::writeFloat(outStream, PtBotRight[ic].yf()*unit);
+                xfl::writeFloat(outStream, PtBotRight[ic].zf()*unit);
+                xfl::writeFloat(outStream, PtRight[ic].xf()*unit);
+                xfl::writeFloat(outStream, PtRight[ic].yf()*unit);
+                xfl::writeFloat(outStream, PtRight[ic].zf()*unit);
+                xfl::writeFloat(outStream, PtRight[ic+1].xf()*unit);
+                xfl::writeFloat(outStream, PtRight[ic+1].yf()*unit);
+                xfl::writeFloat(outStream, PtRight[ic+1].zf()*unit);
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
 
                 //2nd triangle
-                writeFloat(outStream, N.xf());
-                writeFloat(outStream, N.yf());
-                writeFloat(outStream, N.zf());
-                writeFloat(outStream, PtBotRight[ic].xf()*unit);
-                writeFloat(outStream, PtBotRight[ic].yf()*unit);
-                writeFloat(outStream, PtBotRight[ic].zf()*unit);
-                writeFloat(outStream, PtRight[ic+1].xf()*unit);
-                writeFloat(outStream, PtRight[ic+1].yf()*unit);
-                writeFloat(outStream, PtRight[ic+1].zf()*unit);
-                writeFloat(outStream, PtBotRight[ic+1].xf()*unit);
-                writeFloat(outStream, PtBotRight[ic+1].yf()*unit);
-                writeFloat(outStream, PtBotRight[ic+1].zf()*unit);
+                xfl::writeFloat(outStream, N.xf());
+                xfl::writeFloat(outStream, N.yf());
+                xfl::writeFloat(outStream, N.zf());
+                xfl::writeFloat(outStream, PtBotRight[ic].xf()*unit);
+                xfl::writeFloat(outStream, PtBotRight[ic].yf()*unit);
+                xfl::writeFloat(outStream, PtBotRight[ic].zf()*unit);
+                xfl::writeFloat(outStream, PtRight[ic+1].xf()*unit);
+                xfl::writeFloat(outStream, PtRight[ic+1].yf()*unit);
+                xfl::writeFloat(outStream, PtRight[ic+1].zf()*unit);
+                xfl::writeFloat(outStream, PtBotRight[ic+1].xf()*unit);
+                xfl::writeFloat(outStream, PtBotRight[ic+1].yf()*unit);
+                xfl::writeFloat(outStream, PtBotRight[ic+1].zf()*unit);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
@@ -3027,18 +3028,18 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
 
             //T.E. triangle
             int ic = CHORDPANELS-1;
-            writeFloat(outStream, N.xf());
-            writeFloat(outStream, N.yf());
-            writeFloat(outStream, N.zf());
-            writeFloat(outStream, PtBotRight[ic].xf()*unit);
-            writeFloat(outStream, PtBotRight[ic].yf()*unit);
-            writeFloat(outStream, PtBotRight[ic].zf()*unit);
-            writeFloat(outStream, PtRight[ic].xf()*unit);
-            writeFloat(outStream, PtRight[ic].yf()*unit);
-            writeFloat(outStream, PtRight[ic].zf()*unit);
-            writeFloat(outStream, PtBotRight[ic+1].xf()*unit);
-            writeFloat(outStream, PtBotRight[ic+1].yf()*unit);
-            writeFloat(outStream, PtBotRight[ic+1].zf()*unit);
+            xfl::writeFloat(outStream, N.xf());
+            xfl::writeFloat(outStream, N.yf());
+            xfl::writeFloat(outStream, N.zf());
+            xfl::writeFloat(outStream, PtBotRight[ic].xf()*unit);
+            xfl::writeFloat(outStream, PtBotRight[ic].yf()*unit);
+            xfl::writeFloat(outStream, PtBotRight[ic].zf()*unit);
+            xfl::writeFloat(outStream, PtRight[ic].xf()*unit);
+            xfl::writeFloat(outStream, PtRight[ic].yf()*unit);
+            xfl::writeFloat(outStream, PtRight[ic].zf()*unit);
+            xfl::writeFloat(outStream, PtBotRight[ic+1].xf()*unit);
+            xfl::writeFloat(outStream, PtBotRight[ic+1].yf()*unit);
+            xfl::writeFloat(outStream, PtBotRight[ic+1].zf()*unit);
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
 
@@ -3106,7 +3107,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
         //top surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft, PtRight, NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft, PtRight, NormalA, NormalB, CHORDPANELS+1);
 
             double tauA = double(is)   / double(SPANPANELS);
             double tauB = double(is+1) / double(SPANPANELS);
@@ -3144,7 +3145,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
         //bottom surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtLeft, PtRight,
+            m_Surface.at(j)->getSidePoints(xfl::BOTSURFACE, nullptr, PtLeft, PtRight,
                                            NormalA, NormalB, CHORDPANELS+1);
 
             double tauA = double(is)   /double(SPANPANELS);
@@ -3190,8 +3191,8 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
     {
         if(m_Surface.at(j)->isTipLeft())
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
 
             N = m_Surface.at(j)->Normal;
             N.rotateX(90.0);
@@ -3236,8 +3237,8 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
 
         if(m_Surface.at(j)->isTipRight())
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
 
             N = m_Surface.at(j)->Normal;
             N.rotateX(-90.0);

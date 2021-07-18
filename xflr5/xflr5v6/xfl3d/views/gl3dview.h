@@ -21,7 +21,7 @@
 
 #pragma once
 
-
+#include <QOpenGLExtraFunctions>
 #include <QOpenGLWidget>
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
@@ -83,7 +83,7 @@ struct ShaderLocations
 class GLLightDlg;
 
 
-class gl3dView : public QOpenGLWidget
+class gl3dView : public QOpenGLWidget, protected QOpenGLExtraFunctions
 {
     friend class GLLightDlg;
 
@@ -91,6 +91,10 @@ class gl3dView : public QOpenGLWidget
     public:
         gl3dView(QWidget *pParent = nullptr);
         ~gl3dView();
+
+        void setReferenceLength(double length) {m_RefLength = length;}
+        double referenceLength() const {return m_RefLength;}
+        void reset3dScale();
 
         void setLightVisible(bool bShow) {m_bLightVisible=bShow;}
 
@@ -105,6 +109,10 @@ class gl3dView : public QOpenGLWidget
 
         static bool isLightOn() {return s_Light.m_bIsLightOn;}
         static void setLightOn(bool bLight) {s_Light.m_bIsLightOn = bLight;}
+        static void setLight(Light const l) {s_Light=l;}
+        static Light const &light() {return s_Light;}
+        static void setLightPos(double x, double y, double z) {s_Light.m_X=x; s_Light.m_Y=y; s_Light.m_Z=z;}
+        static void setSpecular(double s) {s_Light.m_Specular=s;}
 
         static bool bSpinAnimation() {return s_bSpinAnimation;}
         static double spinDamping() {return s_SpinDamping;}
@@ -145,7 +153,7 @@ class gl3dView : public QOpenGLWidget
         virtual void glMake3dObjects() = 0;
 
         void keyReleaseEvent(QKeyEvent *pEvent) override;
-        void keyPressEvent(QKeyEvent *pEvent) override;
+        virtual void keyPressEvent(QKeyEvent *pEvent) override;
         void mouseDoubleClickEvent(QMouseEvent *pEvent) override;
         void mousePressEvent(QMouseEvent *pEvent) override;
         void mouseMoveEvent(QMouseEvent *pEvent) override;
@@ -154,14 +162,18 @@ class gl3dView : public QOpenGLWidget
         QSize sizeHint() const override {return QSize(913, 701);}
 
     protected slots:
-        void on3dIso();
+        void on3dBot();
         void on3dFlip();
-        void on3dTop();
-        void on3dLeft();
         void on3dFront();
-        virtual void on3dReset() = 0;
+        void on3dIso();
+        void on3dLeft();
+        void on3dRear();
+        void on3dRight();
+        void on3dTop();
+        virtual void on3dReset();
         void onAxes(bool bChecked);
         void onClipPlane(int pos);
+        void onClipScreenPlane(bool bClip);
 
         void onDynamicIncrement();
         void onResetIncrement();
@@ -179,6 +191,7 @@ class gl3dView : public QOpenGLWidget
         void glMakeArcPoint(ArcBall const&arcball);
         void glMakeArcBall(ArcBall &arcball);
         void glMakeLightSource();
+        void glMakeIcoSphere(int nSplits);
 
         void glRenderText(Vector3d const &pos, const QString & str, const QColor &textcolor, bool bBackground=false, bool bBold=false) {glRenderText(pos.x, pos.y, pos.z, str, textcolor, bBackground, bBold);}
         void glRenderText(int x, int y, const QString & str, const QColor &backclr, const QColor &textcolor = QColor(Qt::white), bool bBold=false);
@@ -195,18 +208,24 @@ class gl3dView : public QOpenGLWidget
         void paintArcBall();
         void paintAxes();
         void paintPoints(QOpenGLBuffer &vbo, float width, int iShape, bool bLight, QColor const &clr, int stride);
-        void paintSphere(const Vector3d &place, double radius, QColor sphereColor, bool bLight=true);
+        void paintSphere(float xs, float ys, float zs, float radius, const QColor &color, bool bLight=true);
+        void paintSphere(const Vector3d &place, float radius, const QColor &sphereColor, bool bLight=true);
+        void paintSphereInstances(QOpenGLBuffer &vboPosInstances, float radius, QColor const &clr, bool bTwoSided, bool bLight);
+        void paintTriangle(QOpenGLBuffer &vbo, bool bHighlight, bool bBackground, const QColor &clrBack);
         void paintTriangles3Vtx(QOpenGLBuffer &vbo, const QColor &backclr, bool bTwoSided, bool bLight);
         void paintTriangles3VtxTexture(QOpenGLBuffer &vbo, const QColor &backclr, bool bTwoSided, bool bLight, QOpenGLTexture *pTexture);
         void paintSegments(QOpenGLBuffer &vbo, LineStyle const &ls, bool bHigh = false);
         void paintSegments(QOpenGLBuffer &vbo, const QColor &clr, int thickness, Line::enumLineStipple stip=Line::SOLID, bool bHigh=false);
-        void paintLineStrip(QOpenGLBuffer &vbo, const LineStyle &ls);
+        void paintLineStrip(QOpenGLBuffer &vbo, LineStyle const &ls);
+        void paintLineStrip(QOpenGLBuffer &vbo, const QColor &clr, int width, Line::enumLineStipple stipple=Line::SOLID);
         void paintBox(double x, double y, double z, double dx, double dy, double dz, QColor const &clr, bool bLight);
         void paintCube(double x, double y, double z, double side, QColor const &clr, bool bLight);
+        void paintColourSegments(QOpenGLBuffer &vbo, LineStyle const &ls);
+        void paintColourMap(QOpenGLBuffer &vbo, QMatrix4x4 const& modelmat = QMatrix4x4());
+        void paintTriangleFan(QOpenGLBuffer &vbo, QColor const &clr, bool bLight, bool bCullFaces);
 
         void reset3dRotationCenter();
-        void set3dScale(double length=-1.0);
-        void startResetTimer(double length);
+        void startResetTimer();
         void startRotationTimer();
         void startTranslationTimer(Vector3d PP);
 
@@ -214,6 +233,7 @@ class gl3dView : public QOpenGLWidget
        void startDynamicTimer();
        void stopDynamicTimer();
 
+       void updateLightMatrix();
 
        void screenToViewport(QPoint const &point, int z, Vector3d &real) const;
        void screenToViewport(QPoint const &point, Vector3d &real) const;
@@ -225,9 +245,10 @@ class gl3dView : public QOpenGLWidget
        QPoint worldToScreen(const Vector3d &v, QVector4D &vScreen) const;
        QPoint worldToScreen(const QVector4D &v4, QVector4D &vScreen) const;
 
+       float scale() const {return m_glScalef;}
 
     public:
-        static void printFormat(QSurfaceFormat const &ctxFormat, QString &log);
+        void printFormat(QSurfaceFormat const &ctxFormat, QString &log);
 
 
     protected:
@@ -240,12 +261,17 @@ class gl3dView : public QOpenGLWidget
         ShaderLocations m_locLine;
         ShaderLocations m_locPoint;
 
+        int m_uHasShadow;
+        int m_uShadowLightViewMatrix;
+
         QOpenGLBuffer m_vboArcBall, m_vboArcPoint;
         QOpenGLBuffer m_vboSphere;
+        QOpenGLBuffer m_vboIcoSphere, m_vboIcoSphereEdges;
         QOpenGLBuffer m_vboAxes;
         QOpenGLBuffer m_vboLightSource;
         QOpenGLBuffer m_vboCube, m_vboCubeEdges;
 
+        double m_RefLength;
 
         bool m_bLightVisible;
 
@@ -299,6 +325,8 @@ class gl3dView : public QOpenGLWidget
         Quaternion m_QuatStart, m_QuatEnd;
 
         int ANIMATIONFRAMES;
+
+        QMatrix4x4 m_LightViewMatrix;
 
 
         static bool s_bSpinAnimation;

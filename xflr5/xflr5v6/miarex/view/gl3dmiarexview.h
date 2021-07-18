@@ -55,15 +55,12 @@ class gl3dMiarexView : public gl3dXflView
         void paintPanelCp(int nPanels);
         void paintPanelForces(int nPanels);
 
-        private:
-            void glRenderView() override;
-            void contextMenuEvent(QContextMenuEvent *pEvent) override;
-            void paintOverlay() override;
-            bool intersectTheObject(Vector3d const &AA,  Vector3d const &BB, Vector3d &I) override;
-            void resizeGL(int width, int height) override;
-
-    public slots:
-        void on3dReset() override;
+    private:
+        void glRenderView() override;
+        void contextMenuEvent(QContextMenuEvent *pEvent) override;
+        void paintOverlay() override;
+        bool intersectTheObject(Vector3d const &AA,  Vector3d const &BB, Vector3d &I) override;
+        void resizeGL(int width, int height) override;
 
     public:
         QOpenGLBuffer m_vboSurfaceVelocities, m_vboPanelCp, m_vboPanelForces, m_vboStreamLines;

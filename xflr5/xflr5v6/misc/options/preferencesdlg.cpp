@@ -72,7 +72,6 @@ void PreferencesDlg::setupLayout()
     {
         QVBoxLayout *pUpdateLayout = new QVBoxLayout;
         m_pchUpdateCheck = new QCheckBox("Check for updates on startup");
-//        m_pctrlUpdateCheck->setChecked(Updater::bAutoCheck());
         m_pchUpdateCheck->setChecked(false);
         m_pchUpdateCheck->setEnabled(false);
         pUpdateLayout->addWidget(m_pchUpdateCheck);

@@ -29,7 +29,8 @@ double Panel::s_CoreSize = 0.000001;
 double Panel::s_VortexPos = 0.25;
 double Panel::s_CtrlPos   = 0.75;
 
-Vector3d *Panel::s_pNode, *Panel::s_pWakeNode;
+Vector3d const *Panel::s_pNode(nullptr);
+Vector3d const *Panel::s_pWakeNode(nullptr);
 
 //temporary variables
 
@@ -61,7 +62,7 @@ void Panel::reset()
     m_bIsLeftPanel   = false;
     m_bIsWakePanel   = false;
 
-    m_Pos         =  MIDSURFACE;
+    m_Pos         =  xfl::MIDSURFACE;
 
     m_iElement    = -1;
     m_iLA         = -1;
@@ -191,7 +192,7 @@ void Panel::setPanelFrame(Vector3d const &LA, Vector3d const &LB, Vector3d const
 
     invert33(lij);
 
-    if(m_Pos>MIDSURFACE)
+    if(m_Pos>xfl::MIDSURFACE)
     {
         P1.x = lij[0]*(LA.x-CollPt.x) + lij[1]*(LA.y-CollPt.y) + lij[2]*(LA.z-CollPt.z);
         P1.y = lij[3]*(LA.x-CollPt.x) + lij[4]*(LA.y-CollPt.y) + lij[5]*(LA.z-CollPt.z);
@@ -494,11 +495,11 @@ void Panel::rotateBC(Vector3d const &HA, Quaternion &Qt)
 */
 void Panel::sourceNASA4023(Vector3d const &C,  Vector3d &V, double &phi) const
 {
-    double RNUM=0, DNOM=0, pjk=0, CJKi=0;
-    double PN=0, A=0, B=0, PA=0, PB=0, SM=0, SL=0, AM=0, AL=0, Al=0;
-    double side=0, sign=0, S=0, GL=0;
+    double RNUM(0), DNOM(0), pjk(0), CJKi(0);
+    double PN(0), A(0), B(0), PA(0), PB(0), SM(0), SL(0), AM(0), AL(0), Al(0);
+    double side(0), sign(0), S(0), GL(0);
     Vector3d PJK, a, b, s, T1, T2, h;
-    Vector3d *m_pR[5];
+    Vector3d const*m_pR[5];
     //we use a default core size, unless the user has specified one
     double CoreSize = 0.00000;
     if(qAbs(s_CoreSize)>PRECISION) CoreSize = s_CoreSize;
@@ -523,7 +524,7 @@ void Panel::sourceNASA4023(Vector3d const &C,  Vector3d &V, double &phi) const
         return;
     }
 
-    if(m_Pos>=MIDSURFACE)
+    if(m_Pos>=xfl::MIDSURFACE)
     {
         m_pR[0] = s_pNode + m_iLA;
         m_pR[1] = s_pNode + m_iTA;
@@ -646,18 +647,18 @@ void Panel::sourceNASA4023(Vector3d const &C,  Vector3d &V, double &phi) const
  */
 void Panel::doubletNASA4023(Vector3d const &C, Vector3d &V, double &phi, bool bWake) const
 {
-    Vector3d *m_pR[5];
+    Vector3d const *m_pR[5];
     Vector3d PJK, a, b, s, T1, h;
-    double RNUM=0, DNOM=0, pjk=0, CJKi=0;
-    double PN=0, A=0, B=0, PA=0, PB=0, SM=0, SL=0, AM=0, AL=0, Al=0;
-    double side=0, sign=0, GL=0;
+    double RNUM(0), DNOM(0), pjk(0), CJKi(0);
+    double PN(0), A(0), B(0), PA(0), PB(0), SM(0), SL(0), AM(0), AL(0), Al(0);
+    double side(0), sign(0), GL(0);
 
 
     //we use a default core size, unless the user has specified one
     double CoreSize = 0.00000;
     if(qAbs(s_CoreSize)>PRECISION) CoreSize = s_CoreSize;
 
-    Vector3d *pNode;
+    Vector3d const *pNode;
     if(!bWake) pNode = s_pNode;
     else       pNode = s_pWakeNode;
 
@@ -685,7 +686,7 @@ void Panel::doubletNASA4023(Vector3d const &C, Vector3d &V, double &phi, bool bW
         return;
     }
 
-    if(m_Pos>=MIDSURFACE)
+    if(m_Pos>=xfl::MIDSURFACE)
     {
         m_pR[0] = pNode + m_iLA;
         m_pR[1] = pNode + m_iTA;

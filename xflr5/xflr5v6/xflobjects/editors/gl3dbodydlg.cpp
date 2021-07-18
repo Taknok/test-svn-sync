@@ -79,7 +79,6 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
     setWindowFlags(Qt::Window);
     setMouseTracking(true);
 
-
     m_pBody = nullptr;
 
     m_pPointDelegate = nullptr;
@@ -97,11 +96,11 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
     m_pScaleBody        = new QAction(tr("Scale"), this);
     m_pResetScales      = new QAction(tr("Reset Scales")+("\t(R)"), this);
 
-    m_pUndo= new QAction(QIcon(":/resources/images/OnUndo.png"), tr("Undo"), this);
+    m_pUndo= new QAction(QIcon(":/images/OnUndo.png"), tr("Undo"), this);
     m_pUndo->setStatusTip(tr("Cancels the last modification"));
     m_pUndo->setShortcut(QKeySequence::Undo);
 
-    m_pRedo = new QAction(QIcon(":/resources/images/OnRedo.png"), tr("Redo"), this);
+    m_pRedo = new QAction(QIcon(":/images/OnRedo.png"), tr("Redo"), this);
     m_pRedo->setStatusTip(tr("Restores the last cancelled modification"));
     m_pRedo->setShortcut(QKeySequence::Redo);
 
@@ -150,7 +149,6 @@ void GL3dBodyDlg::connectSignals()
 
     connect(&m_gl3dBodyview, SIGNAL(viewModified()), SLOT(onCheckViewIcons()));
 
-    //    connect(m_pctrlEdgeWeight, SIGNAL(sliderReleased()), SLOT(onEdgeWeight()));
     connect(m_pslPanelBunch, SIGNAL(sliderMoved(int)), SLOT(onNURBSPanels()));
 
     connect(m_prbFlatPanels, SIGNAL(clicked()), SLOT(onLineType()));
@@ -685,7 +683,7 @@ void GL3dBodyDlg::readFrameSectionData(int sel)
 /** The user has clicked a point in the body line view */
 void GL3dBodyDlg::onFrameClicked()
 {
-    m_pctrlFrameTable->selectRow(m_pBody->m_iActiveFrame);
+    m_ptvFrames->selectRow(m_pBody->m_iActiveFrame);
 }
 
 
@@ -752,7 +750,7 @@ void GL3dBodyDlg::onPointCellChanged(QWidget *)
 void GL3dBodyDlg::onPointClicked()
 {
     if(m_pFrame)
-        m_pctrlPointTable->selectRow(m_pFrame->selectedIndex());
+        m_ptvPoints->selectRow(m_pFrame->selectedIndex());
 }
 
 
@@ -765,10 +763,9 @@ void GL3dBodyDlg::onPointItemClicked(const QModelIndex &index)
 }
 
 
-
 void GL3dBodyDlg::onResetScales()
 {
-    m_gl3dBodyview.on3dReset();
+    m_gl3dBodyview.reset3dScale();
     m_pBodyLineWt->onResetScales();
     m_pFrameWt->onResetScales();
     updateView();
@@ -866,20 +863,10 @@ void GL3dBodyDlg::onSelChangeHoopDegree(int sel)
     updateView();
 }
 
+
 void GL3dBodyDlg::onEdgeWeight()
 {
-    /*    if(!m_pBody) return;
-
-    m_bChanged = true;
-    takePicture();
-
-    double w= (double)m_pctrlEdgeWeight->value()/100.0 + 1.0;
-    m_pBody->setEdgeWeight(w, w);
-
-    m_bResetglBody   = true;
-    updateView();*/
 }
-
 
 
 void GL3dBodyDlg::onNURBSPanels()
@@ -1067,8 +1054,6 @@ void GL3dBodyDlg::setControls()
     m_ppbUndo->setEnabled(m_StackPos>0);
     m_ppbRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
 
-    //    m_pctrlEdgeWeight->setSliderPosition((int)((m_pBody->m_SplineSurface.m_EdgeWeightu-1.0)*100.0));
-
     if(m_pBody && m_pBody->m_LineType==xfl::BODYPANELTYPE)
     {
         m_pdeNXPanels->setEnabled(false);
@@ -1102,8 +1087,8 @@ bool GL3dBodyDlg::initDialog(Body *pBody)
 {
     if(!pBody) return false;
 
-    m_pctrlFrameTable->setFont(DisplayOptions::tableFont());
-    m_pctrlPointTable->setFont(DisplayOptions::tableFont());
+    m_ptvFrames->setFont(DisplayOptions::tableFont());
+    m_ptvPoints->setFont(DisplayOptions::tableFont());
 
     m_gl3dBodyview.setBody(pBody);
     m_gl3dBodyview.setScale(pBody->length());
@@ -1225,11 +1210,11 @@ void GL3dBodyDlg::setupLayout()
                     m_ptbIso->setIconSize(QSize(32,32));
                     m_ptbFlip->setIconSize(QSize(32,32));
                 }
-                m_pXView    = new QAction(QIcon(":/resources/images/OnXView.png"), tr("X View"), this);
-                m_pYView    = new QAction(QIcon(":/resources/images/OnYView.png"), tr("Y View"), this);
-                m_pZView    = new QAction(QIcon(":/resources/images/OnZView.png"), tr("Z View"), this);
-                m_pIsoView  = new QAction(QIcon(":/resources/images/OnIsoView.png"), tr("Iso View"), this);
-                m_pFlipView = new QAction(QIcon(":/resources/images/OnFlipView.png"), tr("Flip View"), this);
+                m_pXView    = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
+                m_pYView    = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
+                m_pZView    = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
+                m_pIsoView  = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
+                m_pFlipView = new QAction(QIcon(":/images/OnFlipView.png"), tr("Flip View"), this);
                 m_pXView->setCheckable(true);
                 m_pYView->setCheckable(true);
                 m_pZView->setCheckable(true);
@@ -1259,8 +1244,8 @@ void GL3dBodyDlg::setupLayout()
 
             QHBoxLayout *pActionButtonsLayout = new QHBoxLayout;
             {
-                m_ppbUndo = new QPushButton(QIcon(":/resources/images/OnUndo.png"), tr("Undo"));
-                m_ppbRedo = new QPushButton(QIcon(":/resources/images/OnRedo.png"), tr("Redo"));
+                m_ppbUndo = new QPushButton(QIcon(":/images/OnUndo.png"), tr("Undo"));
+                m_ppbRedo = new QPushButton(QIcon(":/images/OnRedo.png"), tr("Redo"));
 
                 m_ppbMenuButton = new QPushButton(tr("Other"));
 
@@ -1310,7 +1295,7 @@ void GL3dBodyDlg::setupLayout()
                 pNameLayout->addWidget(m_pcbBodyColor);
             }
 
-            QLabel *plabBodyDes = new QLabel(tr("Description:"));
+//            QLabel *plabBodyDes = new QLabel(tr("Description:"));
             m_pteBodyDescription = new QTextEdit();
             m_pteBodyDescription->setToolTip(tr("Enter here a short description for the body"));
             pBodyParamsLayout->setStretchFactor(m_pteBodyDescription,1);
@@ -1348,13 +1333,6 @@ void GL3dBodyDlg::setupLayout()
                 m_pcbHoopDegree = new QComboBox;
                 m_pdeNXPanels = new DoubleEdit;
                 m_pdeNHoopPanels = new DoubleEdit;
-                /*            m_pctrlEdgeWeight = new QSlider(Qt::Horizontal);
-            m_pctrlEdgeWeight->setMinimum(0);
-            m_pctrlEdgeWeight->setMaximum(100);
-            m_pctrlEdgeWeight->setSliderPosition(1);
-            m_pctrlEdgeWeight->setTickInterval(10);
-            m_pctrlEdgeWeight->setTickPosition(QSlider::TicksBelow);
-            m_pctrlEdgeWeight->setSizePolicy(szPolicyMinimum);*/
 
                 m_pslPanelBunch= new QSlider(Qt::Horizontal);
                 m_pslPanelBunch->setMinimum(0    );
@@ -1383,8 +1361,6 @@ void GL3dBodyDlg::setupLayout()
                 pSplineParams->addWidget(m_pcbHoopDegree,2,3);
                 pSplineParams->addWidget(m_pdeNXPanels,3,2);
                 pSplineParams->addWidget(m_pdeNHoopPanels,3,3);
-                //            SplineParams->addWidget(labWeight,4,1);
-                //            SplineParams->addWidget(m_pctrlEdgeWeight,4,2,1,2);
                 pSplineParams->addWidget(labBunch,5,1);
                 pSplineParams->addWidget(m_pslPanelBunch,5,2,1,2);
             }
@@ -1396,43 +1372,39 @@ void GL3dBodyDlg::setupLayout()
 
         QVBoxLayout * pFramePosLayout = new QVBoxLayout;
         {
-            m_pctrlFrameTable = new QTableView;
-            //    m_pctrlFrameTable->setSizePolicy(szPolicyMinimum);
-            m_pctrlFrameTable->setWindowTitle(tr("Frames"));
+            m_ptvFrames = new QTableView;
+            m_ptvFrames->setWindowTitle(tr("Frames"));
             QLabel *LabelFrame = new QLabel(tr("Frame Positions"));
             LabelFrame->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
             pFramePosLayout->addWidget(LabelFrame);
             //    FramePosLayout->addStretch(1);
-            m_pctrlFrameTable->setSelectionMode(QAbstractItemView::SingleSelection);
-            m_pctrlFrameTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-            m_pctrlFrameTable->setEditTriggers(
-                        //                                            QAbstractItemView::CurrentChanged |
+            m_ptvFrames->setSelectionMode(QAbstractItemView::SingleSelection);
+            m_ptvFrames->setSelectionBehavior(QAbstractItemView::SelectRows);
+            m_ptvFrames->setEditTriggers(
                         QAbstractItemView::DoubleClicked |
                         QAbstractItemView::SelectedClicked |
                         QAbstractItemView::EditKeyPressed |
                         QAbstractItemView::AnyKeyPressed);
-            pFramePosLayout->addWidget(m_pctrlFrameTable);
+            pFramePosLayout->addWidget(m_ptvFrames);
         }
 
         QVBoxLayout * pFramePointLayout = new QVBoxLayout;
         {
-            m_pctrlPointTable = new QTableView;
-            //    m_pctrlPointTable->setSizePolicy(szPolicyMinimum);
-            m_pctrlPointTable->setWindowTitle(tr("Points"));
+            m_ptvPoints = new QTableView;
+            m_ptvPoints->setWindowTitle(tr("Points"));
             QLabel *LabelPoints = new QLabel(tr("Current Frame Definition"));
             LabelPoints->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
             pFramePointLayout->addWidget(LabelPoints);
             //    FramePointLayout->addStretch(1);
-            m_pctrlPointTable->setSelectionMode(QAbstractItemView::SingleSelection);
-            m_pctrlPointTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-            m_pctrlPointTable->setEditTriggers(
-                        //                                            QAbstractItemView::CurrentChanged |
+            m_ptvPoints->setSelectionMode(QAbstractItemView::SingleSelection);
+            m_ptvPoints->setSelectionBehavior(QAbstractItemView::SelectRows);
+            m_ptvPoints->setEditTriggers(
                         QAbstractItemView::DoubleClicked |
                         QAbstractItemView::SelectedClicked |
                         QAbstractItemView::EditKeyPressed |
                         QAbstractItemView::AnyKeyPressed);
 
-            pFramePointLayout->addWidget(m_pctrlPointTable);
+            pFramePointLayout->addWidget(m_ptvPoints);
         }
 
         QHBoxLayout *pAllControls = new QHBoxLayout;
@@ -1481,33 +1453,33 @@ void GL3dBodyDlg::setupLayout()
     }
 
     //Setup Frame table
-    m_pctrlFrameTable->horizontalHeader()->setStretchLastSection(true);
+    m_ptvFrames->horizontalHeader()->setStretchLastSection(true);
 
     m_pFrameModel = new QStandardItemModel;
     m_pFrameModel->setRowCount(10);//temporary
     m_pFrameModel->setColumnCount(2);
 
-    m_pctrlFrameTable->setModel(m_pFrameModel);
+    m_ptvFrames->setModel(m_pFrameModel);
 
     m_pSelectionModelFrame = new QItemSelectionModel(m_pFrameModel);
-    m_pctrlFrameTable->setSelectionModel(m_pSelectionModelFrame);
+    m_ptvFrames->setSelectionModel(m_pSelectionModelFrame);
 
     m_pFrameDelegate = new BodyTableDelegate(this);
-    m_pctrlFrameTable->setItemDelegate(m_pFrameDelegate);
+    m_ptvFrames->setItemDelegate(m_pFrameDelegate);
     m_pFrameDelegate->setPrecision({3,0});
 
     //Setup Point Table
-    m_pctrlPointTable->horizontalHeader()->setStretchLastSection(true);
+    m_ptvPoints->horizontalHeader()->setStretchLastSection(true);
 
     m_pPointModel = new QStandardItemModel(this);
     m_pPointModel->setRowCount(10);//temporary
     m_pPointModel->setColumnCount(3);
-    m_pctrlPointTable->setModel(m_pPointModel);
+    m_ptvPoints->setModel(m_pPointModel);
     m_pSelectionModelPoint = new QItemSelectionModel(m_pPointModel);
-    m_pctrlPointTable->setSelectionModel(m_pSelectionModelPoint);
+    m_ptvPoints->setSelectionModel(m_pSelectionModelPoint);
 
     m_pPointDelegate = new BodyTableDelegate;
-    m_pctrlPointTable->setItemDelegate(m_pPointDelegate);
+    m_ptvPoints->setItemDelegate(m_pPointDelegate);
     m_pPointDelegate->setPrecision({3,3,0});
 }
 
@@ -1552,14 +1524,13 @@ void GL3dBodyDlg::hideEvent(QHideEvent *pEvent)
 
 void GL3dBodyDlg::resizeTables()
 {
-    int ColumnWidth = int(double(m_pctrlFrameTable->width())/2.5);
-    m_pctrlFrameTable->setColumnWidth(0,ColumnWidth);
-    m_pctrlFrameTable->setColumnWidth(1,ColumnWidth);
-    //    m_pctrlFrameTable->setColumnWidth(2,ColumnWidth);
-    ColumnWidth = int(double(m_pctrlPointTable->width())/4);
-    m_pctrlPointTable->setColumnWidth(0,ColumnWidth);
-    m_pctrlPointTable->setColumnWidth(1,ColumnWidth);
-    m_pctrlPointTable->setColumnWidth(2,ColumnWidth);
+    int ColumnWidth = int(double(m_ptvFrames->width())/2.5);
+    m_ptvFrames->setColumnWidth(0,ColumnWidth);
+    m_ptvFrames->setColumnWidth(1,ColumnWidth);
+    ColumnWidth = int(double(m_ptvPoints->width())/4);
+    m_ptvPoints->setColumnWidth(0,ColumnWidth);
+    m_ptvPoints->setColumnWidth(1,ColumnWidth);
+    m_ptvPoints->setColumnWidth(2,ColumnWidth);
 }
 
 
@@ -1665,8 +1636,8 @@ void GL3dBodyDlg::blockSignalling(bool bBlock)
     blockSignals(bBlock);
     m_pPointDelegate->blockSignals(bBlock);
     m_pFrameDelegate->blockSignals(bBlock);
-    m_pctrlPointTable->blockSignals(bBlock);
-    m_pctrlFrameTable->blockSignals(bBlock);
+    m_ptvPoints->blockSignals(bBlock);
+    m_ptvFrames->blockSignals(bBlock);
 
     m_pSelectionModelPoint->blockSignals(bBlock);
     m_pSelectionModelFrame->blockSignals(bBlock);

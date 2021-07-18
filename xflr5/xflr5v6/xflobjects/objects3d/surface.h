@@ -1,7 +1,7 @@
 /****************************************************************************
 
-    CSurface Class
-    Copyright (C) 2005-2009 André Deperrois
+    Surface Class
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,8 +27,7 @@
  */
 
 
-#ifndef SURFACE_H
-#define SURFACE_H
+#pragma once
 
 
 
@@ -109,141 +108,140 @@ class Surface
     friend class ViewObjectDlg;
     friend class PlaneTask;
 
-public:
+    public:
 
-    Surface();
+        Surface();
 
-    void addFlapPanel(Panel *pPanel);
-    void copy(Surface const*pSurface);
-    void createXPoints();
-    void getC4(int k, Vector3d &Pt, double &tau);
-    void getLeadingPt(int k, Vector3d &C);
-    void getNormal(double yrel, Vector3d &N) const;
-    void getTrailingPt(int k, Vector3d &C);
-    void getPanel(int const &k, int const &l, enumPanelPosition pos) const;
-    void getSidePoint(double xRel, bool bRight, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const;
-    void getSurfacePoint(double xArel, double xBrel, double yrel, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const;
-    void getSection(double const &tau, double &Chord, double &Area, Vector3d &PtC4);
-    void getYDist(int const &k, double &y1, double &y2) const;
-    void getSidePoints(enumPanelPosition pos, const Body *pBody, QVector<Vector3d> &PtA, QVector<Vector3d> &PtB, QVector<Vector3d> &NA, QVector<Vector3d> &NB, int nPoints) const;
+        void addFlapPanel(const Panel &pPanel);
+        void copy(Surface const*pSurface);
+        void createXPoints();
+        void getC4(int k, Vector3d &Pt, double &tau);
+        void getLeadingPt(int k, Vector3d &C);
+        void getNormal(double yrel, Vector3d &N) const;
+        void getTrailingPt(int k, Vector3d &C);
+        void getPanel(int const &k, int const &l, xfl::enumSurfacePosition pos) const;
+        void getSidePoint(double xRel, bool bRight, xfl::enumSurfacePosition pos, Vector3d &Point, Vector3d &PtNormal) const;
+        void getSurfacePoint(double xArel, double xBrel, double yrel, xfl::enumSurfacePosition pos, Vector3d &Point, Vector3d &PtNormal) const;
+        void getSection(double const &tau, double &Chord, double &Area, Vector3d &PtC4);
+        void getYDist(int const &k, double &y1, double &y2) const;
+        void getSidePoints(xfl::enumSurfacePosition pos, const Body *pBody, QVector<Vector3d> &PtA, QVector<Vector3d> &PtB, QVector<Vector3d> &NA, QVector<Vector3d> &NB, int nPoints) const;
 
-    void init();
-    void resetFlap();
-    void rotateX(Vector3d const &O, double XTilt);
-    void rotateY(Vector3d const &O, double YTilt);
-    void rotateZ(Vector3d const &O, double ZTilt);
-    void setCornerPoints(Vector3d const &LA, Vector3d const &TA, Vector3d const &LB, Vector3d const &TB);
-    void setNormal();
-    void setFlap();
-    void setMeshSidePoints(Body *pBody, double dx, double dz);
-    void setTwist();
-    void setTwist2();
-    void translate(Vector3d const &T);
-    void translate(double tx, double ty, double tz);
+        void init();
+        void resetFlap();
+        void rotateX(Vector3d const &O, double XTilt);
+        void rotateY(Vector3d const &O, double YTilt);
+        void rotateZ(Vector3d const &O, double ZTilt);
+        void setCornerPoints(Vector3d const &LA, Vector3d const &TA, Vector3d const &LB, Vector3d const &TB);
+        void setNormal();
+        void setFlap();
+        void setMeshSidePoints(Body *pBody, double dx, double dz);
+        void setTwist();
+        void setTwist2();
+        void translate(Vector3d const &T);
+        void translate(double tx, double ty, double tz);
 
-    bool isCenterSurf() const {return m_bIsCenterSurf;}
-    bool isLeftSurf()   const {return m_bIsLeftSurf;}
-    bool isRightSurf()  const {return m_bIsRightSurf;}
-    bool isTipLeft()    const {return m_bIsTipLeft;}
-    bool isTipRight()   const {return m_bIsTipRight;}
-    bool isInSymPlane() const {return m_bIsInSymPlane;}
+        bool isCenterSurf() const {return m_bIsCenterSurf;}
+        bool isLeftSurf()   const {return m_bIsLeftSurf;}
+        bool isRightSurf()  const {return m_bIsRightSurf;}
+        bool isTipLeft()    const {return m_bIsTipLeft;}
+        bool isTipRight()   const {return m_bIsTipRight;}
+        bool isInSymPlane() const {return m_bIsInSymPlane;}
 
-    bool isFlapPanel(Panel *pPanel) const;
-    bool isFlapPanel(int p) const;
-    bool isFlapNode(int nNode) const;
-    bool rotateFlap(double Angle);
+        bool isFlapPanel(const Panel *pPanel) const;
+        bool isFlapPanel(int p) const;
+        bool isFlapNode(int nNode) const;
+        bool rotateFlap(double Angle);
 
-    double twist(int k) const;
-    double chord(int k) const;
-    double chord(double tau) const;
-    double offset(double tau) const;
-    double stripSpanPos(int k);
-    double foilArea(double tau) const;
-    double stripWidth(int k) const;
-    double spanLength() const;
-    double planformLength() const {return m_Length;}
+        double twist(int k) const;
+        double chord(int k) const;
+        double chord(double tau) const;
+        double offset(double tau) const;
+        double stripSpanPos(int k);
+        double foilArea(double tau) const;
+        double stripWidth(int k) const;
+        double spanLength() const;
+        double planformLength() const {return m_Length;}
 
-    int innerSection() const {return m_innerSection;}
-    int outerSection() const {return m_outerSection;}
+        int innerSection() const {return m_innerSection;}
+        int outerSection() const {return m_outerSection;}
 
-    int NXPanels() const {return m_NXPanels;}
-    int NYPanels() const {return m_NYPanels;}
-    int NXFlap() const {return m_NXFlap;}
+        int NXPanels() const {return m_NXPanels;}
+        int NYPanels() const {return m_NYPanels;}
+        int NXFlap() const {return m_NXFlap;}
 
-    void setNElements(int n) {m_NElements=n;}
-    int NElements() const {return m_NElements;}
+        void setNElements(int n) {m_NElements=n;}
+        int NElements() const {return m_NElements;}
 
-    Foil const *foilA() const {return m_pFoilA;}
-    Foil const *foilB() const {return m_pFoilB;}
+        Foil const *foilA() const {return m_pFoilA;}
+        Foil const *foilB() const {return m_pFoilB;}
 
-    static void setPanelPointers(Panel *pPanel, Vector3d *pNode);
+        static void setPanelPointers(Panel *pPanel, Vector3d *pNode);
 
-    QVector<Vector3d> m_SideA;      /**< the array of panel points on the left foil's mid-line*/
-    QVector<Vector3d> m_SideB;      /**< the array of panel points on the right foil's mid-line*/
+        QVector<Vector3d> m_SideA;      /**< the array of panel points on the left foil's mid-line*/
+        QVector<Vector3d> m_SideB;      /**< the array of panel points on the right foil's mid-line*/
 
-    Vector3d m_LA;              /**< the Surface's leading left point */
-    Vector3d m_LB;              /**< the Surface's leading right point */
-    Vector3d m_TA;              /**< the Surface's trailing left point */
-    Vector3d m_TB;              /**< the Surface's trailing right point */
-    Vector3d Normal;            /**< the Surface's normal vector */
-    Vector3d NormalA;           /**< the normal at the left tip, defined as the average of this Surface's normal and of the one adjacent on the left side, if any */
-    Vector3d NormalB;           /**< the normal at the right tip, defined as the average of this Surface's normal and of the one adjacent on the right side, if any */
-    double m_TwistA;           /**< the twist at side A in degrees */
-    double m_TwistB;           /**< the twist at side B in degrees */
+        Vector3d m_LA;              /**< the Surface's leading left point */
+        Vector3d m_LB;              /**< the Surface's leading right point */
+        Vector3d m_TA;              /**< the Surface's trailing left point */
+        Vector3d m_TB;              /**< the Surface's trailing right point */
+        Vector3d Normal;            /**< the Surface's normal vector */
+        Vector3d NormalA;           /**< the normal at the left tip, defined as the average of this Surface's normal and of the one adjacent on the left side, if any */
+        Vector3d NormalB;           /**< the normal at the right tip, defined as the average of this Surface's normal and of the one adjacent on the right side, if any */
+        double m_TwistA;           /**< the twist at side A in degrees */
+        double m_TwistB;           /**< the twist at side B in degrees */
 
-private :
-    QVector<Vector3d> m_SideA_T;    /**< the array of panel points on the left foil's top-line*/
-    QVector<Vector3d> m_SideB_T;    /**< the array of panel points on the right foil's top-line*/
-    QVector<Vector3d> m_SideA_B;    /**< the array of panel points on the left foil's bottom-line*/
-    QVector<Vector3d> m_SideB_B;    /**< the array of panel points on the right foil's bottom-line*/
+    private :
+        QVector<Vector3d> m_SideA_T;    /**< the array of panel points on the left foil's top-line*/
+        QVector<Vector3d> m_SideB_T;    /**< the array of panel points on the right foil's top-line*/
+        QVector<Vector3d> m_SideA_B;    /**< the array of panel points on the left foil's bottom-line*/
+        QVector<Vector3d> m_SideB_B;    /**< the array of panel points on the right foil's bottom-line*/
 
-    static Panel *s_pPanel;    /**< a pointer to the array of this Surface's panels, This array is a sub-array of the total array.*/
-    static Vector3d *s_pNode;   /**< a pointer to the array of this panel nodes.*/
+        static Panel *s_pPanel;    /**< a pointer to the array of this Surface's panels, This array is a sub-array of the total array.*/
+        static Vector3d *s_pNode;   /**< a pointer to the array of this panel nodes.*/
 
-    bool m_bIsInSymPlane;      /**< true if the Surface is positioned in the symetry xz plane defined by y=0. Case of a single fin. */
-    bool m_bTEFlap;            /**< true if the Surface has a flap on the trailing edge */
-    bool m_bIsLeftSurf;        /**< true if the Surface is built on the left wing */
-    bool m_bIsRightSurf;       /**< true if the Surface is built on the right wing */
-    bool m_bIsTipLeft;         /**< true if the Surface is built on the tip left wing */
-    bool m_bIsTipRight;        /**< true if the Surface is built on the tip right wing */
-    bool m_bIsCenterSurf;      /**< true if the Surface is either a left or right center surface... need to connect to body */
+        bool m_bIsInSymPlane;      /**< true if the Surface is positioned in the symetry xz plane defined by y=0. Case of a single fin. */
+        bool m_bTEFlap;            /**< true if the Surface has a flap on the trailing edge */
+        bool m_bIsLeftSurf;        /**< true if the Surface is built on the left wing */
+        bool m_bIsRightSurf;       /**< true if the Surface is built on the right wing */
+        bool m_bIsTipLeft;         /**< true if the Surface is built on the tip left wing */
+        bool m_bIsTipRight;        /**< true if the Surface is built on the tip right wing */
+        bool m_bIsCenterSurf;      /**< true if the Surface is either a left or right center surface... need to connect to body */
 
 
-    double m_Length;           /**< the Surface's planform length from A to B*/
+        double m_Length;           /**< the Surface's planform length from A to B*/
 
-    double m_posATE, m_posBTE;      /**< the relative flap hinge positions at sides A and B */
-    QVector<double> m_xPointA;        /**< the chordwise relative position of the VLM panel left corner points at side A */
-    QVector<double> m_xPointB;        /**< the chordwise relative position of the VLM panel right corner points at side B */
+        double m_posATE, m_posBTE;      /**< the relative flap hinge positions at sides A and B */
+        QVector<double> m_xPointA;        /**< the chordwise relative position of the VLM panel left corner points at side A */
+        QVector<double> m_xPointB;        /**< the chordwise relative position of the VLM panel right corner points at side B */
 
-    xfl::enumPanelDistribution m_XDistType;            /**< the type of distribution along the Surface's x axis */
-    xfl::enumPanelDistribution m_YDistType;            /**< the type of distribution along the Surface's y axis */
-    int m_NXLead;               /**< the number of panels upstream of the flap, i.e. between the leading edge and the hinge */
-    int m_NXFlap;               /**< the number of panels on the flap, i.e. between the hinge and the trailing edge */
-    int m_NElements;            /**< the number of panel elements constructer on this Surface. */
+        xfl::enumPanelDistribution m_XDistType;            /**< the type of distribution along the Surface's x axis */
+        xfl::enumPanelDistribution m_YDistType;            /**< the type of distribution along the Surface's y axis */
+        int m_NXLead;               /**< the number of panels upstream of the flap, i.e. between the leading edge and the hinge */
+        int m_NXFlap;               /**< the number of panels on the flap, i.e. between the hinge and the trailing edge */
+        int m_NElements;            /**< the number of panel elements constructer on this Surface. */
 
-    int m_nFlapNodes;           /**< the number of nodes defined on the trailing edge flap */
-    int m_nFlapPanels;          /**< the number of panels defined on the trailing edge flap */
-    int m_FlapNode[VLMHALF];    /**< the array of flap node indexes, used to avoid defining two nodes at the same location */
-    int m_FlapPanel[VLMHALF];   /**< the array of flap panel indexes */
+        int m_nFlapNodes;           /**< the number of nodes defined on the trailing edge flap */
+        int m_nFlapPanels;          /**< the number of panels defined on the trailing edge flap */
+        int m_FlapNode[VLMHALF];    /**< the array of flap node indexes, used to avoid defining two nodes at the same location */
+        int m_FlapPanel[VLMHALF];   /**< the array of flap panel indexes */
 
-    Vector3d m_HingePoint;       /**< a point on the trailing flap hinge */
-    Vector3d m_HingeVector;      /**< a vector which defines the axis of the hinge */
+        Vector3d m_HingePoint;       /**< a point on the trailing flap hinge */
+        Vector3d m_HingeVector;      /**< a vector which defines the axis of the hinge */
 
-    Surface *m_pLeftSurface;    /**< a pointer to this Surface's left neighbour, or NULL if none */
-    Surface *m_pRightSurface;   /**< a pointer to this Surface's right neighbour, or NULL if none */
+        Surface *m_pLeftSurface;    /**< a pointer to this Surface's left neighbour, or NULL if none */
+        Surface *m_pRightSurface;   /**< a pointer to this Surface's right neighbour, or NULL if none */
 
-    int m_innerSection;         /**< the index of the inner wing's section corresponding to this surface */
-    int m_outerSection;         /**< the index of the outer wing's section corresponding to this surface */
-    int m_NYPanels;                /**< the number of spanwise panels of this surface */
-    int m_NXPanels;                /**< the number of chordwise panels of this surface */
+        int m_innerSection;         /**< the index of the inner wing's section corresponding to this surface */
+        int m_outerSection;         /**< the index of the outer wing's section corresponding to this surface */
+        int m_NYPanels;                /**< the number of spanwise panels of this surface */
+        int m_NXPanels;                /**< the number of chordwise panels of this surface */
 
-public:
-    bool m_bJoinRight;             /**< true if the surface's right side should be connected to the next right surface's right left side - for panel analysis only */
-    Foil *m_pFoilA;                /**< a pointer to the Surface's left Foil object */
-    Foil *m_pFoilB;                /**< a pointer to the Surface's right Foil object */
+    public:
+        bool m_bJoinRight;             /**< true if the surface's right side should be connected to the next right surface's right left side - for panel analysis only */
+        Foil *m_pFoilA;                /**< a pointer to the Surface's left Foil object */
+        Foil *m_pFoilB;                /**< a pointer to the Surface's right Foil object */
 
-    // temporary variables
-    mutable Vector3d LA, LB, TA, TB; /**< leading and trailing corners of strip k */
+        // temporary variables
+        mutable Vector3d LA, LB, TA, TB; /**< leading and trailing corners of strip k */
 
 };
-#endif

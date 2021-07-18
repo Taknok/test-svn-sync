@@ -118,21 +118,17 @@ void FoilSelectionDlg::initDialog(QVector<Foil*> const *FoilList, QStringList co
     {
         const Foil *pFoil = m_FoilList.at(i);
         m_plwNameList->addItem(pFoil->name());
-//        m_plwNameList->setItemSelected(m_plwNameList->item(i), false);
         QListWidgetItem *pItem =  m_plwNameList->item(i);
         pItem->setSelected(false);
         for(int j=0; j<FoilSelList.size(); j++)
         {
             if(FoilSelList.at(j)==pFoil->name())
             {
-//                m_plwNameList->setItemSelected(m_plwNameList->item(i), true);
                 QListWidgetItem *pItem =  m_plwNameList->item(i);
                 pItem->setSelected(true);
                 break;
             }
         }
-//        if(pFoil->foilName()==m_FoilName) m_pctrlNameList->setItemSelected(m_pctrlNameList->item(i), true);
-//        else                              m_pctrlNameList->setItemSelected(m_pctrlNameList->item(i), false);
     }
 }
 

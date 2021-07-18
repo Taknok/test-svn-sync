@@ -53,7 +53,6 @@ void NacaFoilDlg::setupLayout()
     QFormLayout *pFormLayout = new QFormLayout;
     {
         m_pleNumber = new QLineEdit(this);
-//        m_pctrlNumber->setValidator(new QIntValidator(m_pctrlNumber));
         m_pleNumber->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
         m_piePanels = new IntEdit(100, this);
         m_piePanels->setMax(IQX);
@@ -96,11 +95,9 @@ void NacaFoilDlg::onButton(QAbstractButton *pButton)
 
 void NacaFoilDlg::onEditingFinished()
 {
-//    s_Digits = locale().toInt(m_pctrlNumber->text().trimmed());
-
     bool bOK(false);
     int d = m_pleNumber->text().toInt(&bOK);
-//    int d1 = m_pctrlNumber->value();
+
     if(bOK) s_Digits = d;
 
     s_Panels = m_piePanels->value();

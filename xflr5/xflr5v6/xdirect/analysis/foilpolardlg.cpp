@@ -1,7 +1,7 @@
 /****************************************************************************
 
     FoilPolarDlg Class
-    Copyright (C) 2008-2016 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -303,7 +303,6 @@ void FoilPolarDlg::onButton(QAbstractButton *pButton)
 void FoilPolarDlg::editingFinished()
 {
     setPlrName();
-//    OKButton->setFocus();
 }
 
 

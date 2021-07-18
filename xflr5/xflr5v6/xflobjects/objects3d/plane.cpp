@@ -24,10 +24,11 @@
 #include "plane.h"
 
 #include <xflcore/units.h>
-#include <xflobjects/objects3d/surface.h>
-#include <xflobjects/objects_global.h>
-#include <xflobjects/objects3d/wpolar.h>
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/planeopp.h>
+#include <xflobjects/objects3d/surface.h>
+#include <xflobjects/objects3d/wpolar.h>
+#include <xflobjects/objects_global.h>
 
 /** The public constructor. */
 Plane::Plane()
@@ -634,10 +635,10 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
             return false;
         }
 
-        readCString(ar,m_Name);
+        xfl::readCString(ar,m_Name);
         if (m_Name.length() ==0) return false;
 
-        if(ArchiveFormat>=1011) readCString(ar, m_PlaneDescription);
+        if(ArchiveFormat>=1011) xfl::readCString(ar, m_PlaneDescription);
 
         m_Wing[0].serializeWingWPA(ar, false);
         if(ArchiveFormat>=1007) m_Wing[1].serializeWingWPA(ar, false);
@@ -690,9 +691,9 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
         if(ArchiveFormat<1004)
         {
             int r,g,b;
-            readCOLORREF(ar,r,g,b);
-            readCOLORREF(ar,r,g,b);
-            readCOLORREF(ar,r,g,b);
+            xfl::readCOLORREF(ar,r,g,b);
+            xfl::readCOLORREF(ar,r,g,b);
+            xfl::readCOLORREF(ar,r,g,b);
         }
 
         if(ArchiveFormat<1006)
@@ -709,7 +710,7 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
         {
             ar >> k;
             if(k)  m_bBody=true; else m_bBody=false;
-            readCString(ar,strong);
+            xfl::readCString(ar,strong);
             m_BodyName = strong;
         }
         else m_bBody = false;
@@ -735,7 +736,7 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
             for(int im=0; im<nMass; im++)
             {
                 tag << "";
-                readCString(ar, tag[im]);
+                xfl::readCString(ar, tag[im]);
             }
 
             clearPointMasses();

@@ -162,34 +162,34 @@ void FoilDesignWt::paintFoils(QPainter &painter)
             FoilPen.setColor(pFoil->color());
             painter.setPen(FoilPen);
 
-            drawFoil(painter, pFoil, 0.0, m_fScale, m_fScale*m_fScaleY,m_ptOffset);
+            xfl::drawFoil(painter, pFoil, 0.0, m_fScale, m_fScale*m_fScaleY,m_ptOffset);
             if (pFoil->bCenterLine())
             {
                 CenterPen.setColor(pFoil->color());
                 CenterPen.setStyle(Qt::DashLine);
                 painter.setPen(CenterPen);
-                drawMidLine(painter, pFoil, m_fScale, m_fScale*m_fScaleY, m_ptOffset);
+                xfl::drawMidLine(painter, pFoil, m_fScale, m_fScale*m_fScaleY, m_ptOffset);
             }
 
-            drawFoilPoints(painter, pFoil, 0.0, m_fScale,m_fScale*m_fScaleY, m_ptOffset, DisplayOptions::backgroundColor());
+            xfl::drawFoilPoints(painter, pFoil, 0.0, m_fScale,m_fScale*m_fScaleY, m_ptOffset, DisplayOptions::backgroundColor());
 
         }
     }
     if (m_pBufferFoil->isVisible())
     {
-        drawFoil(painter, m_pBufferFoil, 0.0, m_fScale, m_fScale*m_fScaleY,m_ptOffset);
+        xfl::drawFoil(painter, m_pBufferFoil, 0.0, m_fScale, m_fScale*m_fScaleY,m_ptOffset);
 
         if (m_pBufferFoil->bCenterLine())
         {
             CenterPen.setColor(m_pBufferFoil->color());
             CenterPen.setStyle(Qt::DashLine);
             painter.setPen(CenterPen);
-            drawMidLine(painter, m_pBufferFoil, m_fScale, m_fScale*m_fScaleY, m_ptOffset);
+            xfl::drawMidLine(painter, m_pBufferFoil, m_fScale, m_fScale*m_fScaleY, m_ptOffset);
         }
 
         CtrlPen.setColor(m_pBufferFoil->color());
         painter.setPen(CtrlPen);
-        drawFoilPoints(painter, m_pBufferFoil, 0.0, m_fScale,m_fScale*m_fScaleY, m_ptOffset, DisplayOptions::backgroundColor());
+        xfl::drawFoilPoints(painter, m_pBufferFoil, 0.0, m_fScale,m_fScale*m_fScaleY, m_ptOffset, DisplayOptions::backgroundColor());
 
     }
     painter.restore();

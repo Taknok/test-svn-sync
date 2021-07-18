@@ -35,8 +35,8 @@ void GridControl::connectSignals()
     connect(m_plbYAxisStyle,   SIGNAL(clickedLB(LineStyle)), SLOT(onYAxisStyle()));
     connect(m_plbXAxisStyle,   SIGNAL(clickedLB(LineStyle)), SLOT(onXAxisStyle()));
     connect(m_plbXMajStyle,    SIGNAL(clickedLB(LineStyle)), SLOT(onXMajStyle()));
-    connect(m_pclbYMajStyle,   SIGNAL(clickedLB(LineStyle)), SLOT(onYMajStyle()));
-    connect(m_pctrlXMinStyle,  SIGNAL(clickedLB(LineStyle)), SLOT(onXMinStyle()));
+    connect(m_plbYMajStyle,   SIGNAL(clickedLB(LineStyle)), SLOT(onYMajStyle()));
+    connect(m_plbXMinStyle,  SIGNAL(clickedLB(LineStyle)), SLOT(onXMinStyle()));
     connect(m_plbYMinStyle,    SIGNAL(clickedLB(LineStyle)), SLOT(onYMinStyle()));
 }
 
@@ -49,16 +49,16 @@ void GridControl::initControls(Grid *pGrid)
     m_plbYAxisStyle->setTheStyle(m_pGrid->yAxisStyle());
 
     m_plbXMajStyle->setTheStyle(m_pGrid->xMajStyle());
-    m_pctrlXMinStyle->setTheStyle(m_pGrid->xMinStyle());
+    m_plbXMinStyle->setTheStyle(m_pGrid->xMinStyle());
 
-    m_pclbYMajStyle->setTheStyle(m_pGrid->yMajStyle(0));
+    m_plbYMajStyle->setTheStyle(m_pGrid->yMajStyle(0));
     m_plbYMinStyle->setTheStyle(m_pGrid->yMinStyle(0));
 
     m_plbXAxisStyle->setEnabled(m_pGrid->bXAxis());
     m_plbYAxisStyle->setEnabled(m_pGrid->bYAxis());
     m_plbXMajStyle->setEnabled(m_pGrid->bXMajGrid());
-    m_pclbYMajStyle->setEnabled(m_pGrid->bYMajGrid(0));
-    m_pctrlXMinStyle->setEnabled(m_pGrid->bXMinGrid());
+    m_plbYMajStyle->setEnabled(m_pGrid->bYMajGrid(0));
+    m_plbXMinStyle->setEnabled(m_pGrid->bXMinGrid());
     m_plbYMinStyle->setEnabled(m_pGrid->bYMinGrid(0));
 
     m_pchXAxisShow->setChecked(m_pGrid->bXAxis());
@@ -91,8 +91,8 @@ void GridControl::setupLayout()
         m_plbYAxisStyle  = new LineBtn(this);
         m_plbXAxisStyle  = new LineBtn(this);
         m_plbXMajStyle   = new LineBtn(this);
-        m_pclbYMajStyle  = new LineBtn(this);
-        m_pctrlXMinStyle = new LineBtn(this);
+        m_plbYMajStyle  = new LineBtn(this);
+        m_plbXMinStyle = new LineBtn(this);
         m_plbYMinStyle   = new LineBtn(this);
 
 
@@ -108,10 +108,10 @@ void GridControl::setupLayout()
         pMainLayout->addWidget(m_pchXMajShow,    3,2);
         pMainLayout->addWidget(m_plbXMajStyle,   3,3);
         pMainLayout->addWidget(m_pchYMajShow,    3,4);
-        pMainLayout->addWidget(m_pclbYMajStyle,  3,5);
+        pMainLayout->addWidget(m_plbYMajStyle,  3,5);
         pMainLayout->addWidget(pLabMinGrid,      4,1);
         pMainLayout->addWidget(m_pchXMinShow,    4,2);
-        pMainLayout->addWidget(m_pctrlXMinStyle, 4,3);
+        pMainLayout->addWidget(m_plbXMinStyle, 4,3);
         pMainLayout->addWidget(m_pchYMinShow,    4,4);
         pMainLayout->addWidget(m_plbYMinStyle,   4,5);
     }
@@ -159,7 +159,7 @@ void GridControl::onXMinStyle()
     lineMenu.initMenu(m_pGrid->xMinStyle());
     lineMenu.exec(QCursor::pos());
     m_pGrid->setXMinStyle(lineMenu.theStyle());
-    m_pctrlXMinStyle->setTheStyle(m_pGrid->xMinStyle());
+    m_plbXMinStyle->setTheStyle(m_pGrid->xMinStyle());
     emit gridModified(true);
 }
 
@@ -170,7 +170,7 @@ void GridControl::onYMajStyle()
     lineMenu.initMenu(m_pGrid->yMajStyle(0));
     lineMenu.exec(QCursor::pos());
     m_pGrid->setYMajStyle(0, lineMenu.theStyle());
-    m_pclbYMajStyle->setTheStyle(m_pGrid->yMajStyle(0));
+    m_plbYMajStyle->setTheStyle(m_pGrid->yMajStyle(0));
     emit gridModified(true);
 }
 
@@ -213,7 +213,7 @@ void GridControl::onXMajShow(bool bShow)
 void GridControl::onYMajShow(bool bShow)
 {
     m_pGrid->showYMajGrid(0, bShow);
-    m_pclbYMajStyle->setEnabled(m_pGrid->bYMajGrid(0));
+    m_plbYMajStyle->setEnabled(m_pGrid->bYMajGrid(0));
     emit gridModified(true);
 }
 
@@ -221,7 +221,7 @@ void GridControl::onYMajShow(bool bShow)
 void GridControl::onXMinShow(bool bShow)
 {
     m_pGrid->showXMinGrid(bShow);
-    m_pctrlXMinStyle->setEnabled(m_pGrid->bXMinGrid());
+    m_plbXMinStyle->setEnabled(m_pGrid->bXMinGrid());
     emit gridModified(true);
 }
 

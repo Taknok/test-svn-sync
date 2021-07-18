@@ -196,14 +196,6 @@ void W3dPrefs::setupLayout()
 
     QGroupBox *pTessBox = new QGroupBox(tr("Tessellation"));
     {
-/*        QGridLayout *pTessLayout = new QGridLayout;
-        {
-            pTessLayout->addWidget(pTessBodyAxial,3,1);
-            pTessLayout->addWidget(m_pctrlBodyAxialRes,3,2);
-            pTessLayout->addWidget(pTessBodyHoop,4,1);
-            pTessLayout->addWidget(m_pctrlBodyHoopRes,4,2);
-        }*/
-
         QVBoxLayout *pTessLayout = new QVBoxLayout;
         {
             QLabel *pTessLabel = new QLabel(tr("Increase the number of points to improve the resolution\n"

@@ -51,8 +51,11 @@ namespace xfl
     extern int s_SymbolSize;
     extern QString s_LastDirName, s_xmlDirName, s_plrDirName;
 
+    extern QVector <QColor> s_ColorList;
 
     QString versionName(bool bFull);
+
+    inline QColor getColor(int index){return s_ColorList.at(index%s_ColorList.size());}
 
     inline void setLastDirName(QString dirname) {s_LastDirName=dirname;}
     inline QString const &lastDirName() {return s_LastDirName;}
@@ -112,6 +115,9 @@ namespace xfl
     void readColor(QDataStream &ar, int &r, int &g, int &b, int &a);
     void writeColor(QDataStream &ar, int r, int g, int b, int a);
 
+    void readCOLORREF(QDataStream &ar, int &r, int &g, int &b);
+    void readQColor(QDataStream &ar, int &r, int &g, int &b, int &a);
+    void writeQColor(QDataStream &ar, int r, int g, int b, int a);
 
 
     int readValues(const QString &theline, double &x, double &y, double &z);

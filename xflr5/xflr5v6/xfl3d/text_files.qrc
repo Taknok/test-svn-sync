@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>resources/script/foil_script.xml</file>
+        <file>resources/textfiles/galaxies.csv</file>
     </qresource>
 </RCC>

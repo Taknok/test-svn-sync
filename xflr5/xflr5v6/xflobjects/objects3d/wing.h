@@ -132,7 +132,7 @@ class Wing
         void scaleAR(double newAR);
         void scaleTR(double newTR);
 
-        void surfacePoint(double xRel, double ypos, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const;
+        void surfacePoint(double xRel, double ypos, xfl::enumSurfacePosition pos, Vector3d &Point, Vector3d &PtNormal) const;
 
         bool isWingOut() const {return m_bWingOut;}
 

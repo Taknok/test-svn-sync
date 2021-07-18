@@ -1,7 +1,7 @@
 /****************************************************************************
 
     TEGapDlg Class
-    Copyright (C) 2009 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -44,11 +44,8 @@ TEGapDlg::TEGapDlg(QWidget *pParent) : QDialog(pParent)
 
     setupLayout();
 
-    connect(m_pctrlGap, SIGNAL(editingFinished()), this, SLOT(onChanged()));
-    connect(m_pctrlBlend, SIGNAL(editingFinished()), this, SLOT(onChanged()));
-    connect(ApplyButton, SIGNAL(clicked()),this, SLOT(onApply()));
-    connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-    connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(m_pdeGap, SIGNAL(editingFinished()), this, SLOT(onChanged()));
+    connect(m_pdeBlend, SIGNAL(editingFinished()), this, SLOT(onChanged()));
 }
 
 
@@ -60,9 +57,9 @@ void TEGapDlg::setupLayout()
         lab1->setAlignment(Qt::AlignRight);
         lab1->setMinimumWidth(150);
         QLabel *lab2 = new QLabel(tr("% chord"));
-        m_pctrlGap = new DoubleEdit;
+        m_pdeGap = new DoubleEdit;
         pGapValueLayout->addWidget(lab1);
-        pGapValueLayout->addWidget(m_pctrlGap);
+        pGapValueLayout->addWidget(m_pdeGap);
         pGapValueLayout->addWidget(lab2);
     }
 
@@ -72,38 +69,34 @@ void TEGapDlg::setupLayout()
         lab3->setAlignment(Qt::AlignRight);
         lab3->setMinimumWidth(150);
         QLabel *lab4 = new QLabel(tr("% chord"));
-        m_pctrlBlend = new DoubleEdit;
+        m_pdeBlend = new DoubleEdit;
         pBlendValueLayout->addWidget(lab3);
-        pBlendValueLayout->addWidget(m_pctrlBlend);
+        pBlendValueLayout->addWidget(m_pdeBlend);
         pBlendValueLayout->addWidget(lab4);
     }
 
-    QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
+
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply);
     {
-        OKButton      = new QPushButton(tr("OK"));
-        CancelButton  = new QPushButton(tr("Cancel"));
-        ApplyButton  = new QPushButton(tr("Apply"));
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(ApplyButton);
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(OKButton);
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(CancelButton);
-        pCommandButtonsLayout->addStretch(1);
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        pMainLayout->addStretch(1);
         pMainLayout->addLayout(pGapValueLayout);
-        pMainLayout->addStretch(1);
         pMainLayout->addLayout(pBlendValueLayout);
-        pMainLayout->addStretch(1);
-        pMainLayout->addLayout(pCommandButtonsLayout);
-        pMainLayout->addStretch(1);
+        pMainLayout->addWidget(m_pButtonBox);
     }
 
     setLayout(pMainLayout);
+}
+
+
+void TEGapDlg::onButton(QAbstractButton *pButton)
+{
+    if      (m_pButtonBox->button(QDialogButtonBox::Ok) == pButton)      onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
+    else if (m_pButtonBox->button(QDialogButtonBox::Apply) == pButton)   onApply();
 }
 
 
@@ -120,15 +113,11 @@ void TEGapDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
                 onApply();
-                OKButton->setFocus();
+                m_pButtonBox->setFocus();
                 m_bApplied  = true;
-            }
-            else
-            {
-                QDialog::accept();
             }
             break;
         }
@@ -139,19 +128,19 @@ void TEGapDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-
 void TEGapDlg::initDialog()
 {
-    m_pctrlGap->setMin(  0.0);
-    m_pctrlGap->setMax(100.0);
+    m_pdeGap->setMin(  0.0);
+    m_pdeGap->setMax(100.0);
 
-    m_pctrlBlend->setMin(  0.0);
-    m_pctrlBlend->setMax(100.0);
+    m_pdeBlend->setMin(  0.0);
+    m_pdeBlend->setMax(100.0);
 
-    m_pctrlGap->setValue(m_pMemFoil->TEGap()*100.0);
-    m_pctrlBlend->setValue(m_Blend*100.0);
+    m_pdeGap->setValue(m_pMemFoil->TEGap()*100.0);
+    m_pdeBlend->setValue(m_Blend*100.0);
 
 }
+
 
 void TEGapDlg::onChanged()
 {
@@ -159,12 +148,14 @@ void TEGapDlg::onChanged()
     onApply();
 }
 
+
 void TEGapDlg::onOK()
 {
-    if(!m_bApplied)    onApply();
+    if(!m_bApplied)   onApply();
     if(!m_bModified) done(0);
     else done(1);
 }
+
 
 void TEGapDlg::onApply()
 {
@@ -199,8 +190,8 @@ void TEGapDlg::onApply()
         return;
     }
 
-    m_Gap = m_pctrlGap->value();
-    m_Blend = m_pctrlBlend->value();
+    m_Gap = m_pdeGap->value();
+    m_Blend = m_pdeBlend->value();
     s_pXFoil->tgap(m_Gap/100.0,m_Blend/100.0);
     if(s_pXFoil->n>IQX)
     {

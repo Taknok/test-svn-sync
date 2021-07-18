@@ -1144,7 +1144,7 @@ void WPolarDlg::setWPolarName()
 {
     if(!m_bAutoName) return;
 
-    setAutoWPolarName(&s_WPolar, m_pPlane);
+    xfl::setAutoWPolarName(&s_WPolar, m_pPlane);
     m_pleWPolarName->setText(s_WPolar.polarName());
 }
 

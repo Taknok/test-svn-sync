@@ -246,6 +246,7 @@ class XDirect : public QWidget
         QCheckBox *m_pchStoreOpp;
         QPushButton *m_ppbAnalyze;
 
+        QCheckBox *m_pchActiveOppOnly;
         QCheckBox *m_pchShowBL, *m_pchShowPressure;
         QCheckBox* m_pchAnimate;
         QSlider* m_pslAnimateSpeed;

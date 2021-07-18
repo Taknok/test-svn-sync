@@ -226,13 +226,13 @@ void GL3dWingDlg::connectSignals()
     connect(m_ppbInsertAfter,   SIGNAL(clicked()), SLOT(onInsertAfter()));
     connect(m_ppbDeleteSection, SIGNAL(clicked()), SLOT(onDeleteSection()));
 
-    connect(m_pctrlResetMesh,   SIGNAL(clicked()), SLOT(onResetMesh()));
+    connect(m_ppbResetMesh,   SIGNAL(clicked()), SLOT(onResetMesh()));
     connect(m_pcbWingColor,     SIGNAL(clicked()), SLOT(onWingColor()));
     connect(m_pchSymetric,      SIGNAL(clicked()), SLOT(onSymetric()));
     connect(m_prbRightSide,     SIGNAL(clicked()), SLOT(onSide()));
     connect(m_prbLeftSide,      SIGNAL(clicked()), SLOT(onSide()));
 
-    connect(m_pctrlWingDescription, SIGNAL(textChanged()), SLOT(onDescriptionChanged()));
+    connect(m_pteWingDescription, SIGNAL(textChanged()), SLOT(onDescriptionChanged()));
 
     connect(m_pInertia,       SIGNAL(triggered()), SLOT(onInertia()));
     connect(m_pScaleWing,     SIGNAL(triggered()),    SLOT(onScaleWing()));
@@ -415,11 +415,11 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
     m_pleWingName->setText(m_pWing->m_WingName);
     if(m_pWing->m_WingDescription.length())
     {
-        m_pctrlWingDescription->setPlainText(m_pWing->m_WingDescription);
+        m_pteWingDescription->setPlainText(m_pWing->m_WingDescription);
     }
     else
     {
-        m_pctrlWingDescription->setPlainText("");
+        m_pteWingDescription->setPlainText("");
     }
 
     if(!m_bAcceptName) m_pleWingName->setEnabled(false);
@@ -945,7 +945,7 @@ void GL3dWingDlg::onWingColor()
 void GL3dWingDlg::readParams()
 {
     m_pWing->m_WingName = m_pleWingName->text();
-    QString strange = m_pctrlWingDescription->toPlainText();
+    QString strange = m_pteWingDescription->toPlainText();
     if(strange == tr("Wing Description")) strange="";
     m_pWing->m_WingDescription = strange;
 
@@ -1348,8 +1348,8 @@ void GL3dWingDlg::setupLayout()
 
     /*_____________End Top Right Layout Here______________*/
 
-    m_pctrlWingDescription = new QTextEdit();
-    m_pctrlWingDescription->setToolTip(tr("Enter here a short description for the wing"));
+    m_pteWingDescription = new QTextEdit();
+    m_pteWingDescription->setToolTip(tr("Enter here a short description for the wing"));
 
     QLabel *WingDescription = new QLabel(tr("Description:"));
 
@@ -1393,11 +1393,11 @@ void GL3dWingDlg::setupLayout()
                         m_ptbIso->setIconSize(QSize(iconSize,iconSize));
                         m_ptbFlip->setIconSize(QSize(iconSize,iconSize));
                     }
-                    m_pXView    = new QAction(QIcon(":/resources/images/OnXView.png"), tr("X View"), this);
-                    m_pYView    = new QAction(QIcon(":/resources/images/OnYView.png"), tr("Y View"), this);
-                    m_pZView    = new QAction(QIcon(":/resources/images/OnZView.png"), tr("Z View"), this);
-                    m_pIsoView  = new QAction(QIcon(":/resources/images/OnIsoView.png"), tr("Iso View"), this);
-                    m_pFlipView = new QAction(QIcon(":/resources/images/OnFlipView.png"), tr("Flip View"), this);
+                    m_pXView    = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
+                    m_pYView    = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
+                    m_pZView    = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
+                    m_pIsoView  = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
+                    m_pFlipView = new QAction(QIcon(":/images/OnFlipView.png"), tr("Flip View"), this);
                     m_pXView->setCheckable(true);
                     m_pYView->setCheckable(true);
                     m_pZView->setCheckable(true);
@@ -1425,7 +1425,7 @@ void GL3dWingDlg::setupLayout()
 
             QHBoxLayout *pWingModCommands = new QHBoxLayout;
             {
-                m_pctrlResetMesh    = new QPushButton(tr("Reset Mesh"));
+                m_ppbResetMesh    = new QPushButton(tr("Reset Mesh"));
 
 
                 m_pScaleWing     = new QAction(tr("Scale Wing"), this);
@@ -1447,7 +1447,7 @@ void GL3dWingDlg::setupLayout()
                 pWingMenu->addAction(m_pScaleWing);
                 pMenuButton->setMenu(pWingMenu);
 
-                pWingModCommands->addWidget(m_pctrlResetMesh);
+                pWingModCommands->addWidget(m_ppbResetMesh);
                 pWingModCommands->addWidget(pMenuButton);
             }
 
@@ -1470,7 +1470,7 @@ void GL3dWingDlg::setupLayout()
             }
 
             pRightSideLayout->addWidget(WingDescription);
-            pRightSideLayout->addWidget(m_pctrlWingDescription);
+            pRightSideLayout->addWidget(m_pteWingDescription);
             pRightSideLayout->addWidget(pDataWidget);
             pRightSideLayout->addWidget(pAll3DControlsWidget);
 
@@ -1539,7 +1539,7 @@ void GL3dWingDlg::resizeEvent(QResizeEvent *)
     m_ptvWingSections->setColumnWidth(8, wCols);
     m_ptvWingSections->setColumnWidth(9, wCols);
 
-    if(m_pWing)    m_pglWingView->set3dScale(m_pWing->planformSpan());
+    if(m_pWing)    m_pglWingView->setReferenceLength(m_pWing->planformSpan());
     m_pglWingView->update();
 }
 
@@ -1723,7 +1723,7 @@ bool GL3dWingDlg::intersectObject(Vector3d AA,  Vector3d U, Vector3d &I)
 
     for(int j=0; j<m_pWing->m_Surface.size(); j++)
     {
-        if (Intersect(m_pWing->m_Surface.at(j)->m_LA,
+        if(xfl::intersect(m_pWing->m_Surface.at(j)->m_LA,
                       m_pWing->m_Surface.at(j)->m_LB,
                       m_pWing->m_Surface.at(j)->m_TA,
                       m_pWing->m_Surface.at(j)->m_TB,

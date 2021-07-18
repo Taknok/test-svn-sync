@@ -25,8 +25,6 @@
 #include <xflcore/linestyle.h>
 
 
-
-class Curve;
 /**
  * @brief The XflObject class the base class for Xfl type objects
  */

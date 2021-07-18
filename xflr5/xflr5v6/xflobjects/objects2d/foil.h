@@ -33,7 +33,7 @@
 #include <QTextStream>
 #include <QColor>
 
-#include <xflgeom/geom3d/vector3d.h>
+#include <xflgeom/geom2d/vector2d.h>
 #include <xflobjects/xflobject.h>
 #include <xfoil_params.h>
 
@@ -56,7 +56,7 @@ class Foil : public XflObject
     public:
         Foil();
 
-        int isPoint(Vector3d const &Real) const;
+        int isPoint(Vector2d const &Real) const;
 
         void getLowerY(double x, double &y, double &normx, double &normy) const;
         void getUpperY(double x, double &y, double &normx, double &normy) const;
@@ -64,9 +64,9 @@ class Foil : public XflObject
         double deRotate();
         double baseUpperY(double x) const;
         double baseLowerY(double x) const;
-        Vector3d midYRel(double sRel) const;
-        Vector3d lowerYRel(double xRel, double &normx, double &normy) const;
-        Vector3d upperYRel(double xRel, double &normx, double &normy) const;
+        Vector2d midYRel(double sRel) const;
+        Vector2d lowerYRel(double xRel, double &normx, double &normy) const;
+        Vector2d upperYRel(double xRel, double &normx, double &normy) const;
         double camber(double x) const;
         double camberSlope(double x) const;
         double length() const;
@@ -88,7 +88,7 @@ class Foil : public XflObject
         void setLEFlapData(bool bFlap, double xhinge, double yhinge, double angle);
         void setTEFlapData(bool bFlap, double xhinge, double yhinge, double angle);
 
-        bool intersect(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d const &D, Vector3d *M) const;
+        bool intersect(Vector2d const &A, Vector2d const &B, Vector2d const &C, Vector2d const &D, Vector2d *M) const;
 
         bool bCenterLine() const {return m_bCenterLine;}
         void showCenterLine(bool bShow) {m_bCenterLine=bShow;}
@@ -120,9 +120,9 @@ class Foil : public XflObject
        double m_x[IBX];                       /**< the array of x-coordinates of the current foil points */
        double m_y[IBX];                       /**< the array of y-coordinates of the current foil points*/
 
-       double m_nx[IBX];                      /**< the array of x-coordinates of the current foil normal Vector3ds*/
-       double m_ny[IBX];                      /**< the array of x-coordinates of the current foil normal Vector3ds*/
-       Vector3d m_rpMid[MIDPOINTCOUNT];              /**< the mid camber line points */
+       double m_nx[IBX];                      /**< the array of x-coordinates of the current foil normal Vector2ds*/
+       double m_ny[IBX];                      /**< the array of x-coordinates of the current foil normal Vector2ds*/
+       Vector2d m_rpMid[MIDPOINTCOUNT];              /**< the mid camber line points */
 
 
     public:
@@ -145,15 +145,15 @@ class Foil : public XflObject
         double m_fXThickness;                /**< the x-position of the Foil's max thickness point */
 
         double m_TEGap;                        /**< the trailing edge gap */
-        Vector3d m_TE;                        /**< the trailing edge point */
-        Vector3d m_LE;                        /**< the leading edge point */
+        Vector2d m_TE;                        /**< the trailing edge point */
+        Vector2d m_LE;                        /**< the leading edge point */
 
-        Vector3d m_rpBaseMid[MIDPOINTCOUNT];          /**< the mid camber line points of the base geometry */
-        Vector3d m_BaseExtrados[IQX];           /**< the upper surface points of the base geometry */
-        Vector3d m_BaseIntrados[IQX];          /**< the lower surface points of the base geometry */
+        Vector2d m_rpBaseMid[MIDPOINTCOUNT];          /**< the mid camber line points of the base geometry */
+        Vector2d m_BaseExtrados[IQX];           /**< the upper surface points of the base geometry */
+        Vector2d m_BaseIntrados[IQX];          /**< the lower surface points of the base geometry */
 
-        Vector3d m_rpExtrados[IQX];           /**< the upper surface points */
-        Vector3d m_rpIntrados[IQX];           /**< the lower surface points */
+        Vector2d m_rpExtrados[IQX];           /**< the upper surface points */
+        Vector2d m_rpIntrados[IQX];           /**< the lower surface points */
 
     public:
 

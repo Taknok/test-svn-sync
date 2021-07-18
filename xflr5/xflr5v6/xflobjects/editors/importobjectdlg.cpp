@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-
+#include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include <QDesktopWidget>
 #include <QLabel>
@@ -86,44 +86,26 @@ void ImportObjectDlg::initDialog(bool bWing)
 
 void ImportObjectDlg::setupLayout()
 {
-    QDesktopWidget desktop;
-    QRect r = desktop.geometry();
-    setMinimumHeight(r.height()/3);
-    move(r.width()/3, r.height()/6);
-
-    QVBoxLayout *MainLayout = new QVBoxLayout;
-
-    m_plabQuestion = new QLabel;
-
-    m_plwNames = new QListWidget;
-    m_plwNames->setMinimumHeight(300);
-    connect(m_plwNames, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(onOK()));
-
-    QHBoxLayout *CommandButtons = new QHBoxLayout;
+    QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        QPushButton *OKButton = new QPushButton(tr("OK"));
-        OKButton->setAutoDefault(false);
-        QPushButton *CancelButton = new QPushButton(tr("Cancel"));
-        CancelButton->setAutoDefault(false);
-        CommandButtons->addStretch(1);
-        CommandButtons->addWidget(OKButton);
-        CommandButtons->addStretch(1);
-        CommandButtons->addWidget(CancelButton);
-        CommandButtons->addStretch(1);
-        connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-        connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+        m_plabQuestion = new QLabel;
+
+        m_plwNames = new QListWidget;
+        m_plwNames->setMinimumHeight(300);
+        connect(m_plwNames, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(accept()));
+
+        QDialogButtonBox *pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+
+        connect(pButtonBox, &QDialogButtonBox::accepted, this, &ImportObjectDlg::onOK);
+        connect(pButtonBox, &QDialogButtonBox::rejected, this, &ImportObjectDlg::reject);
+
+        pMainLayout->addWidget(m_plabQuestion);
+        pMainLayout->addWidget(m_plwNames);
+        pMainLayout->addWidget(pButtonBox);
     }
 
-    MainLayout->addStretch(1);
-    MainLayout->addWidget(m_plabQuestion);
-    MainLayout->addWidget(m_plwNames);
-    MainLayout->addStretch(1);
-    MainLayout->addLayout(CommandButtons);
-    MainLayout->addStretch(1);
-
-    setLayout(MainLayout);
+    setLayout(pMainLayout);
 }
-
 
 
 void ImportObjectDlg::onOK()

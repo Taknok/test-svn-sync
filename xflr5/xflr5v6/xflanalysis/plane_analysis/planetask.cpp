@@ -2,7 +2,7 @@
 
     PlaneTask Class
 
-    Copyright (C) 2008-2017 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -37,28 +37,14 @@ PlaneTask::PlaneTask()
     m_pPlane = nullptr;
     m_pWPolar = nullptr;
 
-    m_pParent = nullptr;
-
-    m_Node = m_MemNode = m_WakeNode = m_RefWakeNode = m_TempWakeNode = nullptr;
-    m_Panel = m_MemPanel = m_WakePanel = m_RefWakePanel = nullptr;
     m_vMin = m_vMax = m_vInc = 0.0;
     m_MaxPanelSize = 0;
     m_bSequence = true;
     m_bIsFinished = false;
 
     m_WakeSize = 0;
-    m_MatSize = 0;
 
-    m_nNodes = m_nWakeNodes = m_NWakeColumn = 0;
-
-}
-
-/**
- * @param pParent a pointer to the parent widget which will receive the analysis event messages
- */
-void PlaneTask::setParent(void *pParent)
-{
-    m_pParent = pParent;
+    m_NWakeColumn = 0;
 }
 
 
@@ -131,12 +117,12 @@ bool PlaneTask::isPanelTask() const
  * Calculates the inertia
  * @param PlaneName the name of the plane to be set as active
  */
-Plane * PlaneTask::setPlaneObject(Plane *pPlane)
+Plane *PlaneTask::setPlaneObject(Plane *pPlane)
 {
     m_pPlane = pPlane;
     if(!pPlane) return nullptr;
 
-    double dx=0, dz=0;
+    double dx(0), dz(0);
 
     if(pPlane->body())
     {
@@ -256,8 +242,10 @@ WPolar* PlaneTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 
     m_pthePanelAnalysis->setWPolar(m_pWPolar);
     m_pthePanelAnalysis->setObjectPointers(pCurPlane, &m_SurfaceList);
-    m_pthePanelAnalysis->setArrayPointers(m_Panel, m_MemPanel, m_WakePanel, m_RefWakePanel, m_Node, m_MemNode, m_WakeNode, m_RefWakeNode, m_TempWakeNode);
-    m_pthePanelAnalysis->setArraySize(m_MatSize, m_WakeSize, m_nNodes, m_nWakeNodes, m_NWakeColumn);
+    m_pthePanelAnalysis->setArrayPointers(m_Panel.data(), m_MemPanel.data(), m_WakePanel.data(), m_RefWakePanel.data(),
+                                          m_Node.data(), m_MemNode.data(),
+                                          m_WakeNode.data(), m_RefWakeNode.data(), m_TempWakeNode.data());
+    m_pthePanelAnalysis->setArraySize(m_Panel.size(), m_WakeSize, m_Node.size(), m_WakeNode.size(), m_NWakeColumn);
 
     /** @todo restore */
     //set sideslip
@@ -344,24 +332,13 @@ bool PlaneTask::initializePanels()
         memsize += MatrixSize;
     }
 
-
     // all set to create the panels
-
-    m_MatSize     = 0;
-    m_nNodes      = 0;
     m_NWakeColumn = 0;
-    m_nWakeNodes  = 0;
     m_WakeSize    = 0;
 
-    memset(m_Panel, 0,     uint(m_MaxPanelSize) * sizeof(Panel));
-    memset(m_Node,  0, 2 * uint(m_MaxPanelSize) * sizeof(Vector3d));
+    m_Node.fill(Vector3d());
 
-    Panel *ptr = m_Panel;
-
-//    dlg.setValue(5);
-//    int NXWakePanels;
-//    if(pCurWPolar)    NXWakePanels = pCurWPolar->m_NXWakePanels;
-//    else                NXWakePanels = 1;
+    Panel *ptr = m_Panel.data();
 
     Wing *pWingList[MAXWINGS];
     pWingList[0] = m_pPlane->wing();
@@ -387,20 +364,6 @@ bool PlaneTask::initializePanels()
         pWing->m_pWingPanel = ptr;
         ptr += pWing->m_MatSize;
     }
-    // list check
-/*    for(int i4=0; i4<m_MatSize; i4++)
-    {
-        Panel *p4 = &m_Panel[i4];
-
-        QString strange;
-        strange = QString::asprintf("Panel %2d has neighbours PU=%d PD =%2d PL=%2d PR=%2d", i4, p4->m_iPU, p4->m_iPD, p4->m_iPL, p4->m_iPR);
-        qDebug()<<strange;
-    }*/
-//qDebug()<<"created total"<<m_nWakeNodes<<"wake nodes";
-//qDebug()<<"";
-/*    qDebug()<<"m_NWakeColumn"<<m_NWakeColumn;
-    qDebug()<<"Wake Panel Size"<<m_WakeSize;
-    qDebug()<<"Wake Node Size"<<m_nWakeNodes;*/
 
     bool bBodyEl = false;
     if(m_pPlane && m_pPlane->body())
@@ -422,11 +385,11 @@ bool PlaneTask::initializePanels()
     }
 
     //back-up the current geometry
-    memcpy(m_MemPanel,     m_Panel,     uint(m_MatSize)* sizeof(Panel));
-    memcpy(m_MemNode,      m_Node,      uint(m_nNodes) * sizeof(Vector3d));
-    memcpy(m_RefWakePanel, m_WakePanel, uint(m_WakeSize)* sizeof(Panel));
-    memcpy(m_RefWakeNode,  m_WakeNode,  uint(m_nWakeNodes) * sizeof(Vector3d));
+    m_MemPanel = m_Panel;
+    m_RefWakePanel = m_WakePanel;
+    m_RefWakeNode = m_WakeNode;
 
+    m_MemNode = m_Node;
     return true;
 }
 
@@ -448,7 +411,7 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
 
     Body *pCurBody = pCurPlane->body();
 
-    double uk=0, uk1=0, v=0, dj=0, dj1=0, dl1=0;
+    double uk(0), uk1(0), v(0), dj(0), dj1(0), dl1(0);
     double dpx(0), dpz(0);
     Vector3d LATB, TALB;
     Vector3d LA, LB, TA, TB;
@@ -459,7 +422,8 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
     int nh = pCurBody->nhPanels();
     int p = 0;
 
-    int InitialSize = m_MatSize;
+    int m_MatSize = m_Panel.size();
+    int InitialSize = m_Panel.size();
     int FullSize =0;
 
     lnx = 0;
@@ -527,36 +491,32 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
                             m_Panel[m_MatSize].m_iLA = n0;
                         }
                         else {
-                            m_Panel[m_MatSize].m_iLA = m_nNodes;
-                            m_Node[m_nNodes].copy(LA);
-                            m_nNodes++;
+                            m_Panel[m_MatSize].m_iLA = m_Node.size();
+                            m_Node.push_back(LA);
                         }
 
                         if(n1>=0) {
                             m_Panel[m_MatSize].m_iTA = n1;
                         }
                         else {
-                            m_Panel[m_MatSize].m_iTA = m_nNodes;
-                            m_Node[m_nNodes].copy(TA);
-                            m_nNodes++;
+                            m_Panel[m_MatSize].m_iTA = m_Node.size();
+                            m_Node.push_back(TA);
                         }
 
                         if(n2>=0) {
                             m_Panel[m_MatSize].m_iLB = n2;
                         }
                         else {
-                            m_Panel[m_MatSize].m_iLB = m_nNodes;
-                            m_Node[m_nNodes].copy(LB);
-                            m_nNodes++;
+                            m_Panel[m_MatSize].m_iLB = m_Node.size();
+                            m_Node.push_back(LB);
                         }
 
                         if(n3 >=0) {
                             m_Panel[m_MatSize].m_iTB = n3;
                         }
                         else {
-                            m_Panel[m_MatSize].m_iTB = m_nNodes;
-                            m_Node[m_nNodes].copy(TB);
-                            m_nNodes++;
+                            m_Panel[m_MatSize].m_iTB = m_Node.size();
+                            m_Node.push_back(TB);
                         }
 
                         LATB = TB - LA;
@@ -568,7 +528,7 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
                         m_Panel[m_MatSize].m_bIsInSymPlane  = false;
                         m_Panel[m_MatSize].m_bIsLeading     = false;
                         m_Panel[m_MatSize].m_bIsTrailing    = false;
-                        m_Panel[m_MatSize].m_Pos = BODYSURFACE;
+                        m_Panel[m_MatSize].m_Pos = xfl::BODYSURFACE;
                         m_Panel[m_MatSize].m_iElement = m_MatSize;
                         m_Panel[m_MatSize].m_bIsLeftPanel  = true;
                         m_Panel[m_MatSize].setPanelFrame(LA, LB, TA, TB);
@@ -636,36 +596,32 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
                     m_Panel[m_MatSize].m_iLA = n0;
                 }
                 else {
-                    m_Panel[m_MatSize].m_iLA = m_nNodes;
-                    m_Node[m_nNodes].copy(LA);
-                    m_nNodes++;
+                    m_Panel[m_MatSize].m_iLA = m_Node.size();
+                    m_Node.push_back(LA);
                 }
 
                 if(n1>=0) {
                     m_Panel[m_MatSize].m_iTA = n1;
                 }
                 else {
-                    m_Panel[m_MatSize].m_iTA = m_nNodes;
-                    m_Node[m_nNodes].copy(TA);
-                    m_nNodes++;
+                    m_Panel[m_MatSize].m_iTA = m_Node.size();
+                    m_Node.push_back(TA);
                 }
 
                 if(n2>=0) {
                     m_Panel[m_MatSize].m_iLB = n2;
                 }
                 else {
-                    m_Panel[m_MatSize].m_iLB = m_nNodes;
-                    m_Node[m_nNodes].copy(LB);
-                    m_nNodes++;
+                    m_Panel[m_MatSize].m_iLB = m_Node.size();
+                    m_Node.push_back(LB);
                 }
 
                 if(n3 >=0) {
                     m_Panel[m_MatSize].m_iTB = n3;
                 }
                 else {
-                    m_Panel[m_MatSize].m_iTB = m_nNodes;
-                    m_Node[m_nNodes].copy(TB);
-                    m_nNodes++;
+                    m_Panel[m_MatSize].m_iTB = m_Node.size();
+                    m_Node.push_back(TB);
                 }
 
                 LATB = TB - LA;
@@ -677,7 +633,7 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
                 m_Panel[m_MatSize].m_bIsInSymPlane  = false;
                 m_Panel[m_MatSize].m_bIsLeading     = false;
                 m_Panel[m_MatSize].m_bIsTrailing    = false;
-                m_Panel[m_MatSize].m_Pos = BODYSURFACE;
+                m_Panel[m_MatSize].m_Pos = xfl::BODYSURFACE;
                 m_Panel[m_MatSize].m_iElement = m_MatSize;
                 m_Panel[m_MatSize].m_bIsLeftPanel  = true;
                 m_Panel[m_MatSize].setPanelFrame(LA, LB, TA, TB);
@@ -731,36 +687,32 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
                 m_Panel[m_MatSize].m_iLA = n0;
             }
             else {
-                m_Panel[m_MatSize].m_iLA = m_nNodes;
-                m_Node[m_nNodes].copy(LA);
-                m_nNodes++;
+                m_Panel[m_MatSize].m_iLA = m_Node.size();
+                m_Node.push_back(LA);
             }
 
             if(n1>=0) {
                 m_Panel[m_MatSize].m_iTA = n1;
             }
             else {
-                m_Panel[m_MatSize].m_iTA = m_nNodes;
-                m_Node[m_nNodes].copy(TA);
-                m_nNodes++;
+                m_Panel[m_MatSize].m_iTA = m_Node.size();
+                m_Node.push_back(TA);
             }
 
             if(n2>=0) {
                 m_Panel[m_MatSize].m_iLB = n2;
             }
             else {
-                m_Panel[m_MatSize].m_iLB = m_nNodes;
-                m_Node[m_nNodes].copy(LB);
-                m_nNodes++;
+                m_Panel[m_MatSize].m_iLB = m_Node.size();
+                m_Node.push_back(LB);
             }
 
             if(n3 >=0) {
                 m_Panel[m_MatSize].m_iTB = n3;
             }
             else {
-                m_Panel[m_MatSize].m_iTB = m_nNodes;
-                m_Node[m_nNodes].copy(TB);
-                m_nNodes++;
+                m_Panel[m_MatSize].m_iTB = m_Node.size();
+                m_Node.push_back(TB);
             }
 
             LATB = TB - LA;
@@ -772,7 +724,7 @@ int PlaneTask::createBodyElements(Plane *pCurPlane)
             m_Panel[m_MatSize].m_bIsInSymPlane  = false;
             m_Panel[m_MatSize].m_bIsLeading     = false;
             m_Panel[m_MatSize].m_bIsTrailing    = false;
-            m_Panel[m_MatSize].m_Pos = BODYSURFACE;
+            m_Panel[m_MatSize].m_Pos = xfl::BODYSURFACE;
             m_Panel[m_MatSize].m_iElement = m_MatSize;
             m_Panel[m_MatSize].m_bIsLeftPanel  = false;
             m_Panel[m_MatSize].setPanelFrame(LA, LB, TA, TB);
@@ -823,8 +775,9 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
     bool bNoJoinFlap(true);
     int n0(0), n1(0), n2(0), n3(0);
 
+    int m_MatSize = m_Panel.size();
     int InitialSize = m_MatSize;
-    enumPanelPosition side = MIDSURFACE;
+    xfl::enumSurfacePosition side = xfl::MIDSURFACE;
     Vector3d LA, LB, TA, TB;
 
     bool bThickSurfaces = true;
@@ -841,53 +794,50 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
         //then left tip surface, add side panels
         for (int l=0; l<pSurface->NXPanels(); l++)
         {
-            Panel &panel = m_Panel[m_MatSize];
+            m_Panel.append(Panel());
+            Panel &panel = m_Panel.last();
             panel.m_bIsLeading     = false;
             panel.m_bIsTrailing    = false;
             panel.m_bIsWakePanel   = false;
             panel.m_bIsInSymPlane  = false; //even if part of a fin
 
-            pSurface->getPanel(0, l, BOTSURFACE);
+            pSurface->getPanel(0, l, xfl::BOTSURFACE);
             LA.copy(pSurface->LA);
             TA.copy(pSurface->TA);
 
-            pSurface->getPanel(0, l, TOPSURFACE);
+            pSurface->getPanel(0, l, xfl::TOPSURFACE);
             LB.copy(pSurface->LA);
             TB.copy(pSurface->TA);
 
             n0 = isNode(LA);
             if(n0>=0)     panel.m_iLA = n0;
             else {
-                panel.m_iLA = m_nNodes;
-                m_Node[m_nNodes].copy(LA);
-                m_nNodes++;
+                panel.m_iLA = m_Node.size();
+                m_Node.push_back(LA);
             }
 
             n1 = isNode(TA);
             if(n1>=0)     panel.m_iTA = n1;
             else {
-                panel.m_iTA = m_nNodes;
-                m_Node[m_nNodes].copy(TA);
-                m_nNodes++;
+                panel.m_iTA = m_Node.size();
+                m_Node.push_back(TA);
             }
 
             n2 = isNode(LB);
             if(n2>=0)     panel.m_iLB = n2;
             else {
-                panel.m_iLB = m_nNodes;
-                m_Node[m_nNodes].copy(LB);
-                m_nNodes++;
+                panel.m_iLB = m_Node.size();
+                m_Node.push_back(LB);
             }
 
             n3 = isNode(TB);
             if(n3>=0)     panel.m_iTB = n3;
             else {
-                panel.m_iTB = m_nNodes;
-                m_Node[m_nNodes].copy(TB);
-                m_nNodes++;
+                panel.m_iTB = m_Node.size();
+                m_Node.push_back(TB);
             }
 
-            panel.m_Pos = SIDESURFACE;
+            panel.m_Pos = xfl::SIDESURFACE;
             panel.m_iElement = m_MatSize;
             panel.m_bIsLeftPanel  = pSurface->isLeftSurf();
             panel.setPanelFrame(LA, LB, TA, TB);
@@ -907,8 +857,8 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
     for (int k=0; k<pSurface->NYPanels(); k++)
     {
         //add "horizontal" panels, mid side, or following a strip from bot to top if 3D Panel
-        if(bThickSurfaces)   side = BOTSURFACE;  //start with lower surf, as recommended by K&P
-        else                 side = MIDSURFACE;
+        if(bThickSurfaces)   side = xfl::BOTSURFACE;  //start with lower surf, as recommended by K&P
+        else                 side = xfl::MIDSURFACE;
         //from T.E. to L.E.
         for (int l=0; l<pSurface->NXPanels(); l++)
         {
@@ -919,7 +869,8 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
             n2 = isNode(pSurface->LB);
             n3 = isNode(pSurface->TB);
 
-            Panel &panel = m_Panel[m_MatSize];
+            m_Panel.push_back(Panel());
+            Panel &panel = m_Panel.back();
 
             if(l==0)                      panel.m_bIsTrailing = true;
             if(l==pSurface->NXPanels()-1) panel.m_bIsLeading  = true;
@@ -933,9 +884,8 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
                 panel.m_iLA = n0;
             }
             else {
-                panel.m_iLA = m_nNodes;
-                m_Node[m_nNodes].copy(pSurface->LA);
-                m_nNodes++;
+                panel.m_iLA = m_Node.size();
+                m_Node.push_back(pSurface->LA);
             }
 
             if(n1>=0 && !bNoJoinFlap) // do not merge nodes if we are at a flap's side in VLM
@@ -943,9 +893,8 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
                 panel.m_iTA = n1;
             }
             else {
-                panel.m_iTA = m_nNodes;
-                m_Node[m_nNodes].copy(pSurface->TA);
-                m_nNodes++;
+                panel.m_iTA = m_Node.size();
+                m_Node.push_back(pSurface->TA);
             }
 
             bNoJoinFlap = side==0 &&  l<pSurface->NXFlap() && k==pSurface->NYPanels()-1;
@@ -955,9 +904,8 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
                 panel.m_iLB = n2;
             }
             else {
-                panel.m_iLB = m_nNodes;
-                m_Node[m_nNodes].copy(pSurface->LB);
-                m_nNodes++;
+                panel.m_iLB = m_Node.size();
+                m_Node.push_back(pSurface->LB);
             }
 
             if(n3>=0 && !bNoJoinFlap) // do not merge nodes if we are at a flap's side in VLM
@@ -965,17 +913,16 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
                 panel.m_iTB = n3;
             }
             else {
-                panel.m_iTB = m_nNodes;
-                m_Node[m_nNodes].copy(pSurface->TB);
-                m_nNodes++;
+                panel.m_iTB = m_Node.size();
+                m_Node.push_back(pSurface->TB);
             }
 
             panel.m_Pos = side;
             panel.m_iElement = m_MatSize;
             panel.m_bIsLeftPanel  = pSurface->isLeftSurf();
 
-            if(side==MIDSURFACE)        panel.setPanelFrame(pSurface->LA, pSurface->LB, pSurface->TA, pSurface->TB);
-            else if (side==BOTSURFACE)  panel.setPanelFrame(pSurface->LB, pSurface->LA, pSurface->TB, pSurface->TA);
+            if(side==xfl::MIDSURFACE)        panel.setPanelFrame(pSurface->LA, pSurface->LB, pSurface->TA, pSurface->TB);
+            else if (side==xfl::BOTSURFACE)  panel.setPanelFrame(pSurface->LB, pSurface->LA, pSurface->TB, pSurface->TA);
 
             // set neighbour panels
             // valid only for Panel 2-sided Analysis
@@ -983,9 +930,9 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
             panel.m_iPD = m_MatSize-1;
             panel.m_iPU = m_MatSize+1;
             if(l==0)                                         panel.m_iPD = -1;// no panel downstream
-            if(l==pSurface->NXPanels()-1 && side==MIDSURFACE) panel.m_iPU = -1;// no panel upstream
+            if(l==pSurface->NXPanels()-1 && side==xfl::MIDSURFACE) panel.m_iPU = -1;// no panel upstream
 
-            if(side!=MIDSURFACE)
+            if(side!=xfl::MIDSURFACE)
             {
                 //wings are modelled as thick surfaces
                 panel.m_iPL = m_MatSize + 2*pSurface->NXPanels();
@@ -1018,7 +965,7 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
                 }
             }
 
-            if(l<pSurface->NXFlap()) pSurface->addFlapPanel(m_Panel+m_MatSize);
+            if(l<pSurface->NXFlap()) pSurface->addFlapPanel(m_Panel.at(m_MatSize));
 
             m_MatSize++;
         }
@@ -1026,7 +973,7 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
         if (bThickSurfaces)
         {
             //add top side if 3D Panels
-            side = TOPSURFACE; //next upper surf, as recommended by K&P
+            side = xfl::TOPSURFACE; //next upper surf, as recommended by K&P
             //from L.E. to T.E.
             for (int l=pSurface->NXPanels()-1;l>=0; l--)
             {
@@ -1036,7 +983,9 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
                 n2 = isNode(pSurface->LB);
                 n3 = isNode(pSurface->TB);
 
-                Panel &panel = m_Panel[m_MatSize];
+
+                m_Panel.push_back(Panel());
+                Panel &panel = m_Panel.back();
 
                 if(l==0)                      panel.m_bIsTrailing = true;
                 if(l==pSurface->NXPanels()-1) panel.m_bIsLeading  = true;
@@ -1046,33 +995,29 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
                 if(n0>=0)
                     panel.m_iLA = n0;
                 else {
-                    panel.m_iLA = m_nNodes;
-                    m_Node[m_nNodes].copy(pSurface->LA);
-                    m_nNodes++;
+                    panel.m_iLA = m_Node.size();
+                    m_Node.push_back(pSurface->LA);
                 }
 
                 if(n1>=0)
                     panel.m_iTA = n1;
                 else {
-                    panel.m_iTA = m_nNodes;
-                    m_Node[m_nNodes].copy(pSurface->TA);
-                    m_nNodes++;
+                    panel.m_iTA = m_Node.size();
+                    m_Node.push_back(pSurface->TA);
                 }
 
                 if(n2>=0)
                     panel.m_iLB = n2;
                 else {
-                    panel.m_iLB = m_nNodes;
-                    m_Node[m_nNodes].copy(pSurface->LB);
-                    m_nNodes++;
+                    panel.m_iLB = m_Node.size();
+                    m_Node.push_back(pSurface->LB);
                 }
 
                 if(n3 >=0)
                     panel.m_iTB = n3;
                 else {
-                    panel.m_iTB = m_nNodes;
-                    m_Node[m_nNodes].copy(pSurface->TB);
-                    m_nNodes++;
+                    panel.m_iTB = m_Node.size();
+                    m_Node.push_back(pSurface->TB);
                 }
 
                 panel.m_Pos = side;
@@ -1107,7 +1052,7 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
                     createWakeElems(m_MatSize, pPlane, pWPolar);
                 }
 
-                if(l<pSurface->NXFlap()) pSurface->addFlapPanel(m_Panel+m_MatSize);
+                if(l<pSurface->NXFlap()) pSurface->addFlapPanel(m_Panel.at(m_MatSize));
                 m_MatSize++;
             }
             m_NWakeColumn++;
@@ -1119,48 +1064,45 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
         int k = pSurface->NYPanels()-1;
         for (int l=0; l< pSurface->NXPanels(); l++)
         {
-            Panel &panel = m_Panel[m_MatSize];
+            m_Panel.push_back(Panel());
+            Panel &panel = m_Panel.back();
 
             panel.m_bIsTrailing    = false;
             panel.m_bIsLeading     = false;
             panel.m_bIsWakePanel   = false;
             panel.m_bIsInSymPlane  = false;//even if part of a fin
 
-            pSurface->getPanel(k,l,TOPSURFACE);
+            pSurface->getPanel(k,l,xfl::TOPSURFACE);
             LA.copy(pSurface->LB);
             TA.copy(pSurface->TB);
 
-            pSurface->getPanel(k,l,BOTSURFACE);
+            pSurface->getPanel(k,l,xfl::BOTSURFACE);
             LB.copy(pSurface->LB);
             TB.copy(pSurface->TB);
 
             n0 = isNode(LA);//answer should be yes
             if(n0>=0)                 panel.m_iLA = n0;
             else {
-                panel.m_iLA = m_nNodes;
-                m_Node[m_nNodes].copy(LA);
-                m_nNodes++;
+                panel.m_iLA = m_Node.size();
+                m_Node.push_back(LA);
             }
             n1 = isNode(TA);//answer should be yes
             if(n1>=0)                 panel.m_iTA = n1;
             else {
-                panel.m_iTA = m_nNodes;
-                m_Node[m_nNodes].copy(TA);
-                m_nNodes++;
+                panel.m_iTA = m_Node.size();
+                m_Node.push_back(TA);
             }
             n2 = isNode(LB);//answer should be yes
             if(n2>=0)                 panel.m_iLB = n2;
             else {
-                panel.m_iLB = m_nNodes;
-                m_Node[m_nNodes].copy(LB);
-                m_nNodes++;
+                panel.m_iLB = m_Node.size();
+                m_Node.push_back(LB);
             }
             n3 = isNode(TB);//answer should be yes
             if(n3>=0)                panel.m_iTB = n3;
             else {
-                panel.m_iTB = m_nNodes;
-                m_Node[m_nNodes].copy(TB);
-                m_nNodes++;
+                panel.m_iTB = m_Node.size();
+                m_Node.push_back(TB);
             }
 
 
@@ -1171,7 +1113,7 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
             panel.m_iPL = -1;
             panel.m_iPR = -1;
 
-            panel.m_Pos = SIDESURFACE;
+            panel.m_Pos = xfl::SIDESURFACE;
             panel.m_iElement = m_MatSize;
             panel.m_bIsLeftPanel  = pSurface->isLeftSurf();
             panel.setPanelFrame(LA, LB, TA, TB);
@@ -1194,7 +1136,7 @@ bool PlaneTask::createWakeElems(int PanelIndex, Plane const*pPlane, WPolar const
     if(!pWPolar) return false;
     if(!m_Panel[PanelIndex].m_bIsTrailing) return false;
 
-    int n0=0, n1=0, n2=0, n3=0;
+    int n0(0), n1(0), n2(0), n3(0);
     int mw = m_WakeSize;// number of wake panels
     Vector3d LATB, TALB;
     Vector3d LA, LB, TA,TB;//wake panel's corner points
@@ -1243,36 +1185,32 @@ bool PlaneTask::createWakeElems(int PanelIndex, Plane const*pPlane, WPolar const
             m_WakePanel[mw].m_iLA = n0;
         }
         else {
-            m_WakePanel[mw].m_iLA = m_nWakeNodes;
-            m_WakeNode[m_nWakeNodes].copy(LA);
-            m_nWakeNodes++;
+            m_WakePanel[mw].m_iLA = m_WakeNode.size();
+            m_WakeNode.push_back(LA);
         }
 
         if(n1>=0) {
             m_WakePanel[mw].m_iTA = n1;
         }
         else {
-            m_WakePanel[mw].m_iTA = m_nWakeNodes;
-            m_WakeNode[m_nWakeNodes].copy(TA);
-            m_nWakeNodes++;
+            m_WakePanel[mw].m_iTA = m_WakeNode.size();
+            m_WakeNode.push_back(TA);
         }
 
         if(n2>=0) {
             m_WakePanel[mw].m_iLB = n2;
         }
         else {
-            m_WakePanel[mw].m_iLB = m_nWakeNodes;
-            m_WakeNode[m_nWakeNodes].copy(LB);
-            m_nWakeNodes++;
+            m_WakePanel[mw].m_iLB = m_WakeNode.size();
+            m_WakeNode.push_back(LB);
         }
 
         if(n3 >=0) {
             m_WakePanel[mw].m_iTB = n3;
         }
         else {
-            m_WakePanel[mw].m_iTB = m_nWakeNodes;
-            m_WakeNode[m_nWakeNodes].copy(TB);
-            m_nWakeNodes++;
+            m_WakePanel[mw].m_iTB = m_WakeNode.size();
+            m_WakeNode.push_back(TB);
         }
 
         LATB = TB - LA;
@@ -1280,7 +1218,7 @@ bool PlaneTask::createWakeElems(int PanelIndex, Plane const*pPlane, WPolar const
 
         m_WakePanel[mw].Normal = LATB * TALB;
 
-        m_WakePanel[mw].m_Pos = MIDSURFACE;
+        m_WakePanel[mw].m_Pos = xfl::MIDSURFACE;
         m_WakePanel[mw].m_bIsWakePanel = true;
         m_WakePanel[mw].Area =  m_WakePanel[mw].Normal.norm()/2.0;
         m_WakePanel[mw].Normal.normalize();
@@ -1305,7 +1243,6 @@ bool PlaneTask::createWakeElems(int PanelIndex, Plane const*pPlane, WPolar const
 
 int PlaneTask::calculateMatSize()
 {
-    int nx=0, nh=0;
     int PanelArraySize = 0;
 
     if(!m_pPlane) return 0;
@@ -1339,9 +1276,9 @@ int PlaneTask::calculateMatSize()
         {
             if(pCurBody->m_LineType==xfl::BODYPANELTYPE)
             {
-                nx = 0;
+                int nx = 0;
                 for(int i=0; i<pCurBody->frameCount()-1; i++) nx+=pCurBody->m_xPanels[i];
-                nh = 0;
+                int nh = 0;
                 for(int i=0; i<pCurBody->sideLineCount()-1; i++) nh+=pCurBody->m_hPanels[i];
                 PanelArraySize += nx*nh*2;
             }
@@ -1352,32 +1289,23 @@ int PlaneTask::calculateMatSize()
 }
 
 
-
-
 /**
  * Releases the memory allocated to the Panel and node arrays.
  * Sets the pointers to NULL and the matrixsize to 0.
  */
 void PlaneTask::releasePanelMemory()
 {
-    if(m_Node)         delete[] m_Node;
-    if(m_MemNode)      delete[] m_MemNode;
-    if(m_WakeNode)     delete[] m_WakeNode;
-    if(m_RefWakeNode)  delete[] m_RefWakeNode;
-    if(m_TempWakeNode) delete[] m_TempWakeNode;
+    m_Node.clear();
+    m_MemNode.clear();
+    m_WakeNode.clear();
+    m_RefWakeNode.clear();
+    m_TempWakeNode.clear();
 
-    m_Node = m_MemNode = m_WakeNode = m_RefWakeNode = m_TempWakeNode = nullptr;
-
-    if(m_Panel)        delete[] m_Panel;
-    if(m_MemPanel)     delete[] m_MemPanel;
-    if(m_WakePanel)    delete[] m_WakePanel;
-    if(m_RefWakePanel) delete[] m_RefWakePanel;
-    m_Panel = m_MemPanel = m_WakePanel = m_RefWakePanel = nullptr;
-
-    m_MatSize = 0;
-    m_nNodes = 0;
+    m_Panel.clear();
+    m_MemPanel.clear();
+    m_WakePanel.clear();
+    m_RefWakePanel.clear();
 }
-
 
 
 /**
@@ -1388,9 +1316,9 @@ void PlaneTask::releasePanelMemory()
 */
 int PlaneTask::isWakeNode(Vector3d &Pt)
 {
-    for (int in=0; in<m_nWakeNodes; in++)
+    for (int in=0; in<m_WakeNode.size(); in++)
     {
-        if(Pt.isSame(m_WakeNode[in])) return in;
+        if(Pt.isSame(m_WakeNode.at(in))) return in;
     }
     return -1;
 }
@@ -1404,9 +1332,9 @@ int PlaneTask::isWakeNode(Vector3d &Pt)
 */
 int PlaneTask::isNode(Vector3d &Pt)
 {
-    for (int in=m_nNodes-1; in>=0; in--)
+    for (int in=m_Node.size()-1; in>=0; in--)
     {
-        if(Pt.isSame(m_Node[in])) return in;
+        if(Pt.isSame(m_Node.at(in))) return in;
     }
     return -1;
 }
@@ -1420,8 +1348,8 @@ bool PlaneTask::allocatePanelArrays(int &memsize)
 {
     try
     {
-        m_Node        = new Vector3d[ulong(2*m_MaxPanelSize)];
-        m_MemNode     = new Vector3d[ulong(2*m_MaxPanelSize)];
+        m_Node.resize(2*m_MaxPanelSize);
+        m_MemNode.resize(2*m_MaxPanelSize);
 
         //Wake Node size
         m_NWakeColumn = 0;
@@ -1445,32 +1373,14 @@ bool PlaneTask::allocatePanelArrays(int &memsize)
         }
         WakeNodeSize *=  (m_pWPolar->m_NXWakePanels + 1);
         int WakePanelSize = m_NWakeColumn * m_pWPolar->m_NXWakePanels;
-//qDebug()<<"WakePanelSize"<<WakePanelSize;
-//qDebug()<<"WakeNodeSize"<<WakeNodeSize;
-//qDebug()<<"NWakeColumn"<<m_NWakeColumn<<"m_pWPolar->m_NXWakePanels"<<m_pWPolar->m_NXWakePanels;
-//qDebug()<<"____";
-//WakeNodeSize +=10;
-//qDebug()<<WakeNodeSize;
-        m_WakeNode    = new Vector3d[ulong(WakeNodeSize)];
-        m_RefWakeNode = new Vector3d[ulong(WakeNodeSize)];
-        m_TempWakeNode = new Vector3d[ulong(WakeNodeSize)];
-//qDebug()<<"Allocated"<<WakeNodeSize;
 
-        m_Panel        = new Panel[ulong(m_MaxPanelSize)];
-        m_MemPanel     = new Panel[ulong(m_MaxPanelSize)];
-        m_WakePanel    = new Panel[ulong(WakePanelSize)];
-        m_RefWakePanel = new Panel[ulong(WakePanelSize)];
+        m_WakeNode.resize(WakeNodeSize);
+        m_RefWakeNode.resize(WakeNodeSize);
+        m_TempWakeNode.resize(WakeNodeSize);
 
-/*        m_Node        = new Vector3d[2*m_MaxPanelSize];
-        m_MemNode     = new Vector3d[2*m_MaxPanelSize];
-        m_WakeNode    = new Vector3d[2*m_MaxPanelSize];
-        m_RefWakeNode = new Vector3d[2*m_MaxPanelSize];
-        m_TempWakeNode = new Vector3d[2*m_MaxPanelSize];
+        m_WakePanel.resize(WakePanelSize);
+        m_RefWakePanel.resize(WakePanelSize);
 
-        m_Panel        = new Panel[m_MaxPanelSize];
-        m_MemPanel     = new Panel[m_MaxPanelSize];
-        m_WakePanel    = new Panel[m_MaxPanelSize];
-        m_RefWakePanel = new Panel[m_MaxPanelSize];*/
     }
     catch(std::exception &)
     {
@@ -1488,10 +1398,10 @@ bool PlaneTask::allocatePanelArrays(int &memsize)
 
 //    Trace(QString("Objects3D::   ...Allocated %1MB for the panel and node arrays").arg((double)memsize/1024./1024.));
 
-    Panel::s_pNode = m_Node;
-    Panel::s_pWakeNode = m_WakeNode;
+    Panel::s_pNode = m_Node.constData();
+    Panel::s_pWakeNode = m_WakeNode.constData();
 
-    Surface::setPanelPointers(m_Panel, m_Node);
+    Surface::setPanelPointers(m_Panel.data(), m_Node.data());
 
 //    QMiarex::s_pPanel = m_Panel;
 //    QMiarex::s_pNode = m_Node;
