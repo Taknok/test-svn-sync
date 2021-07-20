@@ -28,7 +28,6 @@
 #include "afoil.h"
 #include "afoiltabledlg.h"
 
-#include <xflwidgets/line/linepickerdlg.h>
 
 
 AFoilTableDlg::AFoilTableDlg(QWidget *pParent): QDialog(pParent)

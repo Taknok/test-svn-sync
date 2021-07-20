@@ -39,7 +39,6 @@ HEADERS += \
     xflwidgets/line/linedelegate.h \
     xflwidgets/line/linemenu.h \
     xflwidgets/line/linepicker.h \
-    xflwidgets/line/linepickerdlg.h \
     xflwidgets/line/linepickerwt.h \
     xflwidgets/mvc/expandabletreeview.h \
     xflwidgets/mvc/objecttreedelegate.h \
@@ -92,7 +91,6 @@ SOURCES += \
     xflwidgets/line/linedelegate.cpp \
     xflwidgets/line/linemenu.cpp \
     xflwidgets/line/linepicker.cpp \
-    xflwidgets/line/linepickerdlg.cpp \
     xflwidgets/line/linepickerwt.cpp \
     xflwidgets/mvc/expandabletreeview.cpp \
     xflwidgets/mvc/objecttreedelegate.cpp \

@@ -53,7 +53,6 @@
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects_global.h>
 #include <xflwidgets/line/linemenu.h>
-#include <xflwidgets/line/linepickerdlg.h>
 #include <xfoil.h>
 
 

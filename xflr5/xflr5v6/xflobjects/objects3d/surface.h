@@ -115,14 +115,14 @@ class Surface
         void addFlapPanel(const Panel &pPanel);
         void copy(Surface const*pSurface);
         void createXPoints();
-        void getC4(int k, Vector3d &Pt, double &tau);
-        void getLeadingPt(int k, Vector3d &C);
+        void getC4(int k, Vector3d &Pt, double &tau) const;
+        void getLeadingPt(int k, Vector3d &C) const;
         void getNormal(double yrel, Vector3d &N) const;
-        void getTrailingPt(int k, Vector3d &C);
+        void getTrailingPt(int k, Vector3d &C) const;
         void getPanel(int const &k, int const &l, xfl::enumSurfacePosition pos) const;
         void getSidePoint(double xRel, bool bRight, xfl::enumSurfacePosition pos, Vector3d &Point, Vector3d &PtNormal) const;
         void getSurfacePoint(double xArel, double xBrel, double yrel, xfl::enumSurfacePosition pos, Vector3d &Point, Vector3d &PtNormal) const;
-        void getSection(double const &tau, double &Chord, double &Area, Vector3d &PtC4);
+        void getSection(double const &tau, double &Chord, double &Area, Vector3d &PtC4) const;
         void getYDist(int const &k, double &y1, double &y2) const;
         void getSidePoints(xfl::enumSurfacePosition pos, const Body *pBody, QVector<Vector3d> &PtA, QVector<Vector3d> &PtB, QVector<Vector3d> &NA, QVector<Vector3d> &NB, int nPoints) const;
 

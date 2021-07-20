@@ -782,7 +782,7 @@ void EditPlaneDlg::fillPlaneMetaData(QStandardItem *item)
             }
             for(int iwm=0; iwm<m_pPlane->m_PointMass.size(); iwm++)
             {
-                PointMass *pm = m_pPlane->m_PointMass.at(iwm);
+                PointMass const &pm = m_pPlane->m_PointMass.at(iwm);
                 QList<QStandardItem*> planePointMassFolder = prepareRow(QString("Point_mass_%1").arg(iwm+1));
 
                 PlaneInertiaFolder.first()->appendRow(planePointMassFolder);
@@ -791,23 +791,23 @@ void EditPlaneDlg::fillPlaneMetaData(QStandardItem *item)
                     {
                         m_pStruct->expand(m_pModel->indexFromItem(planePointMassFolder.first()));
                     }
-                    QList<QStandardItem*> dataItem = prepareRow("", "Tag", pm->tag());
+                    QList<QStandardItem*> dataItem = prepareRow("", "Tag", pm.tag());
                     dataItem.at(2)->setData(xfl::STRING, Qt::UserRole);
                     planePointMassFolder.first()->appendRow(dataItem);
 
-                    dataItem = prepareRow("", "mass", QString("%1").arg(pm->mass()*Units::kgtoUnit()), Units::massUnitLabel());
+                    dataItem = prepareRow("", "mass", QString("%1").arg(pm.mass()*Units::kgtoUnit()), Units::massUnitLabel());
                     dataItem.at(2)->setData(xfl::DOUBLEVALUE, Qt::UserRole);
                     planePointMassFolder.first()->appendRow(dataItem);
 
-                    dataItem = prepareDoubleRow("", "x", pm->position().x*Units::mtoUnit(), Units::lengthUnitLabel());
+                    dataItem = prepareDoubleRow("", "x", pm.position().x*Units::mtoUnit(), Units::lengthUnitLabel());
                     dataItem.at(2)->setData(xfl::DOUBLEVALUE, Qt::UserRole);
                     planePointMassFolder.first()->appendRow(dataItem);
 
-                    dataItem = prepareDoubleRow("", "y", pm->position().y*Units::mtoUnit(), Units::lengthUnitLabel());
+                    dataItem = prepareDoubleRow("", "y", pm.position().y*Units::mtoUnit(), Units::lengthUnitLabel());
                     dataItem.at(2)->setData(xfl::DOUBLEVALUE, Qt::UserRole);
                     planePointMassFolder.first()->appendRow(dataItem);
 
-                    dataItem = prepareDoubleRow("", "z", pm->position().z*Units::mtoUnit(), Units::lengthUnitLabel());
+                    dataItem = prepareDoubleRow("", "z", pm.position().z*Units::mtoUnit(), Units::lengthUnitLabel());
                     dataItem.at(2)->setData(xfl::DOUBLEVALUE, Qt::UserRole);
                     planePointMassFolder.first()->appendRow(dataItem);
                 }
@@ -903,7 +903,7 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
 
         for(int iwm=0; iwm<pWing->m_PointMass.size(); iwm++)
         {
-            PointMass *pm = pWing->m_PointMass.at(iwm);
+            PointMass const &pm = pWing->m_PointMass.at(iwm);
             QList<QStandardItem*> wingPointMassFolder = prepareRow(QString("Point_mass_%1").arg(iwm+1));
 
             wingInertiaFolder.first()->appendRow(wingPointMassFolder);
@@ -913,23 +913,23 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
                     m_pStruct->expand(m_pModel->indexFromItem(wingPointMassFolder.first()));
                 }
 
-                QList<QStandardItem*> dataItem = prepareRow("", "Tag", pm->tag());
+                QList<QStandardItem*> dataItem = prepareRow("", "Tag", pm.tag());
                 dataItem.at(2)->setData(xfl::STRING, Qt::UserRole);
                 wingPointMassFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "mass", pm->mass()*Units::kgtoUnit(), Units::massUnitLabel());
+                dataItem = prepareDoubleRow("", "mass", pm.mass()*Units::kgtoUnit(), Units::massUnitLabel());
                 dataItem.at(2)->setData(xfl::DOUBLEVALUE, Qt::UserRole);
                 wingPointMassFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "x", pm->position().x*Units::mtoUnit(), Units::lengthUnitLabel());
+                dataItem = prepareDoubleRow("", "x", pm.position().x*Units::mtoUnit(), Units::lengthUnitLabel());
                 dataItem.at(2)->setData(xfl::DOUBLEVALUE, Qt::UserRole);
                 wingPointMassFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "y", pm->position().y*Units::mtoUnit(), Units::lengthUnitLabel());;
+                dataItem = prepareDoubleRow("", "y", pm.position().y*Units::mtoUnit(), Units::lengthUnitLabel());;
                 dataItem.at(2)->setData(xfl::DOUBLEVALUE, Qt::UserRole);
                 wingPointMassFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "z", pm->position().z*Units::mtoUnit(), Units::lengthUnitLabel());
+                dataItem = prepareDoubleRow("", "z", pm.position().z*Units::mtoUnit(), Units::lengthUnitLabel());
                 dataItem.at(2)->setData(xfl::DOUBLEVALUE, Qt::UserRole);
                 wingPointMassFolder.first()->appendRow(dataItem);
             }
@@ -945,45 +945,45 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
         }
         for(int iws=0; iws<pWing->m_Section.size(); iws++)
         {
-            WingSection *wingsec = pWing->m_Section.at(iws);
+            WingSection const &wingsec = pWing->m_Section.at(iws);
 
             QList<QStandardItem*> sectionFolder = prepareRow(QString("Section_%1").arg(iws+1));
             wingSectionFolder.first()->appendRow(sectionFolder);
             {
-                dataItem = prepareDoubleRow("", "span position", wingsec->m_YPosition*Units::mtoUnit(), Units::lengthUnitLabel());
+                dataItem = prepareDoubleRow("", "span position", wingsec.m_YPosition*Units::mtoUnit(), Units::lengthUnitLabel());
                 sectionFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "chord", wingsec->m_Chord*Units::mtoUnit(), Units::lengthUnitLabel());
+                dataItem = prepareDoubleRow("", "chord", wingsec.m_Chord*Units::mtoUnit(), Units::lengthUnitLabel());
                 sectionFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "offset", wingsec->m_Offset*Units::mtoUnit(), Units::lengthUnitLabel());
+                dataItem = prepareDoubleRow("", "offset", wingsec.m_Offset*Units::mtoUnit(), Units::lengthUnitLabel());
                 sectionFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "dihedral", wingsec->m_Dihedral, QChar(0260));
+                dataItem = prepareDoubleRow("", "dihedral", wingsec.m_Dihedral, QChar(0260));
                 sectionFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "twist", wingsec->m_Twist, QChar(0260));
+                dataItem = prepareDoubleRow("", "twist", wingsec.m_Twist, QChar(0260));
                 sectionFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareIntRow("", "x-panels", wingsec->m_NXPanels);
+                dataItem = prepareIntRow("", "x-panels", wingsec.m_NXPanels);
                 sectionFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareRow("", "x-distribution", distributionType(wingsec->m_XPanelDist));
+                dataItem = prepareRow("", "x-distribution", distributionType(wingsec.m_XPanelDist));
                 dataItem.at(2)->setData(xfl::PANELDISTRIBUTION, Qt::UserRole);
                 sectionFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareIntRow("", "y-panels",wingsec->m_NYPanels);
+                dataItem = prepareIntRow("", "y-panels",wingsec.m_NYPanels);
                 sectionFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareRow("", "y-distribution", distributionType(wingsec->m_YPanelDist));
+                dataItem = prepareRow("", "y-distribution", distributionType(wingsec.m_YPanelDist));
                 sectionFolder.first()->appendRow(dataItem);
                 dataItem.at(2)->setData(xfl::PANELDISTRIBUTION, Qt::UserRole);
 
-                dataItem = prepareRow("", "Left side foil name", wingsec->m_LeftFoilName.length() ? wingsec->m_LeftFoilName : "No left foil defined");
+                dataItem = prepareRow("", "Left side foil name", wingsec.m_LeftFoilName.length() ? wingsec.m_LeftFoilName : "No left foil defined");
                 dataItem.at(2)->setData(xfl::FOILNAME, Qt::UserRole);
                 sectionFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareRow("", "Right side foil name", wingsec->m_LeftFoilName.length() ? wingsec->m_RightFoilName : "No left foil defined");
+                dataItem = prepareRow("", "Right side foil name", wingsec.m_LeftFoilName.length() ? wingsec.m_RightFoilName : "No left foil defined");
                 dataItem.at(2)->setData(xfl::FOILNAME, Qt::UserRole);
                 sectionFolder.first()->appendRow(dataItem);
             }
@@ -1054,7 +1054,7 @@ void EditPlaneDlg::fillBodyTreeView(QStandardItem*planeRootItem)
 
         for(int iwm=0; iwm<pBody->m_PointMass.size(); iwm++)
         {
-            PointMass *pm = pBody->m_PointMass.at(iwm);
+            PointMass const &pm = pBody->m_PointMass.at(iwm);
             QList<QStandardItem*> bodyPointMassFolder = prepareRow(QString("Point_mass_%1").arg(iwm+1));
 
             bodyInertiaFolder.first()->appendRow(bodyPointMassFolder);
@@ -1063,19 +1063,19 @@ void EditPlaneDlg::fillBodyTreeView(QStandardItem*planeRootItem)
                 {
                     m_pStruct->expand(m_pModel->indexFromItem(bodyPointMassFolder.first()));
                 }
-                QList<QStandardItem*> dataItem = prepareRow("", "Tag", pm->tag());
+                QList<QStandardItem*> dataItem = prepareRow("", "Tag", pm.tag());
                 bodyPointMassFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "mass", pm->mass()*Units::kgtoUnit(), Units::massUnitLabel());
+                dataItem = prepareDoubleRow("", "mass", pm.mass()*Units::kgtoUnit(), Units::massUnitLabel());
                 bodyPointMassFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "x",pm->position().x*Units::mtoUnit(), Units::lengthUnitLabel());
+                dataItem = prepareDoubleRow("", "x", pm.position().x*Units::mtoUnit(), Units::lengthUnitLabel());
                 bodyPointMassFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "y", pm->position().y*Units::mtoUnit(), Units::lengthUnitLabel());;
+                dataItem = prepareDoubleRow("", "y", pm.position().y*Units::mtoUnit(), Units::lengthUnitLabel());;
                 bodyPointMassFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "z", pm->position().z*Units::mtoUnit(), Units::lengthUnitLabel());
+                dataItem = prepareDoubleRow("", "z", pm.position().z*Units::mtoUnit(), Units::lengthUnitLabel());
                 bodyPointMassFolder.first()->appendRow(dataItem);
             }
         }
@@ -1489,7 +1489,7 @@ void EditPlaneDlg::readWingSectionTree(Wing *pWing, QModelIndex indexLevel)
     QModelIndex dataIndex;
 
     // not expecting any more children
-    WingSection *pWS = new WingSection;
+    WingSection WS;
     do
     {
         object = indexLevel.sibling(indexLevel.row(),0).data().toString();
@@ -1499,28 +1499,27 @@ void EditPlaneDlg::readWingSectionTree(Wing *pWing, QModelIndex indexLevel)
 
         dataIndex = indexLevel.sibling(indexLevel.row(),2);
 
-        if (field.compare("span position", Qt::CaseInsensitive)==0)             pWS->m_YPosition     = dataIndex.data().toDouble()/Units::mtoUnit();
-        else if (field.compare("chord", Qt::CaseInsensitive)==0)                pWS->m_Chord         = dataIndex.data().toDouble()/Units::mtoUnit();
-        else if (field.compare("offset", Qt::CaseInsensitive)==0)               pWS->m_Offset        = dataIndex.data().toDouble()/Units::mtoUnit();
-        else if (field.compare("dihedral", Qt::CaseInsensitive)==0)             pWS->m_Dihedral      = dataIndex.data().toDouble();
-        else if (field.compare("twist", Qt::CaseInsensitive)==0)                pWS->m_Twist         = dataIndex.data().toDouble();
-        else if (field.compare("x-panels", Qt::CaseInsensitive)==0)             pWS->m_NXPanels      = dataIndex.data().toInt();
-        else if (field.compare("y-panels", Qt::CaseInsensitive)==0)             pWS->m_NYPanels      = dataIndex.data().toInt();
-        else if (field.compare("x-distribution", Qt::CaseInsensitive)==0)       pWS->m_XPanelDist    = xfl::distributionType(value);
-        else if (field.compare("y-distribution", Qt::CaseInsensitive)==0)       pWS->m_YPanelDist    = xfl::distributionType(value);
-        else if (field.compare("Left side foil name", Qt::CaseInsensitive)==0)  pWS->m_LeftFoilName  = value;
-        else if (field.compare("Right side foil name", Qt::CaseInsensitive)==0) pWS->m_RightFoilName = value;
+        if (field.compare("span position", Qt::CaseInsensitive)==0)             WS.m_YPosition     = dataIndex.data().toDouble()/Units::mtoUnit();
+        else if (field.compare("chord", Qt::CaseInsensitive)==0)                WS.m_Chord         = dataIndex.data().toDouble()/Units::mtoUnit();
+        else if (field.compare("offset", Qt::CaseInsensitive)==0)               WS.m_Offset        = dataIndex.data().toDouble()/Units::mtoUnit();
+        else if (field.compare("dihedral", Qt::CaseInsensitive)==0)             WS.m_Dihedral      = dataIndex.data().toDouble();
+        else if (field.compare("twist", Qt::CaseInsensitive)==0)                WS.m_Twist         = dataIndex.data().toDouble();
+        else if (field.compare("x-panels", Qt::CaseInsensitive)==0)             WS.m_NXPanels      = dataIndex.data().toInt();
+        else if (field.compare("y-panels", Qt::CaseInsensitive)==0)             WS.m_NYPanels      = dataIndex.data().toInt();
+        else if (field.compare("x-distribution", Qt::CaseInsensitive)==0)       WS.m_XPanelDist    = xfl::distributionType(value);
+        else if (field.compare("y-distribution", Qt::CaseInsensitive)==0)       WS.m_YPanelDist    = xfl::distributionType(value);
+        else if (field.compare("Left side foil name", Qt::CaseInsensitive)==0)  WS.m_LeftFoilName  = value;
+        else if (field.compare("Right side foil name", Qt::CaseInsensitive)==0) WS.m_RightFoilName = value;
 
         indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
     } while(indexLevel.isValid());
 
-    pWing->m_Section.append(pWS);
+    pWing->m_Section.append(WS);
 
 }
 
 
-
-void EditPlaneDlg::readInertiaTree(double &volumeMass, QVector<PointMass*>&pointMasses, QModelIndex indexLevel)
+void EditPlaneDlg::readInertiaTree(double &volumeMass, QVector<PointMass>&pointMasses, QModelIndex indexLevel)
 {
     pointMasses.clear();
 
@@ -1534,8 +1533,8 @@ void EditPlaneDlg::readInertiaTree(double &volumeMass, QVector<PointMass*>&point
             object = indexLevel.sibling(indexLevel.row(),0).data().toString();
             if(object.indexOf("Point_mass_", Qt::CaseInsensitive)>=0)
             {
-                PointMass *ppm = new PointMass;
-                readPointMassTree(ppm, pItem->child(0,0)->index());
+                PointMass ppm;
+                readPointMassTree(&ppm, pItem->child(0,0)->index());
                 pointMasses.append(ppm);
             }
         }
@@ -1570,9 +1569,9 @@ void EditPlaneDlg::readPointMassTree(PointMass *ppm, QModelIndex indexLevel)
 
         if      (field.compare("mass", Qt::CaseInsensitive)==0) ppm->setMass(dataIndex.data().toDouble()/Units::kgtoUnit());
         else if (field.compare("tag",  Qt::CaseInsensitive)==0) ppm->setTag(value);
-        else if (field.compare("x",    Qt::CaseInsensitive)==0) ppm->setXPos(dataIndex.data().toDouble()/Units::mtoUnit());
-        else if (field.compare("y",    Qt::CaseInsensitive)==0) ppm->setYPos(dataIndex.data().toDouble()/Units::mtoUnit());
-        else if (field.compare("z",    Qt::CaseInsensitive)==0) ppm->setZPos(dataIndex.data().toDouble()/Units::mtoUnit());
+        else if (field.compare("x",    Qt::CaseInsensitive)==0) ppm->setXPosition(dataIndex.data().toDouble()/Units::mtoUnit());
+        else if (field.compare("y",    Qt::CaseInsensitive)==0) ppm->setYPosition(dataIndex.data().toDouble()/Units::mtoUnit());
+        else if (field.compare("z",    Qt::CaseInsensitive)==0) ppm->setZPosition(dataIndex.data().toDouble()/Units::mtoUnit());
 
         indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
 
@@ -1602,14 +1601,11 @@ void EditPlaneDlg::readVectorTree(Vector3d &V, QModelIndex indexLevel)
 }
 
 
-
 void EditPlaneDlg::onItemClicked(const QModelIndex &index)
 {
     identifySelection(index);
     m_pglPlaneView->update();
 }
-
-
 
 
 void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
@@ -1710,7 +1706,6 @@ void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
 }
 
 
-
 void EditPlaneDlg::onInsertBefore()
 {
     Wing *pWing = m_pPlane->wing(m_enumActiveWingType);
@@ -1737,8 +1732,8 @@ void EditPlaneDlg::onInsertBefore()
         pWing->setXPanelDist(n, pWing->XPanelDist(n-1));
         pWing->setYPanelDist(n, pWing->YPanelDist(n-1));
 
-        pWing->m_Section[n]->m_RightFoilName = pWing->rightFoilName(n-1);
-        pWing->m_Section[n]->m_LeftFoilName  = pWing->leftFoilName(n-1);
+        pWing->m_Section[n].m_RightFoilName = pWing->rightFoilName(n-1);
+        pWing->m_Section[n].m_LeftFoilName  = pWing->leftFoilName(n-1);
 
         pWing->setNXPanels(n, pWing->NXPanels(n-1));
 
@@ -1775,15 +1770,15 @@ void EditPlaneDlg::onInsertBefore()
     {
         if(m_enumActiveObject==PLANE)
         {
-            m_pPlane->m_PointMass.insert(m_iActivePointMass, new PointMass);
+            m_pPlane->m_PointMass.insert(m_iActivePointMass, PointMass());
         }
         else if(m_enumActiveObject==WING)
         {
-            m_pPlane->wing(m_enumActiveWingType)->m_PointMass.insert(m_iActivePointMass, new PointMass);
+            m_pPlane->wing(m_enumActiveWingType)->m_PointMass.insert(m_iActivePointMass, PointMass());
         }
         else if(m_enumActiveObject==BODY && m_pPlane->body())
         {
-            m_pPlane->body()->m_PointMass.insert(m_iActivePointMass, new PointMass);
+            m_pPlane->body()->m_PointMass.insert(m_iActivePointMass, PointMass());
         }
 
 
@@ -1797,7 +1792,6 @@ void EditPlaneDlg::onInsertBefore()
 
     }
 }
-
 
 
 void EditPlaneDlg::onInsertAfter()
@@ -1832,8 +1826,8 @@ void EditPlaneDlg::onInsertAfter()
         pWing->setNYPanels(n+1, pWing->NYPanels(n));
         pWing->setXPanelDist(n+1, pWing->XPanelDist(n));
         pWing->setYPanelDist(n+1, pWing->YPanelDist(n));
-        pWing->m_Section[n+1]->m_RightFoilName  = pWing->rightFoilName(n);
-        pWing->m_Section[n+1]->m_LeftFoilName   = pWing->leftFoilName(n);
+        pWing->m_Section[n+1].m_RightFoilName  = pWing->rightFoilName(n);
+        pWing->m_Section[n+1].m_LeftFoilName   = pWing->leftFoilName(n);
 
         int ny = pWing->NYPanels(n);
         pWing->setNYPanels(n+1, qMax(1,ny/2));
@@ -1871,17 +1865,17 @@ void EditPlaneDlg::onInsertAfter()
     {
         if(m_enumActiveObject==PLANE)
         {
-            m_pPlane->m_PointMass.insert(m_iActivePointMass+1, new PointMass);
+            m_pPlane->m_PointMass.insert(m_iActivePointMass+1, PointMass());
             m_iActivePointMass++;
         }
         else if(m_enumActiveObject==WING)
         {
-            m_pPlane->wing(m_enumActiveWingType)->m_PointMass.insert(m_iActivePointMass+1, new PointMass);
+            m_pPlane->wing(m_enumActiveWingType)->m_PointMass.insert(m_iActivePointMass+1, PointMass());
             m_iActivePointMass++;
         }
         else if(m_enumActiveObject==BODY && m_pPlane->body())
         {
-            m_pPlane->body()->m_PointMass.insert(m_iActivePointMass+1, new PointMass);
+            m_pPlane->body()->m_PointMass.insert(m_iActivePointMass+1, PointMass());
             m_iActivePointMass++;
         }
 
@@ -1969,8 +1963,6 @@ void EditPlaneDlg::onDelete()
         m_pglPlaneView->update();
     }
 }
-
-
 
 
 /**

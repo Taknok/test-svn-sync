@@ -810,10 +810,10 @@ void gl3dMiarexView::glMakeTransitions(int iWing, Wing const *pWing, WPolar cons
             int m = 0;
             for(int j=0; j<pWing->m_Surface.size(); j++)
             {
-                for(int k=0; k<pWing->m_Surface[j]->NYPanels(); k++)
+                for(int k=0; k<pWing->surface(j)->NYPanels(); k++)
                 {
                     double yrel = pWing->yrel(pWOpp->m_SpanPos[m]);
-                    pWing->m_Surface[j]->getSurfacePoint(pWOpp->m_XTrTop[m],pWOpp->m_XTrTop[m],yrel,xfl::TOPSURFACE,Pt,N);
+                    pWing->surface(j)->getSurfacePoint(pWOpp->m_XTrTop[m],pWOpp->m_XTrTop[m],yrel,xfl::TOPSURFACE,Pt,N);
 
                     pTransVertexArray[iv++] = Pt.xf();
                     pTransVertexArray[iv++] = Pt.yf();
@@ -827,10 +827,10 @@ void gl3dMiarexView::glMakeTransitions(int iWing, Wing const *pWing, WPolar cons
             int m = 0;
             for(int j=0; j<pWing->m_Surface.size(); j++)
             {
-                for(int k=0; k<pWing->m_Surface[j]->NYPanels(); k++)
+                for(int k=0; k<pWing->surface(j)->NYPanels(); k++)
                 {
                     double yrel = pWing->yrel(pWOpp->m_SpanPos[m]);
-                    pWing->m_Surface[j]->getSurfacePoint(pWOpp->m_XTrTop[m],pWOpp->m_XTrTop[m],yrel,xfl::TOPSURFACE,Pt,N);
+                    pWing->surface(j)->getSurfacePoint(pWOpp->m_XTrTop[m],pWOpp->m_XTrTop[m],yrel,xfl::TOPSURFACE,Pt,N);
                     pTransVertexArray[iv++] = Pt.xf();
                     pTransVertexArray[iv++] = Pt.yf();
                     pTransVertexArray[iv++] = Pt.zf();
@@ -858,10 +858,10 @@ void gl3dMiarexView::glMakeTransitions(int iWing, Wing const *pWing, WPolar cons
             int m = 0;
             for(int j=0; j<pWing->m_Surface.size(); j++)
             {
-                for(int k=0; k<pWing->m_Surface[j]->NYPanels(); k++)
+                for(int k=0; k<pWing->surface(j)->NYPanels(); k++)
                 {
                     double yrel = pWing->yrel(pWOpp->m_SpanPos[m]);
-                    pWing->m_Surface[j]->getSurfacePoint(pWOpp->m_XTrBot[m],pWOpp->m_XTrBot[m],yrel,xfl::BOTSURFACE,Pt,N);
+                    pWing->surface(j)->getSurfacePoint(pWOpp->m_XTrBot[m],pWOpp->m_XTrBot[m],yrel,xfl::BOTSURFACE,Pt,N);
                     pTransVertexArray[iv++] = Pt.xf();
                     pTransVertexArray[iv++] = Pt.yf();
                     pTransVertexArray[iv++] = Pt.zf();
@@ -874,10 +874,10 @@ void gl3dMiarexView::glMakeTransitions(int iWing, Wing const *pWing, WPolar cons
             int m = 0;
             for(int j=0; j<pWing->m_Surface.size(); j++)
             {
-                for(int k=0; k<pWing->m_Surface[j]->NYPanels(); k++)
+                for(int k=0; k<pWing->surface(j)->NYPanels(); k++)
                 {
                     double yrel = pWing->yrel(pWOpp->m_SpanPos[m]);
-                    pWing->m_Surface[j]->getSurfacePoint(pWOpp->m_XTrBot[m],pWOpp->m_XTrBot[m],yrel,xfl::BOTSURFACE,Pt,N);
+                    pWing->surface(j)->getSurfacePoint(pWOpp->m_XTrBot[m],pWOpp->m_XTrBot[m],yrel,xfl::BOTSURFACE,Pt,N);
                     pTransVertexArray[iv++] = Pt.xf();
                     pTransVertexArray[iv++] = Pt.yf();
                     pTransVertexArray[iv++] = Pt.zf();
@@ -1226,12 +1226,12 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, const Wing *pWing, const WPolar 
         //lift lines
         for (j=0; j<pWing->m_Surface.size(); j++)
         {
-            for (k=0; k< pWing->m_Surface[j]->NYPanels(); k++)
+            for (k=0; k< pWing->surface(j)->NYPanels(); k++)
             {
-                pWing->m_Surface[j]->getLeadingPt(k, C);
-                amp = float(pWing->m_Surface[j]->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord);
+                pWing->surface(j)->getLeadingPt(k, C);
+                amp = float(pWing->surface(j)->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord);
                 amp *= float(s_LiftScale)/1000.0f;
-                C.x += pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->chord(k);
+                C.x += pWOpp->m_XCPSpanRel[i] * pWing->surface(j)->chord(k);
 
                 pLiftVertexArray[iv++] = C.xf();
                 pLiftVertexArray[iv++] = C.yf();
@@ -1255,21 +1255,21 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, const Wing *pWing, const WPolar 
                 pLiftVertexArray[iv++] = CL.zf();
 
                 k=0;
-                pWing->m_Surface[j]->getLeadingPt(k, C);
-                amp = pWing->m_Surface[j]->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord * QMiarex::s_LiftScale/1000.0;
-                C.xf()+= pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->chord(k);
+                pWing->surface(j)->getLeadingPt(k, C);
+                amp = pWing->surface(j)->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord * QMiarex::s_LiftScale/1000.0;
+                C.xf()+= pWOpp->m_XCPSpanRel[i] * pWing->surface(j)->chord(k);
 
                 pLiftVertexArray[iv++] = C.xf()+ pWOpp->m_F[i].xf()*amp;
                 pLiftVertexArray[iv++] = C.yf() + pWOpp->m_F[i].yf()*amp;
                 pLiftVertexArray[iv++] = C.zf() + pWOpp->m_F[i].zf()*amp;
             }*/
 
-            for (k=0; k< pWing->m_Surface[j]->NYPanels(); k++)
+            for (k=0; k< pWing->surface(j)->NYPanels(); k++)
             {
-                pWing->m_Surface[j]->getLeadingPt(k, C);
-                amp = float(pWing->m_Surface[j]->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord);
+                pWing->surface(j)->getLeadingPt(k, C);
+                amp = float(pWing->surface(j)->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord);
                 amp *= float(s_LiftScale)/1000.0f;
-                C.x += pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->chord(k);
+                C.x += pWOpp->m_XCPSpanRel[i] * pWing->surface(j)->chord(k);
                 CL.x = C.x + pWOpp->m_F[i].x * double(amp);
                 CL.y = C.y + pWOpp->m_F[i].y * double(amp);
                 CL.z = C.z + pWOpp->m_F[i].z * double(amp);
@@ -1435,10 +1435,10 @@ void gl3dMiarexView::glMakeDownwash(int iWing, const Wing *pWing, const WPolar *
         iv = 0;
         for (j=0; j<pWing->m_Surface.size(); j++)
         {
-            for (k=0; k< pWing->m_Surface[j]->NYPanels(); k++)
+            for (k=0; k< pWing->surface(j)->NYPanels(); k++)
             {
                 //                m_pSurface[j+surf0]->GetTrailingPt(k, C);
-                pWing->m_Surface[j]->getTrailingPt(k, C);
+                pWing->surface(j)->getTrailingPt(k, C);
                 //                if (pWOpp->m_Vd[i].z>0) sign = 1.0; else sign = -1.0;
                 pDownWashVertexArray[iv++] = C.xf();
                 pDownWashVertexArray[iv++] = C.yf();
@@ -1595,9 +1595,9 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
         for (j=0; j<pWing->m_Surface.size(); j++)
         {
             //All surfaces
-            for (k=0; k< pWing->m_Surface[j]->NYPanels(); k++)
+            for (k=0; k< pWing->surface(j)->NYPanels(); k++)
             {
-                pWing->m_Surface[j]->getTrailingPt(k, C);
+                pWing->surface(j)->getTrailingPt(k, C);
                 amp1 = q0*float(pWOpp->m_ICd[i]*pWOpp->m_Chord[i]/pWing->m_MAChord*s_DragScale)/coef;
                 amp2 = q0*float(pWOpp->m_PCd[i]*pWOpp->m_Chord[i]/pWing->m_MAChord*s_DragScale)/coef;
                 if(s_pMiarex->m_bICd)
@@ -1641,9 +1641,9 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
                 i = 0;
                 for (j=0; j<pWing->m_Surface.size(); j++)
                 {
-                    for (k=0; k< pWing->m_Surface[j]->NYPanels(); k++)
+                    for (k=0; k< pWing->surface(j)->NYPanels(); k++)
                     {
-                        pWing->m_Surface[j]->getTrailingPt(k, C);
+                        pWing->surface(j)->getTrailingPt(k, C);
                         amp = q0*float(pWOpp->m_ICd[i]*pWOpp->m_Chord[i]/pWing->m_MAChord);
                         amp *= float(s_DragScale)/coef;
                         pICdVertexArray[ii++] = C.xf()+ amp*cosa * cosb;
@@ -1658,9 +1658,9 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
                 i = 0;
                 for (j=0; j<pWing->m_Surface.size(); j++)
                 {
-                    for (k=0; k< pWing->m_Surface[j]->NYPanels(); k++)
+                    for (k=0; k< pWing->surface(j)->NYPanels(); k++)
                     {
-                        pWing->m_Surface[j]->getTrailingPt(k, C);
+                        pWing->surface(j)->getTrailingPt(k, C);
                         amp=0.0;
                         if(s_pMiarex->m_bICd) amp += float(pWOpp->m_ICd[i]);
                         amp += float(pWOpp->m_PCd[i]);
@@ -1683,9 +1683,9 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
                 i = 0;
                 for (j=0; j<pWing->m_Surface.size(); j++)
                 {
-                    for (k=0; k< pWing->m_Surface[j]->NYPanels(); k++)
+                    for (k=0; k< pWing->surface(j)->NYPanels(); k++)
                     {
-                        pWing->m_Surface[j]->getTrailingPt(k, C);
+                        pWing->surface(j)->getTrailingPt(k, C);
                         amp = q0*float(pWOpp->m_ICd[i]*pWOpp->m_Chord[i]/pWing->m_MAChord);
                         amp *= float(s_DragScale)/coef;
                         pICdVertexArray[ii++] = C.xf()+ amp*cosa * cosb;
@@ -1700,9 +1700,9 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
                 i = 0;
                 for (j=0; j<pWing->m_Surface.size(); j++)
                 {
-                    for (k=0; k< pWing->m_Surface[j]->NYPanels(); k++)
+                    for (k=0; k< pWing->surface(j)->NYPanels(); k++)
                     {
-                        pWing->m_Surface[j]->getTrailingPt(k, C);
+                        pWing->surface(j)->getTrailingPt(k, C);
                         amp=0.0;
                         if(s_pMiarex->m_bICd) amp+=float(pWOpp->m_ICd[i]);
                         amp += float(pWOpp->m_PCd[i]);

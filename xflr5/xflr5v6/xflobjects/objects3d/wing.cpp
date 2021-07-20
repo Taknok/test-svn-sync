@@ -144,38 +144,6 @@ Wing::~Wing()
 }
 
 
-/** Destroys the WingSection objects in good order to avoid memory leaks */
-void Wing::clearWingSections()
-{
-    for(int iws=m_Section.size()-1; iws>=0; iws--)
-    {
-        delete m_Section.at(iws);
-        m_Section.removeAt(iws);
-    }
-}
-
-
-/** Destroys the WingSection objects in good order to avoid memory leaks */
-void Wing::clearSurfaces()
-{
-    for(int is=m_Surface.size()-1; is>=0; is--)
-    {
-        delete m_Surface.at(is);
-        m_Surface.removeAt(is);
-    }
-}
-
-/** Destroys the PointMass objects in good order to avoid memory leaks */
-void Wing::clearPointMasses()
-{
-    for(int ipm=m_PointMass.size()-1; ipm>=0; ipm--)
-    {
-        delete m_PointMass.at(ipm);
-        m_PointMass.removeAt(ipm);
-    }
-}
-
-
 /**
  * Imports the wing geometry from a text file.
  * @param path_to_file the path to the filename as a QString
@@ -183,16 +151,10 @@ void Wing::clearPointMasses()
 bool Wing::importDefinition(QString path_to_file, QString errorMessage)
 {
     QFile fp(path_to_file);
-    double ypos;
-    double chord;
-    double offset;
-    double dihedral;
-    double twist;
-    int nx;
-    int ny;
-    int px, py;
-    xfl::enumPanelDistribution x_pan_dist;
-    xfl::enumPanelDistribution y_pan_dist;
+    double ypos(0), chord(0), offset(0), dihedral(0), twist(0);
+    int nx(0), ny(0), px(0), py(0);
+    xfl::enumPanelDistribution x_pan_dist(xfl::UNIFORM);
+    xfl::enumPanelDistribution y_pan_dist(xfl::UNIFORM);
     char right_buff[512];
     char left_buff[512];
 
@@ -372,12 +334,12 @@ void Wing::computeGeometry()
     double surface = 0.0;
     double xysurface = 0.0;
     setLength(0, 0.0);
-    m_Section[0]->m_YProj  = YPosition(0);
+    m_Section[0].m_YProj  = YPosition(0);
     for (int is=1; is<NWingSection(); is++)
-        m_Section[is]->m_Length = YPosition(is) - YPosition(is-1);
+        m_Section[is].m_Length = YPosition(is) - YPosition(is-1);
     for (int is=1; is<NWingSection(); is++)
     {
-        m_Section[is]->m_YProj = YProj(is-1) + Length(is) * cos(Dihedral(is-1)*PI/180.0);
+        m_Section[is].m_YProj = YProj(is-1) + Length(is) * cos(Dihedral(is-1)*PI/180.0);
     }
 
     m_PlanformSpan  = 2.0 * tipPos();
@@ -460,15 +422,15 @@ void Wing::computeGeometry()
 * @param  &CoGIzz zz axis component of the inertia tensor, calculated at the CoG
 * @param  &CoGIxz xz axis component of the inertia tensor, calculated at the CoG
 */
-void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz)
+void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz) const
 {
-    QVector<double> ElemVolume(NXSTATIONS*NYSTATIONS*m_Surface.size());
+    QVector<double> ElemVolume(NXSTATIONS*NYSTATIONS*m_Surface.size()); // Qt initializes to zero
     QVector<Vector3d> PtVolume(NXSTATIONS*NYSTATIONS*m_Surface.size());
 
-    double rho=0, LocalSpan=0, LocalVolume=0;
-    double LocalChord=0,  LocalArea=0,  tau=0;
-    double LocalChord1=0, LocalArea1=0, tau1=0;
-    double xrel=0, xrel1=0, yrel=0, ElemArea=0;
+    double rho(0), LocalSpan(0), LocalVolume(0);
+    double LocalChord(0),  LocalArea(0),  tau(0);
+    double LocalChord1(0), LocalArea1(0), tau1(0);
+    double xrel(0), xrel1(0), yrel(0), ElemArea(0);
     Vector3d ATop, ABot, CTop, CBot, PointNormal, Diag1, Diag2;
     Vector3d PtC4, Pt, Pt1, N;
     CoG.set(0.0, 0.0, 0.0);
@@ -476,13 +438,12 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
 
     //sanity check
     //    Vector3d CoGCheck(0.0,0.0,0.0);
-    double CoGIxxCheck, CoGIyyCheck, CoGIzzCheck, CoGIxzCheck;
-    CoGIxxCheck = CoGIyyCheck = CoGIzzCheck = CoGIxzCheck = 0.0;
+    double CoGIxxCheck(0), CoGIyyCheck(0), CoGIzzCheck(0), CoGIxzCheck(0);
     double recalcMass = 0.0;
     double recalcVolume = 0.0;
     double checkVolume = 0.0;
 
-    computeGeometry();
+//    computeGeometry();
 
     //the mass density is assumed to be homogeneous
 
@@ -490,38 +451,39 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
     //the foil's area is interpolated
 
     //we consider the whole wing, i.e. all left and right surfaces
-    //note : in avl documentation, each side is considered separately
+    //note : in AVL documentation, each side is considered separately
 
     //first get the CoG - necessary for future application of Huygens/Steiner theorem
     int p = 0;
 
     for (int j=0; j<m_Surface.size(); j++)
     {
-        LocalSpan = m_Surface.at(j)->m_Length/double(NYSTATIONS);
+        Surface const &surf = m_Surface.at(j);
+        LocalSpan = surf.m_Length/double(NYSTATIONS);
         for (int k=0; k<NYSTATIONS; k++)
         {
             tau  = double(k)   / double(NYSTATIONS);
             tau1 = double(k+1) / double(NYSTATIONS);
             yrel = (tau+tau1)/2.0;
 
-            m_Surface.at(j)->getSection(tau,  LocalChord,  LocalArea,  Pt);
-            m_Surface.at(j)->getSection(tau1, LocalChord1, LocalArea1, Pt1);
+            surf.getSection(tau,  LocalChord,  LocalArea,  Pt);
+            surf.getSection(tau1, LocalChord1, LocalArea1, Pt1);
             LocalVolume = (LocalArea+LocalArea1)/2.0 * LocalSpan;
             PtC4.x = (Pt.x + Pt1.x)/2.0;
             PtC4.y = (Pt.y + Pt1.y)/2.0;
             PtC4.z = (Pt.z + Pt1.z)/2.0;
 
-            //            CoGCheck += LocalVolume * PtC4;
+//            CoGCheck += LocalVolume * PtC4;
             for(int l=0; l<NXSTATIONS; l++)
             {
                 //browse mid-section
-                xrel  = 1.0 - 1.0/2.0 * (1.0-cos(double(l)   *PI /double(NXSTATIONS)));
+                xrel  = 1.0 - 1.0/2.0 * (1.0-cos(double(l)  *PI /double(NXSTATIONS)));
                 xrel1 = 1.0 - 1.0/2.0 * (1.0-cos(double(l+1)*PI /double(NXSTATIONS)));
 
-                m_Surface.at(j)->getSurfacePoint(xrel,  xrel, yrel,  xfl::TOPSURFACE, ATop, N);
-                m_Surface.at(j)->getSurfacePoint(xrel,  xrel, yrel,  xfl::BOTSURFACE, ABot, N);
-                m_Surface.at(j)->getSurfacePoint(xrel1, xrel1, yrel, xfl::TOPSURFACE, CTop, N);
-                m_Surface.at(j)->getSurfacePoint(xrel1, xrel1, yrel, xfl::BOTSURFACE, CBot, N);
+                surf.getSurfacePoint(xrel,  xrel, yrel,  xfl::TOPSURFACE, ATop, N);
+                surf.getSurfacePoint(xrel,  xrel, yrel,  xfl::BOTSURFACE, ABot, N);
+                surf.getSurfacePoint(xrel1, xrel1, yrel, xfl::TOPSURFACE, CTop, N);
+                surf.getSurfacePoint(xrel1, xrel1, yrel, xfl::BOTSURFACE, CBot, N);
                 PtVolume[p] = (ATop+ABot+CTop+CBot)/4.0;
                 Diag1 = ATop - CBot;
                 Diag2 = ABot - CTop;
@@ -535,10 +497,10 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
                     ElemVolume[p] = 1.0;
 
                 }
-                checkVolume += ElemVolume[p];
-                CoG.x += ElemVolume[p] * PtVolume[p].x;
-                CoG.y += ElemVolume[p] * PtVolume[p].y;
-                CoG.z += ElemVolume[p] * PtVolume[p].z;
+                checkVolume += ElemVolume.at(p);
+                CoG.x += ElemVolume.at(p) * PtVolume.at(p).x;
+                CoG.y += ElemVolume.at(p) * PtVolume.at(p).y;
+                CoG.z += ElemVolume.at(p) * PtVolume.at(p).z;
                 p++;
             }
         }
@@ -555,13 +517,14 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
     p=0;
     for (int j=0; j<m_Surface.size(); j++)
     {
-        LocalSpan = m_Surface.at(j)->m_Length/double(NYSTATIONS);
+        Surface const &surf = m_Surface.at(j);
+        LocalSpan = surf.m_Length/double(NYSTATIONS);
         for (int k=0; k<NYSTATIONS; k++)
         {
             tau  = double(k)     / double(NYSTATIONS);
             tau1 = double(k+1) / double(NYSTATIONS);
-            m_Surface.at(j)->getSection(tau,  LocalChord,  LocalArea,  Pt);
-            m_Surface.at(j)->getSection(tau1, LocalChord1, LocalArea1, Pt1);
+            surf.getSection(tau,  LocalChord,  LocalArea,  Pt);
+            surf.getSection(tau1, LocalChord1, LocalArea1, Pt1);
 
             LocalVolume = (LocalArea+LocalArea1)/2.0 * LocalSpan;
 
@@ -580,10 +543,10 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
             for(int l=0; l<NXSTATIONS; l++)
             {
                 //browse mid-section
-                CoGIxx += ElemVolume[p]*rho * ( (PtVolume[p].y-CoG.y)*(PtVolume[p].y-CoG.y) + (PtVolume[p].z-CoG.z)*(PtVolume[p].z-CoG.z));
-                CoGIyy += ElemVolume[p]*rho * ( (PtVolume[p].x-CoG.x)*(PtVolume[p].x-CoG.x) + (PtVolume[p].z-CoG.z)*(PtVolume[p].z-CoG.z));
-                CoGIzz += ElemVolume[p]*rho * ( (PtVolume[p].x-CoG.x)*(PtVolume[p].x-CoG.x) + (PtVolume[p].y-CoG.y)*(PtVolume[p].y-CoG.y));
-                CoGIxz -= ElemVolume[p]*rho * ( (PtVolume[p].x-CoG.x)*(PtVolume[p].z-CoG.z) );
+                CoGIxx += ElemVolume.at(p)*rho * ( (PtVolume.at(p).y-CoG.y)*(PtVolume.at(p).y-CoG.y) + (PtVolume.at(p).z-CoG.z)*(PtVolume.at(p).z-CoG.z));
+                CoGIyy += ElemVolume.at(p)*rho * ( (PtVolume.at(p).x-CoG.x)*(PtVolume.at(p).x-CoG.x) + (PtVolume.at(p).z-CoG.z)*(PtVolume.at(p).z-CoG.z));
+                CoGIzz += ElemVolume.at(p)*rho * ( (PtVolume.at(p).x-CoG.x)*(PtVolume.at(p).x-CoG.x) + (PtVolume.at(p).y-CoG.y)*(PtVolume.at(p).y-CoG.y));
+                CoGIxz -= ElemVolume.at(p)*rho * ( (PtVolume.at(p).x-CoG.x)*(PtVolume.at(p).z-CoG.z) );
                 p++;
             }
         }
@@ -600,10 +563,10 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
 void Wing::computeBodyAxisInertia()
 {
     Vector3d LA, VolumeCoG;
-    double Ixx, Iyy, Izz, Ixz, VolumeMass;
-    Ixx = Iyy = Izz = Ixz = VolumeMass = 0.0;
+    double Ixx(0), Iyy(0), Izz(0), Ixz(0);
 
     //Get the volume inertia properties in the volume CoG frame of reference
+    computeGeometry();
     computeVolumeInertia(VolumeCoG, Ixx, Iyy, Izz, Ixz);
     double TotalMass = m_VolumeMass;
 
@@ -612,8 +575,10 @@ void Wing::computeBodyAxisInertia()
     // add point masses
     for(int im=0; im<m_PointMass.size(); im++)
     {
-        TotalMass += m_PointMass[im]->mass();
-        m_CoG       += m_PointMass[im]->position() * m_PointMass[im]->mass();
+        PointMass const &pm = m_PointMass.at(im);
+
+        TotalMass += pm.mass();
+        m_CoG     += pm.position() * pm.mass();
     }
 
     if(TotalMass>0.0) m_CoG = m_CoG/TotalMass;
@@ -631,11 +596,12 @@ void Wing::computeBodyAxisInertia()
     //add the contribution of point masses to total inertia
     for(int im=0; im<m_PointMass.size(); im++)
     {
-        LA = m_PointMass[im]->position() - m_CoG;
-        m_CoGIxx += m_PointMass[im]->mass() * (LA.y*LA.y + LA.z*LA.z);
-        m_CoGIyy += m_PointMass[im]->mass() * (LA.x*LA.x + LA.z*LA.z);
-        m_CoGIzz += m_PointMass[im]->mass() * (LA.x*LA.x + LA.y*LA.y);
-        m_CoGIxz -= m_PointMass[im]->mass() * (LA.x*LA.z);
+        PointMass const &pm = m_PointMass.at(im);
+        LA = pm.position() - m_CoG;
+        m_CoGIxx += pm.mass() * (LA.y*LA.y + LA.z*LA.z);
+        m_CoGIyy += pm.mass() * (LA.x*LA.x + LA.z*LA.z);
+        m_CoGIzz += pm.mass() * (LA.x*LA.x + LA.y*LA.y);
+        m_CoGIxz -= pm.mass() * (LA.x*LA.z);
     }
 }
 
@@ -688,22 +654,19 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
     clearSurfaces();
     for(int jss=0; jss<nSurf; jss++)
     {
-        m_Surface.append(new Surface);
+        m_Surface.append(Surface());
     }
 
     if(!m_bIsFin || (m_bIsFin && m_bSymFin) || (m_bIsFin && m_bDoubleFin))
     {
         for(int jss=0; jss<nSurf; jss++)
         {
-            m_Surface.append(new Surface);
+            m_Surface.append(Surface());
         }
     }
 
-
     if(nSurf<=0)  return;
-
     int NSurfaces = nSurf;
-
 
     //define the normals at panel junctions : average between the normals of the two connecting sufaces
     for(int jss=0; jss<nSurf; jss++)
@@ -728,64 +691,64 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
         }
         else
         {
-            Surface *pSurf = m_Surface[iSurf];
-            pSurf->m_pFoilA   = foil(leftFoilName(jss+1));
-            pSurf->m_pFoilB   = foil(leftFoilName(jss));
+            Surface &surf = m_Surface[iSurf];
+            surf.m_pFoilA   = foil(leftFoilName(jss+1));
+            surf.m_pFoilB   = foil(leftFoilName(jss));
 
-            pSurf->m_Length   =  YPosition(jss+1) - YPosition(jss);
+            surf.m_Length   =  YPosition(jss+1) - YPosition(jss);
 
             PLA.x =  Offset(jss+1);         PLB.x =  Offset(jss);
             PLA.y = -YPosition(jss+1);      PLB.y = -YPosition(jss);
             PLA.z =  0.0;                   PLB.z =  0.0;
             PTA.x =  PLA.x+Chord(jss+1);    PTB.x = PLB.x+Chord(jss);
-            PTA.y =  PLA.y;                    PTB.y = PLB.y;
+            PTA.y =  PLA.y;                 PTB.y = PLB.y;
             PTA.z =  0.0;                   PTB.z =  0.0;
 
-            pSurf->setCornerPoints(PLA, PTA, PLB, PTB);
-            pSurf->setNormal(); // is (0,0,1)
+            surf.setCornerPoints(PLA, PTA, PLB, PTB);
+            surf.setNormal(); // is (0,0,1)
 
-            pSurf->rotateX(pSurf->m_LB, -Dihedral(jss));
-            pSurf->NormalA.set(VNSide[nSurf+1].x, -VNSide[nSurf+1].y, VNSide[nSurf+1].z);
-            pSurf->NormalB.set(VNSide[nSurf].x,   -VNSide[nSurf].y,   VNSide[nSurf].z);
+            surf.rotateX(surf.m_LB, -Dihedral(jss));
+            surf.NormalA.set(VNSide[nSurf+1].x, -VNSide[nSurf+1].y, VNSide[nSurf+1].z);
+            surf.NormalB.set(VNSide[nSurf].x,   -VNSide[nSurf].y,   VNSide[nSurf].z);
 
-            pSurf->m_TwistA   =  Twist(jss+1);
-            pSurf->m_TwistB   =  Twist(jss);
-            pSurf->setTwist();
+            surf.m_TwistA   =  Twist(jss+1);
+            surf.m_TwistB   =  Twist(jss);
+            surf.setTwist();
 
             if(jss>0 && iSurf<m_Surface.count()-1)
             {
                 //translate the surface to the left tip of the previous surface
-                T1 = m_Surface[iSurf+1]->m_LA - pSurf->m_LB;
-                pSurf->translate(0.0,T1.y,T1.z);
+                T1 = m_Surface[iSurf+1].m_LA - surf.m_LB;
+                surf.translate(0.0,T1.y,T1.z);
                 //                m_Surface[is].m_LB = m_Surface[is+1].m_LA;
                 //                m_Surface[is].m_TB = m_Surface[is+1].m_TA;
             }
 
             nSurf++;
 
-            pSurf->m_NXPanels = NXPanels(jss);
-            pSurf->m_NYPanels = NYPanels(jss);
+            surf.m_NXPanels = NXPanels(jss);
+            surf.m_NYPanels = NYPanels(jss);
 
 
             //AVL coding + invert XFLR5::SINE and -sine for left wing
-            pSurf->m_XDistType = XPanelDist(jss);
-            if(YPanelDist(jss) == xfl::SINE)              pSurf->m_YDistType = xfl::INVERSESINE;
-            else if(YPanelDist(jss) ==  xfl::COSINE)      pSurf->m_YDistType =  xfl::COSINE;
-            else if(YPanelDist(jss) == xfl::INVERSESINE)  pSurf->m_YDistType =  xfl::SINE;
-            else                                            pSurf->m_YDistType =  xfl::UNIFORM;
+            surf.m_XDistType = XPanelDist(jss);
+            if(YPanelDist(jss) == xfl::SINE)              surf.m_YDistType = xfl::INVERSESINE;
+            else if(YPanelDist(jss) ==  xfl::COSINE)      surf.m_YDistType =  xfl::COSINE;
+            else if(YPanelDist(jss) == xfl::INVERSESINE)  surf.m_YDistType =  xfl::SINE;
+            else                                            surf.m_YDistType =  xfl::UNIFORM;
 
-            pSurf->createXPoints();
-            pSurf->setFlap();
-            pSurf->init();
-            pSurf->m_bIsLeftSurf   = true;
-            pSurf->m_bIsInSymPlane = false;
-            pSurf->m_innerSection = jss;
-            pSurf->m_outerSection = jss+1;
+            surf.createXPoints();
+            surf.setFlap();
+            surf.init();
+            surf.m_bIsLeftSurf   = true;
+            surf.m_bIsInSymPlane = false;
+            surf.m_innerSection = jss;
+            surf.m_outerSection = jss+1;
 
             --iSurf;
         }
     }
-    m_Surface[NSurfaces-1]->m_bIsCenterSurf = true;//previous left center surface
+    m_Surface[NSurfaces-1].m_bIsCenterSurf = true;//previous left center surface
 
     // we only need a right wing in the following cases
     //   - if it's an 'ordinary wing'
@@ -793,7 +756,7 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
     //   - if it's a symetrical double fin
     if(!m_bIsFin || (m_bIsFin && m_bSymFin) || (m_bIsFin && m_bDoubleFin))
     {
-        m_Surface[NSurfaces]->m_bIsCenterSurf   = true;//next right center surface
+        m_Surface[NSurfaces].m_bIsCenterSurf   = true;//next right center surface
         iSurf = nSurf;
         for (int jss=0; jss<NWingSection()-1; jss++)
         {
@@ -803,12 +766,12 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
             }
             else
             {
-                Surface *pSurf = m_Surface[iSurf];
+                Surface &surf = m_Surface[iSurf];
 
-                pSurf->m_pFoilA   = foil(rightFoilName(jss));
-                pSurf->m_pFoilB   = foil(rightFoilName(jss+1));
+                surf.m_pFoilA   = foil(rightFoilName(jss));
+                surf.m_pFoilB   = foil(rightFoilName(jss+1));
 
-                pSurf->m_Length   =  YPosition(jss+1) - YPosition(jss);
+                surf.m_Length   =  YPosition(jss+1) - YPosition(jss);
 
                 PLA.x = Offset(jss);        PLB.x = Offset(jss+1);
                 PLA.y = YPosition(jss);     PLB.y = YPosition(jss+1);
@@ -817,42 +780,42 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
                 PTA.y = PLA.y;              PTB.y = PLB.y;
                 PTA.z = 0.0;                PTB.z = 0.0;
 
-                pSurf->setCornerPoints(PLA, PTA, PLB, PTB);
-                pSurf->setNormal(); // is (0,0,1)
+                surf.setCornerPoints(PLA, PTA, PLB, PTB);
+                surf.setNormal(); // is (0,0,1)
 
-                pSurf->rotateX(pSurf->m_LA, Dihedral(jss));
-                pSurf->NormalA.set(VNSide[iSurf-nSurf].x,   VNSide[iSurf-nSurf].y,   VNSide[iSurf-nSurf].z);
-                pSurf->NormalB.set(VNSide[iSurf-nSurf+1].x, VNSide[iSurf-nSurf+1].y, VNSide[iSurf-nSurf+1].z);
+                surf.rotateX(surf.m_LA, Dihedral(jss));
+                surf.NormalA.set(VNSide[iSurf-nSurf].x,   VNSide[iSurf-nSurf].y,   VNSide[iSurf-nSurf].z);
+                surf.NormalB.set(VNSide[iSurf-nSurf+1].x, VNSide[iSurf-nSurf+1].y, VNSide[iSurf-nSurf+1].z);
 
-                pSurf->m_TwistA   =  Twist(jss);
-                pSurf->m_TwistB   =  Twist(jss+1);
-                pSurf->setTwist();
+                surf.m_TwistA   =  Twist(jss);
+                surf.m_TwistB   =  Twist(jss+1);
+                surf.setTwist();
 
                 if(jss>0 && iSurf>0)
                 {
                     //translate the surface to the left tip of the previous surface and merge points
-                    T1 = m_Surface[iSurf-1]->m_LB - pSurf->m_LA ;
-                    pSurf->translate(0.0, T1.y, T1.z);
+                    T1 = m_Surface[iSurf-1].m_LB - surf.m_LA ;
+                    surf.translate(0.0, T1.y, T1.z);
                     //                    m_Surface[is].m_LA = m_Surface[is-1].m_LB;
                     //                    m_Surface[is].m_TA = m_Surface[is-1].m_TB;
                 }
 
-                pSurf->m_NXPanels = NXPanels(jss);
-                pSurf->m_NYPanels = NYPanels(jss);
+                surf.m_NXPanels = NXPanels(jss);
+                surf.m_NYPanels = NYPanels(jss);
 
                 //AVL coding + invert XFLR5::SINE and -sine for left wing
-                pSurf->m_XDistType = XPanelDist(jss);
-                pSurf->m_YDistType = YPanelDist(jss);
+                surf.m_XDistType = XPanelDist(jss);
+                surf.m_YDistType = YPanelDist(jss);
 
-                pSurf->createXPoints();
-                pSurf->setFlap();
-                pSurf->init();
-                pSurf->m_bIsLeftSurf   = false;
-                pSurf->m_bIsRightSurf  = true;
-                pSurf->m_bIsInSymPlane = false;
+                surf.createXPoints();
+                surf.setFlap();
+                surf.init();
+                surf.m_bIsLeftSurf   = false;
+                surf.m_bIsRightSurf  = true;
+                surf.m_bIsInSymPlane = false;
 
-                pSurf->m_innerSection = jss;
-                pSurf->m_outerSection = jss+1;
+                surf.m_innerSection = jss;
+                surf.m_outerSection = jss+1;
 
                 iSurf++;
             }
@@ -865,17 +828,17 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
         NSurfaces*=2;
         for (int jSurf=0; jSurf<NSurfaces; jSurf++)
         {
-            m_Surface[jSurf]->rotateX(Or, XTilt);
-            m_Surface[jSurf]->rotateY(Or, YTilt);
-            m_Surface[jSurf]->translate(Trans);
+            m_Surface[jSurf].rotateX(Or, XTilt);
+            m_Surface[jSurf].rotateY(Or, YTilt);
+            m_Surface[jSurf].translate(Trans);
             if(m_bIsFin && m_bSymFin)
             {
-                m_Surface[jSurf]->m_bIsInSymPlane = true;
-                //                m_Surface[jSurf]->m_bIsLeftSurf   = true;
-                //                m_Surface[jSurf]->m_bIsRightSurf  = false;
+                m_Surface[jSurf].m_bIsInSymPlane = true;
+                //                m_Surface[jSurf].m_bIsLeftSurf   = true;
+                //                m_Surface[jSurf].m_bIsRightSurf  = false;
             }
         }
-        m_Surface[NSurfaces-1]->m_bIsTipRight = true;
+        m_Surface[NSurfaces-1].m_bIsTipRight = true;
     }
     else
     {
@@ -887,20 +850,20 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
             offset.set(0.0, -T.y, 0.0);
             for(int jSurf=0; jSurf<ns2; jSurf++)
             {
-                m_Surface[jSurf]->rotateX(Or, +XTilt);
-                m_Surface[jSurf]->rotateZ(Or, YTilt);
-                m_Surface[jSurf]->translate(Trans);
-                m_Surface[jSurf]->translate(offset);
-                m_Surface[jSurf]->m_bIsInSymPlane = false;
+                m_Surface[jSurf].rotateX(Or, +XTilt);
+                m_Surface[jSurf].rotateZ(Or, YTilt);
+                m_Surface[jSurf].translate(Trans);
+                m_Surface[jSurf].translate(offset);
+                m_Surface[jSurf].m_bIsInSymPlane = false;
             }
             offset.y = -offset.y;
             for(int jSurf=ns2; jSurf< NSurfaces; jSurf++)
             {
-                m_Surface[jSurf]->rotateX(Or, -XTilt);
-                m_Surface[jSurf]->rotateZ(Or, -YTilt);
-                m_Surface[jSurf]->translate(Trans);
-                m_Surface[jSurf]->translate(offset);
-                m_Surface[jSurf]->m_bIsInSymPlane = false;
+                m_Surface[jSurf].rotateX(Or, -XTilt);
+                m_Surface[jSurf].rotateZ(Or, -YTilt);
+                m_Surface[jSurf].translate(Trans);
+                m_Surface[jSurf].translate(offset);
+                m_Surface[jSurf].m_bIsInSymPlane = false;
             }
 /*            m_Surface[ns2-1]->m_bIsTipRight = true;
             m_Surface[ns2-1]->m_bIsTipLeft  = true;
@@ -917,31 +880,30 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
             //Not a double fin, so just a simple single-sided fin
             for (int jSurf=0; jSurf<NSurfaces; jSurf++)
             {
-                m_Surface[jSurf]->rotateX(Or, XTilt);
-                m_Surface[jSurf]->rotateZ(Or, YTilt);
-                m_Surface[jSurf]->translate(Trans);
-                m_Surface[jSurf]->m_bIsLeftSurf   = true;
-                m_Surface[jSurf]->m_bIsRightSurf  = false;
-                m_Surface[jSurf]->m_bIsInSymPlane = true;
+                m_Surface[jSurf].rotateX(Or, XTilt);
+                m_Surface[jSurf].rotateZ(Or, YTilt);
+                m_Surface[jSurf].translate(Trans);
+                m_Surface[jSurf].m_bIsLeftSurf   = true;
+                m_Surface[jSurf].m_bIsRightSurf  = false;
+                m_Surface[jSurf].m_bIsInSymPlane = true;
             }
         }
     }
 
-    m_Surface[0]->m_bIsTipLeft              = true;
-    if(NSurfaces>=1) m_Surface[NSurfaces-1]->m_bIsTipRight = true;
+    m_Surface[0].m_bIsTipLeft              = true;
+    if(NSurfaces>=1) m_Surface[NSurfaces-1].m_bIsTipRight = true;
 
     if(NSurfaces>1)
     {
-        m_Surface[int(NSurfaces/2)-1]->m_bJoinRight   = true;
+        m_Surface[int(NSurfaces/2)-1].m_bJoinRight   = true;
         //check for a center gap greater than 1/10mm
         int nada = int(NSurfaces/2)-1;
         Q_ASSERT(nada>=0);
-        if(YPosition(0)>0.0001)     m_Surface[int(NSurfaces/2)-1]->m_bJoinRight   = false;
+        if(YPosition(0)>0.0001)     m_Surface[int(NSurfaces/2)-1].m_bJoinRight   = false;
 
-        if(m_bIsFin && m_bDoubleFin) m_Surface[int(NSurfaces/2)-1]->m_bJoinRight   = false;
+        if(m_bIsFin && m_bDoubleFin) m_Surface[int(NSurfaces/2)-1].m_bJoinRight   = false;
     }
 }
-
 
 
 /**
@@ -985,19 +947,20 @@ void Wing::computeChords(int NStation)
         m_NStation = 0;
         m = 0;
 
-        x0 = m_Surface[NSurfaces/2]->m_LA.x;
-        y0 = m_Surface[NSurfaces/2]->m_LA.y;
+        x0 = m_Surface[NSurfaces/2].m_LA.x;
+        y0 = m_Surface[NSurfaces/2].m_LA.y;
 
         for (j=NSurfaces/2; j<NSurfaces; j++)
         {
-            for (k=0; k<m_Surface.at(j)->m_NYPanels; k++)
+            Surface const &surf = m_Surface.at(j);
+            for (k=0; k<surf.m_NYPanels; k++)
             {
                 //calculate span positions at each station
-                m_Surface.at(j)->getYDist(k, y1, y2);
-                SpanPosition.append(y0 + (y1+y2)/2.0*m_Surface.at(j)->m_Length);
+                surf.getYDist(k, y1, y2);
+                SpanPosition.append(y0 + (y1+y2)/2.0*surf.m_Length);
                 m++;
             }
-            y0+=m_Surface.at(j)->m_Length;
+            y0+=surf.m_Length;
         }
 
         m_NStation = 2*m;
@@ -1010,16 +973,17 @@ void Wing::computeChords(int NStation)
         m=0;
         for (j=0; j<NSurfaces; j++)
         {
-            for (k=0; k<m_Surface.at(j)->m_NYPanels; k++)
+            Surface const &surf = m_Surface.at(j);
+            for (k=0; k<surf.m_NYPanels; k++)
             {
                 //calculate chords and offsets at each station
-                m_Chord[m]     = m_Surface.at(j)->chord(k);
-                //                m_StripArea[m] = m_Chord[m]* m_Surface.at(j)->Getdl(k);
+                m_Chord[m]     = surf.chord(k);
+                //                m_StripArea[m] = m_Chord[m]* surf.Getdl(k);
 
-                m_Surface.at(j)->getLeadingPt(k, C);
+                surf.getLeadingPt(k, C);
                 m_Offset[m] = C.x-x0;
 
-                m_Twist[m]  = m_Surface.at(j)->twist(k);
+                m_Twist[m]  = surf.twist(k);
                 Q_ASSERT(!std::isnan(m_Twist[m]));
                 m++;
             }
@@ -1087,25 +1051,7 @@ void Wing::duplicate(Wing const*pWing)
 
     clearWingSections();
 
-    for (int is=0; is<pWing->m_Section.size(); is++)
-    {
-        appendWingSection();
-        m_Section[is]->m_Chord      = pWing->Chord(is);
-        m_Section[is]->m_YPosition  = pWing->YPosition(is);
-        m_Section[is]->m_Offset     = pWing->Offset(is);
-        m_Section[is]->m_Length     = pWing->Length(is);
-        m_Section[is]->m_NXPanels   = pWing->NXPanels(is) ;
-        m_Section[is]->m_NYPanels   = pWing->NYPanels(is);
-        m_Section[is]->m_XPanelDist = pWing->XPanelDist(is);
-        m_Section[is]->m_YPanelDist = pWing->YPanelDist(is);
-        m_Section[is]->m_Twist      = pWing->Twist(is);
-        m_Section[is]->m_Dihedral   = pWing->Dihedral(is);
-        m_Section[is]->m_ZPos       = pWing->ZPosition(is);
-        m_Section[is]->m_YProj      = pWing->YProj(is);
-
-        m_Section[is]->m_RightFoilName  = pWing->rightFoilName(is);
-        m_Section[is]->m_LeftFoilName   = pWing->leftFoilName(is);
-    }
+    m_Section = pWing->m_Section; // watch out for Qt shallow copies
 
     computeGeometry();
 
@@ -1123,15 +1069,13 @@ void Wing::duplicate(Wing const*pWing)
 
     for(int im=0; im<pWing->m_PointMass.size();im++)
     {
-        m_PointMass.append(new PointMass(pWing->m_PointMass[im]->mass(), pWing->m_PointMass[im]->position(), pWing->m_PointMass[im]->tag()));
+        PointMass const &pm = pWing->m_PointMass.at(im);
+        m_PointMass.append(pm);
     }
 
     m_WingDescription = pWing->m_WingDescription;
-    m_Color       = pWing->m_Color;
+    m_Color = pWing->m_Color;
 }
-
-
-
 
 
 /**
@@ -1324,14 +1268,13 @@ double Wing::totalMass() const
 {
     double TotalMass = m_VolumeMass;
     for(int im=0; im<m_PointMass.size(); im++)
-        TotalMass += m_PointMass[im]->mass();
+        TotalMass += m_PointMass.at(im).mass();
     return TotalMass;
 }
 
 
 void Wing::surfacePoint(double xRel, double ypos, xfl::enumSurfacePosition pos, Vector3d &Point, Vector3d &PtNormal) const
 {
-    Surface *pSurface = nullptr;
     double fy = qAbs(ypos);
 
     int iSurf = m_Surface.size()/2;
@@ -1346,14 +1289,14 @@ void Wing::surfacePoint(double xRel, double ypos, xfl::enumSurfacePosition pos, 
             {
                 break;
             }
-            yl += m_Surface.at(iSurf)->spanLength();
+            yl += m_Surface.at(iSurf).spanLength();
             iSurf++;
         }
     }
 
-    pSurface = m_Surface.at(iSurf);
-    double yRel = (fabs(ypos)-yl)/pSurface->spanLength();
-    pSurface->getSurfacePoint(xRel, xRel, yRel, pos, Point, PtNormal);
+
+    double yRel = (fabs(ypos)-yl)/m_Surface.at(iSurf).spanLength();
+    m_Surface.at(iSurf).getSurfacePoint(xRel, xRel, yRel, pos, Point, PtNormal);
 
     if(ypos<0) Point.y = -Point.y;
 }
@@ -1430,14 +1373,16 @@ void Wing::panelComputeBending(bool bThinSurface)
     else
     {
         coef = 2;
-        p= m_Surface[0]->m_NXPanels;
+        p = m_Surface[0].m_NXPanels;
     }
 
     int NSurfaces = m_Surface.size();
 
     for (j=0; j<NSurfaces; j++)
     {
-        for (k=0; k<m_Surface.at(j)->m_NYPanels; k++)
+        Surface const &surf = m_Surface.at(j);
+
+        for (k=0; k<surf.m_NYPanels; k++)
         {
             if(!bThinSurface)
             {
@@ -1450,7 +1395,7 @@ void Wing::panelComputeBending(bool bThinSurface)
                 zpos.append(m_pWingPanel[p].Vortex.z);
             }
 
-            p += coef*m_Surface.at(j)->m_NXPanels;
+            p += coef*surf.m_NXPanels;
         }
     }
 
@@ -1490,8 +1435,8 @@ void Wing::scaleChord(double NewChord)
     double ratio = NewChord/Chord(0);
     for (int is=0; is<m_Section.size(); is++)
     {
-        m_Section[is]->m_Chord  *= ratio;
-        m_Section[is]->m_Offset *= ratio;
+        m_Section[is].m_Chord  *= ratio;
+        m_Section[is].m_Offset *= ratio;
     }
     computeGeometry();
 }
@@ -1507,7 +1452,7 @@ void Wing::scaleSpan(double NewSpan)
     {
         double ypos = YPosition(is) * NewSpan/m_PlanformSpan;
         setYPosition(is, ypos);
-        m_Section[is]->m_Length *= NewSpan/m_PlanformSpan;
+        m_Section[is].m_Length *= NewSpan/m_PlanformSpan;
     }
     computeGeometry();
 }
@@ -1519,14 +1464,14 @@ void Wing::scaleSpan(double NewSpan)
 */
 void Wing::scaleSweep(double newSweep)
 {
-    double rootOffset = m_Section.first()->m_Offset;
+    double rootOffset = m_Section.first().m_Offset;
     double rootchord4 = rootOffset + Chord(0)/4.0;
 
     //scale each panel's offset
     for(int is=1; is<NWingSection(); is++)
     {
-        double chord4Offset = rootchord4 + tan(newSweep*PI/180.0) * m_Section.at(is)->m_YPosition;
-        m_Section[is]->m_Offset = chord4Offset - Chord(is)/4.0;
+        double chord4Offset = rootchord4 + tan(newSweep*PI/180.0) * m_Section.at(is).m_YPosition;
+        m_Section[is].m_Offset = chord4Offset - Chord(is)/4.0;
     }
     computeGeometry();
 }
@@ -1545,7 +1490,7 @@ void Wing::scaleTwist(double NewTwist)
 
         for(int is=1; is<NWingSection(); is++)
         {
-            m_Section[is]->m_Twist *= ratio;
+            m_Section[is].m_Twist *= ratio;
         }
     }
     else
@@ -1553,7 +1498,7 @@ void Wing::scaleTwist(double NewTwist)
         //Set each panel's twist in the ratio of the span position
         for(int is=1; is<NWingSection(); is++)
         {
-            m_Section[is]->m_Twist = NewTwist*YPosition(is)/(m_PlanformSpan/2.0);
+            m_Section[is].m_Twist = NewTwist*YPosition(is)/(m_PlanformSpan/2.0);
         }
     }
     computeGeometry();
@@ -1577,12 +1522,10 @@ void Wing::scaleArea(double newArea)
     {
         double ypos = YPosition(is)*ratio;
         setYPosition(is, ypos);
-        m_Section[is]->m_Chord     *= ratio;
+        m_Section[is].m_Chord     *= ratio;
     }
     computeGeometry();
 }
-
-
 
 
 /**
@@ -1591,7 +1534,7 @@ void Wing::scaleArea(double newArea)
  */
 int Wing::VLMPanelTotal(bool bThinSurface) const
 {
-    double MinPanelSize=0.0;
+    double MinPanelSize(0);
 
     if(s_MinPanelSize>0.0) MinPanelSize = s_MinPanelSize;
     else                   MinPanelSize = m_PlanformSpan/1000.0;
@@ -1638,7 +1581,7 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double cons
                               WPolar const*pWPolar, Vector3d const &CoG)
 
 {
-    double CPStrip=0, tau=0, NForce=0, cosa=0, sina=0;
+    double CPStrip(0), tau(0), NForce(0), cosa(0), sina(0);
     Vector3d HingeLeverArm,  PtC4Strip, PtLEStrip, ForcePt, SurfaceNormal, LeverArmC4CoG, LeverArmPanelC4, LeverArmPanelCoG;
     Vector3d Force, panelforce, StripForce, viscousDragVector, panelmoment, HingeMoment, viscousDragMoment, GeomMoment;
     Vector3d WindNormal, WindDirection;
@@ -1674,16 +1617,16 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double cons
 
     for (int j=0; j<NSurfaces; j++)
     {
-        Surface *pSurf = m_Surface.at(j);
+        Surface const &surf = m_Surface.at(j);
         //do not consider left tip patch, if any
-        if(!pWPolar->bThinSurfaces() && pSurf->m_bIsTipLeft) p += pSurf->m_NXPanels;
+        if(!pWPolar->bThinSurfaces() && surf.m_bIsTipLeft) p += surf.m_NXPanels;
 
-        if(pSurf->m_bTEFlap) m_FlapMoment.append(0.0);
+        if(surf.m_bTEFlap) m_FlapMoment.append(0.0);
 
-        SurfaceNormal = pSurf->Normal;
+        SurfaceNormal = surf.Normal;
 
         // consider each strip in turn
-        for (int k=0; k<pSurf->m_NYPanels; k++)
+        for (int k=0; k<surf.m_NYPanels; k++)
         {
             //initialize
             viscousDragVector.set(0.0,0.0,0.0);
@@ -1693,8 +1636,8 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double cons
             m_CmPressure[m]    = 0.0;
             CPStrip        = 0.0;
 
-            pSurf->getLeadingPt(k, PtLEStrip);
-            pSurf->getC4(k, PtC4Strip, tau);
+            surf.getLeadingPt(k, PtLEStrip);
+            surf.getC4(k, PtC4Strip, tau);
             if(fabs(pWPolar->m_BetaSpec)>0.0)
             {
                 PtC4Strip.rotateZ(Origin, pWPolar->m_BetaSpec);
@@ -1703,7 +1646,7 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double cons
 
             LeverArmC4CoG = PtC4Strip - CoG;
 
-            for (int l=0; l<coef*pSurf->m_NXPanels; l++)
+            for (int l=0; l<coef*surf.m_NXPanels; l++)
             {
                 // Get the force acting on the panel
                 if(m_pWingPanel[p].m_Pos!=xfl::MIDSURFACE)
@@ -1743,14 +1686,14 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double cons
                 ZCP       += ForcePt.z * panelforce.dot(WindNormal);
                 CPStrip   += ForcePt.x * NForce;
 
-                if(pSurf->m_bTEFlap)
+                if(surf.m_bTEFlap)
                 {
-                    if(pSurf->isFlapPanel(m_pWingPanel[p].m_iElement))
+                    if(surf.isFlapPanel(m_pWingPanel[p].m_iElement))
                     {
                         //then p is on the flap, so add its contribution
-                        HingeLeverArm = ForcePt - pSurf->m_HingePoint;
+                        HingeLeverArm = ForcePt - surf.m_HingePoint;
                         HingeMoment = HingeLeverArm * panelforce;                   //N.m/q
-                        m_FlapMoment[nFlap] += HingeMoment.dot(pSurf->m_HingeVector)* pWPolar->density() * QInf * QInf/2.0;  //N.m
+                        m_FlapMoment[nFlap] += HingeMoment.dot(surf.m_HingeVector)* pWPolar->density() * QInf * QInf/2.0;  //N.m
                     }
                 }
                 p++;
@@ -1783,8 +1726,8 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double cons
             m++;
         }
         //do not consider right tip patch
-        if(!pWPolar->bThinSurfaces() && pSurf->m_bIsTipRight) p += pSurf->m_NXPanels;
-        if(pSurf->m_bTEFlap) nFlap++;
+        if(!pWPolar->bThinSurfaces() && surf.m_bIsTipRight) p += surf.m_NXPanels;
+        if(surf.m_bTEFlap) nFlap++;
     }
 
 
@@ -1842,21 +1785,22 @@ void Wing::panelComputeViscous(double QInf, const WPolar *pWPolar, double &WingV
     int m=0;
     for (int j=0; j<m_Surface.size(); j++)
     {
-        for(int k=0; k<m_Surface.at(j)->m_NYPanels; k++)
+        Surface const &surf = m_Surface.at(j);
+        for(int k=0; k<surf.m_NYPanels; k++)
         {
             bOutRe = bPointOutRe = false;
             bPointOutCl = false;
-            m_Surface.at(j)->getC4(k, PtC4, tau);
+            surf.getC4(k, PtC4, tau);
 
-            m_PCd[m]    = getInterpolatedVariable(2, m_Surface.at(j)->m_pFoilA, m_Surface.at(j)->m_pFoilB, m_Re[m], m_Cl[m], tau, bOutRe, bError);
+            m_PCd[m]    = getInterpolatedVariable(2, surf.m_pFoilA, surf.m_pFoilB, m_Re[m], m_Cl[m], tau, bOutRe, bError);
             bPointOutRe = bOutRe || bPointOutRe;
             if(bError) bPointOutCl = true;
 
-            m_XTrTop[m] = getInterpolatedVariable(5, m_Surface.at(j)->m_pFoilA, m_Surface.at(j)->m_pFoilB, m_Re[m], m_Cl[m], tau, bOutRe, bError);
+            m_XTrTop[m] = getInterpolatedVariable(5, surf.m_pFoilA, surf.m_pFoilB, m_Re[m], m_Cl[m], tau, bOutRe, bError);
             bPointOutRe = bOutRe || bPointOutRe;
             if(bError) bPointOutCl = true;
 
-            m_XTrBot[m] = getInterpolatedVariable(6, m_Surface.at(j)->m_pFoilA, m_Surface.at(j)->m_pFoilB, m_Re[m], m_Cl[m], tau, bOutRe, bError);
+            m_XTrBot[m] = getInterpolatedVariable(6, surf.m_pFoilA, surf.m_pFoilB, m_Re[m], m_Cl[m], tau, bOutRe, bError);
             bPointOutRe = bOutRe || bPointOutRe;
             if(bError) bPointOutCl = true;
 
@@ -1927,102 +1871,6 @@ bool Wing::isWingNode(int nNode)
 }
 
 
-/** Returns the offset at a span section identified by its index
-*@param iSection the index of the section
-*@return the value of the offset
-*/
-double Wing::Offset(const int &iSection) const    {return m_Section[iSection]->m_Offset;}
-
-/** Returns the dihedral angle at a span section identified by its index
-*@param iSection the index of the section
-*@return the value of the dihedral angle, in degrees
-*/
-double Wing::Dihedral(const int &iSection) const  {return m_Section[iSection]->m_Dihedral;}
-
-/** Returns the chord length at a span section identified by its index
-*@param iSection the index of the section
-*@return the value of the chord length
-*/
-double Wing::Chord(const int &iSection) const     {return m_Section[iSection]->m_Chord;}
-
-/** Returns the twist angle at a span section identified by its index
-*@param iSection the index of the section
-*@return the value of the twist angle, in degrees
-*/
-double Wing::Twist(const int &iSection) const     {return m_Section[iSection]->m_Twist;}
-
-/** Returns the span position at a span section identified by its index
-*@param iSection the index of the section
-*@return the value of the span position
-*/
-double Wing::YPosition(const int &iSection) const
-{
-    return m_Section[iSection]->m_YPosition;
-}
-
-void Wing::setYPosition(int iSection, double ypos)
-{
-    if(iSection>=0 && iSection<MAXSPANSTATIONS) m_Section[iSection]->m_YPosition=ypos;
-}
-
-/** Returns the length between a span section identified by its index and the next spanwise section
-*@param iSection the index of the section
-*@return the value of the length of the panel
-*/
-double Wing::Length(const int &iSection) const    {return m_Section[iSection]->m_Length;}
-
-/** Returns the span position of a span section identified by its index, projected on the x-y plane
-*@param iSection the index of the section
-*@return the value of the projected span position
-*/
-double Wing::YProj(const int &iSection) const     {return m_Section[iSection]->m_YProj;}
-
-/** Returns the z-position at a span section identified by its index
-*@param iSection the index of the section
-*@return the value of the z-position
-*/
-double Wing::ZPosition(const int &iSection) const {return m_Section[iSection]->m_ZPos;}
-
-
-/** Returns the number of chordwise panels at a span section identified by its index
-*@param iSection the index of the section
-*@return the number of chordwise panels
-*/
-int Wing::NXPanels(const int &iSection)  const {return m_Section[iSection]->m_NXPanels;}
-
-/** Returns the number of spanwise panels at a span section identified by its index
-*@param iSection the index of the section
-*@return the number of spanwise panels
-*/
-int Wing::NYPanels(const int &iSection) const  {return m_Section[iSection]->m_NYPanels;}
-
-/** Returns the type of distribution of chordwise panels at a span section identified by its index - always XFLR5::COSINE type
-*@param iSection the index of the section
-*@return the type of distribution of chordwise panels - always XFLR5::COSINE type
-*/
-xfl::enumPanelDistribution Wing::XPanelDist(const int &iSection) const {return m_Section[iSection]->m_XPanelDist;}
-
-/** Returns the type of distribution of spanwise panels at a span section identified by its index
-*@param iSection the index of the section
-*@return the type of distribution of spanwise panels
-*/
-xfl::enumPanelDistribution Wing::YPanelDist(const int &iSection) const {return m_Section[iSection]->m_YPanelDist;}
-
-/**
- * Returns the name of the foil on the right side of a span section
- * @param iSection the index of the section
- * @return the name of the foil on the right side of the section
- */
-QString const & Wing::rightFoilName(const int &iSection) const {return m_Section[iSection]->m_RightFoilName;}
-
-/**
- * Returns the name of the foil on the left side of a span section
- * @param iSection the index of the section
- * @return the name of the foil on the left side of the section
- */
-QString const & Wing::leftFoilName(const int &iSection)  const {return m_Section[iSection]->m_LeftFoilName;}
-
-
 /**
  * Removes the section in the geometry of the wing identified by its index
  * @param iSection the index of the section
@@ -2040,47 +1888,35 @@ void Wing::removeWingSection(int const iSection)
  */
 void Wing::insertSection(int iSection)
 {
-    if(iSection==0)                          m_Section.prepend(new WingSection);
-    else if(iSection>=m_Section.size())  m_Section.append(new WingSection);
-    else                                     m_Section.insert(iSection, new WingSection);
-}
-
-
-/**
- * Appends a new section at the tip of the wing, with default values
- *@
- */
-bool Wing::appendWingSection()
-{
-    m_Section.append(new WingSection());
-    return true;
+    if(iSection==0)                      m_Section.prepend(WingSection()); //redundant
+    else if(iSection>=m_Section.size())  m_Section.append(WingSection()); //redundant
+    else                                 m_Section.insert(iSection, WingSection());
 }
 
 
 /**
  * Appends a new section at the tip of the wing, with values specified as input parameters
  */
-bool Wing::appendWingSection(double Chord, double Twist, double Pos, double Dihedral, double Offset,
+void Wing::appendWingSection(double Chord, double Twist, double Pos, double Dihedral, double Offset,
                              int NXPanels, int NYPanels, xfl::enumPanelDistribution XPanelDist, xfl::enumPanelDistribution YPanelDist,
-                             QString RightFoilName, QString LeftFoilName)
+                             const QString &RightFoilName, const QString &LeftFoilName)
 {
-    WingSection *pWS = new WingSection();
-    m_Section.append(pWS);
-    pWS->m_Chord      = Chord;
-    pWS->m_Twist      = Twist;
-    pWS->m_YPosition  = Pos ;
-    pWS->m_Dihedral   = Dihedral;
-    pWS->m_Offset     = Offset ;
+    m_Section.append(WingSection());
+    WingSection &WS = m_Section.last();
 
-    pWS->m_NXPanels   = NXPanels ;
-    pWS->m_NYPanels   = NYPanels;
-    pWS->m_XPanelDist = XPanelDist;
-    pWS->m_YPanelDist = YPanelDist;
+    WS.m_Chord      = Chord;
+    WS.m_Twist      = Twist;
+    WS.m_YPosition  = Pos ;
+    WS.m_Dihedral   = Dihedral;
+    WS.m_Offset     = Offset ;
 
-    pWS->m_RightFoilName  = RightFoilName;
-    pWS->m_LeftFoilName   = LeftFoilName;
+    WS.m_NXPanels   = NXPanels ;
+    WS.m_NYPanels   = NYPanels;
+    WS.m_XPanelDist = XPanelDist;
+    WS.m_YPanelDist = YPanelDist;
 
-    return true;
+    WS.m_RightFoilName  = RightFoilName;
+    WS.m_LeftFoilName   = LeftFoilName;
 }
 
 
@@ -2090,7 +1926,7 @@ bool Wing::isWingFoil(const Foil *pFoil) const
 
     for (int iws=0; iws<NWingSection(); iws++)
     {
-        if(pFoil->name() == m_Section.at(iws)->m_RightFoilName)
+        if(pFoil->name() == m_Section.at(iws).m_RightFoilName)
         {
             return true;
         }
@@ -2100,7 +1936,7 @@ bool Wing::isWingFoil(const Foil *pFoil) const
     {
         for (int iws=0; iws<NWingSection(); iws++)
         {
-            if(pFoil->name() == m_Section.at(iws)->m_LeftFoilName)
+            if(pFoil->name() == m_Section.at(iws).m_LeftFoilName)
             {
                 return true;
             }
@@ -2122,10 +1958,11 @@ bool Wing::intersectWing(Vector3d O,  Vector3d U, Vector3d &I) const
 
     for(int j=0; j<m_Surface.count(); j++)
     {
-        if(xfl::intersect(m_Surface.at(j)->m_LA, m_Surface.at(j)->m_LB,
-                     m_Surface.at(j)->m_TA, m_Surface.at(j)->m_TB,
-                     m_Surface.at(j)->Normal,
-                     O, U, I, dist)) return true;
+        Surface const &surf = m_Surface.at(j);
+        if(xfl::intersect(surf.m_LA, surf.m_LB,
+                          surf.m_TA, surf.m_TB,
+                          surf.Normal,
+                          O, U, I, dist)) return true;
     }
     return false;
 }
@@ -2134,48 +1971,49 @@ bool Wing::intersectWing(Vector3d O,  Vector3d U, Vector3d &I) const
 
 void Wing::getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU, double &rightU, int nPoints) const
 {
-    double xRelA=0, xRelB=0, xA=0, xB=0, yA=0, yB=0;
+    double xRelA(0), xRelB(0), xA(0), xB(0), yA(0), yB(0);
     double xMin=100000, xMax=-100000, yMin=0, yMax=0;
     int iSectionA=0, iSectionB=1;
 
-    Surface const *pSurf = m_Surface.at(iSurf);
+    Surface const &surf = m_Surface.at(iSurf);
 
-    if(pSurf->isLeftSurf())
+    if(surf.isLeftSurf())
     {
-        iSectionB = pSurf->innerSection();
-        iSectionA = pSurf->outerSection();
+        iSectionB = surf.innerSection();
+        iSectionA = surf.outerSection();
     }
     else
     {
-        iSectionA = pSurf->innerSection();
-        iSectionB = pSurf->outerSection();
+        iSectionA = surf.innerSection();
+        iSectionB = surf.outerSection();
     }
 
     if(iSectionA<0 || iSectionB<0 || iSectionA>=m_Section.size() ||iSectionB>=m_Section.size()) return;
 
     for(int is=0; is<m_Section.count(); is++)
     {
-        xMin = std::min(xMin, m_Section.at(is)->m_Offset);
-        xMax = std::max(xMax, m_Section.at(is)->m_Offset + m_Section.at(is)->m_Chord);
+        WingSection const &WS = m_Section.at(is);
+        xMin = std::min(xMin, WS.m_Offset);
+        xMax = std::max(xMax, WS.m_Offset + WS.m_Chord);
     }
 
     for(int i=0; i<nPoints; i++)
     {
-        if(m_Surface[iSurf]->m_NXFlap>0 && m_Surface[iSurf]->m_pFoilA && m_Surface[iSurf]->m_pFoilB)
+        if(m_Surface[iSurf].m_NXFlap>0 && m_Surface[iSurf].m_pFoilA && m_Surface[iSurf].m_pFoilB)
         {
             int nPtsTr = nPoints/3;
             int nPtsLe = nPoints-nPtsTr;
 
             if(i<nPtsTr)
             {
-                xRelA = 1.0/2.0*(1.0-cos(PI * double(i)/double(nPtsTr-1)))* (pSurf->m_pFoilA->m_TEXHinge/100.);
-                xRelB = 1.0/2.0*(1.0-cos(PI * double(i)/double(nPtsTr-1)))* (pSurf->m_pFoilB->m_TEXHinge/100.);
+                xRelA = 1.0/2.0*(1.0-cos(PI * double(i)/double(nPtsTr-1)))* (surf.m_pFoilA->m_TEXHinge/100.);
+                xRelB = 1.0/2.0*(1.0-cos(PI * double(i)/double(nPtsTr-1)))* (surf.m_pFoilB->m_TEXHinge/100.);
             }
             else
             {
                 int j = i-nPtsTr;
-                xRelA = pSurf->m_pFoilA->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* double(j)/double(nPtsLe-1))) * (1.-pSurf->m_pFoilA->m_TEXHinge/100.);
-                xRelB = pSurf->m_pFoilB->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* double(j)/double(nPtsLe-1))) * (1.-pSurf->m_pFoilB->m_TEXHinge/100.);
+                xRelA = surf.m_pFoilA->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* double(j)/double(nPtsLe-1))) * (1.-surf.m_pFoilA->m_TEXHinge/100.);
+                xRelB = surf.m_pFoilB->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* double(j)/double(nPtsLe-1))) * (1.-surf.m_pFoilB->m_TEXHinge/100.);
             }
         }
         else
@@ -2186,20 +2024,20 @@ void Wing::getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU,
 
 
         //        xRel  = 1.0/2.0*(1.0-cos( double(i)*PI   /(double)(nPoints-1)));
-        xA = m_Section.at(iSectionA)->m_Offset + m_Section.at(iSectionA)->m_Chord*xRelA;
-        xB = m_Section.at(iSectionB)->m_Offset + m_Section.at(iSectionB)->m_Chord*xRelB;
+        xA = m_Section.at(iSectionA).m_Offset + m_Section.at(iSectionA).m_Chord*xRelA;
+        xB = m_Section.at(iSectionB).m_Offset + m_Section.at(iSectionB).m_Chord*xRelB;
 
         leftV[i]  = (xA-xMin)/(xMax-xMin);
         rightV[i] = (xB-xMin)/(xMax-xMin);
     }
 
 
-    yMin = m_Section.first()->m_YPosition;
-    yMax = m_Section.last()->m_YPosition;
+    yMin = m_Section.first().m_YPosition;
+    yMax = m_Section.last().m_YPosition;
 
-    yA = m_Section.at(iSectionA)->m_YPosition;
-    yB = m_Section.at(iSectionB)->m_YPosition;
-    if(pSurf->isLeftSurf())
+    yA = m_Section.at(iSectionA).m_YPosition;
+    yB = m_Section.at(iSectionB).m_YPosition;
+    if(surf.isLeftSurf())
     {
         leftU = 1.0-(yA-yMin)/(yMax-yMin);
         rightU  = 1.0-(yB-yMin)/(yMax-yMin);
@@ -2278,24 +2116,24 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
         if(NPanel <0 || NPanel>1000) return false;
 
         clearWingSections();
-        for(int is=0; is<=NPanel; is++) m_Section.append(new WingSection);
+        m_Section.resize(NPanel+1);
 
         QString strFoil;
 
         for (int is=0; is<=NPanel; is++)
         {
             xfl::readCString(ar, strFoil);
-            m_Section[is]->m_RightFoilName = strFoil;
+            m_Section[is].m_RightFoilName = strFoil;
         }
         for (int is=0; is<=NPanel; is++)
         {
             xfl::readCString(ar, strFoil);
-            m_Section[is]->m_LeftFoilName = strFoil;
+            m_Section[is].m_LeftFoilName = strFoil;
         }
 
         for (int is=0; is<=NPanel; is++)
         {
-            ar >> f; m_Section[is]->m_Chord=double(f);
+            ar >> f; m_Section[is].m_Chord=double(f);
             if (qAbs(Chord(is)) <0.0)
             {
                 m_WingName = "";
@@ -2314,7 +2152,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
         }
         for (int is=0; is<=NPanel; is++)
         {
-            ar >> f; m_Section[is]->m_Offset=double(f);
+            ar >> f; m_Section[is].m_Offset=double(f);
         }
 
         if(ArchiveFormat<1007)
@@ -2324,18 +2162,18 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             {
                 double ypos = YPosition(is)/1000.0;
                 setYPosition(is, ypos);
-                m_Section[is]->m_Chord  /= 1000.0;
-                m_Section[is]->m_Offset /= 1000.0;
+                m_Section[is].m_Chord  /= 1000.0;
+                m_Section[is].m_Offset /= 1000.0;
             }
 
         }
         for (int is=0; is<=NPanel; is++)
         {
-            ar >> f; m_Section[is]->m_Dihedral=double(f);
+            ar >> f; m_Section[is].m_Dihedral=double(f);
         }
         for (int is=0; is<=NPanel; is++)
         {
-            ar >> f; m_Section[is]->m_Twist=double(f);
+            ar >> f; m_Section[is].m_Twist=double(f);
         }
 
         ar >> f; //m_XCmRef=f;
@@ -2347,10 +2185,10 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             if(ArchiveFormat<=1003)
             {
                 ar >> f;
-                m_Section[is]->m_NXPanels = int(f);
+                m_Section[is].m_NXPanels = int(f);
             }
             else
-                ar >> m_Section[is]->m_NXPanels;
+                ar >> m_Section[is].m_NXPanels;
         }
 
         for (int is=0; is<=NPanel; is++)
@@ -2358,9 +2196,9 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             if(ArchiveFormat<=1003)
             {
                 ar >> f;
-                m_Section[is]->m_NYPanels = int(f);
+                m_Section[is].m_NYPanels = int(f);
             }
-            else     ar >> m_Section[is]->m_NYPanels;
+            else     ar >> m_Section[is].m_NYPanels;
         }
         int total = 0;
         for (int is=0; is<NPanel; is++)
@@ -2434,7 +2272,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             clearPointMasses();
             for(int im=0; im<nMass; im++)
             {
-                m_PointMass.append(new PointMass(mass[im], position[im], tag[im]));
+                m_PointMass.append({mass.at(im), position.at(im), tag.at(im)});
             }
         }
 
@@ -2527,11 +2365,12 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 
         ar << m_VolumeMass;
         ar << m_PointMass.size();
-        for(int i=0; i<m_PointMass.size(); i++)
+        for(int im=0; im<m_PointMass.size(); im++)
         {
-            ar << m_PointMass.at(i)->mass();
-            ar << m_PointMass.at(i)->position().x << m_PointMass.at(i)->position().y << m_PointMass.at(i)->position().z;
-            ar << m_PointMass.at(i)->tag();
+            PointMass const &pm = m_PointMass.at(im);
+            ar << pm.mass();
+            ar << pm.position().x << pm.position().y << pm.position().z;
+            ar << pm.tag();
         }
 
         ar<<1 ; // formerly bTextures
@@ -2612,7 +2451,7 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
         {
             ar >> dm >> px >> py >> pz;
             ar >> tag;
-            m_PointMass.append(new PointMass(dm, Vector3d(px, py, pz), tag));
+            m_PointMass.append({dm, Vector3d(px, py, pz), tag});
         }
 
         ar>>k; //formerly bTextures
@@ -2665,7 +2504,7 @@ void Wing::scaleAR(double newAR)
     {
         double ypos = YPosition(is)*ratio;
         setYPosition(is, ypos);
-        m_Section[is]->m_Chord     /= ratio;
+        m_Section[is].m_Chord     /= ratio;
     }
     computeGeometry();
 }
@@ -2686,7 +2525,7 @@ void Wing::scaleTR(double newTR)
     {
         double yRel = YPosition(is)/m_PlanformSpan *2.0;
         double cRatio = 1.0 +  yRel * (Ratio-1.0);
-        m_Section[is]->m_Chord     *= cRatio;
+        m_Section[is].m_Chord     *= cRatio;
     }
     computeGeometry();
 }
@@ -2753,10 +2592,11 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
 
     for (int j=0; j<m_Surface.size(); j++)
     {
+        Surface const &surf = m_Surface.at(j);
         //top surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft, PtRight,
+            surf.getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft, PtRight,
                                            NormalA, NormalB, CHORDPANELS+1);
 
             double tauA = double(is)   /double(SPANPANELS);
@@ -2815,7 +2655,7 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
         //bottom surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(xfl::BOTSURFACE, nullptr, PtLeft, PtRight,
+            surf.getSidePoints(xfl::BOTSURFACE, nullptr, PtLeft, PtRight,
                                            NormalA, NormalB, CHORDPANELS+1);
 
             double tauA = double(is)   / double(SPANPANELS);
@@ -2876,14 +2716,15 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
 
     for (int j=0; j<m_Surface.size(); j++)
     {
-        if(m_Surface.at(j)->isTipLeft())
+        Surface const &surf = m_Surface.at(j);
+        if(surf.isTipLeft())
         {
-            m_Surface.at(j)->getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft, PtRight,
+            surf.getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft, PtRight,
                                            NormalA, NormalB, CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight,
+            surf.getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight,
                                            NormalA, NormalB, CHORDPANELS+1);
 
-            N = m_Surface.at(j)->Normal;
+            N = surf.Normal;
             N.rotateX(90.0);
 
             //L.E. triangle
@@ -2961,14 +2802,14 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
             iTriangles +=1;
         }
 
-        if(m_Surface.at(j)->isTipRight())
+        if(surf.isTipRight())
         {
-            m_Surface.at(j)->getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft, PtRight,
+            surf.getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft, PtRight,
                                            NormalA, NormalB, CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight,
+            surf.getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight,
                                            NormalA, NormalB, CHORDPANELS+1);
 
-            N = m_Surface.at(j)->Normal;
+            N = surf.Normal;
             N.rotateX(-90.0);
 
             //L.E. triangle
@@ -3103,10 +2944,11 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
 
     for (int j=0; j<m_Surface.size(); j++)
     {
+        Surface const &surf = m_Surface.at(j);
         //top surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft, PtRight, NormalA, NormalB, CHORDPANELS+1);
+            surf.getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft, PtRight, NormalA, NormalB, CHORDPANELS+1);
 
             double tauA = double(is)   / double(SPANPANELS);
             double tauB = double(is+1) / double(SPANPANELS);
@@ -3144,7 +2986,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
         //bottom surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(xfl::BOTSURFACE, nullptr, PtLeft, PtRight,
+            surf.getSidePoints(xfl::BOTSURFACE, nullptr, PtLeft, PtRight,
                                            NormalA, NormalB, CHORDPANELS+1);
 
             double tauA = double(is)   /double(SPANPANELS);
@@ -3188,12 +3030,13 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
 
     for (int j=0; j<m_Surface.size(); j++)
     {
-        if(m_Surface.at(j)->isTipLeft())
+        Surface const &surf = m_Surface.at(j);
+        if(surf.isTipLeft())
         {
-            m_Surface.at(j)->getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
+            surf.getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
+            surf.getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
 
-            N = m_Surface.at(j)->Normal;
+            N = surf.Normal;
             N.rotateX(90.0);
 
             //L.E. triangle
@@ -3234,12 +3077,12 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
             iTriangles +=1;
         }
 
-        if(m_Surface.at(j)->isTipRight())
+        if(surf.isTipRight())
         {
-            m_Surface.at(j)->getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
+            surf.getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
+            surf.getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
 
-            N = m_Surface.at(j)->Normal;
+            N = surf.Normal;
             N.rotateX(-90.0);
 
             //L.E. triangle

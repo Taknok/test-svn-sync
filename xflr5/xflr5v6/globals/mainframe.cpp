@@ -118,9 +118,9 @@
 #include <xflwidgets/color/colorpicker.h>
 #include <xflwidgets/customwts/plaintextoutput.h>
 #include <xflwidgets/customwts/popup.h>
+#include <xflwidgets/customwts/cptableview.h>
 #include <xflwidgets/line/legendbtn.h>
 #include <xflwidgets/line/linepicker.h>
-#include <xflwidgets/line/linepickerdlg.h>
 #include <xflwidgets/mvc/expandabletreeview.h>
 #include <xflwidgets/mvc/objecttreedelegate.h>
 #include <xinverse/xinverse.h>
@@ -6036,6 +6036,7 @@ void MainFrame::showEvent(QShowEvent *)
 bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
 {
     qint8 b = 0x00;
+    int n(0);
     QString strange;
     int ArchiveFormat = 100007;
     // 100006: first version of new xfl format
@@ -6076,7 +6077,6 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
 
         if(ArchiveFormat<100007)
         {
-            int n;
             ar >> n; pFoil->theStyle().setStipple(n);
             ar >> pFoil->theStyle().m_Width;
 
@@ -6118,11 +6118,11 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
  */
 bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStoring)
 {
-    double dble=0;
-    bool boolean=false;
-    int i=0, k=0, n=0;
+    double dble(0);
+    bool boolean(false);
+    int i(0), k(0), n(0);
     // identifies the format of the file
-    // 1000005: new style format
+    // 100005: new style format
     int ArchiveFormat=100005;
 
     if(bIsStoring)
@@ -6172,7 +6172,7 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
     {
         //read variables
         QString strange;
-        float Alpha=0, Cd=0, Cdp=0, Cl=0, Cm=0, XTr1=0, XTr2=0, HMom=0, Cpmn=0, Re=0, XCp=0;
+        float Alpha(0), Cd(0), Cdp(0), Cl(0), Cm(0), XTr1(0), XTr2(0), HMom(0), Cpmn(0), Re(0), XCp(0);
 
         ar >> ArchiveFormat;
         if (ArchiveFormat <100000 || ArchiveFormat>110000) return false;
@@ -6419,6 +6419,7 @@ void MainFrame::pushSettings()
     LegendBtn::setTextFontStruct(DisplayOptions::textFontStruct());
     LegendBtn::setTextColor(DisplayOptions::textColor());
     LegendBtn::setBackgroundColor(DisplayOptions::backgroundColor());
+    CPTableView::setTableFontStruct(DisplayOptions::tableFontStruct());
     PlainTextOutput::setTableFontStruct(DisplayOptions::tableFontStruct());
     LineBtn::setBackgroundColor(DisplayOptions::backgroundColor());
 }
@@ -6446,6 +6447,7 @@ void MainFrame::setDefaultStaticFonts()
     LegendBtn::setTextFontStruct(DisplayOptions::textFontStruct());
     LegendBtn::setTextColor(DisplayOptions::textColor());
     LegendBtn::setBackgroundColor(DisplayOptions::backgroundColor());
+    CPTableView::setTableFontStruct(DisplayOptions::tableFontStruct());
     PlainTextOutput::setTableFontStruct(DisplayOptions::tableFontStruct());
     LineBtn::setBackgroundColor(DisplayOptions::backgroundColor());
 }

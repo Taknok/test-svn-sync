@@ -215,7 +215,7 @@ class Plane : public XflObject
         QString m_BodyName;                         /**< identifies this plane's body */
 
 
-        QVector<PointMass*> m_PointMass;            /**< the array of PointMass objects @todo pointers not necessary, objects are constructed on the heap anyway*/
+        QVector<PointMass> m_PointMass;            /**< the array of PointMass objects @todo pointers not necessary, objects are constructed on the heap anyway*/
         double m_CoGIxx;                            /**< the Ixx component of the inertia tensor, calculated at the CoG */
         double m_CoGIyy;                            /**< the Iyy component of the inertia tensor, calculated at the CoG */
         double m_CoGIzz;                            /**< the Izz component of the inertia tensor, calculated at the CoG */

@@ -757,7 +757,7 @@ void Miarex::createCpCurves()
 
                     pCurve->setName(POppTitle(m_pCurPOpp)+str3);
 
-                    for (pp=p; pp<p+coef*pWing(iw)->m_Surface.at(0)->m_NXPanels; pp++)
+                    for (pp=p; pp<p+coef*pWing(iw)->surface(0)->m_NXPanels; pp++)
                     {
                         pCurve->appendPoint(m_theTask.m_Panel[pp].CollPt.x, m_pWOpp[iw]->m_dCp[pp]);
                         //qDebug("%3d  %13.5g  %13.5g", pp, m_theTask.m_Panel[pp].CollPt.x, m_pWOpp[iw]->m_dCp[pp]);
@@ -1921,7 +1921,7 @@ bool Miarex::loadSettings(QSettings &settings)
 
         PlaneOpp::s_bKeepOutOpps  = settings.value("KeepOutOpps").toBool();
 
-        W3dPrefs::s_MassColor = settings.value("MassColor", QColor(100, 100, 200)).value<QColor>();
+        W3dPrefs::s_MassColor = settings.value("MassColor", W3dPrefs::s_MassColor).value<QColor>();
 
         LLTAnalysis::s_CvPrec       = settings.value("CvPrec").toDouble();
         LLTAnalysis::s_RelaxMax     = settings.value("RelaxMax").toDouble();
@@ -1932,15 +1932,16 @@ bool Miarex::loadSettings(QSettings &settings)
 
         Panel::s_CtrlPos       = settings.value("CtrlPos").toDouble();
         Panel::s_VortexPos     = settings.value("VortexPos").toDouble();
-        Panel::s_CoreSize      = settings.value("CoreSize", 0.000001).toDouble();
+        Panel::s_CoreSize      = settings.value("CoreSize", Panel::s_CoreSize).toDouble();
         Wing::s_MinPanelSize   = settings.value("MinPanelSize").toDouble();
 
-        AeroDataDlg::s_Temperature = settings.value("Temperature", 288.15).toDouble();
-        AeroDataDlg::s_Altitude    = settings.value("Altitude", 0.0).toDouble();
+        AeroDataDlg::s_Temperature = settings.value("Temperature", AeroDataDlg::s_Temperature).toDouble();
+        AeroDataDlg::s_Altitude    = settings.value("Altitude",    AeroDataDlg::s_Altitude).toDouble();
 
         PlaneDlg::s_Geometry     = settings.value("PlaneDlgGeometry"    ).toByteArray();
         StabPolarDlg::s_Geometry = settings.value("StabPolarDlgGeometry").toByteArray();
         WPolarDlg::s_Geometry    = settings.value("WPolarDlgGeometry"   ).toByteArray();
+        InertiaDlg::s_Geometry   = settings.value("InertiaDlgGeometry"  ).toByteArray();
     }
 
     settings.endGroup();
@@ -4092,15 +4093,15 @@ void Miarex::onExportCurPOpp()
                 iStrip = 0;
                 for (j=0; j<pWing(iw)->m_Surface.size(); j++)
                 {
-                    if(pWing(iw)->m_Surface.at(j)->m_bIsTipLeft && !m_pCurPOpp->m_bThinSurface) p+= pWing(iw)->m_Surface.at(j)->m_NXPanels;
+                    if(pWing(iw)->surface(j)->m_bIsTipLeft && !m_pCurPOpp->m_bThinSurface) p+= pWing(iw)->surface(j)->m_NXPanels;
 
-                    for(k=0; k<pWing(iw)->m_Surface.at(j)->m_NYPanels; k++)
+                    for(k=0; k<pWing(iw)->surface(j)->m_NYPanels; k++)
                     {
                         iStrip++;
                         strong = QString(tr("Strip %1\n")).arg(iStrip);
                         out << strong;
 
-                        for(l=0; l<pWing(iw)->m_Surface.at(j)->m_NXPanels * coef; l++)
+                        for(l=0; l<pWing(iw)->surface(j)->m_NXPanels * coef; l++)
                         {
                             if(pWing(iw)->m_pWingPanel[p].m_Pos==xfl::MIDSURFACE)
                             {
@@ -4377,7 +4378,7 @@ void Miarex::exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, d
     for(int j=startIndex; j<NSurfaces; j++)
     {
         out << ("#____PANEL ")<<j-startIndex+1<<"_______\n";
-        aSurface.copy(pWing->m_Surface.at(j));
+        aSurface.copy(pWing->surface(j));
 
         //Remove the twist, since AVL processes it as a mod of the angle of attack thru the dAInc command
         aSurface.m_TwistA = aSurface.m_TwistB = 0.0;
@@ -4396,7 +4397,7 @@ void Miarex::exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, d
                 .arg(aSurface.m_LA.y       *Units::mtoUnit(),9,'f',4)
                 .arg(aSurface.m_LA.z       *Units::mtoUnit(),9,'f',4)
                 .arg(aSurface.chord(0.0)   *Units::mtoUnit(),9,'f',4)
-                .arg(pWing->m_Surface.at(j)->m_TwistA,7,'f',3)
+                .arg(pWing->surface(j)->m_TwistA,7,'f',3)
                 .arg(aSurface.m_NYPanels,3)
                 .arg(aSurface.m_YDistType,3);
         out << (strong);
@@ -4433,7 +4434,7 @@ void Miarex::exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, d
                 .arg(aSurface.m_LB.y       *Units::mtoUnit(),9,'f',4)
                 .arg(aSurface.m_LB.z       *Units::mtoUnit(),9,'f',4)
                 .arg(aSurface.chord(1.0)   *Units::mtoUnit(),9,'f',4)
-                .arg(pWing->m_Surface.at(j)->m_TwistB,7,'f',3)
+                .arg(pWing->surface(j)->m_TwistB,7,'f',3)
                 .arg(aSurface.m_NYPanels,3)
                 .arg(aSurface.m_YDistType,3);
         out << (strong);
@@ -4539,7 +4540,7 @@ void Miarex::exportAVLWing_Old(Wing *pWing, QTextStream &out, int index, double 
 
     for(j=startIndex; j<NSurfaces; j++)
     {
-        ASurface.copy(pWing->m_Surface.at(j));
+        ASurface.copy(pWing->surface(j));
 
         //Remove the twist, since AVL processes it as a mod of the angle of attack thru the dAInc command
         ASurface.m_TwistA = ASurface.m_TwistB = 0.0;
@@ -4551,7 +4552,7 @@ void Miarex::exportAVLWing_Old(Wing *pWing, QTextStream &out, int index, double 
                 .arg(ASurface.m_LA.y          *Units::mtoUnit(),9,'f',4)
                 .arg(ASurface.m_LA.z          *Units::mtoUnit(),9,'f',4)
                 .arg(ASurface.chord(0.0)   *Units::mtoUnit(),9,'f',4)
-                .arg(pWing->m_Surface.at(j)->m_TwistA,7,'f',3)
+                .arg(pWing->surface(j)->m_TwistA,7,'f',3)
                 .arg(ASurface.m_NYPanels,3)
                 .arg(ASurface.m_YDistType,3);
         out << (strong);
@@ -4589,7 +4590,7 @@ void Miarex::exportAVLWing_Old(Wing *pWing, QTextStream &out, int index, double 
                  .arg(ASurface.m_LB.y          *MainFrame::m_mtoUnit,9,'f',4)
                  .arg(ASurface.m_LB.z          *MainFrame::m_mtoUnit,9,'f',4)
                  .arg(ASurface.GetChord(1.0)   *MainFrame::m_mtoUnit,9,'f',4)
-                 .arg(m_Surface.at(j)->m_TwistB,7,'f',3)
+                 .arg(surface(j)->m_TwistB,7,'f',3)
                  .arg(ASurface.NYPanels,3)
                  .arg(ASurface.m_YDistType,3);
             out << (strong);
@@ -4629,7 +4630,7 @@ void Miarex::exportAVLWing_Old(Wing *pWing, QTextStream &out, int index, double 
                 .arg(ASurface.m_LB.y          *Units::mtoUnit(),9,'f',4)
                 .arg(ASurface.m_LB.z          *Units::mtoUnit(),9,'f',4)
                 .arg(ASurface.chord(1.0)   *Units::mtoUnit(),9,'f',4)
-                .arg(pWing->m_Surface[j-1]->m_TwistB,7,'f',3)
+                .arg(pWing->surface(j-1)->m_TwistB,7,'f',3)
                 .arg(ASurface.m_NYPanels,3)
                 .arg(ASurface.m_YDistType,3);
 
@@ -4656,7 +4657,6 @@ void Miarex::onFinCurve()
 }
 
 
-
 /**
  * The user has toggled the display switch for the elevator curve in the OpPoint view
  */
@@ -4673,11 +4673,8 @@ void Miarex::onStabCurve()
  */
 void Miarex::onGL3DScale()
 {
-    if(m_iView != xfl::W3DVIEW)
-    {
-        return;
-    }
-    if(s_pMainFrame->m_pdw3DScales->isVisible()) s_pMainFrame->m_pdw3DScales->hide();
+    if(m_iView != xfl::W3DVIEW) return;
+   if(s_pMainFrame->m_pdw3DScales->isVisible()) s_pMainFrame->m_pdw3DScales->hide();
     else                                                 s_pMainFrame->m_pdw3DScales->show();
 
     s_pMainFrame->m_pW3DScalesAct->setChecked(s_pMainFrame->m_pdw3DScales->isVisible());
@@ -6531,6 +6528,7 @@ bool Miarex::saveSettings(QSettings &settings)
         settings.setValue("PlaneDlgGeometry",     PlaneDlg::s_Geometry);
         settings.setValue("StabPolarDlgGeometry", StabPolarDlg::s_Geometry);
         settings.setValue("WPolarDlgGeometry",    WPolarDlg::s_Geometry);
+        settings.setValue("InertiaDlgGeometry",   InertiaDlg::s_Geometry);
     }
     settings.endGroup();
 

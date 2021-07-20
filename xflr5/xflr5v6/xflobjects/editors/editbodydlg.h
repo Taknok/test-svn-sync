@@ -66,7 +66,8 @@ class EditBodyDlg : public QDialog
         void initDialog(Body *pBody);
         void readBodyFrameTree(Frame *pFrame, QModelIndex indexLevel);
         void readBodyTree(QModelIndex indexLevel);
-        void readInertiaTree(double &volumeMass, QVector<PointMass *> &pointMasses, QModelIndex indexLevel);
+        void readInertiaTree(double &volumeMass, QVector<PointMass*> &pointmasses, QModelIndex indexlevel);
+        void readInertiaTree(double &volumeMass, QVector<PointMass> &pointMasses, QModelIndex indexLevel);
         void readPointMassTree(PointMass *ppm, QModelIndex indexLevel);
         void readVectorTree(Vector3d &V, QModelIndex indexLevel);
         void resizeTreeView();

@@ -44,35 +44,35 @@ Plane::Plane()
     m_Wing[2].m_WingName    = QObject::tr("Elevator");
     m_Wing[2].setWingType(xfl::ELEVATOR);
     m_Wing[2].m_bIsFin      = false;
-    m_Wing[2].m_Section[0]->m_Chord = 0.100;
-    m_Wing[2].m_Section[1]->m_Chord = 0.080;
-    m_Wing[2].m_Section[0]->m_YPosition = 0.0;
-    m_Wing[2].m_Section[1]->m_YPosition = 0.170;
-    m_Wing[2].m_Section[0]->m_Length   =   0.0;
-    m_Wing[2].m_Section[1]->m_Length   = 0.150;
-    m_Wing[2].m_Section[0]->m_Offset   =   0.0;
-    m_Wing[2].m_Section[1]->m_Offset   = 0.020;
-    m_Wing[2].m_Section[0]->m_NXPanels = 7;
-    m_Wing[2].m_Section[1]->m_NYPanels = 7;
-    m_Wing[2].m_Section[0]->m_XPanelDist = xfl::SINE;
-    m_Wing[2].m_Section[0]->m_YPanelDist = xfl::UNIFORM;
+    m_Wing[2].m_Section[0].m_Chord = 0.100;
+    m_Wing[2].m_Section[1].m_Chord = 0.080;
+    m_Wing[2].m_Section[0].m_YPosition = 0.0;
+    m_Wing[2].m_Section[1].m_YPosition = 0.170;
+    m_Wing[2].m_Section[0].m_Length   =   0.0;
+    m_Wing[2].m_Section[1].m_Length   = 0.150;
+    m_Wing[2].m_Section[0].m_Offset   =   0.0;
+    m_Wing[2].m_Section[1].m_Offset   = 0.020;
+    m_Wing[2].m_Section[0].m_NXPanels = 7;
+    m_Wing[2].m_Section[1].m_NYPanels = 7;
+    m_Wing[2].m_Section[0].m_XPanelDist = xfl::SINE;
+    m_Wing[2].m_Section[0].m_YPanelDist = xfl::UNIFORM;
     m_Wing[2].computeGeometry();
 
     m_Wing[3].m_WingName    = QObject::tr("Fin");
     m_Wing[3].setWingType(xfl::FIN);
     m_Wing[3].m_bIsFin      = true;
-    m_Wing[3].m_Section[0]->m_Chord      = 0.100;
-    m_Wing[3].m_Section[1]->m_Chord      = 0.060;
-    m_Wing[3].m_Section[0]->m_YPosition  = 0.000;
-    m_Wing[3].m_Section[1]->m_YPosition  = 0.120;
-    m_Wing[3].m_Section[0]->m_Length     = 0.000;
-    m_Wing[3].m_Section[1]->m_Length     = 0.120;
-    m_Wing[3].m_Section[0]->m_Offset     = 0.000;
-    m_Wing[3].m_Section[1]->m_Offset     = 0.040;
-    m_Wing[3].m_Section[0]->m_NXPanels   = 7;
-    m_Wing[3].m_Section[0]->m_NYPanels   = 7;
-    m_Wing[3].m_Section[0]->m_XPanelDist = xfl::UNIFORM;
-    m_Wing[3].m_Section[0]->m_YPanelDist = xfl::COSINE;
+    m_Wing[3].m_Section[0].m_Chord      = 0.100;
+    m_Wing[3].m_Section[1].m_Chord      = 0.060;
+    m_Wing[3].m_Section[0].m_YPosition  = 0.000;
+    m_Wing[3].m_Section[1].m_YPosition  = 0.120;
+    m_Wing[3].m_Section[0].m_Length     = 0.000;
+    m_Wing[3].m_Section[1].m_Length     = 0.120;
+    m_Wing[3].m_Section[0].m_Offset     = 0.000;
+    m_Wing[3].m_Section[1].m_Offset     = 0.040;
+    m_Wing[3].m_Section[0].m_NXPanels   = 7;
+    m_Wing[3].m_Section[0].m_NYPanels   = 7;
+    m_Wing[3].m_Section[0].m_XPanelDist = xfl::UNIFORM;
+    m_Wing[3].m_Section[0].m_YPanelDist = xfl::COSINE;
 
     m_Wing[3].computeGeometry();
 
@@ -147,6 +147,7 @@ void Plane::computeVolumeInertia(double &Mass, Vector3d &CoG, double &CoGIxx, do
         {
             //the inertia of the wings are base on the surface geometry;
             //these surfaces have been translated to the LE position as they were created
+            pWing[iw]->computeGeometry();
             pWing[iw]->computeVolumeInertia(CoGWing[iw], Ixx, Iyy, Izz, Ixz);
             CoG += CoGWing[iw] * pWing[iw]->m_VolumeMass;// so we do not add again the LE position
             PlaneMass += pWing[iw]->m_VolumeMass;
@@ -230,10 +231,11 @@ void Plane::computeBodyAxisInertia()
     {
         if(pWing[iw])
         {
-            for(int i=0; i<pWing[iw]->m_PointMass.size(); i++)
+            for(int im=0; im<pWing[iw]->m_PointMass.size(); im++)
             {
-                TotalMass +=  pWing[iw]->m_PointMass[i]->mass();
-                m_CoG       += (pWing[iw]->m_PointMass[i]->position()+ m_WingLE[iw]) * pWing[iw]->m_PointMass[i]->mass();
+                PointMass const &pm = pWing[iw]->m_PointMass.at(im);
+                TotalMass +=  pm.mass();
+                m_CoG     += (pm.position()+ m_WingLE[iw]) * pm.mass();
             }
         }
     }
@@ -241,18 +243,20 @@ void Plane::computeBodyAxisInertia()
     //add the body's point masses
     if(m_bBody)
     {
-        for(int i=0; i<m_Body.m_PointMass.size(); i++)
+        for(int im=0; im<m_Body.m_PointMass.size(); im++)
         {
-            TotalMass +=  m_Body.m_PointMass[i]->mass();
-            m_CoG       += (m_Body.m_PointMass[i]->position()+m_BodyPos) * m_Body.m_PointMass[i]->mass();
+            PointMass const &pm = m_Body.m_PointMass.at(im);
+            TotalMass +=  pm.mass();
+            m_CoG     += (pm.position()+m_BodyPos) * pm.mass();
         }
     }
 
     // add the plane's point masses
-    for(int i=0; i<m_PointMass.size(); i++)
+    for(int im=0; im<m_PointMass.size(); im++)
     {
-        TotalMass += m_PointMass[i]->mass();
-        m_CoG       += m_PointMass[i]->position() * m_PointMass[i]->mass();
+        PointMass const &pm = m_PointMass.at(im);
+        TotalMass += pm.mass();
+        m_CoG     += pm.position() * pm.mass();
     }
 
 
@@ -268,41 +272,43 @@ void Plane::computeBodyAxisInertia()
     m_CoGIzz = Izz + VolumeMass * (MassPos.x*MassPos.x+ MassPos.y*MassPos.y);
     m_CoGIxz = Ixz - VolumeMass *  MassPos.x*MassPos.z;
 
-    for(int i=0; i<m_PointMass.size(); i++)
+    for(int im=0; im<m_PointMass.size(); im++)
     {
-        MassPos = m_CoG - m_PointMass[i]->position();
-        m_CoGIxx += m_PointMass[i]->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
-        m_CoGIyy += m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
-        m_CoGIzz += m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
-        m_CoGIxz -= m_PointMass[i]->mass() * (MassPos.x*MassPos.z);
+        PointMass const &pm = m_PointMass.at(im);
+
+        MassPos = m_CoG - pm.position();
+        m_CoGIxx += pm.mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
+        m_CoGIyy += pm.mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
+        m_CoGIzz += pm.mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
+        m_CoGIxz -= pm.mass() * (MassPos.x*MassPos.z);
     }
 
     for(int iw=0; iw<MAXWINGS; iw++)
     {
         if(pWing[iw])
         {
-            for(int i=0; i<pWing[iw]->m_PointMass.size(); i++)
+            for(int im=0; im<pWing[iw]->m_PointMass.size(); im++)
             {
-                PointMass const *pm = pWing[iw]->m_PointMass[i];
-                MassPos = m_CoG - (pm->position() + m_WingLE[iw]);
-                m_CoGIxx += pm->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
-                m_CoGIyy += pm->mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
-                m_CoGIzz += pm->mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
-                m_CoGIxz -= pm->mass() * (MassPos.x*MassPos.z);
+                PointMass const &pm = pWing[iw]->m_PointMass.at(im);
+                MassPos = m_CoG - (pm.position() + m_WingLE[iw]);
+                m_CoGIxx += pm.mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
+                m_CoGIyy += pm.mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
+                m_CoGIzz += pm.mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
+                m_CoGIxz -= pm.mass() * (MassPos.x*MassPos.z);
             }
         }
     }
 
     if(m_bBody)
     {
-        for(int i=0; i<m_Body.m_PointMass.size(); i++)
+        for(int im=0; im<m_Body.m_PointMass.size(); im++)
         {
-            PointMass const *pm = m_Body.m_PointMass[i];
-            MassPos = m_CoG - (pm->position() + m_BodyPos);
-            m_CoGIxx += pm->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
-            m_CoGIyy += pm->mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
-            m_CoGIzz += pm->mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
-            m_CoGIxz -= pm->mass() * (MassPos.x*MassPos.z);
+            PointMass const &pm = m_Body.m_PointMass.at(im);
+            MassPos = m_CoG - (pm.position() + m_BodyPos);
+            m_CoGIxx += pm.mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
+            m_CoGIyy += pm.mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
+            m_CoGIzz += pm.mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
+            m_CoGIxz -= pm.mass() * (MassPos.x*MassPos.z);
         }
     }
 }
@@ -367,12 +373,12 @@ void Plane::duplicate(Plane const *pPlane)
     m_CoGIxz = pPlane->m_CoGIxz;
 
     clearPointMasses();
-    for(int i=0; i<pPlane->m_PointMass.size();i++)
+    for(int im=0; im<pPlane->m_PointMass.size();im++)
     {
-        m_PointMass.append(new PointMass(pPlane->m_PointMass[i]));
+        m_PointMass.append(pPlane->m_PointMass.at(im));
     }
 
-    m_bBody = pPlane->m_bBody ;
+    m_bBody = pPlane->m_bBody;
 
     m_Body.duplicate(&pPlane->m_Body);
 
@@ -423,7 +429,7 @@ double Plane::totalMass() const
     if(m_bBody)    Mass += m_Body.totalMass();
 
     for(int i=0; i<m_PointMass.size(); i++)
-        Mass += m_PointMass[i]->mass();
+        Mass += m_PointMass.at(i).mass();
 
     return Mass;
 }
@@ -432,11 +438,7 @@ double Plane::totalMass() const
 /** Destroys the PointMass objects in good order to avoid memory leaks */
 void Plane::clearPointMasses()
 {
-    for(int ipm=m_PointMass.size()-1; ipm>=0; ipm--)
-    {
-        delete m_PointMass.at(ipm);
-        m_PointMass.removeAt(ipm);
-    }
+    m_PointMass.clear();
 }
 
 
@@ -478,7 +480,7 @@ void Plane::createSurfaces()
         if(wing(iw))
         {
             for (int j=0; j<m_Wing[iw].m_Surface.size(); j++)
-                m_Wing[iw].m_Surface.at(j)->setMeshSidePoints(body(), bodyPos().x, bodyPos().z);
+                m_Wing[iw].m_Surface[j].setMeshSidePoints(body(), bodyPos().x, bodyPos().z);
             m_Wing[iw].computeBodyAxisInertia();
         }
     }
@@ -541,16 +543,11 @@ Wing *Plane::wing(xfl::enumWingType wingType)
 {
     switch(wingType)
     {
-        case xfl::MAINWING:
-            return wing();
-        case xfl::SECONDWING:
-            return wing2();
-        case xfl::ELEVATOR:
-            return stab();
-        case xfl::FIN:
-            return fin();
-        default:
-            return nullptr;
+        case xfl::MAINWING:     return wing();
+        case xfl::SECONDWING:   return wing2();
+        case xfl::ELEVATOR:     return stab();
+        case xfl::FIN:          return fin();
+        default:                return nullptr;
     }
 }
 
@@ -740,11 +737,9 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
             }
 
             clearPointMasses();
-            PointMass *pPM;
             for(int im=0; im<nMass; im++)
             {
-                pPM = new PointMass(mass[im], position[im], tag[im]);
-                m_PointMass.append(pPM);
+                m_PointMass.append(PointMass(mass.at(im), position.at(im), tag.at(im)));
             }
             tag.clear();
         }
@@ -815,9 +810,9 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
         ar << m_PointMass.size();
         for(int i=0; i<m_PointMass.size(); i++)
         {
-            ar << m_PointMass.at(i)->mass();
-            ar << m_PointMass.at(i)->position().x << m_PointMass.at(i)->position().y << m_PointMass.at(i)->position().z;
-            ar << m_PointMass.at(i)->tag();
+            ar << m_PointMass.at(i).mass();
+            ar << m_PointMass.at(i).position().x << m_PointMass.at(i).position().y << m_PointMass.at(i).position().z;
+            ar << m_PointMass.at(i).tag();
         }
 
         // space allocation for the future storage of more data, without need to change the format
@@ -891,7 +886,7 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
         {
             ar >> mass >> px >>py >> pz;
             ar >> str;
-            m_PointMass.append(new PointMass(mass, Vector3d(px, py, pz), str));
+            m_PointMass.append({mass, Vector3d(px, py, pz), str});
         }
 
         // space allocation

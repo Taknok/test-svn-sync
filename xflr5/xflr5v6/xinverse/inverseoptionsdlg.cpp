@@ -26,7 +26,7 @@
 
 #include "xinverse.h"
 #include "inverseoptionsdlg.h"
-#include <xflwidgets/line/linepickerdlg.h>
+#include <xflwidgets/line/linemenu.h>
 #include <xflobjects/objects2d/foil.h>
 #include <xflwidgets/line/linebtn.h>
 
@@ -70,8 +70,8 @@ void InverseOptionsDlg::setupLayout()
 
     QDialogButtonBox *pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     {
-        connect(pButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
-        connect(pButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+        connect(pButtonBox, &QDialogButtonBox::accepted, this, &InverseOptionsDlg::accept);
+        connect(pButtonBox, &QDialogButtonBox::rejected, this, &InverseOptionsDlg::reject);
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
@@ -100,53 +100,44 @@ void InverseOptionsDlg::initDialog()
 
 void InverseOptionsDlg::onRefStyle()
 {
-    LinePickerDlg dlg(this);
-    dlg.initDialog(m_pXInverse->m_pRefFoil->theStyle(), false, false);
-
-    if(QDialog::Accepted==dlg.exec())
-    {
-        m_plbRefFoil->setTheStyle(dlg.theStyle());
-        m_pXInverse->m_pRefFoil->setTheStyle(dlg.theStyle());
-    }
+    LineMenu lm(nullptr, true);
+    lm.initMenu(m_pXInverse->m_pRefFoil->theStyle());
+    lm.exec(QCursor::pos());
+    m_pXInverse->m_pRefFoil->setTheStyle(lm.theStyle());
+    m_plbRefFoil->setTheStyle(lm.theStyle());
 }
 
 
 void InverseOptionsDlg::onModStyle()
 {
-    LinePickerDlg dlg(this);
-    dlg.initDialog(m_pXInverse->m_pModFoil->theStyle(), false, false);
-
-    if(QDialog::Accepted==dlg.exec())
-    {
-        m_plbModFoil->setTheStyle(dlg.theStyle());
-        m_pXInverse->m_pModFoil->setTheStyle(dlg.theStyle());
-    }
+    LineMenu lm(nullptr, true);
+    lm.initMenu(m_pXInverse->m_pModFoil->theStyle());
+    lm.exec(QCursor::pos());
+    m_pXInverse->m_pModFoil->setTheStyle(lm.theStyle());
+    m_plbModFoil->setTheStyle(lm.theStyle());
 }
 
 
 void InverseOptionsDlg::onSplineStyle()
 {
-    LinePickerDlg dlg(this);
-    dlg.initDialog(m_pXInverse->m_Spline.theStyle(), false, false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(m_pXInverse->m_Spline.theStyle());
+    lm.exec(QCursor::pos());
 
-    if(QDialog::Accepted==dlg.exec())
-    {
-        m_plbSpline->setTheStyle(dlg.theStyle());
-        m_pXInverse->m_Spline.setTheStyle(dlg.theStyle());
-    }
+    m_pXInverse->m_Spline.setTheStyle(lm.theStyle());
+    m_plbSpline->setTheStyle(lm.theStyle());
 }
 
 
 void InverseOptionsDlg::onReflectedStyle()
 {
-    LinePickerDlg dlg(this);
-    dlg.initDialog(m_pXInverse->m_ReflectedStyle, false, false);
 
-    if(QDialog::Accepted==dlg.exec())
-    {
-        m_plbReflected->setTheStyle(dlg.theStyle());
-        m_pXInverse->m_ReflectedStyle = dlg.theStyle();
-    }
+    LineMenu lm(nullptr, false);
+    lm.initMenu(m_pXInverse->m_ReflectedStyle);
+    lm.exec(QCursor::pos());
+
+    m_pXInverse->m_ReflectedStyle = lm.theStyle();
+    m_plbReflected->setTheStyle(lm.theStyle());
 }
 
 

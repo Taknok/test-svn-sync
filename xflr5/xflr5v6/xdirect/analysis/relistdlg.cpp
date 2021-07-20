@@ -1,7 +1,7 @@
 /****************************************************************************
 
     ReListDlg Class
-    Copyright (C) 2009-2016 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,15 +19,23 @@
 
 *****************************************************************************/
 
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QStringList>
+#include <QMenu>
 
 #include "relistdlg.h"
-#include <xflcore/displayoptions.h>
+
 #include <xflwidgets/customwts/doubleedit.h>
-#include <xflwidgets/customwts/floateditdelegate.h>
+#include <xflwidgets/customwts/cptableview.h>
+#include <xflwidgets/customwts/actiondelegate.h>
+#include <xflwidgets/customwts/actionitemmodel.h>
+
+
+QByteArray ReListDlg::s_WindowGeometry;
+
 
 ReListDlg::ReListDlg(QWidget *pParent) : QDialog(pParent)
 {
@@ -35,10 +43,17 @@ ReListDlg::ReListDlg(QWidget *pParent) : QDialog(pParent)
 
     m_pFloatDelegate = nullptr;
 
+    // make the two required actions
+
     setupLayout();
 
-    connect(m_ppbDelete, SIGNAL(clicked()), SLOT(onDelete()));
-    connect(m_ppbInsert, SIGNAL(clicked()), SLOT(onInsert()));
+    m_pInsertBeforeAct	= new QAction(tr("Insert before"), this);
+    m_pInsertAfterAct	= new QAction(tr("Insert after"), this);
+    m_pDeleteAct	    = new QAction(tr("Delete"), this);
+
+    connect(m_pDeleteAct,       SIGNAL(triggered(bool)), SLOT(onDelete()));
+    connect(m_pInsertBeforeAct, SIGNAL(triggered(bool)), SLOT(onInsertBefore()));
+    connect(m_pInsertAfterAct,  SIGNAL(triggered(bool)), SLOT(onInsertAfter()));
 }
 
 
@@ -58,33 +73,61 @@ void ReListDlg::initDialog(QVector<double> ReList, QVector<double> MachList, QVe
     m_MachList.append(MachList);
     m_NCritList.append(NCritList);
 
-    m_pReModel = new QStandardItemModel(this);
+    m_pReModel = new ActionItemModel(this);
     m_pReModel->setRowCount(5);//temporary
-    m_pReModel->setColumnCount(3);
-
-    m_pReModel->setColumnCount(3);
+    m_pReModel->setColumnCount(4);
+    m_pReModel->setActionColumn(3);
     m_pReModel->setHeaderData(0, Qt::Horizontal, QObject::tr("Re"));
     m_pReModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Mach"));
     m_pReModel->setHeaderData(2, Qt::Horizontal, QObject::tr("NCrit"));
+    m_pReModel->setHeaderData(3, Qt::Horizontal, QObject::tr("Actions"));
 
-    m_ptvRe->setModel(m_pReModel);
+    m_pcptReTable->setModel(m_pReModel);
 
-    QHeaderView *pHorizontalHeader = m_ptvRe->horizontalHeader();
-    pHorizontalHeader->setStretchLastSection(true);
+    int n = m_pReModel->actionColumn();
+    QHeaderView *pHHeader = m_pcptReTable->horizontalHeader();
+    pHHeader->setSectionResizeMode(n, QHeaderView::Stretch);
+    pHHeader->resizeSection(n, 1);
 
-    m_pFloatDelegate = new FloatEditDelegate(this);
-    m_ptvRe->setItemDelegate(m_pFloatDelegate);
+    m_pFloatDelegate = new ActionDelegate(this);
+    m_pFloatDelegate->setActionColumn(3);
+    QVector<int>m_Precision = {0,2,2};
+    m_pFloatDelegate->setDigits(m_Precision);
+    m_pcptReTable->setItemDelegate(m_pFloatDelegate);
 
-    QVector<int> precision = {0,2,2};
-    m_pFloatDelegate->setPrecision(precision);
-
-    //    connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
-    connect(m_pReModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(onCellChanged(QModelIndex ,QModelIndex)));
+    connect(m_pcptReTable, SIGNAL(clicked(QModelIndex)), SLOT(onReTableClicked(QModelIndex)));
+    connect(m_pReModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(onCellChanged(QModelIndex,QModelIndex)));
 
     fillReModel();
 }
 
 
+void ReListDlg::showEvent(QShowEvent *)
+{
+    restoreGeometry(s_WindowGeometry);
+    m_pButtonBox->setFocus();
+}
+
+
+void ReListDlg::hideEvent(QHideEvent*)
+{
+    s_WindowGeometry = saveGeometry();
+}
+
+
+void ReListDlg::resizeEvent(QResizeEvent *)
+{
+    double w = double(m_pcptReTable->width())/100.0;
+    m_pcptReTable->setColumnWidth(0,int(25.0*w));
+    m_pcptReTable->setColumnWidth(1,int(25.0*w));
+    m_pcptReTable->setColumnWidth(2,int(25.0*w));
+    m_pcptReTable->setColumnWidth(3,int(15.0*w));
+    QHeaderView *pHorizontalHeader = m_pcptReTable->horizontalHeader();
+    pHorizontalHeader->setStretchLastSection(true);
+}
+
+
+/** @todo never called? */
 void ReListDlg::keyPressEvent(QKeyEvent *pEvent)
 {
     switch (pEvent->key())
@@ -93,8 +136,6 @@ void ReListDlg::keyPressEvent(QKeyEvent *pEvent)
         case Qt::Key_Enter:
         {
             if(!m_pButtonBox->hasFocus()) m_pButtonBox->setFocus();
-            else                          accept();
-
             break;
         }
         case Qt::Key_Escape:
@@ -108,55 +149,36 @@ void ReListDlg::keyPressEvent(QKeyEvent *pEvent)
 }
 
 
-void ReListDlg::onCellChanged(QModelIndex topLeft, QModelIndex )
-{
-    if(topLeft.column()==0)
-        sortData();
-}
-
-
 void ReListDlg::setupLayout()
 {
-    QVBoxLayout *pMainLayout = new QVBoxLayout;
+    m_pcptReTable = new CPTableView(this);
+    m_pcptReTable->setEditable(true);
+
+//    QFont fnt;
+//    QFontMetrics fm(fnt);
+//    m_pcptReTable->setMinimumWidth(50*fm.averageCharWidth());
+//    m_pcptReTable->setMinimumHeight(300);
+//    m_pcptReTable->setWindowTitle(QObject::tr("Re List"));
+
+    QVBoxLayout *pRightSideLayout = new QVBoxLayout;
     {
-        QHBoxLayout * pListLayout = new QHBoxLayout;
+        m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Vertical, this);
         {
-            m_ptvRe = new QTableView(this);
-            m_ptvRe->setFont(DisplayOptions::tableFont());
-            m_ptvRe->setSelectionBehavior(QAbstractItemView::SelectRows);
-            m_ptvRe->setEditTriggers(QAbstractItemView::AllEditTriggers);
-            m_ptvRe->setWindowTitle(QObject::tr("Re List"));
-
-            QVBoxLayout *pCommandButtons = new QVBoxLayout;
-            {
-                m_ppbInsert    = new QPushButton(tr("Insert"));
-                m_ppbDelete    = new QPushButton(tr("Delete"));
-
-                pCommandButtons->addWidget(m_ppbInsert);
-                pCommandButtons->addWidget(m_ppbDelete);
-                pCommandButtons->addStretch(1);
-            }
-            pListLayout->addWidget(m_ptvRe);
-            pListLayout->addLayout(pCommandButtons);
+            connect(m_pButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+            connect(m_pButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
         }
-        m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-        {
-            connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
-        }
+        pRightSideLayout->addStretch(30);
+        pRightSideLayout->addWidget(m_pButtonBox);
+    }
 
-        pMainLayout->addLayout(pListLayout);
-        pMainLayout->addWidget(m_pButtonBox);
-        setLayout(pMainLayout);
+    QHBoxLayout * pMainLayout = new QHBoxLayout(this);
+    {
+        pMainLayout->addWidget(m_pcptReTable);
+        pMainLayout->addLayout(pRightSideLayout);
     }
     setLayout(pMainLayout);
 }
 
-
-void ReListDlg::onButton(QAbstractButton *pButton)
-{
-    if (     m_pButtonBox->button(QDialogButtonBox::Ok)     == pButton)  onOK();
-    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
-}
 
 void ReListDlg::fillReModel()
 {
@@ -173,15 +195,18 @@ void ReListDlg::fillReModel()
 
         QModelIndex Zindex =m_pReModel->index(i, 2, QModelIndex());
         m_pReModel->setData(Zindex, m_NCritList[i]);
+
+        QModelIndex actionindex = m_pReModel->index(i, 3, QModelIndex());
+        m_pReModel->setData(actionindex, QString("..."));
     }
     m_pReModel->blockSignals(false);
-    m_ptvRe->resizeRowsToContents();
+    m_pcptReTable->resizeRowsToContents();
 }
 
 
 void ReListDlg::onDelete()
 {
-    QModelIndex index = m_ptvRe->currentIndex();
+    QModelIndex index = m_pcptReTable->currentIndex();
     int sel = index.row();
 
     if(sel<0 || sel>=m_ReList.count()) return;
@@ -195,21 +220,14 @@ void ReListDlg::onDelete()
 }
 
 
-void ReListDlg::onInsert()
+void ReListDlg::onInsertBefore()
 {
-    int sel = m_ptvRe->currentIndex().row();
-    if(sel<0)
-    {
-        m_ReList.prepend(0.0);
-        m_MachList.prepend(0.0);
-        m_NCritList.prepend(0.0);
-    }
-    else
-    {
-        m_ReList.insert(sel, 0.0);
-        m_MachList.insert(sel, 0.0);
-        m_NCritList.insert(sel, 0.0);
-    }
+    int sel = m_pcptReTable->currentIndex().row();
+    //	if(sel<0) return;
+
+    m_ReList.insert(sel, 0.0);
+    m_MachList.insert(sel, 0.0);
+    m_NCritList.insert(sel, 0.0);
 
     if(sel>0)        m_ReList[sel]    = (m_ReList[sel-1]+m_ReList[sel+1]) /2.0;
     else if(sel==0)  m_ReList[sel]    = m_ReList[sel+1]                   /2.0;
@@ -230,8 +248,40 @@ void ReListDlg::onInsert()
     fillReModel();
 
     QModelIndex index = m_pReModel->index(sel, 0, QModelIndex());
-    m_ptvRe->setCurrentIndex(index);
-    m_ptvRe->openPersistentEditor(index);
+    m_pcptReTable->setCurrentIndex(index);
+    m_pcptReTable->selectRow(index.row());
+}
+
+
+void ReListDlg::onInsertAfter()
+{
+    int sel = m_pcptReTable->currentIndex().row()+1;
+
+    m_ReList.insert(sel, 0.0);
+    m_MachList.insert(sel, 0.0);
+    m_NCritList.insert(sel, 0.0);
+
+    if(sel==m_ReList.size()-1) m_ReList[sel]    = m_ReList[sel-1]*2.0;
+    else if(sel>0)             m_ReList[sel]    = (m_ReList[sel-1]+m_ReList[sel+1]) /2.0;
+    else if(sel==0)            m_ReList[sel]    = m_ReList[sel+1]                   /2.0;
+
+    if(sel>0)
+    {
+        m_MachList[sel]  = m_MachList[sel-1];
+        m_NCritList[sel] = m_NCritList[sel-1];
+    }
+    else
+    {
+        sel = 0;
+        m_MachList[sel]  = 0.0;
+        m_NCritList[sel] = 0.0;
+    }
+
+    fillReModel();
+
+    QModelIndex index = m_pReModel->index(sel, 0, QModelIndex());
+    m_pcptReTable->setCurrentIndex(index);
+    m_pcptReTable->selectRow(index.row());
 }
 
 
@@ -253,15 +303,52 @@ void ReListDlg::onOK()
 }
 
 
+void ReListDlg::onReTableClicked(QModelIndex index)
+{
+    if(!index.isValid())
+    {
+    }
+    else
+    {
+        m_pcptReTable->selectRow(index.row());
+
+        switch(index.column())
+        {
+            case 3:
+            {
+                QRect itemrect = m_pcptReTable->visualRect(index);
+                QPoint menupos = m_pcptReTable->mapToGlobal(itemrect.topLeft());
+                QMenu *pReTableRowMenu = new QMenu(tr("Section"),this);
+                pReTableRowMenu->addAction(m_pInsertBeforeAct);
+                pReTableRowMenu->addAction(m_pInsertAfterAct);
+                pReTableRowMenu->addAction(m_pDeleteAct);
+                pReTableRowMenu->exec(menupos, m_pInsertBeforeAct);
+
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+}
+
+
+void ReListDlg::onCellChanged(QModelIndex topLeft, QModelIndex )
+{
+    if(topLeft.column()==0)
+        sortData();
+}
+
 
 void ReListDlg::sortData()
 {
-    int i;
     m_ReList.clear();
     m_MachList.clear();
     m_NCritList.clear();
 
-    for (i=0; i<m_pReModel->rowCount(); i++)
+    for (int i=0; i<m_pReModel->rowCount(); i++)
     {
         m_ReList.append(m_pReModel->index(i, 0, QModelIndex()).data().toDouble());
         m_MachList.append(m_pReModel->index(i, 1, QModelIndex()).data().toDouble());
@@ -280,13 +367,13 @@ void ReListDlg::sortData()
 */
 void ReListDlg::sortRe()
 {
-    int indx, indx2;
-    double Retemp, Retemp2;
-    double Matemp, Matemp2;
-    double NCtemp, NCtemp2;
+    int indx=0, indx2=0;
+    double Retemp=0, Retemp2=0;
+    double Matemp=0, Matemp2=0;
+    double NCtemp=0, NCtemp2=0;
     int flipped;
 
-    if (m_ReList.size() <= 1) return;
+    if (m_ReList.size()<=1) return;
 
     indx = 1;
     do
@@ -313,24 +400,6 @@ void ReListDlg::sortRe()
         }
     } while ((++indx < m_ReList.size()) && flipped);
 }
-
-
-void ReListDlg::showEvent(QShowEvent *)
-{
-    resizeEvent(nullptr);
-}
-
-
-
-void ReListDlg::resizeEvent(QResizeEvent *)
-{
-    int w3 = int(double(m_ptvRe->width())*0.9/3.0);
-    m_ptvRe->setColumnWidth(0, w3);
-    m_ptvRe->setColumnWidth(1, w3);
-}
-
-
-
 
 
 

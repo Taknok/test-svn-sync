@@ -118,9 +118,9 @@ bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthunit, double massunit
             {
                 if (name().compare(QString("point_mass"), Qt::CaseInsensitive)==0)
                 {
-                    PointMass* ppm = new PointMass;
-                    pPlane->m_PointMass.append(ppm);
-                    readPointMass(ppm, massunit, lengthunit);
+                    PointMass pm;
+                    readPointMass(&pm, massunit, lengthunit);
+                    pPlane->m_PointMass.append(pm);
                 }
                 else
                     skipCurrentElement();
@@ -274,9 +274,9 @@ bool XMLPlaneReader::readWing(Wing &newwing, Vector3d &position, double &tiltang
                 }
                 else if (name().compare(QString("point_mass"), Qt::CaseInsensitive)==0)
                 {
-                    PointMass* ppm = new PointMass;
-                    newwing.m_PointMass.append(ppm);
-                    readPointMass(ppm, massUnit, lengthUnit);
+                    PointMass pm;
+                    readPointMass(&pm, massUnit, lengthUnit);
+                    newwing.m_PointMass.append(pm);
                 }
                 else
                     skipCurrentElement();
@@ -288,55 +288,55 @@ bool XMLPlaneReader::readWing(Wing &newwing, Vector3d &position, double &tiltang
             {
                 if (name().compare(QString("Section"),  Qt::CaseInsensitive)==0)
                 {
-                    WingSection *pWingSec = new WingSection;
-                    newwing.m_Section.append(pWingSec);
+                    newwing.m_Section.append(WingSection());
+                    WingSection &WS = newwing.m_Section.last();
                     while(!atEnd() && !hasError() && readNextStartElement() )
                     {
                         if (name().compare(QString("x_number_of_panels"), Qt::CaseInsensitive)==0)
                         {
-                            pWingSec->m_NXPanels = readElementText().toInt();
+                            WS.m_NXPanels = readElementText().toInt();
                         }
                         else if (name().compare(QString("y_number_of_panels"), Qt::CaseInsensitive)==0)
                         {
-                            pWingSec->m_NYPanels = readElementText().toInt();
+                            WS.m_NYPanels = readElementText().toInt();
                         }
                         else if (name().compare(QString("x_panel_distribution"), Qt::CaseInsensitive)==0)
                         {
                             QString strPanelDist = readElementText();
-                            pWingSec->m_XPanelDist = xfl::distributionType(strPanelDist);
+                            WS.m_XPanelDist = xfl::distributionType(strPanelDist);
                         }
                         else if (name().compare(QString("y_panel_distribution"), Qt::CaseInsensitive)==0)
                         {
                             QString strPanelDist = readElementText();
-                            pWingSec->m_YPanelDist = xfl::distributionType(strPanelDist);
+                            WS.m_YPanelDist = xfl::distributionType(strPanelDist);
                         }
                         else if (name().compare(QString("Chord"), Qt::CaseInsensitive)==0)
                         {
-                            pWingSec->m_Chord = readElementText().toDouble()*lengthUnit;
+                            WS.m_Chord = readElementText().toDouble()*lengthUnit;
                         }
                         else if (name().compare(QString("y_position"), Qt::CaseInsensitive)==0)
                         {
-                            pWingSec->m_YPosition = readElementText().toDouble()*lengthUnit;
+                            WS.m_YPosition = readElementText().toDouble()*lengthUnit;
                         }
                         else if (name().compare(QString("xOffset"), Qt::CaseInsensitive)==0)
                         {
-                            pWingSec->m_Offset = readElementText().toDouble()*lengthUnit;
+                            WS.m_Offset = readElementText().toDouble()*lengthUnit;
                         }
                         else if (name().compare(QString("Dihedral"), Qt::CaseInsensitive)==0)
                         {
-                            pWingSec->m_Dihedral = readElementText().toDouble();
+                            WS.m_Dihedral = readElementText().toDouble();
                         }
                         else if (name().compare(QString("Twist"), Qt::CaseInsensitive)==0)
                         {
-                            pWingSec->m_Twist = readElementText().toDouble();
+                            WS.m_Twist = readElementText().toDouble();
                         }
                         else if (name().compare(QString("Left_Side_FoilName"), Qt::CaseInsensitive)==0)
                         {
-                            pWingSec->m_LeftFoilName = readElementText();
+                            WS.m_LeftFoilName = readElementText();
                         }
                         else if (name().compare(QString("Right_Side_FoilName"), Qt::CaseInsensitive)==0)
                         {
-                            pWingSec->m_RightFoilName = readElementText();
+                            WS.m_RightFoilName = readElementText();
                         }
                         else
                             skipCurrentElement();
@@ -364,9 +364,9 @@ bool XMLPlaneReader::readPointMass(PointMass *ppm, double massUnit, double lengt
             QStringList coordList = readElementText().split(",");
             if(coordList.length()>=3)
             {
-                ppm->setXPos(coordList.at(0).toDouble()*lengthUnit);
-                ppm->setYPos(coordList.at(1).toDouble()*lengthUnit);
-                ppm->setZPos(coordList.at(2).toDouble()*lengthUnit);
+                ppm->setXPosition(coordList.at(0).toDouble()*lengthUnit);
+                ppm->setYPosition(coordList.at(1).toDouble()*lengthUnit);
+                ppm->setZPosition(coordList.at(2).toDouble()*lengthUnit);
             }
         }
         else skipCurrentElement();
@@ -408,9 +408,9 @@ bool XMLPlaneReader::readBody(Body *pBody, Vector3d &position, double lengthUnit
                 }
                 else if (name().compare(QString("point_mass"), Qt::CaseInsensitive)==0)
                 {
-                    PointMass* ppm = new PointMass;
-                    pBody->m_PointMass.append(ppm);
-                    readPointMass(ppm, massUnit, lengthUnit);
+                    PointMass pm;
+                    readPointMass(&pm, massUnit, lengthUnit);
+                    pBody->m_PointMass.append(pm);
                 }
                 else
                     skipCurrentElement();

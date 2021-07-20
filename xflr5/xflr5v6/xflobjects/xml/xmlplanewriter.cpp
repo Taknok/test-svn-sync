@@ -147,20 +147,20 @@ void XMLPlaneWriter::writeWing(Wing const &wing, Vector3d position, double Ry)
         {
             for(int ips=0; ips<wing.m_Section.size(); ips++)
             {
-                WingSection *ws = wing.m_Section.at(ips);
+                WingSection const&WS = wing.m_Section.at(ips);
                 writeStartElement("Section");
                 {
-                    writeTextElement("y_position", QString("%1").arg(ws->m_YPosition*Units::mtoUnit(), 7, 'f', 3));
-                    writeTextElement("Chord", QString("%1").arg(ws->m_Chord*Units::mtoUnit(), 7, 'f', 3));
-                    writeTextElement("xOffset", QString("%1").arg(ws->m_Offset*Units::mtoUnit(), 7, 'f', 3));
-                    writeTextElement("Dihedral", QString("%1").arg(ws->m_Dihedral, 7, 'f', 3));
-                    writeTextElement("Twist", QString("%1").arg(ws->m_Twist, 7, 'f', 3));
-                    writeTextElement("x_number_of_panels", QString("%1").arg(ws->m_NXPanels));
-                    writeTextElement("x_panel_distribution", distributionType(ws->m_XPanelDist));
-                    writeTextElement("y_number_of_panels", QString("%1").arg(ws->m_NYPanels));
-                    writeTextElement("y_panel_distribution", distributionType(ws->m_YPanelDist));
-                    writeTextElement("Left_Side_FoilName", ws->m_LeftFoilName);
-                    writeTextElement("Right_Side_FoilName", ws->m_RightFoilName);
+                    writeTextElement("y_position",           QString("%1").arg(WS.m_YPosition*Units::mtoUnit(), 7, 'f', 3));
+                    writeTextElement("Chord",                QString("%1").arg(WS.m_Chord*Units::mtoUnit(), 7, 'f', 3));
+                    writeTextElement("xOffset",              QString("%1").arg(WS.m_Offset*Units::mtoUnit(), 7, 'f', 3));
+                    writeTextElement("Dihedral",             QString("%1").arg(WS.m_Dihedral, 7, 'f', 3));
+                    writeTextElement("Twist",                QString("%1").arg(WS.m_Twist, 7, 'f', 3));
+                    writeTextElement("x_number_of_panels",   QString("%1").arg(WS.m_NXPanels));
+                    writeTextElement("x_panel_distribution", distributionType(WS.m_XPanelDist));
+                    writeTextElement("y_number_of_panels",   QString("%1").arg(WS.m_NYPanels));
+                    writeTextElement("y_panel_distribution", distributionType(WS.m_YPanelDist));
+                    writeTextElement("Left_Side_FoilName",   WS.m_LeftFoilName);
+                    writeTextElement("Right_Side_FoilName",  WS.m_RightFoilName);
                 }
                 writeEndElement();
             }
@@ -185,9 +185,7 @@ void XMLPlaneWriter::writeColor(QColor color)
 }
 
 
-
-
-void XMLPlaneWriter::writePointMass(PointMass *ppm, double massUnit, double lengthUnit)
+void XMLPlaneWriter::writePointMass(PointMass const *ppm, double massUnit, double lengthUnit)
 {
     writeStartElement("Point_Mass");
     {
@@ -203,6 +201,23 @@ void XMLPlaneWriter::writePointMass(PointMass *ppm, double massUnit, double leng
 }
 
 
+void XMLPlaneWriter::writePointMass(PointMass const &pm, double massUnit, double lengthUnit)
+{
+    writeStartElement("Point_Mass");
+    {
+        writeTextElement("Tag", pm.tag());
+        writeTextElement("Mass", QString("%1").arg(pm.mass()*massUnit,7,'f',3));
+        writeTextElement("coordinates",QString("%1, %2, %3")
+                         .arg(pm.position().x*lengthUnit, 11,'g',5)
+                         .arg(pm.position().y*lengthUnit, 11,'g',5)
+                         .arg(pm.position().z*lengthUnit, 11,'g',5));
+
+        //        writeTextElement("x", QString("%1").arg(ppm->m_Position.x*lengthUnit,7,'f',3));
+        //        writeTextElement("y", QString("%1").arg(ppm->m_Position.y*lengthUnit,7,'f',3));
+        //        writeTextElement("z", QString("%1").arg(ppm->m_Position.z*lengthUnit,7,'f',3));
+    }
+    writeEndElement();
+}
 
 
 void XMLPlaneWriter::writeBody(Body *pBody, Vector3d position, double lengthUnit, double massUnit)

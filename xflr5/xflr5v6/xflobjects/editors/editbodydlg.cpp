@@ -696,7 +696,7 @@ void EditBodyDlg::fillBodyTreeView()
 
         for(int iwm=0; iwm<m_pBody->m_PointMass.size(); iwm++)
         {
-            PointMass *pm = m_pBody->m_PointMass.at(iwm);
+            PointMass const &pm = m_pBody->m_PointMass.at(iwm);
             QList<QStandardItem*> bodyPointMassFolder = prepareRow(QString("Point_mass_%1").arg(iwm+1));
 
             bodyInertiaFolder.first()->appendRow(bodyPointMassFolder);
@@ -705,19 +705,19 @@ void EditBodyDlg::fillBodyTreeView()
                 {
                     m_pStruct->expand(m_pModel->indexFromItem(bodyPointMassFolder.first()));
                 }
-                QList<QStandardItem*> dataItem = prepareRow("", "Tag", pm->tag());
+                QList<QStandardItem*> dataItem = prepareRow("", "Tag", pm.tag());
                 bodyPointMassFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "mass", pm->mass()*Units::kgtoUnit(), Units::massUnitLabel());
+                dataItem = prepareDoubleRow("", "mass", pm.mass()*Units::kgtoUnit(), Units::massUnitLabel());
                 bodyPointMassFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "x",pm->position().x*Units::mtoUnit(), Units::lengthUnitLabel());
+                dataItem = prepareDoubleRow("", "x",pm.position().x*Units::mtoUnit(), Units::lengthUnitLabel());
                 bodyPointMassFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "y", pm->position().y*Units::mtoUnit(), Units::lengthUnitLabel());;
+                dataItem = prepareDoubleRow("", "y", pm.position().y*Units::mtoUnit(), Units::lengthUnitLabel());;
                 bodyPointMassFolder.first()->appendRow(dataItem);
 
-                dataItem = prepareDoubleRow("", "z", pm->position().z*Units::mtoUnit(), Units::lengthUnitLabel());
+                dataItem = prepareDoubleRow("", "z", pm.position().z*Units::mtoUnit(), Units::lengthUnitLabel());
                 bodyPointMassFolder.first()->appendRow(dataItem);
             }
         }
@@ -980,7 +980,6 @@ void EditBodyDlg::readBodyFrameTree(Frame *pFrame, QModelIndex indexLevel)
 }
 
 
-
 void EditBodyDlg::readInertiaTree(double &volumeMass, QVector<PointMass*>&pointMasses, QModelIndex indexLevel)
 {
     pointMasses.clear();
@@ -1016,6 +1015,43 @@ void EditBodyDlg::readInertiaTree(double &volumeMass, QVector<PointMass*>&pointM
     } while(indexLevel.isValid());
 }
 
+
+void EditBodyDlg::readInertiaTree(double &volumeMass, QVector<PointMass>&pointmasses, QModelIndex indexlevel)
+{
+    pointmasses.clear();
+
+    QString object, field, value;
+    QModelIndex dataIndex;
+    do
+    {
+        QStandardItem *pItem = m_pModel->itemFromIndex(indexlevel);
+        if(pItem->child(0,0))
+        {
+            object = indexlevel.sibling(indexlevel.row(),0).data().toString();
+            if(object.indexOf("Point_mass_", Qt::CaseInsensitive)>=0)
+            {
+                PointMass pm;
+                readPointMassTree(&pm, pItem->child(0,0)->index());
+                pointmasses.append(pm);
+            }
+        }
+        else
+        {
+            //no more children
+            object = indexlevel.sibling(indexlevel.row(),0).data().toString();
+            field = indexlevel.sibling(indexlevel.row(),1).data().toString();
+            value = indexlevel.sibling(indexlevel.row(),2).data().toString();
+            dataIndex = indexlevel.sibling(indexlevel.row(),2);
+
+            if     (field.compare("Volume Mass", Qt::CaseInsensitive)==0)   volumeMass = dataIndex.data().toDouble()/Units::kgtoUnit();
+        }
+
+        indexlevel = indexlevel.sibling(indexlevel.row()+1,0);
+
+    } while(indexlevel.isValid());
+}
+
+
 void EditBodyDlg::readPointMassTree(PointMass *ppm, QModelIndex indexLevel)
 {
     QString object, field, value;
@@ -1030,9 +1066,9 @@ void EditBodyDlg::readPointMassTree(PointMass *ppm, QModelIndex indexLevel)
 
         if      (field.compare("mass", Qt::CaseInsensitive)==0) ppm->setMass(dataIndex.data().toDouble()/Units::kgtoUnit());
         else if (field.compare("tag",  Qt::CaseInsensitive)==0) ppm->setTag(value);
-        else if (field.compare("x",    Qt::CaseInsensitive)==0) ppm->setXPos(dataIndex.data().toDouble()/Units::mtoUnit());
-        else if (field.compare("y",    Qt::CaseInsensitive)==0) ppm->setYPos(dataIndex.data().toDouble()/Units::mtoUnit());
-        else if (field.compare("z",    Qt::CaseInsensitive)==0) ppm->setZPos(dataIndex.data().toDouble()/Units::mtoUnit());
+        else if (field.compare("x",    Qt::CaseInsensitive)==0) ppm->setXPosition(dataIndex.data().toDouble()/Units::mtoUnit());
+        else if (field.compare("y",    Qt::CaseInsensitive)==0) ppm->setYPosition(dataIndex.data().toDouble()/Units::mtoUnit());
+        else if (field.compare("z",    Qt::CaseInsensitive)==0) ppm->setZPosition(dataIndex.data().toDouble()/Units::mtoUnit());
 
         indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
 
@@ -1150,7 +1186,7 @@ void EditBodyDlg::onInsertBefore()
     }
     else if(m_iActivePointMass>=0)
     {
-        m_pBody->m_PointMass.insert(m_iActivePointMass, new PointMass);
+        m_pBody->m_PointMass.insert(m_iActivePointMass, PointMass());
 
         m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
 
@@ -1183,10 +1219,9 @@ void EditBodyDlg::onInsertAfter()
     {
         if(m_pBody)
         {
-            m_pBody->m_PointMass.insert(m_iActivePointMass+1, new PointMass);
+            m_pBody->m_PointMass.insert(m_iActivePointMass+1, PointMass());
             m_iActivePointMass++;
         }
-
 
         m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
         fillBodyTreeView();

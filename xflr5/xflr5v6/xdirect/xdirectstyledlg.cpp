@@ -25,7 +25,6 @@
 
 #include "xdirectstyledlg.h"
 #include <xdirect/xdirect.h>
-#include <xflwidgets/line/linepickerdlg.h>
 #include <xdirect/oppointwt.h>
 #include <xflwidgets/line/linemenu.h>
 

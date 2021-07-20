@@ -33,7 +33,7 @@
 #include <miarex/miarex.h>
 #include <xflwidgets/color/colorbtn.h>
 #include <xflwidgets/line/linebtn.h>
-#include <xflwidgets/line/linepickerdlg.h>
+#include <xflwidgets/line/linemenu.h>
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/customwts/intedit.h>
 #include <xflwidgets/color/textclrbtn.h>
@@ -265,31 +265,27 @@ void GraphDlg::onAutoY()
 
 void GraphDlg::onAxisStyle()
 {
-    LinePickerDlg dlg(this);
-    dlg.initDialog(m_pGraph->grid().xAxisStyle(), false, false);
+    LineMenu lm(nullptr, false);
+    //	lm.enableSubMenus(true, true, true, false);
+    lm.initMenu(m_pGraph->grid().xAxisStyle());
+    lm.exec(QCursor::pos());
 
-    if(QDialog::Accepted==dlg.exec())
-    {
-        m_pGraph->grid().setXAxisStyle(dlg.theStyle());
-        m_plbAxisStyle->setTheStyle(dlg.theStyle());
-        setApplied(false);
-    }
+    m_pGraph->grid().setXAxisStyle(lm.theStyle());
+    m_plbAxisStyle->setTheStyle(lm.theStyle());
 }
 
 
 void GraphDlg::onBorderStyle()
 {
-    LinePickerDlg dlg(this);
+    LineMenu lm(nullptr, false);
+    //	lm.enableSubMenus(true, true, true, false);
+    lm.initMenu(m_pGraph->borderStyle());
+    lm.exec(QCursor::pos());
 
-    dlg.initDialog(m_pGraph->borderStyle(), false, false);
-
-    if(QDialog::Accepted==dlg.exec())
-    {
-        m_pGraph->setBorderStyle(dlg.theStyle());
-        m_plbBorderStyle->setTheStyle(dlg.theStyle());
-        setApplied(false);
-    }
+    m_pGraph->setBorderStyle(lm.theStyle());
+    m_plbBorderStyle->setTheStyle(lm.theStyle());
 }
+
 
 void GraphDlg::onGraphBorder(int state)
 {
@@ -321,7 +317,6 @@ void GraphDlg::onLabelColor()
 
     setApplied(false);
     update();
-
 }
 
 
@@ -438,43 +433,36 @@ void GraphDlg::onMargin()
 
 void GraphDlg::onXMajGridStyle()
 {
-    LinePickerDlg dlg(this);
-    dlg.initDialog(m_pGraph->grid().xMajStyle(), false, false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(m_pGraph->grid().xMajStyle());
+    lm.exec(QCursor::pos());
 
-    if(QDialog::Accepted==dlg.exec())
-    {
-        m_pGraph->grid().setXMajStyle(dlg.theStyle());
-        m_plbXMajGridStyle->setTheStyle(dlg.theStyle());
-        setApplied(false);
-    }
+    m_pGraph->grid().setXMajStyle(lm.theStyle());
+    m_plbXMajGridStyle->setTheStyle(lm.theStyle());
 }
+
 
 void GraphDlg::onXMinGridStyle()
 {
-    LinePickerDlg dlg(this);
-    dlg.initDialog(m_pGraph->grid().xMinStyle(), false, false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(m_pGraph->grid().xMinStyle());
+    lm.exec(QCursor::pos());
 
-    if(QDialog::Accepted==dlg.exec())
-    {
-        m_pGraph->grid().setXMinStyle(dlg.theStyle());
-        m_plbXMinGridStyle->setTheStyle(dlg.theStyle());
-        setApplied(false);
-    }
+    m_pGraph->grid().setXMinStyle(lm.theStyle());
+    m_plbXMinGridStyle->setTheStyle(lm.theStyle());
 }
 
 
 void GraphDlg::onYMinGridStyle()
 {
-    LinePickerDlg dlg(this);
-    dlg.initDialog(m_pGraph->grid().yMinStyle(0), false, false);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(m_pGraph->grid().yMinStyle(0));
+    lm.exec(QCursor::pos());
 
-    if(QDialog::Accepted==dlg.exec())
-    {
-        m_pGraph->grid().setYMinStyle(0, dlg.theStyle());
-        m_plbYMinGridStyle->setTheStyle(dlg.theStyle());
-        setApplied(false);
-    }
+    m_pGraph->grid().setYMinStyle(0, lm.theStyle());
+    m_plbYMinGridStyle->setTheStyle(lm.theStyle());
 }
+
 
 void GraphDlg::onXMajGridShow(int state)
 {
@@ -513,15 +501,12 @@ void GraphDlg::onYMajGridShow(int state)
 
 void GraphDlg::onYMajGridStyle()
 {
-    LinePickerDlg dlg(this);
+    LineMenu lm(nullptr, false);
+    lm.initMenu(m_pGraph->grid().yMajStyle(0));
+    lm.exec(QCursor::pos());
 
-    dlg.initDialog(m_pGraph->grid().yMajStyle(0), false, false);
-
-    if(QDialog::Accepted==dlg.exec())
-    {
-        m_pGraph->grid().setYMajStyle(0, dlg.theStyle());
-        m_plbYMajGridStyle->setTheStyle(dlg.theStyle());
-    }
+    m_pGraph->grid().setYMajStyle(0, lm.theStyle());
+    m_plbYMajGridStyle->setTheStyle(lm.theStyle());
 }
 
 

@@ -145,8 +145,8 @@ Plane *PlaneTask::setPlaneObject(Plane *pPlane)
 
             for (int j=0; j<pPlane->wing(iw)->m_Surface.size(); j++)
             {
-                pPlane->wing(iw)->m_Surface.at(j)->setMeshSidePoints(pCurBody, dx, dz);
-                m_SurfaceList.append(pPlane->wing(iw)->m_Surface.at(j));
+                pPlane->wing(iw)->surface(j)->setMeshSidePoints(pCurBody, dx, dz);
+                m_SurfaceList.append(pPlane->wing(iw)->surface(j));
             }
 //            pPlane->wing(iw)->computeBodyAxisInertia(); // redundant with inertia calculation at plane level
         }
@@ -201,16 +201,16 @@ WPolar* PlaneTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
                 NStation = 0;
                 m=0;
                 SpanPos = 0;
-                for (int j=0; j<pWingList[iw]->m_Surface.size(); j++)    NStation += pWingList[iw]->m_Surface.at(j)->m_NYPanels;
+                for (int j=0; j<pWingList[iw]->m_Surface.size(); j++)    NStation += pWingList[iw]->surface(j)->m_NYPanels;
 
                 for (int j=int(pWingList[iw]->m_Surface.size()/2); j<pWingList[iw]->m_Surface.size(); j++)
                 {
-                    for(int k=0; k<pWingList[iw]->m_Surface.at(j)->m_NYPanels; k++)
+                    for(int k=0; k<pWingList[iw]->surface(j)->m_NYPanels; k++)
                     {
-                        pWingList[iw]->m_SpanPos[m+NStation/2] = SpanPos + pWingList[iw]->m_Surface.at(j)->stripSpanPos(k);
+                        pWingList[iw]->m_SpanPos[m+NStation/2] = SpanPos + pWingList[iw]->surface(j)->stripSpanPos(k);
                         m++;
                     }
-                    SpanPos += pWingList[iw]->m_Surface.at(j)->m_Length;
+                    SpanPos += pWingList[iw]->surface(j)->m_Length;
                 }
 
                 for(m=0; m<NStation/2; m++) pWingList[iw]->m_SpanPos[m] = -pWingList[iw]->m_SpanPos[NStation-m-1];
@@ -1377,7 +1377,7 @@ bool PlaneTask::allocatePanelArrays(int &memsize)
 
 //                WakeNodeSize  += (m_pPlane->wing(iw)->m_NStation + 2) * (m_pWPolar->m_NXWakePanels + 1);
                 for(int j=0; j<m_pPlane->wing(iw)->m_Surface.size(); j++)
-                    WakeNodeSize += m_pPlane->wing(iw)->m_Surface.at(j)->NYPanels()+1;
+                    WakeNodeSize += m_pPlane->wing(iw)->surface(j)->NYPanels()+1;
             }
         }
         WakeNodeSize *=  (m_pWPolar->m_NXWakePanels + 1);

@@ -19,8 +19,6 @@
 
 *****************************************************************************/
 
-#include <QDebug>
-
 
 #include "splinefoil.h"
 #include <xflobjects/objects2d/foil.h>

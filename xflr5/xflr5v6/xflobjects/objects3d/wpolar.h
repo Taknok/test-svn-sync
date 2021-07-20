@@ -139,13 +139,13 @@ class WPolar : public XflObject
         void setBoundaryCondition(xfl::enumBC bc) {m_BoundaryCondition=bc;}
 
         xfl::enumRefDimension referenceDim() const {return m_ReferenceDim;}
-        double referenceArea()  const {return m_referenceArea;}
-        double referenceSpanLength()  const {return m_referenceSpanLength;}
-        double referenceChordLength() const {return m_referenceChordLength;}
+        double referenceArea()  const {return m_RefArea;}
+        double referenceSpanLength()  const {return m_RefSpan;}
+        double referenceChordLength() const {return m_RefChord;}
         void setReferenceDim(xfl::enumRefDimension dim) {m_ReferenceDim=dim;}
-        void setReferenceArea(double a) {m_referenceArea=a;}
-        void setReferenceSpanLength(double l) {m_referenceSpanLength=l;}
-        void setReferenceChordLength(double c) {m_referenceChordLength=c;}
+        void setReferenceArea(double a) {m_RefArea=a;}
+        void setReferenceSpanLength(double l) {m_RefSpan=l;}
+        void setReferenceChordLength(double c) {m_RefChord=c;}
 
 
         double velocity()     const {return m_QInfSpec;}
@@ -204,9 +204,9 @@ class WPolar : public XflObject
         QString  m_PlaneName;          /**< the name of the parent wing or plane */
 
 
-        double m_referenceArea;          /**< The reference area for the calculation of aero coefficients */
-        double m_referenceChordLength;   /**< The reference length = the mean aero chord, for the calculation of aero coefficients */
-        double m_referenceSpanLength;    /**< The reference span for the calculation of aero coefficients */
+        double m_RefArea;          /**< The reference area for the calculation of aero coefficients */
+        double m_RefChord;   /**< The reference length = the mean aero chord, for the calculation of aero coefficients */
+        double m_RefSpan;    /**< The reference span for the calculation of aero coefficients */
 
         Vector3d      m_CoG;                  /**< the position of the CoG */
         double        m_Density;              /**< The fluid's density */
