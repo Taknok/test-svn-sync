@@ -26,12 +26,15 @@
 #pragma once
 
 #include <QVarLengthArray>
+
+#include <xflanalysis/analysis3d_params.h>
 #include <xflgeom/geom3d/vector3d.h>
-#include <xflobjects/objects3d/panel.h>
-#include <xflobjects/objects3d/wingsection.h>
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects2d/polar.h>
-#include <xflanalysis/analysis3d_params.h>
+#include <xflobjects/objects3d/panel.h>
+#include <xflobjects/objects3d/surface.h>
+#include <xflobjects/objects3d/wingsection.h>
+#include <xflobjects/objects3d/pointmass.h>
 
 /**
  * @class Wing
@@ -56,7 +59,6 @@
 
 class PointMass;
 class WPolar;
-class Surface;
 class Panel;
 
 class Wing
@@ -119,7 +121,7 @@ class Wing
         void computeChords(int NStation=0);
         void computeChords(int NStation, double *chord, double *offset, double *twist);
         void computeGeometry();
-        void computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz);
+        void computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz) const;
         void computeBodyAxisInertia();
 
         bool intersectWing(Vector3d O,  Vector3d U, Vector3d &I) const;
@@ -146,55 +148,61 @@ class Wing
         void setSymFin(bool bSym) {m_bSymFin=bSym;}
 
         void insertSection(int iSection);
-        bool appendWingSection();
-        bool appendWingSection(double Chord, double Twist, double Pos, double Dihedral, double Offset, int NXPanels, int NYPanels,
-                               xfl::enumPanelDistribution XPanelDist, xfl::enumPanelDistribution YPanelDist, QString RightFoilName, QString LeftFoilName);
+        void appendWingSection() {m_Section.append(WingSection());}
+        void appendWingSection(double Chord, double Twist, double Pos, double Dihedral, double Offset, int NXPanels, int NYPanels,
+                               xfl::enumPanelDistribution XPanelDist, xfl::enumPanelDistribution YPanelDist, QString const &RightFoilName, QString const&LeftFoilName);
         void removeWingSection(int const iSection);
 
-        void clearWingSections();
-        void clearPointMasses();
-        void clearSurfaces();
+        void clearWingSections() {m_Section.clear();}
+        void clearPointMasses() {m_PointMass.clear();}
+        void clearSurfaces() {m_Surface.clear();}
 
         //access methods
         int NWingSection()  const {return m_Section.count();}
-        int NXPanels(const int &iSection) const;
-        int NYPanels(const int &iSection) const;
-        void setNXPanels(int iSec, int nx) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_NXPanels=nx;}
-        void setNYPanels(int iSec, int ny) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_NYPanels=ny;}
 
-    //    int NYPanels();
+        void setNXPanels(int iSec, int nx) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_NXPanels=nx;}
+        void setNYPanels(int iSec, int ny) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_NYPanels=ny;}
 
-        xfl::enumPanelDistribution XPanelDist(const int &iSection) const;
-        xfl::enumPanelDistribution YPanelDist(const int &iSection) const;
-        void setXPanelDist(int iSec, xfl::enumPanelDistribution dist) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_XPanelDist = dist;}
-        void setYPanelDist(int iSec, xfl::enumPanelDistribution dist) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_YPanelDist = dist;}
+        void setXPanelDist(int iSec, xfl::enumPanelDistribution dist) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_XPanelDist = dist;}
+        void setYPanelDist(int iSec, xfl::enumPanelDistribution dist) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_YPanelDist = dist;}
 
         bool isWingFoil(Foil const*pFoil) const;
-        double rootChord()     const {return m_Section.first()->m_Chord;}
-        double rootOffset()    const {return m_Section.first()->m_Offset;}
-        double tipChord()      const {return m_Section.last()->m_Chord;}
-        double tipTwist()      const {return m_Section.last()->m_Twist;}
-        double tipOffset()     const {return m_Section.last()->m_Offset;}
-        double tipPos()        const {return m_Section.last()->m_YPosition;}
+        double rootChord()     const {return m_Section.first().m_Chord;}
+        double rootOffset()    const {return m_Section.first().m_Offset;}
+        double tipChord()      const {return m_Section.last().m_Chord;}
+        double tipTwist()      const {return m_Section.last().m_Twist;}
+        double tipOffset()     const {return m_Section.last().m_Offset;}
+        double tipPos()        const {return m_Section.last().m_YPosition;}
         double planformSpan()  const {return m_PlanformSpan;}
         double projectedSpan() const {return m_ProjectedSpan;}
 
-        double YPosition(const int &iSection) const;
-        void setYPosition(int iSection, double ypos);
-        double Chord(const int &iSection) const;
-        void setChord(int iSec, double c) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_Chord=c;}
-        double Twist(const int &iSection) const;
-        void setTwist(int iSec, double t) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_Twist=t;}
-        double Dihedral(const int &iSection) const;
-        void setDihedral(int iSec, double d) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_Dihedral=d;}
-        double Offset(const int &iSection) const;
-        void setOffset(int iSec, double o) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_Offset=o;}
-        double Length(const int &iSection) const;
-        void setLength(int iSec, double l) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_Length=l;}
-        double YProj(const int &iSection) const;
-        void setYProj(int iSec, double y) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_YProj=y;}
-        double ZPosition(const int &iSection) const;
-        void setZPosition(int iSec, double z) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_ZPos=z;}
+
+        double Offset(int iSection)    const {return m_Section.at(iSection).m_Offset;}
+        double Dihedral(int iSection)  const {return m_Section.at(iSection).m_Dihedral;}
+        double Chord(int iSection)     const {return m_Section.at(iSection).m_Chord;}
+        double Twist(int iSection)     const {return m_Section.at(iSection).m_Twist;}
+        double YPosition(int iSection) const {return m_Section.at(iSection).m_YPosition;}
+
+        double Length(int iSection)    const {return m_Section.at(iSection).m_Length;}
+        double YProj(int iSection)     const {return m_Section.at(iSection).m_YProj;}
+        double ZPosition(int iSection) const {return m_Section.at(iSection).m_ZPos;}
+        int NXPanels(int iSection)     const {return m_Section.at(iSection).m_NXPanels;}
+        int NYPanels(int iSection)     const {return m_Section.at(iSection).m_NYPanels;}
+        xfl::enumPanelDistribution XPanelDist(int iSection) const {return m_Section.at(iSection).m_XPanelDist;}
+        xfl::enumPanelDistribution YPanelDist(int iSection) const {return m_Section.at(iSection).m_YPanelDist;}
+        QString const & rightFoilName(int iSection) const {return m_Section.at(iSection).m_RightFoilName;}
+        QString const & leftFoilName( int iSection) const {return m_Section.at(iSection).m_LeftFoilName;}
+
+
+        void setYPosition(int iSec, double ypos) {if(iSec>=0 && iSec<MAXSPANSTATIONS) m_Section[iSec].m_YPosition=ypos;}
+        void setChord(int iSec, double c)        {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_Chord=c;}
+        void setTwist(int iSec, double t)        {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_Twist=t;}
+        void setDihedral(int iSec, double d)     {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_Dihedral=d;}
+        void setOffset(int iSec, double o)       {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_Offset=o;}
+        void setLength(int iSec, double l)       {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_Length=l;}
+        void setYProj(int iSec, double y)        {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_YProj=y;}
+        void setZPosition(int iSec, double z)    {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_ZPos=z;}
+
 
         double yrel(double SpanPos) const;
         double getChord(double yob) const;
@@ -203,7 +211,7 @@ class Wing
         double getTwist(double y) const;
         double averageSweep() const;
 
-        double const &volumeMass() const {return m_VolumeMass;}
+        double volumeMass() const {return m_VolumeMass;}
         void setVolumeMass(double m) {m_VolumeMass=m;}
 
         double totalMass() const;
@@ -212,9 +220,9 @@ class Wing
 
 
         void setSymetric(bool bSymetric) {m_bSymetric=bSymetric;}
-        bool const &isSymetric() const {return m_bSymetric;}
+        bool isSymetric() const {return m_bSymetric;}
 
-        int const &nFlaps() const {return m_nFlaps;}
+        int nFlaps() const {return m_nFlaps;}
         void setNFlaps(int nf) {m_nFlaps=nf;}
 
         static double minPanelSize() {return s_MinPanelSize;}
@@ -227,10 +235,8 @@ class Wing
         QString const& wingDescription() const {return m_WingDescription;}
         void setWingDescription(QString desc) {m_WingDescription=desc;}
 
-        QString const &rightFoilName(const int &iSection) const;
-        QString const &leftFoilName(const int &iSection) const;
-        void setRightFoilName(int iSec, QString foilname) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_RightFoilName=foilname;}
-        void setLeftFoilName(int iSec, QString foilname) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_LeftFoilName=foilname;}
+        void setRightFoilName(int iSec, QString foilname) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_RightFoilName=foilname;}
+        void setLeftFoilName( int iSec, QString foilname) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_LeftFoilName=foilname;}
 
         QColor const & color() const {return m_Color;}
         void setColor(QColor const &colour) {m_Color= colour;}
@@ -256,8 +262,8 @@ class Wing
         double mac() const {return m_MAChord;}
 
         int surfaceCount() const {return m_Surface.size();}
-        Surface const *surface(int is) const {if (is>=0 && is<m_Surface.size()) return m_Surface.at(is); else return nullptr;}
-        Surface *surface(int is) {if (is>=0 && is<m_Surface.size()) return m_Surface.at(is); else return nullptr;}
+        Surface const *surface(int is) const {if (is>=0 && is<m_Surface.size()) return &m_Surface.at(is); else return nullptr;}
+        Surface *surface(int is) {if (is>=0 && is<m_Surface.size()) return &m_Surface[is]; else return nullptr;}
 
         static double getInterpolatedVariable(int nVar, Foil *pFoil0, Foil *pFoil1, double Re, double Cl, double Tau, bool &bOutRe, bool &bError);
         static double getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bool &bOutRe, bool &bError);
@@ -332,10 +338,10 @@ class Wing
         Vector3d m_F[MAXSPANSTATIONS];              /**< the lift vector at span stations */
 
     public:
-        QVector<WingSection*> m_Section;           /**< the array of wing sections. A WingSection extends between a foil and the next. */
-        QVector<PointMass*> m_PointMass;           /**< the array of PointMass objects associated to this Wing object*/
+        QVector<WingSection> m_Section;           /**< the array of wing sections. A WingSection extends between a foil and the next. */
+        QVector<PointMass> m_PointMass;            /**< the array of PointMass objects associated to this Wing object*/
 
-        QVector<Surface*> m_Surface;               /**< the array of Surface objects associated to the wing */
+        QVector<Surface> m_Surface;               /**< the array of Surface objects associated to the wing */
 
         double m_MAChord;                          /**< the wing's mean aerodynamic chord */
         double m_PlanformSpan;                     /**< the planform span, i.e. if the dihedral was 0 at each junction */

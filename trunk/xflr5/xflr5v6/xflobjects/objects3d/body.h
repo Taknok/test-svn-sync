@@ -83,7 +83,7 @@ class Body
         Vector3d centerPoint(double u) const;
         Vector3d leadingPoint() const;
 
-        void clearPointMasses();
+        void clearPointMasses() {m_PointMass.clear();}
         void computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
                          double &GCm, double &GRm, double &GYm, double &Alpha, Vector3d &CoG) const;
         void duplicate(const Body *pBody);
@@ -185,7 +185,7 @@ class Body
         double m_Bunch;                            /**< a bunch parameter to set the density of the points of the NURBS surface; unused */
 
         double m_VolumeMass;                       /**< the mass of the Body's structure, excluding point masses */
-        QVector<PointMass*> m_PointMass;             /**< the array of PointMass objects */
+        QVector<PointMass> m_PointMass;             /**< the array of PointMass objects */
 
         double m_CoGIxx;                           /**< the Ixx component of the inertia tensor, calculated at the CoG */
         double m_CoGIyy;                           /**< the Ixx component of the inertia tensor, calculated at the CoG */

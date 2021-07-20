@@ -38,6 +38,7 @@
 #include <xdirect/analysis/batchctrldlg.h>
 #include <xdirect/analysis/batchgraphdlg.h>
 #include <xdirect/analysis/batchthreaddlg.h>
+#include <xdirect/analysis/relistdlg.h>
 #include <xdirect/analysis/foilpolardlg.h>
 #include <xdirect/analysis/xfoiladvanceddlg.h>
 #include <xdirect/geometry/cadddlg.h>
@@ -1131,6 +1132,7 @@ void XDirect::loadSettings(QSettings &settings)
         }
 
         m_pFoilTreeView->setSplitterSize(settings.value("FoilTreeSplitterSizes").toByteArray());
+        ReListDlg::s_WindowGeometry = settings.value("ReListDlgGeometry").toByteArray();
     }
     settings.endGroup();
 
@@ -3899,6 +3901,7 @@ void XDirect::saveSettings(QSettings &settings)
         }
 
         settings.setValue("FoilTreeSplitterSizes", m_pFoilTreeView->splitterSize());
+        settings.setValue("ReListDlgGeometry", ReListDlg::s_WindowGeometry);
     }
     settings.endGroup();
 

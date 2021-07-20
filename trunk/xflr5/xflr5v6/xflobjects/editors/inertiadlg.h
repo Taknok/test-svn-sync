@@ -32,13 +32,13 @@
 
 
 #include <xflgeom/geom3d/vector3d.h>
+#include <xflobjects/objects3d/pointmass.h>
 
 class FloatEditDelegate;
 class DoubleEdit;
 class Plane;
 class Wing;
 class Body;
-class PointMass;
 
 class InertiaDlg : public QDialog
 {
@@ -57,7 +57,6 @@ class InertiaDlg : public QDialog
         void initDialog();
 
     private slots:
-        void onOK();
         void onBodyInertia();
         void onWingInertia();
         void onWing2Inertia();
@@ -77,8 +76,9 @@ class InertiaDlg : public QDialog
         void showEvent(QShowEvent *pEvent) override;
         void hideEvent(QHideEvent *pEvent) override;
 
+        void onOK();
         void fillMassModel();
-        void clearPointMasses();
+        void clearPointMasses() {m_PointMass.clear();}
         void computeInertia();
         void computeBodyAxisInertia();
         void setupLayout();
@@ -116,7 +116,7 @@ class InertiaDlg : public QDialog
 
         double m_CoGIxx, m_CoGIyy, m_CoGIzz, m_CoGIxz;
 
-        QVector<PointMass*> m_PointMass;
+        QVector<PointMass> m_PointMass;
 
         bool m_bChanged;
 

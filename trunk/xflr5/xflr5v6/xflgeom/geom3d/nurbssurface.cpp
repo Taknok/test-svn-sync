@@ -39,7 +39,6 @@ NURBSSurface::NURBSSurface(int iAxis)
     m_uAxis = iAxis;//directed in x direction, mainly
     m_vAxis = 2;//directed in y direction, mainly
 
-
     m_iuDegree = 2;
     m_ivDegree = 2;
     m_nuKnots = 0;
@@ -50,8 +49,8 @@ NURBSSurface::NURBSSurface(int iAxis)
     m_Bunch  = 0.0;
     m_EdgeWeightu = 1.0;
     m_EdgeWeightv = 1.0;
-
 }
+
 
 NURBSSurface::~NURBSSurface()
 {
@@ -77,7 +76,7 @@ double NURBSSurface::getu(double pos, double v) const
     if(qAbs(m_pFrame.last()->m_Position.coord(m_uAxis) - m_pFrame.first()->m_Position.coord(m_uAxis))<0.0000001) return 0.0;
 
     int iter=0;
-    double u2, u1, b, c, u,  zz, zh;
+    double u2(0), u1(0), b(0), c(0), u(0), zz(0), zh(0);
     u1 = 0.0; u2 = 1.0;
 
     //    v = 0.0;//use top line, but doesn't matter
@@ -154,7 +153,7 @@ double NURBSSurface::getv(double u, Vector3d r) const
     if(r.norm()<1.0e-5) return 0.0;
 
     int iter=0;
-    double v=0, v1=0, v2=0;
+    double v(0), v1(0), v2(0);
     Vector3d t_R;
     r.normalize();
     v1 = 0.0; v2 = 1.0;
@@ -227,7 +226,7 @@ void NURBSSurface::getPoint(double u, double v, Vector3d &Pt) const
 void NURBSSurface::getNormal(double u, double v, Vector3d &N) const
 {
     Vector3d Su, Sv, Vv, rpt;
-    double cs=0, bs=0;
+    double cs(0), bs(0);
 
     u=std::max(u, 1e-4);
     v=std::max(v, 1e-4);
@@ -375,7 +374,6 @@ Vector3d NURBSSurface::point(double u, double v) const
 }
 
 
-
 /**
  * Returns the weight of the control point
  * @param i the index of the point along the edge
@@ -390,18 +388,6 @@ double NURBSSurface::weight(double const &d, const int &i, int const &N) const
 }
 
 
-/*
-double NURBSSurface::Weight(int i, int N)
-{
-    // returns the weight of the control point
-    // i is the index of the point along the edge
-    // N is total number of points along the edge
-
-    if(qAbs(m_EdgeWeight-1.0)<PRECISION) return 1.0;
-    if(i<N/2)                            return 1./pow(m_EdgeWeight, (int)((N-1)/2-i));
-    else                                 return 1./pow(m_EdgeWeight, i-(int)(N/2));
-}*/
-
 /**
  * Intersects a line segment AB with the NURBS surface. The points are expected to be on each side of the NURBS surface.
  *@param A the first point which defines the ray
@@ -411,7 +397,7 @@ double NURBSSurface::Weight(int i, int N)
  */
 bool NURBSSurface::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I) const
 {
-    Vector3d  tmp, M0, M1;
+    Vector3d tmp, M0, M1;
     double u(0), v(0), dist(0), t(0), tp(0);
     int iter = 0;
     int itermax = 20;

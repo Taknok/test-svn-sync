@@ -59,6 +59,7 @@ class Vector2d
             return x;
         }
 
+        // avoid due to compiler conflicts with index operator of std::vector and QVector
 /*        double &operator[](int i)
         {
             if(i==0) return x;

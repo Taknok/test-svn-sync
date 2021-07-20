@@ -73,7 +73,7 @@ class EditPlaneDlg : public QDialog
         void readViewLevel(QModelIndex indexLevel);
         void readBodyTree(Body *pBody, QModelIndex indexLevel);
         void readWingTree(Wing *pWing, Vector3d &wingLE, double &tiltAngle, QModelIndex indexLevel);
-        void readInertiaTree(double &volumeMass, QVector<PointMass *> &pointMasses, QModelIndex indexLevel);
+        void readInertiaTree(double &volumeMass, QVector<PointMass> &pointMasses, QModelIndex indexLevel);
         void readVectorTree(Vector3d &V, QModelIndex indexLevel);
         void readWingSectionTree(Wing *pWing, QModelIndex indexLevel);
         void readPointMassTree(PointMass *ppm, QModelIndex indexLevel);

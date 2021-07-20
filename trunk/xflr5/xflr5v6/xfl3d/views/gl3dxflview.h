@@ -64,6 +64,7 @@ class gl3dXflView : public gl3dView
         void glMakeWingSurface(Wing const *pWing, Body const *pBody, QOpenGLBuffer &vboSurf) const;
         void glMakeWingOutline(Wing const *pWing, Body const *pBody, QOpenGLBuffer &vboOutline) const;
 
+        void paintMasses(double volumeMass, const Vector3d &pos, const QString &tag, const QVector<PointMass> &ptMasses);
         void paintMasses(double volumeMass, Vector3d const&pos, QString const&tag, QVector<PointMass *> const &ptMasses);
         void paintMasses(Plane const *pPlane);
         void paintEditWingMesh(QOpenGLBuffer &vbo);

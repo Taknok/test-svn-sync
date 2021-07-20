@@ -30,7 +30,6 @@
 #include "gl3dbodydlg.h"
 #include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/body.h>
-#include <xflwidgets/line/linepickerdlg.h>
 #include <xflwidgets/customwts/intedit.h>
 #include <xflwidgets/customwts/doubleedit.h>
 

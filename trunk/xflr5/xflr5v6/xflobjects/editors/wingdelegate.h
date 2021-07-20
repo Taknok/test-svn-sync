@@ -49,6 +49,6 @@ class WingDelegate : public QStyledItemDelegate
     private:
         void *m_pWingDlg;
         int *m_Precision; ///table of float precisions for each column
-        QVector<WingSection*> *m_pWingSection;
+        QVector<WingSection> const *m_pWingSection;
 };
 

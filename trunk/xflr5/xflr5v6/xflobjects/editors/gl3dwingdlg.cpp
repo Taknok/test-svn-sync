@@ -141,9 +141,9 @@ bool GL3dWingDlg::checkWing()
     }
     for (int k=1; k<m_pWing->NWingSection(); k++)
     {
-        WingSection const *pSection = m_pWing->m_Section.at(k);
-        Foil const *pLeftFoil = Objects2d::foil(pSection->m_LeftFoilName);
-        Foil const *pRightFoil = Objects2d::foil(pSection->m_RightFoilName);
+        WingSection const pSection = m_pWing->m_Section.at(k);
+        Foil const *pLeftFoil = Objects2d::foil(pSection.m_LeftFoilName);
+        Foil const *pRightFoil = Objects2d::foil(pSection.m_RightFoilName);
         if(pLeftFoil )
         {
             if((pLeftFoil->m_TEXHinge>=99&& pLeftFoil->m_bTEFlap) ||(pLeftFoil->m_LEXHinge<0.01&&pLeftFoil->m_bLEFlap))
@@ -186,7 +186,7 @@ void GL3dWingDlg::computeGeometry()
     m_pWing->createSurfaces(Vector3d(0.0,0.0,0.0), 0.0, 0.0);
 
     for (int j=0; j<m_pWing->m_Surface.size(); j++)
-        m_pWing->m_Surface.at(j)->setMeshSidePoints(nullptr, 0.0, 0.0);
+        m_pWing->surface(j)->setMeshSidePoints(nullptr, 0.0, 0.0);
 }
 
 
@@ -611,15 +611,13 @@ void GL3dWingDlg::onDeleteSection()
 }
 
 
-
-
 void GL3dWingDlg::onInertia()
 {
     InertiaDlg dlg(this);
     dlg.m_pWing = m_pWing;
 
     //save inertia properties
-    QVector<PointMass*> PtMass;
+    QVector<PointMass> PtMass;
     PtMass.clear();
 
     for(int i=0; i< m_pWing->m_PointMass.size(); i++)
@@ -1723,12 +1721,12 @@ bool GL3dWingDlg::intersectObject(Vector3d AA,  Vector3d U, Vector3d &I)
 
     for(int j=0; j<m_pWing->m_Surface.size(); j++)
     {
-        if(xfl::intersect(m_pWing->m_Surface.at(j)->m_LA,
-                      m_pWing->m_Surface.at(j)->m_LB,
-                      m_pWing->m_Surface.at(j)->m_TA,
-                      m_pWing->m_Surface.at(j)->m_TB,
-                      m_pWing->m_Surface.at(j)->Normal,
-                      AA, U, I, dist))
+        if(xfl::intersect(m_pWing->surface(j)->m_LA,
+                          m_pWing->surface(j)->m_LB,
+                          m_pWing->surface(j)->m_TA,
+                          m_pWing->surface(j)->m_TB,
+                          m_pWing->surface(j)->Normal,
+                          AA, U, I, dist))
             return true;
     }
     return false;

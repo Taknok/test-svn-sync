@@ -54,7 +54,6 @@
 #include <xflwidgets/color/colorbtn.h>
 #include <xflwidgets/customwts/bodytabledelegate.h>
 #include <xflwidgets/customwts/doubleedit.h>
-#include <xflwidgets/line/linepickerdlg.h>
 
 QByteArray GL3dBodyDlg::m_VerticalSplitterSizes;
 QByteArray GL3dBodyDlg::m_HorizontalSplitterSizes;

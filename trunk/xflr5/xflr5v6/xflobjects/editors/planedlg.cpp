@@ -600,11 +600,11 @@ void PlaneDlg::onInertia()
     dlg.m_pPlane = m_pPlane;
 
     //save inertia properties
-    QVector<PointMass*> memPtMass;
+    QVector<PointMass> memPtMass;
     memPtMass.clear();
     for(int im=0; im<m_pPlane->m_PointMass.size(); im++)
     {
-        memPtMass.append(new PointMass(m_pPlane->m_PointMass[im]));
+        memPtMass.append(m_pPlane->m_PointMass.at(im));
     }
 
     dlg.initDialog();
@@ -618,7 +618,7 @@ void PlaneDlg::onInertia()
         m_pPlane->clearPointMasses();
         for(int im=0; im<memPtMass.size(); im++)
         {
-            m_pPlane->m_PointMass.append(new PointMass(memPtMass[im]));
+            m_pPlane->m_PointMass.append(memPtMass.at(im));
         }
     }
     m_pglPlaneView->resetPlane();
@@ -635,7 +635,6 @@ void PlaneDlg::onPlaneName()
 void PlaneDlg::onOK()
 {
     readParams();
-qDebug()<<"PlaneDlg::onOK"<<m_pPlane->m_WingLE[0].listCoords();
 
     m_pPlane->m_PlaneDescription = m_ptePlaneDescription->toPlainText();
 
@@ -656,7 +655,6 @@ qDebug()<<"PlaneDlg::onOK"<<m_pPlane->m_WingLE[0].listCoords();
 
     accept();
 }
-
 
 
 void PlaneDlg::onStab()

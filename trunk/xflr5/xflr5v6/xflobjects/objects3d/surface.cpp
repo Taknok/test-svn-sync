@@ -231,7 +231,7 @@ void Surface::copy(Surface const*pSurface)
  * @param Pt the quarter-chord point
  * @param tau the relative span position of the Pt
  */
-void Surface::getC4(int k, Vector3d &Pt, double &tau)
+void Surface::getC4(int k, Vector3d &Pt, double &tau) const
 {
     getPanel(k,m_NXPanels-1, xfl::MIDSURFACE);
     double xl = (LA.x+LB.x)/2.0;
@@ -329,7 +329,7 @@ void Surface::getNormal(double yrel, Vector3d &N) const
  * @param k the 0-based index of the strip for which the leading point shall be returned.
  * @param C the strip's leading point.
  */
-void Surface::getLeadingPt(int k, Vector3d &C)
+void Surface::getLeadingPt(int k, Vector3d &C) const
 {
     getPanel(k,m_NXPanels-1, xfl::MIDSURFACE);
 
@@ -345,7 +345,7 @@ void Surface::getLeadingPt(int k, Vector3d &C)
  * @param k the 0-based index of the strip for which the trailing point shall be returned.
  * @param C the strip's leading point.
  */
-void Surface::getTrailingPt(int k, Vector3d &C)
+void Surface::getTrailingPt(int k, Vector3d &C) const
 {
     getPanel(k,0,xfl::MIDSURFACE);
 
@@ -643,7 +643,7 @@ void Surface::getSurfacePoint(double xArel, double xBrel, double yrel,
  * @param Area a reference to the cross-section area
  * @param PtC4 a reference to the quarter-chord point
  */
-void Surface::getSection(double const &tau, double &Chord, double &Area, Vector3d &PtC4)
+void Surface::getSection(double const &tau, double &Chord, double &Area, Vector3d &PtC4) const
 {
     //explicit double calculations are much faster than vector algebra
     LA.x = m_LA.x * (1.0-tau) + m_LB.x * tau;

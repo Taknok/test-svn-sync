@@ -43,7 +43,8 @@ class XMLPlaneWriter : public QXmlStreamWriter
 
     private:
         void writeHeader();
-        void writePointMass(PointMass *ppm, double massUnit, double lengthUnit);
+        void writePointMass(const PointMass *ppm, double massUnit, double lengthUnit);
+        void writePointMass(const PointMass &pm, double massUnit, double lengthUnit);
         void writeColor(QColor color);
 };
 

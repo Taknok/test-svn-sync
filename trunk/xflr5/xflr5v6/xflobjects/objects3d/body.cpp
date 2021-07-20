@@ -229,11 +229,10 @@ void Body::duplicate(Body const *pBody)
 
     setNURBSKnots();
 
-
     clearPointMasses();
     for(int im=0; im<pBody->m_PointMass.size(); im++)
     {
-        m_PointMass.append(new PointMass(pBody->m_PointMass.at(im)));
+        m_PointMass.append(PointMass(pBody->m_PointMass.at(im)));
     }
     m_VolumeMass = pBody->m_VolumeMass;
 }
@@ -1081,8 +1080,9 @@ void Body::computeBodyAxisInertia()
     // add point masses
     for(int im=0; im<m_PointMass.size(); im++)
     {
-        TotalMass += m_PointMass[im]->mass();
-        m_CoG += m_PointMass[im]->position() * m_PointMass[im]->mass();
+        PointMass const &pm = m_PointMass.at(im);
+        TotalMass += pm.mass();
+        m_CoG += pm.position() * pm.mass();
     }
 
     if(TotalMass>0) m_CoG = m_CoG/TotalMass;
@@ -1099,11 +1099,12 @@ void Body::computeBodyAxisInertia()
 
     for(int im=0; im<m_PointMass.size(); im++)
     {
-        LA = m_PointMass[im]->position() - m_CoG;
-        m_CoGIxx += m_PointMass[im]->mass() * (LA.y*LA.y + LA.z*LA.z);
-        m_CoGIyy += m_PointMass[im]->mass() * (LA.x*LA.x + LA.z*LA.z);
-        m_CoGIzz += m_PointMass[im]->mass() * (LA.x*LA.x + LA.y*LA.y);
-        m_CoGIxz -= m_PointMass[im]->mass() * (LA.x*LA.z);
+        PointMass const &pm = m_PointMass.at(im);
+        LA = pm.position() - m_CoG;
+        m_CoGIxx += pm.mass() * (LA.y*LA.y + LA.z*LA.z);
+        m_CoGIyy += pm.mass() * (LA.x*LA.x + LA.z*LA.z);
+        m_CoGIzz += pm.mass() * (LA.x*LA.x + LA.y*LA.y);
+        m_CoGIxz -= pm.mass() * (LA.x*LA.z);
     }
 }
 
@@ -1315,6 +1316,7 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
     }
 }
 
+
 /**
  * Returns the sum of volume and point masses
  * @return the sum of volume and point masses
@@ -1323,7 +1325,7 @@ double Body::totalMass() const
 {
     double TotalMass = m_VolumeMass;
     for(int im=0; im<m_PointMass.size(); im++)
-        TotalMass += m_PointMass[im]->mass();
+        TotalMass += m_PointMass.at(im).mass();
     return TotalMass;
 }
 
@@ -1340,22 +1342,6 @@ void Body::setEdgeWeight(double uw, double vw)
 }
 
 
-
-/**
- * Destroys the PointMass objects in good order to avoid memory leaks
-*/
-void Body::clearPointMasses()
-{
-    for(int ipm=m_PointMass.size()-1; ipm>=0; ipm--)
-    {
-        delete m_PointMass.at(ipm);
-        m_PointMass.removeAt(ipm);
-    }
-}
-
-
-
-
 /**
  * Exports the definition to text file. The definition is the type of body, the position of the control points,
  * the NURBS degree and other related data.
@@ -1363,7 +1349,6 @@ void Body::clearPointMasses()
  */
 bool Body::exportBodyDefinition(QTextStream &outStream, double mtoUnit) const
 {
-    int i, j;
     QString strong;
 
     strong = "\n# This file defines a body geometry\n";
@@ -1387,10 +1372,10 @@ bool Body::exportBodyDefinition(QTextStream &outStream, double mtoUnit) const
     outStream << ("OFFSET\n");
     outStream << ("0.0     0.0     0.0     #Total body offset (Y-coord is ignored)\n\n");
 
-    for(i=0; i<frameCount(); i++)
+    for(int i=0; i<frameCount(); i++)
     {
         outStream << ("FRAME\n");
-        for(j=0;j<sideLineCount(); j++)
+        for(int j=0; j<sideLineCount(); j++)
         {
             strong = QString("%1     %2    %3\n")
                     .arg(m_SplineSurface.m_pFrame[i]->m_Position.x     * mtoUnit,14,'f',7)
@@ -1579,7 +1564,7 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
             clearPointMasses();
             for(int im=0; im<nMass; im++)
             {
-                m_PointMass.append(new PointMass(mass[im], position[im], tag[im]));
+                m_PointMass.append({mass.at(im), position.at(im), tag.at(im)});
             }
         }
         ar >> f;
@@ -1644,9 +1629,9 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
         ar << m_PointMass.size();
         for(i=0; i<m_PointMass.size(); i++)
         {
-            ar << m_PointMass.at(i)->mass();
-            ar << m_PointMass.at(i)->position().x << m_PointMass.at(i)->position().y << m_PointMass.at(i)->position().z;
-            ar << m_PointMass.at(i)->tag();
+            ar << m_PointMass.at(i).mass();
+            ar << m_PointMass.at(i).position().x << m_PointMass.at(i).position().y << m_PointMass.at(i).position().z;
+            ar << m_PointMass.at(i).tag();
         }
 
         // space allocation for the future storage of more data, without need to change the format
@@ -1714,7 +1699,7 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
         {
             ar >> m >> px >> py >> pz;
             ar >> str;
-            m_PointMass.append(new PointMass(m, Vector3d(px, py, pz), str));
+            m_PointMass.append({m, Vector3d(px, py, pz), str});
         }
 
         // space allocation

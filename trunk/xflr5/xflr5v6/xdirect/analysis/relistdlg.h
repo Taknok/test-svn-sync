@@ -1,7 +1,7 @@
 /****************************************************************************
 
     ReListDlg Class
-    Copyright (C) 2009-2016 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,17 +20,18 @@
 *****************************************************************************/
 
 
+
 #pragma once
 
 #include <QDialog>
-
-#include <QPushButton>
-#include <QTableView>
-#include <QStandardItemModel>
 #include <QDialogButtonBox>
+#include <QModelIndex>
+#include <QSettings>
 
-class FloatEditDelegate;
 
+class CPTableView;
+class ActionDelegate;
+class ActionItemModel;
 
 class ReListDlg : public QDialog
 {
@@ -38,43 +39,43 @@ class ReListDlg : public QDialog
 
     public:
         ReListDlg(QWidget *pParent=nullptr);
-        ~ReListDlg() override;
-
-        QSize sizeHint() const override {return QSize(600,700);}
+        ~ReListDlg();
 
         void initDialog(QVector<double> ReList, QVector<double> MachList, QVector<double> NCritList);
-
-        QVector<double> const &ReList()    const {return m_ReList;}
-        QVector<double> const &MachList()  const {return m_MachList;}
-        QVector<double> const &NCritList() const {return m_NCritList;}
+        QVector<double> const& ReList()    {return m_ReList;}
+        QVector<double> const& MachList()  {return m_MachList;}
+        QVector<double> const& NCritList() {return m_NCritList;}
 
     private slots:
         void onDelete();
-        void onInsert();
+        void onInsertBefore();
+        void onInsertAfter();
         void onOK();
         void onCellChanged(QModelIndex topLeft, QModelIndex botRight);
-        void onButton(QAbstractButton *pButton);
+        void onReTableClicked(QModelIndex index);
 
     private:
         void fillReModel();
         void setupLayout();
         void sortData();
         void sortRe();
+        void showEvent(QShowEvent *pEvent) override;
+        void hideEvent(QHideEvent *pEvent) override;
         void keyPressEvent(QKeyEvent *pEvent) override;
         void resizeEvent(QResizeEvent *pEvent) override;
-        void showEvent(QShowEvent *pEvent) override;
 
     private:
-        QPushButton *m_ppbInsert, *m_ppbDelete;
-        QDialogButtonBox *m_pButtonBox;
-
-        QTableView *m_ptvRe;
-        QStandardItemModel *m_pReModel;
-        FloatEditDelegate *m_pFloatDelegate;
+        CPTableView *m_pcptReTable;
+        ActionItemModel *m_pReModel;
+        ActionDelegate *m_pFloatDelegate;
 
         QVector<double> m_ReList;
         QVector<double> m_MachList;
         QVector<double> m_NCritList;
+        QDialogButtonBox *m_pButtonBox;
+
+        QAction *m_pInsertBeforeAct, *m_pInsertAfterAct, *m_pDeleteAct;
+
+    public:
+        static QByteArray s_WindowGeometry;
 };
-
-
