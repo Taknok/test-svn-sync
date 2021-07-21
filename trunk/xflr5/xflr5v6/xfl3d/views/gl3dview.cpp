@@ -179,7 +179,6 @@ gl3dView::~gl3dView()
 {
     m_vboArcBall.destroy();
     m_vboArcPoint.destroy();
-    m_vboSphere.destroy();
 }
 
 
@@ -863,7 +862,7 @@ void gl3dView::initializeGL()
 
     glMakeAxes();
     glMakeLightSource();
-    glMakeUnitSphere(m_vboSphere);
+    glMakeIcoSphere(2);
     glMakeCube(Vector3d(), 1.0,1.0,1.0, m_vboCube, m_vboCubeEdges);
     glMakeArcBall(m_ArcBall);
     glMakeArcPoint(m_ArcBall);
@@ -1477,95 +1476,6 @@ void gl3dView::glMakeArcPoint(ArcBall const&arcball)
 }
 
 
-//sphere
-#define NUMLONG  31
-#define NUMLAT   29
-/**
-Creates a vbo for a sphere with unit radius by splitting along latitude and longitude arcs.
-Wrong way - use icosahedron splits instead
-*/
-void gl3dView::glMakeUnitSphere(QOpenGLBuffer &vbo)
-{
-    float phi=0, theta=0;
-    float phi1=0, theta1=0;
-
-    float start_lat = -90.0f * PIf/180.0f;
-    float start_lon = 0.0f * PIf/180.0f;
-
-    float lat_incr = 180.0f / (NUMLAT-1) * PIf/180.0f;
-    float lon_incr = 360.0f / (NUMLONG-1) * PIf/180.0f;
-
-    int nQuads = (NUMLONG-1) * (NUMLAT-1);
-    int nTriangles = nQuads*2;
-    int bufferSize =  nTriangles * 3 * 6; // 3 vertices *6 components
-    QVector<GLfloat> sphereVertexArray(bufferSize);
-
-    int iv=0;
-    for (int iLong=0; iLong<NUMLONG-1; iLong++)
-    {
-        phi  = (start_lon + float(iLong)   * lon_incr) ;
-        phi1 = (start_lon + float(iLong+1) * lon_incr) ;
-        for (int iLat=0; iLat<NUMLAT-1; iLat++)
-        {
-
-            theta  = (start_lat + float(iLat)   * lat_incr);
-            theta1 = (start_lat + float(iLat+1) * lat_incr);
-
-            //first triangle
-            sphereVertexArray[iv++] = cosf(phi) * cosf(theta);
-            sphereVertexArray[iv++] = sinf(phi) * cosf(theta);
-            sphereVertexArray[iv++] = sinf(theta);
-            sphereVertexArray[iv++] = cosf(phi) * cosf(theta);
-            sphereVertexArray[iv++] = sinf(phi) * cosf(theta);
-            sphereVertexArray[iv++] = sinf(theta);
-
-            sphereVertexArray[iv++] = cosf(phi1) * cosf(theta);
-            sphereVertexArray[iv++] = sinf(phi1) * cosf(theta);
-            sphereVertexArray[iv++] = sinf(theta);
-            sphereVertexArray[iv++] = cosf(phi1) * cosf(theta);
-            sphereVertexArray[iv++] = sinf(phi1) * cosf(theta);
-            sphereVertexArray[iv++] = sinf(theta);
-
-            sphereVertexArray[iv++] = cosf(phi) * cosf(theta1);
-            sphereVertexArray[iv++] = sinf(phi) * cosf(theta1);
-            sphereVertexArray[iv++] = sinf(theta1);
-            sphereVertexArray[iv++] = cosf(phi) * cosf(theta1);
-            sphereVertexArray[iv++] = sinf(phi) * cosf(theta1);
-            sphereVertexArray[iv++] = sinf(theta1);
-
-            //second triangle
-            sphereVertexArray[iv++] = cosf(phi1) * cosf(theta);
-            sphereVertexArray[iv++] = sinf(phi1) * cosf(theta);
-            sphereVertexArray[iv++] = sinf(theta);
-            sphereVertexArray[iv++] = cosf(phi1) * cosf(theta);
-            sphereVertexArray[iv++] = sinf(phi1) * cosf(theta);
-            sphereVertexArray[iv++] = sinf(theta);
-
-            sphereVertexArray[iv++] = cosf(phi1) * cosf(theta1);
-            sphereVertexArray[iv++] = sinf(phi1) * cosf(theta1);
-            sphereVertexArray[iv++] = sinf(theta1);
-            sphereVertexArray[iv++] = cosf(phi1) * cosf(theta1);
-            sphereVertexArray[iv++] = sinf(phi1) * cosf(theta1);
-            sphereVertexArray[iv++] = sinf(theta1);
-
-            sphereVertexArray[iv++] = cosf(phi) * cosf(theta1);
-            sphereVertexArray[iv++] = sinf(phi) * cosf(theta1);
-            sphereVertexArray[iv++] = sinf(theta1);
-            sphereVertexArray[iv++] = cosf(phi) * cosf(theta1);
-            sphereVertexArray[iv++] = sinf(phi) * cosf(theta1);
-            sphereVertexArray[iv++] = sinf(theta1);
-        }
-    }
-
-    Q_ASSERT(iv==bufferSize);
-
-    vbo.create();
-    vbo.bind();
-    vbo.allocate(sphereVertexArray.constData(), sphereVertexArray.size() * int(sizeof(GLfloat)));
-    vbo.release();
-}
-
-
 void gl3dView::paintSphere(Vector3d const &place, float radius, QColor const &sphereColor, bool bLight)
 {
     paintSphere(place.xf(), place.yf(), place.zf(), radius, sphereColor, bLight);
@@ -1596,31 +1506,31 @@ void gl3dView::paintSphere(float xs, float ys, float zs, float radius, const QCo
         m_shadSurf.enableAttributeArray(m_locSurf.m_attrVertex);
         m_shadSurf.enableAttributeArray(m_locSurf.m_attrNormal);
 
-        m_vboSphere.bind();
+        m_vboIcoSphere.bind();
         {
             m_shadSurf.setAttributeBuffer(m_locSurf.m_attrVertex, GL_FLOAT, 0,                  3, 6 * sizeof(GLfloat));
             m_shadSurf.setAttributeBuffer(m_locSurf.m_attrNormal, GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
 
+            glEnable(GL_CULL_FACE);
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             glEnable(GL_POLYGON_OFFSET_FILL);
             glPolygonOffset(DEPTHFACTOR, DEPTHUNITS);
 
-            int nTriangles = m_vboSphere.size()/3/6/int(sizeof(float)); // 3 vertices and (3 position components+3 normal components)
+            int nTriangles = m_vboIcoSphere.size()/3/6/int(sizeof(float)); // 3 vertices and (3 position components+3 normal components)
             glDrawArrays(GL_TRIANGLES, 0, nTriangles*3);
+            glDisable(GL_CULL_FACE);
         }
-
-        m_vboSphere.release();
+        m_vboIcoSphere.release();
 
         m_shadSurf.disableAttributeArray(m_locSurf.m_attrVertex);
         m_shadSurf.disableAttributeArray(m_locSurf.m_attrNormal);
 
         // leave things as they were
-        m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix, vmMat);
+        m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix,  vmMat);
         m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, pvmMat);
     }
     m_shadSurf.release();
 }
-
 
 
 void gl3dView::paintSphereInstances(QOpenGLBuffer &vboPosInstances, float radius, QColor const &clr, bool bTwoSided, bool bLight)
@@ -1641,7 +1551,7 @@ void gl3dView::paintSphereInstances(QOpenGLBuffer &vboPosInstances, float radius
         else       m_shadSurf.setUniformValue(m_locSurf.m_Light, 0);
         m_shadSurf.setUniformValue(m_locSurf.m_UniColor, clr);
 
-        m_vboSphere.bind();
+        m_vboIcoSphere.bind();
         {
             m_shadSurf.enableAttributeArray(m_locSurf.m_attrVertex);
             m_shadSurf.enableAttributeArray(m_locSurf.m_attrNormal);
@@ -1649,10 +1559,10 @@ void gl3dView::paintSphereInstances(QOpenGLBuffer &vboPosInstances, float radius
             m_shadSurf.setAttributeBuffer(m_locSurf.m_attrVertex, GL_FLOAT, 0,                 3, 6*sizeof(GLfloat));
             m_shadSurf.setAttributeBuffer(m_locSurf.m_attrNormal, GL_FLOAT, 3*sizeof(GLfloat), 3, 6*sizeof(GLfloat));
 
-            nTriangles = m_vboSphere.size()/3/6/int(sizeof(float));
+            nTriangles = m_vboIcoSphere.size()/3/6/int(sizeof(float));
             glDrawArrays(GL_TRIANGLES, 0, nTriangles*3); // 4 vertices defined but only 3 are used
         }
-        m_vboSphere.release();
+        m_vboIcoSphere.release();
 
         vboPosInstances.bind();
         {

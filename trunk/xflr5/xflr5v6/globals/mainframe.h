@@ -150,68 +150,65 @@ class MainFrame : public QMainWindow
         void onSaveViewToImageFile();
         void onSetNoApp();
 
-    protected:
+    private:
         void keyPressEvent(QKeyEvent *pEvent);
         void keyReleaseEvent(QKeyEvent *pEvent);
         void closeEvent (QCloseEvent * pEvent);
         void showEvent(QShowEvent *pEvent);
 
-    private:
+    public:
+        QString shortenFileName(QString &PathName);
+        bool loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
+        bool loadSettings();
+        bool saveProject(QString PathName="");
+        bool serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring);
+        bool serializePlaneProject(QDataStream &ar);
+        bool serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStoring);
+        bool serializeProjectWPA(QDataStream &ar, bool bIsStoring);
+        bool serializeProjectXFL(QDataStream &ar, bool bIsStoring);
+        static QString const &projectName() {return s_ProjectName;}
+        static bool hasOpenGL(){return s_bOpenGL;}
         void addRecentFile(const QString &PathName);
         void checkGraphActions();
-        void createDockWindows();
-        void createToolbars();
-        void createStatusBar();
+        void createAFoilActions();
+        void createAFoilMenus();
+        void createAFoilToolbar();
         void createActions();
-        void createMenus();
+        void createDockWindows();
         void createGraphActions();
+        void createMenus();
+        void createMiarexActions();
+        void createMiarexMenus();
+        void createMiarexToolbar();
+        void createStatusBar();
+        void createToolbars();
         void createXDirectActions();
         void createXDirectMenus();
         void createXDirectToolbar();
         void createXInverseActions();
         void createXInverseMenus();
         void createXInverseToolbar();
-        void createMiarexActions();
-        void createMiarexMenus();
-        void createMiarexToolbar();
-        void createAFoilActions();
-        void createAFoilMenus();
-        void createAFoilToolbar();
         void deleteProject(bool bClosing=false);
         void exportGraph(Graph *pGraph);
         void hideDockWindows();
-        bool loadSettings();
-        bool loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
         void pushSettings();
         void readPolarFile(QDataStream &ar);
         void saveFoilPolars(QDataStream &ar, const QVector<Foil*> &FoilList) const;
-        bool saveProject(QString PathName="");
         void saveSettings();
         void setColorListFromFile();
         void setDefaultStaticFonts();
-        void setPlainColorsFromFile();
-        void setNoApp();
-        bool serializeProjectWPA(QDataStream &ar, bool bIsStoring);
-        bool serializeProjectXFL(QDataStream &ar, bool bIsStoring);
-        bool serializePlaneProject(QDataStream &ar);
-    //    bool serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
-        bool serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStoring);
-        bool serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring);
-
-        void setMainFrameCentralWidget();
         void setGraphSettings(Graph *pGraph);
-        void setProjectName(const QString &PathName);
+        void setMainFrameCentralWidget();
         void setMenus();
+        void setNoApp();
+        void setPlainColorsFromFile();
+        void setProjectName(const QString &PathName);
+        void setSaveState(bool bSave);
         void setupDataDir();
-        QString shortenFileName(QString &PathName);
         void testConfiguration();
         void updateRecentFileActions();
         void updateView();
-
-        static bool hasOpenGL(){return s_bOpenGL;}
-
-        static QString const &projectName() {return s_ProjectName;}
-        void setSaveState(bool bSave);
+    //    bool serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
 
 /*___________________________________________Variables_______________________________*/
 

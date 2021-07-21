@@ -28,7 +28,6 @@
 #include <QMessageBox>
 #include <QFontDatabase>
 #include <QHBoxLayout>
-#include <QtDebug>
 
 #include "settingswt.h"
 #include <globals/mainframe.h>
@@ -41,8 +40,8 @@
 #include <xflwidgets/color/textclrbtn.h>
 #include <xflwidgets/color/colorbtn.h>
 
-
-bool Settings::s_bStyleSheet = false;
+bool Settings::s_bDontUseNativeDlg(true);
+bool Settings::s_bStyleSheet(false);
 QString Settings::s_StyleName;
 QString Settings::s_StyleSheetName;
 

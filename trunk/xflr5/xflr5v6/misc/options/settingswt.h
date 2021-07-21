@@ -107,7 +107,7 @@ class Settings : public QWidget
         static Graph s_RefGraph;//Reference setttings
         static QStringList s_colorList;
         static QStringList s_colorNames;
-
+        static bool s_bDontUseNativeDlg;
 };
 
 
