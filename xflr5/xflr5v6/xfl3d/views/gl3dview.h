@@ -187,7 +187,6 @@ class gl3dView : public QOpenGLWidget, protected QOpenGLExtraFunctions
 
     protected:
         void getGLError();
-        void glMakeUnitSphere(QOpenGLBuffer &vbo);
         void glMakeArcPoint(ArcBall const&arcball);
         void glMakeArcBall(ArcBall &arcball);
         void glMakeLightSource();
@@ -265,7 +264,6 @@ class gl3dView : public QOpenGLWidget, protected QOpenGLExtraFunctions
         int m_uShadowLightViewMatrix;
 
         QOpenGLBuffer m_vboArcBall, m_vboArcPoint;
-        QOpenGLBuffer m_vboSphere;
         QOpenGLBuffer m_vboIcoSphere, m_vboIcoSphereEdges;
         QOpenGLBuffer m_vboAxes;
         QOpenGLBuffer m_vboLightSource;

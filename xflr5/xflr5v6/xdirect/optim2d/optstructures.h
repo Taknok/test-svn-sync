@@ -24,6 +24,11 @@
 
 struct OptObjective
 {
+    OptObjective() {}
+    OptObjective(QString const &name, bool bActive, double target, double maxerror) :
+        m_Name(name), m_bActive(bActive), m_Target(target), m_MaxError(maxerror)
+    {}
+
     QString m_Name;
     bool m_bActive = true;
     double m_Target = 0.0;
@@ -33,6 +38,11 @@ struct OptObjective
 
 struct OptVariable
 {
+    OptVariable() {}
+    OptVariable(QString const &name, double min, double max) :
+        m_Name(name), m_Min(min), m_Max(max)
+    {}
+
     QString m_Name;
     double m_Min = 0.0;
     double m_Max = 0.0;

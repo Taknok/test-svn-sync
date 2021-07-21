@@ -43,7 +43,7 @@ class gl3dBodyView : public gl3dXflView
 
 
     private slots:
-        void on3dReset();
+        void on3dReset() override;
 
     public:
         Body *m_pBody;
