@@ -69,9 +69,10 @@ class Settings : public QWidget
         void onGraphSettings();
         void onReverseZoom();
         void onStyleChanged(const QString &StyleName);
-        void onTableFont();
         void onTextColor();
+        void onTableFont();
         void onTextFont();
+        void onTreeFont();
         void onTheme();
         void onStyleSheet(bool bSheet);
 
@@ -82,7 +83,7 @@ class Settings : public QWidget
     private:
         ColorBtn *m_pcbBackColor;
         TextClrBtn *m_ptcbTextClr;
-        QPushButton *m_ppbTextFont, *m_ppbTableFont;
+        QPushButton *m_ppbTextFont, *m_ppbTableFont, *m_ppbTreeFont;
         QPushButton *m_ppbGraphSettings;
 
         QCheckBox *m_pchReverseZoom;
