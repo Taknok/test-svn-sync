@@ -143,9 +143,6 @@ bool MainFrame::s_bSaved = true;
 bool MainFrame::s_bOpenGL = true;
 
 
-
-
-
 MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(parent, flags)
 {
     setAttribute(Qt::WA_DeleteOnClose);
@@ -6413,15 +6410,18 @@ void MainFrame::pushSettings()
     GraphWt::setTextFontStruct(DisplayOptions::textFontStruct());
     GraphWt::setTextColor(DisplayOptions::textColor());
 
-
     ObjectTreeDelegate::setTreeFontStruct(DisplayOptions::treeFontStruct());
     ExpandableTreeView::setTreeFontStruct(DisplayOptions::treeFontStruct());
     LegendBtn::setTextFontStruct(DisplayOptions::textFontStruct());
     LegendBtn::setTextColor(DisplayOptions::textColor());
     LegendBtn::setBackgroundColor(DisplayOptions::backgroundColor());
     CPTableView::setTableFontStruct(DisplayOptions::tableFontStruct());
+    m_pMiarex->m_pPlaneTreeView->setPropertiesFont(DisplayOptions::tableFont());
+    m_pXDirect->m_pFoilTreeView->setPropertiesFont(DisplayOptions::tableFont());
+
     PlainTextOutput::setTableFontStruct(DisplayOptions::tableFontStruct());
     LineBtn::setBackgroundColor(DisplayOptions::backgroundColor());
+    update();
 }
 
 

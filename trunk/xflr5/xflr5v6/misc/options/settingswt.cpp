@@ -70,13 +70,14 @@ Settings::Settings(QWidget *pParent) : QWidget(pParent)
 
     setupLayout();
 
-    connect(m_pcbStyles,             SIGNAL(activated(const QString &)), SLOT(onStyleChanged(const QString &)));
+    connect(m_pcbStyles,             SIGNAL(activated(QString)),         SLOT(onStyleChanged(QString)));
 
     connect(m_pcbBackColor,          SIGNAL(clicked()),                  SLOT(onBackgroundColor2d()));
     connect(m_ppbGraphSettings,      SIGNAL(clicked()),                  SLOT(onGraphSettings()));
-    connect(m_ptcbTextClr,            SIGNAL(clickedTB()),                SLOT(onTextColor()));
+    connect(m_ptcbTextClr,           SIGNAL(clickedTB()),                SLOT(onTextColor()));
     connect(m_ppbTextFont,           SIGNAL(clicked()),                  SLOT(onTextFont()));
     connect(m_ppbTableFont,          SIGNAL(clicked()),                  SLOT(onTableFont()));
+    connect(m_ppbTreeFont,           SIGNAL(clicked()),                  SLOT(onTreeFont()));
 
     connect(m_pchReverseZoom,        SIGNAL(clicked()),                  SLOT(onReverseZoom()));
     connect(m_pchAlignChildrenStyle, SIGNAL(clicked()),                  SLOT(onAlignChildrenStyle()));
@@ -148,19 +149,23 @@ void Settings::setupLayout()
             {
                 QGridLayout *pMainFontLayout = new QGridLayout;
                 {
-                    QLabel *labMain = new QLabel(tr("Main display font"));
+                    QLabel *plabMain = new QLabel(tr("Main display font"));
                     m_ppbTextFont = new QPushButton;
                     m_ptcbTextClr  = new TextClrBtn(this);
 
-                    pMainFontLayout->addWidget(labMain,1,1);
-                    pMainFontLayout->addWidget(m_ppbTextFont,1,2);
-                    pMainFontLayout->addWidget(m_ptcbTextClr,1,3);
-
-                    QLabel *labTable = new QLabel(tr("Table font"));
+                    QLabel *plabTable = new QLabel(tr("Table font"));
                     m_ppbTableFont = new QPushButton;
 
-                    pMainFontLayout->addWidget(labTable,2,1);
+                    QLabel *plabTree = new QLabel(tr("Tree font"));
+                    m_ppbTreeFont = new QPushButton;
+
+                    pMainFontLayout->addWidget(plabMain,      1,1);
+                    pMainFontLayout->addWidget(m_ppbTextFont, 1,2);
+                    pMainFontLayout->addWidget(m_ptcbTextClr, 1,3);
+                    pMainFontLayout->addWidget(plabTable,     2,1);
                     pMainFontLayout->addWidget(m_ppbTableFont,2,2);
+                    pMainFontLayout->addWidget(plabTree,      3,1);
+                    pMainFontLayout->addWidget(m_ppbTreeFont, 3,2);
                 }
                 pFontBox->setLayout(pMainFontLayout);
             }
@@ -233,6 +238,11 @@ void Settings::initWidget()
     m_ppbTableFont->setText(tableFontName);
     m_ppbTableFont->setFont(s_TableFont);
 
+    QFont s_TreeFont = DisplayOptions::treeFont();
+    QString TreeFontName = s_TreeFont.family() + QString(" %1").arg(s_TreeFont.pointSize());
+    m_ppbTreeFont->setText(TreeFontName);
+    m_ppbTreeFont->setFont(s_TreeFont);
+
     if(m_pcbStyles->findText(s_StyleName)>=0)
         m_pcbStyles->setCurrentIndex(m_pcbStyles->findText(s_StyleName));
     else if(m_pcbStyles->findText(s_StyleSheetName)>=0)
@@ -303,16 +313,7 @@ void Settings::onTextFont()
     {
         DisplayOptions::setTextFont(TextFont);
         setButtonFonts();
-
-/*        QString stylestring = QString::asprintf("color: %s; font-family: %s; font-size: %dpt",
-                                               DisplayOptions::textColor().name(QColor::HexRgb).toStdString().c_str(),
-                                               DisplayOptions::textFont().family().toStdString().c_str(),
-                                               DisplayOptions::textFont().pointSize());
-        m_ppbTextFont->setText(DisplayOptions::textFont().family() + QString::asprintf(" %d",DisplayOptions::textFont().pointSize()));
-        m_ppbTextFont->setStyleSheet(stylestring);
-        m_ptcbTextClr->setStyleSheet(stylestring);*/
     }
-
 }
 
 
@@ -328,7 +329,24 @@ void Settings::onTableFont()
 
     if (bOK)
     {
+        qDebug()<<TableFont;
         DisplayOptions::setTableFont(TableFont);
+        setButtonFonts();
+    }
+}
+
+
+void Settings::onTreeFont()
+{
+#ifdef Q_OS_MAC
+    if(s_bDontUseNativeDlg) dialogoptions |= QFontDialog::DontUseNativeDialog;
+#endif
+    bool bOK(false);
+    QFont TreeFont = QFontDialog::getFont(&bOK, DisplayOptions::treeFont(), this, QString("Tree font"));
+
+    if (bOK)
+    {
+        DisplayOptions::setTreeFont(TreeFont);
         setButtonFonts();
     }
 }
@@ -614,24 +632,23 @@ void Settings::setColorList()
 
 void Settings::setButtonFonts()
 {
-    m_ppbTextFont->setText(DisplayOptions::textFontStruct().family());
-    m_ppbTextFont->setFont(DisplayOptions::textFont());
     m_ptcbTextClr->setFont(DisplayOptions::textFont());
 
     m_ptcbTextClr->setTextColor(DisplayOptions::textColor());
     m_ptcbTextClr->setBackgroundColor(DisplayOptions::backgroundColor());
 
 
-    m_ppbTextFont->setText(DisplayOptions::textFont().family() + QString::asprintf(" %d",DisplayOptions::textFont().pointSize()));
+    m_ppbTextFont->setFont(DisplayOptions::textFont());
+    m_ppbTextFont->setText(DisplayOptions::textFontStruct().family() + QString::asprintf(" %d",DisplayOptions::textFont().pointSize()));
     m_ptcbTextClr->setText(QObject::tr("Text color"));
     QString stylestring = QString::asprintf("font-family: %s; font-size: %dpt",
                                            DisplayOptions::textFont().family().toStdString().c_str(),
                                            DisplayOptions::textFont().pointSize());
     m_ppbTextFont->setStyleSheet(stylestring);
     stylestring = QString::asprintf("color: %s; font-family: %s; font-size: %dpt",
-                                           DisplayOptions::textColor().name(QColor::HexRgb).toStdString().c_str(),
-                                           DisplayOptions::textFont().family().toStdString().c_str(),
-                                           DisplayOptions::textFont().pointSize());
+                                    DisplayOptions::textColor().name(QColor::HexRgb).toStdString().c_str(),
+                                    DisplayOptions::textFont().family().toStdString().c_str(),
+                                    DisplayOptions::textFont().pointSize());
     m_ptcbTextClr->setStyleSheet(stylestring);
 
 
@@ -641,6 +658,13 @@ void Settings::setButtonFonts()
                                     DisplayOptions::tableFont().family().toStdString().c_str(),
                                     DisplayOptions::tableFont().pointSize());
     m_ppbTableFont->setStyleSheet(stylestring);
+
+    QString treeeFontName = DisplayOptions::treeFont().family() + QString(" %1").arg(DisplayOptions::treeFont().pointSize());
+    m_ppbTreeFont->setText(treeeFontName);
+    stylestring = QString::asprintf("font-family: %s; font-size: %dpt",
+                                    DisplayOptions::treeFont().family().toStdString().c_str(),
+                                    DisplayOptions::treeFont().pointSize());
+    m_ppbTreeFont->setStyleSheet(stylestring);
 }
 
 

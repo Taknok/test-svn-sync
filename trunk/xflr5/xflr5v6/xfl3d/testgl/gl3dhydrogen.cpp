@@ -32,7 +32,7 @@ int gl3dHydrogen::s_l(1); // azimuthal quantum number: 0, ..., n-1
 int gl3dHydrogen::s_m(0); // magnetic  quantum number: -l, ...,l
 int gl3dHydrogen::s_NObservations(25000); // Number of observationss
 double gl3dHydrogen::s_PtWidth = 0.3;
-double gl3dHydrogen::s_ObsRadius(90.0); // in Bohr radius units
+double gl3dHydrogen::s_ObsRadius(50.0); // in Bohr radius units
 
 
 gl3dHydrogen::gl3dHydrogen(QWidget *pParent) : gl3dTestGLView(pParent)
@@ -557,14 +557,13 @@ void gl3dHydrogen::onCollapse()
     {
         QtConcurrent::run(this, &gl3dHydrogen::collapseBlock, this);
     }
-
 }
 
 
 void gl3dHydrogen::collapseBlock(QWidget *pParent) const
 {
     double wavefunc(0), probdens(0);
-    double r(0), rho(0), theta(0), phi(0), p(0);
+    double r(0), rho(0), theta(0), phi(0), u(0), p(0);
     QVector<float>tmpstate(m_UpdateInterval); // temporary working array
     QVector<Vector3d>tmppos(m_UpdateInterval); //  temporary working array
 
@@ -573,9 +572,10 @@ void gl3dHydrogen::collapseBlock(QWidget *pParent) const
     do
     {
         rho   = QRandomGenerator::global()->bounded(s_ObsRadius); // in Bohr radius units
-        theta = QRandomGenerator::global()->bounded(PI);
         phi   = QRandomGenerator::global()->bounded(2.0*PI);
-        p     = QRandomGenerator::global()->bounded(1.0)/A0; // set max to 1/A0
+        u     = QRandomGenerator::global()->generateDouble();
+        theta = acos(1.0-2.0*u);
+        p     = QRandomGenerator::global()->generateDouble()/A0; // set max to 1/A0
 
         r = rho*A0;
 
@@ -596,7 +596,6 @@ void gl3dHydrogen::collapseBlock(QWidget *pParent) const
                 pHEvent->setNewPoints(tmppos);
                 pHEvent->setNewStates(tmpstate);
                 qApp->postEvent(pParent, pHEvent);
-//                qApp->processEvents();
                 iv=0;
             }
         }

@@ -64,7 +64,6 @@ win32 {
     LIBS += -lopenGL32
 
     RC_FILE = ../win/xflr5.rc
-
 }
 
 
