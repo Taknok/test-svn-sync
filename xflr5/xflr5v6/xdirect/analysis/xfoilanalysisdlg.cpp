@@ -345,7 +345,6 @@ void XFoilAnalysisDlg::analyze()
 
     //Launch the task
     m_pXFoilTask->run();
-    qApp->processEvents();
 
     pTimer->stop();
     delete pTimer;

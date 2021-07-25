@@ -34,7 +34,7 @@ class gl3dMiarexView : public gl3dXflView
     public:
         void glMake3dObjects() override;
         void glMakeCpLegendClr();
-        bool glMakeStreamLines(const Wing *PlaneWing[], const Vector3d *pNode, const WPolar *pWPolar, const PlaneOpp *pPOpp, int nPanels);
+        bool glMakeStreamLines(const Wing *PlaneWing[], const Vector3d *pNode, const WPolar *pWPolar, const PlaneOpp *pPOpp);
         void glMakeSurfVelocities(Panel const *pPanel, const WPolar *pWPolar, PlaneOpp const *pPOpp, int nPanels);
         void glMakeTransitions(int iWing, const Wing *pWing, const WPolar *pWPolar, const WingOpp *pWOpp);
         void glMakeLiftStrip(int iWing, Wing const *pWing, WPolar const *pWPolar, WingOpp const*pWOpp);

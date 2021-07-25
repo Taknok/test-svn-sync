@@ -5912,7 +5912,6 @@ void MainFrame::executeScript(QString XmlScriptName, bool bShowProgressStdIO, bo
         scriptexecutor.setStdOutStream(true);
     }
 
-    qApp->processEvents();
 
     QFileInfo fi(XmlScriptName);
     if(!fi.exists())
@@ -5953,8 +5952,6 @@ void MainFrame::executeScript(QString XmlScriptName, bool bShowProgressStdIO, bo
         m_iApp=xfl::XFOILANALYSIS;
         onXDirect();
     }
-
-    qApp->processEvents();
 }
 
 

@@ -40,7 +40,6 @@ void OptimTask::outputMsg(QString const &msg) const
 {
     MessageEvent * pMsgEvent = new MessageEvent(msg);
     qApp->postEvent(m_pParent, pMsgEvent);
-    qApp->processEvents();
 }
 
 
@@ -70,7 +69,6 @@ void OptimTask::postOptEndEvent()
 {
     QEvent *pOptimEvent = new QEvent(OPTIM_END_EVENT);
     qApp->postEvent(m_pParent, pOptimEvent);
-    qApp->processEvents();
 }
 
 

@@ -37,10 +37,6 @@ LogWt::LogWt(QWidget *pParent) : QWidget(pParent)
 
     m_bFinished = false;
     setupLayout();
-
-    /*	connect(&m_Timer, SIGNAL(timeout()), this, SLOT(onTimer()));
-    m_Timer.setInterval(500);
-    m_Timer.start();*/
 }
 
 
@@ -83,33 +79,32 @@ void LogWt::onCancelClose()
         m_ppbButton->setText(tr("Cancelling..."));
         m_ppbButton->setEnabled(false);
         onUpdate("\n_____________Cancel request emitted_____________\n\n");
-        qApp->processEvents();
     }
 }
 
 
-void LogWt::keyPressEvent(QKeyEvent *event)
+void LogWt::keyPressEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
     case Qt::Key_Escape:
         m_ppbButton->animateClick();
-        event->accept();
+        pEvent->accept();
         break;
     default:
-        event->ignore();
+        pEvent->ignore();
         break;
     }
 }
 
 
-void LogWt::showEvent(QShowEvent *)
+void LogWt::showEvent(QShowEvent *pEvent)
 {
     restoreGeometry(s_Geometry);
 }
 
 
-void LogWt::hideEvent(QHideEvent*)
+void LogWt::hideEvent(QHideEvent*pEvent)
 {
     s_Geometry = saveGeometry();
 }

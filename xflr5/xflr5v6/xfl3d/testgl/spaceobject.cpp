@@ -128,10 +128,10 @@ void Planet::setOrbit(double a, double e, double i, double O, double o)
 void Planet::list(QString &props) const
 {
     props = m_Name +":\n";
-    props += QString::asprintf(  "   period   = %7.2f years", period()/365/24/3600);
-    props += QString::asprintf("\n   distance = %7.2f a.u.",  distance()/AU);
-    props += QString::asprintf("\n   velocity = %7.2f%% c",   velocity()*100.0/LIGHTSPEED);
-    props += QString::asprintf("\n   RK4 energy loss = %5.2f%%",     (totalEnergy()/m_RefEnergy-1.0)*100.0);
+    props += QString::asprintf(  "   period   = %7.3f years", period()/365/24/3600);
+    props += QString::asprintf("\n   distance = %7.3f a.u.",  distance()/AU);
+    props += QString::asprintf("\n   velocity = %7.3f%% c",   velocity()*100.0/LIGHTSPEED);
+    props += QString::asprintf("\n   RK4 energy loss = %7.3f%%",     (totalEnergy()/m_RefEnergy-1.0)*100.0);
 }
 
 

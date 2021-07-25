@@ -229,7 +229,6 @@ void ObjectTreeModel::updateData()
     QModelIndex idxTL = index(0,0, QModelIndex());
     QModelIndex idxBR = index(rowCount(), columnCount());
     emit dataChanged(idxTL, idxBR);
-    QApplication::processEvents();
 }
 
 
@@ -237,7 +236,6 @@ void ObjectTreeModel::updateData()
 void ObjectTreeModel::updateData(QModelIndex idx)
 {
     emit dataChanged(idx, idx);
-    QApplication::processEvents();
 }
 
 

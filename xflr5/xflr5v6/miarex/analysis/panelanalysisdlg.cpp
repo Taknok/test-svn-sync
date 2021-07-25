@@ -206,8 +206,6 @@ void PanelAnalysisDlg::analyze()
 {
     if(!m_pTheTask) return;
 
-    qApp->processEvents();
-
     m_ppbCancel->setText(tr("Cancel"));
     m_bIsFinished = false;
 
@@ -228,7 +226,6 @@ void PanelAnalysisDlg::analyze()
     m_Timer.setInterval(250);
     m_Timer.start();
 
-
     //run the instance asynchronously
     QFuture<void> future = QtConcurrent::run(m_pTheTask, &PlaneTask::run);
 
@@ -240,7 +237,6 @@ void PanelAnalysisDlg::analyze()
     qApp->processEvents();
     cleanUp();
 }
-
 
 
 void PanelAnalysisDlg::cleanUp()

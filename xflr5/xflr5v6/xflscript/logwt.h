@@ -32,17 +32,17 @@
 class LogWt : public QWidget
 {
     Q_OBJECT
-//    friend class MainFrame;
 
     public:
         LogWt(QWidget *pParent=nullptr);
 
-        void keyPressEvent(QKeyEvent *event);
-        void showEvent(QShowEvent *event);
-        void hideEvent(QHideEvent *event);
+        QSize sizeHint() const override {return QSize(900,550);}
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void showEvent(QShowEvent *pEvent) override;
+        void hideEvent(QHideEvent *pEvent) override;
+
         QPushButton *ctrlButton() {return m_ppbButton;}
 
-        QSize sizeHint() const {return QSize(900,550);}
 
         void setCancelButton(bool bCancel);
         void setFinished(bool bFinished);
@@ -55,7 +55,6 @@ class LogWt : public QWidget
 
     private slots:
         void onCancelClose();
-        void onTimer() {qApp->processEvents();}
 
     private:
         void setupLayout();

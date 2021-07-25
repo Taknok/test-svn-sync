@@ -960,7 +960,6 @@ void Optim2d::customEvent(QEvent *pEvent)
         if(m_pPSOTask) updateParetoGraph();
 
         update();
-        QApplication::processEvents();
     }
     else if(pEvent->type()==OPTIM_END_EVENT)
     {

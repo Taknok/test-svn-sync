@@ -429,7 +429,7 @@ void gl3dMiarexView::glMakeCpLegendClr()
 
 
 bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d const *pNode,
-                                       WPolar const *pWPolar, PlaneOpp const *pPOpp, int /*nPanels*/)
+                                       WPolar const *pWPolar, PlaneOpp const *pPOpp)
 {
 
     if(!isVisible()) return false;
@@ -442,12 +442,8 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
     double memcoresize = Panel::coreSize();
     Panel::setCoreSize(0.0005); //mm, just for the time needed to build the streamlines which are very sensitive to trailing vortex interference
 
-//    QProgressDialog pdlg(tr("Streamlines calculation"), tr("Abort"), 0, nPanels);
-//    pdlg.setWindowModality(Qt::WindowModal);
-//    pdlg.show();
-
-    bool bFound=false;
-    double ds=0;
+    bool bFound(false);
+    double ds(0);
 
     Vector3d C, D, D1, VA, VAT, VB, VBT, VT, VInf, TC, TD;
     Vector3d RefPoint(0.0,0.0,0.0);
@@ -540,8 +536,8 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
                         }
 
                         //Tilt the geometry w.r.t. sideslip and aoa
-                        //                        VA.rotateZ(pPOpp->beta());
-                        //                        VB.rotateZ(pPOpp->beta());
+//                        VA.rotateZ(pPOpp->beta());
+//                        VB.rotateZ(pPOpp->beta());
                         VA.rotateY(pPOpp->alpha());
                         VB.rotateY(pPOpp->alpha());
                     }
@@ -569,7 +565,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
                         ds *= GL3DScales::s_XFactor;
                         nVertex +=2;
 
-                        for (i=2; i< GL3DScales::s_NX ;i++)
+                        for (i=2; i<GL3DScales::s_NX ;i++)
                         {
                             s_pMiarex->m_thePanelAnalysis.getSpeedVector(C, Mu, Sigma, VT);
 
@@ -616,29 +612,14 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
                         ds *= GL3DScales::s_XFactor;
                         nVertex +=1;
                     }
-
-/*                    if(pdlg.wasCanceled())
-                    {
-                        qDebug()<<"cancelled....";
-                        break;
-                    }
-                    else
-                    {
-                        pdlg.setValue(p0+p);
-                    }*/
-                    qApp->processEvents();
                 }
 
-                //                dlg.setValue(m);
                 m++;
             }
-            //            if(dlg.wasCanceled()) break;
 
             p0+=pWing->m_MatSize;
         }
-        //        if(dlg.wasCanceled()) break;
     }
-    //    if(!dlg.wasCanceled()) Q_ASSERT(iv==streamArraySize);
 
 
     m_NStreamLines = iv / GL3DScales::s_NX / 3;
@@ -756,9 +737,6 @@ void gl3dMiarexView::glMakeSurfVelocities(Panel const*pPanel, WPolar const *pWPo
         velocityVertexArray[iv++] = x2;
         velocityVertexArray[iv++] = y2;
         velocityVertexArray[iv++] = z2;
-//        dlg.setValue(p);
-        qApp->processEvents();
-//        if(dlg.wasCanceled()) break;
     }
 
 
@@ -2607,7 +2585,7 @@ void gl3dMiarexView::glMake3dObjects()
         {
             Wing const *pWingList[MAXWINGS];
             for(int iw=0; iw<MAXWINGS;iw++) pWingList[iw]=pCurPlane->wing(iw);
-            if(!glMakeStreamLines(pWingList, theTask.m_Node.constData(), pCurWPolar, pCurPOpp, theTask.matSize()))
+            if(!glMakeStreamLines(pWingList, theTask.m_Node.constData(), pCurWPolar, pCurPOpp))
             {
                 m_bStream  = false;
                 s_bResetglStream = true;

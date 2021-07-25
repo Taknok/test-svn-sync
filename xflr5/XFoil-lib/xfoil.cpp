@@ -4704,7 +4704,6 @@ stop110:
             }
 
             tran = false;
-            //            qApp->processEvents();
             if(s_bCancel) return false;
         }//1000 continue
     }// 2000 continue

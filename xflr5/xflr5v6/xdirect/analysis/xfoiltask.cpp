@@ -85,7 +85,6 @@ void XFoilTask::run()
     if(m_pParent)
     {
         qApp->postEvent(m_pParent, new XFoilTaskEvent(m_pFoil, m_pPolar));
-        qApp->processEvents();
     }
 }
 
@@ -207,8 +206,6 @@ bool XFoilTask::alphaSequence()
     {
         if(s_bCancel) break;
 
-        qApp->processEvents();
-
         int total = 0;
 
         if(fabs(SpInc)<1.0e-6) total = 0;
@@ -292,7 +289,6 @@ bool XFoilTask::alphaSequence()
 
                     // need to do this asynchronously in the main thread to keep the task thread safe
                     qApp->postEvent(m_pParent, new XFoilOppEvent(pOpPoint));
-                    qApp->processEvents();
                 }
             }
             else
@@ -301,7 +297,6 @@ bool XFoilTask::alphaSequence()
                 traceLog(str);
                 m_bErrors = true;
                 qApp->postEvent(m_pParent, new XFoilOppEvent(nullptr));
-                qApp->processEvents();
             }
 
             if(XFoil::fullReport())
@@ -354,8 +349,6 @@ bool XFoilTask::ReSequence()
             return false;
         }
 
-        qApp->processEvents();
-
         Re = m_ReMin+ia*m_ReInc;
         strange =QString("Re = %1 ........ ").arg(Re,0,'f',0);
         traceLog(strange);
@@ -389,8 +382,6 @@ bool XFoilTask::ReSequence()
             m_bErrors = true;
         }
 
-        qApp->processEvents();
-
         m_Iterations = 0;
 
         if(m_pParent)
@@ -398,7 +389,6 @@ bool XFoilTask::ReSequence()
             OpPoint *pOpPoint = new OpPoint;
             addXFoilData(pOpPoint, &m_XFoilInstance, m_pFoil);
             qApp->postEvent(m_pParent, new XFoilOppEvent(pOpPoint));
-            qApp->processEvents();
         }
 
         if(XFoil::fullReport())
@@ -434,7 +424,6 @@ bool XFoilTask::iterate()
             {
                 qApp->postEvent(m_pParent, new XFoilIterEvent(double(m_Iterations), m_XFoilInstance.rmsbl,
                                                               double(m_Iterations), m_XFoilInstance.rmxbl));
-                qApp->processEvents();
             }
 
             m_Iterations++;
@@ -498,7 +487,6 @@ void XFoilTask::traceLog(const QString &str)
     {
         m_OutStream << str;
         m_OutMessage += str;
-        qApp->processEvents();
     }
 }
 

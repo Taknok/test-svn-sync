@@ -684,12 +684,9 @@ bool LLTAnalysis::alphaLoop()
             traceLog(str);
             s_bInitCalc = true;
         }
-        qApp->processEvents();
     }
-
     return true;
 }
-
 
 
 /**
@@ -770,7 +767,6 @@ bool LLTAnalysis::QInfLoop()
             traceLog(str);
             s_bInitCalc = true;
         }
-        qApp->processEvents();
 
         if(m_pX) m_pX->clear();
         if(m_pY) m_pY->clear();
@@ -813,19 +809,7 @@ void LLTAnalysis::initializeAnalysis()
 
     traceLog("\nLaunching the LLT Analysis....\n");
 
-/*    QString strange;
-    strange = QString("Max iterations:          %1\n").arg(s_IterLim);
-    traceLog(strange);
-    strange = QString("Number of span stations: %1\n").arg(s_NLLTStations);
-    traceLog(strange);
-    strange = QString("Convergence precision:   %1\n").arg(s_CvPrec);
-    traceLog(strange);
-    strange = QString("Relaxation factor:       %1\n\n").arg(s_RelaxMax);
-    traceLog(strange);
-
-    qApp->processEvents(); */
     initializeGeom();
-    qApp->processEvents();
 }
 
 
@@ -833,8 +817,7 @@ void LLTAnalysis::initializeAnalysis()
 /** emits the analysis messages to the world */
 void LLTAnalysis::traceLog(QString str)
 {
-    emit(outputMsg(str));
-    qApp->processEvents();
+    emit outputMsg(str);
 }
 
 

@@ -289,7 +289,6 @@ void XflScriptExec::traceLog(QString strMsg)
         m_OutLogStream.flush();
     }
     emit msgUpdate(strMsg);
-    qApp->processEvents();
 }
 
 
