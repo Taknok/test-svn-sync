@@ -48,7 +48,7 @@ class XFoil;
 /**
  * @brief the AFoil class used as the interface for direct Foil design
  */
-class AFoil : public QWidget
+class AFoil : public QFrame
 {
     Q_OBJECT
 

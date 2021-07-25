@@ -24,7 +24,7 @@
 #include <QOpenGLPaintDevice>
 
 #include "gl3dwingview.h"
-#include <xflobjects/editors/gl3dwingdlg.h>
+#include <xflobjects/editors/wingdlg.h>
 #include <xfl3d/controls/w3dprefs.h>
 #include <xflobjects/objects3d/wing.h>
 #include <xflobjects/objects3d/surface.h>
@@ -32,7 +32,7 @@
 
 gl3dWingView::gl3dWingView(QWidget *pParent) : gl3dXflView(pParent)
 {
-    m_pGL3dWingDlg = dynamic_cast<GL3dWingDlg*>(pParent);
+    m_pGL3dWingDlg = dynamic_cast<WingDlg*>(pParent);
     m_pWing = nullptr;
 
 

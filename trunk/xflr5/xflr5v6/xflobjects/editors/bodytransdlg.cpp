@@ -111,45 +111,45 @@ void BodyTransDlg::onFrameOnly()
 
 void BodyTransDlg::setupLayout()
 {
-    QHBoxLayout *pFrameIDLayout = new QHBoxLayout;
-    {
-        m_pchFrameOnly = new QCheckBox(tr("Frame Only"));
-        m_pieFrameID = new IntEdit(0);
-        pFrameIDLayout->addWidget(m_pchFrameOnly);
-        pFrameIDLayout->addWidget(m_pieFrameID);
-    }
-
-    QGridLayout *pTransLayout = new QGridLayout;
-    {
-        QLabel * XTrans = new QLabel(tr("X Translation"));
-        QLabel * YTrans = new QLabel(tr("Y Translation"));
-        QLabel * ZTrans = new QLabel(tr("Z Translation"));
-        m_pdeXTransFactor = new DoubleEdit(0.0,3);
-        m_pdeYTransFactor = new DoubleEdit(0.0,3);
-        m_pdeZTransFactor = new DoubleEdit(0.0,3);
-        QString length;
-        Units::getLengthUnitLabel(length);
-        QLabel *plabLength1 = new QLabel(length);
-        QLabel *plabLength2 = new QLabel(length);
-        QLabel *plabLength3 = new QLabel(length);
-        pTransLayout->addWidget(XTrans,              1,1);
-        pTransLayout->addWidget(YTrans,              2,1);
-        pTransLayout->addWidget(ZTrans,              3,1);
-        pTransLayout->addWidget(m_pdeXTransFactor, 1,2);
-        pTransLayout->addWidget(m_pdeYTransFactor, 2,2);
-        pTransLayout->addWidget(m_pdeZTransFactor, 3,2);
-        pTransLayout->addWidget(plabLength1,         1,3);
-        pTransLayout->addWidget(plabLength2,         2,3);
-        pTransLayout->addWidget(plabLength3,         3,3);
-    }
-
-    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    {
-        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
-    }
-
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
+        QHBoxLayout *pFrameIDLayout = new QHBoxLayout;
+        {
+            m_pchFrameOnly = new QCheckBox(tr("Frame Only"));
+            m_pieFrameID = new IntEdit(0);
+            pFrameIDLayout->addWidget(m_pchFrameOnly);
+            pFrameIDLayout->addWidget(m_pieFrameID);
+        }
+
+        QGridLayout *pTransLayout = new QGridLayout;
+        {
+            QLabel * XTrans = new QLabel(tr("X Translation"));
+            QLabel * YTrans = new QLabel(tr("Y Translation"));
+            QLabel * ZTrans = new QLabel(tr("Z Translation"));
+            m_pdeXTransFactor = new DoubleEdit(0.0,3);
+            m_pdeYTransFactor = new DoubleEdit(0.0,3);
+            m_pdeZTransFactor = new DoubleEdit(0.0,3);
+            QString length;
+            Units::getLengthUnitLabel(length);
+            QLabel *plabLength1 = new QLabel(length);
+            QLabel *plabLength2 = new QLabel(length);
+            QLabel *plabLength3 = new QLabel(length);
+            pTransLayout->addWidget(XTrans,              1,1);
+            pTransLayout->addWidget(YTrans,              2,1);
+            pTransLayout->addWidget(ZTrans,              3,1);
+            pTransLayout->addWidget(m_pdeXTransFactor, 1,2);
+            pTransLayout->addWidget(m_pdeYTransFactor, 2,2);
+            pTransLayout->addWidget(m_pdeZTransFactor, 3,2);
+            pTransLayout->addWidget(plabLength1,         1,3);
+            pTransLayout->addWidget(plabLength2,         2,3);
+            pTransLayout->addWidget(plabLength3,         3,3);
+        }
+
+        m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+        {
+            connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
+        }
+
         pMainLayout->addLayout(pFrameIDLayout);
         pMainLayout->addLayout(pTransLayout);
         pMainLayout->addStretch(1);

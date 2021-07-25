@@ -32,7 +32,7 @@
 
 
 
-#include "gl3dbodydlg.h"
+#include "bodydlg.h"
 
 
 #include <misc/lengthunitdlg.h>
@@ -51,28 +51,28 @@
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/xml/xmlplanereader.h>
 #include <xflobjects/xml/xmlplanewriter.h>
-#include <xflwidgets/color/colorbtn.h>
+#include <xflwidgets/color/colormenubtn.h>
 #include <xflwidgets/customwts/bodytabledelegate.h>
 #include <xflwidgets/customwts/doubleedit.h>
 
-QByteArray GL3dBodyDlg::m_VerticalSplitterSizes;
-QByteArray GL3dBodyDlg::m_HorizontalSplitterSizes;
-QByteArray GL3dBodyDlg::m_LeftSplitterSizes;
+QByteArray BodyDlg::m_VerticalSplitterSizes;
+QByteArray BodyDlg::m_HorizontalSplitterSizes;
+QByteArray BodyDlg::m_LeftSplitterSizes;
 
 
 
-QByteArray GL3dBodyDlg::s_WindowGeometry;
+QByteArray BodyDlg::s_WindowGeometry;
 
 
 
-bool GL3dBodyDlg::s_bOutline    = true;
-bool GL3dBodyDlg::s_bSurfaces   = true;
-bool GL3dBodyDlg::s_bVLMPanels  = false;
-bool GL3dBodyDlg::s_bAxes       = true;
-bool GL3dBodyDlg::s_bShowMasses = false;
-bool GL3dBodyDlg::s_bFoilNames  = false;
+bool BodyDlg::s_bOutline    = true;
+bool BodyDlg::s_bSurfaces   = true;
+bool BodyDlg::s_bVLMPanels  = false;
+bool BodyDlg::s_bAxes       = true;
+bool BodyDlg::s_bShowMasses = false;
+bool BodyDlg::s_bFoilNames  = false;
 
-GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
+BodyDlg::BodyDlg(QWidget *pParent): QDialog(pParent)
 {
     setWindowTitle(tr("Body Edition"));
     setWindowFlags(Qt::Window);
@@ -117,7 +117,7 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 }
 
 
-void GL3dBodyDlg::connectSignals()
+void BodyDlg::connectSignals()
 {
     connect(m_pUndo, SIGNAL(triggered()), SLOT(onUndo()));
     connect(m_pRedo, SIGNAL(triggered()), SLOT(onRedo()));
@@ -152,7 +152,7 @@ void GL3dBodyDlg::connectSignals()
 
     connect(m_prbFlatPanels, SIGNAL(clicked()), SLOT(onLineType()));
     connect(m_prbBSplines,   SIGNAL(clicked()), SLOT(onLineType()));
-    connect(m_pcbBodyColor,  SIGNAL(clicked()), SLOT(onBodyColor()));
+    connect(m_pcbBodyColor,  SIGNAL(clickedCB(QColor)), SLOT(onBodyColor(QColor)));
 
     connect(m_pleBodyName,     SIGNAL(editingFinished()), SLOT(onBodyName()));
 
@@ -178,14 +178,14 @@ void GL3dBodyDlg::connectSignals()
 }
 
 
-void GL3dBodyDlg::onButton(QAbstractButton *pButton)
+void BodyDlg::onButton(QAbstractButton *pButton)
 {
     if (m_pButtonBox->button(QDialogButtonBox::Save) == pButton)           accept();
     else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
 }
 
 
-void GL3dBodyDlg::setTableUnits()
+void BodyDlg::setTableUnits()
 {
     QString length;
     Units::getLengthUnitLabel(length);
@@ -198,7 +198,7 @@ void GL3dBodyDlg::setTableUnits()
 }
 
 
-GL3dBodyDlg::~GL3dBodyDlg()
+BodyDlg::~BodyDlg()
 {
     clearStack(-1);
     if(m_pFrameDelegate)  delete m_pFrameDelegate;
@@ -209,7 +209,7 @@ GL3dBodyDlg::~GL3dBodyDlg()
 }
 
 
-void GL3dBodyDlg::fillFrameCell(int iItem, int iSubItem)
+void BodyDlg::fillFrameCell(int iItem, int iSubItem)
 {
     QModelIndex ind;
 
@@ -235,7 +235,7 @@ void GL3dBodyDlg::fillFrameCell(int iItem, int iSubItem)
 }
 
 
-void GL3dBodyDlg::fillFrameDataTable()
+void BodyDlg::fillFrameDataTable()
 {
     if(!m_pBody) return;
     m_pFrameModel->setRowCount(m_pBody->frameCount());
@@ -247,7 +247,7 @@ void GL3dBodyDlg::fillFrameDataTable()
 }
 
 
-void GL3dBodyDlg::fillFrameTableRow(int row)
+void BodyDlg::fillFrameTableRow(int row)
 {
     QModelIndex ind;
 
@@ -259,7 +259,7 @@ void GL3dBodyDlg::fillFrameTableRow(int row)
 }
 
 
-void GL3dBodyDlg::fillPointDataTable()
+void BodyDlg::fillPointDataTable()
 {
     if(!m_pBody) return;
 
@@ -271,7 +271,7 @@ void GL3dBodyDlg::fillPointDataTable()
 }
 
 
-void GL3dBodyDlg::fillPointCell(int iItem, int iSubItem)
+void BodyDlg::fillPointCell(int iItem, int iSubItem)
 {
     QModelIndex ind;
 
@@ -307,7 +307,7 @@ void GL3dBodyDlg::fillPointCell(int iItem, int iSubItem)
 }
 
 
-void GL3dBodyDlg::fillPointTableRow(int row)
+void BodyDlg::fillPointTableRow(int row)
 {
     if(!m_pFrame) return;
     QModelIndex ind;
@@ -323,7 +323,7 @@ void GL3dBodyDlg::fillPointTableRow(int row)
 }
 
 
-void GL3dBodyDlg::keyPressEvent(QKeyEvent *pEvent)
+void BodyDlg::keyPressEvent(QKeyEvent *pEvent)
 {
     bool bShift = false;
     bool bCtrl  = false;
@@ -378,7 +378,7 @@ void GL3dBodyDlg::keyPressEvent(QKeyEvent *pEvent)
 }
 
 
-void GL3dBodyDlg::setViewControls()
+void BodyDlg::setViewControls()
 {
     m_ptbX->setChecked(false);
     m_ptbY->setChecked(false);
@@ -387,7 +387,7 @@ void GL3dBodyDlg::setViewControls()
 }
 
 
-void GL3dBodyDlg::onBodyName()
+void BodyDlg::onBodyName()
 {
     if(m_pBody)
     {
@@ -397,32 +397,24 @@ void GL3dBodyDlg::onBodyName()
 }
 
 
-void GL3dBodyDlg::onBodyColor()
-{
-    QColorDialog::ColorDialogOptions dialogOptions = QColorDialog::ShowAlphaChannel;
-#ifdef Q_OS_MAC
-#if QT_VERSION >= 0x040700
-    dialogOptions |= QColorDialog::DontUseNativeDialog;
-#endif
-#endif
-    QColor clr = QColorDialog::getColor(m_pBody->color(),
-                                        this, "Color selection", dialogOptions);
+void BodyDlg::onBodyColor(QColor clr)
+{   
+    if(!m_pBody) return;
 
     if(clr.isValid())
     {
         m_pBody->setBodyColor(clr);
-        m_gl3dBodyview.resetGLBody();
-
-        m_pcbBodyColor->setColor(clr);
-        update();
     }
+
+    m_gl3dBodyview.resetGLBody();
+    m_gl3dBodyview.update();
 }
 
 
 /**
  * Unselects all the 3D-view icons.
  */
-void GL3dBodyDlg::onCheckViewIcons()
+void BodyDlg::onCheckViewIcons()
 {
     m_ptbIso->setChecked(false);
     m_ptbX->setChecked(false);
@@ -431,8 +423,7 @@ void GL3dBodyDlg::onCheckViewIcons()
 }
 
 
-
-void GL3dBodyDlg::onBodyInertia()
+void BodyDlg::onBodyInertia()
 {
     if(!m_pBody) return;
     InertiaDlg dlg(this);
@@ -448,8 +439,7 @@ void GL3dBodyDlg::onBodyInertia()
 }
 
 
-
-void GL3dBodyDlg::onExportBodyXML()
+void BodyDlg::onExportBodyXML()
 {
     if(!m_pBody)return ;// is there anything to export ?
 
@@ -482,7 +472,7 @@ void GL3dBodyDlg::onExportBodyXML()
 
 
 
-void GL3dBodyDlg::onExportBodyDef()
+void BodyDlg::onExportBodyDef()
 {
     if(!m_pBody) return;
 
@@ -509,7 +499,7 @@ void GL3dBodyDlg::onExportBodyDef()
 }
 
 
-void GL3dBodyDlg::onExportBodyGeom()
+void BodyDlg::onExportBodyGeom()
 {
     if(!m_pBody) return;
     QString LengthUnit, FileName;
@@ -544,7 +534,7 @@ void GL3dBodyDlg::onExportBodyGeom()
 }
 
 
-void GL3dBodyDlg::onImportBodyDef()
+void BodyDlg::onImportBodyDef()
 {
     Body memBody;
     memBody.duplicate(m_pBody);
@@ -601,7 +591,7 @@ void GL3dBodyDlg::onImportBodyDef()
 
 
 
-void GL3dBodyDlg::onImportBodyXML()
+void BodyDlg::onImportBodyXML()
 {
     //    Body memBody;
     //    memBody.duplicate(m_pBody);
@@ -648,7 +638,7 @@ void GL3dBodyDlg::onImportBodyXML()
 }
 
 
-void GL3dBodyDlg::readFrameSectionData(int sel)
+void BodyDlg::readFrameSectionData(int sel)
 {
     if(sel>=m_pFrameModel->rowCount()) return;
     double x=0;
@@ -680,13 +670,13 @@ void GL3dBodyDlg::readFrameSectionData(int sel)
 
 
 /** The user has clicked a point in the body line view */
-void GL3dBodyDlg::onFrameClicked()
+void BodyDlg::onFrameClicked()
 {
     m_ptvFrames->selectRow(m_pBody->m_iActiveFrame);
 }
 
 
-void GL3dBodyDlg::onFrameItemClicked(const QModelIndex &index)
+void BodyDlg::onFrameItemClicked(const QModelIndex &index)
 {
     m_pBody->m_iActiveFrame = index.row();
     setFrame(m_pBody->m_iActiveFrame);
@@ -694,7 +684,7 @@ void GL3dBodyDlg::onFrameItemClicked(const QModelIndex &index)
 }
 
 
-void GL3dBodyDlg::onFrameCellChanged(QWidget *)
+void BodyDlg::onFrameCellChanged(QWidget *)
 {
     takePicture();
     m_bChanged = true;
@@ -707,7 +697,7 @@ void GL3dBodyDlg::onFrameCellChanged(QWidget *)
 }
 
 
-void GL3dBodyDlg::onLineType()
+void BodyDlg::onLineType()
 {
     m_bChanged = true;
     if(m_prbFlatPanels->isChecked())
@@ -732,7 +722,7 @@ void GL3dBodyDlg::onLineType()
 }
 
 
-void GL3dBodyDlg::onPointCellChanged(QWidget *)
+void BodyDlg::onPointCellChanged(QWidget *)
 {
     if(!m_pFrame) return;
 
@@ -746,14 +736,14 @@ void GL3dBodyDlg::onPointCellChanged(QWidget *)
 
 
 /** The user has clicked a point in the frame view */
-void GL3dBodyDlg::onPointClicked()
+void BodyDlg::onPointClicked()
 {
     if(m_pFrame)
         m_ptvPoints->selectRow(m_pFrame->selectedIndex());
 }
 
 
-void GL3dBodyDlg::onPointItemClicked(const QModelIndex &index)
+void BodyDlg::onPointItemClicked(const QModelIndex &index)
 {
     if(!m_pFrame) return;
     m_pFrame->setSelected(index.row());
@@ -762,7 +752,7 @@ void GL3dBodyDlg::onPointItemClicked(const QModelIndex &index)
 }
 
 
-void GL3dBodyDlg::onResetScales()
+void BodyDlg::onResetScales()
 {
     m_gl3dBodyview.reset3dScale();
     m_pBodyLineWt->onResetScales();
@@ -771,7 +761,7 @@ void GL3dBodyDlg::onResetScales()
 }
 
 
-void GL3dBodyDlg::onScaleBody()
+void BodyDlg::onScaleBody()
 {
     if(!m_pBody) return;
 
@@ -794,7 +784,7 @@ void GL3dBodyDlg::onScaleBody()
 }
 
 
-void GL3dBodyDlg::onUpdateBody()
+void BodyDlg::onUpdateBody()
 {
     takePicture();
 
@@ -812,7 +802,7 @@ void GL3dBodyDlg::onUpdateBody()
 
 
 
-void GL3dBodyDlg::onSelChangeXDegree(int sel)
+void BodyDlg::onSelChangeXDegree(int sel)
 {
     if(!m_pBody) return;
     if (sel <0) return;
@@ -837,7 +827,7 @@ void GL3dBodyDlg::onSelChangeXDegree(int sel)
 }
 
 
-void GL3dBodyDlg::onSelChangeHoopDegree(int sel)
+void BodyDlg::onSelChangeHoopDegree(int sel)
 {
     if(!m_pBody) return;
     if (sel<0) return;
@@ -863,12 +853,12 @@ void GL3dBodyDlg::onSelChangeHoopDegree(int sel)
 }
 
 
-void GL3dBodyDlg::onEdgeWeight()
+void BodyDlg::onEdgeWeight()
 {
 }
 
 
-void GL3dBodyDlg::onNURBSPanels()
+void BodyDlg::onNURBSPanels()
 {
     if(!m_pBody) return;
 
@@ -887,8 +877,7 @@ void GL3dBodyDlg::onNURBSPanels()
 }
 
 
-
-void GL3dBodyDlg::onTranslateBody()
+void BodyDlg::onTranslateBody()
 {
     if(!m_pBody) return;
 
@@ -910,7 +899,7 @@ void GL3dBodyDlg::onTranslateBody()
 }
 
 
-void GL3dBodyDlg::readPointSectionData(int sel)
+void BodyDlg::readPointSectionData(int sel)
 {
     if(sel>=m_pPointModel->rowCount()) return;
     if(!m_pFrame) return;
@@ -945,7 +934,7 @@ void GL3dBodyDlg::readPointSectionData(int sel)
 }
 
 
-void GL3dBodyDlg::accept()
+void BodyDlg::accept()
 {
     if(m_pBody)
     {
@@ -965,7 +954,7 @@ void GL3dBodyDlg::accept()
 }
 
 
-void GL3dBodyDlg::reject()
+void BodyDlg::reject()
 {
     s_bOutline    = m_gl3dBodyview.m_bOutline;
     s_bSurfaces   = m_gl3dBodyview.m_bSurfaces;
@@ -998,7 +987,7 @@ void GL3dBodyDlg::reject()
 }
 
 
-void GL3dBodyDlg::resizeEvent(QResizeEvent *pEvent)
+void BodyDlg::resizeEvent(QResizeEvent *pEvent)
 {
     //    SetBodyScale();
     //    SetRectangles();
@@ -1008,7 +997,7 @@ void GL3dBodyDlg::resizeEvent(QResizeEvent *pEvent)
 }
 
 
-bool GL3dBodyDlg::loadSettings(QSettings &settings)
+bool BodyDlg::loadSettings(QSettings &settings)
 {
     settings.beginGroup("GL3dBody");
     {
@@ -1023,7 +1012,7 @@ bool GL3dBodyDlg::loadSettings(QSettings &settings)
 
 
 
-bool GL3dBodyDlg::saveSettings(QSettings &settings)
+bool BodyDlg::saveSettings(QSettings &settings)
 {
     settings.beginGroup("GL3dBody");
     {
@@ -1038,8 +1027,7 @@ bool GL3dBodyDlg::saveSettings(QSettings &settings)
 }
 
 
-
-void GL3dBodyDlg::setControls()
+void BodyDlg::setControls()
 {
     m_pleBodyName->setEnabled(m_bEnableName);
 
@@ -1082,7 +1070,7 @@ void GL3dBodyDlg::setControls()
 }
 
 
-bool GL3dBodyDlg::initDialog(Body *pBody)
+bool BodyDlg::initDialog(Body *pBody)
 {
     if(!pBody) return false;
 
@@ -1099,7 +1087,7 @@ bool GL3dBodyDlg::initDialog(Body *pBody)
 }
 
 
-bool GL3dBodyDlg::setBody(Body *pBody)
+bool BodyDlg::setBody(Body *pBody)
 {
     if(pBody) m_pBody = pBody;
 
@@ -1123,7 +1111,7 @@ bool GL3dBodyDlg::setBody(Body *pBody)
 }
 
 
-void GL3dBodyDlg::setFrame(int iFrame)
+void BodyDlg::setFrame(int iFrame)
 {
     if(!m_pBody) return;
     if(iFrame<0 || iFrame>=m_pBody->frameCount()) m_pFrame = nullptr;
@@ -1136,7 +1124,7 @@ void GL3dBodyDlg::setFrame(int iFrame)
 }
 
 
-void GL3dBodyDlg::setFrame(Frame *pFrame)
+void BodyDlg::setFrame(Frame *pFrame)
 {
     if(!m_pBody || !pFrame) return;
 
@@ -1149,7 +1137,7 @@ void GL3dBodyDlg::setFrame(Frame *pFrame)
 
 
 
-void GL3dBodyDlg::setupLayout()
+void BodyDlg::setupLayout()
 {
     QString str;
 
@@ -1289,7 +1277,7 @@ void GL3dBodyDlg::setupLayout()
             QHBoxLayout *pNameLayout = new QHBoxLayout;
             {
                 m_pleBodyName = new QLineEdit(tr("BodyName"));
-                m_pcbBodyColor = new ColorBtn;
+                m_pcbBodyColor = new ColorMenuBtn;
                 pNameLayout->addWidget(m_pleBodyName);
                 pNameLayout->addWidget(m_pcbBodyColor);
             }
@@ -1483,7 +1471,7 @@ void GL3dBodyDlg::setupLayout()
 }
 
 
-void GL3dBodyDlg::showEvent(QShowEvent *pEvent)
+void BodyDlg::showEvent(QShowEvent *pEvent)
 {
     restoreGeometry(s_WindowGeometry);
 
@@ -1510,7 +1498,7 @@ void GL3dBodyDlg::showEvent(QShowEvent *pEvent)
  * Overrides the base class hideEvent method. Stores the window's current position.
  * @param event the hideEvent.
  */
-void GL3dBodyDlg::hideEvent(QHideEvent *pEvent)
+void BodyDlg::hideEvent(QHideEvent *pEvent)
 {
     s_WindowGeometry = saveGeometry();
 
@@ -1521,7 +1509,7 @@ void GL3dBodyDlg::hideEvent(QHideEvent *pEvent)
 }
 
 
-void GL3dBodyDlg::resizeTables()
+void BodyDlg::resizeTables()
 {
     int ColumnWidth = int(double(m_ptvFrames->width())/2.5);
     m_ptvFrames->setColumnWidth(0,ColumnWidth);
@@ -1537,7 +1525,7 @@ void GL3dBodyDlg::resizeTables()
   * Clears the stack starting at a given position.
   * @param the first stack element to remove
   */
-void GL3dBodyDlg::clearStack(int pos)
+void BodyDlg::clearStack(int pos)
 {
     for(int il=m_UndoStack.size()-1; il>pos; il--)
     {
@@ -1551,7 +1539,7 @@ void GL3dBodyDlg::clearStack(int pos)
 /**
  * Restores a SplineFoil definition from the current position in the stack.
  */
-void GL3dBodyDlg::setPicture()
+void BodyDlg::setPicture()
 {
     Body const *pTmpBody = m_UndoStack.at(m_StackPos);
     m_pBody->duplicate(pTmpBody);
@@ -1574,7 +1562,7 @@ void GL3dBodyDlg::setPicture()
 /**
  * Copies the current Body object to a new Body and pushes it on the stack.
  */
-void GL3dBodyDlg::takePicture()
+void BodyDlg::takePicture()
 {
     m_bChanged = true;
 
@@ -1593,7 +1581,7 @@ void GL3dBodyDlg::takePicture()
 }
 
 
-void GL3dBodyDlg::onUndo()
+void BodyDlg::onUndo()
 {
     if(m_StackPos>0)
     {
@@ -1610,7 +1598,7 @@ void GL3dBodyDlg::onUndo()
 }
 
 
-void GL3dBodyDlg::onRedo()
+void BodyDlg::onRedo()
 {
     if(m_StackPos<m_UndoStack.size()-1)
     {
@@ -1622,7 +1610,7 @@ void GL3dBodyDlg::onRedo()
 }
 
 
-void GL3dBodyDlg::updateView()
+void BodyDlg::updateView()
 {
     if(isVisible()) m_gl3dBodyview.update();
     m_pFrameWt->update();
@@ -1630,7 +1618,7 @@ void GL3dBodyDlg::updateView()
 }
 
 
-void GL3dBodyDlg::blockSignalling(bool bBlock)
+void BodyDlg::blockSignalling(bool bBlock)
 {
     blockSignals(bBlock);
     m_pPointDelegate->blockSignals(bBlock);

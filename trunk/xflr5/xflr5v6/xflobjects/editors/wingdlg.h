@@ -42,14 +42,14 @@
 
 class gl3dWingView;
 class DoubleEdit;
-class ColorBtn;
+class ColorMenuBtn;
 class Wing;
 class WingDelegate;
 class Panel;
 class Foil;
 
 
-class GL3dWingDlg: public QDialog
+class WingDlg: public QDialog
 {
     Q_OBJECT
 
@@ -63,8 +63,8 @@ class GL3dWingDlg: public QDialog
     friend class WingDelegate;
 
     public:
-        GL3dWingDlg(QWidget *pParent=nullptr);
-        ~GL3dWingDlg();
+        WingDlg(QWidget *pParent=nullptr);
+        ~WingDlg();
 
         bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
         void glMake3DObjects();
@@ -89,7 +89,7 @@ class GL3dWingDlg: public QDialog
         void onDescriptionChanged();
         void onCellChanged(QWidget *);
         void onItemClicked(const QModelIndex &index);
-        void onWingColor();
+        void onWingColor(QColor clr);
 
         void onSide();
         void onSymetric();
@@ -152,7 +152,8 @@ class GL3dWingDlg: public QDialog
         QTextEdit *m_pteWingDescription;
         QCheckBox *m_pchSymetric;
         QRadioButton *m_prbLeftSide, *m_prbRightSide;
-        ColorBtn *m_pcbWingColor;
+        ColorMenuBtn *m_pcmbWingColor;
+
         QPushButton *m_ppbResetMesh;
         QPushButton *m_ppbInsertBefore, *m_ppbInsertAfter, *m_ppbDeleteSection;
         QLabel *m_plabWingSpan, *m_plabWingArea, *m_plabMAC, *m_plabGeomChord;

@@ -34,7 +34,6 @@
 
 
 
-Attenuation GLLightDlg::s_Attenuation;
 int GLLightDlg::s_iShininess = 3;
 
 GLLightDlg::GLLightDlg(QWidget *pParent) : QDialog(pParent)
@@ -53,13 +52,13 @@ GLLightDlg::GLLightDlg(QWidget *pParent) : QDialog(pParent)
 
 void GLLightDlg::connectSignals()
 {
-    connect(m_plabLight,    SIGNAL(clicked()), SLOT(onLight()));
-    connect(m_ppbClose,    SIGNAL(clicked()), SLOT(accept()));
-    connect(m_ppbDefaults, SIGNAL(clicked()), SLOT(onDefaults()));
+    connect(m_plabLight,         SIGNAL(clicked()),        SLOT(onLight()));
+    connect(m_ppbClose,          SIGNAL(clicked()),        SLOT(accept()));
+    connect(m_ppbDefaults,       SIGNAL(clicked()),        SLOT(onDefaults()));
 
-    connect(m_pslRed,           SIGNAL(sliderMoved(int)), SLOT(onChanged()));
-    connect(m_pslGreen,         SIGNAL(sliderMoved(int)), SLOT(onChanged()));
-    connect(m_pslBlue,          SIGNAL(sliderMoved(int)), SLOT(onChanged()));
+    connect(m_pslRed,            SIGNAL(sliderMoved(int)), SLOT(onChanged()));
+    connect(m_pslGreen,          SIGNAL(sliderMoved(int)), SLOT(onChanged()));
+    connect(m_pslBlue,           SIGNAL(sliderMoved(int)), SLOT(onChanged()));
     connect(m_peslLightAmbient,  SIGNAL(sliderMoved(int)), SLOT(onChanged()));
     connect(m_peslLightDiffuse,  SIGNAL(sliderMoved(int)), SLOT(onChanged()));
     connect(m_peslLightSpecular, SIGNAL(sliderMoved(int)), SLOT(onChanged()));
@@ -67,7 +66,7 @@ void GLLightDlg::connectSignals()
     connect(m_peslYLight,        SIGNAL(sliderMoved(int)), SLOT(onChanged()));
     connect(m_peslZLight,        SIGNAL(sliderMoved(int)), SLOT(onChanged()));
 
-    connect(m_pslMatShininess,  SIGNAL(sliderMoved(int)), SLOT(onChanged()));
+    connect(m_pslMatShininess,   SIGNAL(sliderMoved(int)), SLOT(onChanged()));
 
     connect(m_pdeConstantAttenuation,  SIGNAL(editingFinished()), SLOT(onChanged()));
     connect(m_pdeLinearAttenuation,    SIGNAL(editingFinished()), SLOT(onChanged()));
@@ -333,9 +332,9 @@ void GLLightDlg::readParams(void)
 
     s_iShininess   = m_pslMatShininess->value();
 
-    s_Attenuation.m_Constant  = float(m_pdeConstantAttenuation->value());
-    s_Attenuation.m_Linear    = float(m_pdeLinearAttenuation->value());
-    s_Attenuation.m_Quadratic = float(m_pdeQuadAttenuation->value());
+    s_Light.m_Attenuation.m_Constant  = float(m_pdeConstantAttenuation->value());
+    s_Light.m_Attenuation.m_Linear    = float(m_pdeLinearAttenuation->value());
+    s_Light.m_Attenuation.m_Quadratic = float(m_pdeQuadAttenuation->value());
 }
 
 
@@ -365,9 +364,9 @@ void GLLightDlg::setParams(void)
 
     m_pslMatShininess->setValue(s_iShininess);
 
-    m_pdeConstantAttenuation->setValue(double(s_Attenuation.m_Constant));
-    m_pdeLinearAttenuation->setValue(double(s_Attenuation.m_Linear));
-    m_pdeQuadAttenuation->setValue(double(s_Attenuation.m_Quadratic));
+    m_pdeConstantAttenuation->setValue(double(s_Light.m_Attenuation.m_Constant));
+    m_pdeLinearAttenuation->setValue(  double(s_Light.m_Attenuation.m_Linear));
+    m_pdeQuadAttenuation->setValue(    double(s_Light.m_Attenuation.m_Quadratic));
 
     setLabels();
 }
@@ -421,15 +420,16 @@ bool GLLightDlg::loadSettings(QSettings &settings)
 
         s_iShininess     = settings.value("MatShininess", 5).toInt();
 
-        s_Attenuation.m_Constant    = settings.value("ConstantAtt",  2.0).toFloat();
-        s_Attenuation.m_Linear      = settings.value("LinearAtt",    1.0).toFloat();
-        s_Attenuation.m_Quadratic   = settings.value("QuadraticAtt", 0.5).toFloat();
+        s_Light.m_Attenuation.m_Constant    = settings.value("ConstantAtt",  2.0).toFloat();
+        s_Light.m_Attenuation.m_Linear      = settings.value("LinearAtt",    1.0).toFloat();
+        s_Light.m_Attenuation.m_Quadratic   = settings.value("QuadraticAtt", 0.5).toFloat();
 
         s_Light.m_bIsLightOn        = settings.value("bLight", true).toBool();
     }
     settings.endGroup();
     return true;
 }
+
 
 void GLLightDlg::setDefaults()
 {
@@ -438,9 +438,9 @@ void GLLightDlg::setDefaults()
 
     s_iShininess = 5;
 
-    s_Attenuation.m_Constant  = 1.0;
-    s_Attenuation.m_Linear    = 0.5;
-    s_Attenuation.m_Quadratic = 0.0;
+    s_Light.m_Attenuation.m_Constant  = 1.0;
+    s_Light.m_Attenuation.m_Linear    = 0.5;
+    s_Light.m_Attenuation.m_Quadratic = 0.0;
 
     s_Light.m_bIsLightOn = true;
 }
@@ -465,9 +465,9 @@ bool GLLightDlg::saveSettings(QSettings &settings)
 
         settings.setValue("MatShininess", s_iShininess);
 
-        settings.setValue("ConstantAtt",  s_Attenuation.m_Constant);
-        settings.setValue("LinearAtt",    s_Attenuation.m_Linear);
-        settings.setValue("QuadraticAtt", s_Attenuation.m_Quadratic);
+        settings.setValue("ConstantAtt",  s_Light.m_Attenuation.m_Constant);
+        settings.setValue("LinearAtt",    s_Light.m_Attenuation.m_Linear);
+        settings.setValue("QuadraticAtt", s_Light.m_Attenuation.m_Quadratic);
 
     }
     settings.endGroup();

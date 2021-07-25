@@ -43,8 +43,8 @@ class Body;
 class InertiaDlg : public QDialog
 {
     Q_OBJECT
-    friend class GL3dWingDlg;
-    friend class GL3dBodyDlg;
+    friend class WingDlg;
+    friend class BodyDlg;
     friend class EditBodyDlg;
     friend class PlaneDlg;
     friend class Miarex;

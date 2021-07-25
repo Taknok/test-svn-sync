@@ -43,7 +43,7 @@
 #include <miarex/analysis/wadvanceddlg.h>
 #include <miarex/analysis/wpolardlg.h>
 #include <xflobjects/editors/editplanedlg.h>
-#include <xflobjects/editors/gl3dwingdlg.h>
+#include <xflobjects/editors/wingdlg.h>
 #include <xflobjects/editors/planedlg.h>
 #include <miarex/mgt/manageplanesdlg.h>
 #include <miarex/planetreeview.h>
@@ -68,7 +68,7 @@
 #include <xflgraph/curve.h>
 #include <xflgraph/graph.h>
 #include <xflobjects/editors/editbodydlg.h>
-#include <xflobjects/editors/gl3dbodydlg.h>
+#include <xflobjects/editors/bodydlg.h>
 #include <xflobjects/editors/inertiadlg.h>
 #include <xflobjects/editors/renamedlg.h>
 #include <xflobjects/editors/wingscaledlg.h>
@@ -1646,7 +1646,7 @@ void Miarex::keyPressEvent(QKeyEvent *pEvent)
         {
             if (pEvent->modifiers().testFlag(Qt::ShiftModifier))        onEditCurPlane();
             else if (pEvent->modifiers().testFlag(Qt::ControlModifier)) onEditCurObject();
-            else                                                       onNewPlane();
+            else                                                        onNewPlane();
             break;
         }
         case Qt::Key_F4:
@@ -1667,14 +1667,14 @@ void Miarex::keyPressEvent(QKeyEvent *pEvent)
         {
             if (pEvent->modifiers().testFlag(Qt::ShiftModifier))         onDefineStabPolar();
             else if (pEvent->modifiers().testFlag(Qt::ControlModifier))  onDefineWPolarObject();
-            else                                                        onDefineWPolar();
+            else                                                         onDefineWPolar();
             break;
         }
         case Qt::Key_F8:
         {
             if (pEvent->modifiers().testFlag(Qt::ShiftModifier))        onRootLocusView();
             else if (pEvent->modifiers().testFlag(Qt::ControlModifier)) onStabTimeView();
-            else                                                       onWPolarView();
+            else                                                        onWPolarView();
             break;
         }
         case Qt::Key_F9:
@@ -1904,21 +1904,6 @@ bool Miarex::loadSettings(QSettings &settings)
         }
         pStabView->updateControlModelData();
 
-
-        StabPolarDlg::s_StabWPolar.m_bAutoInertia = settings.value("StabPolarAutoInertia", true).toBool();
-        StabPolarDlg::s_StabWPolar.setMass(settings.value("StabPolarMass", 0.0).toDouble());
-        StabPolarDlg::s_StabWPolar.setCoGx(settings.value("StabPolarCoGx", 0.0).toDouble());
-        StabPolarDlg::s_StabWPolar.setCoGy(settings.value("StabPolarCoGy", 0.0).toDouble());
-        StabPolarDlg::s_StabWPolar.setCoGz(settings.value("StabPolarCoGz", 0.0).toDouble());
-        StabPolarDlg::s_StabWPolar.m_CoGIxx = settings.value("StabPolarCoGIxx", 0.0).toDouble();
-        StabPolarDlg::s_StabWPolar.m_CoGIyy = settings.value("StabPolarCoGIyy", 0.0).toDouble();
-        StabPolarDlg::s_StabWPolar.m_CoGIzz = settings.value("StabPolarCoGIzz", 0.0).toDouble();
-        StabPolarDlg::s_StabWPolar.m_CoGIxz = settings.value("StabPolarCoGIxz", 0.0).toDouble();
-
-
-        WPolarDlg::s_WPolar.m_bAutoInertia =    settings.value("bAutoInertia", false).toBool();
-        WPolarDlg::s_WPolar.setVLM1(settings.value("bVLM1").toBool());
-
         PlaneOpp::s_bKeepOutOpps  = settings.value("KeepOutOpps").toBool();
 
         W3dPrefs::s_MassColor = settings.value("MassColor", W3dPrefs::s_MassColor).value<QColor>();
@@ -1947,8 +1932,8 @@ bool Miarex::loadSettings(QSettings &settings)
     settings.endGroup();
 
     PlaneTreeView::loadSettings(settings);
-    GL3dBodyDlg::loadSettings(settings);
-    GL3dWingDlg::loadSettings(settings);
+    BodyDlg::loadSettings(settings);
+    WingDlg::loadSettings(settings);
     GLLightDlg::loadSettings(settings);
     EditPlaneDlg::loadSettings(settings);
     EditBodyDlg::loadSettings(settings);
@@ -2597,7 +2582,11 @@ void Miarex::onDefineStabPolar()
         pNewStabPolar->setColor(clr);
         pNewStabPolar->setWidth(2);
         pNewStabPolar->setPointStyle(Line::LITTLECIRCLE);
+        if(DisplayOptions::isAlignedChildrenStyle()) pNewStabPolar->setTheStyle(m_pCurPlane->theStyle());
+
         pNewStabPolar->setVisible(true);
+
+
 
         pNewStabPolar->setReferenceChordLength(m_pCurPlane->mac());
 
@@ -2648,7 +2637,7 @@ void Miarex::onDefineWPolar()
 
     stopAnimate();
 
-    WPolar* pNewWPolar  = new WPolar;
+    WPolar *pNewWPolar = new WPolar;
 
     WPolarDlg wpDlg(s_pMainFrame);
     wpDlg.initDialog(m_pCurPlane);
@@ -2684,6 +2673,7 @@ void Miarex::onDefineWPolar()
 
         QColor clr = xfl::getObjectColor(4);
         pNewWPolar->setColor(clr);
+        if(DisplayOptions::isAlignedChildrenStyle()) pNewWPolar->setTheStyle(m_pCurPlane->theStyle());
 
         m_pCurWPolar = Objects3d::insertNewWPolar(pNewWPolar, m_pCurPlane);
         m_pCurPOpp = nullptr;
@@ -2724,8 +2714,6 @@ void Miarex::onDefineWPolarObject()
     pNewWPolar->setReferenceArea(m_pCurPlane->planformArea());
     pNewWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
     pNewWPolar->setReferenceChordLength(m_pCurPlane->mac());
-    QColor clr = xfl::getObjectColor(4);
-    pNewWPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 
     EditPolarDefDlg vpDlg(s_pMainFrame);
     vpDlg.initDialog(m_pCurPlane, pNewWPolar);
@@ -2750,8 +2738,9 @@ void Miarex::onDefineWPolarObject()
             pNewWPolar->setReferenceArea(area);
         }
 
-        //        if(m_bDirichlet) pNewWPolar->boundaryCondition() = XFLR5::DIRICHLET;
-        //        else             pNewWPolar->boundaryCondition() = XFLR5::NEUMANN;
+        QColor clr = xfl::getObjectColor(4);
+        pNewWPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+        if(DisplayOptions::isAlignedChildrenStyle()) pNewWPolar->setTheStyle(m_pCurPlane->theStyle());
         pNewWPolar->setVisible(true);
 
         m_pCurWPolar = Objects3d::insertNewWPolar(pNewWPolar, m_pCurPlane);
@@ -2819,6 +2808,8 @@ void Miarex::onEditCurWPolar()
 
         QColor clr = xfl::getObjectColor(4);
         pNewWPolar->setColor(clr);
+        if(DisplayOptions::isAlignedChildrenStyle()) pNewWPolar->setTheStyle(m_pCurWPolar->theStyle());
+
         pNewWPolar->setVisible(true);
 
         m_pCurWPolar = Objects3d::insertNewWPolar(pNewWPolar, m_pCurPlane);
@@ -2844,7 +2835,6 @@ void Miarex::onEditCurWPolar()
 }
 
 
-
 /**
  * The user has requested an edition of the current WPolar Object
  */
@@ -2864,12 +2854,10 @@ void Miarex::onEditCurWPolarObject()
 
         pNewWPolar->setPlaneName(m_pCurPlane->name());
 
-        //        pNewWPolar->bDirichlet() = m_bDirichlet;
-
         QColor clr = xfl::getObjectColor(4);
         pNewWPolar->setColor(clr);
+        if(DisplayOptions::isAlignedChildrenStyle()) pNewWPolar->setTheStyle(m_pCurWPolar->theStyle());
         pNewWPolar->setVisible(true);
-
 
         m_pCurWPolar = Objects3d::insertNewWPolar(pNewWPolar, m_pCurPlane);
         m_pCurPOpp = nullptr;
@@ -3251,7 +3239,7 @@ void Miarex::onEditCurBody()
     Plane *pModPlane = new Plane();
     pModPlane->duplicate(m_pCurPlane);
 
-    GL3dBodyDlg glbDlg(s_pMainFrame);
+    BodyDlg glbDlg(s_pMainFrame);
     glbDlg.m_bEnableName = false;
     glbDlg.initDialog(pModPlane->body());
 
@@ -3527,14 +3515,10 @@ void Miarex::onEditCurPlane()
     m_pgl3dMiarexView->m_bArcball = false;
     if(!m_pCurPlane) return;
 
-    qDebug()<<"onEditCurPlane"<<m_pCurPlane->m_WingLE[0].listCoords();
-
-    WPolar *pWPolar = nullptr;
-    PlaneOpp* pPOpp = nullptr;
     bool bHasResults = false;
     for (int i=0; i<Objects3d::polarCount(); i++)
     {
-        pWPolar = Objects3d::polarAt(i);
+        WPolar *pWPolar = Objects3d::polarAt(i);
         if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->name())
         {
             bHasResults = true;
@@ -3542,17 +3526,7 @@ void Miarex::onEditCurPlane()
         }
     }
 
-    for (int i=0; i<Objects3d::planeOppCount(); i++)
-    {
-        pPOpp = Objects3d::planeOppAt(i);
-        if(pPOpp->planeName() == m_pCurPlane->name())
-        {
-            bHasResults = true;
-            break;
-        }
-    }
-
-    Plane* pModPlane = new Plane;
+    Plane *pModPlane = new Plane;
 
     pModPlane->duplicate(m_pCurPlane);
 
@@ -3668,7 +3642,7 @@ void Miarex::onEditCurWing()
 
     pModPlane->duplicate(m_pCurPlane);
 
-    GL3dWingDlg wgDlg(s_pMainFrame);
+    WingDlg wgDlg(s_pMainFrame);
     wgDlg.m_bAcceptName = false;
     wgDlg.initDialog(pModPlane->wing(iWing));
 
@@ -6474,8 +6448,6 @@ bool Miarex::saveSettings(QSettings &settings)
 
         settings.setValue("Iter", m_LLTMaxIterations);
         settings.setValue("InducedDragPoint", m_InducedDragPoint);
-        //        settings.setValue("NHoopPoints", GL3dBodyDlg::s_NHoopPoints);
-        //        settings.setValue("NXPoints", GL3dBodyDlg::s_NXPoints);
 
         settings.setValue("LiftScale", gl3dMiarexView::s_LiftScale);
         settings.setValue("DragScale", gl3dMiarexView::s_DragScale);
@@ -6512,16 +6484,6 @@ bool Miarex::saveSettings(QSettings &settings)
         }
 
 
-        settings.setValue("StabPolarAutoInertia", StabPolarDlg::s_StabWPolar.m_bAutoInertia);
-        settings.setValue("StabPolarMass",   StabPolarDlg::s_StabWPolar.mass());
-        settings.setValue("StabPolarCoGx",   StabPolarDlg::s_StabWPolar.CoG().x);
-        settings.setValue("StabPolarCoGy",   StabPolarDlg::s_StabWPolar.CoG().y);
-        settings.setValue("StabPolarCoGz",   StabPolarDlg::s_StabWPolar.CoG().z);
-        settings.setValue("StabPolarCoGIxx", StabPolarDlg::s_StabWPolar.m_CoGIxx);
-        settings.setValue("StabPolarCoGIyy", StabPolarDlg::s_StabWPolar.m_CoGIyy);
-        settings.setValue("StabPolarCoGIzz", StabPolarDlg::s_StabWPolar.m_CoGIzz);
-        settings.setValue("StabPolarCoGIxz", StabPolarDlg::s_StabWPolar.m_CoGIxz);
-
         settings.setValue("Temperature", AeroDataDlg::s_Temperature);
         settings.setValue("Altitude",    AeroDataDlg::s_Altitude);
 
@@ -6542,8 +6504,8 @@ bool Miarex::saveSettings(QSettings &settings)
 
     PlaneTreeView::saveSettings(settings);
     GLLightDlg::saveSettings(settings);
-    GL3dWingDlg::saveSettings(settings);
-    GL3dBodyDlg::saveSettings(settings);
+    WingDlg::saveSettings(settings);
+    BodyDlg::saveSettings(settings);
     EditPlaneDlg::saveSettings(settings);
     EditBodyDlg::saveSettings(settings);
     STLExportDlg::saveSettings(settings);

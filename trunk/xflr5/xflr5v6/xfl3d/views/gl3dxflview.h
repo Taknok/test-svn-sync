@@ -42,8 +42,8 @@ class gl3dXflView : public gl3dView
 
     friend class MainFrame;
     friend class Miarex;
-    friend class GL3dWingDlg;
-    friend class GL3dBodyDlg;
+    friend class WingDlg;
+    friend class BodyDlg;
     friend class EditBodyDlg;
     friend class EditPlaneDlg;
     friend class PlaneDlg;

@@ -407,7 +407,7 @@ void W3dPrefs::onMasses()
 #endif
 #endif
     QColor Color = QColorDialog::getColor(s_MassColor,
-                                   this, "Select the color", dialogOptions);
+                                          this, "Select the color", dialogOptions);
     if(Color.isValid()) s_MassColor = Color;
     m_pcbMassColor->setColor(s_MassColor);
 

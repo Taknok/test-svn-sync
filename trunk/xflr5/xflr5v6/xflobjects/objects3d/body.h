@@ -109,13 +109,13 @@ class Body
         Frame *setActiveFrame(int iFrame);
 
 
-        double framePosition(int iFrame);
+        double framePosition(int iFrame) const;
         int frameCount()      const {return m_SplineSurface.frameCount();}
         int framePointCount() const {return m_SplineSurface.framePointCount();}
         int sideLineCount()   const {return m_SplineSurface.framePointCount();}// same as FramePointCount();
 
         void computeBodyAxisInertia();
-        void computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz);
+        void computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz) const;
         double totalMass() const;
         double const &volumeMass() const {return m_VolumeMass;}
         void setVolumeMass(double m) {m_VolumeMass=m;}

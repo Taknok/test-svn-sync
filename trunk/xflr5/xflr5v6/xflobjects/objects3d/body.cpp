@@ -934,14 +934,14 @@ void Body::setPanelPos()
     double a = (m_Bunch+1.0)*.48 ;
     a = 1./(1.0-a);
 
-    double norm = 1/(1+exp(0.5*a));
+    double norm = 1.0/(1.0+exp(0.5*a));
 
-    m_XPanelPos.clear();
+    m_XPanelPos.resize(m_nxPanels+1);
     for(int i=0; i<=m_nxPanels; i++)
     {
         double x = double(i)/double(m_nxPanels);
         double y = 1.0/(1.0+exp((0.5-x)*a));
-        m_XPanelPos.append(0.5-((0.5-y)/(0.5-norm))/2.0);
+        m_XPanelPos[i] = (0.5-((0.5-y)/(0.5-norm))/2.0);
     }
 }
 
@@ -1011,7 +1011,7 @@ Frame const *Body::frameAt(int iFrame) const
  * @param iFrame the index of the Frame object
  * @return the absolute longitudinal position, in meters
  */
-double Body::framePosition(int iFrame)
+double Body::framePosition(int iFrame) const
 {
     return m_SplineSurface.m_pFrame[iFrame]->m_Position.x;
 }
@@ -1047,7 +1047,6 @@ int Body::setActiveFrame(Frame const*pFrame)
 }
 
 
-
 /**
  * Sets as active the Frame pointed in input
  * @param iFrame the index of the newly selected Frame
@@ -1070,7 +1069,7 @@ Frame * Body::setActiveFrame(int iFrame)
 void Body::computeBodyAxisInertia()
 {
     Vector3d LA, VolumeCoG;
-    double Ixx=0, Iyy=0, Izz=0, Ixz=0;
+    double Ixx(0), Iyy(0), Izz(0), Ixz(0);
 
     computeVolumeInertia(VolumeCoG, Ixx, Iyy, Izz, Ixz);
     double TotalMass = m_VolumeMass;
@@ -1091,7 +1090,7 @@ void Body::computeBodyAxisInertia()
     // The CoG position is now available, so calculate the inertia w.r.t the CoG
     // using Huygens theorem
     // LA is the distance vector from the centre of mass to the new axis
-    LA = m_CoG-VolumeCoG;
+    LA = VolumeCoG - m_CoG;
     m_CoGIxx = Ixx + m_VolumeMass * (LA.y*LA.y + LA.z*LA.z);
     m_CoGIyy = Iyy + m_VolumeMass * (LA.x*LA.x + LA.z*LA.z);
     m_CoGIzz = Izz + m_VolumeMass * (LA.x*LA.x + LA.y*LA.y);
@@ -1104,26 +1103,24 @@ void Body::computeBodyAxisInertia()
         m_CoGIxx += pm.mass() * (LA.y*LA.y + LA.z*LA.z);
         m_CoGIyy += pm.mass() * (LA.x*LA.x + LA.z*LA.z);
         m_CoGIzz += pm.mass() * (LA.x*LA.x + LA.y*LA.y);
-        m_CoGIxz -= pm.mass() * (LA.x*LA.z);
+        m_CoGIxz += pm.mass() * (LA.x*LA.z);
     }
 }
 
 
 /**
-* Calculates the inertia of the Body's volume, in geometrical axis
+ * Calculates the inertia of the Body's volume, in geometrical axis
  * Assumes that the mass is distributed homogeneously in the body's skin.
  * Homogeneity is questionable, but is a rather handy assumption.
  * Mass in the body's skin is reasonable, given that the point masses are added manually.
  */
-void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz)
+void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz) const
 {
-    //evaluate roughly the Body's wetted area
-
-    double ux=0, rho=0;
-    double dj=0, dj1=0;
-    double BodyArea=0;
-    double SectionArea=0;
-    double xpos=0, dl=0;
+    double ux(0), rho(0);
+    double dj(0), dj1(0);
+    double BodyArea(0);
+    double SectionArea(0);
+    double xpos(0), dl(0);
     Vector3d Pt, LATB, TALB, N, PLA, PTA, PLB, PTB, Top, Bot;
 
     CoG.set(0.0, 0.0, 0.0);
@@ -1140,20 +1137,20 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
             {
                 //build the four corner points of the strips
                 PLA.x =  framePosition(i);
-                PLA.y =  frame(i)->m_CtrlPoint[k].y  ;
-                PLA.z =  frame(i)->m_CtrlPoint[k].z  ;
+                PLA.y =  frameAt(i)->m_CtrlPoint[k].y  ;
+                PLA.z =  frameAt(i)->m_CtrlPoint[k].z  ;
 
                 PLB.x = framePosition(i);
-                PLB.y = frame(i)->m_CtrlPoint[k+1].y ;
-                PLB.z = frame(i)->m_CtrlPoint[k+1].z ;
+                PLB.y = frameAt(i)->m_CtrlPoint[k+1].y ;
+                PLB.z = frameAt(i)->m_CtrlPoint[k+1].z ;
 
                 PTA.x = framePosition(i+1);
-                PTA.y = frame(i+1)->m_CtrlPoint[k].y ;
-                PTA.z = frame(i+1)->m_CtrlPoint[k].z ;
+                PTA.y = frameAt(i+1)->m_CtrlPoint[k].y ;
+                PTA.z = frameAt(i+1)->m_CtrlPoint[k].z ;
 
                 PTB.x = framePosition(i+1);
-                PTB.y = frame(i+1)->m_CtrlPoint[k+1].y;
-                PTB.z = frame(i+1)->m_CtrlPoint[k+1].z;
+                PTB.y = frameAt(i+1)->m_CtrlPoint[k+1].y;
+                PTB.z = frameAt(i+1)->m_CtrlPoint[k+1].z;
 
                 LATB = PTB - PLA;
                 TALB = PLB - PTA;
@@ -1167,10 +1164,10 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
         //First get the CoG position
         for (int i=0; i<frameCount()-1; i++)
         {
-            for (int j=0; j<m_xPanels[i]; j++)
+            for (int j=0; j<m_xPanels.at(i); j++)
             {
-                dj  = double(j)  /double(m_xPanels[i]);
-                dj1 = double(j+1)/double(m_xPanels[i]);
+                dj  = double(j)  /double(m_xPanels.at(i));
+                dj1 = double(j+1)/double(m_xPanels.at(i));
                 SectionArea = 0.0;
 
                 PLA.x = PLB.x = (1.0- dj) * framePosition(i)  +  dj * framePosition(i+1);
@@ -1179,17 +1176,17 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
                 for (int k=0; k<sideLineCount()-1; k++)
                 {
                     //build the four corner points of the strips
-                    PLB.y = (1.0- dj) * frame(i)->m_CtrlPoint[k].y   +  dj * frame(i+1)->m_CtrlPoint[k].y;
-                    PLB.z = (1.0- dj) * frame(i)->m_CtrlPoint[k].z   +  dj * frame(i+1)->m_CtrlPoint[k].z;
+                    PLB.y = (1.0- dj) * frameAt(i)->m_CtrlPoint.at(k).y   +  dj * frameAt(i+1)->m_CtrlPoint.at(k).y;
+                    PLB.z = (1.0- dj) * frameAt(i)->m_CtrlPoint.at(k).z   +  dj * frameAt(i+1)->m_CtrlPoint.at(k).z;
 
-                    PTB.y = (1.0-dj1) * frame(i)->m_CtrlPoint[k].y   + dj1 * frame(i+1)->m_CtrlPoint[k].y;
-                    PTB.z = (1.0-dj1) * frame(i)->m_CtrlPoint[k].z   + dj1 * frame(i+1)->m_CtrlPoint[k].z;
+                    PTB.y = (1.0-dj1) * frameAt(i)->m_CtrlPoint.at(k).y   + dj1 * frameAt(i+1)->m_CtrlPoint.at(k).y;
+                    PTB.z = (1.0-dj1) * frameAt(i)->m_CtrlPoint.at(k).z   + dj1 * frameAt(i+1)->m_CtrlPoint.at(k).z;
 
-                    PLA.y = (1.0- dj) * frame(i)->m_CtrlPoint[k+1].y +  dj * frame(i+1)->m_CtrlPoint[k+1].y;
-                    PLA.z = (1.0- dj) * frame(i)->m_CtrlPoint[k+1].z +  dj * frame(i+1)->m_CtrlPoint[k+1].z;
+                    PLA.y = (1.0- dj) * frameAt(i)->m_CtrlPoint.at(k+1).y +  dj * frameAt(i+1)->m_CtrlPoint.at(k+1).y;
+                    PLA.z = (1.0- dj) * frameAt(i)->m_CtrlPoint.at(k+1).z +  dj * frameAt(i+1)->m_CtrlPoint.at(k+1).z;
 
-                    PTA.y = (1.0-dj1) * frame(i)->m_CtrlPoint[k+1].y + dj1 * frame(i+1)->m_CtrlPoint[k+1].y;
-                    PTA.z = (1.0-dj1) * frame(i)->m_CtrlPoint[k+1].z + dj1 * frame(i+1)->m_CtrlPoint[k+1].z;
+                    PTA.y = (1.0-dj1) * frameAt(i)->m_CtrlPoint.at(k+1).y + dj1 * frameAt(i+1)->m_CtrlPoint.at(k+1).y;
+                    PTA.z = (1.0-dj1) * frameAt(i)->m_CtrlPoint.at(k+1).z + dj1 * frameAt(i+1)->m_CtrlPoint.at(k+1).z;
 
                     LATB = PTB - PLA;
                     TALB = PLB - PTA;
@@ -1201,8 +1198,8 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
                 // get center point for this section
                 Pt.x = (PLA.x + PTA.x)/2.0;
                 Pt.y = 0.0;
-                Pt.z = ((1.0-dj)  * m_SplineSurface.m_pFrame[i]->zPos() + dj  * m_SplineSurface.m_pFrame[i+1]->zPos()
-                        +(1.0-dj1) * m_SplineSurface.m_pFrame[i]->zPos() + dj1 * m_SplineSurface.m_pFrame[i+1]->zPos())/2.0;
+                Pt.z = ((1.0-dj)  * m_SplineSurface.m_pFrame.at(i)->zPos() + dj  * m_SplineSurface.m_pFrame.at(i+1)->zPos()
+                       +(1.0-dj1) * m_SplineSurface.m_pFrame.at(i)->zPos() + dj1 * m_SplineSurface.m_pFrame.at(i+1)->zPos())/2.0;
 
                 CoG.x += SectionArea*rho * Pt.x;
                 CoG.y += SectionArea*rho * Pt.y;
@@ -1216,10 +1213,10 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
         // we could do it one calculation, for CG and inertia, by using Huyghens/steiner theorem
         for (int i=0; i<frameCount()-1; i++)
         {
-            for (int j=0; j<m_xPanels[i]; j++)
+            for (int j=0; j<m_xPanels.at(i); j++)
             {
-                dj  = double(j)  /double(m_xPanels[i]);
-                dj1 = double(j+1)/double(m_xPanels[i]);
+                dj  = double(j)  /double(m_xPanels.at(i));
+                dj1 = double(j+1)/double(m_xPanels.at(i));
                 SectionArea = 0.0;
 
                 PLA.x = PLB.x = (1.0- dj) * framePosition(i)   +  dj * framePosition(i+1);
@@ -1228,17 +1225,17 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
                 for (int k=0; k<sideLineCount()-1; k++)
                 {
                     //build the four corner points of the strips
-                    PLB.y = (1.0- dj) * frame(i)->m_CtrlPoint[k].y   +  dj * frame(i+1)->m_CtrlPoint[k].y;
-                    PLB.z = (1.0- dj) * frame(i)->m_CtrlPoint[k].z   +  dj * frame(i+1)->m_CtrlPoint[k].z;
+                    PLB.y = (1.0- dj) * frameAt(i)->m_CtrlPoint.at(k).y   +  dj * frameAt(i+1)->m_CtrlPoint.at(k).y;
+                    PLB.z = (1.0- dj) * frameAt(i)->m_CtrlPoint.at(k).z   +  dj * frameAt(i+1)->m_CtrlPoint.at(k).z;
 
-                    PTB.y = (1.0-dj1) * frame(i)->m_CtrlPoint[k].y   + dj1 * frame(i+1)->m_CtrlPoint[k].y;
-                    PTB.z = (1.0-dj1) * frame(i)->m_CtrlPoint[k].z   + dj1 * frame(i+1)->m_CtrlPoint[k].z;
+                    PTB.y = (1.0-dj1) * frameAt(i)->m_CtrlPoint.at(k).y   + dj1 * frameAt(i+1)->m_CtrlPoint.at(k).y;
+                    PTB.z = (1.0-dj1) * frameAt(i)->m_CtrlPoint.at(k).z   + dj1 * frameAt(i+1)->m_CtrlPoint.at(k).z;
 
-                    PLA.y = (1.0- dj) * frame(i)->m_CtrlPoint[k+1].y +  dj * frame(i+1)->m_CtrlPoint[k+1].y;
-                    PLA.z = (1.0- dj) * frame(i)->m_CtrlPoint[k+1].z +  dj * frame(i+1)->m_CtrlPoint[k+1].z;
+                    PLA.y = (1.0- dj) * frameAt(i)->m_CtrlPoint.at(k+1).y +  dj * frameAt(i+1)->m_CtrlPoint.at(k+1).y;
+                    PLA.z = (1.0- dj) * frameAt(i)->m_CtrlPoint.at(k+1).z +  dj * frameAt(i+1)->m_CtrlPoint.at(k+1).z;
 
-                    PTA.y = (1.0-dj1) * frame(i)->m_CtrlPoint[k+1].y + dj1 * frame(i+1)->m_CtrlPoint[k+1].y;
-                    PTA.z = (1.0-dj1) * frame(i)->m_CtrlPoint[k+1].z + dj1 * frame(i+1)->m_CtrlPoint[k+1].z;
+                    PTA.y = (1.0-dj1) * frameAt(i)->m_CtrlPoint.at(k+1).y + dj1 * frameAt(i+1)->m_CtrlPoint.at(k+1).y;
+                    PTA.z = (1.0-dj1) * frameAt(i)->m_CtrlPoint.at(k+1).z + dj1 * frameAt(i+1)->m_CtrlPoint.at(k+1).z;
 
                     LATB = PTB - PLA;
                     TALB = PLB - PTA;
@@ -1250,13 +1247,13 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
                 // get center point for this section
                 Pt.x = (PLA.x + PTA.x)/2.0;
                 Pt.y = 0.0;
-                Pt.z = ((1.0-dj)  * m_SplineSurface.m_pFrame[i]->zPos() + dj  * m_SplineSurface.m_pFrame[i+1]->zPos()
-                        +(1.0-dj1) * m_SplineSurface.m_pFrame[i]->zPos() + dj1 * m_SplineSurface.m_pFrame[i+1]->zPos())/2.0;
+                Pt.z = ((1.0-dj)  * m_SplineSurface.m_pFrame.at(i)->zPos() + dj  * m_SplineSurface.m_pFrame.at(i+1)->zPos()
+                       +(1.0-dj1) * m_SplineSurface.m_pFrame.at(i)->zPos() + dj1 * m_SplineSurface.m_pFrame.at(i+1)->zPos())/2.0;
 
                 CoGIxx += SectionArea*rho * ( (Pt.y-CoG.y)*(Pt.y-CoG.y) + (Pt.z-CoG.z)*(Pt.z-CoG.z) );
                 CoGIyy += SectionArea*rho * ( (Pt.x-CoG.x)*(Pt.x-CoG.x) + (Pt.z-CoG.z)*(Pt.z-CoG.z) );
                 CoGIzz += SectionArea*rho * ( (Pt.x-CoG.x)*(Pt.x-CoG.x) + (Pt.y-CoG.y)*(Pt.y-CoG.y) );
-                CoGIxz -= SectionArea*rho * ( (Pt.x-CoG.x)*(Pt.z-CoG.z) );
+                CoGIxz += SectionArea*rho * ( (Pt.x-CoG.x)*(Pt.z-CoG.z) );
             }
         }
     }
@@ -1309,7 +1306,7 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
             CoGIxx += SectionArea*rho * ( (Pt.y-CoG.y)*(Pt.y-CoG.y) + (Pt.z-CoG.z)*(Pt.z-CoG.z) );
             CoGIyy += SectionArea*rho * ( (Pt.x-CoG.x)*(Pt.x-CoG.x) + (Pt.z-CoG.z)*(Pt.z-CoG.z) );
             CoGIzz += SectionArea*rho * ( (Pt.x-CoG.x)*(Pt.x-CoG.x) + (Pt.y-CoG.y)*(Pt.y-CoG.y) );
-            CoGIxz -= SectionArea*rho * ( (Pt.x-CoG.x)*(Pt.z-CoG.z) );
+            CoGIxz += SectionArea*rho * ( (Pt.x-CoG.x)*(Pt.z-CoG.z) );
 
             xpos += dl;
         }
@@ -2315,8 +2312,10 @@ int Body::makePanels(int nFirst, Vector3d const &pos, QVector<Panel> &panels, QV
     Vector3d PLA, PTA, PLB, PTB;
 
     int n0(0), n1(0), n2(0), n3(0), lnx(0), lnh(0);
-    int nx = nxPanels();
-    int nh = nhPanels();
+    int nx = m_nxPanels;
+    int nh = m_nhPanels;
+    setPanelPos();
+
     int p = 0;
 
     int FullSize = 0;
@@ -2463,8 +2462,8 @@ int Body::makePanels(int nFirst, Vector3d const &pos, QVector<Panel> &panels, QV
         //start with left side... same as for wings
         for (int k=0; k<nx; k++)
         {
-            uk  = m_XPanelPos[k];
-            uk1 = m_XPanelPos[k+1];
+            uk  = m_XPanelPos.at(k);
+            uk1 = m_XPanelPos.at(k+1);
 
             getPoint(uk,  0, false, LB);
             getPoint(uk1, 0, false, TB);

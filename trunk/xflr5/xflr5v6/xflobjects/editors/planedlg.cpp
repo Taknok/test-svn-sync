@@ -29,13 +29,13 @@
 #include <QMenu>
 
 
-#include <xflobjects/editors/gl3dwingdlg.h>
+#include <xflobjects/editors/wingdlg.h>
 #include <xflobjects/editors/planedlg.h>
 #include <xfl3d/views/gl3dplaneview.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
 #include <xflobjects/editors/editbodydlg.h>
-#include <xflobjects/editors/gl3dbodydlg.h>
+#include <xflobjects/editors/bodydlg.h>
 #include <xflobjects/editors/importobjectdlg.h>
 #include <xflobjects/editors/inertiadlg.h>
 #include <xflobjects/objects3d/objects3d.h>
@@ -272,7 +272,7 @@ void PlaneDlg::onDefineWing()
     Wing *pSaveWing = new Wing();
     pSaveWing->duplicate(m_pPlane->wing());
 
-    GL3dWingDlg wingDlg(this);
+    WingDlg wingDlg(this);
 
     wingDlg.m_bAcceptName = true;
     wingDlg.initDialog(m_pPlane->wing());
@@ -296,7 +296,7 @@ void PlaneDlg::onDefineFin()
     Wing *pSaveWing = new Wing();
     pSaveWing->duplicate(m_pPlane->fin());
 
-    GL3dWingDlg wingDlg(this);
+    WingDlg wingDlg(this);
     wingDlg.m_bAcceptName = true;
     wingDlg.initDialog(m_pPlane->fin());
 
@@ -319,7 +319,7 @@ void PlaneDlg::onDefineStab()
     Wing *pSaveWing = new Wing();
     pSaveWing->duplicate(m_pPlane->stab());
 
-    GL3dWingDlg wingDlg(this);
+    WingDlg wingDlg(this);
     wingDlg.m_bAcceptName = true;
     wingDlg.initDialog(m_pPlane->stab());
 
@@ -342,7 +342,7 @@ void PlaneDlg::onDefineWing2()
     Wing *pSaveWing = new Wing();
     pSaveWing->duplicate(m_pPlane->wing2());
 
-    GL3dWingDlg wingDlg(this);
+    WingDlg wingDlg(this);
     wingDlg.m_bAcceptName = true;
     wingDlg.initDialog(m_pPlane->wing2());
 
@@ -392,7 +392,7 @@ void PlaneDlg::onDefineBody()
     Vector3d v = m_pPlane->bodyPos();
     v.x = -v.x; v.z=-v.z;
     //   m_pPlane->m_pBody->Translate(v,false);
-    GL3dBodyDlg glbDlg(this);
+    BodyDlg glbDlg(this);
     glbDlg.m_bEnableName = false;
     glbDlg.initDialog(m_pPlane->body());
 

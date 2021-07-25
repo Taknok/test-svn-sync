@@ -98,7 +98,6 @@ class PanelAnalysis : QObject
 
         void relaxWake();
 
-        void computeStabilityDerivativesOld();
         void computeStabilityDerivatives();
         void computeStabilityInertia();
         bool computeTrimmedConditions();

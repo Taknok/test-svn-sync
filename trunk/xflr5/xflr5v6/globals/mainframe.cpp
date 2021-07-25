@@ -20,7 +20,6 @@
 *****************************************************************************/
 
 #include <QToolTip>
-#include <QGLFormat>
 #include <QMessageBox>
 #include <QtCore>
 #include <QToolBar>
@@ -101,7 +100,7 @@
 #include <xflgraph/controls/graphdlg.h>
 #include <xflobjects/editors/bodytransdlg.h>
 #include <xflobjects/editors/editobjectdelegate.h>
-#include <xflobjects/editors/gl3dbodydlg.h>
+#include <xflobjects/editors/bodydlg.h>
 #include <xflobjects/editors/inertiadlg.h>
 #include <xflobjects/editors/planedlg.h>
 #include <xflobjects/editors/renamedlg.h>
@@ -339,14 +338,7 @@ void MainFrame::testConfiguration()
     strange = QString::asprintf("    Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
     Trace(strange);
 
-
-    if(!QGLFormat::hasOpenGL())
-    {
-        QMessageBox::warning(this, tr("Warning"), tr("Your system does not provide support for OpenGL.\n"
-                                                     "XFLR5 will not operate correctly."));
-        s_bOpenGL = false;
-    }
-    else if(QSurfaceFormat::defaultFormat().majorVersion()<2)
+    if(QSurfaceFormat::defaultFormat().majorVersion()<2)
     {
         QString strong = "XFLR5 requires OpenGL 2.1 or greater.\n";
         QString strange;
@@ -4231,10 +4223,10 @@ void MainFrame::onOpenRecentFile()
  */
 void MainFrame::readPolarFile(QDataStream &ar)
 {
-    Foil* pFoil = nullptr;
-    Polar *pPolar = nullptr;
-    Polar * pOldPolar = nullptr;
-    int i=0, n=0, l=0;
+    Foil *pFoil(nullptr);
+    Polar *pPolar(nullptr);
+    Polar *pOldPolar(nullptr);
+    int n(0);
 
     ar >> n;
 
@@ -4249,7 +4241,7 @@ void MainFrame::readPolarFile(QDataStream &ar)
         //new format XFLR5 v1.99+
         //first read all available foils
         ar>>n;
-        for (i=0;i<n; i++)
+        for (int i=0; i<n; i++)
         {
             pFoil = new Foil();
             if (!xfl::serializeFoil(pFoil, ar, false))
@@ -4263,7 +4255,7 @@ void MainFrame::readPolarFile(QDataStream &ar)
         //next read all available polars
 
         ar>>n;
-        for (i=0;i<n; i++)
+        for (int i=0; i<n; i++)
         {
             pPolar = new Polar();
 
@@ -4272,7 +4264,7 @@ void MainFrame::readPolarFile(QDataStream &ar)
                 delete pPolar;
                 return;
             }
-            for (l=0; l<Objects2d::polarCount(); l++)
+            for (int l=0; l<Objects2d::polarCount(); l++)
             {
                 pOldPolar = Objects2d::polarAt(l);
                 if (pOldPolar->foilName() == pPolar->foilName() &&
@@ -4425,14 +4417,14 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
     ar << Units::momentUnitIndex();
 
     //Save default Polar data. Not in the Settings, since this is Project dependant
-    if(WPolarDlg::s_WPolar.polarType()==xfl::FIXEDSPEEDPOLAR)      ar<<1;
+    if     (WPolarDlg::s_WPolar.polarType()==xfl::FIXEDSPEEDPOLAR) ar<<1;
     else if(WPolarDlg::s_WPolar.polarType()==xfl::FIXEDLIFTPOLAR)  ar<<2;
     else if(WPolarDlg::s_WPolar.polarType()==xfl::FIXEDAOAPOLAR)   ar<<4;
     else if(WPolarDlg::s_WPolar.polarType()==xfl::BETAPOLAR)       ar<<5;
     else if(WPolarDlg::s_WPolar.polarType()==xfl::STABILITYPOLAR)  ar<<7;
     else ar << 0;
 
-    if(WPolarDlg::s_WPolar.isLLTMethod())             ar << 1;
+    if     (WPolarDlg::s_WPolar.isLLTMethod())        ar << 1;
     else if(WPolarDlg::s_WPolar.isVLMMethod())        ar << 2;
     else if(WPolarDlg::s_WPolar.isPanel4Method())     ar << 3;
     else if(WPolarDlg::s_WPolar.isTriCstMethod())     ar << 4;
@@ -4805,22 +4797,28 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         {
             //Load the default Polar data. Not in the Settings, since this is Project dependant
             ar >> n;
-            if     (n==1) WPolarDlg::s_WPolar.setPolarType(xfl::FIXEDSPEEDPOLAR);
-            else if(n==2) WPolarDlg::s_WPolar.setPolarType(xfl::FIXEDLIFTPOLAR);
-            else if(n==4) WPolarDlg::s_WPolar.setPolarType(xfl::FIXEDAOAPOLAR);
-            else if(n==5) WPolarDlg::s_WPolar.setPolarType(xfl::BETAPOLAR);
-            else if(n==7) WPolarDlg::s_WPolar.setPolarType(xfl::STABILITYPOLAR);
+            switch (n)
+            {
+                default:
+                case 1: WPolarDlg::s_WPolar.setPolarType(xfl::FIXEDSPEEDPOLAR);  break;
+                case 2: WPolarDlg::s_WPolar.setPolarType(xfl::FIXEDLIFTPOLAR);   break;
+                case 4: WPolarDlg::s_WPolar.setPolarType(xfl::FIXEDAOAPOLAR);    break;
+                case 5: WPolarDlg::s_WPolar.setPolarType(xfl::BETAPOLAR);        break;
+                case 7: WPolarDlg::s_WPolar.setPolarType(xfl::STABILITYPOLAR);   break;
+            }
 
             ar >> n;
-            if(n==1)      WPolarDlg::s_WPolar.setAnalysisMethod(xfl::LLTMETHOD);
-            else if(n==2) WPolarDlg::s_WPolar.setAnalysisMethod(xfl::VLMMETHOD);
-            else if(n==3) WPolarDlg::s_WPolar.setAnalysisMethod(xfl::PANEL4METHOD);
-            else if(n==4) WPolarDlg::s_WPolar.setAnalysisMethod(xfl::TRIUNIMETHOD);
-            else if(n==5) WPolarDlg::s_WPolar.setAnalysisMethod(xfl::TRILINMETHOD);
+            switch(n)
+            {
+                case 1: WPolarDlg::s_WPolar.setAnalysisMethod(xfl::LLTMETHOD);     break;
+                default:
+                case 2: WPolarDlg::s_WPolar.setAnalysisMethod(xfl::VLMMETHOD);     break;
+                case 3: WPolarDlg::s_WPolar.setAnalysisMethod(xfl::PANEL4METHOD);  break;
+            }
 
             ar >> dble;    WPolarDlg::s_WPolar.setMass(dble);
             ar >> WPolarDlg::s_WPolar.m_QInfSpec;
-            double x=0, y=0, z=0;
+            double x(0), y(0), z(0);
             ar >> x >> y >> z;
             WPolarDlg::s_WPolar.setCoG({x,y,z});
 
@@ -6371,7 +6369,7 @@ void MainFrame::setPlainColorsFromFile()
 
     QStringList GoogleColorNames;
     QTextStream stream(&ColorFile);
-//    QString line = stream.readLine();
+    stream.readLine();
 //    LineColorNames = line.split(QRegExp("[,\\s\t]"), QString::SkipEmptyParts);
 
     int iline = 0;

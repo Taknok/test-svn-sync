@@ -39,7 +39,7 @@
 
 #include <xfl3d/views/gl3dbodyview.h>
 
-class ColorBtn;
+class ColorMenuBtn;
 class DoubleEdit;
 class BodyTableDelegate;
 class BodyGridDlg;
@@ -49,7 +49,7 @@ class BodyFrameWt;
 class Frame;
 
 
-class GL3dBodyDlg : public QDialog
+class BodyDlg : public QDialog
 {
     Q_OBJECT
     friend class MainFrame;
@@ -62,11 +62,11 @@ class GL3dBodyDlg : public QDialog
     friend class gl3dBodyView;
 
     public:
-        GL3dBodyDlg(QWidget *pParent=nullptr);
-        ~GL3dBodyDlg();
+        BodyDlg(QWidget *pParent=nullptr);
+        ~BodyDlg();
 
     private slots:
-        void onBodyColor();
+        void onBodyColor(QColor clr);
         void onBodyInertia();
         void onBodyName();
         void onButton(QAbstractButton *pButton);
@@ -176,7 +176,7 @@ class GL3dBodyDlg : public QDialog
         QTextEdit *m_pteBodyDescription;
 
         QRadioButton *m_prbFlatPanels, *m_prbBSplines;
-        ColorBtn *m_pcbBodyColor;
+        ColorMenuBtn *m_pcbBodyColor;
         DoubleEdit *m_pdeNXPanels, *m_pdeNHoopPanels;
         QComboBox *m_pcbXDegree, *m_pcbHoopDegree;
         QPushButton *m_ppbMenuButton;

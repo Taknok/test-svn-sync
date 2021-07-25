@@ -31,13 +31,13 @@
 
 class IntEdit;
 class DoubleEdit;
-class GL3dBodyDlg;
+class BodyDlg;
 
 class BodyScaleDlg : public QDialog
 {
     Q_OBJECT
 
-    friend class GL3dBodyDlg;
+    friend class BodyDlg;
     friend class EditBodyDlg;
     friend class Body;
     friend class BodyFrameWt;

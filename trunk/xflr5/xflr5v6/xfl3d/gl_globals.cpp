@@ -1137,7 +1137,7 @@ void glMakeCircle(double radius, Vector3d const &O, QOpenGLBuffer &vbo)
 
     for(int i=0; i<NPOINTS-1; i++)
     {
-        float theta  = float(i)   * 2.0f*PI/float(NPOINTS-1);
+        float theta  = float(i)   * 2.0f*PIf/float(NPOINTS-1);
         float theta1 = float(i+1) * 2.0f*PIf/float(NPOINTS-1);
         ArcVertexArray[iv++] = O.xf()+radius*cosf(theta);
         ArcVertexArray[iv++] = O.yf()+radius*sinf(theta);

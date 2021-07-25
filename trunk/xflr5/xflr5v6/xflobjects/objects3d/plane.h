@@ -64,7 +64,7 @@ class Plane : public XflObject
         void renameWings();
 
         void clearPointMasses();
-        void computeVolumeInertia(double &Mass, Vector3d &CoG, double &Ixx, double &Iyy, double &Izz, double &Ixz);
+        void computeVolumeInertia(double &Mass, Vector3d &CoG, double &Ixx, double &Iyy, double &Izz, double &Ixz) const;
         void computeBodyAxisInertia();
 
         void setAutoBodyName();

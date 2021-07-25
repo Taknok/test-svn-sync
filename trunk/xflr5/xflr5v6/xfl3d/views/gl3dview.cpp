@@ -323,7 +323,7 @@ void gl3dView::on3dRear()
     m_ArcBall.setQuat(m_QuatEnd);
 
     startRotationTimer();
-    emit (viewModified());
+    emit viewModified();
 }
 
 
@@ -1482,7 +1482,6 @@ void gl3dView::paintSphere(Vector3d const &place, float radius, QColor const &sp
 }
 
 
-/** @todo make paintTriangles3Vtx */
 void gl3dView::paintSphere(float xs, float ys, float zs, float radius, const QColor &color, bool bLight)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);

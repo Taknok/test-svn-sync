@@ -563,7 +563,7 @@ void gl3dHydrogen::onCollapse()
 void gl3dHydrogen::collapseBlock(QWidget *pParent) const
 {
     double wavefunc(0), probdens(0);
-    double r(0), rho(0), theta(0), phi(0), u(0), p(0);
+    double r(0), rho(0), theta(0), phi(0), p(0);
     QVector<float>tmpstate(m_UpdateInterval); // temporary working array
     QVector<Vector3d>tmppos(m_UpdateInterval); //  temporary working array
 
@@ -571,16 +571,17 @@ void gl3dHydrogen::collapseBlock(QWidget *pParent) const
     int iv = 0;
     do
     {
-        rho   = QRandomGenerator::global()->bounded(s_ObsRadius); // in Bohr radius units
-        phi   = QRandomGenerator::global()->bounded(2.0*PI);
-        u     = QRandomGenerator::global()->generateDouble();
-        theta = acos(1.0-2.0*u);
-        p     = QRandomGenerator::global()->generateDouble()/A0; // set max to 1/A0
+        rho   = pow(QRandomGenerator::global()->generateDouble(),0.33333)*s_ObsRadius;
+        r = rho*A0;// in Bohr radius units
 
-        r = rho*A0;
+        phi   = QRandomGenerator::global()->bounded(2.0*PI);
+        theta = acos(1.0-2.0*QRandomGenerator::global()->generateDouble());
+
+        p     = QRandomGenerator::global()->generateDouble()/A0; // set max to 1/A0
 
         wavefunc = psi(rho, theta, phi);  // r.dr.dtheta.dphi
         probdens = r*r * wavefunc*wavefunc;
+
         if(p<probdens)
         {
             tmppos[iv].x = r/A0 * sin(theta)*cos(phi);

@@ -21,7 +21,7 @@
  
 
 #include <xflobjects/editors/wingdelegate.h>
-#include <xflobjects/editors/gl3dwingdlg.h>
+#include <xflobjects/editors/wingdlg.h>
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflobjects/objects2d/objects2d.h>
 #include <xflobjects/objects3d/wingsection.h>
@@ -112,6 +112,7 @@ void WingDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, cons
     if(index.column()!=5 && index.column()!=7 && index.column()!=9)
     {
         DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
+        pDE->readValue();
         double value = pDE->value();
         model->setData(index, value, Qt::EditRole);
     }
