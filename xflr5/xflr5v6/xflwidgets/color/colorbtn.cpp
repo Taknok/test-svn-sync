@@ -29,7 +29,7 @@ QSize ColorBtn::sizeHint() const
 {
     QFont font; // the application's default font, avoid custom font to ensure fixed size widget
     QFontMetrics fm(font);
-    int w = 11*fm.averageCharWidth();
+    int w = 3*fm.averageCharWidth();
     int h = fm.height();
     return QSize(w, h);
 }
@@ -65,7 +65,6 @@ void ColorBtn::onSetColor(QColor clr)
 }
 
 
-
 bool ColorBtn::event(QEvent* pEvent)
 {
     if (pEvent->type() == QEvent::Enter)
@@ -80,6 +79,7 @@ bool ColorBtn::event(QEvent* pEvent)
     }
     return QWidget::event(pEvent); // Or whatever parent class you have.
 }
+
 
 void ColorBtn::paintEvent(QPaintEvent *pEvent)
 {

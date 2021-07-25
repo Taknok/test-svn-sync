@@ -331,8 +331,8 @@ bool Wing::exportDefinition(QString path_to_file, QString errorMessage)
  */
 void Wing::computeGeometry()
 {
-    double surface = 0.0;
-    double xysurface = 0.0;
+    double surface(0);
+    double xysurface(0);
     setLength(0, 0.0);
     m_Section[0].m_YProj  = YPosition(0);
     for (int is=1; is<NWingSection(); is++)
@@ -535,7 +535,7 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
             CoGIxxCheck += LocalVolume*rho * ( (PtC4.y-CoG.y)*(PtC4.y-CoG.y) + (PtC4.z-CoG.z)*(PtC4.z-CoG.z) );
             CoGIyyCheck += LocalVolume*rho * ( (PtC4.x-CoG.x)*(PtC4.x-CoG.x) + (PtC4.z-CoG.z)*(PtC4.z-CoG.z) );
             CoGIzzCheck += LocalVolume*rho * ( (PtC4.x-CoG.x)*(PtC4.x-CoG.x) + (PtC4.y-CoG.y)*(PtC4.y-CoG.y) );
-            CoGIxzCheck -= LocalVolume*rho * ( (PtC4.x-CoG.x)*(PtC4.z-CoG.z) );
+            CoGIxzCheck += LocalVolume*rho * ( (PtC4.x-CoG.x)*(PtC4.z-CoG.z) );
 
             recalcMass   += LocalVolume*rho;
             recalcVolume += LocalVolume;
@@ -546,7 +546,7 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
                 CoGIxx += ElemVolume.at(p)*rho * ( (PtVolume.at(p).y-CoG.y)*(PtVolume.at(p).y-CoG.y) + (PtVolume.at(p).z-CoG.z)*(PtVolume.at(p).z-CoG.z));
                 CoGIyy += ElemVolume.at(p)*rho * ( (PtVolume.at(p).x-CoG.x)*(PtVolume.at(p).x-CoG.x) + (PtVolume.at(p).z-CoG.z)*(PtVolume.at(p).z-CoG.z));
                 CoGIzz += ElemVolume.at(p)*rho * ( (PtVolume.at(p).x-CoG.x)*(PtVolume.at(p).x-CoG.x) + (PtVolume.at(p).y-CoG.y)*(PtVolume.at(p).y-CoG.y));
-                CoGIxz -= ElemVolume.at(p)*rho * ( (PtVolume.at(p).x-CoG.x)*(PtVolume.at(p).z-CoG.z) );
+                CoGIxz += ElemVolume.at(p)*rho * ( (PtVolume.at(p).x-CoG.x)*(PtVolume.at(p).z-CoG.z) );
                 p++;
             }
         }
@@ -591,7 +591,7 @@ void Wing::computeBodyAxisInertia()
     m_CoGIxx = Ixx + m_VolumeMass * (LA.y*LA.y+ LA.z*LA.z);
     m_CoGIyy = Iyy + m_VolumeMass * (LA.x*LA.x+ LA.z*LA.z);
     m_CoGIzz = Izz + m_VolumeMass * (LA.x*LA.x+ LA.y*LA.y);
-    m_CoGIxz = Ixz - m_VolumeMass *  LA.x*LA.z;
+    m_CoGIxz = Ixz + m_VolumeMass *  LA.x*LA.z;
 
     //add the contribution of point masses to total inertia
     for(int im=0; im<m_PointMass.size(); im++)
@@ -601,7 +601,7 @@ void Wing::computeBodyAxisInertia()
         m_CoGIxx += pm.mass() * (LA.y*LA.y + LA.z*LA.z);
         m_CoGIyy += pm.mass() * (LA.x*LA.x + LA.z*LA.z);
         m_CoGIzz += pm.mass() * (LA.x*LA.x + LA.y*LA.y);
-        m_CoGIxz -= pm.mass() * (LA.x*LA.z);
+        m_CoGIxz += pm.mass() * (LA.x*LA.z);
     }
 }
 
@@ -912,9 +912,8 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
 */
 void Wing::computeChords(int NStation)
 {
-    int j,k,m;
-    double y, yob, tau;
-    double x0,y0,y1,y2;
+    double y(0), yob(0), tau(0);
+    double x0(0),y0(0),y1(0),y2(0);
     Vector3d C;
 
     int NSurfaces = m_Surface.size();
@@ -924,7 +923,7 @@ void Wing::computeChords(int NStation)
         //LLT based
         m_NStation = NStation;
 
-        for (k=0; k<=NStation; k++)
+        for (int k=0; k<=NStation; k++)
         {
             yob   = cos(k*PI/NStation);
             y = qAbs(yob * m_PlanformSpan/2);
@@ -945,15 +944,15 @@ void Wing::computeChords(int NStation)
         //VLM Mesh based
         QVector<double> SpanPosition;
         m_NStation = 0;
-        m = 0;
+        int m = 0;
 
         x0 = m_Surface[NSurfaces/2].m_LA.x;
         y0 = m_Surface[NSurfaces/2].m_LA.y;
 
-        for (j=NSurfaces/2; j<NSurfaces; j++)
+        for (int j=NSurfaces/2; j<NSurfaces; j++)
         {
             Surface const &surf = m_Surface.at(j);
-            for (k=0; k<surf.m_NYPanels; k++)
+            for (int k=0; k<surf.m_NYPanels; k++)
             {
                 //calculate span positions at each station
                 surf.getYDist(k, y1, y2);
@@ -971,10 +970,10 @@ void Wing::computeChords(int NStation)
         }
 
         m=0;
-        for (j=0; j<NSurfaces; j++)
+        for (int j=0; j<NSurfaces; j++)
         {
             Surface const &surf = m_Surface.at(j);
-            for (k=0; k<surf.m_NYPanels; k++)
+            for (int k=0; k<surf.m_NYPanels; k++)
             {
                 //calculate chords and offsets at each station
                 m_Chord[m]     = surf.chord(k);
@@ -1124,9 +1123,7 @@ double Wing::C4(double yob) const
  */
 double Wing::getChord(double yob) const
 {
-    double chord = 0.0;
-    double tau;
-    double y;
+    double chord(0), tau(0), y(0);
 
     y= qAbs(yob*m_PlanformSpan/2.0);//geometry is symetric
     for(int is=0; is<NWingSection()-1; is++)
@@ -1149,8 +1146,8 @@ double Wing::getChord(double yob) const
  */
 double Wing::getOffset(double yob) const
 {
-    double tau, y;
-    double offset = 0.0;
+    double tau(0), y(0);
+    double offset(0);
 
     y= qAbs(yob*m_PlanformSpan/2.0);
     for(int is=0; is<NWingSection()-1; is++)
@@ -1175,7 +1172,7 @@ double Wing::getOffset(double yob) const
  */
 double Wing::getTwist(double yob) const
 {
-    double tau;
+    double tau(0);
 
     double y= qAbs(yob*m_PlanformSpan/2.0);//geometry is symetric
 
@@ -1329,8 +1326,8 @@ double Wing::yrel(double SpanPos) const
  */
 double Wing::zPos(double y) const
 {
-    double tau;
-    double ZPos =0.0;
+    double tau(0);
+    double ZPos(0);
 
     y= qAbs(y);
     if(y<=0.0) return 0.0;
@@ -1359,8 +1356,8 @@ double Wing::zPos(double y) const
 void Wing::panelComputeBending(bool bThinSurface)
 {
     QVector<double> ypos, zpos;
-    int j,k,jj,coef,p;
-    double bm;
+    int coef(0),p(0);
+    double bm(0);
     Vector3d Dist(0.0,0.0,0.0);
     Vector3d Moment;
 
@@ -1378,11 +1375,11 @@ void Wing::panelComputeBending(bool bThinSurface)
 
     int NSurfaces = m_Surface.size();
 
-    for (j=0; j<NSurfaces; j++)
+    for (int j=0; j<NSurfaces; j++)
     {
         Surface const &surf = m_Surface.at(j);
 
-        for (k=0; k<surf.m_NYPanels; k++)
+        for (int k=0; k<surf.m_NYPanels; k++)
         {
             if(!bThinSurface)
             {
@@ -1399,12 +1396,12 @@ void Wing::panelComputeBending(bool bThinSurface)
         }
     }
 
-    for (j=0; j<m_NStation; j++)
+    for (int j=0; j<m_NStation; j++)
     {
         bm = 0.0;
         if (ypos[j]<=0)
         {
-            for (jj=0; jj<j; jj++)
+            for (int jj=0; jj<j; jj++)
             {
                 Dist.y =  -ypos[jj]+ypos[j];
                 Dist.z =  -zpos[jj]+zpos[j];
@@ -1414,7 +1411,7 @@ void Wing::panelComputeBending(bool bThinSurface)
         }
         else
         {
-            for (jj=j+1; jj<m_NStation; jj++)
+            for (int jj=j+1; jj<m_NStation; jj++)
             {
                 Dist.y =  ypos[jj]-ypos[j];
                 Dist.z =  zpos[jj]-zpos[j];
@@ -1745,7 +1742,6 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double cons
 }
 
 
-
 /**
 * In input, takes the speed QInf and the distribution of lift coefficients m_Cl[] along the span
 * In output, returns for each span station
@@ -1954,7 +1950,7 @@ bool Wing::isWingFoil(const Foil *pFoil) const
  */
 bool Wing::intersectWing(Vector3d O,  Vector3d U, Vector3d &I) const
 {
-    double dist=0.0;
+    double dist(0);
 
     for(int j=0; j<m_Surface.count(); j++)
     {
@@ -2058,7 +2054,7 @@ void Wing::getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU,
  */
 bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
 {
-    int ArchiveFormat;// identifies the format of the file
+    int ArchiveFormat(0);// identifies the format of the file
 
     if(bIsStoring)
     {
@@ -2068,8 +2064,8 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
     else
     {
         // loading code
-        float f,g,h;
-        int k;
+        float f(0),g(0),h(0);
+        int k(0);
         //1010 : added storage of alpha channel + added a provision for ints and floats
         //1009 : QFLR5 v0.03 : added mass properties for inertia calculations
         //1008 : QFLR5 v0.02 : Added wing description field
@@ -2304,7 +2300,7 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
     int ArchiveFormat(0);// identifies the format of the file
     double dble(0), dm(0), px(0), py(0), pz(0);
     double chord(0), twist(0), pos(0), dihedral(0), offset(0);
-    xfl::enumPanelDistribution xDist, yDist;
+    xfl::enumPanelDistribution xDist(xfl::UNIFORM), yDist(xfl::UNIFORM);
 
     if(bIsStoring)
     {

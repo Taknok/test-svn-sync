@@ -27,7 +27,7 @@
 #include <QLabel>
 
 #include "bodyscaledlg.h"
-#include "gl3dbodydlg.h"
+#include "bodydlg.h"
 #include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/body.h>
 #include <xflwidgets/customwts/intedit.h>

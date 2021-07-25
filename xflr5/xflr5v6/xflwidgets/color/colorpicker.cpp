@@ -189,7 +189,7 @@ void ColorPicker::onOtherColor()
     if(s_bDontUseNativeDlg) dialogOptions |= QColorDialog::DontUseNativeDialog;
 #endif
     QColor Color = QColorDialog::getColor(m_Color,
-								   this, "Select the color", dialogOptions);
+                                          this, "Select the color", dialogOptions);
     if(Color.isValid()) m_Color = Color;
 
     m_bChanged = true;

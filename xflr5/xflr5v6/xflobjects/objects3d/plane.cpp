@@ -122,14 +122,14 @@ bool Plane::hasPOpp(PlaneOpp const*pPOpp)   const {return pPOpp->planeName().com
  * @param  &CoGIzz zz axis component of the inertia tensor, calculated at the Plane's CoG
  * @param  &CoGIxz xz axis component of the inertia tensor, calculated at the Plane's CoG
 */
-void Plane::computeVolumeInertia(double &Mass, Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz)
+void Plane::computeVolumeInertia(double &Mass, Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz) const
 {
-    double Ixx=0, Iyy=0, Izz=0, Ixz=0;
+    double Ixx(0), Iyy(0), Izz(0), Ixz(0);
 
     Vector3d Pt;
     Vector3d CoGBody;
     Vector3d CoGWing[MAXWINGS];
-    Wing *pWing[] = {nullptr,nullptr,nullptr,nullptr};
+    Wing const *pWing[]{nullptr,nullptr,nullptr,nullptr};
 
     pWing[0] = m_Wing;
     if(m_bBiplane) pWing[1] = m_Wing+1;
@@ -147,7 +147,7 @@ void Plane::computeVolumeInertia(double &Mass, Vector3d &CoG, double &CoGIxx, do
         {
             //the inertia of the wings are base on the surface geometry;
             //these surfaces have been translated to the LE position as they were created
-            pWing[iw]->computeGeometry();
+//            pWing[iw]->computeGeometry();
             pWing[iw]->computeVolumeInertia(CoGWing[iw], Ixx, Iyy, Izz, Ixz);
             CoG += CoGWing[iw] * pWing[iw]->m_VolumeMass;// so we do not add again the LE position
             PlaneMass += pWing[iw]->m_VolumeMass;
@@ -188,7 +188,7 @@ void Plane::computeVolumeInertia(double &Mass, Vector3d &CoG, double &CoGIxx, do
             CoGIxx +=  pWing[iw]->m_VolumeMass * (Pt.y*Pt.y + Pt.z*Pt.z);
             CoGIyy +=  pWing[iw]->m_VolumeMass * (Pt.x*Pt.x + Pt.z*Pt.z);
             CoGIzz +=  pWing[iw]->m_VolumeMass * (Pt.x*Pt.x + Pt.y*Pt.y);
-            CoGIxz -=  pWing[iw]->m_VolumeMass *  Pt.x*Pt.z;
+            CoGIxz +=  pWing[iw]->m_VolumeMass *  Pt.x*Pt.z;
         }
     }
 
@@ -198,7 +198,7 @@ void Plane::computeVolumeInertia(double &Mass, Vector3d &CoG, double &CoGIxx, do
         CoGIxx += m_Body.m_VolumeMass * (Pt.y*Pt.y + Pt.z*Pt.z);
         CoGIyy += m_Body.m_VolumeMass * (Pt.x*Pt.x + Pt.z*Pt.z);
         CoGIzz += m_Body.m_VolumeMass * (Pt.x*Pt.x + Pt.y*Pt.y);
-        CoGIxz -= m_Body.m_VolumeMass *  Pt.x*Pt.z;
+        CoGIxz += m_Body.m_VolumeMass *  Pt.x*Pt.z;
     }
     Mass = PlaneMass;
 }
@@ -213,8 +213,8 @@ void Plane::computeVolumeInertia(double &Mass, Vector3d &CoG, double &CoGIxx, do
 void Plane::computeBodyAxisInertia()
 {
     Vector3d VolumeCoG, MassPos;
-    Wing *pWing[] = {nullptr, nullptr, nullptr, nullptr};
-    double Ixx=0, Iyy=0, Izz=0, Ixz=0, VolumeMass=0;
+    Wing const *pWing[]{nullptr, nullptr, nullptr, nullptr};
+    double Ixx(0), Iyy(0), Izz(0), Ixz(0), VolumeMass(0);
 
     pWing[0] = m_Wing;
     if(m_bBiplane) pWing[1] = m_Wing+1;
@@ -270,7 +270,7 @@ void Plane::computeBodyAxisInertia()
     m_CoGIxx = Ixx + VolumeMass * (MassPos.y*MassPos.y+ MassPos.z*MassPos.z);
     m_CoGIyy = Iyy + VolumeMass * (MassPos.x*MassPos.x+ MassPos.z*MassPos.z);
     m_CoGIzz = Izz + VolumeMass * (MassPos.x*MassPos.x+ MassPos.y*MassPos.y);
-    m_CoGIxz = Ixz - VolumeMass *  MassPos.x*MassPos.z;
+    m_CoGIxz = Ixz + VolumeMass *  MassPos.x*MassPos.z;
 
     for(int im=0; im<m_PointMass.size(); im++)
     {
@@ -280,7 +280,7 @@ void Plane::computeBodyAxisInertia()
         m_CoGIxx += pm.mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
         m_CoGIyy += pm.mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
         m_CoGIzz += pm.mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
-        m_CoGIxz -= pm.mass() * (MassPos.x*MassPos.z);
+        m_CoGIxz += pm.mass() * (MassPos.x*MassPos.z);
     }
 
     for(int iw=0; iw<MAXWINGS; iw++)

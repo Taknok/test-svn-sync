@@ -38,7 +38,7 @@ void RenameDlg::onButton(QAbstractButton *pButton)
 {
     if      (m_pButtonBox->button(QDialogButtonBox::Ok) == pButton)       onOK();
     else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
-    else if (m_ppbOverwrite==pButton)                                   onOverwrite();
+    else if (m_ppbOverwrite==pButton)                                     onOverwrite();
 }
 
 

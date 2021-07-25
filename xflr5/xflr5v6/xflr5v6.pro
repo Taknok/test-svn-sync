@@ -30,10 +30,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #   Uncomment the following line to print the name of the variable OUT_PWD in the console
 #message($$OUT_PWD)
 
-VERSION = 6.44
+VERSION = 6.49
 
 CONFIG += qt
-QT += widgets opengl network xml svg
+QT += widgets opengl network xml
 
 TEMPLATE = app
 TARGET = xflr5

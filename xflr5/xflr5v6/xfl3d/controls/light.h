@@ -33,7 +33,7 @@ struct Light
 
             m_X   =  0.23f * float(reflength);
             m_Y   =  0.19f * float(reflength);
-            m_Z   =  0.19f * float(reflength);
+            m_Z   =  0.39f * float(reflength);
 
             m_EyeDist =  1.0f * float(reflength);
 

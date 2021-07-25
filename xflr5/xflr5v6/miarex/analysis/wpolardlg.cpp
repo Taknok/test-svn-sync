@@ -225,10 +225,10 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 
 
     //initialize polar type
-    if(s_WPolar.polarType()==xfl::FIXEDSPEEDPOLAR)     m_prbType1->setChecked(true);
-    else if(s_WPolar.polarType()==xfl::FIXEDLIFTPOLAR) m_prbType2->setChecked(true);
-    else if(s_WPolar.polarType()==xfl::FIXEDAOAPOLAR)  m_prbType4->setChecked(true);
-    else if(s_WPolar.polarType()==xfl::BETAPOLAR)      m_prbType5->setChecked(true);
+    if     (s_WPolar.polarType()==xfl::FIXEDSPEEDPOLAR) m_prbType1->setChecked(true);
+    else if(s_WPolar.polarType()==xfl::FIXEDLIFTPOLAR)  m_prbType2->setChecked(true);
+    else if(s_WPolar.polarType()==xfl::FIXEDAOAPOLAR)   m_prbType4->setChecked(true);
+    else if(s_WPolar.polarType()==xfl::BETAPOLAR)       m_prbType5->setChecked(true);
 
 
     //initialize inertia

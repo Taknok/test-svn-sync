@@ -99,7 +99,7 @@ void LinePicker::onOtherColor()
     if(s_bDontUseNativeDlg) dialogOptions |= QColorDialog::DontUseNativeDialog;
 #endif
     QColor Color = QColorDialog::getColor(m_theStyle.m_Color,
-								   this, "Select the color", dialogOptions);
+                                          this, "Select the color", dialogOptions);
     if(Color.isValid()) m_theStyle.m_Color = Color;
     emit colorChanged(m_theStyle.m_Color);
 }

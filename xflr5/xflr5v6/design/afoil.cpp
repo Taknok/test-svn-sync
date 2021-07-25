@@ -62,7 +62,7 @@ MainFrame *AFoil::s_pMainFrame = nullptr;
  * The public constructor
  * @param parent a pointer to the MainFrame window
  */
-AFoil::AFoil(QWidget *parent)  : QWidget(parent)
+AFoil::AFoil(QWidget *parent)  : QFrame(parent)
 {
     setAttribute(Qt::WA_DeleteOnClose);
 
@@ -93,9 +93,6 @@ AFoil::AFoil(QWidget *parent)  : QWidget(parent)
 }
 
 
-/**
- * The public destructor
- */
 AFoil::~AFoil()
 {
     clearStack(-1);

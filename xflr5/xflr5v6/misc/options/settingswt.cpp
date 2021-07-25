@@ -681,10 +681,6 @@ void Settings::onStyleSheet(bool bSheet)
         else
             stylefile.setFileName(QStringLiteral(":/qss/xflr5_dark.qss"));
     }
-    else
-    {
-        stylefile.setFileName(QStringLiteral(":/qss/default.qss"));
-    }
 
     if (stylefile.open(QIODevice::ReadOnly | QIODevice::Text))
     {

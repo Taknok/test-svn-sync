@@ -55,8 +55,3 @@ class FoilTableDelegate : public QItemDelegate
 
 
 
-
-
-
-
-

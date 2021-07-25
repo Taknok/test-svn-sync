@@ -1,6 +1,7 @@
 
 
 HEADERS += \
+    xflobjects/editors/bodydlg.h \
     xflobjects/editors/bodyframewt.h \
     xflobjects/editors/bodylinewt.h \
     xflobjects/editors/bodyscaledlg.h \
@@ -8,13 +9,12 @@ HEADERS += \
     xflobjects/editors/editbodydlg.h \
     xflobjects/editors/editobjectdelegate.h \
     xflobjects/editors/editplanedlg.h \
-    xflobjects/editors/gl3dbodydlg.h \
-    xflobjects/editors/gl3dwingdlg.h \
     xflobjects/editors/importobjectdlg.h \
     xflobjects/editors/inertiadlg.h \
     xflobjects/editors/planedlg.h \
     xflobjects/editors/renamedlg.h \
     xflobjects/editors/wingdelegate.h \
+    xflobjects/editors/wingdlg.h \
     xflobjects/editors/wingscaledlg.h \
     xflobjects/editors/wingseldlg.h \
     xflobjects/objects2d/blxfoil.h \
@@ -43,6 +43,7 @@ HEADERS += \
 
 
 SOURCES += \
+    xflobjects/editors/bodydlg.cpp \
     xflobjects/editors/bodyframewt.cpp \
     xflobjects/editors/bodylinewt.cpp \
     xflobjects/editors/bodyscaledlg.cpp \
@@ -50,13 +51,12 @@ SOURCES += \
     xflobjects/editors/editbodydlg.cpp \
     xflobjects/editors/editobjectdelegate.cpp \
     xflobjects/editors/editplanedlg.cpp \
-    xflobjects/editors/gl3dbodydlg.cpp \
-    xflobjects/editors/gl3dwingdlg.cpp \
     xflobjects/editors/importobjectdlg.cpp \
     xflobjects/editors/inertiadlg.cpp \
     xflobjects/editors/planedlg.cpp \
     xflobjects/editors/renamedlg.cpp \
     xflobjects/editors/wingdelegate.cpp \
+    xflobjects/editors/wingdlg.cpp \
     xflobjects/editors/wingscaledlg.cpp \
     xflobjects/editors/wingseldlg.cpp \
     xflobjects/objects2d/blxfoil.cpp \

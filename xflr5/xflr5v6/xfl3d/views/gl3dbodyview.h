@@ -24,7 +24,7 @@
 #include <xfl3d/views/gl3dxflview.h>
 
 class Body;
-class GL3dBodyDlg;
+class BodyDlg;
 
 class gl3dBodyView : public gl3dXflView
 {

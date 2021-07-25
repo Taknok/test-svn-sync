@@ -24,7 +24,7 @@
 #include <xfl3d/views/gl3dxflview.h>
 
 class Wing;
-class GL3dWingDlg;
+class WingDlg;
 
 class gl3dWingView : public gl3dXflView
 {
@@ -45,7 +45,7 @@ class gl3dWingView : public gl3dXflView
 
     private:
         Wing const*m_pWing;
-        GL3dWingDlg *m_pGL3dWingDlg;
+        WingDlg *m_pGL3dWingDlg;
 
         QOpenGLBuffer m_vboSurface, m_vboOutline;
 

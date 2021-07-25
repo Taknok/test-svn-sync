@@ -487,6 +487,8 @@ void WPolar::duplicateSpec(const WPolar *pWPolar)
     m_PlaneName   = pWPolar->m_PlaneName;
     m_Name    = pWPolar->m_Name;
 
+    m_theStyle = pWPolar->theStyle();
+
     m_WPolarType  = pWPolar->m_WPolarType;
 
     m_QInfSpec      = pWPolar->m_QInfSpec;
@@ -1415,19 +1417,26 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 
         m_theStyle.serializeXfl(ar, bIsStoring);
 
-        if     (m_AnalysisMethod==xfl::LLTMETHOD)    ar<<1;
-        else if(m_AnalysisMethod==xfl::VLMMETHOD)    ar<<2;
-        else if(m_AnalysisMethod==xfl::PANEL4METHOD) ar<<3;
-        else if(m_AnalysisMethod==xfl::TRILINMETHOD) ar<<4;
-        else if(m_AnalysisMethod==xfl::TRIUNIMETHOD) ar<<5;
-        else                                         ar<<0;
+        switch(m_AnalysisMethod)
+        {
+            case xfl::LLTMETHOD:    ar<<1;    break;
+            default:
+            case xfl::VLMMETHOD:    ar<<2;    break;
+            case xfl::PANEL4METHOD: ar<<3;    break;
+            case xfl::TRILINMETHOD: ar<<4;    break;
+            case xfl::TRIUNIMETHOD: ar<<5;    break;
+        }
 
-        if     (m_WPolarType==xfl::FIXEDSPEEDPOLAR) ar<<1;
-        else if(m_WPolarType==xfl::FIXEDLIFTPOLAR)  ar<<2;
-        else if(m_WPolarType==xfl::FIXEDAOAPOLAR)   ar<<4;
-        else if(m_WPolarType==xfl::BETAPOLAR)       ar<<5;
-        else if(m_WPolarType==xfl::STABILITYPOLAR)  ar<<7;
-        else ar << 0;
+        switch(m_WPolarType)
+        {
+            default:
+            case xfl::FIXEDSPEEDPOLAR: ar<<1;    break;
+            case xfl::FIXEDLIFTPOLAR:  ar<<2;    break;
+            case xfl::FIXEDAOAPOLAR:   ar<<4;    break;
+            case xfl::BETAPOLAR:       ar<<5;    break;
+            case xfl::STABILITYPOLAR:  ar<<7;    break;
+        }
+
 
         ar << m_bVLM1;
         ar << m_bThinSurfaces;
@@ -1517,18 +1526,24 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
             m_theStyle.serializeXfl(ar, bIsStoring);
 
         ar >> n;
-        if     (n==1) m_AnalysisMethod=xfl::LLTMETHOD;
-        else if(n==2) m_AnalysisMethod=xfl::VLMMETHOD;
-        else if(n==3) m_AnalysisMethod=xfl::PANEL4METHOD;
-        else if(n==4) m_AnalysisMethod=xfl::TRILINMETHOD;
-        else if(n==5) m_AnalysisMethod=xfl::TRIUNIMETHOD;
+        switch(n)
+        {
+            case 1: m_AnalysisMethod=xfl::LLTMETHOD;       break;
+            default:
+            case 2: m_AnalysisMethod=xfl::VLMMETHOD;       break;
+            case 3: m_AnalysisMethod=xfl::PANEL4METHOD;    break;
+        }
 
         ar >> n;
-        if     (n==1) m_WPolarType=xfl::FIXEDSPEEDPOLAR;
-        else if(n==2) m_WPolarType=xfl::FIXEDLIFTPOLAR;
-        else if(n==4) m_WPolarType=xfl::FIXEDAOAPOLAR;
-        else if(n==5) m_WPolarType=xfl::BETAPOLAR;
-        else if(n==7) m_WPolarType=xfl::STABILITYPOLAR;
+        switch (n)
+        {
+            default:
+            case 1: m_WPolarType=xfl::FIXEDSPEEDPOLAR;   break;
+            case 2: m_WPolarType=xfl::FIXEDLIFTPOLAR;    break;
+            case 4: m_WPolarType=xfl::FIXEDAOAPOLAR;     break;
+            case 5: m_WPolarType=xfl::BETAPOLAR;         break;
+            case 7: m_WPolarType=xfl::STABILITYPOLAR;    break;
+        }
 
         ar >> m_bVLM1;
         ar >> m_bThinSurfaces;
