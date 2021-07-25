@@ -96,7 +96,6 @@ class PanelAnalysis : QObject
         void getDoubletDerivative(const int &p, double const*Mu, double &Cp, Vector3d &VLocal, double QInf, double Vx, double Vy, double Vz) const;
         void getVortexCp(int p, const double *Gamma, double *Cp, const Vector3d &VInf) const;
 
-        void relaxWake();
 
         void computeStabilityDerivatives();
         void computeStabilityInertia();

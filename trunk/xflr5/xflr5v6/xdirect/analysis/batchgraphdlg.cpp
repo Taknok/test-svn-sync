@@ -683,8 +683,6 @@ void BatchGraphDlg::analyze()
 
     onProgress();
 
-    qApp->processEvents();
-
     if(!m_bCancel)
     {
         if(m_bErrors)

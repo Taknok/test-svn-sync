@@ -124,7 +124,6 @@ void GATask::postIterEvent(int iBest)
 {
     OptimEvent *pIterEvent = new OptimEvent(OPTIM_ITER_EVENT, m_Iter, iBest, m_Swarm.at(iBest));
     qApp->postEvent(m_pParent, pIterEvent);
-    qApp->processEvents();
 }
 
 

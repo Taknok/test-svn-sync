@@ -1946,12 +1946,11 @@ void PanelAnalysis::getSourceInfluence(Vector3d const &C, Panel *pPanel, Vector3
 void PanelAnalysis::getSpeedVector(Vector3d const &C, double const *Mu, double const *Sigma, Vector3d &VT, bool bAll) const
 {
     Vector3d V;
-    int pp, pw, lw;
-    double phi, sign;
+    double phi(0), sign(0);
 
     VT.set(0.0,0.0,0.0);
 
-    for (pp=0; pp<m_MatSize;pp++)
+    for (int pp=0; pp<m_MatSize;pp++)
     {
         if(s_bCancel) return;
 
@@ -1969,8 +1968,8 @@ void PanelAnalysis::getSpeedVector(Vector3d const &C, double const *Mu, double c
         {
             //If so, we need to add the contribution of the wake column shedded by this panel
             if(m_pPanel[pp].m_Pos==xfl::BOTSURFACE) sign=-1.0; else sign=1.0;
-            pw = m_pPanel[pp].m_iWake;
-            for(lw=0; lw<m_pWPolar->m_NXWakePanels; lw++)
+            int pw = m_pPanel[pp].m_iWake;
+            for(int lw=0; lw<m_pWPolar->m_NXWakePanels; lw++)
             {
                 getDoubletInfluence(C, m_pWakePanel+pw+lw, V, phi, true, bAll);
                 VT += V * Mu[pp]*sign;
@@ -4371,7 +4370,6 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double const *Gamma, double 
 void PanelAnalysis::traceLog(QString str) const
 {
     emit outputMsg(str);
-    qApp->processEvents();
 }
 
 
@@ -5254,113 +5252,6 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
     }
 
     pWing->m_CDi = WingIDrag; // save this wing's induced drag (unused though...)
-}
-
-
-void PanelAnalysis::relaxWake()
-{
-    Vector3d VL;
-
-    int nInter(0);
-    double t(0), dx(0);
-    double *Mu    = m_Mu;
-    double *Sigma = m_Sigma;
-
-    //Since the wake roll-up is performed on the tilted geometry,
-    // we define a speed vector parallel to the x-axis
-    Vector3d QInf(m_QInf, 0.0, 0.0);
-
-    // Andre's method : fit the wake panels on the streamlines
-    // we have the computing power to do it
-
-    Vector3d LATB, TALB;
-    Vector3d WLA, WLB,WTA,WTB, WTemp;//wake panel's leading corner points
-
-    double dx0 = 0.05;
-
-    traceLog("      Relaxing the wake...\n");
-
-    memcpy(m_pTempWakeNode, m_pWakeNode, uint(m_nWakeNodes) * sizeof(Vector3d));
-
-    int mw = 0;
-
-    for (int lw=0; lw<m_pWPolar->m_NXWakePanels; lw++)
-    {
-        if(s_bCancel) break;
-        for (int kw=0; kw<m_NWakeColumn; kw++)
-        {
-            if(s_bCancel) break;
-
-            mw = kw * m_pWPolar->m_NXWakePanels + lw;
-            //left point
-            WLA.copy(m_pTempWakeNode[m_pWakePanel[mw].m_iLA]);
-            WTA.copy(m_pTempWakeNode[m_pWakePanel[mw].m_iTA]);
-            WTemp.copy(WLA);
-
-            nInter = int((WTA.x - WLA.x)/dx0) ;
-            dx = (WTA.x - WLA.x)/nInter;
-
-            for (int llw=0; llw<nInter; llw++)
-            {
-                getSpeedVector(WTemp, Mu, Sigma, VL);
-                VL += QInf;
-                VL.normalize();
-                t = dx/VL.x;
-                WTemp.x += dx;
-                WTemp.y += VL.y * t;
-                WTemp.z += VL.z * t;
-            }
-            m_pTempWakeNode[m_pWakePanel[mw].m_iTA] = WTemp;
-        }
-        //finally do the same for the right side of the last right column
-
-        WLB.copy(m_pTempWakeNode[m_pWakePanel[mw].m_iLB]);
-        WTB.copy(m_pTempWakeNode[m_pWakePanel[mw].m_iTB]);
-        WTemp.copy(WLB);
-
-        nInter = int((WTB.x - WLB.x)/dx0);
-        dx = (WTB.x - WLB.x)/nInter;
-
-        for (int llw=0; llw<nInter; llw++)
-        {
-            getSpeedVector(WTemp, Mu, Sigma, VL);
-            VL += QInf;
-            VL.normalize();
-            t = dx/VL.x;
-            WTemp.x += dx;
-            WTemp.y += VL.y * t;
-            WTemp.z += VL.z * t;
-        }
-        m_pTempWakeNode[m_pWakePanel[mw].m_iTB] = WTemp;
-        m_Progress += 20.0/double(m_pWPolar->m_NXWakePanels);
-        qApp->processEvents();
-    }
-
-    // Paste the new wake nodes back into the wake node array
-    memcpy(m_pWakeNode, m_pTempWakeNode, uint(m_nWakeNodes) * sizeof(Vector3d));
-
-    // Re-create the wake panels
-    mw=0;
-    for (int mw=0; mw<m_WakeSize; mw++)
-    {
-        if(s_bCancel) break;
-
-        WLA.copy(m_pWakeNode[m_pWakePanel[mw].m_iLA]);
-        WLB.copy(m_pWakeNode[m_pWakePanel[mw].m_iLB]);
-        WTA.copy(m_pWakeNode[m_pWakePanel[mw].m_iTA]);
-        WTB.copy(m_pWakeNode[m_pWakePanel[mw].m_iTB]);
-        LATB.x = WTB.x - WLA.x;
-        LATB.y = WTB.y - WLA.y;
-        LATB.z = WTB.z - WLA.z;
-        TALB.x = WLB.x - WTA.x;
-        TALB.y = WLB.y - WTA.y;
-        TALB.z = WLB.z - WTA.z;
-
-        m_pWakePanel[mw].Normal = LATB * TALB;
-        m_pWakePanel[mw].Area =  m_pWakePanel[mw].Normal.norm()/2.0;
-        m_pWakePanel[mw].Normal.normalize();
-        m_pWakePanel[mw].setPanelFrame(WLA, WLB, WTA, WTB);
-    }
 }
 
 

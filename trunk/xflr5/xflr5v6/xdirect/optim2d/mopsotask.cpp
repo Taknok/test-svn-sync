@@ -249,7 +249,6 @@ void MOPSOTask::postIterEvent(int iBest)
 {
     OptimEvent *pIterEvent = new OptimEvent(OPTIM_ITER_EVENT, m_Iter, iBest, m_Pareto.at(iBest));
     qApp->postEvent(m_pParent, pIterEvent);
-    qApp->processEvents();
 }
 
 
@@ -258,7 +257,6 @@ void MOPSOTask::postPSOEvent(int iBest)
 {
     OptimEvent *pPSOEvent = new OptimEvent(OPTIM_END_EVENT, m_Iter, iBest, m_Pareto.at(iBest));
     qApp->postEvent(m_pParent, pPSOEvent);
-    qApp->processEvents();
 }
 
 #define PARTICLEBESTSIZE 3

@@ -503,7 +503,6 @@ bool Crout_LU_Decomposition_with_Pivoting(double *A, int pivot[], int n, bool *p
             for (j = k+1; j < n; j++) *(p_row + j) -= *(p_row + k) * *(p_k + j);
 
         Progress += TaskSize/double(n);
-//        qApp->processEvents();
         if(*pbCancel) return false;
     }
     return true;
@@ -560,7 +559,6 @@ bool Crout_LU_with_Pivoting_Solve(double const*LU, double B[], int pivot[], doub
         for (i=0; i<k; i++) x[k]-=x[i] * *(p_k+i);
         x[k] /= *(p_k+k);
 
-//        qApp->processEvents();
         if(*pbCancel) return false;
     }
 
@@ -581,7 +579,6 @@ bool Crout_LU_with_Pivoting_Solve(double const*LU, double B[], int pivot[], doub
             return false;
         }
 
-//        qApp->processEvents();
         if(*pbCancel) return false;
     }
 

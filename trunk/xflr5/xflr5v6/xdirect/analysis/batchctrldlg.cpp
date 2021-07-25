@@ -292,7 +292,6 @@ void BatchCtrlDlg::startAnalyses()
         if(!pFoil) continue;
 
         m_pteTextOutput->appendPlainText("   starting XFoil tasks for "+pFoil->name());
-        qApp->processEvents();
 
 //        QFutureSynchronizer<void> futureSync;
         for (int iRe=0; iRe<nRe; iRe++)
@@ -320,7 +319,6 @@ void BatchCtrlDlg::startAnalyses()
 //        futureSync.waitForFinished(); // maybe unnecessary: "The destructor of QFutureSynchronizer calls waitForFinished()"
         m_pteTextOutput->appendPlainText("   finished launching XFoil tasks for " + pFoil->name());
 
-        qApp->processEvents();
         s_pXDirect->resetCurves();
         s_pXDirect->updateView();
     }

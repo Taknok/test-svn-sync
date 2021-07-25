@@ -228,8 +228,6 @@ void BatchThreadDlg::startAnalysis()
 */
 void BatchThreadDlg::onTimerEvent()
 {
-    qApp->processEvents();
-
     QString strong;
     //time to launch another analysis, if any are left
 

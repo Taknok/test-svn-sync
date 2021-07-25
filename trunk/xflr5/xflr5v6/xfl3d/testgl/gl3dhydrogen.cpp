@@ -32,7 +32,7 @@ int gl3dHydrogen::s_l(1); // azimuthal quantum number: 0, ..., n-1
 int gl3dHydrogen::s_m(0); // magnetic  quantum number: -l, ...,l
 int gl3dHydrogen::s_NObservations(25000); // Number of observationss
 double gl3dHydrogen::s_PtWidth = 0.3;
-double gl3dHydrogen::s_ObsRadius(50.0); // in Bohr radius units
+double gl3dHydrogen::s_ObsRadius(35.0); // in Bohr radius units
 
 
 gl3dHydrogen::gl3dHydrogen(QWidget *pParent) : gl3dTestGLView(pParent)
