@@ -1,7 +1,7 @@
 /****************************************************************************
 
-    xflScriptExec Class
-    Copyright (C) 2016-2016 André Deperrois
+    XflScriptExec Class
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef XFLSCRIPTEXEC_H
-#define XFLSCRIPTEXEC_H
+#pragma once
 
 #include <QTextStream>
 
@@ -39,70 +38,69 @@ struct FoilAnalysis;
 class XflScriptExec : public QObject
 {
     Q_OBJECT
-public:
-    XflScriptExec(MainFrame *pMainFrame);
-    ~XflScriptExec() override;
+    public:
+        XflScriptExec(MainFrame *pMainFrame);
+        ~XflScriptExec() override;
 
-    void customEvent(QEvent *pEvent) override;
+        void customEvent(QEvent *pEvent) override;
 
-    bool readScript(QString scriptpathname);
-    bool runScript();
-    void setStdOutStream(bool bStdOut) {m_bStdOutStream = bStdOut;}
+        bool readScript(QString scriptpathname);
+        bool runScript();
+        void setStdOutStream(bool bStdOut) {m_bStdOutStream = bStdOut;}
 
-    bool bCSVOutput()       const {return m_Reader.m_bcsvPolarOutput;}
+        bool bCSVOutput()       const {return m_Reader.m_bcsvPolarOutput;}
 
-    void traceLog(QString strMsg);
+        void traceLog(QString strMsg);
 
-    QString outputDirPath()               const {return m_OutputPath;}
-    QString foilPolarTextOutputDirPath()  const {return m_FoilPolarsTextPath;}
-    QString foilPolarBinOutputDirPath()   const {return m_FoilPolarsBinPath;}
+        QString outputDirPath()               const {return m_OutputPath;}
+        QString foilPolarTextOutputDirPath()  const {return m_FoilPolarsTextPath;}
+        QString foilPolarBinOutputDirPath()   const {return m_FoilPolarsBinPath;}
 
-    QString projectFilePathName() const;
+        QString projectFilePathName() const;
 
-    bool outputPolarBin()   const {return m_Reader.m_bOutputPolarsBin;}
-    bool outputPolarText()  const {return m_Reader.m_bOutputPolarsText;}
-    bool makeProjectFile()  const {return m_Reader.m_bMakeProjectFile;}
-    bool setLogFile();
+        bool outputPolarBin()   const {return m_Reader.m_bOutputPolarsBin;}
+        bool outputPolarText()  const {return m_Reader.m_bOutputPolarsText;}
+        bool makeProjectFile()  const {return m_Reader.m_bMakeProjectFile;}
+        bool setLogFile();
 
-    void closeLogFile();
-    QString logFileName() const {return m_LogFileName;}
+        void closeLogFile();
+        QString logFileName() const {return m_LogFileName;}
 
-private:
-    Polar *makePolarFromXml(QString pathName);
-    bool makeExportDirectories();
-    bool makeFoils();
-    void makeFoilAnalysisList();
-    void runFoilAnalyses();
-    void cleanUpFoilAnalyses();
-    void startXFoilTaskThread();
+    private:
+        Polar *makePolarFromXml(QString pathName);
+        bool makeExportDirectories();
+        bool makeFoils();
+        void makeFoilAnalysisList();
+        void runFoilAnalyses();
 
-signals:
-    void msgUpdate(const QString &msg) const;
-    void cancelTask() const;
+    signals:
+        void msgUpdate(QString const &msg) const;
+        void doneScript() const;
 
-public slots:
-    void onCancel();
+    public slots:
+        void onCancel();
 
-private:
-    XFLScriptReader m_Reader;
-    QFile *m_pXFile;
-    QTextStream m_OutLogStream;
-    QString m_LogFileName;
-    QString m_FoilPolarsBinPath, m_FoilPolarsTextPath, m_OutputPath;
+    private:
+        XFLScriptReader m_Reader;
+        QFile *m_pXFile;
+        QTextStream m_OutLogStream;
+        QString m_LogFileName;
+        QString m_FoilPolarsBinPath, m_FoilPolarsTextPath, m_OutputPath;
 
-    QVector<FoilAnalysis> m_FoilExecList;
+        QVector<FoilAnalysis> m_FoilExecList;
 
-    MainFrame *m_pMainFrame;
+        MainFrame *m_pMainFrame;
 
-    bool m_bCancel;
-    bool m_bStdOutStream;
+        bool m_bCancel;
+        bool m_bStdOutStream;
 
-    int m_nTaskStarted, m_nTaskDone;
-    int m_nThreads;
+        int m_nTaskStarted, m_nTaskDone;
+        int m_nThreads;
 
-    QVector <Foil*>  m_oaFoil;
+        QVector <Foil*>  m_oaFoil;
 
-    static QString s_VersionName;
+        static QString s_VersionName;
 };
 
-#endif // XFLSCRIPTEXEC_H
+
+

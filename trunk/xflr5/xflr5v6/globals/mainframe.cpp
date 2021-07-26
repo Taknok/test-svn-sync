@@ -148,7 +148,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     setWindowTitle(VERSIONNAME);
     setWindowIcon(QIcon(":/images/xflr5_64.png"));
 
-    testConfiguration();
+//    testConfiguration();
 
     //    Settings sets(this);//to initialize the static variables
     //"Qt does not support style hints on X11 since this information is not provided by the window system."
@@ -188,6 +188,9 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     m_SaveInterval = 10;
     m_GraphExportFilter = "Comma Separated Values (*.csv)";
 
+    m_pLogWt = nullptr;
+    m_pScriptExecutor = nullptr;
+
     m_pSaveTimer = nullptr;
 
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
@@ -224,6 +227,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
         m_pMiarex->loadSettings(settings);
         m_pXInverse->loadSettings(settings);
 
+        LogWt::loadSettings(settings);
         GL3DScales::loadSettings(settings);
         W3dPrefs::loadSettings(settings);
         Units::loadSettings(settings);
@@ -280,12 +284,6 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 
     setColorListFromFile();
     setPlainColorsFromFile();
-
-    /*    if(m_bAutoLoadLast)
-    {
-        onLoadLastProject();
-    }*/
-
 }
 
 
@@ -303,52 +301,6 @@ MainFrame::~MainFrame()
 }
 
 
-void MainFrame::testConfiguration()
-{
-    QString FileName = QDir::tempPath() + "/Trace.log";
-    g_pTraceFile = new QFile(FileName);
-
-    if (!g_pTraceFile->open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) g_bTrace = false;
-    g_pTraceFile->reset();
-
-    QString strange;
-
-#if QT_VERSION >= 0x050900
-    QOperatingSystemVersion const &sys = QOperatingSystemVersion::current();
-    strange = sys.name();
-    Trace(strange);
-
-    QSysInfo sysInfo;
-
-    Trace("build ABI: "       + sysInfo.buildAbi());
-    Trace("build CPU: "       + sysInfo.buildCpuArchitecture());
-    Trace("current CPU: "     + sysInfo.currentCpuArchitecture());
-    Trace("kernel type: "     + sysInfo.kernelType());
-    Trace("kernel version: "  + sysInfo.kernelVersion());
-    Trace("product name: "    + sysInfo.prettyProductName());
-    Trace("product type: "    + sysInfo.productType());
-    Trace("product version: " + sysInfo.productVersion());
-#endif
-    Trace("OpenGL support:");
-    Trace("    Desktop OpenGL ", qApp->testAttribute(Qt::AA_UseDesktopOpenGL));
-    Trace("    OpenGL ES      ", qApp->testAttribute(Qt::AA_UseOpenGLES));
-    Trace("    Software OpenGL", qApp->testAttribute(Qt::AA_UseSoftwareOpenGL));
-
-
-    strange = QString::asprintf("    Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
-    Trace(strange);
-
-    if(QSurfaceFormat::defaultFormat().majorVersion()<2)
-    {
-        QString strong = "XFLR5 requires OpenGL 2.1 or greater.\n";
-        QString strange;
-        strange = QString::asprintf("Your system provides by default OpenGL %d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
-        QMessageBox::warning(this, tr("Warning"), strong+strange);
-        s_bOpenGL = false;
-    }
-}
-
-
 void MainFrame::aboutQt()
 {
 #ifndef QT_NO_MESSAGEBOX
@@ -362,7 +314,6 @@ void MainFrame::aboutQt()
                 );
 #endif // QT_NO_MESSAGEBOX
 }
-
 
 
 void MainFrame::aboutXFLR5()
@@ -383,7 +334,7 @@ void MainFrame::addRecentFile(const QString &PathName)
 }
 
 
-void MainFrame::closeEvent (QCloseEvent * pEvent)
+void MainFrame::closeEvent(QCloseEvent *pEvent)
 {
     if(!s_bSaved)
     {
@@ -412,7 +363,6 @@ void MainFrame::closeEvent (QCloseEvent * pEvent)
     m_pMiarexTileWidget->close();
     m_pXDirectTileWidget->close();
     m_VoidWidget.close();
-
 
     m_pdwXDirect->close();
     m_pdwFoilTreeView->close();
@@ -4619,6 +4569,7 @@ void MainFrame::saveSettings()
     m_pMiarex->saveSettings(settings);
     m_pXInverse->saveSettings(settings);
     Settings::saveSettings(settings);
+    LogWt::saveSettings(settings);
     gl3dView::saveSettings(settings);
     GL3DScales::saveSettings(settings);
     W3dPrefs::saveSettings(settings);
@@ -5398,11 +5349,16 @@ void MainFrame::setSaveState(bool bSave)
 {
     s_bSaved = bSave;
     if(bSave)
+    {
         m_plabProjectName->setText(s_ProjectName);
+        m_pSaveAct->setIcon(QIcon(":/images/save.png"));
+    }
     else
+    {
         m_plabProjectName->setText(s_ProjectName+ "*");
+        m_pSaveAct->setIcon(QIcon(":/images/unsaved.png"));
+    }
 }
-
 
 
 void MainFrame::setGraphSettings(Graph *pGraph)
@@ -5419,7 +5375,6 @@ void MainFrame::setGraphSettings(Graph *pGraph)
     for(int ig=0; ig<m_pMiarex->m_TimeGraph.count(); ig++) m_pMiarex->m_TimeGraph[ig]->copySettings(pGraph, false);
     for(int ig=0; ig<m_pMiarex->m_StabPlrGraph.count(); ig++) m_pMiarex->m_StabPlrGraph[ig]->copySettings(pGraph, false);
 }
-
 
 
 QString MainFrame::shortenFileName(QString &PathName)
@@ -5889,27 +5844,32 @@ void MainFrame::onExecuteScript()
     QFileInfo fi(XmlPathName);
 
     xfl::setLastDirName(fi.path());
+
     executeScript(XmlPathName, false, true);
 }
 
 
-void MainFrame::executeScript(QString XmlScriptName, bool bShowProgressStdIO, bool bShowLog)
+void MainFrame::executeScript(const QString &XmlScriptName, bool bShowProgressStdIO, bool bShowLog)
 {
-    XflScriptExec scriptexecutor(this);
+    if(m_pScriptExecutor) delete m_pScriptExecutor;
+    m_pScriptExecutor = new XflScriptExec(this);
 
-    LogWt *pLogWidget = new LogWt;
+    if(m_pLogWt) delete m_pLogWt;
+    m_pLogWt = new LogWt;
+
     if(bShowLog)
     {
-        pLogWidget->setCancelButton(true);
-        connect(&scriptexecutor,          SIGNAL(msgUpdate(QString)), pLogWidget,      SLOT(onUpdate(QString)), static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
-        connect(pLogWidget->ctrlButton(), SIGNAL(clicked(bool)),      &scriptexecutor, SLOT(onCancel()));
-        pLogWidget->show();
+        m_pLogWt->setCancelButton(true);
+        connect(m_pScriptExecutor,      SIGNAL(doneScript()),                          SLOT(onDoneScript()));
+        connect(m_pScriptExecutor,      SIGNAL(msgUpdate(QString)), m_pLogWt,          SLOT(onUpdate(QString)), static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
+        connect(m_pLogWt->ctrlButton(), SIGNAL(clicked(bool)),      m_pScriptExecutor, SLOT(onCancel()));
+        m_pLogWt->show();
     }
 
     if(bShowProgressStdIO)
     {
         //output log messages to the console
-        scriptexecutor.setStdOutStream(true);
+        m_pScriptExecutor->setStdOutStream(true);
     }
 
 
@@ -5919,39 +5879,46 @@ void MainFrame::executeScript(QString XmlScriptName, bool bShowProgressStdIO, bo
         return;
     }
 
-    if(!scriptexecutor.readScript(fi.filePath()))
+    if(!m_pScriptExecutor->readScript(fi.filePath()))
     {
         QString strange("Error reading script... aborting\n");
-        if(bShowProgressStdIO) scriptexecutor.traceLog(strange);
-        else pLogWidget->onUpdate(strange);
+        if(bShowProgressStdIO) m_pScriptExecutor->traceLog(strange);
+        else m_pLogWt->onUpdate(strange);
+        return;
     }
-    else
-    {
-        scriptexecutor.runScript();
 
-        addRecentFile(scriptexecutor.projectFilePathName());
+    m_pScriptExecutor->runScript();
+}
 
-        bool bCSV = scriptexecutor.bCSVOutput();
-        if(scriptexecutor.outputPolarBin()) onMakePlrFiles(scriptexecutor.foilPolarBinOutputDirPath());
 
-        xfl::enumTextFileType exporttype = bCSV ? xfl::CSV : xfl::TXT;
-        if(scriptexecutor.outputPolarText()) m_pXDirect->onExportAllPolarsTxt(scriptexecutor.foilPolarTextOutputDirPath(), exporttype);
-        if(scriptexecutor.makeProjectFile()) onSaveProjectAs(scriptexecutor.projectFilePathName());
+void MainFrame::onDoneScript()
+{
+    addRecentFile(m_pScriptExecutor->projectFilePathName());
 
-        disconnect(&scriptexecutor, SIGNAL(msgUpdate(QString)), nullptr, nullptr);
-        scriptexecutor.closeLogFile();
-    }
-    pLogWidget->setFinished(true);
+    bool bCSV = m_pScriptExecutor->bCSVOutput();
+    if(m_pScriptExecutor->outputPolarBin()) onMakePlrFiles(m_pScriptExecutor->foilPolarBinOutputDirPath());
+
+    xfl::enumTextFileType exporttype = bCSV ? xfl::CSV : xfl::TXT;
+    if(m_pScriptExecutor->outputPolarText()) m_pXDirect->onExportAllPolarsTxt(m_pScriptExecutor->foilPolarTextOutputDirPath(), exporttype);
+    if(m_pScriptExecutor->makeProjectFile()) onSaveProjectAs(m_pScriptExecutor->projectFilePathName());
+
+    disconnect(m_pScriptExecutor, nullptr, nullptr, nullptr);
+    m_pScriptExecutor->closeLogFile();
+
+    m_pLogWt->setFinished(true);
 
     // duplicate the log file in the temp directory
     QString projectLogFileName = QDir::tempPath() + "/xfl_"+QTime::currentTime().toString("hhmmss")+".log";
-    QFile::copy(scriptexecutor.logFileName(), projectLogFileName);
+    QFile::copy(m_pScriptExecutor->logFileName(), projectLogFileName);
 
     if(!m_pMiarex->curPlane())
     {
         m_iApp=xfl::XFOILANALYSIS;
         onXDirect();
     }
+
+    delete m_pScriptExecutor;
+    m_pScriptExecutor = nullptr;
 }
 
 

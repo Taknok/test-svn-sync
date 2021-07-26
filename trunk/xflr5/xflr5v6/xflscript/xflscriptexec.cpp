@@ -1,7 +1,7 @@
 /****************************************************************************
 
-    xflScriptExec Class
-    Copyright (C) 2016-2016 André Deperrois
+    XflScriptExec Class
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -92,6 +92,7 @@ void XflScriptExec::makeFoilAnalysisList()
             {
                 pPolar->setFoilName(pFoil->name());
                 pPolar->setTheStyle(pFoil->theStyle());
+                pPolar->setVisible(true);
                 pPolar->setAutoPolarName();
 
                 if(pPolar->m_Reynolds<0.1)
@@ -343,7 +344,6 @@ void XflScriptExec::onCancel()
     XFoilTask::cancelTask();
 
     traceLog("\n_____________Analysis cancellation request received_____________\n\n");
-    emit (cancelTask());
 }
 
 
@@ -412,20 +412,7 @@ bool XflScriptExec::runScript()
     }
     else traceLog("No Foil analysis requested\n\n");
 
-
-    traceLog("Finished script successfully\n");
     return true;
-}
-
-
-/**
- * Clean-up is performed when all the threads are terminated
- */
-void XflScriptExec::cleanUpFoilAnalyses()
-{
-    XFoil::s_bCancel = false;
-
-    QThreadPool::globalInstance()->setMaxThreadCount(QThread::idealThreadCount());
 }
 
 
@@ -453,58 +440,25 @@ void XflScriptExec::runFoilAnalyses()
 
     XFoilTask::s_bCancel = false;
 
-    while(m_FoilExecList.size()>0 && !m_bCancel)
+    for(int i=0; i<m_FoilExecList.size(); i++)
     {
-        if (QThreadPool::globalInstance()->activeThreadCount()<QThreadPool::globalInstance()->maxThreadCount())
-        {
-            startXFoilTaskThread(); // analyze a new pair
-        }
+        XFoilTask *pXFoilTask = new XFoilTask(this);
 
-        QThread::msleep(100);
+        FoilAnalysis &Analysis = m_FoilExecList[i];
+
+        pXFoilTask->initializeTask(Analysis, true, true, false);
+        if(Analysis.pPolar->polarType()<xfl::FIXEDAOAPOLAR)
+            pXFoilTask->setSequence(true, Analysis.vMin, Analysis.vMax, Analysis.vInc);
+        else if(Analysis.pPolar->isFixedaoaPolar())
+            pXFoilTask->setReRange(Analysis.vMin, Analysis.vMax, Analysis.vInc);
+
+        //launch it
+        m_nTaskStarted++;
+        strong = "Starting "+Analysis.pFoil->name()+" / "+Analysis.pPolar->polarName()+"\n";
+        traceLog(strong);
+
+        QThreadPool::globalInstance()->start(pXFoilTask);
     }
-
-    QThreadPool::globalInstance()->waitForDone();
-
-    cleanUpFoilAnalyses();
-    if(m_bCancel) strong = "\n_____Foil analysis cancelled_____\n";
-    else          strong = "\n_____Foil analysis completed_____\n";
-    traceLog(strong);
-}
-
-
-/**
- * Starts an individual thread
- */
-void XflScriptExec::startXFoilTaskThread()
-{
-    QString strong;
-    //  browse through the array until we find an available thread
-
-    XFoilTask *pXFoilTask = new XFoilTask(this);
-
-    //take the last analysis in the array
-     FoilAnalysis &Analysis = m_FoilExecList[m_FoilExecList.size()-1];
-
-    Analysis.pPolar->setVisible(true);
-
-    //initiate the task
-
-    pXFoilTask->initializeTask(Analysis, true, true, false);
-    if(Analysis.pPolar->polarType()<xfl::FIXEDAOAPOLAR)
-        pXFoilTask->setSequence(true, Analysis.vMin, Analysis.vMax, Analysis.vInc);
-    else if(Analysis.pPolar->isFixedaoaPolar())
-        pXFoilTask->setReRange(Analysis.vMin, Analysis.vMax, Analysis.vInc);
-
-    //launch it
-    m_nTaskStarted++;
-    strong = "Starting "+Analysis.pFoil->name()+" / "+Analysis.pPolar->polarName()+"\n";
-    traceLog(strong);
-
-    QThreadPool::globalInstance()->start(pXFoilTask);
-//    pXFoilTask->run();
-
-    //remove it from the array of pairs to analyze
-    m_FoilExecList.removeLast();
 }
 
 
@@ -522,6 +476,19 @@ void XflScriptExec::customEvent(QEvent *pEvent)
                 +(pXFEvent->polar())->polarName()+"\n";
 
         traceLog(str);
+        if(m_nTaskDone==m_FoilExecList.size())
+        {
+            // leave things as they were
+            XFoil::s_bCancel = false;
+            QThreadPool::globalInstance()->setMaxThreadCount(QThread::idealThreadCount());
+
+            QString strong;
+            if(m_bCancel) strong = "\n_____Foil analysis cancelled_____\n";
+            else          strong = "\n_____Foil analysis completed_____\n";
+            traceLog(strong);
+
+            emit doneScript();
+        }
     }
     else if(pEvent->type() == XFOIL_END_OPP_EVENT)
     {

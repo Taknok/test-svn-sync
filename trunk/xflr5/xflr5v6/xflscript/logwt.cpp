@@ -2,7 +2,7 @@
 
     LogWt Class
 
-    Copyright (C) 2019 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -98,13 +98,13 @@ void LogWt::keyPressEvent(QKeyEvent *pEvent)
 }
 
 
-void LogWt::showEvent(QShowEvent *pEvent)
+void LogWt::showEvent(QShowEvent *)
 {
     restoreGeometry(s_Geometry);
 }
 
 
-void LogWt::hideEvent(QHideEvent*pEvent)
+void LogWt::hideEvent(QHideEvent*)
 {
     s_Geometry = saveGeometry();
 }

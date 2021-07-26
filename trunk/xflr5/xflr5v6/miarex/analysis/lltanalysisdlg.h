@@ -77,7 +77,6 @@ class LLTAnalysisDlg : public QDialog
         void setTask(PlaneTask *pTask) {m_pTheTask = pTask;}
         void deleteTask();
         void analyze();
-        void cleanUp();
 
         Graph* iterGraph() const {return m_pIterGraph;}
 
@@ -86,6 +85,11 @@ class LLTAnalysisDlg : public QDialog
         void onProgress();
         void onLogFile();
         void onMessage(QString msg);
+        void onTaskFinished();
+
+    signals:
+        void lltAnalysisFinished() const;
+
 
     private:
         void keyPressEvent(QKeyEvent *pEvent) override;

@@ -123,6 +123,30 @@ void FoilTreeView::updateObjectView()
 }
 
 
+/** updates the plane items after the WPolars or PlaneOpps have been changed, deleted or something */
+void FoilTreeView::updateFoil(Foil const *pFoil)
+{
+    if(!pFoil) return;
+
+    for(int ir=0; ir<m_pModel->rowCount(); ir++)
+    {
+        ObjectTreeItem *pFoilItem = m_pModel->item(ir);
+        QModelIndex planeindex = m_pModel->index(ir, 0);
+        if(pFoilItem->name().compare(pFoil->name())==0)
+        {
+            ObjectTreeItem *pItem = m_pModel->itemFromIndex(planeindex);
+            if(!pItem) continue;
+            m_pModel->blockSignals(true);
+            m_pModel->removeRows(0, pItem->rowCount(), planeindex);
+            m_pModel->blockSignals(false);
+
+            fillPolars(pFoilItem, pFoil);
+            break;
+        }
+    }
+}
+
+
 void FoilTreeView::setObjectProperties()
 {
     QString props;
@@ -661,7 +685,6 @@ void FoilTreeView::addOpps(Polar *pPolar)
                                 if   (pPolar->isFixedaoaPolar()) strange = QString(format).arg(pOpp->Reynolds(), 0, 'f', 0);
                                 else                             strange = QString(format).arg(pOpp->aoa(),      0, 'f', 3);
 
-
                                 LineStyle ls(pOpp->theStyle());
                                 ls.m_bIsEnabled = !s_pXDirect->isPolarView();
                                 m_pModel->appendRow(pOldPolarItem, strange, ls, Qt::PartiallyChecked);
@@ -683,7 +706,7 @@ void FoilTreeView::insertFoil(Foil *pFoil)
     if(!pFoil) return;
 
     bool bInserted = false;
-    for(int ir = 0; ir<m_pModel->rowCount(); ir++)
+    for(int ir=0; ir<m_pModel->rowCount(); ir++)
     {
         ObjectTreeItem *pFoilItem = m_pModel->item(ir);
 
@@ -711,7 +734,6 @@ void FoilTreeView::insertFoil(Foil *pFoil)
         //not inserted, append
         ObjectTreeItem* pRootItem = m_pModel->rootItem();
         m_pModel->appendRow(pRootItem, pFoil->name(), pFoil->theStyle(), foilState(pFoil));
-
     }
 
     for(int ip=0; ip<Objects2d::polarCount(); ip++)

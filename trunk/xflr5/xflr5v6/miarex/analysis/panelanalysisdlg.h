@@ -79,7 +79,11 @@ class PanelAnalysisDlg : public QDialog
         void onCancelAnalysis();
         void onProgress();
         void onLogFile();
-        void onMessage(QString msg);
+        void onMessage(const QString &msg);
+        void onTaskFinished();
+
+    signals:
+        void analysisFinished() const;
 
     private:
         void showEvent(QShowEvent *event) override;
@@ -88,9 +92,8 @@ class PanelAnalysisDlg : public QDialog
 
         void setupLayout();
         void analyze();
-        void cleanUp();
 
-        void updateOutput(QString &strong);
+        void updateOutput(const QString &strong);
         void updateView();
 
     private:

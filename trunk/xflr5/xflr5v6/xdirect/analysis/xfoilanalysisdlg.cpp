@@ -362,6 +362,8 @@ void XFoilAnalysisDlg::analyze()
     m_pButtonBox->button(QDialogButtonBox::Close)->setText(tr("Close"));
     m_ppbSkip->setEnabled(false);
     update();
+
+    qApp->processEvents(); // make sure that all custom events are received before exiting the dialog
 }
 
 

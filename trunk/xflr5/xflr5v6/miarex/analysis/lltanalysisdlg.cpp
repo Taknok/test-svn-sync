@@ -241,23 +241,13 @@ void LLTAnalysisDlg::analyze()
     m_pTheTask->m_ptheLLTAnalysis->setCurvePointers(&pCurve->m_x, &pCurve->m_y);
 
     //run the instance asynchronously
+    disconnect(m_pTheTask, nullptr, nullptr, nullptr);
+    connect(m_pTheTask,  SIGNAL(taskFinished()),   this,          SLOT(onTaskFinished()));
     QFuture<void> future = QtConcurrent::run(m_pTheTask, &PlaneTask::run);
-
-    while(future.isRunning())
-    {
-        qApp->processEvents();
-        QThread::msleep(200);
-//      QDateTime dt = QDateTime::currentDateTime();
-//        QString str = dt.toString("dd.MM.yyyy  hh:mm:ss.zzz");
-//        qDebug() << str<<m_pTheTask->isFinished();
-    }
-
-    qApp->processEvents();
-    cleanUp();
 }
 
 
-void LLTAnalysisDlg::cleanUp()
+void LLTAnalysisDlg::onTaskFinished()
 {
     QString strange;
     m_Timer.stop();
@@ -313,6 +303,8 @@ void LLTAnalysisDlg::cleanUp()
     m_pTheTask = nullptr;
     m_ppbCancel->setText(tr("Close"));
     m_ppbCancel->setFocus();
+
+    emit lltAnalysisFinished();
 }
 
 

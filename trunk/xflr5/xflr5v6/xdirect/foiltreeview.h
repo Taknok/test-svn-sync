@@ -51,6 +51,7 @@ class FoilTreeView : public QWidget
         void setObjectFromIndex(const QModelIndex &filteredindex);
 
         void updateObjectView();
+        void updateFoil(const Foil*pFoil);
 
         void insertPolar(Polar *pPolar);
         void insertFoil(Foil* pFoil);

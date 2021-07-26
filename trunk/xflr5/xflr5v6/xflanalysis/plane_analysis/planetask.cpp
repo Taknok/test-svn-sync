@@ -96,6 +96,8 @@ void PlaneTask::run()
     }
 
     m_bIsFinished = true;
+
+    emit taskFinished();
 }
 
 

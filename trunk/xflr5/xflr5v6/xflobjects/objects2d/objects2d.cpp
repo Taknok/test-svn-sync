@@ -560,7 +560,6 @@ void Objects2d::insertOpPoint(OpPoint *pNewPoint)
             }
         }
     }
-
     s_oaOpp.append(pNewPoint);
 }
 
@@ -577,12 +576,10 @@ void Objects2d::addPolar(Polar *pPolar)
 
     bool bExists   = false;
     bool bInserted = false;
-    Polar *pOldPlr = nullptr;
-    int ip,j;
 
-    for (ip=0; ip<s_oaPolar.size(); ip++)
+    for (int ip=0; ip<s_oaPolar.size(); ip++)
     {
-        pOldPlr = s_oaPolar.at(ip);
+        Polar *pOldPlr = s_oaPolar.at(ip);
         if (pOldPlr->polarName().compare(pPolar->polarName())==0 &&
                 pOldPlr->foilName().compare(pPolar->foilName())==0)
         {
@@ -596,9 +593,9 @@ void Objects2d::addPolar(Polar *pPolar)
 
     if(!bExists)
     {
-        for (j=0; j<s_oaPolar.size(); j++)
+        for (int j=0; j<s_oaPolar.size(); j++)
         {
-            pOldPlr = s_oaPolar.at(j);
+            Polar *pOldPlr = s_oaPolar.at(j);
 
             //first index is the parent foil name
             if (pPolar->foilName().compare(pOldPlr->foilName(), Qt::CaseInsensitive)<0)
