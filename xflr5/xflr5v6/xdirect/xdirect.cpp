@@ -111,7 +111,6 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
     m_bAnimatePlus    = false;
     m_bCpGraph        = true;
 
-
     m_bXPressed = m_bYPressed = false;
 
     m_bResetCurves    = true;
@@ -1307,7 +1306,6 @@ void XDirect::onAnimateSpeed(int val)
 void XDirect::onAnalyze()
 {
     if(!Objects2d::curFoil() || !Objects2d::curPolar()) return;
-    //qDebug("cpgraphtype %d", m_CpGraph.scaleType());
 
     readParams();
 
@@ -1331,21 +1329,20 @@ void XDirect::onAnalyze()
     s_bInitBL = !m_XFoil.isBLInitialized();
     m_pchInitBL->setChecked(s_bInitBL);;
 
-    m_pFoilTreeView->addOpps(Objects2d::curPolar());
-
     if(s_bAlpha) setOpp(XFoilAnalysisDlg::s_Alpha);
     else         setOpp();
 
+    m_pFoilTreeView->addOpps(Objects2d::curPolar());
     m_pFoilTreeView->selectOpPoint();
 
     Graph::setOppHighlighting(bHigh);
 
     m_bResetCurves = true;
 
-    emit projectModified();
-
     setControls();
     updateView();
+
+    emit projectModified();
 }
 
 
@@ -1415,8 +1412,6 @@ void XDirect::onMultiThreadedBatchAnalysis()
     m_pFoilTreeView->fillModelView();
 
     m_ppbAnalyze->setEnabled(true);
-
-
 
     setOpp();
     setControls();
@@ -1669,11 +1664,9 @@ void XDirect::onDeletePolarOpps()
 {
     if(!Objects2d::curFoil() || !Objects2d::curPolar()) return;
 
-    OpPoint *pOpp;
-
     for(int i=m_poaOpp->size()-1; i>=0; i--)
     {
-        pOpp = m_poaOpp->at(i);
+        OpPoint *pOpp = m_poaOpp->at(i);
         if(pOpp->foilName()==Objects2d::curFoil()->name() && pOpp->polarName()==Objects2d::curPolar()->polarName())
         {
             m_poaOpp->removeAt(i);
@@ -1720,6 +1713,8 @@ void XDirect::onDeleteFoilOpps()
     setCurOpp(nullptr);
 
     m_bResetCurves = true;
+
+    m_pFoilTreeView->updateFoil(Objects2d::curFoil());
 
     setControls();
     updateView();
@@ -1775,6 +1770,7 @@ void XDirect::onDeleteFoilPolars()
 
     m_bResetCurves = true;
 
+    m_pFoilTreeView->updateFoil(Objects2d::curFoil());
 
     emit projectModified();
 
@@ -4122,34 +4118,6 @@ Polar * XDirect::setPolar(Polar *pPolar)
 }
 
 
-OpPoint *XDirect::setOpp(OpPoint *pOpp)
-{
-    if(!pOpp)
-    {
-        //if unsuccessful so far,
-        //try to get the first one from the array
-        for(int iOpp=0; iOpp<Objects2d::oppCount(); iOpp++)
-        {
-            OpPoint *pOldOpp = Objects2d::oppAt(iOpp);
-            if(pOldOpp->foilName()==Objects2d::curFoil()->name() && pOldOpp->polarName()==Objects2d::curPolar()->polarName())
-            {
-                pOpp = pOldOpp;
-                break;
-            }
-        }
-    }
-
-//    if(pOpp)  s_pMainFrame->selectOpPoint(pOpp);
-
-    setCurOpp(pOpp);
-    m_bResetCurves = true;
-
-    setControls();
-
-    return Objects2d::curOpp();
-}
-
-
 /**
  * Initializes XDirect with the OpPoint with the specified aoa.
  * If the OpPoint cannot be found for the active Foil and Polar, a stock OpPoint associated to the current foil and polar will be set.
@@ -4183,6 +4151,32 @@ OpPoint * XDirect::setOpp(double Alpha)
         pOpp = Objects2d::getOpp(Objects2d::curFoil(), Objects2d::curPolar(), Alpha);
     }
     return setOpp(pOpp);
+}
+
+
+OpPoint *XDirect::setOpp(OpPoint *pOpp)
+{
+    if(!pOpp)
+    {
+        //if unsuccessful so far,
+        //try to get the first one from the array
+        for(int iOpp=0; iOpp<Objects2d::oppCount(); iOpp++)
+        {
+            OpPoint *pOldOpp = Objects2d::oppAt(iOpp);
+            if(pOldOpp->foilName()==Objects2d::curFoil()->name() && pOldOpp->polarName()==Objects2d::curPolar()->polarName())
+            {
+                pOpp = pOldOpp;
+                break;
+            }
+        }
+    }
+
+    setCurOpp(pOpp);
+    m_bResetCurves = true;
+
+    setControls();
+
+    return Objects2d::curOpp();
 }
 
 

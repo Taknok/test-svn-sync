@@ -403,7 +403,7 @@ void BodyDlg::onBodyColor(QColor clr)
 
     if(clr.isValid())
     {
-        m_pBody->setBodyColor(clr);
+        m_pBody->setColor(clr);
     }
 
     m_gl3dBodyview.resetGLBody();
@@ -940,7 +940,7 @@ void BodyDlg::accept()
     {
         m_pBody->setDescription(m_pteBodyDescription->toPlainText());
         QColor clr = m_pcbBodyColor->color();
-        m_pBody->setBodyColor(clr);
+        m_pBody->setColor(clr);
     }
 
     s_bOutline    = m_gl3dBodyview.m_bOutline;

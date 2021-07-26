@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>images/new.png</file>
-        <file>images/open.png</file> 
+        <file>images/open.png</file>
         <file>images/save.png</file>
         <file>images/On3DView.png</file>
         <file>images/OnCpView.png</file>
@@ -36,5 +36,6 @@
         <file>images/level2.png</file>
         <file>images/Lorenz.png</file>
         <file>images/Lorenz_inv.png</file>
+        <file>images/unsaved.png</file>
     </qresource>
 </RCC>

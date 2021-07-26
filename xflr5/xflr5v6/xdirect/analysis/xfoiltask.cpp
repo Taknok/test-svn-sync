@@ -1,7 +1,7 @@
 /****************************************************************************
 
     XFoilTask Class
-       Copyright (C) 2011-2017 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -85,6 +85,7 @@ void XFoilTask::run()
     if(m_pParent)
     {
         qApp->postEvent(m_pParent, new XFoilTaskEvent(m_pFoil, m_pPolar));
+        qApp->processEvents();
     }
 }
 

@@ -129,7 +129,7 @@ class Body
 
         QColor const &color() const {return m_BodyColor;}
         QColor &color() {return m_BodyColor;}
-        void setBodyColor(QColor const&color) {m_BodyColor=color;}
+        void setColor(QColor const&color) {m_BodyColor=color;}
 
         NURBSSurface& nurbs() {return m_SplineSurface;}
 

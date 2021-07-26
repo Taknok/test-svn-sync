@@ -48,8 +48,9 @@ struct PlaneAnalysis
 };
 
 
-class PlaneTask
+class PlaneTask : public QObject
 {
+    Q_OBJECT
     friend class MainFrame;
     friend class Miarex;
     friend class PanelAnalysisDlg;
@@ -87,7 +88,7 @@ class PlaneTask
 
         void LLTAnalyze();
         void PanelAnalyze();
-        void run();
+
         static void cancelTask(){s_bCancel=true;}
 
         PanelAnalysis *m_pthePanelAnalysis;
@@ -98,6 +99,12 @@ class PlaneTask
 
         int nNodes() const {return m_Node.size();}
         int matSize() const {return m_Panel.size();}
+
+    public slots:
+        void run();
+
+    signals:
+        void taskFinished();
 
     private:
         Plane *m_pPlane;

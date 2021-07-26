@@ -40,6 +40,7 @@
 #include <xflobjects/objects3d/plane.h>
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/customwts/floateditdelegate.h>
+#include <xflwidgets/customwts/cptableview.h>
 
 QByteArray InertiaDlg::s_Geometry;
 
@@ -975,7 +976,7 @@ void InertiaDlg::setupLayout()
 
     //___________________Point Masses__________________________
     QLabel *pPointMasses = new QLabel(tr("Additional Point Masses"));
-    m_ptvMass = new QTableView(this);
+    m_ptvMass = new CPTableView(this);
     m_ptvMass->setSizePolicy(szPolicyExpanding);
     m_ptvMass->setFont(DisplayOptions::tableFont());
     m_ptvMass->setMinimumHeight(150);
@@ -1137,7 +1138,6 @@ void InertiaDlg::setupLayout()
     connect(m_pInsertMassRow,    SIGNAL(triggered()), SLOT(onInsertMassRow()));
     connect(m_pDeleteMassRow,    SIGNAL(triggered()), SLOT(onDeleteMassRow()));
 }
-
 
 
 void InertiaDlg::onWingInertia()

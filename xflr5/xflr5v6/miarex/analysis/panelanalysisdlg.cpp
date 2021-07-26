@@ -227,19 +227,13 @@ void PanelAnalysisDlg::analyze()
     m_Timer.start();
 
     //run the instance asynchronously
+    disconnect(m_pTheTask, nullptr, nullptr, nullptr);
+    connect(m_pTheTask,  SIGNAL(taskFinished()),   this,  SLOT(onTaskFinished()));
     QFuture<void> future = QtConcurrent::run(m_pTheTask, &PlaneTask::run);
-
-    while(future.isRunning())
-    {
-        qApp->processEvents();
-        QThread::msleep(200);
-    }
-    qApp->processEvents();
-    cleanUp();
 }
 
 
-void PanelAnalysisDlg::cleanUp()
+void PanelAnalysisDlg::onTaskFinished()
 {
     QString strong;
     m_Timer.stop();
@@ -305,6 +299,8 @@ void PanelAnalysisDlg::cleanUp()
 
     m_ppbCancel->setText(tr("Close"));
     m_ppbCancel->setFocus();
+
+    emit analysisFinished();
 }
 
 
@@ -312,7 +308,7 @@ void PanelAnalysisDlg::cleanUp()
 * Updates the text output in the dialog box and the log file.
 *@param strong the text message to append to the output widget and to the log file.
 */
-void PanelAnalysisDlg::updateOutput(QString &strong)
+void PanelAnalysisDlg::updateOutput(QString const&strong)
 {
     m_pteOutput->insertPlainText(strong);
     m_pteOutput->textCursor().movePosition(QTextCursor::End);
@@ -320,7 +316,7 @@ void PanelAnalysisDlg::updateOutput(QString &strong)
 }
 
 
-void PanelAnalysisDlg::onMessage(QString msg)
+void PanelAnalysisDlg::onMessage(QString const &msg)
 {
     m_pteOutput->insertPlainText(msg);
     m_pteOutput->textCursor().movePosition(QTextCursor::End);

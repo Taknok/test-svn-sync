@@ -130,8 +130,10 @@ Miarex::Miarex(QWidget *parent) : QWidget(parent)
     m_pLLTDlg = new LLTAnalysisDlg(this);
     m_pPanelAnalysisDlg = new PanelAnalysisDlg(s_pMainFrame);
 
-    connect(m_theTask.m_pthePanelAnalysis, SIGNAL(outputMsg(QString)), m_pPanelAnalysisDlg, SLOT(onMessage(QString)), Qt::QueuedConnection);
-    connect(m_theTask.m_ptheLLTAnalysis, SIGNAL(outputMsg(QString)), m_pLLTDlg, SLOT(onMessage(QString)), Qt::QueuedConnection);
+    connect(m_pPanelAnalysisDlg,           SIGNAL(analysisFinished()),                      SLOT(onTaskFinished()));
+    connect(m_pLLTDlg,                     SIGNAL(lltAnalysisFinished()),                   SLOT(onTaskFinished()));
+    connect(m_theTask.m_pthePanelAnalysis, SIGNAL(outputMsg(QString)), m_pPanelAnalysisDlg, SLOT(onMessage(QString)));
+    connect(m_theTask.m_ptheLLTAnalysis,   SIGNAL(outputMsg(QString)), m_pLLTDlg,           SLOT(onMessage(QString)));
 
     m_PixText = QPixmap(107, 97);
     m_PixText.fill(Qt::transparent);
@@ -1730,52 +1732,6 @@ void Miarex::keyReleaseEvent(QKeyEvent *event)
 
 
 /**
- * Launches the LLT analysis and updates the display after the analysis
- * @param V0 : the start angle
- * @param VMax : the maximal angle
- * @param VDelta : the increment angle
- * @param bSequence : if true, the analysis will be run for the whole range between V0 and VMax; if not, the analysis will be run for V0 only
- * @param bInitCalc : if true, the starting point for convergence iterations will be reset to the default; if not, the iterations will start at the last calculated point
- *
-*/
-void Miarex::LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, bool bInitCalc)
-{
-    if(!m_pCurPlane || !m_pCurWPolar) return;
-
-    LLTAnalysis::s_bInitCalc = bInitCalc;
-    LLTAnalysis::s_IterLim = m_LLTMaxIterations;
-
-    m_pLLTDlg->iterGraph()->copySettings(&Settings::s_RefGraph);
-
-    //    m_pLLTDlg->deleteTask();
-
-    //    PlaneTask *pTask = new PlaneTask();
-    //    memcpy(pTask, &m_theTask, sizeof(PlaneTask));
-
-    m_theTask.initializeTask(m_pCurPlane, m_pCurWPolar, V0, VMax, VDelta, bSequence);
-    m_pLLTDlg->setTask(&m_theTask);
-    m_pLLTDlg->initDialog();
-    m_pLLTDlg->show();
-
-    m_pLLTDlg->analyze();
-
-    if(s_bLogFile && (m_theTask.m_ptheLLTAnalysis->m_bError || m_theTask.m_ptheLLTAnalysis->m_bWarning))
-    {
-    }
-    else
-    {
-        m_pLLTDlg->hide();
-    }
-
-    m_pPlaneTreeView->addPOpps(m_pCurWPolar);
-    m_pPlaneTreeView->selectWPolar(m_pCurWPolar, true);
-
-    emit projectModified();
-}
-
-
-
-/**
  * Loads the user's saved settings from the configuration file and maps the data.
  *@param a pointer to the QSettings object loaded in the MainFrame class
  *@return true if the settings have been loaded successfully
@@ -2062,9 +2018,7 @@ void Miarex::on3DPrefs()
 */
 void Miarex::onAnalyze()
 {
-    double V0=0, VMax=0, VDelta=0;
-    bool bHigh = Graph::isHighLighting();
-    Graph::setOppHighlighting(false);
+    double V0(0), VMax(0), VDelta(0);
 
     if(!m_pCurPlane)
     {
@@ -2153,11 +2107,82 @@ void Miarex::onAnalyze()
         panelAnalyze(V0, VMax, VDelta, m_bSequence);
     }
 
+}
+
+/**
+ * Launches a 3d panel analysis
+ * @param V0 the initial aoa
+ * @param VMax the final aoa
+ * @param VDelta the increment
+ * @param bSequence if true, the analysis will for a sequence of aoa from V0 to Vmax, if not only V0 shall be calculated
+ */
+void Miarex::panelAnalyze(double V0, double VMax, double VDelta, bool bSequence)
+{
+    if(!m_pCurPlane || !m_pCurWPolar) return;
+
+    m_theTask.initializeTask(m_pCurPlane, m_pCurWPolar, V0, VMax, VDelta, bSequence);
+    m_theTask.stitchSurfaces();
+    m_pPanelAnalysisDlg->setTask(&m_theTask);
+    m_pPanelAnalysisDlg->initDialog();
+    m_pPanelAnalysisDlg->show();
+
+    m_pPanelAnalysisDlg->analyze();
+}
+
+/**
+ * Launches the LLT analysis and updates the display after the analysis
+ * @param V0 : the start angle
+ * @param VMax : the maximal angle
+ * @param VDelta : the increment angle
+ * @param bSequence : if true, the analysis will be run for the whole range between V0 and VMax; if not, the analysis will be run for V0 only
+ * @param bInitCalc : if true, the starting point for convergence iterations will be reset to the default; if not, the iterations will start at the last calculated point
+ *
+*/
+void Miarex::LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, bool bInitCalc)
+{
+    if(!m_pCurPlane || !m_pCurWPolar) return;
+
+    LLTAnalysis::s_bInitCalc = bInitCalc;
+    LLTAnalysis::s_IterLim = m_LLTMaxIterations;
+
+    m_pLLTDlg->iterGraph()->copySettings(&Settings::s_RefGraph);
+
+    //    m_pLLTDlg->deleteTask();
+
+    //    PlaneTask *pTask = new PlaneTask();
+    //    memcpy(pTask, &m_theTask, sizeof(PlaneTask));
+
+    m_theTask.initializeTask(m_pCurPlane, m_pCurWPolar, V0, VMax, VDelta, bSequence);
+    m_pLLTDlg->setTask(&m_theTask);
+    m_pLLTDlg->initDialog();
+    m_pLLTDlg->show();
+
+    m_pLLTDlg->analyze();
+
+}
+
+
+void Miarex::onTaskFinished()
+{
+    if(!s_bLogFile || !PanelAnalysis::s_bWarning)
+        m_pPanelAnalysisDlg->hide();
+    if(!s_bLogFile || !(m_theTask.m_ptheLLTAnalysis->m_bError || m_theTask.m_ptheLLTAnalysis->m_bWarning))
+        m_pLLTDlg->hide();
+
+    if(m_pCurWPolar)
+    {
+        if     (m_pCurWPolar->isT12Polar())  setPlaneOpp(false, m_AlphaMin);
+        else if(m_pCurWPolar->isT4Polar())  setPlaneOpp(false, m_QInfMin);
+        else if(m_pCurWPolar->isT5Polar())  setPlaneOpp(false, m_BetaMin);
+    }
+    m_pPlaneTreeView->addPOpps(m_pCurWPolar);
+    if(m_pCurPOpp) m_pPlaneTreeView->selectPlaneOpp(m_pCurPOpp);
+    else           m_pPlaneTreeView->selectWPolar(m_pCurWPolar, true);
+
+    emit projectModified();
+
     m_ppbAnalyze->setEnabled(true);
     m_pPlaneTreeView->setEnabled(true);
-
-    //restore things as they were
-    Graph::setOppHighlighting(bHigh);
 
     //refresh the view
     s_bResetCurves = true;
@@ -2165,8 +2190,6 @@ void Miarex::onAnalyze()
     setControls();
     s_pMainFrame->setFocus();
 }
-
-
 
 
 /**
@@ -3287,19 +3310,18 @@ void Miarex::onEditCurBody()
         }
     }
 
-    //then modifications are automatically recorded
     m_pCurPlane->duplicate(pModPlane);
+    Objects3d::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
+    m_pPlaneTreeView->updatePlane(m_pCurPlane);
 
     // in all cases copy new color and texture flag
     if(m_pCurPlane->body())
     {
-        m_pCurPlane->body()->setBodyColor( pModPlane->body()->color());
+        m_pCurPlane->body()->setColor( pModPlane->body()->color());
     }
 
     delete pModPlane; // clean up, we don't need it any more
 
-    //plane has been modified, old results are not consistent with the new geometry, delete them
-    Objects3d::deletePlaneResults(m_pCurPlane, false);
     m_pCurWPolar = nullptr;
     m_pCurPOpp = nullptr;
     m_pPlaneTreeView->selectPlane(m_pCurPlane);
@@ -3382,11 +3404,15 @@ void Miarex::onEditCurBodyObject()
         {
             //save mods to a new plane object
             m_pCurPlane = Objects3d::setModPlane(pModPlane);
+
             m_pCurWPolar = nullptr;
             m_pCurPOpp = nullptr;
 
             setPlane(pModPlane->name());
-            m_pPlaneTreeView->selectPlane(m_pCurPlane);
+
+            m_pPlaneTreeView->insertPlane(pModPlane);
+            m_pPlaneTreeView->update();
+            m_pPlaneTreeView->selectPlane(pModPlane);
             updateView();
             return;
         }
@@ -3394,15 +3420,15 @@ void Miarex::onEditCurBodyObject()
 
     //then modifications are automatically recorded
     m_pCurPlane->duplicate(pModPlane);
-    delete pModPlane;
     Objects3d::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
+    m_pPlaneTreeView->updatePlane(m_pCurPlane);
+    delete pModPlane;
     m_pCurWPolar = nullptr;
     m_pCurPOpp = nullptr;
     setPlane();
 
     updateView();
 }
-
 
 
 /**
@@ -3473,11 +3499,15 @@ void Miarex::onEditCurObject()
                 {
                     //save mods to a new plane object
                     m_pCurPlane = Objects3d::setModPlane(pModPlane);
+
                     m_pCurWPolar = nullptr;
                     m_pCurPOpp = nullptr;
 
                     setPlane(pModPlane->name());
-                    m_pPlaneTreeView->selectPlane(m_pCurPlane);
+
+                    m_pPlaneTreeView->insertPlane(pModPlane);
+                    m_pPlaneTreeView->update();
+                    m_pPlaneTreeView->selectPlane(pModPlane);
                     updateView();
                     return;
                 }
@@ -3485,8 +3515,9 @@ void Miarex::onEditCurObject()
 
             //then modifications are automatically recorded
             m_pCurPlane->duplicate(pModPlane);
-
             Objects3d::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
+            m_pPlaneTreeView->updatePlane(m_pCurPlane);
+
             m_pCurWPolar = nullptr;
             m_pCurPOpp = nullptr;
         }
@@ -3535,7 +3566,6 @@ void Miarex::onEditCurPlane()
     plDlg.m_bAcceptName = false;
     plDlg.initDialog();
 
-    ModDlg mdDlg(s_pMainFrame);
 
     if(QDialog::Accepted == plDlg.exec())
     {
@@ -3553,6 +3583,7 @@ void Miarex::onEditCurPlane()
         {
             if(bHasResults)
             {
+                ModDlg mdDlg(s_pMainFrame);
                 mdDlg.setQuestion(tr("The modification will erase all results associated to this Plane.\nContinue ?"));
                 mdDlg.initDialog();
                 int Ans = mdDlg.exec();
@@ -3563,21 +3594,33 @@ void Miarex::onEditCurPlane()
                     delete pModPlane; // clean up
                     return;
                 }
+
                 else if(Ans==20)
                 {
                     //save mods to a new plane object
                     m_pCurPlane = Objects3d::setModPlane(pModPlane);
 
+                    m_pCurWPolar = nullptr;
+                    m_pCurPOpp = nullptr;
+
                     setPlane(pModPlane->name());
-                    m_pPlaneTreeView->selectPlane(m_pCurPlane);
+
+                    m_pPlaneTreeView->insertPlane(pModPlane);
+                    m_pPlaneTreeView->update();
+                    m_pPlaneTreeView->selectPlane(pModPlane);
                     updateView();
                     return;
+                }
+                else // accepted
+                {
                 }
             }
 
             //then modifications are automatically recorded
             m_pCurPlane->duplicate(pModPlane);
             Objects3d::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
+            m_pPlaneTreeView->updatePlane(m_pCurPlane);
+
             m_pCurWPolar = nullptr;
             m_pCurPOpp = nullptr;
         }
@@ -3615,23 +3658,11 @@ void Miarex::onEditCurWing()
 
     if(!m_pCurPlane->wing(iWing)) return;
 
-    WPolar *pWPolar = nullptr;
-    PlaneOpp* pPOpp = nullptr;
     bool bHasResults = false;
     for (int i=0; i<Objects3d::polarCount(); i++)
     {
-        pWPolar = Objects3d::polarAt(i);
+        WPolar *pWPolar = Objects3d::polarAt(i);
         if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->name())
-        {
-            bHasResults = true;
-            break;
-        }
-    }
-
-    for (int i=0; i<Objects3d::planeOppCount(); i++)
-    {
-        pPOpp = Objects3d::planeOppAt(i);
-        if(pPOpp->planeName() == m_pCurPlane->name())
         {
             bHasResults = true;
             break;
@@ -3679,18 +3710,22 @@ void Miarex::onEditCurWing()
                 {
                     //save mods to a new plane object
                     m_pCurPlane = Objects3d::setModPlane(pModPlane);
+                    m_pCurWPolar = nullptr;
+                    m_pCurPOpp = nullptr;
 
                     setPlane(pModPlane->name());
-                    m_pPlaneTreeView->selectPlane(m_pCurPlane);
+                    m_pPlaneTreeView->insertPlane(pModPlane);
+                    m_pPlaneTreeView->update();
+                    m_pPlaneTreeView->selectPlane(pModPlane);
                     updateView();
                     return;
                 }
             }
 
-            //then modifications are automatically recorded
             m_pCurPlane->duplicate(pModPlane);
-
             Objects3d::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
+            m_pPlaneTreeView->updatePlane(m_pCurPlane);
+
             m_pCurWPolar = nullptr;
             m_pCurPOpp = nullptr;
         }
@@ -3709,7 +3744,6 @@ void Miarex::onEditCurWing()
 }
 
 
-
 /**
  * The user has requested that the size of the active wing be scaled.
  * Launches the dialog box, creates a new wing, and overwrites the existing wing or plane,
@@ -3719,23 +3753,11 @@ void Miarex::onScaleWing()
 {
     if(!m_pCurPlane) return;
 
-    WPolar *pWPolar = nullptr;
-    PlaneOpp* pPOpp = nullptr;
     bool bHasResults = false;
     for (int i=0; i< Objects3d::polarCount(); i++)
     {
-        pWPolar = Objects3d::polarAt(i);
+        WPolar *pWPolar = Objects3d::polarAt(i);
         if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->name())
-        {
-            bHasResults = true;
-            break;
-        }
-    }
-
-    for (int i=0; i<Objects3d::planeOppCount(); i++)
-    {
-        pPOpp = Objects3d::planeOppAt(i);
-        if(pPOpp->planeName() == m_pCurPlane->name())
         {
             bHasResults = true;
             break;
@@ -3785,16 +3807,23 @@ void Miarex::onScaleWing()
                     //save mods to a new plane object
                     m_pCurPlane = Objects3d::setModPlane(pModPlane);
 
-                    setPlane();
-                    m_pPlaneTreeView->selectPlane(m_pCurPlane);
+                    m_pCurWPolar = nullptr;
+                    m_pCurPOpp = nullptr;
+
+                    setPlane(pModPlane->name());
+
+                    m_pPlaneTreeView->insertPlane(pModPlane);
+                    m_pPlaneTreeView->update();
+                    m_pPlaneTreeView->selectPlane(pModPlane);
                     updateView();
                     return;
                 }
             }
 
-            //then modifications are automatically recorded
             m_pCurPlane->duplicate(pModPlane);
             Objects3d::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
+            m_pPlaneTreeView->updatePlane(m_pCurPlane);
+
             m_pCurWPolar = nullptr;
             m_pCurPOpp = nullptr;
 
@@ -5774,7 +5803,7 @@ void Miarex::onPlaneInertia()
     iDlg.m_pBody  = nullptr;
 
     Plane SavePlane;
-    WPolar *pWPolar(nullptr);
+
     QString PlaneName;
     bool bHasResults = false;
 
@@ -5787,7 +5816,7 @@ void Miarex::onPlaneInertia()
 
     for (int i=0; i<Objects3d::polarCount(); i++)
     {
-        pWPolar = Objects3d::polarAt(i);
+        WPolar const*pWPolar = Objects3d::polarAt(i);
         if(pWPolar->dataSize() && pWPolar->planeName()==PlaneName && pWPolar->m_bAutoInertia)
         {
             bHasResults = true;
@@ -5834,23 +5863,13 @@ void Miarex::onPlaneInertia()
 
             //last case, user wants to overwrite, so reset all polars, WOpps and POpps with autoinertia associated to the Plane
 
+            Objects3d::deletePlaneResults(m_pCurPlane);
             for (int i=0; i<Objects3d::polarCount(); i++)
             {
-                pWPolar = Objects3d::polarAt(i);
-                if(pWPolar && pWPolar->planeName()==PlaneName && pWPolar->m_bAutoInertia)
+                WPolar *pWPolar = Objects3d::polarAt(i);
+                if(pWPolar && pWPolar->planeName()==PlaneName && pWPolar->bAutoInertia())
                 {
                     pWPolar->clearData();
-                    if(m_pCurPlane) pWPolar->retrieveInertia(m_pCurPlane);
-
-                    for (int i=Objects3d::planeOppCount()-1; i>=0; i--)
-                    {
-                        PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
-                        if(pPOpp && pPOpp->planeName()==PlaneName && pPOpp->polarName()==pWPolar->polarName())
-                        {
-                            Objects3d::removePOppAt(i);
-                            delete pPOpp;
-                        }
-                    }
                 }
             }
             updateTreeView();
@@ -6219,60 +6238,6 @@ void Miarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
 
     painter.restore();
 }
-
-
-
-/**
- * Launches a 3D panel analysis
- * @param V0 the initial aoa
- * @param VMax the final aoa
- * @param VDelta the increment
- * @param bSequence if true, the analysis will for a sequence of aoa from V0 to Vmax, if not only V0 shall be calculated
- */
-void Miarex::panelAnalyze(double V0, double VMax, double VDelta, bool bSequence)
-{
-    if(!m_pCurPlane || !m_pCurWPolar) return;
-
-
-    /*    //Join surfaces together
-    int i,pl, pr;
-    pl = 0;
-    pr = m_theTask.m_SurfaceList.at(0)->m_NElements;
-    for (i=0; i<m_theTask.m_SurfaceList.size()-1; i++)
-    {
-        if(!m_theTask.m_SurfaceList.at(i)->m_bIsTipRight)
-        {
-            if(m_theTask.m_SurfaceList.at(i)->m_bJoinRight)
-                m_theTask.joinSurfaces(m_pCurWPolar, m_theTask.m_SurfaceList.at(i), m_theTask.m_SurfaceList.at(i+1), pl, pr);
-        }
-        pl  = pr;
-        pr += m_theTask.m_SurfaceList.at(i+1)->m_NElements;
-    }*/
-
-    //    m_pPanelAnalysisDlg->deleteTask();
-
-    //    PlaneTask *pTask = new PlaneTask;
-    //    memcpy(pTask, &m_theTask, sizeof(PlaneTask));
-
-    m_theTask.initializeTask(m_pCurPlane, m_pCurWPolar, V0, VMax, VDelta, bSequence);
-    m_theTask.stitchSurfaces();
-    m_pPanelAnalysisDlg->setTask(&m_theTask);
-    m_pPanelAnalysisDlg->initDialog();
-    m_pPanelAnalysisDlg->show();
-    m_pPanelAnalysisDlg->analyze();
-
-    if(!s_bLogFile || !PanelAnalysis::s_bWarning)
-        m_pPanelAnalysisDlg->hide();
-
-    setPlaneOpp(false, V0);
-    m_pPlaneTreeView->addPOpps(m_pCurWPolar);
-    if(m_pCurPOpp) m_pPlaneTreeView->selectPlaneOpp(m_pCurPOpp);
-    else           m_pPlaneTreeView->selectWPolar(m_pCurWPolar, true);
-
-    //    delete pTask;
-    emit projectModified();
-}
-
 
 
 /**
@@ -7531,8 +7496,6 @@ void Miarex::paintPanelForceLegendText(QPainter &painter)
 }
 
 
-
-
 void Miarex::drawColorGradient(QPainter &painter, QRect const & gradientRect)
 {
     // draw the color gradient
@@ -7548,6 +7511,26 @@ void Miarex::drawColorGradient(QPainter &painter, QRect const & gradientRect)
         gradient.setColorAt(double(fi), clr);
     }
     painter.fillRect(gradientRect, gradient);
+}
+
+
+/**
+* Searches for an operating point with aoa or velocity or control paramter x, for the active polar
+* Sets it as active, if valid
+* else sets the current PlaneOpp, if any
+* else sets the comboBox's first, if any
+* else sets it to NULL
+*@param bCurrent, if true, uses the x value of the current operating point; this is useful if the user has changed the polar, but wants to display the same aoa for instance
+*@return true if a new valid operating point has been selected
+*/
+bool Miarex::setPlaneOpp(bool bCurrent, double x)
+{
+    PlaneOpp *pPOpp = nullptr;
+    if(bCurrent) pPOpp = m_pCurPOpp;
+    else         pPOpp = Objects3d::getPlaneOpp(m_pCurPlane, m_pCurWPolar, x);
+    if(!pPOpp)   pPOpp = Objects3d::getPlaneOpp(m_pCurPlane, m_pCurWPolar, m_LastAlpha);
+
+    return setPlaneOpp(pPOpp);
 }
 
 
@@ -7631,27 +7614,6 @@ bool Miarex::setPlaneOpp(PlaneOpp *pPOpp)
     }
 
     return true;
-}
-
-
-
-/**
-* Searches for an operating point with aoa or velocity or control paramter x, for the active polar
-* Sets it as active, if valid
-* else sets the current PlaneOpp, if any
-* else sets the comboBox's first, if any
-* else sets it to NULL
-*@param bCurrent, if true, uses the x value of the current operating point; this is useful if the user has changed the polar, but wants to display the same aoa for instance
-*@return true if a new valid operating point has been selected
-*/
-bool Miarex::setPlaneOpp(bool bCurrent, double x)
-{
-    PlaneOpp *pPOpp = nullptr;
-    if(bCurrent) pPOpp = m_pCurPOpp;
-    else         pPOpp = Objects3d::getPlaneOpp(m_pCurPlane, m_pCurWPolar, x);
-    if(!pPOpp)   pPOpp = Objects3d::getPlaneOpp(m_pCurPlane, m_pCurWPolar, m_LastAlpha);
-
-    return setPlaneOpp(pPOpp);
 }
 
 

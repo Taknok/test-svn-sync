@@ -221,6 +221,7 @@ class Miarex : public QWidget
         void onSurfaces();
         void onSurfaceSpeeds();
         void onStabTimeView();
+        void onTaskFinished();
         void onWing2Curve();
         void onWOppView();
         void onWPolarView();

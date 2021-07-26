@@ -1,7 +1,7 @@
 /****************************************************************************
 
     FloatEditDelegate Class
-    Copyright (C) 2009 André Deperrois 
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,11 +30,11 @@ FloatEditDelegate::FloatEditDelegate(QObject *parent)
 
 QWidget *FloatEditDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & index ) const
 {
-    if(m_Precision[index.column()]>=0)
+    if(m_Precision.at(index.column())>=0)
     {
         //we have a number
         DoubleEdit *editor = new DoubleEdit(parent);
-        editor->setDigits(m_Precision[index.column()]);
+        editor->setDigits(m_Precision.at(index.column()));
         double value = index.model()->data(index, Qt::EditRole).toDouble();
         editor->setValue(value);
 
@@ -48,6 +48,7 @@ QWidget *FloatEditDelegate::createEditor(QWidget *parent, const QStyleOptionView
         return editor;
     }
 }
+
 
 void FloatEditDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
@@ -65,13 +66,13 @@ void FloatEditDelegate::setEditorData(QWidget *editor, const QModelIndex &index)
 }
 
 
-
 void FloatEditDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                 const QModelIndex &index) const
 {
-    if(m_Precision[index.column()]>=0)
+    if(m_Precision.at(index.column())>=0)
     {
         DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
+        pDE->readValue();
         double value = pDE->value();
         model->setData(index, value, Qt::EditRole);
     }
@@ -99,10 +100,10 @@ void FloatEditDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 {
     QString strong;
     QStyleOptionViewItem myOption = option;
-    if(m_Precision[index.column()]>=0)
+    if(m_Precision.at(index.column())>=0)
     {
         myOption.displayAlignment = Qt::AlignRight | Qt::AlignVCenter;
-        strong = QString("%L1").arg(index.model()->data(index, Qt::DisplayRole).toDouble(),0,'f', m_Precision[index.column()]);
+        strong = QString("%L1").arg(index.model()->data(index, Qt::DisplayRole).toDouble(),0,'f', m_Precision.at(index.column()));
 
     }
     else

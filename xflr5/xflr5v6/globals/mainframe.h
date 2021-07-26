@@ -64,6 +64,8 @@ class XDirectTileWidget;
 class XInverse;
 class gl3dMiarexView;
 class inverseviewwt;
+class XflScriptExec;
+class LogWt;
 
 /**
 *@class MainFrame
@@ -110,7 +112,7 @@ class MainFrame : public QMainWindow
 
         /*___________________________________________Methods_______________________________*/
 
-        void executeScript(QString XmlScriptName, bool bShowProgressStdIO, bool bShowLog=false);
+        void executeScript(QString const &XmlScriptName, bool bShowProgressStdIO, bool bShowLog=false);
         bool bAutoLoadLast() const {return m_bAutoLoadLast;}
 
     public slots:
@@ -128,6 +130,7 @@ class MainFrame : public QMainWindow
         void aboutQt();
         void aboutXFLR5();
         void onCurGraphSettings();
+        void onDoneScript();
         void onExecuteScript();
         void onExportCurGraph();
         void onHighlightOperatingPoint();
@@ -205,7 +208,6 @@ class MainFrame : public QMainWindow
         void setProjectName(const QString &PathName);
         void setSaveState(bool bSave);
         void setupDataDir();
-        void testConfiguration();
         void updateRecentFileActions();
         void updateView();
     //    bool serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
@@ -399,6 +401,9 @@ class MainFrame : public QMainWindow
 
         xfl::enumImageFormat m_ImageFormat;   /**< The index of the type of image file which should be used. */
         QTimer *m_pSaveTimer;          /**< The timer which triggers the autosaving of the project at given intervals */
+
+        XflScriptExec *m_pScriptExecutor;
+        QPointer<LogWt> m_pLogWt;
 
     public:
         static bool s_bOpenGL;

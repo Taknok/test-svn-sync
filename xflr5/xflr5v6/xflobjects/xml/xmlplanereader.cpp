@@ -392,7 +392,7 @@ bool XMLPlaneReader::readBody(Body *pBody, Vector3d &position, double lengthUnit
         {
             QColor clr;
             readColor(clr);
-            pBody->setBodyColor(clr);
+            pBody->setColor(clr);
         }
         else if (name().toString().compare(QString("description"), Qt::CaseInsensitive)==0)
         {

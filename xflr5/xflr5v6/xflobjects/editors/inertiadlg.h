@@ -26,7 +26,6 @@
 #include <QStackedWidget>
 #include <QRadioButton>
 #include <QPushButton>
-#include <QTableView>
 #include <QStandardItemModel>
 #include <QDialogButtonBox>
 
@@ -34,6 +33,7 @@
 #include <xflgeom/geom3d/vector3d.h>
 #include <xflobjects/objects3d/pointmass.h>
 
+class CPTableView;
 class FloatEditDelegate;
 class DoubleEdit;
 class Plane;
@@ -84,12 +84,13 @@ class InertiaDlg : public QDialog
         void setupLayout();
         void readData();
 
+    private:
         //layout widget variables
         QStackedWidget *m_pswTop;
         QPushButton *m_ppbWingInertia, *m_ppbWing2Inertia, *m_ppbStabInertia, *m_ppbFinInertia, *m_ppbBodyInertia;
 
         QLabel *m_plabVolumeMassLabel, *m_plabTotalMassLabel;
-        QTableView *m_ptvMass;
+        CPTableView *m_ptvMass;
         QStandardItemModel *m_pMassModel;
         FloatEditDelegate *m_pFloatDelegate;
         DoubleEdit *m_pdeCoGIxx, *m_pdeCoGIyy, *m_pdeCoGIzz, *m_pdeCoGIxz;
