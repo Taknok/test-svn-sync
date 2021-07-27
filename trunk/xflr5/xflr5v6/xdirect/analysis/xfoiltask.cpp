@@ -85,7 +85,6 @@ void XFoilTask::run()
     if(m_pParent)
     {
         qApp->postEvent(m_pParent, new XFoilTaskEvent(m_pFoil, m_pPolar));
-        qApp->processEvents();
     }
 }
 

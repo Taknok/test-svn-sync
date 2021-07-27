@@ -188,9 +188,6 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     m_SaveInterval = 10;
     m_GraphExportFilter = "Comma Separated Values (*.csv)";
 
-    m_pLogWt = nullptr;
-    m_pScriptExecutor = nullptr;
-
     m_pSaveTimer = nullptr;
 
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
@@ -3909,7 +3906,7 @@ bool MainFrame::onSaveProjectAs()
 }
 
 
-bool MainFrame::onSaveProjectAs(const QString pathName)
+bool MainFrame::onSaveProjectAs(const QString &pathName)
 {
     saveProject(pathName);
     setProjectName(pathName);
@@ -5828,13 +5825,6 @@ void MainFrame::setNoApp()
 void MainFrame::onExecuteScript()
 {
     setNoApp();
-    XDirect::setCurFoil(nullptr);
-    XDirect::setCurPolar(nullptr);
-    XDirect::setCurOpp(nullptr);
-
-    m_pMiarex->m_pCurPlane = nullptr;
-    m_pMiarex->m_pCurWPolar = nullptr;
-    m_pMiarex->m_pCurPOpp = nullptr;
 
     QString XmlPathName;
     XmlPathName = QFileDialog::getOpenFileName(this, tr("Open XML Script File"),
@@ -5851,27 +5841,29 @@ void MainFrame::onExecuteScript()
 
 void MainFrame::executeScript(const QString &XmlScriptName, bool bShowProgressStdIO, bool bShowLog)
 {
-    if(m_pScriptExecutor) delete m_pScriptExecutor;
-    m_pScriptExecutor = new XflScriptExec(this);
+    XflScriptExec scriptexecutor(this);
+    XDirect::setCurFoil(nullptr);
+    XDirect::setCurPolar(nullptr);
+    XDirect::setCurOpp(nullptr);
 
-    if(m_pLogWt) delete m_pLogWt;
-    m_pLogWt = new LogWt;
+    m_pMiarex->m_pCurPlane = nullptr;
+    m_pMiarex->m_pCurWPolar = nullptr;
+    m_pMiarex->m_pCurPOpp = nullptr;
 
+    LogWt *pLogWidget = new LogWt;
     if(bShowLog)
     {
-        m_pLogWt->setCancelButton(true);
-        connect(m_pScriptExecutor,      SIGNAL(doneScript()),                          SLOT(onDoneScript()));
-        connect(m_pScriptExecutor,      SIGNAL(msgUpdate(QString)), m_pLogWt,          SLOT(onUpdate(QString)), static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
-        connect(m_pLogWt->ctrlButton(), SIGNAL(clicked(bool)),      m_pScriptExecutor, SLOT(onCancel()));
-        m_pLogWt->show();
+        pLogWidget->setCancelButton(true);
+        connect(&scriptexecutor,          SIGNAL(msgUpdate(QString)), pLogWidget,      SLOT(onUpdate(QString)), static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
+        connect(pLogWidget->ctrlButton(), SIGNAL(clicked(bool)),      &scriptexecutor, SLOT(onCancel()));
+        pLogWidget->show();
     }
 
     if(bShowProgressStdIO)
     {
         //output log messages to the console
-        m_pScriptExecutor->setStdOutStream(true);
+        scriptexecutor.setStdOutStream(true);
     }
-
 
     QFileInfo fi(XmlScriptName);
     if(!fi.exists())
@@ -5879,51 +5871,44 @@ void MainFrame::executeScript(const QString &XmlScriptName, bool bShowProgressSt
         return;
     }
 
-    if(!m_pScriptExecutor->readScript(fi.filePath()))
+    if(!scriptexecutor.readScript(fi.filePath()))
     {
         QString strange("Error reading script... aborting\n");
-        if(bShowProgressStdIO) m_pScriptExecutor->traceLog(strange);
-        else m_pLogWt->onUpdate(strange);
-        return;
+        if(bShowProgressStdIO) scriptexecutor.traceLog(strange);
+        else pLogWidget->onUpdate(strange);
     }
+    else
+    {
+        scriptexecutor.runScript();
 
-    m_pScriptExecutor->runScript();
-}
+        addRecentFile(scriptexecutor.projectFilePathName());
 
+        bool bCSV = scriptexecutor.bCSVOutput();
+        if(scriptexecutor.outputPolarBin()) onMakePlrFiles(scriptexecutor.foilPolarBinOutputDirPath());
 
-void MainFrame::onDoneScript()
-{
-    addRecentFile(m_pScriptExecutor->projectFilePathName());
+        xfl::enumTextFileType exporttype = bCSV ? xfl::CSV : xfl::TXT;
+        if(scriptexecutor.outputPolarText()) m_pXDirect->onExportAllPolarsTxt(scriptexecutor.foilPolarTextOutputDirPath(), exporttype);
+        if(scriptexecutor.makeProjectFile()) onSaveProjectAs(scriptexecutor.projectFilePathName());
 
-    bool bCSV = m_pScriptExecutor->bCSVOutput();
-    if(m_pScriptExecutor->outputPolarBin()) onMakePlrFiles(m_pScriptExecutor->foilPolarBinOutputDirPath());
-
-    xfl::enumTextFileType exporttype = bCSV ? xfl::CSV : xfl::TXT;
-    if(m_pScriptExecutor->outputPolarText()) m_pXDirect->onExportAllPolarsTxt(m_pScriptExecutor->foilPolarTextOutputDirPath(), exporttype);
-    if(m_pScriptExecutor->makeProjectFile()) onSaveProjectAs(m_pScriptExecutor->projectFilePathName());
-
-    disconnect(m_pScriptExecutor, nullptr, nullptr, nullptr);
-    m_pScriptExecutor->closeLogFile();
-
-    m_pLogWt->setFinished(true);
+        disconnect(&scriptexecutor, SIGNAL(msgUpdate(QString)), nullptr, nullptr);
+        scriptexecutor.closeLogFile();
+    }
+    pLogWidget->setFinished(true);
 
     // duplicate the log file in the temp directory
     QString projectLogFileName = QDir::tempPath() + "/xfl_"+QTime::currentTime().toString("hhmmss")+".log";
-    QFile::copy(m_pScriptExecutor->logFileName(), projectLogFileName);
+    QFile::copy(scriptexecutor.logFileName(), projectLogFileName);
 
     if(!m_pMiarex->curPlane())
     {
         m_iApp=xfl::XFOILANALYSIS;
         onXDirect();
     }
-
-    delete m_pScriptExecutor;
-    m_pScriptExecutor = nullptr;
 }
 
 
 /** Make one .plr file for each foil and save it to the path name*/
-void MainFrame::onMakePlrFiles(QString const pathname) const
+void MainFrame::onMakePlrFiles(QString const &pathname) const
 {
     QFile XFile;
     QString fileName;

@@ -131,9 +131,9 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
 
     int OGLversion = -1;
     bool bScript=false, bShowProgress=false;
-    QString scriptPathName;
+    QString ScriptPathName;
 
-    parseCmdLine(*this, scriptPathName, bScript, bShowProgress, OGLversion);
+    parseCmdLine(*this, ScriptPathName, bScript, bShowProgress, OGLversion);
 
     QPixmap pixmap;
     pixmap.load(":/images/splash.png");
@@ -161,7 +161,7 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
 
     if(bScript)
     {
-        pMainFrame->executeScript(scriptPathName, bShowProgress);
+        pMainFrame->executeScript(ScriptPathName, bShowProgress);
         m_bDone = true;
         return;
     }
