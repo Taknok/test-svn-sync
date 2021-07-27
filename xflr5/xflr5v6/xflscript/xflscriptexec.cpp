@@ -1,7 +1,7 @@
 /****************************************************************************
 
-    XflScriptExec Class
-    Copyright (C) André Deperrois
+    xflScriptExec Class
+    Copyright (C) 2016-2016 André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -344,6 +344,7 @@ void XflScriptExec::onCancel()
     XFoilTask::cancelTask();
 
     traceLog("\n_____________Analysis cancellation request received_____________\n\n");
+    emit (cancelTask());
 }
 
 
@@ -412,6 +413,8 @@ bool XflScriptExec::runScript()
     }
     else traceLog("No Foil analysis requested\n\n");
 
+
+    traceLog("Finished script successfully\n");
     return true;
 }
 
@@ -444,8 +447,10 @@ void XflScriptExec::runFoilAnalyses()
     {
         XFoilTask *pXFoilTask = new XFoilTask(this);
 
-        FoilAnalysis &Analysis = m_FoilExecList[i];
+        //take the last analysis in the array
+         FoilAnalysis &Analysis = m_FoilExecList[i];
 
+        //initiate the task
         pXFoilTask->initializeTask(Analysis, true, true, false);
         if(Analysis.pPolar->polarType()<xfl::FIXEDAOAPOLAR)
             pXFoilTask->setSequence(true, Analysis.vMin, Analysis.vMax, Analysis.vInc);
@@ -459,13 +464,22 @@ void XflScriptExec::runFoilAnalyses()
 
         QThreadPool::globalInstance()->start(pXFoilTask);
     }
+
+    QThreadPool::globalInstance()->waitForDone();
+
+    // leave things as they were
+    XFoil::s_bCancel = false;
+    QThreadPool::globalInstance()->setMaxThreadCount(QThread::idealThreadCount());
+
+    if(m_bCancel) strong = "\n_____Foil analysis cancelled_____\n";
+    else          strong = "\n_____Foil analysis completed_____\n";
+    traceLog(strong);
 }
 
 
+/** Useless: thread does not exit the runFoilAnalyses() method until all tasks are done*/
 void XflScriptExec::customEvent(QEvent *pEvent)
 {
-    // When the execution reaches this point, we've crossed the thread boundary and are now
-    // executing in this object's thread
     if(pEvent->type() == XFOIL_END_TASK_EVENT)
     {
         // Now we can safely do something with our Qt objects.
@@ -476,19 +490,6 @@ void XflScriptExec::customEvent(QEvent *pEvent)
                 +(pXFEvent->polar())->polarName()+"\n";
 
         traceLog(str);
-        if(m_nTaskDone==m_FoilExecList.size())
-        {
-            // leave things as they were
-            XFoil::s_bCancel = false;
-            QThreadPool::globalInstance()->setMaxThreadCount(QThread::idealThreadCount());
-
-            QString strong;
-            if(m_bCancel) strong = "\n_____Foil analysis cancelled_____\n";
-            else          strong = "\n_____Foil analysis completed_____\n";
-            traceLog(strong);
-
-            emit doneScript();
-        }
     }
     else if(pEvent->type() == XFOIL_END_OPP_EVENT)
     {

@@ -37,7 +37,7 @@ struct FoilAnalysis;
 
 class XflScriptExec : public QObject
 {
-    Q_OBJECT
+        Q_OBJECT
     public:
         XflScriptExec(MainFrame *pMainFrame);
         ~XflScriptExec() override;
@@ -67,15 +67,15 @@ class XflScriptExec : public QObject
         QString logFileName() const {return m_LogFileName;}
 
     private:
-        Polar *makePolarFromXml(QString pathName);
+        Polar* makePolarFromXml(QString pathName);
         bool makeExportDirectories();
         bool makeFoils();
         void makeFoilAnalysisList();
         void runFoilAnalyses();
 
     signals:
-        void msgUpdate(QString const &msg) const;
-        void doneScript() const;
+        void msgUpdate(const QString &msg) const;
+        void cancelTask() const;
 
     public slots:
         void onCancel();

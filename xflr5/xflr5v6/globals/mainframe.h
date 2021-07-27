@@ -64,20 +64,10 @@ class XDirectTileWidget;
 class XInverse;
 class gl3dMiarexView;
 class inverseviewwt;
-class XflScriptExec;
-class LogWt;
 
 /**
 *@class MainFrame
 *@brief The class associated to the application's main window.
-
-  The class fills many functions:
-  - it creates the child windows and toolbars of the application
-  - it manages the loading and saving of settings
-  - it stores and manages the arrays of data as member variables
-  - it manages the load & save operations of project files
-  
-  This class will remain only partially documented.
 */
 class MainFrame : public QMainWindow
 {
@@ -126,18 +116,17 @@ class MainFrame : public QMainWindow
 
     private slots:
         bool onSaveProjectAs();
-        bool onSaveProjectAs(const QString pathName);
+        bool onSaveProjectAs(QString const &pathName);
         void aboutQt();
         void aboutXFLR5();
         void onCurGraphSettings();
-        void onDoneScript();
         void onExecuteScript();
         void onExportCurGraph();
         void onHighlightOperatingPoint();
         void onInsertProject();
         void onLoadFile();
         void onLogFile();
-        void onMakePlrFiles(QString const pathname) const;
+        void onMakePlrFiles(const QString &pathname) const;
         void onManageFoils();
         void onNewProject();
         void onOpenGLInfo();
@@ -402,8 +391,6 @@ class MainFrame : public QMainWindow
         xfl::enumImageFormat m_ImageFormat;   /**< The index of the type of image file which should be used. */
         QTimer *m_pSaveTimer;          /**< The timer which triggers the autosaving of the project at given intervals */
 
-        XflScriptExec *m_pScriptExecutor;
-        QPointer<LogWt> m_pLogWt;
 
     public:
         static bool s_bOpenGL;
