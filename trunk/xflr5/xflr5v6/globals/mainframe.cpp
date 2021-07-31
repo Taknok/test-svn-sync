@@ -193,7 +193,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
     QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #elif defined Q_OS_LINUX
-    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5v649");
 #else
     QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
@@ -3220,7 +3220,7 @@ bool MainFrame::loadSettings()
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
     QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #elif defined Q_OS_LINUX
-    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5v649");
 #else
     QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
@@ -3785,7 +3785,7 @@ void MainFrame::onResetSettings()
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
         QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #elif defined Q_OS_LINUX
-        QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+        QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5v649");
 #else
         QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
@@ -4485,7 +4485,7 @@ void MainFrame::saveSettings()
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
     QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #elif defined Q_OS_LINUX
-    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5v649");
 #else
     QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
@@ -4847,7 +4847,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
                 pWPolar = Objects3d::getWPolar(pPlane, pPOpp->polarName());
 
                 // clean up : the project may be carrying useless PlaneOpps due to past programming errors
-                if(pPlane && pWPolar) Objects3d::appendPlaneOpp(pPOpp);
+                if(pPlane && pWPolar) Objects3d::insertPOpp(pPOpp);
                 else
                 {
                 }
@@ -5061,7 +5061,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
             {
                 //create a plane with this wing
                 pPlane = new Plane();
-                pPlane->setName(pWing->wingName());
+                pPlane->setName(pWing->name());
                 pPlane->m_Wing[0].duplicate(pWing);
                 pPlane->setBody(nullptr);
                 pPlane->setWings(false, false, false);

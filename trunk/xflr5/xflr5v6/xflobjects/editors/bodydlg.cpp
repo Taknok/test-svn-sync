@@ -391,8 +391,8 @@ void BodyDlg::onBodyName()
 {
     if(m_pBody)
     {
-        m_pBody->m_BodyName = m_pleBodyName->text();
-        m_pBody->m_BodyDescription = m_pteBodyDescription->toPlainText();
+        m_pBody->m_Name = m_pleBodyName->text();
+        m_pBody->m_Description = m_pteBodyDescription->toPlainText();
     }
 }
 
@@ -446,7 +446,7 @@ void BodyDlg::onExportBodyXML()
     QString filter = "XML file (*.xml)";
     QString FileName, strong;
 
-    strong = m_pBody->bodyName();
+    strong = m_pBody->name();
     FileName = QFileDialog::getSaveFileName(this, tr("Export plane definition to xml file"),
                                             xfl::s_LastDirName +'/'+strong,
                                             filter,
@@ -478,7 +478,7 @@ void BodyDlg::onExportBodyDef()
 
     QString FileName;
 
-    FileName = m_pBody->m_BodyName;
+    FileName = m_pBody->m_Name;
     FileName.replace("/", " ");
 
     FileName = QFileDialog::getSaveFileName(this, QObject::tr("Export Body Definition"),
@@ -506,7 +506,7 @@ void BodyDlg::onExportBodyGeom()
 
     Units::getLengthUnitLabel(LengthUnit);
 
-    FileName = m_pBody->m_BodyName;
+    FileName = m_pBody->m_Name;
     FileName.replace("/", " ");
 
     int type = 1;
@@ -965,7 +965,7 @@ void BodyDlg::reject()
 
     if(m_bChanged)
     {
-        m_pBody->m_BodyName = m_pleBodyName->text();
+        m_pBody->m_Name = m_pleBodyName->text();
 
         int res = QMessageBox::question(this, tr("Body Dlg Exit"), tr("Save the Body ?"), QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
         if (QMessageBox::No == res)
@@ -1059,7 +1059,7 @@ void BodyDlg::setControls()
     if(m_pBody)
     {
         m_pslPanelBunch->setSliderPosition(int(m_pBody->m_Bunch*100.0));
-        m_pcbBodyColor->setColor(m_pBody->m_BodyColor);
+        m_pcbBodyColor->setColor(m_pBody->m_Color);
 
         m_pdeNXPanels->setValue(m_pBody->m_nxPanels);
         m_pdeNHoopPanels->setValue(m_pBody->m_nhPanels);
@@ -1103,7 +1103,7 @@ bool BodyDlg::setBody(Body *pBody)
     fillFrameDataTable();
     fillPointDataTable();
 
-    m_pleBodyName->setText(m_pBody->m_BodyName);
+    m_pleBodyName->setText(m_pBody->m_Name);
 
     takePicture();
 

@@ -85,7 +85,7 @@ class Body
 
         void clearPointMasses() {m_PointMass.clear();}
         void computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
-                         double &GCm, double &GRm, double &GYm, double &Alpha, Vector3d &CoG) const;
+                         double &GCm, double &GRm, double &GYm, double &Alpha, const Vector3d &CoG, const Panel *pPanel) const;
         void duplicate(const Body *pBody);
         void getPoint(double u, double v, bool bRight, Vector3d &Pt) const;
 
@@ -122,14 +122,14 @@ class Body
 
         Vector3d CoG() {return m_CoG;}
 
-        void setName(QString const&name){m_BodyName=name;}
-        void setDescription(QString const&des){m_BodyDescription=des;}
-        QString const &bodyName() const {return m_BodyName;}
-        QString const &bodyDescription() const {return m_BodyDescription;}
+        void setName(QString const&name){m_Name=name;}
+        void setDescription(QString const&des){m_Description=des;}
+        QString const &name() const {return m_Name;}
+        QString const &description() const {return m_Description;}
 
-        QColor const &color() const {return m_BodyColor;}
-        QColor &color() {return m_BodyColor;}
-        void setColor(QColor const&color) {m_BodyColor=color;}
+        QColor const &color() const {return m_Color;}
+        QColor &color() {return m_Color;}
+        void setColor(QColor const&color) {m_Color=color;}
 
         NURBSSurface& nurbs() {return m_SplineSurface;}
 
@@ -163,10 +163,14 @@ class Body
         int makePanels(int nFirst, Vector3d const &pos, QVector<Panel> &panels, QVector<Vector3d> &nodes);
         int nPanels() const {return m_NElements;}
 
+        void setPanelCoun(int n) {m_NElements=n;}
+        void setFirstPanelIndex(int i) {m_FirstPanelIndex=i;}
+        int firstPanelIndex() const {return m_FirstPanelIndex;}
+
         //____________________VARIABLES_____________________________________________
 
-        QString m_BodyName;                       /**< the Body's name, used as its reference */
-        QString m_BodyDescription;                /**< a free description for the Body */
+        QString m_Name;                       /**< the Body's name, used as its reference */
+        QString m_Description;                /**< a free description for the Body */
 
         NURBSSurface m_SplineSurface;             /**< the spline surface which defines the left (port) side of the body */
 
@@ -177,10 +181,9 @@ class Body
         int m_NElements;                          /**< the number of mesh elements for this Body object = m_nxPanels * m_nhPanels *2 */
         int m_nxPanels;                           /**< For a NURBS body, the number of mesh elements in the direction of the x-axis */
         int m_nhPanels;                           /**< For a NURBS body, the number of mesh elements in the hoop direction */
+        int m_FirstPanelIndex;                          /**< the index of this wing's first panel in the array of panels */
 
-        int m_BodyStyle;                          /**< the index of the spline's style */
-        int m_BodyWidth;                          /**< the width of the spline */
-        QColor m_BodyColor;                       /**< the Body's display color */
+        QColor m_Color;                       /**< the Body's display color */
 
         double m_Bunch;                            /**< a bunch parameter to set the density of the points of the NURBS surface; unused */
 
@@ -199,7 +202,7 @@ class Body
         QVector<double> m_XPanelPos;
 
 
-        Panel *m_pBodyPanel;                       /** A pointer to the first body panel in the array */
+
 
         //allocate temporary variables to
         //avoid lengthy memory allocation times on the stack

@@ -845,7 +845,7 @@ PlaneOpp* LLTAnalysis::createPlaneOpp(double QInf, double Alpha, bool bWingOut)
     {
         pNewPOpp->m_Alpha               = Alpha;
         pNewPOpp->m_QInf                = QInf;
-        pNewPOpp->m_NPanels             = m_pWing->m_MatSize;
+        pNewPOpp->m_NPanels             = m_pWing->m_nPanels;
         pNewPOpp->m_bOut                = m_bWingOut;
         pNewPOpp->m_CL                  = m_CL;
         pNewPOpp->m_ICD                 = m_CDi;

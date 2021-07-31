@@ -663,7 +663,7 @@ void EditBodyDlg::fillBodyTreeView()
 
     m_pStruct->expand(m_pModel->indexFromItem(bodyFolder.first()));
 
-    dataItem = prepareRow("", "Name", m_pBody->bodyName());
+    dataItem = prepareRow("", "Name", m_pBody->name());
     bodyFolder.first()->appendRow(dataItem);
 
     dataItem = prepareRow("", "Type", bodyPanelType(m_pBody->bodyType()));
@@ -1319,7 +1319,7 @@ void EditBodyDlg::onExportBodyGeom()
 
     Units::getLengthUnitLabel(LengthUnit);
 
-    FileName = m_pBody->m_BodyName;
+    FileName = m_pBody->m_Name;
     FileName.replace("/", " ");
 
     int type = 1;
@@ -1354,7 +1354,7 @@ void EditBodyDlg::onExportBodyXML()
     QString filter = "XML file (*.xml)";
     QString FileName, strong;
 
-    strong = m_pBody->bodyName();
+    strong = m_pBody->name();
     FileName = QFileDialog::getSaveFileName(this, tr("Export plane definition to xml file"),
                                             xfl::s_LastDirName +'/'+strong,
                                             filter,

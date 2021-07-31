@@ -175,21 +175,29 @@ void gl3dMiarexView::glRenderView()
 
     if(m_bVLMPanels)
     {
-        if(!pWPolar || s_pMiarex->m_pCurWPolar->isLLTMethod())
+        if(pWPolar && pWPolar->isLLTMethod())
         {
-            for(int iw=0; iw<MAXWINGS; iw++)
-            {
-                if(s_pMiarex->m_pCurPlane->wing(iw))
-                    paintEditWingMesh(m_vboEditWingMesh[iw]);
-            }
-//                paintEditBodyMesh(s_pMiarex->m_pCurPlane->body());
-            if(s_pMiarex->m_pCurPlane->body())
-                paintMesh(m_vboEditBodyMesh, true);
+            // no mesh
         }
         else
         {
-            bool bBackground = (!s_pMiarex->m_pCurPOpp || !s_pMiarex->m_b3DCp);
-            paintMesh(m_vboMesh, bBackground);
+            if(!pWPolar)
+            {
+                // display something
+                for(int iw=0; iw<MAXWINGS; iw++)
+                {
+                    if(s_pMiarex->m_pCurPlane->wing(iw))
+                        paintEditWingMesh(m_vboEditWingMesh[iw]);
+                }
+
+                if(s_pMiarex->m_pCurPlane->body())
+                    paintMesh(m_vboEditBodyMesh, true);
+            }
+            else
+            {
+                bool bBackground = (!s_pMiarex->m_pCurPOpp || !s_pMiarex->m_b3DCp);
+                paintMesh(m_vboMesh, bBackground);
+            }
         }
     }
 
@@ -224,7 +232,7 @@ void gl3dMiarexView::glRenderView()
 
     for(int iw=0; iw<MAXWINGS; iw++)
     {
-        Wing * pWing = s_pMiarex->m_pCurPlane->wing(iw);
+        Wing const *pWing = s_pMiarex->m_pCurPlane->wing(iw);
         if(pWing)
         {
             if(m_bSurfaces)
@@ -237,7 +245,7 @@ void gl3dMiarexView::glRenderView()
         }
     }
 
-    Body const*pBody=s_pMiarex->m_pCurPlane->body();
+    Body const *pBody = s_pMiarex->m_pCurPlane->body();
     if(pBody)
     {
         if(m_bSurfaces)
@@ -476,26 +484,28 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
             Wing const *pWing = PlaneWing[iWing];
 
             int nVertex = 0;
-            for (int p=0; p<pWing->m_MatSize; p++)
+            for (int p=0; p<pWing->nPanels(); p++)
             {
                 bFound = false;
+                int iPanel = pWing->firstPanelIndex() + p;
+                Panel const &panel = s_pMiarex->m_theTask.m_Panel.at(iPanel);
 
-                if(GL3DScales::s_pos==0 && pWing->m_pWingPanel[p].m_bIsLeading && pWing->m_pWingPanel[p].m_Pos<=xfl::MIDSURFACE)
+                if(GL3DScales::s_pos==0 && panel.m_bIsLeading && panel.m_Pos<=xfl::MIDSURFACE)
                 {
-                    C.set(pNode[pWing->m_pWingPanel[p].m_iLA]);
-                    D.set(pNode[pWing->m_pWingPanel[p].m_iLB]);
+                    C.set(pNode[panel.m_iLA]);
+                    D.set(pNode[panel.m_iLB]);
                     bFound = true;
                 }
-                else if(GL3DScales::s_pos==1 && pWing->m_pWingPanel[p].m_bIsTrailing && pWing->m_pWingPanel[p].m_Pos<=xfl::MIDSURFACE)
+                else if(GL3DScales::s_pos==1 && panel.m_bIsTrailing && panel.m_Pos<=xfl::MIDSURFACE)
                 {
-                    C.set(pNode[pWing->m_pWingPanel[p].m_iTA]);
-                    D.set(pNode[pWing->m_pWingPanel[p].m_iTB]);
+                    C.set(pNode[panel.m_iTA]);
+                    D.set(pNode[panel.m_iTB]);
                     bFound = true;
                 }
-                else if(GL3DScales::s_pos==2 && pWing->m_pWingPanel[p].m_bIsLeading && pWing->m_pWingPanel[p].m_Pos<=xfl::MIDSURFACE)
+                else if(GL3DScales::s_pos==2 && panel.m_bIsLeading && panel.m_Pos<=xfl::MIDSURFACE)
                 {
-                    C.set(0.0, pNode[pWing->m_pWingPanel[p].m_iLA].y, 0.0);
-                    D.set(0.0, pNode[pWing->m_pWingPanel[p].m_iLB].y, 0.0);
+                    C.set(0.0, pNode[panel.m_iLA].y, 0.0);
+                    D.set(0.0, pNode[panel.m_iLB].y, 0.0);
                     bFound = true;
                 }
 
@@ -515,21 +525,29 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
                     if(GL3DScales::s_pos==1 && qAbs(GL3DScales::s_XOffset)<0.001 && qAbs(GL3DScales::s_ZOffset)<0.001)
                     {
                         //apply Kutta's condition : initial speed vector is parallel to the T.E. bisector angle
-                        VA.set(pNode[pWing->m_pWingPanel[p].m_iTA] - pNode[pWing->m_pWingPanel[p].m_iLA]);
+                        VA.set(pNode[panel.m_iTA] - pNode[panel.m_iLA]);
                         VA. normalize();
-                        VB.set(pNode[pWing->m_pWingPanel[p].m_iTB] - pNode[pWing->m_pWingPanel[p].m_iLB]);
+                        VB.set(pNode[panel.m_iTB] - pNode[panel.m_iLB]);
                         VB. normalize();
-                        if(pWing->m_pWingPanel[p].m_Pos==xfl::BOTSURFACE)
+                        if(panel.m_Pos==xfl::BOTSURFACE)
                         {
                             //corresponding upper panel is the next one coming up
-                            for (i=p; i<pWing->m_MatSize;i++)
-                                if(pWing->m_pWingPanel[i].m_Pos>xfl::MIDSURFACE && pWing->m_pWingPanel[i].m_bIsTrailing) break;
-                            VAT = pNode[pWing->m_pWingPanel[i].m_iTA] - pNode[pWing->m_pWingPanel[i].m_iLA];
+                            int ip = 0;
+                            for (i=p; i<pWing->nPanels(); i++)
+                            {
+                                ip = pWing->firstPanelIndex() + i;
+                                Panel const &panel_i = s_pMiarex->m_theTask.m_Panel.at(ip);
+                                if(panel_i.m_Pos>xfl::MIDSURFACE && panel_i.m_bIsTrailing) break;
+                            }
+
+                            Panel const &panel_i = s_pMiarex->m_theTask.m_Panel.at(ip);
+
+                            VAT = pNode[panel_i.m_iTA] - pNode[panel_i.m_iLA];
                             VAT.normalize();
                             VA = VA+VAT;
                             VA.normalize();//VA is parallel to the bisector angle
 
-                            VBT = pNode[pWing->m_pWingPanel[i].m_iTB] - pNode[pWing->m_pWingPanel[i].m_iLB];
+                            VBT = pNode[panel_i.m_iTB] - pNode[panel_i.m_iLB];
                             VBT.normalize();
                             VB = VB+VBT;
                             VB.normalize();//VB is parallel to the bisector angle
@@ -617,7 +635,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
                 m++;
             }
 
-            p0+=pWing->m_MatSize;
+            p0+=pWing->m_nPanels;
         }
     }
 
@@ -788,7 +806,7 @@ void gl3dMiarexView::glMakeTransitions(int iWing, Wing const *pWing, WPolar cons
             int m = 0;
             for(int j=0; j<pWing->m_Surface.size(); j++)
             {
-                for(int k=0; k<pWing->surface(j)->NYPanels(); k++)
+                for(int k=0; k<pWing->surface(j)->nYPanels(); k++)
                 {
                     double yrel = pWing->yrel(pWOpp->m_SpanPos[m]);
                     pWing->surface(j)->getSurfacePoint(pWOpp->m_XTrTop[m],pWOpp->m_XTrTop[m],yrel,xfl::TOPSURFACE,Pt,N);
@@ -805,7 +823,7 @@ void gl3dMiarexView::glMakeTransitions(int iWing, Wing const *pWing, WPolar cons
             int m = 0;
             for(int j=0; j<pWing->m_Surface.size(); j++)
             {
-                for(int k=0; k<pWing->surface(j)->NYPanels(); k++)
+                for(int k=0; k<pWing->surface(j)->nYPanels(); k++)
                 {
                     double yrel = pWing->yrel(pWOpp->m_SpanPos[m]);
                     pWing->surface(j)->getSurfacePoint(pWOpp->m_XTrTop[m],pWOpp->m_XTrTop[m],yrel,xfl::TOPSURFACE,Pt,N);
@@ -836,7 +854,7 @@ void gl3dMiarexView::glMakeTransitions(int iWing, Wing const *pWing, WPolar cons
             int m = 0;
             for(int j=0; j<pWing->m_Surface.size(); j++)
             {
-                for(int k=0; k<pWing->surface(j)->NYPanels(); k++)
+                for(int k=0; k<pWing->surface(j)->nYPanels(); k++)
                 {
                     double yrel = pWing->yrel(pWOpp->m_SpanPos[m]);
                     pWing->surface(j)->getSurfacePoint(pWOpp->m_XTrBot[m],pWOpp->m_XTrBot[m],yrel,xfl::BOTSURFACE,Pt,N);
@@ -852,7 +870,7 @@ void gl3dMiarexView::glMakeTransitions(int iWing, Wing const *pWing, WPolar cons
             int m = 0;
             for(int j=0; j<pWing->m_Surface.size(); j++)
             {
-                for(int k=0; k<pWing->surface(j)->NYPanels(); k++)
+                for(int k=0; k<pWing->surface(j)->nYPanels(); k++)
                 {
                     double yrel = pWing->yrel(pWOpp->m_SpanPos[m]);
                     pWing->surface(j)->getSurfacePoint(pWOpp->m_XTrBot[m],pWOpp->m_XTrBot[m],yrel,xfl::BOTSURFACE,Pt,N);
@@ -1204,7 +1222,7 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, const Wing *pWing, const WPolar 
         //lift lines
         for (j=0; j<pWing->m_Surface.size(); j++)
         {
-            for (k=0; k< pWing->surface(j)->NYPanels(); k++)
+            for (k=0; k< pWing->surface(j)->nYPanels(); k++)
             {
                 pWing->surface(j)->getLeadingPt(k, C);
                 amp = float(pWing->surface(j)->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord);
@@ -1242,7 +1260,7 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, const Wing *pWing, const WPolar 
                 pLiftVertexArray[iv++] = C.zf() + pWOpp->m_F[i].zf()*amp;
             }*/
 
-            for (k=0; k< pWing->surface(j)->NYPanels(); k++)
+            for (k=0; k< pWing->surface(j)->nYPanels(); k++)
             {
                 pWing->surface(j)->getLeadingPt(k, C);
                 amp = float(pWing->surface(j)->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord);
@@ -1413,7 +1431,7 @@ void gl3dMiarexView::glMakeDownwash(int iWing, const Wing *pWing, const WPolar *
         iv = 0;
         for (j=0; j<pWing->m_Surface.size(); j++)
         {
-            for (k=0; k< pWing->surface(j)->NYPanels(); k++)
+            for (k=0; k< pWing->surface(j)->nYPanels(); k++)
             {
                 //                m_pSurface[j+surf0]->GetTrailingPt(k, C);
                 pWing->surface(j)->getTrailingPt(k, C);
@@ -1573,7 +1591,7 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
         for (j=0; j<pWing->m_Surface.size(); j++)
         {
             //All surfaces
-            for (k=0; k< pWing->surface(j)->NYPanels(); k++)
+            for (k=0; k< pWing->surface(j)->nYPanels(); k++)
             {
                 pWing->surface(j)->getTrailingPt(k, C);
                 amp1 = q0*float(pWOpp->m_ICd[i]*pWOpp->m_Chord[i]/pWing->m_MAChord*s_DragScale)/coef;
@@ -1619,7 +1637,7 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
                 i = 0;
                 for (j=0; j<pWing->m_Surface.size(); j++)
                 {
-                    for (k=0; k< pWing->surface(j)->NYPanels(); k++)
+                    for (k=0; k< pWing->surface(j)->nYPanels(); k++)
                     {
                         pWing->surface(j)->getTrailingPt(k, C);
                         amp = q0*float(pWOpp->m_ICd[i]*pWOpp->m_Chord[i]/pWing->m_MAChord);
@@ -1636,7 +1654,7 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
                 i = 0;
                 for (j=0; j<pWing->m_Surface.size(); j++)
                 {
-                    for (k=0; k< pWing->surface(j)->NYPanels(); k++)
+                    for (k=0; k< pWing->surface(j)->nYPanels(); k++)
                     {
                         pWing->surface(j)->getTrailingPt(k, C);
                         amp=0.0;
@@ -1661,7 +1679,7 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
                 i = 0;
                 for (j=0; j<pWing->m_Surface.size(); j++)
                 {
-                    for (k=0; k< pWing->surface(j)->NYPanels(); k++)
+                    for (k=0; k< pWing->surface(j)->nYPanels(); k++)
                     {
                         pWing->surface(j)->getTrailingPt(k, C);
                         amp = q0*float(pWOpp->m_ICd[i]*pWOpp->m_Chord[i]/pWing->m_MAChord);
@@ -1678,7 +1696,7 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
                 i = 0;
                 for (j=0; j<pWing->m_Surface.size(); j++)
                 {
-                    for (k=0; k< pWing->surface(j)->NYPanels(); k++)
+                    for (k=0; k< pWing->surface(j)->nYPanels(); k++)
                     {
                         pWing->surface(j)->getTrailingPt(k, C);
                         amp=0.0;

@@ -107,14 +107,14 @@ class Wing
 
         void panelComputeOnBody(double QInf, double Alpha, double *Cp, const double *Gamma, double &XCP, double &YCP, double &ZCP,
                                 double &GCm, double &VCm, double &ICm, double &GRm, double &GYm, double &VYm, double &IYm,
-                                const WPolar *pWPolar, const Vector3d &CoG);
+                                const WPolar *pWPolar, const Vector3d &CoG, const Panel *pPanel);
 
 
         void panelComputeViscous(double QInf, WPolar const*pWPolar, double &WingVDrag, bool bViscous, QString &OutString);
-        void panelComputeBending(bool bThinSurface);
+        void panelComputeBending(const Panel *pPanel, bool bThinSurface);
 
-        bool isWingPanel(int nPanel);
-        bool isWingNode(int nNode);
+        bool isWingPanel(int nPanel, Panel const *pPanel);
+        bool isWingNode(int nNode, Panel const *pPanel);
 
         void getFoils(Foil **pFoil0, Foil **pFoil1, double y, double &t);
         void duplicate(const Wing *pWing);
@@ -229,11 +229,11 @@ class Wing
 
         Vector3d CoG() const {return m_CoG;}
 
-        QString const &wingName() const {return m_WingName;}
-        void setWingName(QString name) {m_WingName=name;}
+        QString const &name() const {return m_Name;}
+        void setWingName(QString name) {m_Name=name;}
 
-        QString const& wingDescription() const {return m_WingDescription;}
-        void setWingDescription(QString desc) {m_WingDescription=desc;}
+        QString const& wingDescription() const {return m_Description;}
+        void setWingDescription(QString desc) {m_Description=desc;}
 
         void setRightFoilName(int iSec, QString foilname) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_RightFoilName=foilname;}
         void setLeftFoilName( int iSec, QString foilname) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec].m_LeftFoilName=foilname;}
@@ -265,18 +265,23 @@ class Wing
         Surface const *surface(int is) const {if (is>=0 && is<m_Surface.size()) return &m_Surface.at(is); else return nullptr;}
         Surface *surface(int is) {if (is>=0 && is<m_Surface.size()) return &m_Surface[is]; else return nullptr;}
 
+        void setPanelCoun(int n) {m_nPanels=n;}
+        void setFirstPanelIndex(int i) {m_FirstPanelIndex=i;}
+        int firstPanelIndex() const {return m_FirstPanelIndex;}
+        int nPanels() const {return m_nPanels;}
+
         static double getInterpolatedVariable(int nVar, Foil *pFoil0, Foil *pFoil1, double Re, double Cl, double Tau, bool &bOutRe, bool &bError);
         static double getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bool &bOutRe, bool &bError);
 
     //__________________________Variables_______________________
     private:
-        QString m_WingName;                           /**< the Wing's name; this name is used to identify the wing and as a reference for child Polar and WingOpp objects. */
-        QString m_WingDescription;                 /**< a text field for the description of the Wing */
+        QString m_Name;                           /**< the Wing's name; this name is used to identify the wing and as a reference for child Polar and WingOpp objects. */
+        QString m_Description;                 /**< a text field for the description of the Wing */
         QColor m_Color;                        /**< the Wing's display color */
 
         xfl::enumWingType m_WingType;  /** Defines the type of wing on the plane : main, second, elevator, fin, other */
 
-        static double s_MinPanelSize;      /**< wing minimum panel size ; panels of less length are ignored */
+        static double s_MinPanelSize;      /**< wing minimum panel size; panels of less length are ignored */
 
         bool m_bWingOut;                 /**< true if the wing OpPoint is outside the flight envelope of the available Type 1 polar mesh */
         bool m_bSymetric;                 /**< true if the wing's geometry is symetric */
@@ -338,10 +343,10 @@ class Wing
         Vector3d m_F[MAXSPANSTATIONS];              /**< the lift vector at span stations */
 
     public:
-        QVector<WingSection> m_Section;           /**< the array of wing sections. A WingSection extends between a foil and the next. */
+        QVector<WingSection> m_Section;            /**< the array of wing sections. A WingSection extends between a foil and the next. */
         QVector<PointMass> m_PointMass;            /**< the array of PointMass objects associated to this Wing object*/
 
-        QVector<Surface> m_Surface;               /**< the array of Surface objects associated to the wing */
+        QVector<Surface> m_Surface;                /**< the array of Surface objects associated to the wing */
 
         double m_MAChord;                          /**< the wing's mean aerodynamic chord */
         double m_PlanformSpan;                     /**< the planform span, i.e. if the dihedral was 0 at each junction */
@@ -354,10 +359,10 @@ class Wing
         double m_CoGIyy;                           /**< the Ixx component of the inertia tensor, calculated at the CoG */
         double m_CoGIzz;                           /**< the Ixx component of the inertia tensor, calculated at the CoG */
         double m_CoGIxz;                           /**< the Ixx component of the inertia tensor, calculated at the CoG */
-        Vector3d m_CoG;                             /**< the position of the CoG */
+        Vector3d m_CoG;                            /**< the position of the CoG */
 
-        int m_MatSize;                             /**< the number of mesh panels on this Wing; dependant on the polar type */
-        Panel *m_pWingPanel;                       /**< a pointer to the first panel of this wing in the array of panels */
+        int m_FirstPanelIndex;                          /**< the index of this wing's first panel in the array of panels */
+        int m_nPanels;                             /**< the number of mesh panels on this Wing; dependant on the polar type */
 
         static QVector<Foil*> *s_poaFoil;
         static QVector<Polar*> *s_poaPolar;

@@ -339,6 +339,7 @@ void PlaneTreeView::addPOpps(WPolar const *pWPolar)
     if(!pWPolar) return;
 
     bool bAdded(false);
+//    m_pModel->blockSignals(true);
 
     //find this polar's plane parent
     for(int ir=0; ir<m_pModel->rowCount(); ir++)
@@ -392,6 +393,8 @@ void PlaneTreeView::addPOpps(WPolar const *pWPolar)
         }
         if(bAdded) break;
     }
+
+//    m_pModel->blockSignals(false);
 
     setOverallCheckStatus();
 }

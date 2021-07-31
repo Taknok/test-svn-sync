@@ -80,7 +80,7 @@ void BodyLineWt::drawBodyLines()
     QPainter painter(this);
     painter.save();
 
-    QPen linePen(m_pBody->m_BodyColor);
+    QPen linePen(m_pBody->m_Color);
     linePen.setWidth(1);
     painter.setPen(linePen);
     linePen.setStyle(Qt::DashLine);
@@ -164,11 +164,11 @@ void BodyLineWt::drawBodyPoints()
         else if(m_pBody->m_iHighlightFrame==k)
         {
             pointPen.setWidth(4);
-            pointPen.setColor(m_pBody->m_BodyColor.lighter());
+            pointPen.setColor(m_pBody->m_Color.lighter());
         }
         else
         {
-            pointPen.setColor(m_pBody->m_BodyColor);
+            pointPen.setColor(m_pBody->m_Color);
             pointPen.setWidth(2);
         }
 

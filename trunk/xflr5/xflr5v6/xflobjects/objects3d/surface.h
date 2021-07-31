@@ -165,9 +165,9 @@ class Surface
         int innerSection() const {return m_innerSection;}
         int outerSection() const {return m_outerSection;}
 
-        int NXPanels() const {return m_NXPanels;}
-        int NYPanels() const {return m_NYPanels;}
-        int NXFlap() const {return m_NXFlap;}
+        int nXPanels() const {return m_NXPanels;}
+        int nYPanels() const {return m_NYPanels;}
+        int nXFlap() const {return m_NXFlap;}
 
         void setNElements(int n) {m_NElements=n;}
         int NElements() const {return m_NElements;}
@@ -175,8 +175,13 @@ class Surface
         Foil const *foilA() const {return m_pFoilA;}
         Foil const *foilB() const {return m_pFoilB;}
 
+        Vector3d const &normal() const {return m_Normal;}
+
+
         static void setPanelPointers(Panel *pPanel, Vector3d *pNode);
 
+
+    public:
         QVector<Vector3d> m_SideA;      /**< the array of panel points on the left foil's mid-line*/
         QVector<Vector3d> m_SideB;      /**< the array of panel points on the right foil's mid-line*/
 
@@ -184,7 +189,7 @@ class Surface
         Vector3d m_LB;              /**< the Surface's leading right point */
         Vector3d m_TA;              /**< the Surface's trailing left point */
         Vector3d m_TB;              /**< the Surface's trailing right point */
-        Vector3d Normal;            /**< the Surface's normal vector */
+        Vector3d m_Normal;            /**< the Surface's normal vector */
         Vector3d NormalA;           /**< the normal at the left tip, defined as the average of this Surface's normal and of the one adjacent on the left side, if any */
         Vector3d NormalB;           /**< the normal at the right tip, defined as the average of this Surface's normal and of the one adjacent on the right side, if any */
         double m_TwistA;           /**< the twist at side A in degrees */

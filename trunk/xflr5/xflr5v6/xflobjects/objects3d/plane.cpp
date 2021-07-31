@@ -33,15 +33,15 @@
 /** The public constructor. */
 Plane::Plane()
 {
-    m_Wing[0].m_WingName   = QObject::tr("Wing");
+    m_Wing[0].m_Name   = QObject::tr("Wing");
     m_Wing[0].setWingType(xfl::MAINWING);
     m_Wing[0].computeGeometry();
 
-    m_Wing[1].m_WingName   = QObject::tr("2nd Wing");
+    m_Wing[1].m_Name   = QObject::tr("2nd Wing");
     m_Wing[1].setWingType(xfl::SECONDWING);
     m_Wing[1].computeGeometry();
 
-    m_Wing[2].m_WingName    = QObject::tr("Elevator");
+    m_Wing[2].m_Name    = QObject::tr("Elevator");
     m_Wing[2].setWingType(xfl::ELEVATOR);
     m_Wing[2].m_bIsFin      = false;
     m_Wing[2].m_Section[0].m_Chord = 0.100;
@@ -58,7 +58,7 @@ Plane::Plane()
     m_Wing[2].m_Section[0].m_YPanelDist = xfl::UNIFORM;
     m_Wing[2].computeGeometry();
 
-    m_Wing[3].m_WingName    = QObject::tr("Fin");
+    m_Wing[3].m_Name    = QObject::tr("Fin");
     m_Wing[3].setWingType(xfl::FIN);
     m_Wing[3].m_bIsFin      = true;
     m_Wing[3].m_Section[0].m_Chord      = 0.100;
@@ -392,7 +392,7 @@ void Plane::setAutoBodyName()
     else
     {
         m_BodyName = m_Name+"_body";
-        m_Body.m_BodyName = m_Name+"_body";
+        m_Body.m_Name = m_Name+"_body";
     }
 }
 
@@ -447,10 +447,10 @@ void Plane::clearPointMasses()
 */
 void Plane::renameWings()
 {
-    m_Wing[0].m_WingName = QObject::tr("Main Wing");
-    m_Wing[1].m_WingName = QObject::tr("Second Wing2");
-    m_Wing[2].m_WingName = QObject::tr("Elevator");
-    m_Wing[3].m_WingName = QObject::tr("Fin");
+    m_Wing[0].m_Name = QObject::tr("Main Wing");
+    m_Wing[1].m_Name = QObject::tr("Second Wing2");
+    m_Wing[2].m_Name = QObject::tr("Elevator");
+    m_Wing[3].m_Name = QObject::tr("Fin");
 }
 
 

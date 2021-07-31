@@ -341,7 +341,7 @@ void InertiaDlg::initDialog()
         m_pdeVolumeMass->setValue(m_pWing->m_VolumeMass * Units::kgtoUnit()); //we only display half a wing, AVL way
         m_plabVolumeMassLabel->setText(tr("Wing Mass:"));
         m_ppbWingInertia->setEnabled(true);
-        setWindowTitle(tr("Inertia properties for ")+m_pWing->m_WingName);
+        setWindowTitle(tr("Inertia properties for ")+m_pWing->m_Name);
     }
     else if (m_pBody)
     {
@@ -351,7 +351,7 @@ void InertiaDlg::initDialog()
         m_pdeVolumeMass->setValue(m_pBody->m_VolumeMass * Units::kgtoUnit());
         m_plabVolumeMassLabel->setText(tr("Body Mass:"));
         m_ppbBodyInertia->setEnabled(true);
-        setWindowTitle(tr("Inertia properties for ")+m_pBody->m_BodyName);
+        setWindowTitle(tr("Inertia properties for ")+m_pBody->m_Name);
     }
     else if (m_pPlane)
     {
@@ -461,8 +461,8 @@ void InertiaDlg::onExportToAVL()
 
 
     if(m_pPlane)     FileName = m_pPlane->name();
-    else if(m_pWing) FileName = m_pWing->m_WingName;
-    else if(m_pBody) FileName = m_pBody->m_BodyName;
+    else if(m_pWing) FileName = m_pWing->m_Name;
+    else if(m_pBody) FileName = m_pBody->m_Name;
     FileName.replace("/", " ");
     FileName += ".mass";
     FileName = QFileDialog::getSaveFileName(this, tr("Export Mass Properties"), xfl::s_LastDirName + "/"+FileName,
@@ -488,8 +488,8 @@ void InertiaDlg::onExportToAVL()
     out << "#-------------------------------------------------\n";
     out << "#\n";
     if(m_pPlane)      out << "#   "+m_pPlane->name()+"\n";
-    else if(m_pWing)  out << "#   "+m_pWing->m_WingName+"\n";
-    else if(m_pBody)  out << "#   "+m_pBody->m_BodyName+"\n";
+    else if(m_pWing)  out << "#   "+m_pWing->m_Name+"\n";
+    else if(m_pBody)  out << "#   "+m_pBody->m_Name+"\n";
     out << "#\n";
     out << "#  Dimensional unit and parameter data.\n";
     out << "#  Mass & Inertia breakdown.\n";
@@ -570,7 +570,7 @@ void InertiaDlg::onExportToAVL()
                         .arg(0.0,10, 'g', 3)
                         .arg(CoGIxz/Iunit,10, 'g', 3)
                         .arg(0.0,10, 'g', 3);
-                strong += pWing[iw]->m_WingName;
+                strong += pWing[iw]->m_Name;
                 out << strong+"\n";
             }
         }

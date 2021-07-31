@@ -45,7 +45,7 @@ void Objects3d::addBody(Body *pBody)
     for(int ip=0; ip<s_oaPlane.size(); ip++)
     {
         Plane *pPlane = s_oaPlane.at(ip);
-        if(pPlane->m_BodyName==pBody->m_BodyName)
+        if(pPlane->m_BodyName==pBody->m_Name)
         {
             // duplicate the body - create one for each plane
             // no more bodies associated to multiple plane
@@ -402,7 +402,7 @@ Body * Objects3d::getBody(const QString &BodyName)
     for (int ib=0; ib<s_oaBody.size(); ib++)
     {
         pBody = s_oaBody.at(ib);
-        if (pBody->m_BodyName == BodyName) return pBody;
+        if (pBody->m_Name == BodyName) return pBody;
     }
 
     Plane *pPlane;

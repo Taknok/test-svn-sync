@@ -951,14 +951,6 @@ void PanelAnalysis::createWakeContribution()
                     PHC[kw] += phi;
                     VHC[kw] += V;
 
-                    /*                    if(m_b3DSymetric && m_pPanel[p].m_bIsLeftPanel)
-                    {
-                        GetDoubletInfluence(CC,  m_pWakePanel+pw, VS, phiSym, true,true);
-                        PHC[kw]    +=  phiSym;
-                        VHC[kw].x  +=  VS.x;
-                        VHC[kw].y  -=  VS.y;
-                        VHC[kw].z  +=  VS.z;
-                    }*/
                     pw++;
                 }
             }
@@ -968,8 +960,6 @@ void PanelAnalysis::createWakeContribution()
             mm = 0;
             for(pp=0; pp<m_MatSize; pp++) //for each matrix column
             {
-                //                if(!m_b3DSymetric || m_pPanel[pp].m_bIsLeftPanel)
-                //                {
                 if(s_bCancel) return;
                 m_aijWake[m*Size+mm] = 0.0;
                 // Is the panel pp shedding a wake ?
@@ -1043,11 +1033,10 @@ void PanelAnalysis::createWakeContribution()
 }
 
 
-
 /**
 * In the case of a panel analysis, adds the contribution of the wake columns to the coefficients of the influence matrix
 * Method :
-*     - follow the method described in NASA 4023 eq. (44)
+*    - follow the method described in NASA 4023 eq. (44)
 *    - add the wake's doublet contribution to the matrix
 *    - add the potential difference at the trailing edge panels to the RHS ; the potential's origin
 *     is set arbitrarily to the geometrical orgin so that phi = V.dot(WindDirectio) x point_position
@@ -1197,7 +1186,7 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
 
     for(int iw=0; iw<MAXWINGS; iw++)
     {
-        if(m_pWingList[iw]) ThinSize += double(m_pWingList[iw]->m_MatSize);
+        if(m_pWingList[iw]) ThinSize += double(m_pWingList[iw]->m_nPanels);
     }
 
     for (int q=0; q<nval;q++)
@@ -1237,9 +1226,9 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
                 memcpy(m_F   + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_F,   uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
                 memcpy(m_Vd  + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_Vd,  uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
 
-                pos += m_pWingList[iw]->m_MatSize;
+                pos += m_pWingList[iw]->m_nPanels;
 
-                m_Progress += 10.0 * double(m_pWingList[iw]->m_MatSize)/ThinSize *double(m_MatSize)/400.;
+                m_Progress += 10.0 * double(m_pWingList[iw]->m_nPanels)/ThinSize *double(m_MatSize)/400.;
                 if(s_bCancel)return;
             }
         }
@@ -1440,9 +1429,8 @@ void PanelAnalysis::computeAeroCoefs(double V0, double VDelta, int nrhs)
 */
 void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 {
-    int pos=0;
-
-    double Lift=0, IDrag=0, VDrag=0, XCP=0, YCP=0, ZCP=0, WingVDrag=0;
+    int pos(0);
+    double Lift(0), IDrag(0), VDrag(0), XCP(0), YCP(0), ZCP(0), WingVDrag(0);
     Vector3d WindNormal, WindDirection, WindSide;
     Vector3d Force;
     QString OutString;
@@ -1490,7 +1478,7 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
         {
             if(m_pWingList[iw])
             {
-                traceLog("         Calculating wing..." + m_pWingList[iw]->m_WingName+"\n");
+                traceLog("         Calculating wing..." + m_pWingList[iw]->m_Name+"\n");
                 //restore the saved FF results
                 if(m_pWPolar->polarType()!=xfl::FIXEDAOAPOLAR)
                 {
@@ -1523,12 +1511,12 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
                 //Compute moment coefficients
                 m_pWingList[iw]->panelComputeOnBody(QInf, Alpha, m_Cp+qrhs*m_MatSize+pos, m_Mu+qrhs*m_MatSize+pos,
                                                     XCP, YCP, ZCP, m_GCm, m_VCm, m_ICm, m_GRm, m_GYm, m_VYm, m_IYm,
-                                                    m_pWPolar, m_CoG);
+                                                    m_pWPolar, m_CoG, m_pPanel);
 
 
-                m_pWingList[iw]->panelComputeBending(m_pWPolar->bThinSurfaces());
+                m_pWingList[iw]->panelComputeBending(m_pPanel, m_pWPolar->bThinSurfaces());
 
-                pos += m_pWingList[iw]->m_MatSize;
+                pos += m_pWingList[iw]->m_nPanels;
             }
         }
 
@@ -1536,7 +1524,7 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
         {
             double ICm = 0.0;
             traceLog("       Calculating body...\n");
-            m_pPlane->body()->computeAero(m_Cp+qrhs*m_MatSize+pos, XCP, YCP, ZCP, ICm, m_GRm, m_GYm, Alpha, m_CoG);
+            m_pPlane->body()->computeAero(m_Cp+qrhs*m_MatSize+pos, XCP, YCP, ZCP, ICm, m_GRm, m_GYm, Alpha, m_CoG, m_pPanel);
             m_ICm += ICm;
             m_GCm += ICm;
 
@@ -3990,13 +3978,14 @@ void PanelAnalysis::computeControlDerivatives()
 
             Quat.set(SignedDeltaAngle*180.0/PI, H);
 
-            for(int p=0; p<m_pWingList[0]->m_MatSize; p++)
+            for(int p=0; p<m_pWingList[0]->nPanels(); p++)
             {
-                (m_pWingList[0]->m_pWingPanel+p)->rotateBC(m_pPlane->wingLE(0), Quat);
+                Panel &panel = m_pPanel[m_pWingList[0]->firstPanelIndex()+p];
+                panel.rotateBC(m_pPlane->wingLE(0), Quat);
             }
         }
 
-        pos = m_pWingList[0]->m_MatSize;
+        pos = m_pWingList[0]->m_nPanels;
         NCtrls = 1;
     }
 
@@ -4013,12 +4002,13 @@ void PanelAnalysis::computeControlDerivatives()
 
             Quat.set(SignedDeltaAngle*180.0/PI, H);
 
-            for(int p=0; p<m_pWingList[2]->m_MatSize; p++)
+            for(int p=0; p<m_pWingList[2]->m_nPanels; p++)
             {
-                (m_pWingList[2]->m_pWingPanel+p)->rotateBC(m_pPlane->wingLE(2), Quat);
+                Panel &panel = m_pPanel[m_pWingList[2]->firstPanelIndex()+p];
+                panel.rotateBC(m_pPlane->wingLE(2), Quat);
             }
         }
-        pos += m_pWingList[2]->m_MatSize;
+        pos += m_pWingList[2]->m_nPanels;
         NCtrls = 2;
     }
 
@@ -4179,7 +4169,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double const *Gamma, double 
     {
         if(m_pWingList[iw])
         {
-            pPOpp->addWingOpp(iw, m_pWingList[iw]->m_MatSize);
+            pPOpp->addWingOpp(iw, m_pWingList[iw]->m_nPanels);
             pPOpp->m_pWOpp[iw]->createWOpp(m_pWingList[iw], m_pWPolar);
         }
     }
@@ -4347,7 +4337,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double const *Gamma, double 
                 pPOpp->m_pWOpp[iw]->m_dG     = pPOpp->m_dG     + pos;
                 pPOpp->m_pWOpp[iw]->m_dSigma = pPOpp->m_dSigma + pos;
             }
-            pos +=m_pWingList[iw]->m_MatSize;
+            pos +=m_pWingList[iw]->m_nPanels;
         }
     }
 
@@ -4666,7 +4656,7 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
 
             if(bBCOnly)
             {
-                for(int p=0; p<m_pPlane->wing()->m_MatSize; p++)
+                for(int p=0; p<m_pPlane->wing()->nPanels(); p++)
                 {
                     memcpy(m_pPanel+p, m_pMemPanel+p, sizeof(Panel));
                     (m_pPanel+p)->rotateBC(m_pPlane->wingLE(0), Quat);
@@ -4676,7 +4666,7 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
             {
                 for(int n=0; n<m_nNodes; n++)
                 {
-                    if(m_pPlane->wing()->isWingNode(n))
+                    if(m_pPlane->wing()->isWingNode(n, m_pPanel))
                     {
                         m_pNode[n].copy(m_pMemNode[n]);
                         W = m_pNode[n] - m_pPlane->wingLE(0);
@@ -4686,7 +4676,7 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
                 }
                 for(int p=0; p<m_MatSize; p++)
                 {
-                    if(m_pPlane->wing()->isWingPanel(p)) m_pPanel[p].setPanelFrame();
+                    if(m_pPlane->wing()->isWingPanel(p, m_pPanel)) m_pPanel[p].setPanelFrame();
                 }
             }
         }
@@ -4710,7 +4700,7 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
                 {
                     for(int n=0; n<m_nNodes; n++)
                     {
-                        if(m_pPlane->stab()->isWingNode(n))
+                        if(m_pPlane->stab()->isWingNode(n, m_pPanel))
                         {
                             m_pNode[n].copy(m_pMemNode[n]);
                             W = m_pNode[n] - m_pPlane->wingLE(2);
@@ -4720,14 +4710,15 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
                     }
                     for(int p=0; p<m_MatSize; p++)
                     {
-                        if(pWingList[2]->isWingPanel(p)) m_pPanel[p].setPanelFrame();
+                        if(pWingList[2]->isWingPanel(p, m_pPanel)) m_pPanel[p].setPanelFrame();
                     }
                 }
                 else
                 {
-                    for(int p=0; p<m_pPlane->stab()->m_MatSize; p++)
+                    for(int p=0; p<m_pPlane->stab()->m_nPanels; p++)
                     {
-                        m_pPlane->stab()->m_pWingPanel[p].rotateBC(m_pPlane->wingLE(2), Quat);
+                        Panel &panel = m_pPanel[m_pPlane->stab()->firstPanelIndex()+p];
+                        panel.rotateBC(m_pPlane->wingLE(2), Quat);
                     }
                 }
             }
@@ -5099,9 +5090,9 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
                                  Vector3d &Force, double &WingIDrag,
                                  WPolar const*pWPolar, Panel const*pWakePanel, Vector3d const*pWakeNode) const
 {
-    int nw=0, iTA=0, iTB=0;
-    int pp=0;
-    double InducedAngle=0, cosa=0, sina=0;
+    int nw(0), iTA(0), iTB(0);
+    int pp(0);
+    double InducedAngle(0), cosa(0), sina(0);
     QVector<double> GammaStrip;
     Vector3d C, Wg, dF, StripForce, WindDirection, WindNormal, VInf;
 
@@ -5125,9 +5116,8 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
     //dynamic pressure, kg/m3
     double q = 0.5 * pWPolar->density() * QInf * QInf;
 
-    pWing->m_WingCL      = 0.0;
+    pWing->m_WingCL = 0.0;
     WingIDrag = 0.0;
-
 
     int coef = 2;
     if (pWPolar->bThinSurfaces()) coef = 1;
@@ -5138,20 +5128,23 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
     int m=0;
     for (int j=0; j<NSurfaces; j++)
     {
-        if(pWing->surface(j)->m_bIsTipLeft && !pWPolar->bThinSurfaces()) p+=pWing->surface(j)->m_NXPanels;//tip patch panels
+        Surface const *pSurf = pWing->surface(j);
+        if(pSurf->isTipLeft() && !pWPolar->bThinSurfaces()) p += pSurf->nXPanels();         //tip patch panels
 
-        Vector3d surfaceNormal(pWing->surface(j)->Normal);
-        for (int k=0; k<pWing->surface(j)->m_NYPanels; k++)
+        Vector3d surfaceNormal(pSurf->normal());
+        for (int k=0; k<pSurf->nYPanels(); k++)
         {
             pp = p;
             pWing->m_StripArea[m] = 0.0;
             StripForce.set(0.0,0.0,0.0);
-            for (int l=0; l<coef*pWing->surface(j)->m_NXPanels; l++)
+            for (int l=0; l<coef*pSurf->nXPanels(); l++)
             {
-                pWing->m_StripArea[m]  += pWing->m_pWingPanel[pp].Area;
+                pWing->m_StripArea[m] += m_pPanel[pWing->firstPanelIndex()+pp].area();
                 pp++;
             }
             pWing->m_StripArea[m] /= double(coef);
+
+            Panel const &panel = m_pPanel[pWing->firstPanelIndex()+p];
 
             if(!pWPolar->bThinSurfaces())
             {
@@ -5163,7 +5156,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
                 // The downwash in this plane is directly the wing's downwash
                 // If we were to model the downstream part, the total induced speed would be twice larger,
                 // so just add a factor 2 to account for this.
-                nw  = pWing->m_pWingPanel[p].m_iWake;
+                nw  = panel.m_iWake;
                 iTA = pWakePanel[nw].m_iTA;
                 iTB = pWakePanel[nw].m_iTB;
                 C = (pWakeNode[iTA] + pWakeNode[iTB])/2.0;
@@ -5171,7 +5164,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 
                 pWing->m_Vd[m] = Wg;
                 InducedAngle = atan2(Wg.dot(surfaceNormal), QInf);
-                pWing->m_Ai[m]      =       InducedAngle*180/PI;
+                pWing->m_Ai[m] = InducedAngle*180.0/PI;
                 //    qDebug("%13.7g %13.7g %13.7g %13.7g %13.7g %13.7g %13.7g ", C.x, C.y, C.z, Wg.x, Wg.y, Wg.z, pWing->m_Ai[m]);
 
                 // ____________________________
@@ -5183,10 +5176,10 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 
                 // Method 2 : Far-field plane integration
                 // This is the method generally recommended
-                GammaStrip.append((-Mu[pos+p+coef*pWing->surface(j)->m_NXPanels-1] + Mu[pos+p]) *4.0*PI);
+                GammaStrip.append((-Mu[pos+p+coef*pSurf->m_NXPanels-1] + Mu[pos+p]) *4.0*PI);
                 Wg += VInf;
 
-                StripForce  = pWing->m_pWingPanel[p].Vortex * Wg;
+                StripForce  = panel.Vortex * Wg;
                 StripForce *= GammaStrip.at(m) * pWPolar->density() / q;  // N/q
 
                 //____________________________
@@ -5198,11 +5191,14 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
             else
             {
                 pp=p;
-                for(int l=0; l<pWing->surface(j)->m_NXPanels; l++)
+                for(int l=0; l<pSurf->m_NXPanels; l++)
                 {
-                    if(pWPolar->bVLM1() || pWing->m_pWingPanel[pp].m_bIsTrailing)
+
+                    Panel const &panel_pp = m_pPanel[pWing->firstPanelIndex()+pp];
+
+                    if(pWPolar->bVLM1() || panel_pp.m_bIsTrailing)
                     {
-                        C = pWing->m_pWingPanel[pp].CtrlPt;
+                        C = panel_pp.CtrlPt;
                         C.x = pWing->m_PlanformSpan * 1000.0;
 
                         getSpeedVector(C, Mu, Sigma, Wg, false);
@@ -5212,7 +5208,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
                         // So divide by 2 to account for this.
                         Wg *= 1.0/2.0;
 
-                        if(pWing->m_pWingPanel[pp].m_bIsTrailing)
+                        if(panel_pp.m_bIsTrailing)
                         {
                             pWing->m_Vd[m]      = Wg;
                             InducedAngle = atan2(Wg.dot(surfaceNormal), QInf);
@@ -5222,7 +5218,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
                         Wg += VInf; //total speed vector
 
                         //induced force
-                        dF  = Wg * pWing->m_pWingPanel[pp].Vortex;
+                        dF  = Wg * panel_pp.Vortex;
                         dF *= Mu[pp+pos];       // N/rho
                         StripForce += dF;       // N/rho
                     }
@@ -5238,17 +5234,16 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
                 pWing->m_WingCL  += StripForce.dot(WindNormal);                // N/q
                 WingIDrag += StripForce.dot(WindDirection);          // N/q
             }
-            p  += coef*pWing->surface(j)->m_NXPanels;
+            p += coef*pSurf->m_NXPanels;
 
             // Calculate resulting vector force
             Force     += StripForce;                          // N/q
             pWing->m_F[m]     = StripForce * q;                        // Newtons
 
-            //            if(pWPolar->m_bTiltedGeom) m_F[m].RotateY(-Alpha);
             m++;
         }
 
-        if(pWing->surface(j)->isTipRight() && !pWPolar->bThinSurfaces()) p+=pWing->surface(j)->NXPanels();//tip patch panels
+        if(pSurf->isTipRight() && !pWPolar->bThinSurfaces()) p += pSurf->nXPanels();//tip patch panels
     }
 
     pWing->m_CDi = WingIDrag; // save this wing's induced drag (unused though...)
