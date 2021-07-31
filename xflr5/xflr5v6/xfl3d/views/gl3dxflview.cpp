@@ -756,7 +756,8 @@ void gl3dXflView::paintEditWingMesh(QOpenGLBuffer &vbo)
     {
         m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix, m_matView*m_matModel);
         m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, m_matProj*m_matView*m_matModel);
-        m_shadSurf.setUniformValue(m_locSurf.m_UniColor, W3dPrefs::s_VLMStyle.m_Color);
+        m_shadSurf.setUniformValue(m_locSurf.m_HasUniColor, 1);
+        m_shadSurf.setUniformValue(m_locSurf.m_UniColor, s_BackgroundColor);
 
         vbo.bind();
         {
@@ -764,8 +765,6 @@ void gl3dXflView::paintEditWingMesh(QOpenGLBuffer &vbo)
             m_shadSurf.setAttributeBuffer(m_locSurf.m_attrVertex, GL_FLOAT, 0, 3);
 
             int nTriangles = vbo.size()/3/3/int(sizeof(float)); // three vertices and three components
-
-            m_shadSurf.setUniformValue(m_locSurf.m_UniColor, DisplayOptions::backgroundColor());
 
             f->glEnable(GL_POLYGON_OFFSET_FILL);
             f->glPolygonOffset(DEPTHFACTOR, DEPTHUNITS);
@@ -808,7 +807,7 @@ void gl3dXflView::setSpanStations(Plane const *pPlane, WPolar const *pWPolar, Pl
                 m_Ny[iWing]=0;
                 for (int j=0; j<pWing->m_Surface.size(); j++)
                 {
-                    m_Ny[iWing] += pWing->surface(j)->NYPanels();
+                    m_Ny[iWing] += pWing->surface(j)->nYPanels();
                 }
             }
         }
@@ -918,7 +917,7 @@ void gl3dXflView::paintMasses(Plane const *pPlane)
         if(pPlane->wingAt(iw))
         {
             paintMasses(pPlane->wingAt(iw)->m_VolumeMass, pPlane->wingLE(iw),
-                        pPlane->wingAt(iw)->m_WingName,   pPlane->wingAt(iw)->m_PointMass);
+                        pPlane->wingAt(iw)->m_Name,   pPlane->wingAt(iw)->m_PointMass);
         }
     }
 
@@ -931,7 +930,7 @@ void gl3dXflView::paintMasses(Plane const *pPlane)
 
         paintMasses(pCurBody->m_VolumeMass,
                     pPlane->bodyPos(),
-                    pCurBody->m_BodyName,
+                    pCurBody->m_Name,
                     pCurBody->m_PointMass);
     }
 
@@ -957,11 +956,11 @@ void gl3dXflView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing const *pWing)
     {
         Surface const &surf = pWing->m_Surface.at(j);
         //tip patches
-        if(surf.isTipLeft())  bufferSize += (surf.NXPanels());
-        if(surf.isTipRight()) bufferSize += (surf.NXPanels());
+        if(surf.isTipLeft())  bufferSize += (surf.nXPanels());
+        if(surf.isTipRight()) bufferSize += (surf.nXPanels());
 
         // top and bottom surfaces
-        bufferSize += surf.NXPanels()*2 * (surf.NYPanels());
+        bufferSize += surf.nXPanels()*2 * (surf.nYPanels());
     }
     bufferSize *=2;    // 2 triangles/quad
     bufferSize *=3;    // 3 vertex for each triangle
@@ -979,7 +978,7 @@ void gl3dXflView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing const *pWing)
         Surface const &surf = pWing->m_Surface.at(j);
         if(surf.isTipLeft())
         {
-            for (int l=0; l<surf.NXPanels(); l++)
+            for (int l=0; l<surf.nXPanels(); l++)
             {
                 surf.getPanel(0,l,xfl::TOPSURFACE);
                 A = surf.TA;
@@ -1013,12 +1012,12 @@ void gl3dXflView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing const *pWing)
         }
         if(surf.isTipRight())
         {
-            for (int l=0; l<surf.NXPanels(); l++)
+            for (int l=0; l<surf.nXPanels(); l++)
             {
-                surf.getPanel(surf.NYPanels()-1,l,xfl::TOPSURFACE);
+                surf.getPanel(surf.nYPanels()-1,l,xfl::TOPSURFACE);
                 A = surf.TB;
                 B = surf.LB;
-                surf.getPanel(surf.NYPanels()-1,l,xfl::BOTSURFACE);
+                surf.getPanel(surf.nYPanels()-1,l,xfl::BOTSURFACE);
                 C = surf.LB;
                 D = surf.TB;
 
@@ -1051,9 +1050,9 @@ void gl3dXflView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing const *pWing)
     for (int j=0; j<pWing->m_Surface.size(); j++)
     {
         Surface const &surf = pWing->m_Surface.at(j);
-        for(int k=0; k<surf.NYPanels(); k++)
+        for(int k=0; k<surf.nYPanels(); k++)
         {
-            for (int l=0; l<surf.NXPanels(); l++)
+            for (int l=0; l<surf.nXPanels(); l++)
             {
                 surf.getPanel(k,l,xfl::TOPSURFACE);
 
@@ -1080,7 +1079,7 @@ void gl3dXflView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing const *pWing)
                 meshVertexArray[iv++] = surf.LA.zf();
             }
 
-            for (int l=0; l<surf.NXPanels(); l++)
+            for (int l=0; l<surf.nXPanels(); l++)
             {
                 surf.getPanel(k,l,xfl::BOTSURFACE);
                 //first triangle

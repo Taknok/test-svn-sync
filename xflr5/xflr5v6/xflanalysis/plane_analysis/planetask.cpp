@@ -296,7 +296,6 @@ WPolar* PlaneTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 bool PlaneTask::initializePanels()
 {
     if(!m_pPlane) return false;
-    int Nel=0;
 
     // first check that the total number of panels that will be created does not exceed
     // the currently allocated memory size for the influence atrix.
@@ -340,31 +339,28 @@ bool PlaneTask::initializePanels()
 
     m_Node.fill(Vector3d());
 
-    Panel *ptr = m_Panel.data();
-
     Wing *pWingList[MAXWINGS];
     pWingList[0] = m_pPlane->wing();
     pWingList[1] = m_pPlane->wing2();
     pWingList[2] = m_pPlane->stab();
     pWingList[3] = m_pPlane->fin();
 
-
     for(int iw=0; iw<MAXWINGS; iw++)
     {
         Wing *pWing = pWingList[iw];
         if(!pWing) continue;
 
-        pWing->m_MatSize = 0;
+        int Nel = 0;
+        pWing->setFirstPanelIndex(m_Panel.size());
         for(int jSurf=0; jSurf<pWing->surfaceCount(); jSurf++)
         {
             Surface *pSurf = pWing->surface(jSurf);
             pSurf->resetFlap();
-            Nel = createSurfaceElements(m_pPlane, m_pWPolar, pSurf);
-//                qDebug()<<"    Surface"<<jSurf<<"nWakeNodes"<<m_nWakeNodes;
-            pWing->m_MatSize += Nel;
+            Nel += createSurfaceElements(m_pPlane, m_pWPolar, pSurf);
         }
-        pWing->m_pWingPanel = ptr;
-        ptr += pWing->m_MatSize;
+        pWing->setPanelCoun(Nel);
+
+//        qDebug()<<pWing->name()<<pWing->firstPanelIndex()<<pWing->nPanels();
     }
 
     bool bBodyEl = false;
@@ -379,19 +375,20 @@ bool PlaneTask::initializePanels()
 
     if(bBodyEl)
     {
-        Nel = createBodyElements(m_pPlane);
-
         if(m_pPlane && m_pPlane->body())
-            m_pPlane->body()->m_pBodyPanel = ptr;
-
+        {
+            m_pPlane->body()->setFirstPanelIndex(m_Panel.size());
+            createBodyElements(m_pPlane);
+//            qDebug()<<m_pPlane->body()->name()<<m_pPlane->body()->firstPanelIndex()<<m_pPlane->body()->nPanels();
+        }
     }
 
     //back-up the current geometry
-    m_MemPanel = m_Panel;
+    m_MemPanel     = m_Panel;
     m_RefWakePanel = m_WakePanel;
-    m_RefWakeNode = m_WakeNode;
+    m_RefWakeNode  = m_WakeNode;
+    m_MemNode      = m_Node;
 
-    m_MemNode = m_Node;
     return true;
 }
 
@@ -786,8 +783,8 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
     bool bNoJoinFlap(true);
     int n0(0), n1(0), n2(0), n3(0);
 
-    int m_MatSize = m_Panel.size();
-    int InitialSize = m_MatSize;
+    int matsize = m_Panel.size();
+    int initialsize = matsize;
     xfl::enumSurfacePosition side = xfl::MIDSURFACE;
     Vector3d LA, LB, TA, TB;
 
@@ -803,7 +800,7 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
     if (bThickSurfaces && pWPolar && pSurface->isTipLeft())
     {
         //then left tip surface, add side panels
-        for (int l=0; l<pSurface->NXPanels(); l++)
+        for (int l=0; l<pSurface->nXPanels(); l++)
         {
             m_Panel.append(Panel());
             Panel &panel = m_Panel.last();
@@ -849,29 +846,29 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
             }
 
             panel.m_Pos = xfl::SIDESURFACE;
-            panel.m_iElement = m_MatSize;
+            panel.m_iElement = matsize;
             panel.m_bIsLeftPanel  = pSurface->isLeftSurf();
             panel.setPanelFrame(LA, LB, TA, TB);
             panel.m_iWake = -1;
 
-            panel.m_iPD = m_MatSize-1;
-            panel.m_iPU = m_MatSize+1;
+            panel.m_iPD = matsize-1;
+            panel.m_iPU = matsize+1;
             if(l==0)                      panel.m_iPD = -1;// no panel downstream
-            if(l==pSurface->NXPanels()-1) panel.m_iPU = -1;// no panel upstream
+            if(l==pSurface->nXPanels()-1) panel.m_iPU = -1;// no panel upstream
             panel.m_iPL = -1;
             panel.m_iPR = -1;
 
-            m_MatSize++;
+            matsize++;
         }
     }
 
-    for (int k=0; k<pSurface->NYPanels(); k++)
+    for (int k=0; k<pSurface->nYPanels(); k++)
     {
         //add "horizontal" panels, mid side, or following a strip from bot to top if 3D Panel
         if(bThickSurfaces)   side = xfl::BOTSURFACE;  //start with lower surf, as recommended by K&P
         else                 side = xfl::MIDSURFACE;
         //from T.E. to L.E.
-        for (int l=0; l<pSurface->NXPanels(); l++)
+        for (int l=0; l<pSurface->nXPanels(); l++)
         {
             pSurface->getPanel(k,l,side);
             Q_ASSERT(!isnan(pSurface->LA.x));
@@ -884,11 +881,11 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
             Panel &panel = m_Panel.back();
 
             if(l==0)                      panel.m_bIsTrailing = true;
-            if(l==pSurface->NXPanels()-1) panel.m_bIsLeading  = true;
+            if(l==pSurface->nXPanels()-1) panel.m_bIsLeading  = true;
             panel.m_bIsWakePanel   = false;
             panel.m_bIsInSymPlane  = pSurface->isInSymPlane();
 
-            bNoJoinFlap = side==0 &&  l<pSurface->NXFlap() && k==0;
+            bNoJoinFlap = side==0 &&  l<pSurface->nXFlap() && k==0;
 
             if(n0>=0 && !bNoJoinFlap) // do not merge nodes if we are at a flap's side in VLM
             {
@@ -908,7 +905,7 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
                 m_Node.push_back(pSurface->TA);
             }
 
-            bNoJoinFlap = side==0 &&  l<pSurface->NXFlap() && k==pSurface->NYPanels()-1;
+            bNoJoinFlap = side==0 &&  l<pSurface->nXFlap() && k==pSurface->nYPanels()-1;
 
             if(n2>=0 && !bNoJoinFlap) // do not merge nodes if we are at a flap's side in VLM
             {
@@ -929,7 +926,7 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
             }
 
             panel.m_Pos = side;
-            panel.m_iElement = m_MatSize;
+            panel.m_iElement = matsize;
             panel.m_bIsLeftPanel  = pSurface->isLeftSurf();
 
             if(side==xfl::MIDSURFACE)        panel.setPanelFrame(pSurface->LA, pSurface->LB, pSurface->TA, pSurface->TB);
@@ -938,32 +935,32 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
             // set neighbour panels
             // valid only for Panel 2-sided Analysis
             // we are on the bottom or middle surface
-            panel.m_iPD = m_MatSize-1;
-            panel.m_iPU = m_MatSize+1;
+            panel.m_iPD = matsize-1;
+            panel.m_iPU = matsize+1;
             if(l==0)                                         panel.m_iPD = -1;// no panel downstream
-            if(l==pSurface->NXPanels()-1 && side==xfl::MIDSURFACE) panel.m_iPU = -1;// no panel upstream
+            if(l==pSurface->nXPanels()-1 && side==xfl::MIDSURFACE) panel.m_iPU = -1;// no panel upstream
 
             if(side!=xfl::MIDSURFACE)
             {
                 //wings are modelled as thick surfaces
-                panel.m_iPL = m_MatSize + 2*pSurface->NXPanels();
-                panel.m_iPR = m_MatSize - 2*pSurface->NXPanels();
+                panel.m_iPL = matsize + 2*pSurface->nXPanels();
+                panel.m_iPR = matsize - 2*pSurface->nXPanels();
                 //todo : do not link to right wing if there is a gap in between
                 if(k==0                      && pSurface->isTipLeft())  panel.m_iPR = -1;
-                if(k==pSurface->NYPanels()-1 && pSurface->isTipRight()) panel.m_iPL = -1;
+                if(k==pSurface->nYPanels()-1 && pSurface->isTipRight()) panel.m_iPL = -1;
             }
             else
             {
                 //wings are modelled as thin surfaces
-                panel.m_iPR = m_MatSize + pSurface->NXPanels();
-                panel.m_iPL = m_MatSize - pSurface->NXPanels();
+                panel.m_iPR = matsize + pSurface->nXPanels();
+                panel.m_iPL = matsize - pSurface->nXPanels();
                 if(k==0                      && pSurface->isTipLeft())  panel.m_iPL = -1;
-                if(k==pSurface->NYPanels()-1 && pSurface->isTipRight()) panel.m_iPR = -1;
+                if(k==pSurface->nYPanels()-1 && pSurface->isTipRight()) panel.m_iPR = -1;
             }
 
             //do not link to next surfaces... will be done in JoinSurfaces() if surfaces are continuous
             if(k==0)                      panel.m_iPR = -1;
-            if(k==pSurface->NYPanels()-1) panel.m_iPL = -1;
+            if(k==pSurface->nYPanels()-1) panel.m_iPL = -1;
 
             if(pWPolar && panel.m_bIsTrailing && pWPolar->analysisMethod()==xfl::PANEL4METHOD)
             {
@@ -971,14 +968,14 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
                 panel.m_iWakeColumn = m_NWakeColumn;
                 if(pWPolar->bThinSurfaces())
                 {
-                    createWakeElems(m_MatSize, pPlane, pWPolar);
+                    createWakeElems(matsize, pPlane, pWPolar);
                     m_NWakeColumn++;
                 }
             }
 
-            if(l<pSurface->NXFlap()) pSurface->addFlapPanel(m_Panel.at(m_MatSize));
+            if(l<pSurface->nXFlap()) pSurface->addFlapPanel(m_Panel.at(matsize));
 
-            m_MatSize++;
+            matsize++;
         }
 
         if (bThickSurfaces)
@@ -986,7 +983,7 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
             //add top side if 3D Panels
             side = xfl::TOPSURFACE; //next upper surf, as recommended by K&P
             //from L.E. to T.E.
-            for (int l=pSurface->NXPanels()-1;l>=0; l--)
+            for (int l=pSurface->nXPanels()-1;l>=0; l--)
             {
                 pSurface->getPanel(k,l,side);
                 n0 = isNode(pSurface->LA);
@@ -999,7 +996,7 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
                 Panel &panel = m_Panel.back();
 
                 if(l==0)                      panel.m_bIsTrailing = true;
-                if(l==pSurface->NXPanels()-1) panel.m_bIsLeading  = true;
+                if(l==pSurface->nXPanels()-1) panel.m_bIsLeading  = true;
                 panel.m_bIsWakePanel   = false;
                 panel.m_bIsInSymPlane  = pSurface->isInSymPlane();
 
@@ -1032,7 +1029,7 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
                 }
 
                 panel.m_Pos = side;
-                panel.m_iElement = m_MatSize;
+                panel.m_iElement = matsize;
                 panel.m_bIsLeftPanel  = pSurface->isLeftSurf();
 
                 panel.setPanelFrame(pSurface->LA, pSurface->LB, pSurface->TA, pSurface->TB);
@@ -1040,31 +1037,31 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
                 // set neighbour panels
                 // valid only for Panel 2-sided Analysis
                 // we are on the top surface
-                panel.m_iPD = m_MatSize+1;
-                panel.m_iPU = m_MatSize-1;
+                panel.m_iPD = matsize+1;
+                panel.m_iPU = matsize-1;
                 if(l==0)                      panel.m_iPD = -1;// no panel downstream
 //                if(l==pSurface->NXPanels()-1) panel.m_iPU = -1;// no panel upstream
 
-                panel.m_iPL = m_MatSize - 2*pSurface->NXPanels();//assuming all wing panels have same chordwise distribution
-                panel.m_iPR = m_MatSize + 2*pSurface->NXPanels();//assuming all wing panels have same chordwise distribution
+                panel.m_iPL = matsize - 2*pSurface->nXPanels();//assuming all wing panels have same chordwise distribution
+                panel.m_iPR = matsize + 2*pSurface->nXPanels();//assuming all wing panels have same chordwise distribution
 
                 if(k==0                      && pSurface->isTipLeft())    panel.m_iPL = -1;
-                if(k==pSurface->NYPanels()-1 && pSurface->isTipRight())   panel.m_iPR = -1;
+                if(k==pSurface->nYPanels()-1 && pSurface->isTipRight())   panel.m_iPR = -1;
 
                 //do not link to next surfaces... will be done in JoinSurfaces() if surfaces are continuous
                 if(k==0)                      panel.m_iPL = -1;
-                if(k==pSurface->NYPanels()-1) panel.m_iPR = -1;
+                if(k==pSurface->nYPanels()-1) panel.m_iPR = -1;
 
 
                 if(pWPolar && panel.m_bIsTrailing && pWPolar->analysisMethod()==xfl::PANEL4METHOD)
                 {
                     panel.m_iWake = m_WakeSize;//next wake element
                     panel.m_iWakeColumn = m_NWakeColumn;
-                    createWakeElems(m_MatSize, pPlane, pWPolar);
+                    createWakeElems(matsize, pPlane, pWPolar);
                 }
 
-                if(l<pSurface->NXFlap()) pSurface->addFlapPanel(m_Panel.at(m_MatSize));
-                m_MatSize++;
+                if(l<pSurface->nXFlap()) pSurface->addFlapPanel(m_Panel.at(matsize));
+                matsize++;
             }
             m_NWakeColumn++;
         }
@@ -1072,8 +1069,8 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
 
     if (bThickSurfaces && pWPolar && pSurface->isTipRight())
     {    //right tip surface
-        int k = pSurface->NYPanels()-1;
-        for (int l=0; l< pSurface->NXPanels(); l++)
+        int k = pSurface->nYPanels()-1;
+        for (int l=0; l< pSurface->nXPanels(); l++)
         {
             m_Panel.push_back(Panel());
             Panel &panel = m_Panel.back();
@@ -1117,23 +1114,23 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
             }
 
 
-            panel.m_iPD = m_MatSize-1;
-            panel.m_iPU = m_MatSize+1;
+            panel.m_iPD = matsize-1;
+            panel.m_iPU = matsize+1;
             if(l==0)                      panel.m_iPD = -1;// no panel downstream
-            if(l==pSurface->NXPanels()-1) panel.m_iPU = -1;// no panel upstream
+            if(l==pSurface->nXPanels()-1) panel.m_iPU = -1;// no panel upstream
             panel.m_iPL = -1;
             panel.m_iPR = -1;
 
             panel.m_Pos = xfl::SIDESURFACE;
-            panel.m_iElement = m_MatSize;
+            panel.m_iElement = matsize;
             panel.m_bIsLeftPanel  = pSurface->isLeftSurf();
             panel.setPanelFrame(LA, LB, TA, TB);
             panel.m_iWake = -1;
-            m_MatSize++;
+            matsize++;
         }
     }
 
-    pSurface->setNElements(m_MatSize-InitialSize);
+    pSurface->setNElements(matsize-initialsize);
     return pSurface->NElements();
 }
 
@@ -1178,6 +1175,7 @@ bool PlaneTask::createWakeElems(int PanelIndex, Plane const*pPlane, WPolar const
 
     for (int l=0; l<NXWakePanels; l++)
     {
+        Panel &wakepanel = m_WakePanel[mw];
         LA = TA;
         LB = TB;
         TA.x += dxA;
@@ -1193,55 +1191,55 @@ bool PlaneTask::createWakeElems(int PanelIndex, Plane const*pPlane, WPolar const
         n3 = isWakeNode(TB);
 
         if(n0>=0) {
-            m_WakePanel[mw].m_iLA = n0;
+            wakepanel.m_iLA = n0;
         }
         else {
-            m_WakePanel[mw].m_iLA = m_WakeNode.size();
+            wakepanel.m_iLA = m_WakeNode.size();
             m_WakeNode.push_back(LA);
         }
 
         if(n1>=0) {
-            m_WakePanel[mw].m_iTA = n1;
+            wakepanel.m_iTA = n1;
         }
         else {
-            m_WakePanel[mw].m_iTA = m_WakeNode.size();
+            wakepanel.m_iTA = m_WakeNode.size();
             m_WakeNode.push_back(TA);
         }
 
         if(n2>=0) {
-            m_WakePanel[mw].m_iLB = n2;
+            wakepanel.m_iLB = n2;
         }
         else {
-            m_WakePanel[mw].m_iLB = m_WakeNode.size();
+            wakepanel.m_iLB = m_WakeNode.size();
             m_WakeNode.push_back(LB);
         }
 
         if(n3 >=0) {
-            m_WakePanel[mw].m_iTB = n3;
+            wakepanel.m_iTB = n3;
         }
         else {
-            m_WakePanel[mw].m_iTB = m_WakeNode.size();
+            wakepanel.m_iTB = m_WakeNode.size();
             m_WakeNode.push_back(TB);
         }
 
         LATB = TB - LA;
         TALB = LB - TA;
 
-        m_WakePanel[mw].Normal = LATB * TALB;
+        wakepanel.Normal = LATB * TALB;
 
-        m_WakePanel[mw].m_Pos = xfl::MIDSURFACE;
-        m_WakePanel[mw].m_bIsWakePanel = true;
-        m_WakePanel[mw].Area =  m_WakePanel[mw].Normal.norm()/2.0;
-        m_WakePanel[mw].Normal.normalize();
-        m_WakePanel[mw].setPanelFrame(LA,LB, TA, TB);
-        m_WakePanel[mw].m_bIsLeftPanel  = false;
+        wakepanel.m_Pos = xfl::MIDSURFACE;
+        wakepanel.m_bIsWakePanel = true;
+        wakepanel.Area =  wakepanel.Normal.norm()/2.0;
+        wakepanel.Normal.normalize();
+        wakepanel.setPanelFrame(LA,LB, TA, TB);
+        wakepanel.m_bIsLeftPanel  = false;
 
-        if(l==0)                    m_WakePanel[mw].m_iPD = -1;// no panel downstream
-        else if(l==NXWakePanels)    m_WakePanel[mw].m_iPU = -1;// no panel upstream
-        else                        m_WakePanel[mw].m_iPD = mw+1;
+        if     (l==0)               wakepanel.m_iPD = -1;// no panel downstream
+        else if(l==NXWakePanels)    wakepanel.m_iPU = -1;// no panel upstream
+        else                        wakepanel.m_iPD = mw+1;
 
-        m_WakePanel[mw].m_iPL = -1;
-        m_WakePanel[mw].m_iPR = -1;
+        wakepanel.m_iPL = -1;
+        wakepanel.m_iPR = -1;
 
         mw++;
     }
@@ -1261,7 +1259,7 @@ int PlaneTask::calculateMatSize()
     //Count the wing panels
     for (int js=0; js<m_SurfaceList.size(); js++)
     {
-        PanelArraySize += m_SurfaceList.at(js)->NXPanels() * m_SurfaceList.at(js)->NYPanels();
+        PanelArraySize += m_SurfaceList.at(js)->nXPanels() * m_SurfaceList.at(js)->nYPanels();
     }
 
     if(m_pPlane->isWing() && (!m_pWPolar || !m_pWPolar->bThinSurfaces()))
@@ -1270,7 +1268,7 @@ int PlaneTask::calculateMatSize()
         for (int js=0; js<m_SurfaceList.size(); js++)
         {
             if(m_SurfaceList.at(js)->isTipLeft() || m_SurfaceList.at(js)->isTipRight())
-                PanelArraySize += m_SurfaceList.at(js)->NXPanels();//tip patches
+                PanelArraySize += m_SurfaceList.at(js)->nXPanels();//tip patches
         }
     }
 
@@ -1379,7 +1377,7 @@ bool PlaneTask::allocatePanelArrays(int &memsize)
 
 //                WakeNodeSize  += (m_pPlane->wing(iw)->m_NStation + 2) * (m_pWPolar->m_NXWakePanels + 1);
                 for(int j=0; j<m_pPlane->wing(iw)->m_Surface.size(); j++)
-                    WakeNodeSize += m_pPlane->wing(iw)->surface(j)->NYPanels()+1;
+                    WakeNodeSize += m_pPlane->wing(iw)->surface(j)->nYPanels()+1;
             }
         }
         WakeNodeSize *=  (m_pWPolar->m_NXWakePanels + 1);
@@ -1458,7 +1456,7 @@ void PlaneTask::joinSurfaces(WPolar*pWPolar, Surface *pLeftSurf, Surface *pRight
     int ppl=0, ppr=0;
     double dist=0, x=0,y=0,z=0, mindist=0;
     int lclose=0;
-    Vector3d MidNormal = pLeftSurf->Normal + pRightSurf->Normal;
+    Vector3d MidNormal = pLeftSurf->m_Normal + pRightSurf->m_Normal;
     MidNormal.normalize();
 
     int coef = 1;
@@ -1602,7 +1600,6 @@ void PlaneTask::joinSurfaces(WPolar*pWPolar, Surface *pLeftSurf, Surface *pRight
 }
 
 
-
 void PlaneTask::LLTAnalyze()
 {
     if(!m_ptheLLTAnalysis || !m_ptheLLTAnalysis->m_pWing || !m_ptheLLTAnalysis->m_pWPolar) return;
@@ -1620,7 +1617,6 @@ void PlaneTask::LLTAnalyze()
 }
 
 
-
 void PlaneTask::PanelAnalyze()
 {
     if(!m_pthePanelAnalysis->m_pPlane || !m_pthePanelAnalysis->m_pWPolar) return;
@@ -1633,15 +1629,15 @@ void PlaneTask::PanelAnalyze()
 
     if(m_pWPolar->polarType()==xfl::FIXEDAOAPOLAR)
     {
-        m_pthePanelAnalysis->m_Alpha      = m_pWPolar->Alpha();
+        m_pthePanelAnalysis->m_Alpha  = m_pWPolar->Alpha();
     }
     else if(m_pWPolar->polarType()==xfl::STABILITYPOLAR)
     {
-        m_pthePanelAnalysis->m_Alpha      = m_pWPolar->Alpha();
+        m_pthePanelAnalysis->m_Alpha  = m_pWPolar->Alpha();
     }
     else
     {
-        m_pthePanelAnalysis->m_QInf       = m_pWPolar->velocity();
+        m_pthePanelAnalysis->m_QInf   = m_pWPolar->velocity();
     }
 
     m_pthePanelAnalysis->initializeAnalysis();

@@ -2573,7 +2573,6 @@ void XDirect::onFoilGeom()
 }
 
 
-
 /**
  * The user has requested to hide all OpPoints
  */
@@ -2585,11 +2584,11 @@ void XDirect::onHideAllOpps()
         pOpp = m_poaOpp->at(i);
         pOpp->setVisible(false);
     }
-    emit projectModified();
     m_bResetCurves = true;
     setAnalysisParams();
 
     updateView();
+    emit projectModified();
 }
 
 
@@ -2603,10 +2602,11 @@ void XDirect::onHideAllPolars()
         Polar *pPolar = m_poaPolar->at(i);
         pPolar->setVisible(false);
     }
-    emit projectModified();
+    m_pFoilTreeView->setCurveParams();
     m_bResetCurves = true;
 
     updateView();
+    emit projectModified();
 }
 
 
@@ -2624,10 +2624,11 @@ void XDirect::onHideFoilPolars()
             pPolar->setVisible(false);
         }
     }
-    emit projectModified();
     m_bResetCurves = true;
+    m_pFoilTreeView->setCurveParams();
 
     updateView();
+    emit projectModified();
 }
 
 
@@ -2644,10 +2645,11 @@ void XDirect::onHideFoilOpps()
         if(pOpp->foilName()==Objects2d::curFoil()->name())
             pOpp->setVisible(false);
     }
-    emit projectModified();
     m_bResetCurves = true;
+    m_pFoilTreeView->setCurveParams();
 
     updateView();
+    emit projectModified();
 }
 
 
@@ -2666,13 +2668,12 @@ void XDirect::onHidePolarOpps()
         if(pOpp->foilName()==Objects2d::curFoil()->name() && pOpp->polarName()==Objects2d::curPolar()->polarName())
             pOpp->setVisible(false);
     }
-    emit projectModified();
     m_bResetCurves = true;
+    m_pFoilTreeView->setCurveParams();
 
     updateView();
+    emit projectModified();
 }
-
-
 
 
 /**
@@ -3622,6 +3623,8 @@ void XDirect::onShowAllOpps()
     emit projectModified();
     m_bResetCurves = true;
 
+    m_pFoilTreeView->setCurveParams();
+
     updateView();
 }
 
@@ -3638,6 +3641,7 @@ void XDirect::onShowAllPolars()
     }
     emit projectModified();
     m_bResetCurves = true;
+    m_pFoilTreeView->setCurveParams();
 
     updateView();
 }
@@ -3655,10 +3659,11 @@ void XDirect::onShowFoilPolarsOnly()
         Polar *pPolar = m_poaPolar->at(i);
         pPolar->setVisible((pPolar->foilName() == Objects2d::curFoil()->name()));
     }
-    emit projectModified();
     m_bResetCurves = true;
+    m_pFoilTreeView->setCurveParams();
 
     updateView();
+    emit projectModified();
 }
 
 
@@ -3677,10 +3682,11 @@ void XDirect::onShowFoilPolars()
             pPolar->setVisible(true);
         }
     }
-    emit projectModified();
     m_bResetCurves = true;
+    m_pFoilTreeView->setCurveParams();
 
     updateView();
+    emit projectModified();
 }
 
 
@@ -3699,11 +3705,12 @@ void XDirect::onShowFoilOpps()
         if(pOpp->foilName()==Objects2d::curFoil()->name())
             pOpp->setVisible(true);
     }
-    emit projectModified();
     if(!m_bPolarView) m_bResetCurves = true;
 
+    m_pFoilTreeView->setCurveParams();
 
     updateView();
+    emit projectModified();
 }
 
 
@@ -3722,10 +3729,11 @@ void XDirect::onShowPolarOpps()
         if(pOpp->foilName()==Objects2d::curFoil()->name() && pOpp->polarName()==Objects2d::curPolar()->polarName())
             pOpp->setVisible(true);
     }
-    emit projectModified();
     if(!m_bPolarView) m_bResetCurves = true;
+    m_pFoilTreeView->setCurveParams();
 
     updateView();
+    emit projectModified();
 }
 
 

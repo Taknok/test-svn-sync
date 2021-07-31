@@ -673,11 +673,10 @@ void Miarex::clearCpCurves()
  */
 void Miarex::createCpCurves()
 {
-    int pp,i;
-    bool bFound;
-    double SpanPos, SpanInc;
+    bool bFound(false);
+    double SpanPos(0), SpanInc(0);
 
-    Curve *pCurve = nullptr;
+    Curve *pCurve(nullptr);
     QString str2, str3;
 
     if(!m_pCurPOpp || !m_pCurWPolar) return;
@@ -687,7 +686,7 @@ void Miarex::createCpCurves()
         return;
     }
 
-    for (i=0; i<MAXWINGS; i++)
+    for (int i=0; i<MAXWINGS; i++)
     {
         // the first four curves are necessarily the current opPoint's main wing, second wing, elevator and fin
         // the next are those the user has chosen to keep for display --> don't reset them
@@ -708,6 +707,8 @@ void Miarex::createCpCurves()
     str2 = QString(" a=%1").arg(m_pCurPOpp->alpha(), 5, 'f', 2);
     str3 = QString(" y/b=%1").arg(m_CurSpanPos, 5, 'f', 2);
 
+    Wing const *wing = m_pCurPlane->wing(0);
+
     //    if(m_bCurWOppOnly)
     {
         //        p=0;
@@ -715,11 +716,14 @@ void Miarex::createCpCurves()
         //        if(m_pCurWPolar->bThinSurfaces()) p+=m_pCurPlane->m_Wing[0].m_Surface[0]->m_NXPanels;
 
         SpanInc = -m_pCurPlane->planformSpan()/2.0;
-        for (int p=0; p<m_pCurPlane->m_Wing[0].m_MatSize; p++)
+        for (int p=0; p<wing->nPanels(); p++)
         {
-            if(m_pCurPlane->m_Wing[0].m_pWingPanel[p].m_bIsTrailing && m_pCurPlane->m_Wing[0].m_pWingPanel[p].m_Pos<=xfl::MIDSURFACE)
+            int ip = wing->firstPanelIndex() + p;
+            Panel const &panel_i = m_theTask.m_Panel.at(ip);
+
+            if(panel_i.m_bIsTrailing && panel_i.m_Pos<=xfl::MIDSURFACE)
             {
-                SpanInc += m_pCurPlane->m_Wing[0].m_pWingPanel[p].width();
+                SpanInc += panel_i.width();
                 if(SpanPos<=SpanInc || qAbs(SpanPos-SpanInc)/m_pCurPlane->planformSpan()<0.001)
                 {
                     bFound = true;
@@ -735,12 +739,15 @@ void Miarex::createCpCurves()
                 bFound = false;
                 //                if(m_pCurWPolar->bThinSurfaces()) p+=pWingList(iw)->m_Surface.at(0)->m_NXPanels;
 
-                SpanInc = -pWing(iw)->m_PlanformSpan/2.0;
-                for (p=0; p<pWing(iw)->m_MatSize; p++)
+                SpanInc = -pWing(iw)->planformSpan()/2.0;
+                for (p=0; p<pWing(iw)->nPanels(); p++)
                 {
-                    if(pWing(iw)->m_pWingPanel[p].m_bIsTrailing && pWing(iw)->m_pWingPanel[p].m_Pos<=xfl::MIDSURFACE)
+                    int ip = pWing(iw)->firstPanelIndex() + p;
+                    Panel const &panel_i = m_theTask.m_Panel.at(ip);
+
+                    if(panel_i.m_bIsTrailing && panel_i.m_Pos<=xfl::MIDSURFACE)
                     {
-                        SpanInc += pWing(iw)->m_pWingPanel[p].width();
+                        SpanInc += panel_i.width();
                         if(SpanPos<=SpanInc || qAbs(SpanPos-SpanInc)/pWing(iw)->m_PlanformSpan<0.001)
                         {
                             bFound = true;
@@ -759,7 +766,7 @@ void Miarex::createCpCurves()
 
                     pCurve->setName(POppTitle(m_pCurPOpp)+str3);
 
-                    for (pp=p; pp<p+coef*pWing(iw)->surface(0)->m_NXPanels; pp++)
+                    for (int pp=p; pp<p+coef*pWing(iw)->surface(0)->m_NXPanels; pp++)
                     {
                         pCurve->appendPoint(m_theTask.m_Panel[pp].CollPt.x, m_pWOpp[iw]->m_dCp[pp]);
                         //qDebug("%3d  %13.5g  %13.5g", pp, m_theTask.m_Panel[pp].CollPt.x, m_pWOpp[iw]->m_dCp[pp]);
@@ -2080,14 +2087,14 @@ void Miarex::onAnalyze()
                 if (!Objects2d::foil(pwing->rightFoilName(l)))
                 {
                     QString strong;
-                    strong = pwing->m_WingName + ": "+tr("Could not find the wing's foil ")+ pwing->rightFoilName(l) +tr("...\nAborting Calculation");
+                    strong = pwing->m_Name + ": "+tr("Could not find the wing's foil ")+ pwing->rightFoilName(l) +tr("...\nAborting Calculation");
                     QMessageBox::warning(s_pMainFrame, tr("Warning"), strong);
                     return;
                 }
                 if (!Objects2d::foil(pwing->leftFoilName(l)))
                 {
                     QString strong;
-                    strong = pwing->m_WingName + ": "+tr("Could not find the wing's foil ")+ pwing->leftFoilName(l) +tr("...\nAborting Calculation");
+                    strong = pwing->m_Name + ": "+tr("Could not find the wing's foil ")+ pwing->leftFoilName(l) +tr("...\nAborting Calculation");
                     QMessageBox::warning(s_pMainFrame, tr("Warning"), strong);
                     return;
                 }
@@ -2109,6 +2116,7 @@ void Miarex::onAnalyze()
 
 }
 
+
 /**
  * Launches a 3d panel analysis
  * @param V0 the initial aoa
@@ -2128,6 +2136,7 @@ void Miarex::panelAnalyze(double V0, double VMax, double VDelta, bool bSequence)
 
     m_pPanelAnalysisDlg->analyze();
 }
+
 
 /**
  * Launches the LLT analysis and updates the display after the analysis
@@ -2169,13 +2178,15 @@ void Miarex::onTaskFinished()
     if(!s_bLogFile || !(m_theTask.m_ptheLLTAnalysis->m_bError || m_theTask.m_ptheLLTAnalysis->m_bWarning))
         m_pLLTDlg->hide();
 
+    m_pPlaneTreeView->addPOpps(m_pCurWPolar);
+
     if(m_pCurWPolar)
     {
-        if     (m_pCurWPolar->isT12Polar())  setPlaneOpp(false, m_AlphaMin);
+        if     (m_pCurWPolar->isT12Polar()) setPlaneOpp(false, m_AlphaMin);
         else if(m_pCurWPolar->isT4Polar())  setPlaneOpp(false, m_QInfMin);
         else if(m_pCurWPolar->isT5Polar())  setPlaneOpp(false, m_BetaMin);
     }
-    m_pPlaneTreeView->addPOpps(m_pCurWPolar);
+
     if(m_pCurPOpp) m_pPlaneTreeView->selectPlaneOpp(m_pCurPOpp);
     else           m_pPlaneTreeView->selectWPolar(m_pCurWPolar, true);
 
@@ -3688,7 +3699,7 @@ void Miarex::onEditCurWing()
         {
             emit projectModified();
             m_pCurPlane->wing(iWing)->setColor(pModPlane->wing(iWing)->color());
-            m_pCurPlane->wing(iWing)->m_WingDescription = pModPlane->wing(iWing)->wingDescription();
+            m_pCurPlane->wing(iWing)->m_Description = pModPlane->wing(iWing)->wingDescription();
         }
 
         if(wgDlg.m_bChanged)
@@ -4056,7 +4067,7 @@ void Miarex::onExportCurPOpp()
     {
         if(pWing(iw))
         {
-            out << pWing(iw)->m_WingName;
+            out << pWing(iw)->m_Name;
             for (l=0; l<m_pWOpp[iw]->m_nFlaps; l++)
             {
                 strong = QString(tr("Flap ")+sep+"%1"+sep+" moment = "+sep+"%2 ").arg(l+1,4).arg(m_pWOpp[iw]->m_FlapMoment[l]*Units::NmtoUnit(), 9,'f',4);
@@ -4091,43 +4102,46 @@ void Miarex::onExportCurPOpp()
         {
             if(pWing(iw))
             {
-                out << pWing(iw)->m_WingName+ tr("Cp Coefficients")+"\n";
+                out << pWing(iw)->name()+ tr("Cp Coefficients")+"\n";
                 p=0;
                 iStrip = 0;
-                for (j=0; j<pWing(iw)->m_Surface.size(); j++)
+                for (j=0; j<pWing(iw)->surfaceCount(); j++)
                 {
-                    if(pWing(iw)->surface(j)->m_bIsTipLeft && !m_pCurPOpp->m_bThinSurface) p+= pWing(iw)->surface(j)->m_NXPanels;
+                    if(pWing(iw)->surface(j)->isTipLeft() && !m_pCurPOpp->m_bThinSurface) p+= pWing(iw)->surface(j)->nXPanels();
 
-                    for(k=0; k<pWing(iw)->surface(j)->m_NYPanels; k++)
+                    for(k=0; k<pWing(iw)->surface(j)->nYPanels(); k++)
                     {
                         iStrip++;
                         strong = QString(tr("Strip %1\n")).arg(iStrip);
                         out << strong;
 
-                        for(l=0; l<pWing(iw)->surface(j)->m_NXPanels * coef; l++)
+                        for(l=0; l<pWing(iw)->surface(j)->nXPanels() * coef; l++)
                         {
-                            if(pWing(iw)->m_pWingPanel[p].m_Pos==xfl::MIDSURFACE)
+                            int ip = pWing(iw)->firstPanelIndex() + p;
+                            Panel const &panel_i = m_theTask.m_Panel.at(ip);
+
+                            if(panel_i.m_Pos==xfl::MIDSURFACE)
                             {
                                 strong = QString(Format).arg(p,4)
-                                        .arg(pWing(iw)->m_pWingPanel[p].CtrlPt.x,11,'e',3)
-                                        .arg(pWing(iw)->m_pWingPanel[p].CtrlPt.y,11,'e',3)
-                                        .arg(pWing(iw)->m_pWingPanel[p].CtrlPt.z,11,'e',3)
-                                        .arg(pWing(iw)->m_pWingPanel[p].Normal.x,11,'f',3)
-                                        .arg(pWing(iw)->m_pWingPanel[p].Normal.y,11,'f',3)
-                                        .arg(pWing(iw)->m_pWingPanel[p].Normal.z,11,'f',3)
-                                        .arg(pWing(iw)->m_pWingPanel[p].Area,11,'e',3)
+                                        .arg(panel_i.CtrlPt.x,11,'e',3)
+                                        .arg(panel_i.CtrlPt.y,11,'e',3)
+                                        .arg(panel_i.CtrlPt.z,11,'e',3)
+                                        .arg(panel_i.Normal.x,11,'f',3)
+                                        .arg(panel_i.Normal.y,11,'f',3)
+                                        .arg(panel_i.Normal.z,11,'f',3)
+                                        .arg(panel_i.Area,11,'e',3)
                                         .arg(m_pWOpp[iw]->m_dCp[p],11,'f',4);
                             }
                             else
                             {
                                 strong = QString(Format).arg(p,4)
-                                        .arg(pWing(iw)->m_pWingPanel[p].CollPt.x,11,'e',3)
-                                        .arg(pWing(iw)->m_pWingPanel[p].CollPt.y,11,'e',3)
-                                        .arg(pWing(iw)->m_pWingPanel[p].CollPt.z,11,'e',3)
-                                        .arg(pWing(iw)->m_pWingPanel[p].Normal.x,11,'f',3)
-                                        .arg(pWing(iw)->m_pWingPanel[p].Normal.y,11,'f',3)
-                                        .arg(pWing(iw)->m_pWingPanel[p].Normal.z,11,'f',3)
-                                        .arg(pWing(iw)->m_pWingPanel[p].Area,11,'e',3)
+                                        .arg(panel_i.CollPt.x,11,'e',3)
+                                        .arg(panel_i.CollPt.y,11,'e',3)
+                                        .arg(panel_i.CollPt.z,11,'e',3)
+                                        .arg(panel_i.Normal.x,11,'f',3)
+                                        .arg(panel_i.Normal.y,11,'f',3)
+                                        .arg(panel_i.Normal.z,11,'f',3)
+                                        .arg(panel_i.Area,11,'e',3)
                                         .arg(m_pWOpp[iw]->m_dCp[p],11,'f',4);
                             }
                             out << strong;
@@ -4326,7 +4340,7 @@ void Miarex::exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, d
 
     out << ("#========TODO: REMOVE OR MODIFY MANUALLY DUPLICATE SECTIONS IN SURFACE DEFINITION=========\n");
     out << ("SURFACE                      | (keyword)\n");
-    out << (pWing->wingName());
+    out << (pWing->name());
     out << ("\n");
     out << ("#Nchord    Cspace   [ Nspan Sspace ]\n");
 
@@ -4412,7 +4426,7 @@ void Miarex::exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, d
         {
             out << ("CONTROL                                                     |  (keyword)\n");
             str = QString("_Flap_%1  ").arg(iFlap);
-            strong = pWing->wingName();
+            strong = pWing->name();
             strong.replace(" ", "_");
             strong += str;
 
@@ -4450,7 +4464,7 @@ void Miarex::exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, d
         {
             out << ("CONTROL                                                     |  (keyword)\n");
             str = QString("_Flap_%1  ").arg(iFlap);
-            strong = pWing->wingName();
+            strong = pWing->name();
             strong.replace(" ", "_");
             strong += str;
 
@@ -4492,7 +4506,7 @@ void Miarex::exportAVLWing_Old(Wing *pWing, QTextStream &out, int index, double 
 
     out << ("#=================================================\n");
     out << ("SURFACE                      | (keyword)\n");
-    out << (pWing->wingName());
+    out << (pWing->name());
     out << ("\n");
     out << ("#Nchord    Cspace   [ Nspan Sspace ]\n");
 
@@ -4567,7 +4581,7 @@ void Miarex::exportAVLWing_Old(Wing *pWing, QTextStream &out, int index, double 
         {
             out << ("CONTROL                                                     |  (keyword)\n");
             str = QString("_Flap_%1  ").arg(iFlap);
-            strong = pWing->wingName();
+            strong = pWing->name();
             strong.replace(" ", "_");
             strong += str;
             double mean_angle = 0.0;
@@ -4696,10 +4710,11 @@ void Miarex::onHideAllWPolars()
         //        if(pWPolar->polarType()==XFLR5::STABILITYPOLAR) pWPolar->points() = false;
     }
 
-    emit projectModified();
+    m_pPlaneTreeView->setCurveParams();
 
     s_bResetCurves = true;
     updateView();
+    emit projectModified();
 }
 
 
@@ -4721,11 +4736,12 @@ void Miarex::onHideAllWPlrOpps()
             }
         }
     }
-    emit projectModified();
 
+    m_pPlaneTreeView->setCurveParams();
 
     s_bResetCurves = true;
     updateView();
+    emit projectModified();
 }
 
 
@@ -4741,10 +4757,12 @@ void Miarex::onHideAllWOpps()
         PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
         pPOpp->setVisible(false);
     }
-    emit projectModified();
+    m_pPlaneTreeView->setCurveParams();
 
     s_bResetCurves = true;
     updateView();
+
+    emit projectModified();
 }
 
 
@@ -4753,19 +4771,20 @@ void Miarex::onHideAllWOpps()
  */
 void Miarex::onHidePlaneOpps()
 {
+    if(!m_pCurPlane) return;
     for (int i=0; i< Objects3d::planeOppCount(); i++)
     {
         PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
-        if (pPOpp->planeName() == m_pCurWPolar->planeName())
+        if (pPOpp->planeName() == m_pCurPlane->name())
         {
             pPOpp->setVisible(false);
         }
     }
-
-    emit projectModified();
+    m_pPlaneTreeView->setCurveParams();
 
     s_bResetCurves = true;
     updateView();
+    emit projectModified();
 }
 
 
@@ -4789,10 +4808,11 @@ void Miarex::onHidePlaneWPolars()
             if(pWPolar->polarType()==xfl::STABILITYPOLAR) pWPolar->setPointStyle(Line::NOSYMBOL);
         }
     }
+    m_pPlaneTreeView->setCurveParams();
 
-    emit projectModified();
     s_bResetCurves = true;
     updateView();
+    emit projectModified();
 }
 
 
@@ -5143,7 +5163,6 @@ void Miarex::onReadAnalysisData()
 }
 
 
-
 /**
  * The user has requested a change to the type of polars which ought to be displayed
  */
@@ -5179,14 +5198,11 @@ void Miarex::onRenameCurWPolar()
     if(!m_pCurWPolar) return;
     if(!m_pCurPlane) return;
 
-    WPolar *pWPolar = nullptr;
-    WPolar *pOldWPolar = nullptr;
-
     //make a list of existing WPolar names for that Plane
     QStringList NameList;
     for(int k=0; k<Objects3d::polarCount(); k++)
     {
-        pWPolar = Objects3d::polarAt(k);
+        WPolar *pWPolar = Objects3d::polarAt(k);
         if(pWPolar->planeName()==m_pCurPlane->name())
             NameList.append(pWPolar->polarName());
     }
@@ -5205,10 +5221,10 @@ void Miarex::onRenameCurWPolar()
 
         // it's a real overwrite
         // so find and delete the existing WPolar with the new name
-        pWPolar = nullptr;
+
         for(int ipb=0; ipb<Objects3d::polarCount(); ipb++)
         {
-            pOldWPolar = Objects3d::polarAt(ipb);
+            WPolar *pOldWPolar = Objects3d::polarAt(ipb);
             if(pOldWPolar->polarName()==dlg.newName() && pOldWPolar->planeName()==m_pCurPlane->name())
             {
                 Objects3d::deleteWPolar(pOldWPolar);
@@ -5221,7 +5237,7 @@ void Miarex::onRenameCurWPolar()
     //remove the WPolar from its current position in the array
     for (int l=0; l<Objects3d::polarCount();l++)
     {
-        pOldWPolar = Objects3d::polarAt(l);
+        WPolar *pOldWPolar = Objects3d::polarAt(l);
         if(pOldWPolar==m_pCurWPolar)
         {
             Objects3d::removePolarAt(l);
@@ -5245,7 +5261,7 @@ void Miarex::onRenameCurWPolar()
     bool bInserted = false;
     for (int l=0; l<Objects3d::polarCount();l++)
     {
-        pOldWPolar = Objects3d::polarAt(l);
+        WPolar *pOldWPolar = Objects3d::polarAt(l);
 
         if(pOldWPolar->polarName().compare(m_pCurWPolar->polarName(), Qt::CaseInsensitive) >0)
         {
@@ -5258,8 +5274,8 @@ void Miarex::onRenameCurWPolar()
 
     if(!bInserted) Objects3d::s_oaWPolar.append(m_pCurWPolar);
 
-
     updateTreeView();
+    m_pPlaneTreeView->selectWPolar(m_pCurWPolar, false);
 
     emit projectModified();
 
@@ -5268,15 +5284,12 @@ void Miarex::onRenameCurWPolar()
 }
 
 
-
 /**
  * The user has requested that the active wing ot plane be renames
  * Changes the name and updates the references in all child polars and oppoints
  */
 void Miarex::onRenameCurPlane()
 {
-    //Rename the currently selected Plane
-
     if(!m_pCurPlane)    return;
     QString oldName = m_pCurPlane->name();
     Objects3d::renamePlane(m_pCurPlane->name());
@@ -5319,12 +5332,12 @@ void Miarex::onResetCurWPolar()
                                                   QMessageBox::Yes)) return;
     m_bResetTextLegend = true;
     m_pCurWPolar->clearData();
-    PlaneOpp *pPOpp;
+
     if(m_pCurPlane)
     {
         for(int i=Objects3d::planeOppCount()-1; i>=0; --i)
         {
-            pPOpp =  Objects3d::planeOppAt(i);
+            PlaneOpp *pPOpp =  Objects3d::planeOppAt(i);
             if(pPOpp->polarName()==m_pCurWPolar->polarName() && pPOpp->planeName()==m_pCurPlane->name())
             {
                 Objects3d::removePOppAt(i);
@@ -5369,6 +5382,7 @@ void Miarex::onShowAllWOpps()
         PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
         pPOpp->setVisible(true);
     }
+    m_pPlaneTreeView->setCurveParams();
 
     emit projectModified();
 
@@ -5382,13 +5396,12 @@ void Miarex::onShowAllWOpps()
  */
 void Miarex::onShowAllWPolars()
 {
-    int i;
-    WPolar *pWPolar;
-    for (i=0; i<Objects3d::polarCount(); i++)
+    for (int i=0; i<Objects3d::polarCount(); i++)
     {
-        pWPolar = Objects3d::polarAt(i);
+        WPolar *pWPolar = Objects3d::polarAt(i);
         pWPolar->setVisible(true);
     }
+    m_pPlaneTreeView->setCurveParams();
 
     emit projectModified();
     s_bResetCurves = true;
@@ -5409,10 +5422,11 @@ void Miarex::onShowPlaneWPolarsOnly()
         WPolar *pWPolar = Objects3d::polarAt(i);
         pWPolar->setVisible((pWPolar->planeName() == m_pCurPlane->name()));
     }
+    m_pPlaneTreeView->setCurveParams();
 
-    emit projectModified();
     s_bResetCurves = true;
     updateView();
+    emit projectModified();
 }
 
 
@@ -5429,8 +5443,10 @@ void Miarex::onShowWPolarOppsOnly()
         }
         else pPOpp->setVisible(false);
     }
+    m_pPlaneTreeView->setCurveParams();
     s_bResetCurves = true;
     updateView();
+    emit projectModified();
 }
 
 
@@ -5440,23 +5456,22 @@ void Miarex::onShowWPolarOppsOnly()
 void Miarex::onShowPlaneWPolars()
 {
     if(!m_pCurPlane) return;
-    int i;
-    QString PlaneName;
-    if(m_pCurPlane)     PlaneName = m_pCurPlane->name();
-    else return;
 
-    WPolar *pWPolar;
-    for (i=0; i<Objects3d::polarCount(); i++)
+    QString PlaneName;
+    if(m_pCurPlane)   PlaneName = m_pCurPlane->name();
+    else              return;
+
+    for (int i=0; i<Objects3d::polarCount(); i++)
     {
-        pWPolar = Objects3d::polarAt(i);
+        WPolar *pWPolar = Objects3d::polarAt(i);
         if (pWPolar->planeName() == PlaneName) pWPolar->setVisible(true);
     }
+    m_pPlaneTreeView->setCurveParams();
 
-    emit projectModified();
     s_bResetCurves = true;
     updateView();
+    emit projectModified();
 }
-
 
 
 /**
@@ -5464,21 +5479,22 @@ void Miarex::onShowPlaneWPolars()
  */
 void Miarex::onShowPlaneOpps()
 {
-    PlaneOpp *pPOpp;
-    int i;
-    for (i=0; i< Objects3d::planeOppCount(); i++)
+    if(!m_pCurPlane) return;
+
+    for (int i=0; i< Objects3d::planeOppCount(); i++)
     {
-        pPOpp = Objects3d::planeOppAt(i);
-        if (pPOpp->planeName() == m_pCurWPolar->planeName())
+        PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
+        if (pPOpp->planeName() == m_pCurPlane->name())
         {
             pPOpp->setVisible(true);
         }
     }
+    m_pPlaneTreeView->setCurveParams();
 
-    emit projectModified();
 
     s_bResetCurves = true;
     updateView();
+    emit projectModified();
 }
 
 
@@ -5487,16 +5503,13 @@ void Miarex::onShowPlaneOpps()
  */
 void Miarex::onShowAllWPlrOpps()
 {
-    int i;
-    //Switch all WOpps view to on for the current Plane and WPolar
     m_bCurPOppOnly = false;
 
-    PlaneOpp *pPOpp;
     if(m_pCurPlane)
     {
-        for (i=0; i< Objects3d::planeOppCount(); i++)
+        for (int i=0; i< Objects3d::planeOppCount(); i++)
         {
-            pPOpp = Objects3d::planeOppAt(i);
+            PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
             if (pPOpp->planeName() == m_pCurWPolar->planeName() &&
                     pPOpp->polarName()   == m_pCurWPolar->polarName())
             {
@@ -5504,10 +5517,11 @@ void Miarex::onShowAllWPlrOpps()
             }
         }
     }
-    emit projectModified();
+    m_pPlaneTreeView->setCurveParams();
 
     s_bResetCurves = true;
     updateView();
+    emit projectModified();
 }
 
 
@@ -7449,7 +7463,7 @@ void Miarex::paintPanelForceLegendText(QPainter &painter)
     {
         if(pWing(iw))
         {
-            for (p=0; p<pWing(iw)->m_MatSize; p++)
+            for (p=0; p<pWing(iw)->m_nPanels; p++)
             {
                 rmax = qMax(rmax, pWOppList[iw]->m_dCp[p]);
                 rmin = qMin(rmin, pWOppList[iw]->m_dCp[p]);

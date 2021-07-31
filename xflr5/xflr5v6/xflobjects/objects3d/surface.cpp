@@ -194,7 +194,7 @@ void Surface::copy(Surface const*pSurface)
     m_TwistA    = pSurface->m_TwistA;
     m_TwistB    = pSurface->m_TwistB;
 
-    Normal  = pSurface->Normal;
+    m_Normal  = pSurface->m_Normal;
     NormalA = pSurface->NormalA;
     NormalB = pSurface->NormalB;
 
@@ -323,7 +323,6 @@ void Surface::getNormal(double yrel, Vector3d &N) const
 }
 
 
-
 /**
  * Returns the leading point of the specified strip
  * @param k the 0-based index of the strip for which the leading point shall be returned.
@@ -337,7 +336,6 @@ void Surface::getLeadingPt(int k, Vector3d &C) const
     C.y    = (LA.y+LB.y)/2.0;
     C.z    = (LA.z+LB.z)/2.0;
 }
-
 
 
 /**
@@ -453,7 +451,7 @@ void Surface::getSidePoint(double xRel, bool bRight, xfl::enumSurfacePosition po
         else if(pos==xfl::BOTSURFACE && m_pFoilA) foilPt = m_pFoilA->lowerYRel(xRel, PtNormal.x, PtNormal.z);
 
         Point = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
-        Point +=  Normal * foilPt.y*chord(0.0);
+        Point +=  m_Normal * foilPt.y*chord(0.0);
     }
     else
     {
@@ -462,7 +460,7 @@ void Surface::getSidePoint(double xRel, bool bRight, xfl::enumSurfacePosition po
         else if(pos==xfl::BOTSURFACE && m_pFoilB) foilPt = m_pFoilB->lowerYRel(xRel, PtNormal.x, PtNormal.z);
 
         Point = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
-        Point +=  Normal * foilPt.y*chord(1.0);
+        Point +=  m_Normal * foilPt.y*chord(1.0);
     }
 }
 
@@ -484,7 +482,7 @@ void Surface::getSidePoints(xfl::enumSurfacePosition pos,
     double xRelA(0), xRelB(0);
     Vector3d A4, B4, TA4, TB4, I;
     Vector3d Ux(1,0,0);
-    Vector3d V = Normal * NormalA;
+    Vector3d V = m_Normal * NormalA;
     Vector3d Ua = (m_LA - m_TA).normalized();
     //    double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
     double sindA = V.dot(Ua);
@@ -494,7 +492,7 @@ void Surface::getSidePoints(xfl::enumSurfacePosition pos,
     double cosdA = cos(alpha_dA);
     alpha_dA *= 180.0/PI;
 
-    V = Normal * NormalB;
+    V = m_Normal * NormalB;
     Vector3d Ub = (m_LB-m_TB).normalized();
     //    double sindB = -V.dot(Vector3d(1.0,0.0,0.0));
     double sindB = V.dot(Ub);
@@ -505,7 +503,7 @@ void Surface::getSidePoints(xfl::enumSurfacePosition pos,
     alpha_dB *= 180.0/PI;
 
 
-    double delta = -atan(Normal.y / Normal.z)*180.0/PI;
+    double delta = -atan(m_Normal.y / m_Normal.z)*180.0/PI;
     //    double delta = -atan2(Normal.y,  Normal.z)*180.0/PI;
 
     //create the quarter chord centers of rotation for the twist
@@ -603,33 +601,33 @@ void Surface::getSurfacePoint(double xArel, double xBrel, double yrel,
     {
         foilPt = m_pFoilA->midYRel(xArel);
         APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
-        APt +=  Normal * foilPt.y*chord(0.0);
+        APt +=  m_Normal * foilPt.y*chord(0.0);
 
         foilPt = m_pFoilB->midYRel(xBrel);
         BPt = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
-        BPt +=  Normal * foilPt.y*chord(1.0);
+        BPt +=  m_Normal * foilPt.y*chord(1.0);
 
     }
     else if(pos==xfl::TOPSURFACE && m_pFoilA && m_pFoilB)
     {
         foilPt = m_pFoilA->upperYRel(xArel, nx, ny);
         APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
-        APt +=  Normal * foilPt.y*chord(0.0);
+        APt +=  m_Normal * foilPt.y*chord(0.0);
 
         foilPt = m_pFoilB->upperYRel(xBrel, nx, ny);
         BPt = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
-        BPt +=  Normal * foilPt.y*chord(1.0);
+        BPt +=  m_Normal * foilPt.y*chord(1.0);
 
     }
     else if(pos==xfl::BOTSURFACE && m_pFoilA && m_pFoilB)
     {
         foilPt = m_pFoilA->lowerYRel(xArel, nx, ny);
         APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
-        APt +=  Normal * foilPt.y*chord(0.0);
+        APt +=  m_Normal * foilPt.y*chord(0.0);
 
         foilPt = m_pFoilB->lowerYRel(xBrel, nx, ny);
         BPt = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
-        BPt +=  Normal * foilPt.y*chord(1.0);
+        BPt +=  m_Normal * foilPt.y*chord(1.0);
     }
     Point = APt * (1.0-yrel)+  BPt * yrel;
     getNormal(yrel, PtNormal);
@@ -938,7 +936,7 @@ void Surface::rotateX(Vector3d const&O, double XTilt)
     m_TB.rotateX(O, XTilt);
     m_HingePoint.rotateX(O, XTilt);
 
-    Normal.rotateX(XTilt);
+    m_Normal.rotateX(XTilt);
     NormalA.rotateX(XTilt);
     NormalB.rotateX(XTilt);
     m_HingeVector.rotateX(XTilt);
@@ -958,7 +956,7 @@ void Surface::rotateY(Vector3d const &O, double YTilt)
     m_TB.rotateY(O, YTilt);
     m_HingePoint.rotateY(O, YTilt);
 
-    Normal.rotateY(YTilt);
+    m_Normal.rotateY(YTilt);
     NormalA.rotateY(YTilt);
     NormalB.rotateY(YTilt);
     m_HingeVector.rotateY(YTilt);
@@ -979,7 +977,7 @@ void Surface::rotateZ(Vector3d const &O, double ZTilt)
     m_HingePoint.rotateZ(O, ZTilt);
 
     Vector3d Origin(0.0,0.0,0.0);
-    Normal.rotateZ(Origin, ZTilt);
+    m_Normal.rotateZ(Origin, ZTilt);
     NormalA.rotateZ(Origin, ZTilt);
     NormalB.rotateZ(Origin, ZTilt);
     m_HingeVector.rotateZ(Origin, ZTilt);
@@ -1027,8 +1025,8 @@ void Surface::setNormal()
     Vector3d LATB, TALB;
     LATB = m_TB - m_LA;
     TALB = m_LB - m_TA;
-    Normal = LATB * TALB;
-    Normal.normalize();
+    m_Normal = LATB * TALB;
+    m_Normal.normalize();
 }
 
 
@@ -1213,7 +1211,7 @@ void Surface::setMeshSidePoints(Body * pBody, double dx, double dz)
         TBody.translate(dx, 0.0, dz);
     }
 
-    V = Normal * NormalA;
+    V = m_Normal * NormalA;
     Ua = (m_LA - m_TA).normalized();
     //    double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
     double sindA = V.dot(Ua);
@@ -1223,7 +1221,7 @@ void Surface::setMeshSidePoints(Body * pBody, double dx, double dz)
     cosdA = cos(alpha_dA);
     alpha_dA *= 180.0/PI;
 
-    V = Normal * NormalB;
+    V = m_Normal * NormalB;
     Ub = (m_LB-m_TB).normalized();
     double sindB = V.dot(Ub);
     //    double sindB = V.VAbs();

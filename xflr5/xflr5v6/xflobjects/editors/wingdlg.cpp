@@ -114,7 +114,7 @@ WingDlg::~WingDlg()
 
 bool WingDlg::checkWing()
 {
-    if(!m_pWing->m_WingName.length())
+    if(!m_pWing->m_Name.length())
     {
         QMessageBox::warning(this, tr("Warning"), tr("Please enter a name for the wing"));
         m_pleWingName->setFocus();
@@ -412,10 +412,10 @@ bool WingDlg::initDialog(Wing *pWing)
     m_pglWingView->setWing(m_pWing);
     computeGeometry();
 
-    m_pleWingName->setText(m_pWing->m_WingName);
-    if(m_pWing->m_WingDescription.length())
+    m_pleWingName->setText(m_pWing->m_Name);
+    if(m_pWing->m_Description.length())
     {
-        m_pteWingDescription->setPlainText(m_pWing->m_WingDescription);
+        m_pteWingDescription->setPlainText(m_pWing->m_Description);
     }
     else
     {
@@ -907,10 +907,10 @@ void WingDlg::onWingColor(QColor clr)
 
 void WingDlg::readParams()
 {
-    m_pWing->m_WingName = m_pleWingName->text();
+    m_pWing->m_Name = m_pleWingName->text();
     QString strange = m_pteWingDescription->toPlainText();
     if(strange == tr("Wing Description")) strange="";
-    m_pWing->m_WingDescription = strange;
+    m_pWing->m_Description = strange;
 
     for (int i=0; i< m_pWingModel->rowCount();  i++)
     {
@@ -1618,7 +1618,7 @@ void WingDlg::onExportWingToXML()
     QString filter = "XML file (*.xml)";
     QString FileName, strong;
 
-    strong = m_pWing->wingName().trimmed();
+    strong = m_pWing->name().trimmed();
     strong.replace(' ', '_');
     FileName = QFileDialog::getSaveFileName(this, tr("Export to xml file"),
                                             xfl::s_LastDirName +'/'+strong,
@@ -1691,7 +1691,7 @@ bool WingDlg::intersectObject(Vector3d AA,  Vector3d U, Vector3d &I)
                           m_pWing->surface(j)->m_LB,
                           m_pWing->surface(j)->m_TA,
                           m_pWing->surface(j)->m_TB,
-                          m_pWing->surface(j)->Normal,
+                          m_pWing->surface(j)->m_Normal,
                           AA, U, I, dist))
             return true;
     }

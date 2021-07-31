@@ -470,7 +470,7 @@ void PlaneDlg::onFin()
 void PlaneDlg::onImportPlaneBody()
 {
     ImportObjectDlg dlg(this);
-    if(m_pPlane->body()) dlg.m_ObjectName = m_pPlane->body()->m_BodyName;
+    if(m_pPlane->body()) dlg.m_ObjectName = m_pPlane->body()->m_Name;
     else                 dlg.m_ObjectName.clear();
     dlg.initDialog(false);
 
@@ -569,7 +569,7 @@ void PlaneDlg::onImportWing()
 void PlaneDlg::onImportWing2()
 {
     ImportObjectDlg dlg(this);
-    dlg.m_ObjectName = m_pPlane->wing()->m_WingName;
+    dlg.m_ObjectName = m_pPlane->wing()->m_Name;
     dlg.initDialog(true);
 
     if(dlg.exec() == QDialog::Accepted)

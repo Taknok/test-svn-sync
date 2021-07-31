@@ -184,8 +184,8 @@ double WingOpp::maxLift() const
 */
 void WingOpp::createWOpp(const Wing *pWing, const WPolar *pWPolar)
 {
-    m_WingName            = pWing->wingName();
-    m_NVLMPanels          = pWing->m_MatSize;
+    m_WingName            = pWing->name();
+    m_NVLMPanels          = pWing->m_nPanels;
     m_NStation            = pWing->NStations();
     m_nFlaps              = pWing->nFlaps();
 

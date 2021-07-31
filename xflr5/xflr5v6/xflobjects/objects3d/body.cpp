@@ -31,11 +31,9 @@
  */
 Body::Body()
 {
-    m_BodyName = QObject::tr("Body Name");
+    m_Name = QObject::tr("Body Name");
 
-    m_BodyColor = QColor(98,102,156);
-    m_BodyStyle = 0;
-    m_BodyWidth = 1;
+    m_Color = QColor(98,102,156);
 
     m_iActiveFrame =  1;
     m_iHighlightFrame   = -1;
@@ -44,7 +42,6 @@ Body::Body()
     m_nxPanels = 19;
     m_nhPanels = 11;
 
-    m_pBodyPanel = nullptr;
     m_NElements = m_nxPanels * m_nhPanels * 2;
 
     //    m_BodyLEPosition.Set(0.0,0.0,0.0);
@@ -155,7 +152,8 @@ void Body::setNURBSKnots()
  * @param CoG the position of the CoG
  */
 void Body::computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
-                       double &GCm, double &GRm, double &GYm, double &Alpha, Vector3d &CoG) const
+                       double &GCm, double &GRm, double &GYm, double &Alpha, Vector3d const &CoG,
+                       Panel const*pPanel) const
 {
     Vector3d PanelForce, LeverArm, WindNormal, WindDirection;
     Vector3d GeomMoment;
@@ -163,23 +161,24 @@ void Body::computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
     double cosa = cos(Alpha*PI/180.0);
     double sina = sin(Alpha*PI/180.0);
 
-
     //   Define wind axis
     WindNormal.set(   -sina, 0.0, cosa);
     WindDirection.set( cosa, 0.0, sina);
 
     for (int p=0; p<m_NElements; p++)
     {
-        PanelForce.x = m_pBodyPanel[p].Normal.x * (-Cp[p]) * m_pBodyPanel[p].Area;
-        PanelForce.y = m_pBodyPanel[p].Normal.y * (-Cp[p]) * m_pBodyPanel[p].Area;
-        PanelForce.z = m_pBodyPanel[p].Normal.z * (-Cp[p]) * m_pBodyPanel[p].Area; // N/q
+        int ip = m_FirstPanelIndex+p;
+        Panel const &panel = pPanel[ip];
+        PanelForce.x = panel.Normal.x * (-Cp[p]) * panel.Area;
+        PanelForce.y = panel.Normal.y * (-Cp[p]) * panel.Area;
+        PanelForce.z = panel.Normal.z * (-Cp[p]) * panel.Area; // N/q
 
         double PanelLift = PanelForce.dot(WindNormal);
-        XCP   += m_pBodyPanel[p].CollPt.x * PanelLift;
-        YCP   += m_pBodyPanel[p].CollPt.y * PanelLift;
-        ZCP   += m_pBodyPanel[p].CollPt.z * PanelLift;
+        XCP   += panel.CollPt.x * PanelLift;
+        YCP   += panel.CollPt.y * PanelLift;
+        ZCP   += panel.CollPt.z * PanelLift;
 
-        LeverArm.set(m_pBodyPanel[p].CollPt.x - CoG.x, m_pBodyPanel[p].CollPt.y, m_pBodyPanel[p].CollPt.z-CoG.z);
+        LeverArm.set(panel.CollPt.x - CoG.x, panel.CollPt.y, panel.CollPt.z-CoG.z);
         GeomMoment = LeverArm * PanelForce; // N.m/q
 
         GCm  += GeomMoment.y;
@@ -197,12 +196,12 @@ void Body::duplicate(Body const *pBody)
 {
     if(!pBody) return;
 
-    m_BodyName        = pBody->m_BodyName;
-    m_BodyColor       = pBody->m_BodyColor;
+    m_Name        = pBody->m_Name;
+    m_Color       = pBody->m_Color;
     m_nxPanels        = pBody->m_nxPanels;
     m_nhPanels        = pBody->m_nhPanels;
     m_LineType        = pBody->m_LineType;
-    m_BodyDescription = pBody->m_BodyDescription;
+    m_Description = pBody->m_Description;
 
     //copy the splined surface data
     m_SplineSurface.m_iuDegree    = pBody->m_SplineSurface.m_iuDegree;
@@ -1361,7 +1360,7 @@ bool Body::exportBodyDefinition(QTextStream &outStream, double mtoUnit) const
     strong = "# in the clockwise direction aft looking forward\n\n";
     outStream << strong;
 
-    outStream << (m_BodyName+"\n\n");
+    outStream << (m_Name+"\n\n");
     outStream << ("BODYTYPE\n");
     if(m_LineType==xfl::BODYPANELTYPE)  outStream << (" 1        # Flat Panels (1) or NURBS (2)\n\n");
     if(m_LineType==xfl::BODYSPLINETYPE) outStream << (" 2        # Flat Panels (1) or NURBS (2)\n\n");
@@ -1404,7 +1403,7 @@ void Body::exportGeometry(QTextStream &outStream, int type, double mtoUnit, int 
     if(type==1)    str="";
     else        str=", ";
 
-    outStream  << m_BodyName;
+    outStream  << m_Name;
     outStream  << ("\n\n");
 
     outStream  << (("Right Surface Points\n"));
@@ -1476,11 +1475,11 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
         ar >> ArchiveFormat;
         if(ArchiveFormat<1000 || ArchiveFormat>1100) return false;
 
-        xfl::readCString(ar, m_BodyName);
-        if(ArchiveFormat>=1003) xfl::readCString(ar, m_BodyDescription);
+        xfl::readCString(ar, m_Name);
+        if(ArchiveFormat>=1003) xfl::readCString(ar, m_Description);
 
         xfl::readCOLORREF(ar, r,g,b);
-        m_BodyColor = QColor(r,g,b);
+        m_Color = QColor(r,g,b);
         ar >> k;
         if(k==1) m_LineType = xfl::BODYPANELTYPE;
         else     m_LineType = xfl::BODYSPLINETYPE;
@@ -1565,7 +1564,7 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
             }
         }
         ar >> f;
-        if(ArchiveFormat>=1005) m_BodyColor.setAlphaF(f);
+        if(ArchiveFormat>=1005) m_Color.setAlphaF(f);
         if(ArchiveFormat>=1006)
         {
             ar >> x >> y >> z;
@@ -1599,10 +1598,10 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
     {
         ar << 100006;
 
-        ar << m_BodyName;
-        ar << m_BodyDescription;
+        ar << m_Name;
+        ar << m_Description;
 
-        xfl::writeQColor(ar, m_BodyColor.red(), m_BodyColor.green(), m_BodyColor.blue(), m_BodyColor.alpha());
+        xfl::writeQColor(ar, m_Color.red(), m_Color.green(), m_Color.blue(), m_Color.alpha());
 
         if(m_LineType==xfl::BODYPANELTYPE) ar << 1;
         else                                 ar << 2;
@@ -1643,13 +1642,13 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
         ar >> ArchiveFormat;
         if(ArchiveFormat<100000 || ArchiveFormat>200000) return false;
 
-        ar >> m_BodyName;
-        ar >> m_BodyDescription;
+        ar >> m_Name;
+        ar >> m_Description;
 
 /*        int a,r,g,b;
         xfl::readQColor(ar, r, g, b, a);
         m_BodyColor = QColor(r,g,b,a); */
-        ar >> m_BodyColor;
+        ar >> m_Color;
 
         ar >> k;
         if(k==1) m_LineType = xfl::BODYPANELTYPE;
@@ -1809,7 +1808,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
 
     Line = 0;
     bRead  = xfl::readAVLString(inStream, Line, strong);
-    m_BodyName = strong.trimmed();
+    m_Name = strong.trimmed();
     m_SplineSurface.clearFrames();
     m_xPanels.clear();
     m_hPanels.clear();
@@ -1875,7 +1874,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
     {
         if(m_SplineSurface.m_pFrame[i]->m_CtrlPoint.size() != m_SplineSurface.m_pFrame[i-1]->m_CtrlPoint.size())
         {
-            errorMessage = QObject::tr("Error reading ")+m_BodyName+QObject::tr("\nFrames have different number of side points");
+            errorMessage = QObject::tr("Error reading ")+m_Name+QObject::tr("\nFrames have different number of side points");
             return false;
         }
     }

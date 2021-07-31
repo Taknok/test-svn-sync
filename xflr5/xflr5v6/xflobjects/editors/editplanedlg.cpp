@@ -831,7 +831,7 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
         m_pStruct->expand(m_pModel->indexFromItem(wingFolder.first()));
     }
 
-    QList<QStandardItem*> dataItem = prepareRow("Name", "Name", pWing->wingName());
+    QList<QStandardItem*> dataItem = prepareRow("Name", "Name", pWing->name());
     wingFolder.first()->appendRow(dataItem);
 
     dataItem = prepareRow("Symetric", "Symetric", pWing->isSymetric() ? "true": "false");
@@ -1009,7 +1009,7 @@ void EditPlaneDlg::fillBodyTreeView(QStandardItem*planeRootItem)
     QList<QStandardItem*> dataItem;
 
 
-    dataItem = prepareRow("", "Name", m_pPlane->body()->bodyName());
+    dataItem = prepareRow("", "Name", m_pPlane->body()->name());
     bodyFolder.first()->appendRow(dataItem);
 
     dataItem = prepareRow("", "Type", bodyPanelType(pBody->bodyType()));

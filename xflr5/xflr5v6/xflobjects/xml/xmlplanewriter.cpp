@@ -122,7 +122,7 @@ void XMLPlaneWriter::writeWing(Wing const &wing, Vector3d position, double Ry)
 {
     writeStartElement("wing");
     {
-        writeTextElement("Name", wing.wingName());
+        writeTextElement("Name", wing.name());
         writeTextElement("Type",   wingType(wing.wingType()));
         writeColor(wing.color());
         writeTextElement("Description", wing.wingDescription());
@@ -225,9 +225,9 @@ void XMLPlaneWriter::writeBody(Body *pBody, Vector3d position, double lengthUnit
     NURBSSurface *pSurface = pBody->splineSurface();
     writeStartElement("body");
     {
-        writeTextElement("Name", pBody->bodyName());
+        writeTextElement("Name", pBody->name());
         writeColor(pBody->color());
-        writeTextElement("Description", pBody->bodyDescription());
+        writeTextElement("Description", pBody->description());
         writeTextElement("Position",QString("%1, %2, %3").arg(position.x*lengthUnit, 11,'g',5)
                          .arg(position.y*lengthUnit, 11,'g',5)
                          .arg(position.z*lengthUnit, 11,'g',5));

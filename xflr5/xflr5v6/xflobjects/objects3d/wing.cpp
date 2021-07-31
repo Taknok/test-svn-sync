@@ -77,9 +77,9 @@ Wing::Wing()
     m_bSymetric     = true;
     m_bWingOut      = false;
 
-    m_WingName        = QObject::tr("Wing Name");
+    m_Name        = QObject::tr("Wing Name");
     m_WingType        = xfl::MAINWING;
-    m_WingDescription = "";
+    m_Description = "";
 
     QColor clr;
     clr.setHsv(QRandomGenerator::global()->bounded(360),
@@ -88,8 +88,6 @@ Wing::Wing()
     m_Color.setRed(  clr.red());
     m_Color.setGreen(clr.green());
     m_Color.setBlue( clr.blue());
-
-    m_pWingPanel     = nullptr;
 
     m_WingCL            = 0.0;
     m_CDv               = 0.0;
@@ -107,7 +105,7 @@ Wing::Wing()
     m_Maxa = 0.0;
     //    m_AVLIndex = -(int)(qrand()/10000);//improbable value...
 
-    m_MatSize   = 0;
+    m_nPanels   = 0;
     m_NStation  = 0;
 
     m_AR         = 0.0;// Aspect ratio
@@ -170,7 +168,7 @@ bool Wing::importDefinition(QString path_to_file, QString errorMessage)
         else {
             QTextStream infile(&fp);
             clearWingSections();
-            this->m_WingName = infile.readLine();
+            this->m_Name = infile.readLine();
             while (true)
             {
                 counter++;
@@ -245,7 +243,7 @@ bool Wing::exportDefinition(QString path_to_file, QString errorMessage)
         } else {
             QTextStream out_file(&fp);
             //Iterate the wing sections are write out the data...
-            out_file << this->m_WingName;
+            out_file << this->m_Name;
 
 #if QT_VERSION >= 0x050F00
             out_file << Qt::endl;
@@ -628,7 +626,7 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
     double MinPanelSize = 0.0;
     if(s_MinPanelSize>0.0) MinPanelSize = s_MinPanelSize;
 
-    m_MatSize = 0;
+    m_nPanels = 0;
 
     //define the normal to each surface
     int nSurf=0;
@@ -1042,7 +1040,7 @@ void Wing::duplicate(Wing const*pWing)
     m_TR            = pWing->m_TR;
     m_GChord        = pWing->m_GChord;
     m_MAChord       = pWing->m_MAChord;
-    m_WingName      = pWing->m_WingName;
+    m_Name      = pWing->m_Name;
     m_bSymetric     = pWing->m_bSymetric;
     m_bIsFin        = pWing->m_bIsFin;
     m_bSymFin       = pWing->m_bSymFin;
@@ -1072,7 +1070,7 @@ void Wing::duplicate(Wing const*pWing)
         m_PointMass.append(pm);
     }
 
-    m_WingDescription = pWing->m_WingDescription;
+    m_Description = pWing->m_Description;
     m_Color = pWing->m_Color;
 }
 
@@ -1353,7 +1351,7 @@ double Wing::zPos(double y) const
  * Assumes the array of force vectors has been calculated previously
  * @param bThinSurface true if the calculation has been performed on thin VLM surfaces, false in the case of a 3D-panelanalysis
  */
-void Wing::panelComputeBending(bool bThinSurface)
+void Wing::panelComputeBending(Panel const*pPanel, bool bThinSurface)
 {
     QVector<double> ypos, zpos;
     int coef(0),p(0);
@@ -1383,13 +1381,13 @@ void Wing::panelComputeBending(bool bThinSurface)
         {
             if(!bThinSurface)
             {
-                ypos.append(m_pWingPanel[p].CollPt.y);
-                zpos.append(m_pWingPanel[p].CollPt.z);
+                ypos.append(pPanel[m_FirstPanelIndex+p].CollPt.y);
+                zpos.append(pPanel[m_FirstPanelIndex+p].CollPt.z);
             }
             else
             {
-                ypos.append(m_pWingPanel[p].VortexPos.y);
-                zpos.append(m_pWingPanel[p].Vortex.z);
+                ypos.append(pPanel[m_FirstPanelIndex+p].VortexPos.y);
+                zpos.append(pPanel[m_FirstPanelIndex+p].Vortex.z);
             }
 
             p += coef*surf.m_NXPanels;
@@ -1575,7 +1573,7 @@ int Wing::VLMPanelTotal(bool bThinSurface) const
 void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double const*Gamma,
                               double &XCP, double &YCP, double &ZCP,
                               double &GCm, double &VCm, double &ICm, double &GRm, double &GYm, double &VYm,double &IYm,
-                              WPolar const*pWPolar, Vector3d const &CoG)
+                              WPolar const*pWPolar, Vector3d const &CoG, Panel const *pPanel)
 
 {
     double CPStrip(0), tau(0), NForce(0), cosa(0), sina(0);
@@ -1620,7 +1618,7 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double cons
 
         if(surf.m_bTEFlap) m_FlapMoment.append(0.0);
 
-        SurfaceNormal = surf.Normal;
+        SurfaceNormal = surf.m_Normal;
 
         // consider each strip in turn
         for (int k=0; k<surf.m_NYPanels; k++)
@@ -1645,26 +1643,27 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double cons
 
             for (int l=0; l<coef*surf.m_NXPanels; l++)
             {
+                Panel const&panel = pPanel[m_FirstPanelIndex+p];
                 // Get the force acting on the panel
-                if(m_pWingPanel[p].m_Pos!=xfl::MIDSURFACE)
+                if(pPanel[m_FirstPanelIndex+p].m_Pos!=xfl::MIDSURFACE)
                 {
-                    ForcePt = m_pWingPanel[p].CollPt;
-                    panelforce = m_pWingPanel[p].Normal * (-Cp[p]) * m_pWingPanel[p].Area;      // Newtons/q
+                    ForcePt = panel.CollPt;
+                    panelforce = panel.Normal * (-Cp[p]) * panel.Area;      // Newtons/q
                 }
                 else
                 {
                     // for each panel along the chord, add the lift coef
-                    ForcePt = m_pWingPanel[p].VortexPos;
-                    panelforce  = WindDirection * m_pWingPanel[p].Vortex;
+                    ForcePt = panel.VortexPos;
+                    panelforce  = WindDirection * panel.Vortex;
                     panelforce *= 2.0 * Gamma[p] /QInf;                                 //Newtons/q
 
-                    if(!pWPolar->bVLM1() && !m_pWingPanel[p].m_bIsLeading)
+                    if(!pWPolar->bVLM1() && !panel.m_bIsLeading)
                     {
-                        Force       = WindDirection * m_pWingPanel[p].Vortex;
+                        Force       = WindDirection * panel.Vortex;
                         Force      *= 2.0 * Gamma[p+1] /QInf;                          //Newtons/q
                         panelforce -= Force;
                     }
-                    Cp[p] = panelforce.dot(m_pWingPanel[p].Normal)/m_pWingPanel[p].Area;    //
+                    Cp[p] = panelforce.dot(panel.Normal)/panel.Area;    //
                 }
                 StripForce += panelforce;                                           // Newtons/q
                 NForce = panelforce.dot(SurfaceNormal);                             // Newtons/q
@@ -1685,7 +1684,7 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double cons
 
                 if(surf.m_bTEFlap)
                 {
-                    if(surf.isFlapPanel(m_pWingPanel[p].m_iElement))
+                    if(surf.isFlapPanel(panel.m_iElement))
                     {
                         //then p is on the flap, so add its contribution
                         HingeLeverArm = ForcePt - surf.m_HingePoint;
@@ -1839,11 +1838,11 @@ void Wing::panelComputeViscous(double QInf, const WPolar *pWPolar, double &WingV
  * @param nPanel the index of the panel
  * @return true if the panel belongs to the wing, false otherwise
  */
-bool Wing::isWingPanel(int nPanel)
+bool Wing::isWingPanel(int nPanel, Panel const *pPanel)
 {
-    for(int p=0; p<m_MatSize; p++)
+    for(int p=0; p<m_nPanels; p++)
     {
-        if(nPanel==m_pWingPanel[p].m_iElement) return true;
+        if(nPanel==pPanel[m_FirstPanelIndex+p].m_iElement) return true;
     }
     return false;
 }
@@ -1854,14 +1853,14 @@ bool Wing::isWingPanel(int nPanel)
  * @param nNode the index of a node
  * @return true if the node belongs to the wing, false otherwise
  */
-bool Wing::isWingNode(int nNode)
+bool Wing::isWingNode(int nNode, Panel const *pPanel)
 {
-    for(int p=0; p<m_MatSize; p++)
+    for(int p=0; p<m_nPanels; p++)
     {
-        if(nNode==m_pWingPanel[p].m_iLA) return true;
-        if(nNode==m_pWingPanel[p].m_iLB) return true;
-        if(nNode==m_pWingPanel[p].m_iTA) return true;
-        if(nNode==m_pWingPanel[p].m_iTB) return true;
+        if(nNode==pPanel[m_FirstPanelIndex+p].m_iLA) return true;
+        if(nNode==pPanel[m_FirstPanelIndex+p].m_iLB) return true;
+        if(nNode==pPanel[m_FirstPanelIndex+p].m_iTA) return true;
+        if(nNode==pPanel[m_FirstPanelIndex+p].m_iTB) return true;
     }
     return false;
 }
@@ -1957,7 +1956,7 @@ bool Wing::intersectWing(Vector3d O,  Vector3d U, Vector3d &I) const
         Surface const &surf = m_Surface.at(j);
         if(xfl::intersect(surf.m_LA, surf.m_LB,
                           surf.m_TA, surf.m_TB,
-                          surf.Normal,
+                          surf.m_Normal,
                           O, U, I, dist)) return true;
     }
     return false;
@@ -2080,21 +2079,21 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
         ar >> ArchiveFormat;
 
         if (ArchiveFormat <1001 || ArchiveFormat>1100) {
-            m_WingName = "";
+            m_Name = "";
             return false;
         }
 
-        xfl::readCString(ar,m_WingName);
-        if (m_WingName.length() ==0) return false;
+        xfl::readCString(ar,m_Name);
+        if (m_Name.length() ==0) return false;
 
         if (ArchiveFormat >=1008)
         {
-            xfl::readCString(ar, m_WingDescription);
+            xfl::readCString(ar, m_Description);
         }
 
         ar >> k;
         if(k!=0){
-            m_WingName = "";
+            m_Name = "";
             return false;
         }
 
@@ -2102,7 +2101,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
         if (k==1) m_bSymetric = true;
         else if (k==0) m_bSymetric = false;
         else{
-            m_WingName = "";
+            m_Name = "";
             return false;
         }
         //        m_bVLMSymetric = m_bSymetric;
@@ -2132,7 +2131,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             ar >> f; m_Section[is].m_Chord=double(f);
             if (qAbs(Chord(is)) <0.0)
             {
-                m_WingName = "";
+                m_Name = "";
                 return false;
             }
         }
@@ -2142,7 +2141,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             ar >> f;   setYPosition(is, double(f));
             if (qAbs(YPosition(is)) <0.0)
             {
-                m_WingName = "";
+                m_Name = "";
                 return false;
             }
         }
@@ -2305,8 +2304,8 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
     if(bIsStoring)
     {
         ar << 100001;
-        ar << m_WingName;
-        ar << m_WingDescription;
+        ar << m_Name;
+        ar << m_Description;
 
         xfl::writeQColor(ar, m_Color.red(), m_Color.green(), m_Color.blue(), m_Color.alpha());
 
@@ -2400,8 +2399,8 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
         ar >> ArchiveFormat;
         if(ArchiveFormat<100000 || ArchiveFormat>100001) return false;
 
-        ar >> m_WingName;
-        ar >> m_WingDescription;
+        ar >> m_Name;
+        ar >> m_Description;
 
 /*        int a,r,g,b;
         xfl::readQColor(ar, r, g, b, a);
@@ -2720,7 +2719,7 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
             surf.getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight,
                                            NormalA, NormalB, CHORDPANELS+1);
 
-            N = surf.Normal;
+            N = surf.m_Normal;
             N.rotateX(90.0);
 
             //L.E. triangle
@@ -2805,7 +2804,7 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
             surf.getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight,
                                            NormalA, NormalB, CHORDPANELS+1);
 
-            N = surf.Normal;
+            N = surf.m_Normal;
             N.rotateX(-90.0);
 
             //L.E. triangle
@@ -2906,7 +2905,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
      *
      * endsolid name
     */
-    QString name = wingName();
+    QString name = m_Name;
     name.replace(" ","");
     QString strong = "solid " + name + "\n";
     outStream << strong;
@@ -3032,7 +3031,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
             surf.getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
             surf.getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
 
-            N = surf.Normal;
+            N = surf.m_Normal;
             N.rotateX(90.0);
 
             //L.E. triangle
@@ -3078,7 +3077,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
             surf.getSidePoints(xfl::TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
             surf.getSidePoints(xfl::BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
 
-            N = surf.Normal;
+            N = surf.m_Normal;
             N.rotateX(-90.0);
 
             //L.E. triangle
