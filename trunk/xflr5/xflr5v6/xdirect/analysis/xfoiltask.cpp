@@ -311,6 +311,8 @@ bool XFoilTask::alphaSequence()
         SpMin = 0.0;
         SpMax = m_AlphaMin;
         SpInc = -SpInc;
+
+        qApp->processEvents();
     }
     //        strong+="\n";
     return true;

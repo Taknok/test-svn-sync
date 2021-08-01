@@ -1217,31 +1217,6 @@ void FoilTreeView::onSetFilter()
 }
 
 
-void FoilTreeView::updateVisibilityBoxes()
-{
-    for(int ir=0; ir<m_pModel->rowCount(); ir++)
-    {
-        ObjectTreeItem *pFoilItem = m_pModel->item(ir);
-        Foil *pFoil = Objects2d::foil(pFoilItem->name());
-        if(!pFoil) continue;
-
-        QModelIndex checkindex = m_pModel->index(ir, 2);
-        m_pModel->setData(checkindex, foilState(pFoil));
-
-        for(int jr=0; jr<pFoilItem->rowCount(); jr++)
-        {
-            ObjectTreeItem *pWPolarItem = pFoilItem->child(jr);
-            Polar *pPolar = Objects2d::getPolar(pFoil->name(), pWPolarItem->name());
-            if(!pPolar) continue;
-
-            QModelIndex checkindex = m_pModel->index(jr, 2, pFoilItem);
-
-            m_pModel->setData(checkindex, polarState(pPolar));
-        }
-    }
-}
-
-
 
 
 

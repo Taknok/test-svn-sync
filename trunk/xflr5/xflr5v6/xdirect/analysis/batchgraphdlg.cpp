@@ -88,7 +88,6 @@ BatchGraphDlg::BatchGraphDlg(QWidget *pParent) : BatchAbstractDlg(pParent)
 
 void BatchGraphDlg::connectSignals()
 {
-    connect(m_ppbAnalyze,   SIGNAL(clicked()),         SLOT(onAnalyze()));
     connect(m_ppbSkipOpp,   SIGNAL(clicked()),         SLOT(onSkipPoint()));
     connect(m_ppbSkipPolar, SIGNAL(clicked()),         SLOT(onSkipPolar()));
     connect(m_rbtype1,      SIGNAL(clicked()),         SLOT(onPolarType()));
@@ -262,6 +261,8 @@ void BatchGraphDlg::alphaLoop()
             outputMsg(str);
             break;
         }
+
+        qApp->processEvents();
     }//end Re loop
 }
 
@@ -469,11 +470,15 @@ void BatchGraphDlg::onAnalyze()
 {
     if(m_bIsRunning)
     {
+        qDebug()<<"cancelling";
         XFoil::setCancel(true);
         XFoilTask::s_bCancel = true;
         m_bCancel = true;
         return;
     }
+    qDebug()<<"onanalyyyze";
+
+
     m_bCancel    = false;
     m_bIsRunning = true;
     m_bErrors    = false;
@@ -660,7 +665,7 @@ void BatchGraphDlg::analyze()
     if(s_bCurrentFoil)
     {
         if(s_PolarType!=xfl::FIXEDAOAPOLAR) ReLoop();
-        else                                  alphaLoop();
+        else                                alphaLoop();
     }
     else
     {

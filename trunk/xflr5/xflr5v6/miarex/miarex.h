@@ -294,7 +294,8 @@ class Miarex : public QWidget
         Plane* curPlane() {return m_pCurPlane;}
         WPolar *curWPolar() {return m_pCurWPolar;}
         PlaneOpp *curPOpp(){return m_pCurPOpp;}
-        bool curPOppOnly(){return m_bCurPOppOnly;}
+
+        bool curPOppOnly() const {return m_bCurPOppOnly;}
 
         Wing *pWing(int iw);
 
@@ -363,7 +364,6 @@ class Miarex : public QWidget
         bool m_bLongitudinal;              /**< true if longitudinal stability results are to be displayed, false if lateral */
         bool m_bMoments;                   /**< true if the arrows representing moments are to be displayed on the 3D openGl view */
         bool m_bPanelForce;                /**< true if the forces acting on the panels are to be displayed in the 3D view */
-        bool m_bResetWake;                 /**< true if the wake geometry should be reset to its default shape prior to the analysis */
         bool m_bSequence;                  /**< true if a sequential analysis is to be performed */
         bool m_bShowCp;                    /**< true if the active curve should be displayed in Cp view */
         bool m_bShowEllipticCurve;         /**< true if the elliptic loading should be displayed in the local lift graph */

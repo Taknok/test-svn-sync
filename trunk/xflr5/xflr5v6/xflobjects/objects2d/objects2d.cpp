@@ -515,7 +515,7 @@ void Objects2d::insertOpPoint(OpPoint *pNewPoint)
 {
     if(!pNewPoint) return;
 
-    Polar *pPolar = getPolar(pNewPoint->foilName(), pNewPoint->polarName());
+    Polar const *pPolar = getPolar(pNewPoint->foilName(), pNewPoint->polarName());
     Q_ASSERT(pPolar);
 
     // first add the OpPoint to the OpPoint Array for the current FoilName
@@ -538,10 +538,10 @@ void Objects2d::insertOpPoint(OpPoint *pNewPoint)
             }
             else if (fabs(pNewPoint->Reynolds()-pOpPoint->Reynolds())<1.0)
             {
-                if(fabs(pNewPoint->aoa() - pOpPoint->aoa())<0.005 &&
-                        fabs(pNewPoint->ACrit-pOpPoint->ACrit)<0.1 &&
-                        fabs(pNewPoint->Xtr1-pOpPoint->Xtr1)<0.001 &&
-                        fabs(pNewPoint->Xtr2-pOpPoint->Xtr2)<0.001)
+                if(     fabs(pNewPoint->aoa() - pOpPoint->aoa())<0.005 &&
+                        fabs(pNewPoint->ACrit - pOpPoint->ACrit)<0.1   &&
+                        fabs(pNewPoint->Xtr1  - pOpPoint->Xtr1) <0.001 &&
+                        fabs(pNewPoint->Xtr2  - pOpPoint->Xtr2) <0.001)
                 {
 
                     //replace existing point

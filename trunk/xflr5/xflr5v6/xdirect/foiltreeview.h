@@ -74,6 +74,8 @@ class FoilTreeView : public QWidget
         void setCurveParams();
         void setPropertiesFont(QFont const &fnt) {m_pptoObjectProps->setFont(fnt);}
 
+        void setOverallCheckStatus();
+
         QByteArray const &splitterSize() const {return m_SplitterSizes;}
         void setSplitterSize(QByteArray size) {m_SplitterSizes = size;}
 
@@ -83,9 +85,6 @@ class FoilTreeView : public QWidget
     private:
         Qt::CheckState foilState(const Foil *pFoil) const;
         Qt::CheckState polarState(const Polar *pPolar) const;
-
-        void setOverallCheckStatus();
-        void updateVisibilityBoxes();
 
     public slots:
         void onItemClicked(const QModelIndex &index);

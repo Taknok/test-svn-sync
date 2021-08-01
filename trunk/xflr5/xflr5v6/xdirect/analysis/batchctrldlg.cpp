@@ -1,7 +1,7 @@
 /****************************************************************************
 
     BatchCtrlDlg Class
-    Copyright (C) 2021 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -241,9 +241,7 @@ void BatchCtrlDlg::customEvent(QEvent * pEvent)
     else if(pEvent->type() == XFOIL_END_OPP_EVENT)
     {
         XFoilOppEvent *pOppEvent = dynamic_cast<XFoilOppEvent*>(pEvent);
-//        Objects2d::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->oppPtr(), XDirect::s_bStoreOpp);
-        if(OpPoint::bStoreOpp()) Objects2d::insertOpPoint(pOppEvent->theOpPoint()); // OpPoint data is added to the polar data on the fly in the XFoilTask
-        else                     delete pOppEvent->theOpPoint();
+        delete pOppEvent->theOpPoint();
     }
 }
 

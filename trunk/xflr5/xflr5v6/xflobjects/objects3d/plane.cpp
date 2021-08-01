@@ -100,6 +100,8 @@ Plane::Plane()
     clearPointMasses();
 
     m_Name  = QObject::tr("Plane Name");
+
+    m_theStyle.m_Width = 2;
 }
 
 

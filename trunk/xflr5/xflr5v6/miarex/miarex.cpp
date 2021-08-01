@@ -165,7 +165,7 @@ Miarex::Miarex(QWidget *parent) : QWidget(parent)
     m_bTransGraph        = true;
     m_bPanelForce        = false;
     m_bLongitudinal      = true;
-    m_bCurPOppOnly       = true;
+    m_bCurPOppOnly       = false;
     m_bCurFrameOnly      = true;
     m_bType1 = m_bType2 = m_bType4 = m_bType7 = true;
     m_bShowEllipticCurve = false;
@@ -196,7 +196,6 @@ Miarex::Miarex(QWidget *parent) : QWidget(parent)
     m_bCurveVisible = true;
 
     m_WakeInterNodes  = 6;
-    m_bResetWake      = true;
     m_bSequence       = false;
 
     m_bDirichlet = true;
@@ -639,7 +638,7 @@ void Miarex::setControls()
 
     setAnalysisParams();
     m_pPlaneTreeView->setCurveParams();
-
+    m_pPlaneTreeView->setOverallCheckStatus();
     blockSignals(false);
     update();
 }
@@ -1765,41 +1764,40 @@ bool Miarex::loadSettings(QSettings &settings)
         m_bDownwash     = settings.value("bDownwash").toBool();
         m_bMoments      = settings.value("bMoments").toBool();
         gl3dMiarexView::s_bAutoCpScale  = settings.value("bAutoCpScale").toBool();
-        m_bCurPOppOnly  = settings.value("CurWOppOnly").toBool();
-        m_bShowEllipticCurve = settings.value("bShowElliptic").toBool();
-        m_bShowBellCurve     = settings.value("bShowTargetCurve").toBool();
-        m_BellCurveExp  = settings.value("BellCurveExp", 1).toDouble();
-        m_bMaxCL        = settings.value("CurveMaxCL", true ).toBool();
-        s_bLogFile      = settings.value("LogFile").toBool();
-        m_bDirichlet    = settings.value("Dirichlet").toBool();
-        m_bResetWake    = settings.value("ResetWake").toBool();
-        m_bShowWingCurve[0]    = settings.value("ShowWing").toBool();
-        m_bShowWingCurve[1]    = settings.value("ShowWing2").toBool();
-        m_bShowWingCurve[2]    = settings.value("ShowStab").toBool();
-        m_bShowWingCurve[3]    = settings.value("ShowFin").toBool();
-        m_bShowWingCurve[0] = true;
-        m_bShowFlapMoments = settings.value("showFlapMoments", true).toBool();
+        m_bCurPOppOnly       = settings.value("CurWOppOnly",      m_bCurPOppOnly).toBool();
+        m_bShowEllipticCurve = settings.value("bShowElliptic",    m_bShowEllipticCurve).toBool();
+        m_bShowBellCurve     = settings.value("bShowTargetCurve", m_bShowBellCurve).toBool();
+        m_BellCurveExp       = settings.value("BellCurveExp",     m_BellCurveExp).toDouble();
+        m_bMaxCL             = settings.value("CurveMaxCL",       m_bMaxCL ).toBool();
+        s_bLogFile           = settings.value("LogFile",          s_bLogFile).toBool();
+        m_bDirichlet         = settings.value("Dirichlet",        m_bDirichlet).toBool();
+        m_bShowWingCurve[0]  = settings.value("ShowWing",         m_bShowWingCurve[0]).toBool();
+        m_bShowWingCurve[1]  = settings.value("ShowWing2",        m_bShowWingCurve[1]).toBool();
+        m_bShowWingCurve[2]  = settings.value("ShowStab",         m_bShowWingCurve[2]).toBool();
+        m_bShowWingCurve[3]  = settings.value("ShowFin",          m_bShowWingCurve[3]).toBool();
+        m_bShowWingCurve[0]  = true;
+        m_bShowFlapMoments   = settings.value("showFlapMoments", m_bShowFlapMoments).toBool();
 
-        PlaneOpp::s_bStoreOpps    = settings.value("StoreWOpp").toBool();
-        m_bSequence     = settings.value("Sequence").toBool();
+        PlaneOpp::s_bStoreOpps = settings.value("StoreWOpp", PlaneOpp::s_bStoreOpps).toBool();
+        m_bSequence            = settings.value("Sequence",  m_bSequence).toBool();
 
-        m_AlphaMin      = settings.value("AlphaMin").toDouble();
-        m_AlphaMax      = settings.value("AlphaMax").toDouble();
-        m_AlphaDelta    = settings.value("AlphaDelta").toDouble();
-        m_BetaMin       = settings.value("BetaMin", 0.0).toDouble();
-        m_BetaMax       = settings.value("BetaMax", 1.0).toDouble();
-        m_BetaDelta     = settings.value("BetaDelta", 0.5).toDouble();
-        m_QInfMin       = settings.value("QInfMin").toDouble();
-        m_QInfMax       = settings.value("QInfMax").toDouble();
-        m_QInfDelta     = settings.value("QInfDelta").toDouble();
-        m_ControlMin    = settings.value("ControlMin").toDouble();
-        m_ControlMax    = settings.value("ControlMax").toDouble();
-        m_ControlDelta  = settings.value("ControlDelta").toDouble();
+        m_AlphaMin      = settings.value("AlphaMin",     m_AlphaMin).toDouble();
+        m_AlphaMax      = settings.value("AlphaMax",     m_AlphaMax).toDouble();
+        m_AlphaDelta    = settings.value("AlphaDelta",   m_AlphaDelta).toDouble();
+        m_BetaMin       = settings.value("BetaMin",      m_BetaMin).toDouble();
+        m_BetaMax       = settings.value("BetaMax",      m_BetaMax).toDouble();
+        m_BetaDelta     = settings.value("BetaDelta",    m_BetaDelta).toDouble();
+        m_QInfMin       = settings.value("QInfMin",      m_QInfMin).toDouble();
+        m_QInfMax       = settings.value("QInfMax",      m_QInfMax).toDouble();
+        m_QInfDelta     = settings.value("QInfDelta",    m_QInfDelta).toDouble();
+        m_ControlMin    = settings.value("ControlMin",   m_ControlMin).toDouble();
+        m_ControlMax    = settings.value("ControlMax",   m_ControlMax).toDouble();
+        m_ControlDelta  = settings.value("ControlDelta", m_ControlDelta).toDouble();
 
         m_CpLineStyle.loadSettings(settings,"CpStyle");
 
         int k = settings.value("iView").toInt();
-        if(k==0)      m_iView = xfl::WOPPVIEW;
+        if     (k==0) m_iView = xfl::WOPPVIEW;
         else if(k==1) m_iView = xfl::WPOLARVIEW;
         else if(k==2) m_iView = xfl::W3DVIEW;
         else if(k==3) m_iView = xfl::WCPVIEW;
@@ -1807,32 +1805,30 @@ bool Miarex::loadSettings(QSettings &settings)
         else if(k==5) m_iView = xfl::STABPOLARVIEW;
 
         k = settings.value("iWingView").toInt();
-        if(k==0)      m_iWingView  = xfl::ALLGRAPHS;
+        if     (k==0) m_iWingView  = xfl::ALLGRAPHS;
         else if(k==1) m_iWingView  = xfl::ONEGRAPH;
         else if(k==2) m_iWingView  = xfl::TWOGRAPHS;
         else if(k==4) m_iWingView  = xfl::FOURGRAPHS;
 
         k = settings.value("iWPlrView").toInt();
-        if(k==0)      m_iWPlrView  = xfl::ALLGRAPHS;
+        if     (k==0) m_iWPlrView  = xfl::ALLGRAPHS;
         else if(k==1) m_iWPlrView  = xfl::ONEGRAPH;
         else if(k==2) m_iWPlrView  = xfl::TWOGRAPHS;
         else if(k==4) m_iWPlrView  = xfl::FOURGRAPHS;
 
         k = settings.value("iRootLocusView").toInt();
-        if(k==0)      m_iRootLocusView  = xfl::ALLGRAPHS;
+        if     (k==0) m_iRootLocusView  = xfl::ALLGRAPHS;
         else if(k==1) m_iRootLocusView  = xfl::ONEGRAPH;
         else if(k==2) m_iRootLocusView  = xfl::TWOGRAPHS;
         else if(k==4) m_iRootLocusView  = xfl::FOURGRAPHS;
 
         k = settings.value("iStabTimeView").toInt();
-        if(k==0)      m_iStabTimeView  = xfl::ALLGRAPHS;
+        if     (k==0) m_iStabTimeView  = xfl::ALLGRAPHS;
         else if(k==1) m_iStabTimeView  = xfl::ONEGRAPH;
         else if(k==2) m_iStabTimeView  = xfl::TWOGRAPHS;
         else if(k==4) m_iStabTimeView  = xfl::FOURGRAPHS;
 
-        m_LLTMaxIterations         = settings.value("Iter").toInt();
-        //        GL3dBodyDlg::s_NHoopPoints  = settings.value("NHoopPoints").toInt();
-        //        GL3dBodyDlg::s_NXPoints     = settings.value("NXPoints").toInt();
+        m_LLTMaxIterations  = settings.value("Iter").toInt();
         m_InducedDragPoint  = settings.value("InducedDragPoint").toInt();
 
         gl3dMiarexView::s_LiftScale     = settings.value("LiftScale").toDouble();
@@ -1853,7 +1849,6 @@ bool Miarex::loadSettings(QSettings &settings)
         m_TimeInput[3]      = settings.value("TimeIn3",0.0).toDouble();
         m_bLongitudinal     = settings.value("DynamicsMode").toBool();
         m_StabilityResponseType = settings.value("StabCurveType",0).toInt();
-
 
         for(int i=0; i<20; i++)
         {
@@ -6292,7 +6287,6 @@ bool Miarex::saveSettings(QSettings &settings)
         settings.setValue("bVLM1", WPolarDlg::s_WPolar.bVLM1());
         settings.setValue("Dirichlet", m_bDirichlet);
         settings.setValue("KeepOutOpps", PlaneOpp::s_bKeepOutOpps);
-        settings.setValue("ResetWake", m_bResetWake );
         settings.setValue("ShowWing", m_bShowWingCurve[0]);
         settings.setValue("ShowWing2", m_bShowWingCurve[1]);
         settings.setValue("ShowStab", m_bShowWingCurve[2]);
