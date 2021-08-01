@@ -196,7 +196,7 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
         }
     }
 #else
-    if(w->bAutoLoadLast() && !MainFrame::projectName().length())
+    if(pMainFrame->bAutoLoadLast() && !MainFrame::projectName().length())
     {
         // if nothing has been loaded, load the last project file
         pMainFrame->onLoadLastProject();
