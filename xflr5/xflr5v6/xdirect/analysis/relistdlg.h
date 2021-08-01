@@ -63,6 +63,7 @@ class ReListDlg : public QDialog
         void hideEvent(QHideEvent *pEvent) override;
         void keyPressEvent(QKeyEvent *pEvent) override;
         void resizeEvent(QResizeEvent *pEvent) override;
+        QSize sizeHint() const override  {return QSize(550,550);}
 
     private:
         CPTableView *m_pcptReTable;

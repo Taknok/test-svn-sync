@@ -1,7 +1,7 @@
 ﻿/****************************************************************************
 
     BatchThreadDlg Class
-       Copyright (C) 2003-2016 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -337,8 +337,7 @@ void BatchThreadDlg::customEvent(QEvent * pEvent)
     else if(pEvent->type() == XFOIL_END_OPP_EVENT)
     {
         XFoilOppEvent *pOppEvent = dynamic_cast<XFoilOppEvent*>(pEvent);
-        if(OpPoint::bStoreOpp()) Objects2d::insertOpPoint(pOppEvent->theOpPoint()); // OpPoint data is added to the polar data on the fly in the XFoilTask
-        else                     delete pOppEvent->theOpPoint();
+        delete pOppEvent->theOpPoint();
     }
 }
 

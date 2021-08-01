@@ -2201,12 +2201,12 @@ void MainFrame::createXDirectActions()
     m_pDefinePolarAct->setStatusTip(tr("Defines a single analysis/polar"));
     connect(m_pDefinePolarAct, SIGNAL(triggered()), m_pXDirect, SLOT(onDefinePolar()));
 
-    m_pBatchAnalysisAct = new QAction(tr("Batch Analysis")/*+"\tShift+F6"*/, this);
+    m_pBatchAnalysisAct = new QAction(tr("Batch Analysis") + tr(" (Deprecated)"), this);
     m_pBatchAnalysisAct->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_F6));
     m_pBatchAnalysisAct->setStatusTip(tr("Launches a batch of analysis calculation for a specified range or list of Reynolds numbers"));
     connect(m_pBatchAnalysisAct, SIGNAL(triggered()), m_pXDirect, SLOT(onBatchAnalysis()));
 
-    m_pMultiThreadedBatchAct = new QAction(tr("Multi-threaded Batch Analysis")/*+"\tCtrl+F6"*/, this);
+    m_pMultiThreadedBatchAct = new QAction(tr("Batch Analysis"), this);
     m_pMultiThreadedBatchAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F6));
     m_pMultiThreadedBatchAct->setStatusTip(tr("Launches a batch of analysis calculation using all available computer CPU cores"));
     connect(m_pMultiThreadedBatchAct, SIGNAL(triggered()), m_pXDirect, SLOT(onMultiThreadedBatchAnalysis()));
@@ -2412,7 +2412,7 @@ void MainFrame::createXDirectMenus()
     m_pXFoilAnalysisMenu = menuBar()->addMenu(tr("Analysis"));
     {
         m_pXFoilAnalysisMenu->addAction(m_pDefinePolarAct);
-        m_pXFoilAnalysisMenu->addAction(m_pBatchAnalysisAct);
+//        m_pXFoilAnalysisMenu->addAction(m_pBatchAnalysisAct);
         m_pXFoilAnalysisMenu->addAction(m_pMultiThreadedBatchAct);
 #ifdef QT_DEBUG
         m_pXFoilAnalysisMenu->addAction(m_pBatchCtrlAct);
@@ -2564,7 +2564,7 @@ void MainFrame::createXDirectMenus()
 
         m_pOperFoilCtxMenu->addSeparator();//_______________
         m_pOperFoilCtxMenu->addAction(m_pDefinePolarAct);
-        m_pOperFoilCtxMenu->addAction(m_pBatchAnalysisAct);
+//        m_pOperFoilCtxMenu->addAction(m_pBatchAnalysisAct);
         m_pOperFoilCtxMenu->addAction(m_pMultiThreadedBatchAct);
         m_pOperFoilCtxMenu->addSeparator();//_______________
         m_pOperFoilCtxMenu->addAction(m_pShowAllPolars);
@@ -2634,7 +2634,7 @@ void MainFrame::createXDirectMenus()
         m_pOperPolarCtxMenu->addAction(m_pAllGraphsScalesAct);
         m_pOperPolarCtxMenu->addSeparator();//_______________
         m_pOperPolarCtxMenu->addAction(m_pDefinePolarAct);
-        m_pOperPolarCtxMenu->addAction(m_pBatchAnalysisAct);
+//        m_pOperPolarCtxMenu->addAction(m_pBatchAnalysisAct);
         m_pOperPolarCtxMenu->addAction(m_pMultiThreadedBatchAct);
         m_pOperPolarCtxMenu->addSeparator();//_______________
         m_pOperPolarCtxMenu->addAction(m_pShowAllPolars);

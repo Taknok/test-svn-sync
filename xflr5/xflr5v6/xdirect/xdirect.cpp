@@ -222,6 +222,7 @@ OpPoint* XDirect::curOpp()   {return Objects2d::curOpp();}
 void XDirect::setControls()
 {
     m_pFoilTreeView->setCurveParams();
+    m_pFoilTreeView->setOverallCheckStatus();
 
     m_pDisplayBox->setVisible(!m_bPolarView);
 
@@ -1131,7 +1132,7 @@ void XDirect::loadSettings(QSettings &settings)
         }
 
         m_pFoilTreeView->setSplitterSize(settings.value("FoilTreeSplitterSizes").toByteArray());
-        ReListDlg::s_WindowGeometry = settings.value("ReListDlgGeometry").toByteArray();
+        ReListDlg::s_WindowGeometry = settings.value("ReListDlgGeom").toByteArray();
     }
     settings.endGroup();
 
@@ -3905,7 +3906,7 @@ void XDirect::saveSettings(QSettings &settings)
         }
 
         settings.setValue("FoilTreeSplitterSizes", m_pFoilTreeView->splitterSize());
-        settings.setValue("ReListDlgGeometry", ReListDlg::s_WindowGeometry);
+        settings.setValue("ReListDlgGeom", ReListDlg::s_WindowGeometry);
     }
     settings.endGroup();
 
