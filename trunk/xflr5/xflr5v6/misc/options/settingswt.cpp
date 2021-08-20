@@ -680,15 +680,18 @@ void Settings::onStyleSheet(bool bSheet)
             stylefile.setFileName(qssPathName);
         else
             stylefile.setFileName(QStringLiteral(":/qss/xflr5_dark.qss"));
+        if (stylefile.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            QString qsStylesheet = QString::fromLatin1(stylefile.readAll());
+            qApp->setStyleSheet(qsStylesheet);
+            stylefile.close();
+            QApplication::restoreOverrideCursor();
+        }
     }
-
-    if (stylefile.open(QIODevice::ReadOnly | QIODevice::Text))
+    else
     {
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-        QString qsStylesheet = QString::fromLatin1(stylefile.readAll());
-        qApp->setStyleSheet(qsStylesheet);
-        stylefile.close();
-        QApplication::restoreOverrideCursor();
+        qApp->setStyleSheet(QString());
     }
 }
 

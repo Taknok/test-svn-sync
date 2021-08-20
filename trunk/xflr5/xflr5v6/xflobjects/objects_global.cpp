@@ -886,12 +886,12 @@ bool xfl::serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
  */
 bool xfl::serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
 {
-    int i=0, j=0, n=0, l=0, k=0;
+    int i(0), j(0), n(0), l(0), k(0);
     // identifies the format of the file
     // 1005: new linestyle format
 
     int ArchiveFormat=1005;
-    float f=0;
+    float f(0);
 
     if(bIsStoring)
     {
@@ -904,13 +904,13 @@ bool xfl::serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         xfl::writeString(ar, pPolar->m_FoilName);
         xfl::writeString(ar, pPolar->name());
 
-        if(pPolar->m_PolarType==xfl::FIXEDSPEEDPOLAR)       ar<<1;
+        if     (pPolar->m_PolarType==xfl::FIXEDSPEEDPOLAR)  ar<<1;
         else if(pPolar->m_PolarType==xfl::FIXEDLIFTPOLAR)   ar<<2;
         else if(pPolar->m_PolarType==xfl::RUBBERCHORDPOLAR) ar<<3;
         else if(pPolar->m_PolarType==xfl::FIXEDAOAPOLAR)    ar<<4;
-        else                                   ar<<1;
+        else                                                ar<<1;
 
-        ar << pPolar->m_MaType << pPolar->m_ReType  ;
+        ar << pPolar->m_MaType << pPolar->m_ReType;
         ar << int(pPolar->m_Reynolds) << float(pPolar->m_Mach);
         ar << float(pPolar->m_ASpec);
         ar << n << float(pPolar->m_NCrit);
@@ -939,8 +939,8 @@ bool xfl::serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
     {
         //read variables
         QString strange;
-        float Alpha=0, Cd=0, Cdp=0, Cl=0, Cm=0, XTr1=0, XTr2=0, HMom=0, Cpmn=0, Re=0, XCp=0;
-        int iRe=0;
+        float Alpha(0), Cd(0), Cdp(0), Cl(0), Cm(0), XTr1(0), XTr2(0), HMom(0), Cpmn(0), Re(0), XCp(0);
+        int iRe(0);
 
         ar >> ArchiveFormat;
         if (ArchiveFormat <1001 || ArchiveFormat>1100)

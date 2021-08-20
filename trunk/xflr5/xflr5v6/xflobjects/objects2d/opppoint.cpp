@@ -34,7 +34,7 @@ bool OpPoint::s_bStoreOpp = true;
  */
 OpPoint::OpPoint()
 {
-    n=0;
+    m_n=0;
 
     m_bViscResults = false;//not a  viscous point a priori
     m_bBL          = false;// no boundary layer surface either
@@ -187,7 +187,7 @@ void OpPoint::exportOpp(QTextStream &out, QString Version, bool bCSV, Foil*pFoil
     if(!bCSV) out << "   x        Cpi      Cpv        Qi        Qv\n";
     else      out << "x,Cpi,Cpv,Qi,Qv\n";
 
-    for (int k=0; k<n; k++)
+    for (int k=0; k<m_n; k++)
     {
         if(!bCSV) strong=QString("%1  %2   %3   %4   %5\n")
                                        .arg(pFoil->m_x[k],7,'f',4).arg(Cpi[k],7,'f',3).arg(Cpv[k],7,'f',3).arg(Qi[k],7,'f',3).arg(Qv[k],7,'f',3);
@@ -310,7 +310,7 @@ bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
         ar >> f; m_Reynolds =double(f);
         ar >> f; m_Mach = double(f);
         ar >> f; m_Alpha = double(f);
-        ar >> n >> blx.nd1 >> blx.nd2 >> blx.nd3;
+        ar >> m_n >> blx.nd1 >> blx.nd2 >> blx.nd3;
         ar >> a >> b;
         if(a) m_bViscResults = true; else m_bViscResults = false;
         if(a!=0 && a!=1) return false;
@@ -327,14 +327,14 @@ bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
         ar >> f; ACrit = double(f);
         ar >> f; m_TEHMom = double(f);
         ar >> f; Cpmn = double(f);
-        for (k=0; k<n; k++)
+        for (k=0; k<m_n; k++)
         {
             ar >> f; Cpv[k] = double(f);
             ar >> f; Cpi[k] = double(f);
         }
 
 //            if (Format ==2) {
-        for (k=0; k<n; k++)
+        for (k=0; k<m_n; k++)
         {
             if(Format<=100002)    ar >> f; //s[k]  = f;
             ar >> f; Qv[k] = double(f);
@@ -361,8 +361,8 @@ bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
         }
         if(ArchiveFormat>=100002)
         {
-            ar>>n;
-            m_theStyle.setStipple(n);
+            ar>>m_n;
+            m_theStyle.setStipple(m_n);
             ar>>m_theStyle.m_Width;
             int r,g,b;
             xfl::readCOLORREF(ar, r,g,b);
@@ -388,14 +388,15 @@ bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
  */
 bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring)
 {
-    bool boolean;
-    int k=0;
-    float f0=0,f1=0;
-    double dble=0;
+    bool boolean(false);
+    int k(0);
+    float f0(0), f1(0);
+    double dble(0);
 
     //identifies the archive's format
     //200004: new LineStyle format
-    int ArchiveFormat = 200004;
+    int ArchiveFormat = 200005;
+
     if(bIsStoring)
     {
         ar << ArchiveFormat;
@@ -412,7 +413,7 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring)
         m_theStyle.serializeXfl(ar, bIsStoring);
 
         ar << m_Reynolds << m_Mach << m_Alpha;
-        ar << n << blx.nd1 << blx.nd2 << blx.nd3;
+        ar << m_n << blx.nd1 << blx.nd2 << blx.nd3;
 
         ar << m_bViscResults;
         ar << m_bBL;
@@ -421,8 +422,8 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring)
         ar << Xtr1 << Xtr2 << m_XCP;
         ar << ACrit << m_TEHMom << Cpmn;
 
-        for (k=0; k<n; k++)          ar << float(Cpv[k])     << float(Cpi[k]);
-        for (k=0; k<n; k++)          ar << float(Qv[k])      << float(Qi[k]);
+        for (k=0; k<m_n; k++)          ar << float(Cpv[k])     << float(Cpi[k]);
+        for (k=0; k<m_n; k++)          ar << float(Qv[k])      << float(Qi[k]);
         for (k=0; k<=blx.nd1; k++)   ar << float(blx.xd1[k]) << float(blx.yd1[k]);
         for (k=0; k<blx.nd2; k++)    ar << float(blx.xd2[k]) << float(blx.yd2[k]);
         for (k=0; k<blx.nd3; k++)    ar << float(blx.xd3[k]) << float(blx.yd3[k]);
@@ -442,8 +443,8 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring)
 
         if(ArchiveFormat<200005)
         {
-            ar >> n;
-            m_theStyle.setStipple(n);
+            ar >> k;
+            m_theStyle.setStipple(k);
             ar >> m_theStyle.m_Width;
             int r,g,b,a;
             xfl::readQColor(ar, r,g,b,a);
@@ -454,7 +455,7 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring)
             m_theStyle.serializeXfl(ar, bIsStoring);
 
         ar >> m_Reynolds >> m_Mach >> m_Alpha;
-        ar >> n >> blx.nd1 >> blx.nd2 >> blx.nd3;
+        ar >> m_n >> blx.nd1 >> blx.nd2 >> blx.nd3;
 
         ar >> m_bViscResults;
         ar >> m_bBL;
@@ -463,13 +464,13 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring)
         ar >> Xtr1 >> Xtr2 >> m_XCP;
         ar >> ACrit >> m_TEHMom >> Cpmn;
 
-        for (k=0; k<n; k++)
+        for (k=0; k<m_n; k++)
         {
             ar >> f0 >> f1;
             Cpv[k] = double(f0);
             Cpi[k] = double(f1);
         }
-        for (k=0; k<n; k++)
+        for (k=0; k<m_n; k++)
         {
             ar >> f0 >> f1;
             Qv[k] = double(f0);

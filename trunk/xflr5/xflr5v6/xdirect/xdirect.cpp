@@ -464,7 +464,7 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
         case 0:
         {
             m_CpGraph.setInverted(true);
-            for (int j=0; j<pOpp->n; j++)
+            for (int j=0; j<pOpp->m_n; j++)
             {
                 if(!bInviscid)
                 {
@@ -480,7 +480,7 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
         }
         case 1:
         {
-            for (int j=0; j<pOpp->n; j++)
+            for (int j=0; j<pOpp->m_n; j++)
             {
                 if(!bInviscid)
                 {
@@ -781,7 +781,7 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
         }
         default:
         {
-            for (int j=0; j<pOpp->n; j++)
+            for (int j=0; j<pOpp->m_n; j++)
             {
                 if(!bInviscid)
                 {
@@ -2388,7 +2388,7 @@ void XDirect::onExportPolarOpps()
             if(Settings::s_ExportFileType==xfl::TXT) out<< " Cpi          Cpv\n-----------------\n";
             else                                       out << "Cpi,Cpv\n";
 
-            for (j=0; j<pOpPoint->n; j++)
+            for (j=0; j<pOpPoint->m_n; j++)
             {
                 if(pOpPoint->m_bViscResults)
                 {

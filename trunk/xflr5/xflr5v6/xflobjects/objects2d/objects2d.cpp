@@ -514,9 +514,9 @@ OpPoint *Objects2d::getOpp(Foil *pFoil, Polar *pPolar, double Alpha)
 void Objects2d::insertOpPoint(OpPoint *pNewPoint)
 {
     if(!pNewPoint) return;
-
+qDebug()<<"Objects2d::insertOpPoint"<<pNewPoint->foilName()<<pNewPoint->polarName();
     Polar const *pPolar = getPolar(pNewPoint->foilName(), pNewPoint->polarName());
-    Q_ASSERT(pPolar);
+    if(!pPolar) return;
 
     // first add the OpPoint to the OpPoint Array for the current FoilName
     for (int i=0; i<s_oaOpp.size(); i++)
@@ -652,7 +652,7 @@ Polar *Objects2d::getPolar(const Foil *pFoil, QString const &PolarName)
 
     for (int i=0; i<s_oaPolar.size(); i++)
     {
-        Polar *pPolar =  s_oaPolar.at(i);
+        Polar *pPolar = s_oaPolar.at(i);
         if (pPolar->foilName() == pFoil->name() &&  pPolar->polarName() == PolarName)
         {
             return pPolar;
@@ -671,7 +671,7 @@ Polar *Objects2d::getPolar(const QString &FoilName, const QString &PolarName)
 
     for (int i=0; i<s_oaPolar.size(); i++)
     {
-        Polar *pPolar =  s_oaPolar.at(i);
+        Polar *pPolar = s_oaPolar.at(i);
         if (pPolar->foilName() == FoilName &&  pPolar->polarName() == PolarName)
         {
             return pPolar;

@@ -288,7 +288,7 @@ void gl3dHydrogen::showEvent(QShowEvent *pEvent)
 void gl3dHydrogen::closeEvent(QCloseEvent *pEvent)
 {
     m_bCancel = true;
-    QOpenGLWidget::closeEvent(pEvent);
+    gl3dTestGLView::closeEvent(pEvent);
 }
 
 
@@ -436,50 +436,6 @@ void gl3dHydrogen::paintElectronInstances(QOpenGLBuffer &vboPosInstances, float 
 }
 
 
-#define NLAT  30
-#define NLONG 50
-
-void gl3dHydrogen::onHarmonic()
-{
-    s_l = m_piel->value();
-    s_m = m_piem->value();
-    s_n = m_pien->value();
-
-    m_Pts.resize(NLONG*NLAT);
-    m_State.resize(NLONG*NLAT);
-    int iv =0;
-    for(int i=0; i<NLONG; i++)
-    {
-        double phi = double(i)/double(NLONG)*2.0*PI; //longitude
-        for(int j=0; j<NLAT; j++)
-        {
-            double theta = double(j)/double(NLAT-1)*PI; //colatitude
-            std::complex<double> amp = LaplaceHarmonic(s_m, s_l, theta, phi);
-            double r = amp.real();
-
-            m_Pts[iv].x = fabs(r) * sin(theta)*cos(phi);
-            m_Pts[iv].y = fabs(r) * sin(theta)*sin(phi);
-            m_Pts[iv].z = fabs(r) * cos(theta);
-
-            m_State[iv] = r>0 ? 0.8f : 0.2f;
-            iv++;
-        }
-    }
-
-    m_bResetPositions = true;
-    update();
-}
-
-
-/**
- *  Ground state wave function
- *  r is in Bohr radius units*/
-double gl3dHydrogen::psi_1s(double r, double, double)
-{
-    return 1.0/sqrt(PI*A0*A0*A0)*exp(-r);
-}
-
-
 /** r is in Bohr radius units
 *  theta is the colatitude in [0, PI]
 *  phi is the longitude in [0, 2.PI]
@@ -499,7 +455,6 @@ double gl3dHydrogen::psi(double r, double theta, double phi) const
     std::complex<double> wavefunc =   coef * LaplaceHarmonic(s_m, s_l, theta, phi);
     return wavefunc.real();
 }
-
 
 
 void gl3dHydrogen::onCollapse()
@@ -573,7 +528,6 @@ void gl3dHydrogen::collapseBlock(QWidget *pParent) const
     {
         rho   = pow(QRandomGenerator::global()->generateDouble(),0.33333)*s_ObsRadius;
         r = rho*A0;// in Bohr radius units
-
         phi   = QRandomGenerator::global()->bounded(2.0*PI);
         theta = acos(1.0-2.0*QRandomGenerator::global()->generateDouble());
 

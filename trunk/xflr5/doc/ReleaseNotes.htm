@@ -19,13 +19,21 @@
                 </h1>
                 <br>
                   <h3>
-                   xflr5 v6.49 xxx 2021
+                   xflr5 v6.50 August xxx 2021
+                  </h3>
+                  <ul>
+                     <li>Fixed the crash bug ocurring when running foil T4 analyses</li>
+                     <li>Corrected the crash bug which prevented to load project foil containing foil operating points</li>
+                  </ul>
+                <br>
+                  <h3>
+                   xflr5 v6.49 August 1 2021
                   </h3>
                   <ul>
                      <li>the format of the .xfl project file has been modified; NEWLY SAVED FILES WILL NOT BE READABLE BY VERSIONS OLDER THAN v6.49</li>
                      <li>deprecated the support for OpenGL 2.1; the default and recommended configuration is 3.3; all the display options may no longer be available for OpenGL 2.1</li>
-                     <li>Removed the support for textures - feature of limited interest which induced far too much code complexity</li>
-                     <li>Deprecated and disabled the legacy batch mode for foil analyses; superseded and replaced by the threaded bacth analysis</li>
+                     <li>removed the support for textures - feature of limited interest which induced far too much code complexity</li>
+                     <li>deprecated and disabled the legacy batch mode for foil analyses; superseded and replaced by the threaded batch analysis</li>
                      <li>fixed the missing degree to radians conversion in the input of q(°/s) in forced time response graphs</li>
                      <li>fix for bug report #165</li>
                      <li>fixed a first batch of issues related to bug report 163</li>
@@ -499,7 +507,7 @@
                     <li>corrected the incorrect aileron control derivatives</li>
                     <li>corrected the bug in wing analysis with ground effect</li>
                     <li>corrected the bug in type 4 analysis for wings and planes</li>
-                    <li>corrected the bug which modified the chord length as twist increases : impact results for wings with high dihedral</li>
+                    <li>corrected the bug which modified the chord length as twist increases: impact results for wings with high dihedral</li>
                     <li>cleaned, corrected, and improved the code for B-Splines</li>
                     <li>removed the option for Min/Max type controls in Stabillity Polars</li>
                     <li>added an option to edit Wing Polar paramaters</li>
@@ -869,7 +877,7 @@
                         Corrected a 1/2 missing factor in the output of non converged LLT oppoints - no
                         effect on results</li>
                     <li>
-                        3D panel with tilted geometry : corrected wake tilting</li>
+                        3D panel with tilted geometry: corrected wake tilting</li>
                     <li>
                         Improved streamline display to reduce singularity effects, essentially by
                         enforcing Kutta's condition</li>
@@ -1045,7 +1053,7 @@
                     </li><li>
                     Corrected a sign error on geometric yawing moment in VLM analysis
                     </li><li>
-                    Changed the fin definition : all planes with fins will need to be redefined...
+                    Changed the fin definition: all planes with fins will need to be redefined...
                     </li><li>
                     Changed 3D view rotation with arcball
                     </li><li>
@@ -1059,7 +1067,7 @@
                     </li><li>
                     Added option to offset the main wing in a plane design
                     </li><li>
-                    Corrected the area of double fins or symetrical fins : factor 2 had been
+                    Corrected the area of double fins or symetrical fins: factor 2 had been
                     ommitted
                     </li><li>
                     Corrected occasional crash bug when deleting all Opps associated to a Wing or
@@ -1098,7 +1106,7 @@
                 </h3>
                 <ul>
                     <li>
-                    Trouble with internal messaging issues : Deleted all V/W_ENDTHREAD messages,
+                    Trouble with internal messaging issues: Deleted all V/W_ENDTHREAD messages,
                     replaced them with idle loop checking for end of analysis
                     </li><li>
                     Added tentative volume calculations to plane and wing definitions
@@ -1114,7 +1122,7 @@
                     </li><li>
                     Added Recent File management
                     </li><li>
-                    Removed the foil's automatic length normalization : operation will need to be
+                    Removed the foil's automatic length normalization: operation will need to be
                     performed manually
                     </li><li>
                     Corrected the initialization of the Inverse Design to take into account the
@@ -1676,7 +1684,7 @@
                         </li><li>
                         Fixed "On Sequence" crash bug when no foil is loaded
                         </li><li>
-                        Added power factor for negative Cl values : -|Cl|^(3/2)/Cd
+                        Added power factor for negative Cl values: -|Cl|^(3/2)/Cd
                         </li><li>
                         Added 1/sqrt(Cl) to the polar graph variables,Cl&gt;0
                         </li><li>
@@ -1706,7 +1714,7 @@
                     </h3>
                     <ul>
                         <li>
-                        Introduced Type 4 polars : fixed Alpha, variable Re
+                        Introduced Type 4 polars: fixed Alpha, variable Re
                         </li><li>
                         Increased polar format to "4" for storage of Type 4 polars
                         </li><li>
