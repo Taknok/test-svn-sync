@@ -5483,7 +5483,7 @@ void MainFrame::saveFoilPolars(QDataStream &ar, QVector<Foil*> const &FoilList) 
     int ArchiveFormat = 100003;
     ar << ArchiveFormat;
     //100003 : added foil comment
-    //100002 : means we are serializings opps in the new numbered format
+    //100002 : means we are serializing opps in the new numbered format
     //100001 : transferred NCrit, XTopTr, XBotTr to polar file
     //first write foils
     ar << ExportList.size();

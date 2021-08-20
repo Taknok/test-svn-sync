@@ -389,6 +389,9 @@ bool XFoilTask::ReSequence()
         if(m_pParent)
         {
             OpPoint *pOpPoint = new OpPoint;
+            pOpPoint->setFoilName(m_pFoil->name());
+            pOpPoint->setPolarName(m_pPolar->name());
+            pOpPoint->setTheStyle(m_pPolar->theStyle());
             addXFoilData(pOpPoint, &m_XFoilInstance, m_pFoil);
             qApp->postEvent(m_pParent, new XFoilOppEvent(pOpPoint));
         }
@@ -501,7 +504,7 @@ void XFoilTask::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil const*pFoil)
 {
     int i=0, j=0, ibl=0, is=0;
     pOpp->m_Alpha      = pXFoil->alfa*180.0/PI;
-    pOpp->n            = pXFoil->n;
+    pOpp->m_n          = pXFoil->n;
     pOpp->Cd           = pXFoil->cd;
     pOpp->Cdp          = pXFoil->cdp;
     pOpp->Cl           = pXFoil->cl;

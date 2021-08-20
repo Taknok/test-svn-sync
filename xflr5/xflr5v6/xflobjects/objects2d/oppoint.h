@@ -96,7 +96,7 @@ class OpPoint : public XflObject
         bool m_bTEFlap;             /**< true if the parent foil has a flap on the trailing edge */
         bool m_bLEFlap;             /**< true if the parent foil has a flap on the leading edge */
 
-        int n;                      /**< the number of foil surface points */
+        int m_n;                    /**< the number of foil surface points */
 
         double m_Reynolds;          /**< the Re number of the OpPoint */
         double m_Mach;              /**< the Mach number of the OpPoint */
