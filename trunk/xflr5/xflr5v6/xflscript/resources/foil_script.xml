@@ -27,10 +27,10 @@
             <foil_files_dir>/home/user/studies/airfoils</foil_files_dir>
             <!-- The default directory where the foil analysis files (.xml) will be looked for -->
             <foil_analysis_xml_dir>/home/user/studies/xml/analyses_2d</foil_analysis_xml_dir>
-            <!-- The default directory where the foil polar files (.plr) will be created after a foil analysis.
-                 If undefined the files will be saved in the output directory -->
-            <!--foil_polars_dir>/home/user/studies/polars</foil_polars_dir-->
-
+            <!-- The default directory where the foil polar files (.plr) will be created. -->
+            <foil_polars_dir>/home/user/studies/polars</foil_polars_dir>
+            <!-- The default directory where the XFoil polar files (.txt) will be created. -->
+            <xfoil_polars_dir>/home/user/studies/xfoil</xfoil_polars_dir>
         </Directories>
 
         <!-- Multithreading options -->

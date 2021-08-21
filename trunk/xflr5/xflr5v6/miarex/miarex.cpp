@@ -7962,8 +7962,6 @@ void Miarex::onImportSTLFile()
 }
 
 
-
-
 /**
  * Imports an XML file containing the definition of either a plane or a WPolar
  */

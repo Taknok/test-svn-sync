@@ -52,13 +52,14 @@ public:
     bool bMakeFoilOpps() const {return m_bMakeOpps;}
     bool bRunAllAnalyses() const {return m_bRunAllFoilAnalyses;}
 
-    QString datFoilDirPath()     const {return m_datFoilDirPath;}
-    QString binPolarDirPath()    const {return m_PolarBinDirPath;}
-    QString xmlAnalysisDirPath() const {return m_xmlAnalysisDirPath;}
-    QString outputDirPath()      const {return m_OutputDirPath;}
+    QString const &datFoilDirPath()     const {return m_datFoilDirPath;}
+    QString const &binPolarDirPath()    const {return m_PolarBinDirPath;}
+    QString const &xfoilPolarDirPath()  const {return m_XFoilPolarsDir;}
+    QString const &xmlAnalysisDirPath() const {return m_xmlAnalysisDirPath;}
+    QString const &outputDirPath()      const {return m_OutputDirPath;}
 
 private:
-    QString projectFileName()   const {return m_ProjectFileName;}
+    QString const &projectFileName()   const {return m_ProjectFileName;}
 
     QStringList m_FoilList, m_PolarList;
 
@@ -75,7 +76,8 @@ private:
     bool m_bRepanelFoils;
 
     QString m_OutputDirectoryPath, m_ProjectFileName;
-    QString m_datFoilDirPath, m_xmlAnalysisDirPath, m_PolarBinDirPath;
+    QString m_datFoilDirPath, m_xmlAnalysisDirPath;
+    QString m_PolarBinDirPath, m_XFoilPolarsDir;
     QString m_OutputDirPath;
     QStringList m_XmlFoilAnalysisList;         /**< The list of xml foil analysis files to load */
 
