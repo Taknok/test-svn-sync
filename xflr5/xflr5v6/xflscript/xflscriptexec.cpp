@@ -169,18 +169,20 @@ void XflScriptExec::makeFoilAnalysisList()
                 default: break;
             }
 
-            if(!pPolar || pPolar->m_Reynolds<0.1)
+            if(pPolar && pPolar->m_Reynolds<0.1)
             {
                 traceLog("   skipping polar "+pPolar->polarName()+": Reynolds number is null\n");
                 Objects2d::deletePolar(pPolar);
                 continue;
             }
 
-            FoilAnalysis.pFoil = pFoil;
-            FoilAnalysis.pPolar = pPolar;
-            m_FoilExecList.append(FoilAnalysis);
-            traceLog("   added analysis for foil "+pFoil->name()+" and "+pPolar->polarName() +"\n");
-
+            if(pFoil && pPolar)
+            {
+                FoilAnalysis.pFoil = pFoil;
+                FoilAnalysis.pPolar = pPolar;
+                m_FoilExecList.append(FoilAnalysis);
+                traceLog("   added analysis for foil "+pFoil->name()+" and "+pPolar->polarName() +"\n");
+            }
         }
     }
 }
@@ -233,9 +235,9 @@ bool XflScriptExec::makeFoils()
 }
 
 
-Polar* XflScriptExec::makePolarFromXml(QString fileName)
+Polar* XflScriptExec::makePolarFromXml(QString const &fileName)
 {
-    QString pathName = m_Reader.m_PolarBinDirPath+QDir::separator()+fileName;
+    QString pathName = m_Reader.xmlAnalysisDirPath()+QDir::separator()+fileName;
     QFile xmlFile(pathName);
     if (!xmlFile.open(QIODevice::ReadOnly))
     {
@@ -277,7 +279,7 @@ bool XflScriptExec::setLogFile()
 }
 
 
-void XflScriptExec::traceLog(QString strMsg)
+void XflScriptExec::traceLog(const QString &strMsg)
 {
     if(m_bStdOutStream)
     {
@@ -293,7 +295,7 @@ void XflScriptExec::traceLog(QString strMsg)
 }
 
 
-bool XflScriptExec::readScript(QString scriptpathname)
+bool XflScriptExec::readScript(const QString &scriptpathname)
 {
     QFile xmlFile(scriptpathname);
     if (!xmlFile.open(QIODevice::ReadOnly))
@@ -344,7 +346,7 @@ void XflScriptExec::onCancel()
     XFoilTask::cancelTask();
 
     traceLog("\n_____________Analysis cancellation request received_____________\n\n");
-    emit (cancelTask());
+    emit cancelTask();
 }
 
 
@@ -368,19 +370,27 @@ bool XflScriptExec::makeExportDirectories()
         }
     }
 
-    m_FoilPolarsTextPath = m_OutputPath+QDir::separator()+"Foil_polars";
-    QDir exportFoilPolarsDir(m_FoilPolarsTextPath);
-    if(!exportFoilPolarsDir.exists())
+    QString FoilPolarsBinPath = m_Reader.binPolarDirPath();
+    QDir FoilPolarsBinDir(FoilPolarsBinPath);
+    if(!FoilPolarsBinDir.exists())
     {
-        if(!exportFoilPolarsDir.mkpath(m_FoilPolarsTextPath))
+        if(!FoilPolarsBinDir.mkpath(FoilPolarsBinPath))
         {
-            traceLog("Could not make the directory: "+m_FoilPolarsTextPath+"\n");
+            traceLog("Could not make the directory: "+FoilPolarsBinPath+"\n");
             bOK = false;
         }
     }
 
-    if(m_Reader.binPolarDirPath().length()) m_FoilPolarsBinPath = m_Reader.binPolarDirPath();
-    else                                          m_FoilPolarsBinPath = m_FoilPolarsTextPath;
+    QString XFoilPolarsTextPath = m_Reader.xfoilPolarDirPath();
+    QDir exportFoilPolarsDir(XFoilPolarsTextPath);
+    if(!exportFoilPolarsDir.exists())
+    {
+        if(!exportFoilPolarsDir.mkpath(XFoilPolarsTextPath))
+        {
+            traceLog("Could not make the directory: "+XFoilPolarsTextPath+"\n");
+            bOK = false;
+        }
+    }
 
     return bOK;
 }
@@ -389,7 +399,6 @@ bool XflScriptExec::makeExportDirectories()
 bool XflScriptExec::runScript()
 {
     XFoilTask::setCancelled(false);
-    QString strange;
 
     if(!makeExportDirectories())
     {

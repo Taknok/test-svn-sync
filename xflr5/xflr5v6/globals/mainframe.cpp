@@ -5828,12 +5828,12 @@ void MainFrame::onExecuteScript()
 
     QString XmlPathName;
     XmlPathName = QFileDialog::getOpenFileName(this, tr("Open XML Script File"),
-                                               xfl::lastDirName(),
+                                               xfl::xmlDirName(),
                                                tr("XML Script file")+"(*.xml)");
     if(!XmlPathName.length()) return;
     QFileInfo fi(XmlPathName);
 
-    xfl::setLastDirName(fi.path());
+    xfl::setXmlDirName(fi.path());
 
     executeScript(XmlPathName, false, true);
 }
@@ -5884,11 +5884,14 @@ void MainFrame::executeScript(const QString &XmlScriptName, bool bShowProgressSt
         addRecentFile(scriptexecutor.projectFilePathName());
 
         bool bCSV = scriptexecutor.bCSVOutput();
-        if(scriptexecutor.outputPolarBin()) onMakePlrFiles(scriptexecutor.foilPolarBinOutputDirPath());
+        if(scriptexecutor.outputPolarBin())
+            onMakePlrFiles(scriptexecutor.foilPolarBinOutputDirPath());
 
         xfl::enumTextFileType exporttype = bCSV ? xfl::CSV : xfl::TXT;
-        if(scriptexecutor.outputPolarText()) m_pXDirect->onExportAllPolarsTxt(scriptexecutor.foilPolarTextOutputDirPath(), exporttype);
-        if(scriptexecutor.makeProjectFile()) onSaveProjectAs(scriptexecutor.projectFilePathName());
+        if(scriptexecutor.outputPolarText())
+            m_pXDirect->onExportAllPolarsTxt(scriptexecutor.xfoilPolarOutputDirPath(), exporttype);
+        if(scriptexecutor.makeProjectFile())
+            onSaveProjectAs(scriptexecutor.projectFilePathName());
 
         disconnect(&scriptexecutor, SIGNAL(msgUpdate(QString)), nullptr, nullptr);
         scriptexecutor.closeLogFile();

@@ -44,17 +44,17 @@ class XflScriptExec : public QObject
 
         void customEvent(QEvent *pEvent) override;
 
-        bool readScript(QString scriptpathname);
+        bool readScript(QString const &scriptpathname);
         bool runScript();
         void setStdOutStream(bool bStdOut) {m_bStdOutStream = bStdOut;}
 
-        bool bCSVOutput()       const {return m_Reader.m_bcsvPolarOutput;}
+        bool bCSVOutput() const {return m_Reader.m_bcsvPolarOutput;}
 
-        void traceLog(QString strMsg);
+        void traceLog(QString const &strMsg);
 
-        QString outputDirPath()               const {return m_OutputPath;}
-        QString foilPolarTextOutputDirPath()  const {return m_FoilPolarsTextPath;}
-        QString foilPolarBinOutputDirPath()   const {return m_FoilPolarsBinPath;}
+        QString const &outputDirPath()               const {return m_OutputPath;}
+        QString const &foilPolarBinOutputDirPath()   const {return m_Reader.binPolarDirPath();}
+        QString const &xfoilPolarOutputDirPath()     const {return m_Reader.xfoilPolarDirPath();}
 
         QString projectFilePathName() const;
 
@@ -64,10 +64,10 @@ class XflScriptExec : public QObject
         bool setLogFile();
 
         void closeLogFile();
-        QString logFileName() const {return m_LogFileName;}
+        QString const &logFileName() const {return m_LogFileName;}
 
     private:
-        Polar* makePolarFromXml(QString pathName);
+        Polar* makePolarFromXml(const QString &pathName);
         bool makeExportDirectories();
         bool makeFoils();
         void makeFoilAnalysisList();
@@ -85,7 +85,7 @@ class XflScriptExec : public QObject
         QFile *m_pXFile;
         QTextStream m_OutLogStream;
         QString m_LogFileName;
-        QString m_FoilPolarsBinPath, m_FoilPolarsTextPath, m_OutputPath;
+        QString m_OutputPath;
 
         QVector<FoilAnalysis> m_FoilExecList;
 

@@ -146,6 +146,11 @@ bool XFLScriptReader::readDirectoryData()
             m_PolarBinDirPath = readElementText().trimmed();
             if(m_PolarBinDirPath.endsWith(QDir::separator())) m_PolarBinDirPath.remove(m_PolarBinDirPath.lastIndexOf(QDir::separator()), 1);
         }
+        else if(name().compare(QString("xfoil_polars_dir"), Qt::CaseInsensitive)==0)
+        {
+            m_XFoilPolarsDir = readElementText().trimmed();
+            if(m_XFoilPolarsDir.endsWith(QDir::separator())) m_XFoilPolarsDir.remove(m_XFoilPolarsDir.lastIndexOf(QDir::separator()), 1);
+        }
         else if(name().compare(QString("recursive_scan"), Qt::CaseInsensitive)==0)
         {
             m_bRecursiveDirScan = xfl::stringToBool(readElementText().trimmed());
