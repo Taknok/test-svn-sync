@@ -43,8 +43,6 @@ ReListDlg::ReListDlg(QWidget *pParent) : QDialog(pParent)
 
     m_pFloatDelegate = nullptr;
 
-    // make the two required actions
-
     setupLayout();
 
     m_pInsertBeforeAct	= new QAction(tr("Insert before"), this);
@@ -153,19 +151,18 @@ void ReListDlg::setupLayout()
 {
     m_pcptReTable = new CPTableView(this);
     m_pcptReTable->setEditable(true);
-
-//    QFont fnt;
-//    QFontMetrics fm(fnt);
-//    m_pcptReTable->setMinimumWidth(50*fm.averageCharWidth());
-//    m_pcptReTable->setMinimumHeight(300);
-//    m_pcptReTable->setWindowTitle(QObject::tr("Re List"));
+    m_pcptReTable->setEditTriggers(QAbstractItemView::CurrentChanged |
+                                   QAbstractItemView::DoubleClicked |
+                                   QAbstractItemView::SelectedClicked |
+                                   QAbstractItemView::EditKeyPressed |
+                                   QAbstractItemView::AnyKeyPressed);
 
     QVBoxLayout *pRightSideLayout = new QVBoxLayout;
     {
         m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Vertical, this);
         {
-            connect(m_pButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
-            connect(m_pButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+            connect(m_pButtonBox, &QDialogButtonBox::accepted, this, &ReListDlg::accept);
+            connect(m_pButtonBox, &QDialogButtonBox::rejected, this, &ReListDlg::reject);
         }
         pRightSideLayout->addStretch(30);
         pRightSideLayout->addWidget(m_pButtonBox);
@@ -285,7 +282,7 @@ void ReListDlg::onInsertAfter()
 }
 
 
-void ReListDlg::onOK()
+void ReListDlg::accept()
 {
     for (int i=0; i<m_ReList.count(); i++)
     {

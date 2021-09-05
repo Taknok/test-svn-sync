@@ -50,7 +50,7 @@ class ReListDlg : public QDialog
         void onDelete();
         void onInsertBefore();
         void onInsertAfter();
-        void onOK();
+        void accept() override;
         void onCellChanged(QModelIndex topLeft, QModelIndex botRight);
         void onReTableClicked(QModelIndex index);
 
@@ -63,7 +63,7 @@ class ReListDlg : public QDialog
         void hideEvent(QHideEvent *pEvent) override;
         void keyPressEvent(QKeyEvent *pEvent) override;
         void resizeEvent(QResizeEvent *pEvent) override;
-        QSize sizeHint() const override  {return QSize(550,550);}
+        QSize sizeHint() const override {return QSize(550,550);}
 
     private:
         CPTableView *m_pcptReTable;

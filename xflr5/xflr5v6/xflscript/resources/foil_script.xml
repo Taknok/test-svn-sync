@@ -13,7 +13,7 @@
         <!-- The project file provided in the following line will be pre-loaded before the script's execution.
              Specify either an absolute path or a path relative to the directory of project files specified
              in the Directories section.
-             Should not be the same as the project file name to make to avoid data overwrite. -->
+             Should not be the same as the output project file name to avoid data overwrite. -->
         <!--load_project_file>/home/user/studies/005.xflflow</load_project_file-->
 
         <!-- set this field either to TXT or CSV -->
