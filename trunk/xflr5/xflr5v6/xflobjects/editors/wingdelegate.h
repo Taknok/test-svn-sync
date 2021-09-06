@@ -21,13 +21,13 @@
 
 #pragma once
 
-#include <QVector>
+
 #include <QVector>
 #include <QPainter>
 #include <QStyledItemDelegate>
 
 class Foil;
-class WingSection;
+
 class DoubleEdit;
 
 class WingDelegate : public QStyledItemDelegate
@@ -44,11 +44,11 @@ class WingDelegate : public QStyledItemDelegate
         void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const override;
         void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
         void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-        void setPrecision(int*PrecisionTable);
+
+        void setPrecision(QVector<int> PrecisionTable) {m_Precision = PrecisionTable;}
 
     private:
         void *m_pWingDlg;
-        int *m_Precision; ///table of float precisions for each column
-        QVector<WingSection> const *m_pWingSection;
+        QVector<int> m_Precision; ///table of float precisions for each column
 };
 

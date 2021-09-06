@@ -70,9 +70,6 @@
 #include <xflwidgets/line/linepickerwt.h>
 #include <xinverse/foilselectiondlg.h>
 
-QVector<double> XDirect::s_ReList;
-QVector<double> XDirect::s_MachList;
-QVector<double> XDirect::s_NCritList;
 
 bool XDirect::s_bViscous = true;
 bool XDirect::s_bAlpha = true;
@@ -170,29 +167,7 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
     m_CpGraph.setGraphName("Cp_Graph");
     m_CpGraph.setVariables(0,0);
 
-    s_ReList.clear();
-    s_MachList.clear();
-    s_NCritList.clear();
-
-    for(int iRe=0; iRe<12; iRe++)
-    {
-        s_ReList.append(0.0);
-        s_MachList.append(0.0);
-        s_NCritList.append(9.0);
-    }
-
-    s_ReList[0]  =   30000.0;
-    s_ReList[1]  =   40000.0;
-    s_ReList[2]  =   60000.0;
-    s_ReList[3]  =   80000.0;
-    s_ReList[4]  =  100000.0;
-    s_ReList[5]  =  130000.0;
-    s_ReList[6]  =  160000.0;
-    s_ReList[7]  =  200000.0;
-    s_ReList[8]  =  300000.0;
-    s_ReList[9]  =  500000.0;
-    s_ReList[10] = 1000000.0;
-    s_ReList[11] = 3000000.0;
+    BatchAbstractDlg::initReList();
 }
 
 
@@ -1116,20 +1091,6 @@ void XDirect::loadSettings(QSettings &settings)
 
         BatchThreadDlg::s_bUpdatePolarView = settings.value("BatchUpdatePolarView", false).toBool();
         BatchThreadDlg::s_nThreads = settings.value("MaxThreads", 12).toInt();
-
-        int NRe = settings.value("NReynolds").toInt();
-        s_ReList.clear();
-        s_MachList.clear();
-        s_NCritList.clear();
-        for (int i=0; i<NRe; i++)
-        {
-            str1 = QString("ReList%1").arg(i);
-            str2 = QString("MaList%1").arg(i);
-            str3 = QString("NcList%1").arg(i);
-            s_ReList.append(settings.value(str1).toDouble());
-            s_MachList.append(settings.value(str2).toDouble());
-            s_NCritList.append(settings.value(str3).toDouble());
-        }
 
         m_pFoilTreeView->setSplitterSize(settings.value("FoilTreeSplitterSizes").toByteArray());
         ReListDlg::s_WindowGeometry = settings.value("ReListDlgGeom").toByteArray();
@@ -3893,17 +3854,6 @@ void XDirect::saveSettings(QSettings &settings)
 
         settings.setValue("VAccel", m_XFoil.VAccel());
         settings.setValue("KeepOpenErrors", s_bKeepOpenErrors);
-
-        settings.setValue("NReynolds", s_ReList.count());
-        for (int i=0; i<s_ReList.count(); i++)
-        {
-            str1 = QString("ReList%1").arg(i);
-            str2 = QString("MaList%1").arg(i);
-            str3 = QString("NcList%1").arg(i);
-            settings.setValue(str1, s_ReList[i]);
-            settings.setValue(str2, s_MachList[i]);
-            settings.setValue(str3, s_NCritList[i]);
-        }
 
         settings.setValue("FoilTreeSplitterSizes", m_pFoilTreeView->splitterSize());
         settings.setValue("ReListDlgGeom", ReListDlg::s_WindowGeometry);

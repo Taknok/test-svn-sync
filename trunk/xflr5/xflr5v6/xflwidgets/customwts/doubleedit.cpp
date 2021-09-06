@@ -51,7 +51,6 @@ void DoubleEdit::readValue()
     if(xfl::g_bLocalize)
         val = locale().toDouble(strange, &bOK);
 
-
     if(bOK)
     {
         bool bValueChanged = fabs(m_Value-val)>1.e-10;

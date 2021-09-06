@@ -55,6 +55,7 @@ class ReListDlg : public QDialog
         void onReTableClicked(QModelIndex index);
 
     private:
+        void connectSignals();
         void fillReModel();
         void setupLayout();
         void sortData();

@@ -212,8 +212,5 @@ class WingDlg: public QDialog
 
         Panel *m_pPanel;
         Vector3d *m_pNode;
-
-
-        int  *m_precision;
 };
 

@@ -573,7 +573,7 @@ void BatchGraphDlg::ReLoop()
     double Reynolds =0, Mach = 0, NCrit = 9.0;
 
     if(!s_bFromList) nRe = int(qAbs((s_ReMax-s_ReMin)/s_ReInc));
-    else             nRe = XDirect::s_ReList.count()-1;
+    else             nRe = s_ReList.count()-1;
 
     for (iRe=0; iRe<=nRe; iRe++)
     {
@@ -585,9 +585,9 @@ void BatchGraphDlg::ReLoop()
         }
         else
         {
-            Reynolds = XDirect::s_ReList[iRe];
-            Mach     = XDirect::s_MachList[iRe];
-            NCrit    = XDirect::s_NCritList[iRe];
+            Reynolds = s_ReList[iRe];
+            Mach     = s_MachList[iRe];
+            NCrit    = s_NCritList[iRe];
         }
         str = QString("Re=%1   Ma=%2   Nc=%3\n").arg(Reynolds,8,'f',0).arg(Mach,5,'f',3).arg(NCrit,5,'f',2);
         outputMsg(str);

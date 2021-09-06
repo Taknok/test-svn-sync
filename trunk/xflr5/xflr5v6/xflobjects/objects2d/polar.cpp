@@ -40,15 +40,15 @@ Polar::Polar()
                               QRandomGenerator::global()->bounded(55)+30,
                               QRandomGenerator::global()->bounded(55)+150);
 
-    m_ASpec = 0.0;
+    m_ASpec     = 0.0;
     m_PolarType = xfl::FIXEDSPEEDPOLAR;
-    m_ReType = 1;
-    m_MaType = 1;
-    m_Reynolds = 100000.0;
-    m_Mach     = 0.0;
-    m_NCrit    = 9.0;
-    m_XTop     = 1.0;
-    m_XBot     = 1.0;
+    m_ReType    = 1;
+    m_MaType    = 1;
+    m_Reynolds  = 100000.0;
+    m_Mach      = 0.0;
+    m_NCrit     = 9.0;
+    m_XTop      = 1.0;
+    m_XBot      = 1.0;
     m_FoilName.clear();
 }
 

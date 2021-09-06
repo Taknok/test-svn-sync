@@ -19,12 +19,11 @@
 
 *****************************************************************************/
  
+#include <QComboBox>
 
 #include <xflobjects/editors/wingdelegate.h>
-#include <xflobjects/editors/wingdlg.h>
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflobjects/objects2d/objects2d.h>
-#include <xflobjects/objects3d/wingsection.h>
 #include <xflobjects/objects2d/foil.h>
 
 
@@ -33,8 +32,6 @@ WingDelegate::WingDelegate(QObject *parent)
 {
     m_pWingDlg = parent;
 
-    m_Precision = nullptr; ///table of float precisions for each column
-    m_pWingSection = nullptr;
 }
 
 
@@ -131,24 +128,25 @@ void WingDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
 {
     QString strong;
     QStyleOptionViewItem myOption = option;
+    QAbstractItemModel const *pModel = index.model();
+
     if(index.column()!=5 && index.column()!=7 && index.column()!=9)
     {
         myOption.displayAlignment = Qt::AlignRight | Qt::AlignVCenter;
-        strong = QString("%L1").arg(index.model()->data(index, Qt::DisplayRole).toDouble(),0,'f', m_Precision[index.column()]);
+        strong = QString("%L1").arg(pModel->data(index, Qt::DisplayRole).toDouble(),0,'f', m_Precision[index.column()]);
     }
     else
     {
         myOption.displayAlignment = Qt::AlignLeft | Qt::AlignVCenter;
-        strong = index.model()->data(index, Qt::DisplayRole).toString();
+        strong = pModel->data(index, Qt::DisplayRole).toString();
     }
 
-    if(index.row()> m_pWingSection->count()) strong=" ";
-    if(index.row()== m_pWingSection->count()-1)
+    if(index.row()> pModel->rowCount()) strong=" ";
+    if(index.row()== pModel->rowCount()-1)
     {
         if(index.column()==3 ||index.column()>=6) strong = " ";
     }
-//    drawDisplay(painter, myOption, myOption.rect, strong);
-//    drawFocus(painter, myOption, myOption.rect);
+
     painter->drawText(myOption.rect, myOption.displayAlignment , strong);
 }
 
@@ -159,10 +157,6 @@ void WingDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewI
 }
 
 
-void WingDelegate::setPrecision(int *PrecisionTable)
-{
-    m_Precision = PrecisionTable;
-}
 
 
 

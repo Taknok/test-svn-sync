@@ -161,7 +161,7 @@ void BatchThreadDlg::startAnalysis()
 
 
     if(!s_bFromList) nRe = int(qAbs((s_ReMax-s_ReMin)/s_ReInc)+1);
-    else             nRe = XDirect::s_ReList.count();
+    else             nRe = s_ReList.count();
 
     //    QThreadPool::globalInstance()->setExpiryTimeout(60000);//ms
 
@@ -190,7 +190,7 @@ void BatchThreadDlg::startAnalysis()
                 else
                 {
                     pAnalysis->pPolar = Objects2d::createPolar(pFoil, xfl::FIXEDSPEEDPOLAR,
-                                                               XDirect::s_ReList[iRe], XDirect::s_MachList[iRe], XDirect::s_NCritList[iRe],
+                                                               s_ReList[iRe], s_MachList[iRe], s_NCritList[iRe],
                                                                s_XTop, s_XBot);
                 }
 
