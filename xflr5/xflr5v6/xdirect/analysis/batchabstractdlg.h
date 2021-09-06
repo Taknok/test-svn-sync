@@ -60,6 +60,7 @@ class BatchAbstractDlg : public QDialog
         virtual void initDialog();
         QSize sizeHint() const override {return QSize(1100,900);}
 
+        static void initReList();
         static void loadSettings(QSettings &settings);
         static void saveSettings(QSettings &settings);
 
@@ -120,7 +121,9 @@ class BatchAbstractDlg : public QDialog
         bool m_bCancel;             /**< true if the user has clicked the cancel button */
         bool m_bIsRunning;          /**< true until all the pairs of (foil, polar) have been calculated */
 
-
+        static QVector<double> s_ReList;        /**< the user-defined list of Re numbers, used for batch analysis */
+        static QVector<double> s_MachList;      /**< the user-defined list of Mach numbers, used for batch analysis */
+        static QVector<double> s_NCritList;     /**< the user-defined list of NCrit numbers, used for batch analysis */
 
         QFile *m_pXFile;                   /**< a pointer to the output log file */
 

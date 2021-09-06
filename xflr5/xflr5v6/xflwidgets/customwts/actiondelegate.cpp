@@ -117,7 +117,7 @@ void ActionDelegate::setModelData(QWidget *pEditor, QAbstractItemModel *model,
         }
         else
         {
-            if(m_Digits[index.column()]>=0)
+            if(m_Digits.at(index.column())>=0)
             {
                 DoubleEdit *pDE = static_cast<DoubleEdit*>(pEditor);
                 pDE->readValue();

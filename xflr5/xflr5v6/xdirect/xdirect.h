@@ -296,9 +296,6 @@ class XDirect : public QWidget
         static bool s_bInitBL;            /**< true if the boundary layer should be initialized for the next xfoil calculation */
         static bool s_bKeepOpenErrors;    /**< true if the XfoilAnalysisDlg should be kept open if errors occured in the XFoil calculation */
         static int s_TimeUpdateInterval;  /**< time interval in ms between two output display updates during an XFoil analysis */
-        static QVector<double> s_ReList;        /**< the user-defined list of Re numbers, used for batch analysis */
-        static QVector<double> s_MachList;      /**< the user-defined list of Mach numbers, used for batch analysis */
-        static QVector<double> s_NCritList;     /**< the user-defined list of NCrit numbers, used for batch analysis */
 };
 
 

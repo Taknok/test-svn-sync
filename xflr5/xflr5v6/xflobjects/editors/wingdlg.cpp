@@ -68,8 +68,6 @@ WingDlg::WingDlg(QWidget *pParent) : QDialog(pParent)
 
     m_pWing = nullptr;
 
-    m_precision = nullptr;
-
     m_iSection   = -1;
 
     m_pspLeftSide = nullptr;
@@ -108,7 +106,6 @@ WingDlg::~WingDlg()
 {
     if(m_pWingModel)    delete m_pWingModel;
     if(m_pWingDelegate) delete m_pWingDelegate;
-    if(m_precision)     delete [] m_precision;
 }
 
 
@@ -204,22 +201,22 @@ void WingDlg::connectSignals()
     connect(m_pDeleteSection, SIGNAL(triggered()), SLOT(onDeleteSection()));
     connect(m_pResetSection,  SIGNAL(triggered()), SLOT(onResetSection()));
 
-    connect(m_pResetScales,  SIGNAL(triggered()), m_pglWingView, SLOT(on3dReset()));
-    connect(m_ptbIso,        SIGNAL(clicked()),   m_pglWingView, SLOT(on3dIso()));
-    connect(m_ptbX,          SIGNAL(clicked()),   m_pglWingView, SLOT(on3dFront()));
-    connect(m_ptbY,          SIGNAL(clicked()),   m_pglWingView, SLOT(on3dLeft()));
-    connect(m_ptbZ,          SIGNAL(clicked()),   m_pglWingView, SLOT(on3dTop()));
-    connect(m_ppbReset,    SIGNAL(clicked()),   m_pglWingView, SLOT(on3dReset()));
-    connect(m_ptbFlip,       SIGNAL(clicked()),   m_pglWingView, SLOT(on3dFlip()));
+    connect(m_pResetScales,   SIGNAL(triggered()), m_pglWingView, SLOT(on3dReset()));
+    connect(m_ptbIso,         SIGNAL(clicked()),   m_pglWingView, SLOT(on3dIso()));
+    connect(m_ptbX,           SIGNAL(clicked()),   m_pglWingView, SLOT(on3dFront()));
+    connect(m_ptbY,           SIGNAL(clicked()),   m_pglWingView, SLOT(on3dLeft()));
+    connect(m_ptbZ,           SIGNAL(clicked()),   m_pglWingView, SLOT(on3dTop()));
+    connect(m_ppbReset,       SIGNAL(clicked()),   m_pglWingView, SLOT(on3dReset()));
+    connect(m_ptbFlip,        SIGNAL(clicked()),   m_pglWingView, SLOT(on3dFlip()));
 
 
-    connect(m_pchFoilNames,  SIGNAL(clicked()),SLOT(onFoilNames()));
-    connect(m_pchShowMasses, SIGNAL(clicked()),SLOT(onShowMasses()));
+    connect(m_pchFoilNames,   SIGNAL(clicked()),SLOT(onFoilNames()));
+    connect(m_pchShowMasses,  SIGNAL(clicked()),SLOT(onShowMasses()));
 
-    connect(m_pchAxes,       SIGNAL(clicked()), SLOT(onAxes()));
-    connect(m_pchPanels,     SIGNAL(clicked()), SLOT(onPanels()));
-    connect(m_pchSurfaces,   SIGNAL(clicked()), SLOT(onSurfaces()));
-    connect(m_pchOutline,    SIGNAL(clicked()), SLOT(onOutline()));
+    connect(m_pchAxes,        SIGNAL(clicked()), SLOT(onAxes()));
+    connect(m_pchPanels,      SIGNAL(clicked()), SLOT(onPanels()));
+    connect(m_pchSurfaces,    SIGNAL(clicked()), SLOT(onSurfaces()));
+    connect(m_pchOutline,     SIGNAL(clicked()), SLOT(onOutline()));
 
     connect(m_ppbInsertBefore,  SIGNAL(clicked()), SLOT(onInsertBefore()));
     connect(m_ppbInsertAfter,   SIGNAL(clicked()), SLOT(onInsertAfter()));
@@ -332,15 +329,14 @@ void WingDlg::createXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFoilB,
 void WingDlg::fillDataTable()
 {
     if(!m_pWing) return;
-    int i;
+
     m_pWingModel->setRowCount(m_pWing->NWingSection());
 
-    for(i=0; i<m_pWing->NWingSection(); i++)
+    for(int i=0; i<m_pWing->NWingSection(); i++)
     {
         fillTableRow(i);
     }
 }
-
 
 
 void WingDlg::fillTableRow(int row)
@@ -404,11 +400,11 @@ void WingDlg::fillTableRow(int row)
 
 bool WingDlg::initDialog(Wing *pWing)
 {
-    QString str;
     m_iSection = 0;
 
     m_pWing = pWing;
     if(!m_pWing) return false;
+
     m_pglWingView->setWing(m_pWing);
     computeGeometry();
 
@@ -440,47 +436,6 @@ bool WingDlg::initDialog(Wing *pWing)
     m_pcmbWingColor->setColor(m_pWing->m_Color);
 
     m_ptvWingSections->setFont(DisplayOptions::tableFont());
-
-    m_pWingModel = new QStandardItemModel;
-    m_pWingModel->setRowCount(30);//temporary
-    m_pWingModel->setColumnCount(10);
-
-    m_pWingModel->setHeaderData(0, Qt::Horizontal, tr("y (")+str+")");
-    m_pWingModel->setHeaderData(1, Qt::Horizontal, tr("chord (")+str+")");
-    m_pWingModel->setHeaderData(2, Qt::Horizontal, tr("offset (")+str+")");
-    m_pWingModel->setHeaderData(3, Qt::Horizontal, QObject::tr("dihedral")+QString::fromUtf8("(°)"));
-    m_pWingModel->setHeaderData(4, Qt::Horizontal, QObject::tr("twist")+QString::fromUtf8("(°)"));
-    m_pWingModel->setHeaderData(5, Qt::Horizontal, QObject::tr("foil"));
-    m_pWingModel->setHeaderData(6, Qt::Horizontal, QObject::tr("X-panels"));
-    m_pWingModel->setHeaderData(7, Qt::Horizontal, QObject::tr("X-dist"));
-    m_pWingModel->setHeaderData(8, Qt::Horizontal, QObject::tr("Y-panels"));
-    m_pWingModel->setHeaderData(9, Qt::Horizontal, QObject::tr("Y-dist"));
-
-    m_ptvWingSections->setModel(m_pWingModel);
-
-
-    QItemSelectionModel *selectionModel = new QItemSelectionModel(m_pWingModel);
-    m_ptvWingSections->setSelectionModel(selectionModel);
-    connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
-
-
-    m_pWingDelegate = new WingDelegate(this);
-    m_ptvWingSections->setItemDelegate(m_pWingDelegate);
-    connect(m_pWingDelegate,  SIGNAL(closeEditor(QWidget*)), this, SLOT(onCellChanged(QWidget*)));
-
-    m_precision = new int[10];
-    m_precision[0] = 3;
-    m_precision[1] = 3;
-    m_precision[2] = 3;
-    m_precision[3] = 1;
-    m_precision[4] = 2;
-    m_precision[5] = 1;
-    m_precision[6] = 0;
-    m_precision[7] = 0;
-    m_precision[8] = 0;
-    m_precision[9] = 0;
-    m_pWingDelegate->setPrecision(m_precision);
-    m_pWingDelegate->m_pWingSection = &m_pWing->m_Section;
 
     fillDataTable();
     setWingData();
@@ -1185,6 +1140,36 @@ void WingDlg::setupLayout()
                                                    QAbstractItemView::EditKeyPressed  |
                                                    QAbstractItemView::AnyKeyPressed);
                 m_ptvWingSections->horizontalHeader()->setStretchLastSection(true);
+
+                m_pWingModel = new QStandardItemModel;
+                m_pWingModel->setRowCount(30);//temporary
+                m_pWingModel->setColumnCount(10);
+
+                m_pWingModel->setHeaderData(0, Qt::Horizontal, tr("y (")+")");
+                m_pWingModel->setHeaderData(1, Qt::Horizontal, tr("chord (")+")");
+                m_pWingModel->setHeaderData(2, Qt::Horizontal, tr("offset (")+")");
+                m_pWingModel->setHeaderData(3, Qt::Horizontal, QObject::tr("dihedral")+QString::fromUtf8("(°)"));
+                m_pWingModel->setHeaderData(4, Qt::Horizontal, QObject::tr("twist")+QString::fromUtf8("(°)"));
+                m_pWingModel->setHeaderData(5, Qt::Horizontal, QObject::tr("foil"));
+                m_pWingModel->setHeaderData(6, Qt::Horizontal, QObject::tr("X-panels"));
+                m_pWingModel->setHeaderData(7, Qt::Horizontal, QObject::tr("X-dist"));
+                m_pWingModel->setHeaderData(8, Qt::Horizontal, QObject::tr("Y-panels"));
+                m_pWingModel->setHeaderData(9, Qt::Horizontal, QObject::tr("Y-dist"));
+
+                m_ptvWingSections->setModel(m_pWingModel);
+
+
+                QItemSelectionModel *selectionModel = new QItemSelectionModel(m_pWingModel);
+                m_ptvWingSections->setSelectionModel(selectionModel);
+                connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
+
+
+                m_pWingDelegate = new WingDelegate(this);
+                m_ptvWingSections->setItemDelegate(m_pWingDelegate);
+                connect(m_pWingDelegate,  SIGNAL(closeEditor(QWidget*)), this, SLOT(onCellChanged(QWidget*)));
+
+                QVector<int> m_precision = {3,3,3,1,2,1,0,0,0,0};
+                m_pWingDelegate->setPrecision(m_precision);
 
                 pDataLayout->addWidget(pNameWidget);
                 pDataLayout->addWidget(pSymWidget);

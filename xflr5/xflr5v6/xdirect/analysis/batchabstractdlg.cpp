@@ -80,6 +80,10 @@ int BatchAbstractDlg::s_nThreads = 1;
 
 QByteArray BatchAbstractDlg::s_Geometry;
 
+QVector<double> BatchAbstractDlg::s_ReList;
+QVector<double> BatchAbstractDlg::s_MachList;
+QVector<double> BatchAbstractDlg::s_NCritList;
+
 /**
  * The public contructor
  */
@@ -193,7 +197,7 @@ void BatchAbstractDlg::makeCommonWidgets()
         QHBoxLayout *pRangeSpecLayout = new QHBoxLayout;
         {
             QLabel *Spec = new QLabel(tr("Specify:"));
-            m_prbAlpha = new QRadioButton(tr("Alpha"));
+            m_prbAlpha = new QRadioButton(QChar(0x03B1));
             m_prbCl = new QRadioButton(tr("Cl"));
             m_pchFromZero   = new QCheckBox(tr("From Zero"));
             pRangeSpecLayout->addWidget(Spec);
@@ -529,17 +533,13 @@ void BatchAbstractDlg::reject()
 void BatchAbstractDlg::onEditReList()
 {
     ReListDlg dlg(this);
-    dlg.initDialog(XDirect::s_ReList,XDirect::s_MachList, XDirect::s_NCritList);
+    dlg.initDialog(s_ReList, s_MachList,  s_NCritList);
 
     if(QDialog::Accepted == dlg.exec())
     {
-        XDirect::s_ReList.clear();
-        XDirect::s_MachList.clear();
-        XDirect::s_NCritList.clear();
-
-        XDirect::s_ReList.append(dlg.ReList());
-        XDirect::s_MachList.append(dlg.MachList());
-        XDirect::s_NCritList.append(dlg.NCritList());
+        s_ReList    = dlg.ReList();
+        s_MachList  = dlg.MachList();
+        s_NCritList = dlg.NCritList();
     }
 }
 
@@ -730,12 +730,12 @@ void BatchAbstractDlg::outputReList()
     m_pteTextOutput->appendPlainText(tr("Reynolds numbers to analyze:")+"\n");
     if(s_bFromList)
     {
-        for(int i=0; i<XDirect::s_ReList.count(); i++)
+        for(int i=0; i<s_ReList.count(); i++)
         {
             QString strong = QString("   Re = %L1  /  Mach = %L2  /  NCrit = %L3")
-                    .arg(XDirect::s_ReList.at(i), 10,'f',0)
-                    .arg(XDirect::s_MachList.at(i), 5,'f',3)
-                    .arg(XDirect::s_NCritList.at(i), 5, 'f', 2);
+                    .arg(s_ReList.at(i), 10,'f',0)
+                    .arg(s_MachList.at(i), 5,'f',3)
+                    .arg(s_NCritList.at(i), 5, 'f', 2);
             m_pteTextOutput->appendPlainText(strong+"\n");
         }
     }
@@ -799,6 +799,29 @@ void BatchAbstractDlg::onUpdatePolarView()
 }
 
 
+void BatchAbstractDlg::initReList()
+{
+    s_ReList.resize(12);
+    s_MachList.resize(12);
+    s_NCritList.resize(12);
+
+    s_ReList[0]  =   30000.0;
+    s_ReList[1]  =   40000.0;
+    s_ReList[2]  =   60000.0;
+    s_ReList[3]  =   80000.0;
+    s_ReList[4]  =  100000.0;
+    s_ReList[5]  =  130000.0;
+    s_ReList[6]  =  160000.0;
+    s_ReList[7]  =  200000.0;
+    s_ReList[8]  =  300000.0;
+    s_ReList[9]  =  500000.0;
+    s_ReList[10] = 1000000.0;
+    s_ReList[11] = 3000000.0;
+
+    s_MachList.fill(0);
+    s_NCritList.fill(9);
+}
+
 
 void BatchAbstractDlg::loadSettings(QSettings &settings)
 {
@@ -824,6 +847,23 @@ void BatchAbstractDlg::loadSettings(QSettings &settings)
         s_ReMin     = settings.value("ReynoldsMin",  s_ReMin).toDouble();
         s_ReMax     = settings.value("ReynoldsMax",  s_ReMax).toDouble();
         s_ReInc     = settings.value("ReynolsDelta", s_ReInc).toDouble();
+
+        if(settings.contains("NReynolds"))
+        {
+            int NRe = settings.value("NReynolds").toInt();
+            s_ReList.clear();
+            s_MachList.clear();
+            s_NCritList.clear();
+            for (int i=0; i<NRe; i++)
+            {
+                QString str1 = QString("ReList%1").arg(i);
+                QString str2 = QString("MaList%1").arg(i);
+                QString str3 = QString("NcList%1").arg(i);
+                if(settings.contains(str1)) s_ReList.append(settings.value(str1).toDouble());
+                if(settings.contains(str2)) s_MachList.append(settings.value(str2).toDouble());
+                if(settings.contains(str3)) s_NCritList.append(settings.value(str3).toDouble());
+            }
+            }
 
         s_Geometry = settings.value("WindowGeom", QByteArray()).toByteArray();
     }
@@ -855,6 +895,17 @@ void BatchAbstractDlg::saveSettings(QSettings &settings)
         settings.setValue("ReynoldsMin",  s_ReMin);
         settings.setValue("ReynoldsMax",  s_ReMax);
         settings.setValue("ReynolsDelta", s_ReInc);
+
+        settings.setValue("NReynolds", s_ReList.count());
+        for (int i=0; i<s_ReList.count(); i++)
+        {
+            QString str1 = QString("ReList%1").arg(i);
+            QString str2 = QString("MaList%1").arg(i);
+            QString str3 = QString("NcList%1").arg(i);
+            settings.setValue(str1, s_ReList[i]);
+            settings.setValue(str2, s_MachList[i]);
+            settings.setValue(str3, s_NCritList[i]);
+        }
 
         settings.setValue("WindowGeom",   s_Geometry);
     }
