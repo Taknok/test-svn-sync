@@ -425,7 +425,6 @@ bool WingDlg::initDialog(Wing *pWing)
     m_prbRightSide->setChecked(m_bRightSide);
     m_prbLeftSide->setChecked(!m_bRightSide);
 
-
     m_pchSurfaces->setChecked(m_pglWingView->m_bSurfaces);
     m_pchOutline->setChecked(m_pglWingView->m_bOutline);
     m_pchAxes->setChecked(m_pglWingView->m_bAxes);
@@ -525,12 +524,10 @@ void WingDlg::onDeleteSection()
     }
     m_ptvWingSections->closePersistentEditor(m_ptvWingSections->currentIndex());
 
-    int ny, size;
-
-    size = m_pWingModel->rowCount();
+    int size = m_pWingModel->rowCount();
     if(size<=2) return;
 
-    ny = m_pWing->NYPanels(m_iSection-1) + m_pWing->NYPanels(m_iSection);
+    int ny = m_pWing->NYPanels(m_iSection-1) + m_pWing->NYPanels(m_iSection);
 
     m_pWing->removeWingSection(m_iSection);
 
@@ -1433,8 +1430,6 @@ void WingDlg::setupLayout()
     {
         m_pspHorizontal->addWidget(m_pspLeftSide);
         m_pspHorizontal->addWidget(pRightSideWidget);
-        m_pspLeftSide->sizePolicy().setHorizontalStretch(4);
-        pRightSideWidget->sizePolicy().setHorizontalStretch(1);
     }
 
     QHBoxLayout *pMainLayout = new QHBoxLayout;

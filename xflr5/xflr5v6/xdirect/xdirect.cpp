@@ -36,9 +36,7 @@
 #include <xflobjects/editors/renamedlg.h>
 #include <xdirect/foiltreeview.h>
 #include <xdirect/analysis/batchctrldlg.h>
-#include <xdirect/analysis/batchgraphdlg.h>
 #include <xdirect/analysis/batchthreaddlg.h>
-#include <xdirect/analysis/relistdlg.h>
 #include <xdirect/analysis/foilpolardlg.h>
 #include <xdirect/analysis/xfoiladvanceddlg.h>
 #include <xdirect/geometry/cadddlg.h>
@@ -233,7 +231,6 @@ void XDirect::setControls()
     s_pMainFrame->m_pExportCurFoil->setEnabled(Objects2d::curFoil());
     s_pMainFrame->m_pRenameCurFoil->setEnabled(Objects2d::curFoil());
     s_pMainFrame->m_pDefinePolarAct->setEnabled(Objects2d::curFoil());
-    s_pMainFrame->m_pBatchAnalysisAct->setEnabled(Objects2d::curFoil());
     s_pMainFrame->m_pDeleteFoilOpps->setEnabled(Objects2d::curFoil());
     s_pMainFrame->m_pDeleteFoilPolars->setEnabled(Objects2d::curFoil());
 
@@ -1093,7 +1090,6 @@ void XDirect::loadSettings(QSettings &settings)
         BatchThreadDlg::s_nThreads = settings.value("MaxThreads", 12).toInt();
 
         m_pFoilTreeView->setSplitterSize(settings.value("FoilTreeSplitterSizes").toByteArray());
-        ReListDlg::s_WindowGeometry = settings.value("ReListDlgGeom").toByteArray();
     }
     settings.endGroup();
 
@@ -1305,41 +1301,6 @@ void XDirect::onAnalyze()
     updateView();
 
     emit projectModified();
-}
-
-
-/**
- * Launches a single-threaded batch analysis
- */
-void XDirect::onBatchAnalysis()
-{
-    if(!Objects2d::curFoil()) return;
-
-    onPolarView();
-    updateView();
-
-    m_ppbAnalyze->setEnabled(false);
-
-    BatchGraphDlg *pBatchDlg = new BatchGraphDlg;
-    pBatchDlg->m_pFoil     = Objects2d::curFoil();
-    pBatchDlg->m_pRmsGraph->copySettings(&Settings::s_RefGraph);
-
-    pBatchDlg->initDialog();
-
-    if(pBatchDlg->exec()==QDialog::Accepted) emit projectModified();
-
-    delete pBatchDlg;
-
-    setPolar();
-    m_pFoilTreeView->fillModelView();
-    m_ppbAnalyze->setEnabled(true);
-
-    setOpp();
-
-    emit projectModified();
-
-    setControls();
-    updateView();
 }
 
 
@@ -3856,7 +3817,6 @@ void XDirect::saveSettings(QSettings &settings)
         settings.setValue("KeepOpenErrors", s_bKeepOpenErrors);
 
         settings.setValue("FoilTreeSplitterSizes", m_pFoilTreeView->splitterSize());
-        settings.setValue("ReListDlgGeom", ReListDlg::s_WindowGeometry);
     }
     settings.endGroup();
 

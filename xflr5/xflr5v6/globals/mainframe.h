@@ -331,7 +331,7 @@ class MainFrame : public QMainWindow
 
         //XDirect Actions
         QActionGroup *m_pXDirectViewActGroup;
-        QAction *m_pPolarsAct, *m_pOpPointsAct, *m_pDeletePolar, *m_pDefinePolarAct, *m_pEditCurPolar, *m_pBatchAnalysisAct, *m_pResetCurPolar;
+        QAction *m_pPolarsAct, *m_pOpPointsAct, *m_pDeletePolar, *m_pDefinePolarAct, *m_pEditCurPolar, *m_pResetCurPolar;
         QAction *m_pMultiThreadedBatchAct, *m_pBatchCtrlAct;
         QAction *m_pRestoreToolbarsAct;
         QAction *m_pExportCurPolar, *m_pHideFoilPolars, *m_pShowFoilPolars, *m_pShowFoilPolarsOnly, *m_pSaveFoilPolars,*m_pDeleteFoilPolars;

@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <QListWidget>
 #include <QSettings>
 #include <QDialog>
 #include <QCheckBox>
@@ -32,6 +33,9 @@
 #include <QPlainTextEdit>
 #include <QDialogButtonBox>
 #include <QGroupBox>
+#include <QModelIndex>
+#include <QSplitter>
+
 #include <xflcore/core_enums.h>
 
 class Foil;
@@ -42,6 +46,9 @@ class XFoilTask;
 class XFoilTaskEvent;
 struct FoilAnalysis;
 class XDirect;
+class CPTableView;
+class ActionDelegate;
+class ActionItemModel;
 
 /**
  * @brief Abstract base class for BatchThreadDlg and BacthCtrlDlg
@@ -75,11 +82,14 @@ class BatchAbstractDlg : public QDialog
         virtual void readParams();
 
         void makeCommonWidgets();
-        void outputFoilList();
         void outputReList();
         void setFileHeader();
         void setPlrName(Polar *pNewPolar);
         void writeString(QString &strong);
+        void fillReModel();
+        void sortRe();
+
+        void readFoils(QVector<Foil *> &foils);
 
     protected slots:
         virtual void onAnalyze() = 0;
@@ -87,63 +97,63 @@ class BatchAbstractDlg : public QDialog
         void onAdvancedSettings();
         void onButton(QAbstractButton *pButton);
         void onClose();
-        void onEditReList();
-        void onFoilList();
-        void onFoilSelectionType();
         void onInitBL(int);
-        void onRange();
         void onSpecChanged();
         void onUpdatePolarView();
 
+        void onDelete();
+        void onInsertBefore();
+        void onInsertAfter();
+        void onCellChanged(QModelIndex topLeft, QModelIndex botRight);
+        void onReTableClicked(QModelIndex index);
 
     protected:
-        QRadioButton *m_prbFoil1, *m_prbFoil2;
-        QPushButton *m_ppbFoilList;
-        QRadioButton *m_prbRange1, *m_prbRange2;
+        QListWidget *m_plwNameList;
+
         QRadioButton *m_prbAlpha, *m_prbCl;
-        QPushButton *m_ppbEditList;
-        DoubleEdit *m_pdeReMin, *m_pdeReMax, *m_pdeReDelta, *m_pdeMach;
+
         DoubleEdit *m_pdeSpecMin, *m_pdeSpecMax, *m_pdeSpecDelta;
-        DoubleEdit *m_pdeACrit, *m_pdeXTopTr, *m_pdeXBotTr;
+        DoubleEdit *m_pdeXTopTr, *m_pdeXBotTr;
+
         IntEdit *m_pieMaxThreads;
         QLabel *m_plabSpecVar;
         QLabel *m_plabMaType, *m_plabReType;
         QCheckBox *m_pchInitBL, *m_pchFromZero, *m_pchUpdatePolarView;
 
-        QGroupBox *m_pFoilBox,*m_pBatchVarsGroupBox, *m_pRangeVarsGroupBox, *m_pTransVarsGroupBox;
+        QGroupBox *m_pRangeVarsGroupBox, *m_pTransVarsGroupBox;
         QFrame *m_pOptionsFrame;
 
         QDialogButtonBox *m_pButtonBox;
         QPushButton *m_ppbAnalyze, *m_ppbAdvancedSettings;
         QPlainTextEdit *m_pteTextOutput;
 
+        QSplitter *m_pVSplitter;
+
+        CPTableView *m_pcptReTable;
+        ActionItemModel *m_pReModel;
+        ActionDelegate *m_pFloatDelegate;
+
+        QAction *m_pInsertBeforeAct, *m_pInsertAfterAct, *m_pDeleteAct;
 
         bool m_bCancel;             /**< true if the user has clicked the cancel button */
         bool m_bIsRunning;          /**< true until all the pairs of (foil, polar) have been calculated */
-
-        static QVector<double> s_ReList;        /**< the user-defined list of Re numbers, used for batch analysis */
-        static QVector<double> s_MachList;      /**< the user-defined list of Mach numbers, used for batch analysis */
-        static QVector<double> s_NCritList;     /**< the user-defined list of NCrit numbers, used for batch analysis */
 
         QFile *m_pXFile;                   /**< a pointer to the output log file */
 
         Foil *m_pFoil;                  /**< a pointer to the current Foil */
 
-        QStringList m_FoilList;            /**< the list of foils to analyze */
-
         static bool s_bAlpha;              /**< true if the analysis should be performed for a range of aoa rather than lift coefficient */
         static bool s_bFromZero;           /**< true if the iterations should start from aoa=0 rather than aoa=alpha_min */
 
-        static double s_Mach;              /**< the Mach number used if not from the list of Re numbers */
-        static double s_ACrit;             /**< the transition criterion used if not from the list of Re numbers */
+        static QVector<double> s_ReList;        /**< the user-defined list of Re numbers, used for batch analysis */
+        static QVector<double> s_MachList;      /**< the user-defined list of Mach numbers, used for batch analysis */
+        static QVector<double> s_NCritList;     /**< the user-defined list of NCrit numbers, used for batch analysis */
+
         static double s_XTop;            /**< the point of forced transition on the upper surface */
         static double s_XBot;            /**< the point of forced transition on the lower surface */
 
         static xfl::enumPolarType s_PolarType;  /**< the type of analysis to perform */
 
-        static double s_ReMin;             /**< the min Re for a range analysis */
-        static double s_ReMax;             /**< the max Re for a range analysis */
-        static double s_ReInc;             /**< the incement Re for a range analysis */
         static double s_AlphaMin;          /**< The starting aoa */
         static double s_AlphaMax;          /**< The ending aoa */
         static double s_AlphaInc;          /**< The aoa increment */
@@ -151,14 +161,14 @@ class BatchAbstractDlg : public QDialog
         static double s_ClMax;             /**< The ending Cl coefficient */
         static double s_ClInc;             /**< The Cl increment  */
 
-        static bool s_bFromList;           /**< true if the analysis should be performed for a list of Re values rather than for a range */
         static bool s_bInitBL;             /**< true if the boundary layer should be restored to the default value before each polar analysis */
 
         static QByteArray s_Geometry;
         static XDirect* s_pXDirect;           /**< a void pointer to the unique instance of the QXDirect class */
-        static bool s_bCurrentFoil;        /**< true if the analysis should be performed only for the current foil */
         static bool s_bUpdatePolarView;    /**< true if the polar graphs should be updated during the analysis */
         static int s_nThreads;             /**< the number of available threads */
+
+        static QByteArray s_VSplitterSizes;
 };
 
 
