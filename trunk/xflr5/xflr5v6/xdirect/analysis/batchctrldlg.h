@@ -27,9 +27,6 @@
 #include "batchabstractdlg.h"
 
 class DoubleEdit;
-class CPTableView;
-class ActionDelegate;
-class ActionItemModel;
 
 
 /**
@@ -52,32 +49,20 @@ class BatchCtrlDlg : public BatchAbstractDlg
         static void saveSettings(QSettings &settings);
 
     private:
-        void connectSignals();
         void setupLayout();
         void readParams() override;
         void startAnalyses();
         void customEvent(QEvent * pEvent) override;
-        void fillReModel();
-        void sortRe();
 
     private slots:
         void onAnalyze() override;
-        void onDelete();
-        void onInsertBefore();
-        void onInsertAfter();
-        void onCellChanged(QModelIndex topLeft, QModelIndex botRight);
-        void onReTableClicked(QModelIndex index);
+
 
     private:
         int m_nTasks, m_TaskCounter;
 
         DoubleEdit *m_pdeXHinge, *m_pdeYHinge;
         DoubleEdit *m_pdeAngleMin, *m_pdeAngleMax, *m_pdeAngleDelta;
-        CPTableView *m_pcptReTable;
-        ActionItemModel *m_pReModel;
-        ActionDelegate *m_pFloatDelegate;
-
-        QAction *m_pInsertBeforeAct, *m_pInsertAfterAct, *m_pDeleteAct;
 
 
         static double s_XHinge, s_YHinge;

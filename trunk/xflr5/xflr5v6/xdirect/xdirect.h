@@ -120,7 +120,6 @@ class XDirect : public QWidget
         void onAnimate(bool bChecked);
         void onAnimateSingle();
         void onAnimateSpeed(int val);
-        void onBatchAnalysis();
         void onBatchCtrlAnalysis();
         void onCadd();
         void onCpGraph();

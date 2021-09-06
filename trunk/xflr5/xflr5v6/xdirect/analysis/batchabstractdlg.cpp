@@ -20,6 +20,7 @@
 *****************************************************************************/
 
 #include <QApplication>
+#include <QHeaderView>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
@@ -30,31 +31,31 @@
 #include <QThreadPool>
 #include <QTimer>
 #include <QFontDatabase>
-#include <QtDebug>
+#include <QMenu>
+#include <QModelIndex>
 
 #include "batchabstractdlg.h"
-#include "relistdlg.h"
-#include "xfoiladvanceddlg.h"
-#include <xflcore/displayoptions.h>
-#include <xflcore/xflcore.h>
-#include <xflcore/gui_params.h>
 
-#include <xflwidgets/customwts/doubleedit.h>
-#include <xflwidgets/customwts/intedit.h>
+#include <xdirect/analysis/xfoiladvanceddlg.h>
 #include <xdirect/analysis/xfoiltask.h>
-#include <xflobjects/objects2d/objects2d.h>
 #include <xdirect/xdirect.h>
+#include <xflcore/displayoptions.h>
+#include <xflcore/gui_params.h>
+#include <xflcore/xflcore.h>
 #include <xflcore/xflevents.h>
 #include <xflobjects/objects2d/foil.h>
+#include <xflobjects/objects2d/objects2d.h>
 #include <xflobjects/objects2d/polar.h>
-#include <xinverse/foilselectiondlg.h>
+#include <xflwidgets/customwts/actiondelegate.h>
+#include <xflwidgets/customwts/actionitemmodel.h>
+#include <xflwidgets/customwts/cptableview.h>
+#include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/intedit.h>
+
 
 bool BatchAbstractDlg::s_bAlpha    = true;
 bool BatchAbstractDlg::s_bFromZero = true;
 
-double BatchAbstractDlg::s_ReMin     = 1.0e5;
-double BatchAbstractDlg::s_ReMax     = 1.0e6;
-double BatchAbstractDlg::s_ReInc     = 1.0e5;
 double BatchAbstractDlg::s_AlphaMin  = 0.0;
 double BatchAbstractDlg::s_AlphaMax  = 1.0;
 double BatchAbstractDlg::s_AlphaInc  = 0.5;
@@ -62,27 +63,25 @@ double BatchAbstractDlg::s_ClMin     = 0.0;
 double BatchAbstractDlg::s_ClMax     = 1.0;
 double BatchAbstractDlg::s_ClInc     = 0.1;
 
-bool BatchAbstractDlg::s_bFromList = false;
 bool BatchAbstractDlg::s_bInitBL   = false;
 
 xfl::enumPolarType BatchAbstractDlg::s_PolarType = xfl::FIXEDSPEEDPOLAR;
 
-double BatchAbstractDlg::s_Mach    = 0.0;
-double BatchAbstractDlg::s_ACrit  = 9.0;
 double BatchAbstractDlg::s_XTop   = 1.0;
 double BatchAbstractDlg::s_XBot   = 1.0;
 
-bool BatchAbstractDlg::s_bCurrentFoil     = true;
 bool BatchAbstractDlg::s_bUpdatePolarView = false;
 XDirect * BatchAbstractDlg::s_pXDirect;
 
 int BatchAbstractDlg::s_nThreads = 1;
 
-QByteArray BatchAbstractDlg::s_Geometry;
 
 QVector<double> BatchAbstractDlg::s_ReList;
 QVector<double> BatchAbstractDlg::s_MachList;
 QVector<double> BatchAbstractDlg::s_NCritList;
+
+QByteArray BatchAbstractDlg::s_Geometry;
+QByteArray BatchAbstractDlg::s_VSplitterSizes;
 
 /**
  * The public contructor
@@ -91,10 +90,6 @@ BatchAbstractDlg::BatchAbstractDlg(QWidget *pParent) : QDialog(pParent)
 {
     m_pXFile = nullptr;
     m_pFoil = nullptr;
-
-
-    m_FoilList.clear();
-
 
     m_bCancel         = false;
 
@@ -123,73 +118,46 @@ BatchAbstractDlg::~BatchAbstractDlg()
  */
 void BatchAbstractDlg::makeCommonWidgets()
 {
-    m_pFoilBox = new QGroupBox(tr("Foil Selection"));
+    m_pVSplitter = new QSplitter(Qt::Vertical);
     {
-        QHBoxLayout *pFoilLayout = new QHBoxLayout;
-        m_prbFoil1 = new QRadioButton(tr("Current foil only"), this);
-        m_prbFoil2 = new QRadioButton(tr("Foil list"), this);
-        m_ppbFoilList = new QPushButton(tr("Foil list"), this);
-        pFoilLayout->addWidget(m_prbFoil1);
-        pFoilLayout->addWidget(m_prbFoil2);
-        pFoilLayout->addStretch(1);
-        pFoilLayout->addWidget(m_ppbFoilList);
-        m_pFoilBox->setLayout(pFoilLayout);
-    }
+        m_plwNameList = new QListWidget;
+        m_plwNameList->setSelectionMode(QAbstractItemView::MultiSelection);
 
-    m_pBatchVarsGroupBox = new QGroupBox(tr("Batch Variables"));
-    {
-        QGridLayout *pBatchVarsLayout = new QGridLayout;
-        {
-            m_prbRange1 = new QRadioButton(tr("Range"), this);
-            m_prbRange2 = new QRadioButton(tr("Re List"), this);
-            m_ppbEditList = new QPushButton(tr("Edit List"));
-            QLabel *MinVal   = new QLabel(tr("Min"));
-            QLabel *MaxVal   = new QLabel(tr("Max"));
-            QLabel *DeltaVal = new QLabel(tr("Increment"));
-            MinVal->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-            MaxVal->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-            DeltaVal->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+        m_pcptReTable = new CPTableView(this);
+        m_pcptReTable->setEditable(true);
+        m_pcptReTable->setEditTriggers(QAbstractItemView::CurrentChanged |
+                                       QAbstractItemView::DoubleClicked |
+                                       QAbstractItemView::SelectedClicked |
+                                       QAbstractItemView::EditKeyPressed |
+                                       QAbstractItemView::AnyKeyPressed);
+        m_pReModel = new ActionItemModel(this);
+        m_pReModel->setRowCount(5);//temporary
+        m_pReModel->setColumnCount(4);
+        m_pReModel->setActionColumn(3);
+        m_pReModel->setHeaderData(0, Qt::Horizontal, QObject::tr("Re"));
+        m_pReModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Mach"));
+        m_pReModel->setHeaderData(2, Qt::Horizontal, QObject::tr("NCrit"));
+        m_pReModel->setHeaderData(3, Qt::Horizontal, QObject::tr("Actions"));
 
-            m_plabReType  = new QLabel("Reynolds=");
-            m_plabMaType  = new QLabel("Mach=");
-            QLabel *NCritLabel = new QLabel(tr("NCrit="));
-            m_plabReType->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
-            NCritLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
-            m_plabMaType->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
-            m_pdeACrit   = new DoubleEdit(9.00,2, this);
+        m_pcptReTable->setModel(m_pReModel);
 
-            m_pdeReMin   = new DoubleEdit(100000,0,this);
-            m_pdeReMax   = new DoubleEdit(150000,0,this);
-            m_pdeReDelta = new DoubleEdit(50000,0, this);
-            m_pdeMach    = new DoubleEdit(0.00, 3, this);
+        int n = m_pReModel->actionColumn();
+        QHeaderView *pHHeader = m_pcptReTable->horizontalHeader();
+        pHHeader->setSectionResizeMode(n, QHeaderView::Stretch);
+        pHHeader->resizeSection(n, 1);
 
-            pBatchVarsLayout->addWidget(MinVal, 2, 2);
-            pBatchVarsLayout->addWidget(MaxVal, 2, 3);
-            pBatchVarsLayout->addWidget(DeltaVal, 2, 4);
-            pBatchVarsLayout->addWidget(m_plabReType, 3, 1);
-            pBatchVarsLayout->addWidget(m_pdeReMin, 3, 2);
-            pBatchVarsLayout->addWidget(m_pdeReMax, 3, 3);
-            pBatchVarsLayout->addWidget(m_pdeReDelta, 3, 4);
-            pBatchVarsLayout->addWidget(m_plabMaType, 4, 1);
-            pBatchVarsLayout->addWidget(m_pdeMach, 4, 2);
-            pBatchVarsLayout->addWidget(NCritLabel, 5,1);
-            pBatchVarsLayout->addWidget(m_pdeACrit, 5, 2);
-        }
+        m_pFloatDelegate = new ActionDelegate(this);
+        m_pFloatDelegate->setActionColumn(3);
+        QVector<int>m_Precision = {0,2,2};
+        m_pFloatDelegate->setDigits(m_Precision);
+        m_pcptReTable->setItemDelegate(m_pFloatDelegate);
 
-        QHBoxLayout *pRangeSpecLayout = new QHBoxLayout;
-        {
-            pRangeSpecLayout->addWidget(m_prbRange1);
-            pRangeSpecLayout->addWidget(m_prbRange2);
-            pRangeSpecLayout->addStretch(1);
-            pRangeSpecLayout->addWidget(m_ppbEditList);
-        }
+        m_pInsertBeforeAct	= new QAction(tr("Insert before"), this);
+        m_pInsertAfterAct	= new QAction(tr("Insert after"), this);
+        m_pDeleteAct	    = new QAction(tr("Delete"), this);
 
-        QVBoxLayout *pBatchVarsGroupLayout = new QVBoxLayout;
-        {
-            pBatchVarsGroupLayout->addLayout(pRangeSpecLayout);
-            pBatchVarsGroupLayout->addLayout(pBatchVarsLayout);
-            m_pBatchVarsGroupBox->setLayout(pBatchVarsGroupLayout);
-        }
+        m_pVSplitter->addWidget(m_plwNameList);
+        m_pVSplitter->addWidget(m_pcptReTable);
     }
 
     m_pRangeVarsGroupBox = new QGroupBox(tr("Analysis Range"));
@@ -310,15 +278,15 @@ void BatchAbstractDlg::makeCommonWidgets()
 
 void BatchAbstractDlg::connectBaseSignals()
 {
-    connect(m_prbFoil1,           SIGNAL(clicked()),         SLOT(onFoilSelectionType()));
-    connect(m_prbFoil2,           SIGNAL(clicked()),         SLOT(onFoilSelectionType()));
-    connect(m_ppbFoilList,        SIGNAL(clicked()),         SLOT(onFoilList()));
     connect(m_prbAlpha,           SIGNAL(toggled(bool)),     SLOT(onAcl()));
     connect(m_prbCl,              SIGNAL(toggled(bool)),     SLOT(onAcl()));
-    connect(m_prbRange1,          SIGNAL(toggled(bool)),     SLOT(onRange()));
-    connect(m_prbRange2,          SIGNAL(toggled(bool)),     SLOT(onRange()));
-    connect(m_ppbEditList,        SIGNAL(clicked()),         SLOT(onEditReList()));
     connect(m_pchUpdatePolarView, SIGNAL(clicked(bool)),     SLOT(onUpdatePolarView()));
+
+    connect(m_pcptReTable,        SIGNAL(clicked(QModelIndex)),                 SLOT(onReTableClicked(QModelIndex)));
+    connect(m_pReModel,           SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(onCellChanged(QModelIndex,QModelIndex)));
+    connect(m_pDeleteAct,         SIGNAL(triggered(bool)),                      SLOT(onDelete()));
+    connect(m_pInsertBeforeAct,   SIGNAL(triggered(bool)),                      SLOT(onInsertBefore()));
+    connect(m_pInsertAfterAct,    SIGNAL(triggered(bool)),                      SLOT(onInsertAfter()));
 }
 
 
@@ -328,7 +296,6 @@ void BatchAbstractDlg::onButton(QAbstractButton *pButton)
     else if (pButton == m_ppbAnalyze)                                  onAnalyze();
     else if (pButton == m_ppbAdvancedSettings)                         onAdvancedSettings();
 }
-
 
 
 /**
@@ -395,35 +362,36 @@ void BatchAbstractDlg::keyPressEvent(QKeyEvent *pEvent)
 void BatchAbstractDlg::initDialog()
 {
     if(!XDirect::curFoil()) return;
+
     blockSignals(true);
+
+    for(int i=0; i<Objects2d::foilCount(); i++)
+    {
+        Foil *pFoil = Objects2d::foilAt(i);
+        if(pFoil)
+        {
+            m_plwNameList->addItem(pFoil->name());
+            if(m_pFoil==pFoil)
+            {
+                QListWidgetItem *pItem =  m_plwNameList->item(i);
+                pItem->setSelected(true);
+            }
+        }
+    }
 
     m_pteTextOutput->clear();
     m_pteTextOutput->setFont(DisplayOptions::tableFont());
 
     s_PolarType = xfl::FIXEDSPEEDPOLAR; //no choice...
 
-    m_prbFoil1->setChecked(s_bCurrentFoil);
-    m_prbFoil2->setChecked(!s_bCurrentFoil);
-    onFoilSelectionType();
-
-    m_pdeReMin->setDigits(0);
-    m_pdeReMax->setDigits(0);
-    m_pdeReDelta->setDigits(0);
-
     m_pdeSpecMin->setDigits(3);
     m_pdeSpecMax->setDigits(3);
     m_pdeSpecDelta->setDigits(3);
 
-    if(s_ReMin<=0.0) s_ReMin = qAbs(s_ReInc);
-    m_pdeReMin->setValue(s_ReMin);
-    m_pdeReMax->setValue(s_ReMax);
-    m_pdeReDelta->setValue(s_ReInc);
     m_pdeSpecMin->setValue(s_AlphaMin);
     m_pdeSpecMax->setValue(s_AlphaMax);
     m_pdeSpecDelta->setValue(s_AlphaInc);
 
-    m_pdeMach->setValue(  s_Mach);
-    m_pdeACrit->setValue( s_ACrit);
     m_pdeXTopTr->setValue(s_XTop);
     m_pdeXBotTr->setValue(s_XBot);
 
@@ -431,21 +399,13 @@ void BatchAbstractDlg::initDialog()
     else         m_prbCl->setChecked(true);
     onAcl();
 
-
-    if(!s_bFromList)  m_prbRange1->setChecked(true);
-    else              m_prbRange2->setChecked(true);
-
-    m_ppbEditList->setEnabled(s_bFromList);
-    m_pdeReMin->setEnabled(!s_bFromList);
-    m_pdeReMax->setEnabled(!s_bFromList);
-    m_pdeReDelta->setEnabled(!s_bFromList);
-    m_pdeMach->setEnabled(!s_bFromList);
-    m_pdeACrit->setEnabled(!s_bFromList);
-
     m_pchFromZero->setChecked(s_bFromZero);
 
     m_pchInitBL->setChecked(true);
     m_pchUpdatePolarView->setChecked(s_bUpdatePolarView);
+
+    fillReModel();
+
     blockSignals(false);
 }
 
@@ -528,81 +488,11 @@ void BatchAbstractDlg::reject()
 
 
 /**
- * The user has requested an edition of the Re list
-*/
-void BatchAbstractDlg::onEditReList()
-{
-    ReListDlg dlg(this);
-    dlg.initDialog(s_ReList, s_MachList,  s_NCritList);
-
-    if(QDialog::Accepted == dlg.exec())
-    {
-        s_ReList    = dlg.ReList();
-        s_MachList  = dlg.MachList();
-        s_NCritList = dlg.NCritList();
-    }
-}
-
-
-/**
- * The user has requested an edition of the list of Foil objects to analyze
- */
-void BatchAbstractDlg::onFoilList()
-{
-    FoilSelectionDlg dlg(this);
-    //    dlg.SetSelectionMode(true);
-
-    dlg.initDialog(Objects2d::pOAFoil(), m_FoilList);
-
-    m_FoilList.clear();
-
-    if(QDialog::Accepted == dlg.exec())
-    {
-        m_FoilList.append(dlg.foilSelectionList());
-    }
-    outputFoilList();
-}
-
-
-/**
- *The user has changed between single Foil and list of Foil objects to analyze
- */
-void BatchAbstractDlg::onFoilSelectionType()
-{
-    s_bCurrentFoil = m_prbFoil1->isChecked();
-    m_ppbFoilList->setEnabled(!s_bCurrentFoil);
-
-    if(s_bCurrentFoil)
-    {
-        m_FoilList.clear();
-        m_FoilList.append(XDirect::curFoil()->name());
-    }
-
-    outputFoilList();
-}
-
-
-/**
  * The user has clicked the checkbox which specifies the initialization of the boundary layer
  **/
 void BatchAbstractDlg::onInitBL(int)
 {
     s_bInitBL = m_pchInitBL->isChecked();
-}
-
-/**
- * The user has clicked the checkbox specifying which range of Re should be analyzed
- */
-void BatchAbstractDlg::onRange()
-{
-    s_bFromList = !m_prbRange1->isChecked();
-
-    m_ppbEditList->setEnabled(s_bFromList);
-    m_pdeReMin->setEnabled(!s_bFromList);
-    m_pdeReMax->setEnabled(!s_bFromList);
-    m_pdeReDelta->setEnabled(!s_bFromList);
-    m_pdeMach->setEnabled(!s_bFromList);
-    m_pdeACrit->setEnabled(!s_bFromList);
 }
 
 
@@ -615,17 +505,6 @@ void BatchAbstractDlg::readParams()
 
     if(s_PolarType!=xfl::FIXEDAOAPOLAR)
     {
-        s_ReInc = m_pdeReDelta->value();
-        s_ReMax = m_pdeReMax->value();
-        s_ReMin = m_pdeReMin->value();
-
-        if(s_ReMin>s_ReMax)
-        {
-            double tmp = s_ReMin;
-            s_ReMin = s_ReMax;
-            s_ReMax = tmp;
-        }
-
         if(s_bAlpha)
         {
             s_AlphaInc = qAbs(m_pdeSpecDelta->value());
@@ -640,11 +519,6 @@ void BatchAbstractDlg::readParams()
         }
     }
 
-    if(s_ReMin<=0.0) s_ReMin = qAbs(s_ReInc);
-    if(s_ReMax<=0.0) s_ReMax = qAbs(s_ReMax);
-
-    s_Mach   = std::max(0.0, m_pdeMach->value());
-    s_ACrit  = m_pdeACrit->value();
     s_XTop   = m_pdeXTopTr->value();
     s_XBot   = m_pdeXBotTr->value();
 
@@ -668,12 +542,6 @@ void BatchAbstractDlg::setFileHeader()
     out << "\n";
     out << VERSIONNAME;
     out << "\n";
-    if(s_bCurrentFoil)
-    {
-        out << XDirect::curFoil()->name();
-        out << "\n";
-    }
-
 
     QDateTime dt = QDateTime::currentDateTime();
     QString str = dt.toString("dd.MM.yyyy  hh:mm:ss");
@@ -706,50 +574,22 @@ void BatchAbstractDlg::writeString(QString &strong)
 }
 
 
-
-
-/**
- * Outputs the list of the Foil names selected for analysis to the output text window.
- */
-void BatchAbstractDlg::outputFoilList()
-{
-    m_pteTextOutput->appendPlainText(tr("Foils to analyze:"));
-    for(int i=0; i<m_FoilList.count();i++)
-    {
-        m_pteTextOutput->appendPlainText("   "+m_FoilList.at(i));
-    }
-    m_pteTextOutput->appendPlainText("\n");
-}
-
-
 /**
  * Outputs the list of the Re values selected for analysis to the output text window.
  */
 void BatchAbstractDlg::outputReList()
 {
     m_pteTextOutput->appendPlainText(tr("Reynolds numbers to analyze:")+"\n");
-    if(s_bFromList)
+
+    for(int i=0; i<s_ReList.count(); i++)
     {
-        for(int i=0; i<s_ReList.count(); i++)
-        {
-            QString strong = QString("   Re = %L1  /  Mach = %L2  /  NCrit = %L3")
-                    .arg(s_ReList.at(i), 10,'f',0)
-                    .arg(s_MachList.at(i), 5,'f',3)
-                    .arg(s_NCritList.at(i), 5, 'f', 2);
-            m_pteTextOutput->appendPlainText(strong+"\n");
-        }
+        QString strong = QString("   Re = %L1  /  Mach = %L2  /  NCrit = %L3")
+                .arg(s_ReList.at(i), 10,'f',0)
+                .arg(s_MachList.at(i), 5,'f',3)
+                .arg(s_NCritList.at(i), 5, 'f', 2);
+        m_pteTextOutput->appendPlainText(strong+"\n");
     }
-    else
-    {
-        for(double Re=s_ReMin; Re<s_ReMax; Re+=s_ReInc)
-        {
-            QString strong = QString("   Re = %L1  /  Mach = %L2  /  NCrit = %L3")
-                    .arg(Re, 10,'f',0)
-                    .arg(s_Mach, 5,'f',3)
-                    .arg(s_ACrit, 5, 'f', 2);
-            m_pteTextOutput->appendPlainText(strong+"\n");
-        }
-    }
+
     m_pteTextOutput->appendPlainText("\n");
 }
 
@@ -761,6 +601,7 @@ void BatchAbstractDlg::outputReList()
 void BatchAbstractDlg::showEvent(QShowEvent *)
 {
     restoreGeometry(s_Geometry);
+    if(s_VSplitterSizes.length()>0) m_pVSplitter->restoreState(s_VSplitterSizes);
 }
 
 
@@ -771,6 +612,7 @@ void BatchAbstractDlg::showEvent(QShowEvent *)
 void BatchAbstractDlg::hideEvent(QHideEvent *)
 {
     s_Geometry = saveGeometry();
+    s_VSplitterSizes  = m_pVSplitter->saveState();
 }
 
 
@@ -827,14 +669,11 @@ void BatchAbstractDlg::loadSettings(QSettings &settings)
 {
     settings.beginGroup("BatchAbstractDlg");
     {
-        s_bFromList = settings.value("bFromList",    s_bFromList).toBool();
         s_bInitBL   = settings.value("bInitBL",      s_bInitBL).toBool();
 
         s_bAlpha    = settings.value("bAlpha",       s_bAlpha).toBool();
         s_bFromZero = settings.value("bFromZero",    s_bFromZero).toBool();
 
-        s_Mach      = settings.value("Mach",         s_Mach).toDouble();
-        s_ACrit     = settings.value("NCrit",        s_ACrit).toDouble();
         s_XTop      = settings.value("XTrTop",       s_XTop).toDouble();
         s_XBot      = settings.value("XTrBot",       s_XBot).toDouble();
 
@@ -844,9 +683,6 @@ void BatchAbstractDlg::loadSettings(QSettings &settings)
         s_ClMin     = settings.value("ClMin",        s_ClMin).toDouble();
         s_ClMax     = settings.value("ClMax",        s_ClMax).toDouble();
         s_ClInc     = settings.value("ClDelta",      s_ClInc).toDouble();
-        s_ReMin     = settings.value("ReynoldsMin",  s_ReMin).toDouble();
-        s_ReMax     = settings.value("ReynoldsMax",  s_ReMax).toDouble();
-        s_ReInc     = settings.value("ReynolsDelta", s_ReInc).toDouble();
 
         if(settings.contains("NReynolds"))
         {
@@ -865,6 +701,8 @@ void BatchAbstractDlg::loadSettings(QSettings &settings)
             }
             }
 
+
+        s_VSplitterSizes = settings.value("VSplitterSizes").toByteArray();
         s_Geometry = settings.value("WindowGeom", QByteArray()).toByteArray();
     }
     settings.endGroup();
@@ -875,14 +713,11 @@ void BatchAbstractDlg::saveSettings(QSettings &settings)
 {
     settings.beginGroup("BatchAbstractDlg");
     {
-        settings.setValue("bFromList",    s_bFromList);
         settings.setValue("bInitBL",      s_bInitBL);
 
         settings.setValue("bAlpha",       s_bAlpha);
         settings.setValue("bFromZero",    s_bFromZero);
 
-        settings.setValue("Mach",   s_Mach);
-        settings.setValue("NCrit",  s_ACrit);
         settings.setValue("XTrTop", s_XTop);
         settings.setValue("XTrBot", s_XBot);
 
@@ -892,9 +727,6 @@ void BatchAbstractDlg::saveSettings(QSettings &settings)
         settings.setValue("ClMin",        s_ClMin);
         settings.setValue("ClMax",        s_ClMax);
         settings.setValue("ClDelta",      s_ClInc);
-        settings.setValue("ReynoldsMin",  s_ReMin);
-        settings.setValue("ReynoldsMax",  s_ReMax);
-        settings.setValue("ReynolsDelta", s_ReInc);
 
         settings.setValue("NReynolds", s_ReList.count());
         for (int i=0; i<s_ReList.count(); i++)
@@ -907,11 +739,225 @@ void BatchAbstractDlg::saveSettings(QSettings &settings)
             settings.setValue(str3, s_NCritList[i]);
         }
 
+        settings.setValue("VSplitterSizes",  s_VSplitterSizes);
         settings.setValue("WindowGeom",   s_Geometry);
     }
     settings.endGroup();
 }
 
 
+void BatchAbstractDlg::fillReModel()
+{
+    m_pReModel->setRowCount(s_ReList.count());
+    m_pReModel->blockSignals(true);
+
+    for (int i=0; i<s_ReList.count(); i++)
+    {
+        QModelIndex Xindex = m_pReModel->index(i, 0, QModelIndex());
+        m_pReModel->setData(Xindex, s_ReList.at(i));
+
+        QModelIndex Yindex =m_pReModel->index(i, 1, QModelIndex());
+        m_pReModel->setData(Yindex, s_MachList.at(i));
+
+        QModelIndex Zindex =m_pReModel->index(i, 2, QModelIndex());
+        m_pReModel->setData(Zindex, s_NCritList.at(i));
+
+        QModelIndex actionindex = m_pReModel->index(i, 3, QModelIndex());
+        m_pReModel->setData(actionindex, QString("..."));
+    }
+    m_pReModel->blockSignals(false);
+    m_pcptReTable->resizeRowsToContents();
+}
+
+
+void BatchAbstractDlg::onDelete()
+{
+    QModelIndex index = m_pcptReTable->currentIndex();
+    int sel = index.row();
+
+    if(sel<0 || sel>=s_ReList.count()) return;
+
+    s_ReList.removeAt(sel);
+    s_MachList.removeAt(sel);
+    s_NCritList.removeAt(sel);
+
+    fillReModel();
+}
+
+
+void BatchAbstractDlg::onInsertBefore()
+{
+    int sel = m_pcptReTable->currentIndex().row();
+
+    s_ReList.insert(sel, 0.0);
+    s_MachList.insert(sel, 0.0);
+    s_NCritList.insert(sel, 0.0);
+
+    if     (sel>0)   s_ReList[sel] = (s_ReList.at(sel-1)+s_ReList.at(sel+1)) /2.0;
+    else if(sel==0)  s_ReList[sel] =  s_ReList.at(sel+1)                     /2.0;
+    else             s_ReList[0]   = 100000.0;
+
+    if(sel>=0)
+    {
+        s_MachList[sel]  = s_MachList.at(sel+1);
+        s_NCritList[sel] = s_NCritList.at(sel+1);
+    }
+    else
+    {
+        sel = 0;
+        s_MachList[sel]  = 0.0;
+        s_NCritList[sel] = 0.0;
+    }
+
+    fillReModel();
+
+    QModelIndex index = m_pReModel->index(sel, 0, QModelIndex());
+    m_pcptReTable->setCurrentIndex(index);
+    m_pcptReTable->selectRow(index.row());
+}
+
+
+void BatchAbstractDlg::onInsertAfter()
+{
+    int sel = m_pcptReTable->currentIndex().row()+1;
+
+    s_ReList.insert(sel, 0.0);
+    s_MachList.insert(sel, 0.0);
+    s_NCritList.insert(sel, 0.0);
+
+    if(sel==s_ReList.size()-1) s_ReList[sel]    = s_ReList[sel-1]*2.0;
+    else if(sel>0)             s_ReList[sel]    = (s_ReList[sel-1]+s_ReList[sel+1]) /2.0;
+    else if(sel==0)            s_ReList[sel]    = s_ReList[sel+1]                   /2.0;
+
+    if(sel>0)
+    {
+        s_MachList[sel]  = s_MachList[sel-1];
+        s_NCritList[sel] = s_NCritList[sel-1];
+    }
+    else
+    {
+        sel = 0;
+        s_MachList[sel]  = 0.0;
+        s_NCritList[sel] = 0.0;
+    }
+
+    fillReModel();
+
+    QModelIndex index = m_pReModel->index(sel, 0, QModelIndex());
+    m_pcptReTable->setCurrentIndex(index);
+    m_pcptReTable->selectRow(index.row());
+}
+
+
+void BatchAbstractDlg::onCellChanged(QModelIndex topLeft, QModelIndex )
+{
+    s_ReList.clear();
+    s_MachList.clear();
+    s_NCritList.clear();
+
+    for (int i=0; i<m_pReModel->rowCount(); i++)
+    {
+        s_ReList.append(   m_pReModel->index(i, 0, QModelIndex()).data().toDouble());
+        s_MachList.append( m_pReModel->index(i, 1, QModelIndex()).data().toDouble());
+        s_NCritList.append(m_pReModel->index(i, 2, QModelIndex()).data().toDouble());
+    }
+
+    if(topLeft.column()==0)
+    {
+        sortRe();
+
+        //and fill back the model
+        fillReModel();
+    }
+}
+
+
+/**
+* Bubble sort algorithm for the arrays of Reynolds, Mach and NCrit numbers.
+* The arrays are sorted by crescending Re numbers.
+*/
+void BatchAbstractDlg::sortRe()
+{
+    int indx(0), indx2(0);
+    double Retemp(0), Retemp2(0);
+    double Matemp(0), Matemp2(0);
+    double NCtemp(0), NCtemp2(0);
+    int flipped(0);
+
+    if (s_ReList.size()<=1) return;
+
+    indx = 1;
+    do
+    {
+        flipped = 0;
+        for (indx2 = s_ReList.size() - 1; indx2 >= indx; --indx2)
+        {
+            Retemp  = s_ReList.at(indx2);
+            Retemp2 = s_ReList.at(indx2 - 1);
+            Matemp  = s_MachList.at(indx2);
+            Matemp2 = s_MachList.at(indx2 - 1);
+            NCtemp  = s_NCritList.at(indx2);
+            NCtemp2 = s_NCritList.at(indx2 - 1);
+            if (Retemp2> Retemp)
+            {
+                s_ReList[indx2 - 1]    = Retemp;
+                s_ReList[indx2]        = Retemp2;
+                s_MachList[indx2 - 1]  = Matemp;
+                s_MachList[indx2]      = Matemp2;
+                s_NCritList[indx2 - 1] = NCtemp;
+                s_NCritList[indx2]     = NCtemp2;
+                flipped = 1;
+            }
+        }
+    } while ((++indx < s_ReList.size()) && flipped);
+}
+
+
+void BatchAbstractDlg::onReTableClicked(QModelIndex index)
+{
+    if(!index.isValid())
+    {
+    }
+    else
+    {
+        m_pcptReTable->selectRow(index.row());
+
+        switch(index.column())
+        {
+            case 3:
+            {
+                QRect itemrect = m_pcptReTable->visualRect(index);
+                QPoint menupos = m_pcptReTable->mapToGlobal(itemrect.topLeft());
+                QMenu *pReTableRowMenu = new QMenu(tr("Section"),this);
+                pReTableRowMenu->addAction(m_pInsertBeforeAct);
+                pReTableRowMenu->addAction(m_pInsertAfterAct);
+                pReTableRowMenu->addAction(m_pDeleteAct);
+                pReTableRowMenu->exec(menupos, m_pInsertBeforeAct);
+
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+}
+
+
+void BatchAbstractDlg::readFoils(QVector<Foil*> &foils)
+{
+    foils.clear();
+    for(int i=0; i<m_plwNameList->count();i++)
+    {
+        QListWidgetItem *pItem = m_plwNameList->item(i);
+        if(pItem && pItem->isSelected())
+        {
+            Foil  *pFoil = Objects2d::foil(pItem->text());
+            if(pFoil)
+                foils.append(pFoil);
+        }
+    }
+}
 
 

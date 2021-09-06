@@ -58,7 +58,6 @@
 #include <twodwidgets/foildesignwt.h>
 #include <twodwidgets/inverseviewwt.h>
 #include <twodwidgets/wingwt.h>
-#include <xdirect/analysis/batchgraphdlg.h>
 #include <xdirect/analysis/batchthreaddlg.h>
 #include <xdirect/analysis/foilpolardlg.h>
 #include <xdirect/analysis/xfoilanalysisdlg.h>
@@ -977,7 +976,7 @@ void MainFrame::createDockWindows()
     FoilGeomDlg::s_pXFoil         = &m_pXDirect->m_XFoil;
     TEGapDlg::s_pXFoil            = &m_pXDirect->m_XFoil;
     LEDlg::s_pXFoil               = &m_pXDirect->m_XFoil;
-    BatchGraphDlg::s_pXDirect          = m_pXDirect;
+
     BatchThreadDlg::s_pXDirect    = m_pXDirect;
 
     GraphTileWidget::s_pMainFrame = this;
@@ -2201,11 +2200,6 @@ void MainFrame::createXDirectActions()
     m_pDefinePolarAct->setStatusTip(tr("Defines a single analysis/polar"));
     connect(m_pDefinePolarAct, SIGNAL(triggered()), m_pXDirect, SLOT(onDefinePolar()));
 
-    m_pBatchAnalysisAct = new QAction(tr("Batch Analysis") + tr(" (Deprecated)"), this);
-    m_pBatchAnalysisAct->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_F6));
-    m_pBatchAnalysisAct->setStatusTip(tr("Launches a batch of analysis calculation for a specified range or list of Reynolds numbers"));
-    connect(m_pBatchAnalysisAct, SIGNAL(triggered()), m_pXDirect, SLOT(onBatchAnalysis()));
-
     m_pMultiThreadedBatchAct = new QAction(tr("Batch Analysis"), this);
     m_pMultiThreadedBatchAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F6));
     m_pMultiThreadedBatchAct->setStatusTip(tr("Launches a batch of analysis calculation using all available computer CPU cores"));
@@ -2278,7 +2272,6 @@ void MainFrame::createXDirectActions()
     connect(m_pDeleteCurOpp, SIGNAL(triggered()), m_pXDirect, SLOT(onDeleteCurOpp()));
 
     m_pViewXFoilAdvanced = new QAction(tr("XFoil Advanced Settings"), this);
-    m_pBatchAnalysisAct->setStatusTip(tr("Tip : you don't want to use that option..."));
     connect(m_pViewXFoilAdvanced, SIGNAL(triggered()), m_pXDirect, SLOT(onXFoilAdvanced()));
 
     m_pViewLogFile = new QAction(tr("View Log File")+"\tL", this);

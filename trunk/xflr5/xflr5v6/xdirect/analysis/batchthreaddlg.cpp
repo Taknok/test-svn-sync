@@ -30,9 +30,9 @@
 #include "batchthreaddlg.h"
 
 #include <xdirect/analysis/xfoiltask.h>
-#include <xflobjects/objects2d/objects2d.h>
 #include <xdirect/xdirect.h>
-
+#include <xflobjects/objects2d/objects2d.h>
+#include <xflwidgets/customwts/cptableview.h>
 
 /**
  * The public contructor
@@ -71,12 +71,9 @@ void BatchThreadDlg::setupLayout()
 {
     QVBoxLayout *pLeftSide = new QVBoxLayout;
     {
-        pLeftSide->addWidget(m_pFoilBox);
-        pLeftSide->addWidget(m_pBatchVarsGroupBox);
+        pLeftSide->addWidget(m_pVSplitter);
         pLeftSide->addWidget(m_pTransVarsGroupBox);
         pLeftSide->addWidget(m_pRangeVarsGroupBox);
-        pLeftSide->addStretch(1);
-        pLeftSide->addSpacing(20);
         pLeftSide->addWidget(m_pButtonBox);
     }
 
@@ -143,13 +140,10 @@ void BatchThreadDlg::startAnalysis()
     QString strong;
     int nRe=0;
 
-    if(s_bCurrentFoil)
-    {
-        m_FoilList.clear();
-        m_FoilList.append(XDirect::curFoil()->name());
-    }
+    QVector<Foil*> foils;
+    readFoils(foils);
 
-    if(!m_FoilList.count())
+    if(foils.isEmpty())
     {
         strong ="No foil defined for analysis\n\n";
         m_pteTextOutput->insertPlainText(strong);
@@ -159,9 +153,7 @@ void BatchThreadDlg::startAnalysis()
 
     m_ppbAnalyze->setText(tr("Cancel"));
 
-
-    if(!s_bFromList) nRe = int(qAbs((s_ReMax-s_ReMin)/s_ReInc)+1);
-    else             nRe = s_ReList.count();
+    nRe = s_ReList.count();
 
     //    QThreadPool::globalInstance()->setExpiryTimeout(60000);//ms
 
@@ -171,9 +163,9 @@ void BatchThreadDlg::startAnalysis()
     m_nTaskStarted = 0;
 
     FoilAnalysis *pAnalysis=nullptr;
-    for(int i=0; i<m_FoilList.count(); i++)
+    for(int i=0; i<foils.count(); i++)
     {
-        Foil *pFoil = Objects2d::foil(m_FoilList.at(i));
+        Foil *pFoil = foils.at(i);
         if(pFoil)
         {
             for (int iRe=0; iRe<nRe; iRe++)
@@ -182,17 +174,9 @@ void BatchThreadDlg::startAnalysis()
                 m_AnalysisPair.append(pAnalysis);
                 pAnalysis->pFoil = pFoil;
 
-                if(!s_bFromList)
-                {
-                    pAnalysis->pPolar = Objects2d::createPolar(pFoil, xfl::FIXEDSPEEDPOLAR, s_ReMin + iRe *s_ReInc,
-                                                               s_Mach, s_ACrit, s_XTop, s_XBot);
-                }
-                else
-                {
-                    pAnalysis->pPolar = Objects2d::createPolar(pFoil, xfl::FIXEDSPEEDPOLAR,
-                                                               s_ReList[iRe], s_MachList[iRe], s_NCritList[iRe],
-                                                               s_XTop, s_XBot);
-                }
+                pAnalysis->pPolar = Objects2d::createPolar(pFoil, xfl::FIXEDSPEEDPOLAR,
+                                                           s_ReList[iRe], s_MachList[iRe], s_NCritList[iRe],
+                                                           s_XTop, s_XBot);
 
                 m_nAnalysis++;
             }

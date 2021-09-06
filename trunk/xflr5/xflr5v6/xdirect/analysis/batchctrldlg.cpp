@@ -53,7 +53,6 @@ BatchCtrlDlg::BatchCtrlDlg(QWidget *pParent) : BatchAbstractDlg(pParent)
 
     setupLayout();
     connectBaseSignals();
-    connectSignals();
 
     m_pchUpdatePolarView->setChecked(false);
     m_pchUpdatePolarView->hide();
@@ -67,16 +66,6 @@ BatchCtrlDlg::~BatchCtrlDlg()
 }
 
 
-void BatchCtrlDlg::connectSignals()
-{
-    connect(m_pcptReTable,      SIGNAL(clicked(QModelIndex)),                 SLOT(onReTableClicked(QModelIndex)));
-    connect(m_pReModel,         SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(onCellChanged(QModelIndex,QModelIndex)));
-    connect(m_pDeleteAct,       SIGNAL(triggered(bool)),                      SLOT(onDelete()));
-    connect(m_pInsertBeforeAct, SIGNAL(triggered(bool)),                      SLOT(onInsertBefore()));
-    connect(m_pInsertAfterAct,  SIGNAL(triggered(bool)),                      SLOT(onInsertAfter()));
-}
-
-
 /**
  * Sets up the GUI
  */
@@ -84,38 +73,6 @@ void BatchCtrlDlg::setupLayout()
 {
     QVBoxLayout *pLeftSideLayout = new QVBoxLayout;
     {
-        m_pcptReTable = new CPTableView(this);
-        m_pcptReTable->setEditable(true);
-        m_pcptReTable->setEditTriggers(QAbstractItemView::DoubleClicked |
-                                       QAbstractItemView::SelectedClicked |
-                                       QAbstractItemView::EditKeyPressed |
-                                       QAbstractItemView::AnyKeyPressed);
-        m_pReModel = new ActionItemModel(this);
-        m_pReModel->setRowCount(5);//temporary
-        m_pReModel->setColumnCount(4);
-        m_pReModel->setActionColumn(3);
-        m_pReModel->setHeaderData(0, Qt::Horizontal, QObject::tr("Re"));
-        m_pReModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Mach"));
-        m_pReModel->setHeaderData(2, Qt::Horizontal, QObject::tr("NCrit"));
-        m_pReModel->setHeaderData(3, Qt::Horizontal, QObject::tr("Actions"));
-
-        m_pcptReTable->setModel(m_pReModel);
-
-        int n = m_pReModel->actionColumn();
-        QHeaderView *pHHeader = m_pcptReTable->horizontalHeader();
-        pHHeader->setSectionResizeMode(n, QHeaderView::Stretch);
-        pHHeader->resizeSection(n, 1);
-
-        m_pFloatDelegate = new ActionDelegate(this);
-        m_pFloatDelegate->setActionColumn(3);
-        QVector<int>m_Precision = {0,2,2};
-        m_pFloatDelegate->setDigits(m_Precision);
-        m_pcptReTable->setItemDelegate(m_pFloatDelegate);
-
-        m_pInsertBeforeAct	= new QAction(tr("Insert before"), this);
-        m_pInsertAfterAct	= new QAction(tr("Insert after"), this);
-        m_pDeleteAct	    = new QAction(tr("Delete"), this);
-
         QGroupBox *pFlapBox = new QGroupBox("Flap settings");
         {
             QGridLayout *pFlapLayout = new QGridLayout;
@@ -156,13 +113,10 @@ void BatchCtrlDlg::setupLayout()
             pFlapBox->setLayout(pFlapLayout);
         }
 
-        pLeftSideLayout->addWidget(m_pFoilBox);
+        pLeftSideLayout->addWidget(m_pVSplitter);
         pLeftSideLayout->addWidget(pFlapBox);
-        pLeftSideLayout->addWidget(m_pcptReTable);
         pLeftSideLayout->addWidget(m_pTransVarsGroupBox);
         pLeftSideLayout->addWidget(m_pRangeVarsGroupBox);
-        pLeftSideLayout->addStretch(1);
-        pLeftSideLayout->addSpacing(20);
         pLeftSideLayout->addWidget(m_pButtonBox);
     }
 
@@ -221,32 +175,6 @@ void BatchCtrlDlg::initDialog()
     m_pdeAngleDelta->setValue(s_AngleDelta);
     m_pdeXHinge->setValue(s_XHinge*100.0);
     m_pdeYHinge->setValue(s_YHinge*100.0);
-
-    fillReModel();
-}
-
-
-void BatchCtrlDlg::fillReModel()
-{
-    m_pReModel->setRowCount(s_ReList.count());
-    m_pReModel->blockSignals(true);
-
-    for (int i=0; i<s_ReList.count(); i++)
-    {
-        QModelIndex Xindex = m_pReModel->index(i, 0, QModelIndex());
-        m_pReModel->setData(Xindex, s_ReList.at(i));
-
-        QModelIndex Yindex =m_pReModel->index(i, 1, QModelIndex());
-        m_pReModel->setData(Yindex, s_MachList.at(i));
-
-        QModelIndex Zindex =m_pReModel->index(i, 2, QModelIndex());
-        m_pReModel->setData(Zindex, s_NCritList.at(i));
-
-        QModelIndex actionindex = m_pReModel->index(i, 3, QModelIndex());
-        m_pReModel->setData(actionindex, QString("..."));
-    }
-    m_pReModel->blockSignals(false);
-    m_pcptReTable->resizeRowsToContents();
 }
 
 
@@ -320,181 +248,6 @@ void BatchCtrlDlg::customEvent(QEvent * pEvent)
 }
 
 
-void BatchCtrlDlg::onDelete()
-{
-    QModelIndex index = m_pcptReTable->currentIndex();
-    int sel = index.row();
-
-    if(sel<0 || sel>=s_ReList.count()) return;
-
-    s_ReList.removeAt(sel);
-    s_MachList.removeAt(sel);
-    s_NCritList.removeAt(sel);
-
-    fillReModel();
-}
-
-
-void BatchCtrlDlg::onInsertBefore()
-{
-    int sel = m_pcptReTable->currentIndex().row();
-
-    s_ReList.insert(sel, 0.0);
-    s_MachList.insert(sel, 0.0);
-    s_NCritList.insert(sel, 0.0);
-
-    if     (sel>0)   s_ReList[sel] = (s_ReList.at(sel-1)+s_ReList.at(sel+1)) /2.0;
-    else if(sel==0)  s_ReList[sel] =  s_ReList.at(sel+1)                     /2.0;
-    else             s_ReList[0]   = 100000.0;
-
-    if(sel>=0)
-    {
-        s_MachList[sel]  = s_MachList.at(sel+1);
-        s_NCritList[sel] = s_NCritList.at(sel+1);
-    }
-    else
-    {
-        sel = 0;
-        s_MachList[sel]  = 0.0;
-        s_NCritList[sel] = 0.0;
-    }
-
-    fillReModel();
-
-    QModelIndex index = m_pReModel->index(sel, 0, QModelIndex());
-    m_pcptReTable->setCurrentIndex(index);
-    m_pcptReTable->selectRow(index.row());
-}
-
-
-void BatchCtrlDlg::onInsertAfter()
-{
-    int sel = m_pcptReTable->currentIndex().row()+1;
-
-    s_ReList.insert(sel, 0.0);
-    s_MachList.insert(sel, 0.0);
-    s_NCritList.insert(sel, 0.0);
-
-    if(sel==s_ReList.size()-1) s_ReList[sel]    = s_ReList[sel-1]*2.0;
-    else if(sel>0)             s_ReList[sel]    = (s_ReList[sel-1]+s_ReList[sel+1]) /2.0;
-    else if(sel==0)            s_ReList[sel]    = s_ReList[sel+1]                   /2.0;
-
-    if(sel>0)
-    {
-        s_MachList[sel]  = s_MachList[sel-1];
-        s_NCritList[sel] = s_NCritList[sel-1];
-    }
-    else
-    {
-        sel = 0;
-        s_MachList[sel]  = 0.0;
-        s_NCritList[sel] = 0.0;
-    }
-
-    fillReModel();
-
-    QModelIndex index = m_pReModel->index(sel, 0, QModelIndex());
-    m_pcptReTable->setCurrentIndex(index);
-    m_pcptReTable->selectRow(index.row());
-}
-
-
-void BatchCtrlDlg::onCellChanged(QModelIndex topLeft, QModelIndex )
-{
-    s_ReList.clear();
-    s_MachList.clear();
-    s_NCritList.clear();
-
-    for (int i=0; i<m_pReModel->rowCount(); i++)
-    {
-        s_ReList.append(   m_pReModel->index(i, 0, QModelIndex()).data().toDouble());
-        s_MachList.append( m_pReModel->index(i, 1, QModelIndex()).data().toDouble());
-        s_NCritList.append(m_pReModel->index(i, 2, QModelIndex()).data().toDouble());
-    }
-
-    if(topLeft.column()==0)
-    {
-        sortRe();
-
-        //and fill back the model
-        fillReModel();
-    }
-}
-
-
-/**
-* Bubble sort algorithm for the arrays of Reynolds, Mach and NCrit numbers.
-* The arrays are sorted by crescending Re numbers.
-*/
-void BatchCtrlDlg::sortRe()
-{
-    int indx(0), indx2(0);
-    double Retemp(0), Retemp2(0);
-    double Matemp(0), Matemp2(0);
-    double NCtemp(0), NCtemp2(0);
-    int flipped(0);
-
-    if (s_ReList.size()<=1) return;
-
-    indx = 1;
-    do
-    {
-        flipped = 0;
-        for (indx2 = s_ReList.size() - 1; indx2 >= indx; --indx2)
-        {
-            Retemp  = s_ReList.at(indx2);
-            Retemp2 = s_ReList.at(indx2 - 1);
-            Matemp  = s_MachList.at(indx2);
-            Matemp2 = s_MachList.at(indx2 - 1);
-            NCtemp  = s_NCritList.at(indx2);
-            NCtemp2 = s_NCritList.at(indx2 - 1);
-            if (Retemp2> Retemp)
-            {
-                s_ReList[indx2 - 1]    = Retemp;
-                s_ReList[indx2]        = Retemp2;
-                s_MachList[indx2 - 1]  = Matemp;
-                s_MachList[indx2]      = Matemp2;
-                s_NCritList[indx2 - 1] = NCtemp;
-                s_NCritList[indx2]     = NCtemp2;
-                flipped = 1;
-            }
-        }
-    } while ((++indx < s_ReList.size()) && flipped);
-}
-
-
-void BatchCtrlDlg::onReTableClicked(QModelIndex index)
-{
-    if(!index.isValid())
-    {
-    }
-    else
-    {
-        m_pcptReTable->selectRow(index.row());
-
-        switch(index.column())
-        {
-            case 3:
-            {
-                QRect itemrect = m_pcptReTable->visualRect(index);
-                QPoint menupos = m_pcptReTable->mapToGlobal(itemrect.topLeft());
-                QMenu *pReTableRowMenu = new QMenu(tr("Section"),this);
-                pReTableRowMenu->addAction(m_pInsertBeforeAct);
-                pReTableRowMenu->addAction(m_pInsertAfterAct);
-                pReTableRowMenu->addAction(m_pDeleteAct);
-                pReTableRowMenu->exec(menupos, m_pInsertBeforeAct);
-
-                break;
-            }
-            default:
-            {
-                break;
-            }
-        }
-    }
-}
-
-
 /**
  * Starts the multithreaded analysis.
  * First, creates a pool list of all (Foil, pairs) to analyze.
@@ -505,13 +258,11 @@ void BatchCtrlDlg::startAnalyses()
     QString strange;
     int nRe=0;
 
-    if(s_bCurrentFoil)
-    {
-        m_FoilList.clear();
-        m_FoilList.append(XDirect::curFoil()->name());
-    }
 
-    if(!m_FoilList.count())
+    QVector<Foil*> foils;
+    readFoils(foils);
+
+    if(foils.isEmpty())
     {
         strange ="No foil defined for analysis\n\n";
         m_pteTextOutput->insertPlainText(strange);
@@ -523,19 +274,18 @@ void BatchCtrlDlg::startAnalyses()
 
     m_ppbAnalyze->setText(tr("Cancel"));
 
-    if(!s_bFromList) nRe = int(qAbs((s_ReMax-s_ReMin)/s_ReInc)+1);
-    else             nRe = s_ReList.count();
+     nRe = s_ReList.count();
 
-    m_nTasks = m_FoilList.size()*nRe; // to monitor the progress
+    m_nTasks = foils.size()*nRe; // to monitor the progress
     m_TaskCounter = 0;
 
     XFoilTask::s_bCancel = false;
 
     m_pteTextOutput->appendPlainText("Starting analyses");
 
-    for(int i=0; i<m_FoilList.count(); i++)
+    for(int i=0; i<foils.count(); i++)
     {
-        Foil *pFoil = Objects2d::foil(m_FoilList.at(i));
+        Foil *pFoil = foils.at(i);
         if(!pFoil) continue;
 
         m_pteTextOutput->appendPlainText("   starting XFoil tasks for "+pFoil->name());
@@ -544,12 +294,8 @@ void BatchCtrlDlg::startAnalyses()
         for (int iRe=0; iRe<nRe; iRe++)
         {
             Polar *pPolar = nullptr;
-            if(!s_bFromList)
-                pPolar = Objects2d::createPolar(pFoil, xfl::FIXEDSPEEDPOLAR, s_ReMin + iRe *s_ReInc,
-                                                s_Mach, s_ACrit, s_XTop, s_XBot);
-            else
-                pPolar = Objects2d::createPolar(pFoil, xfl::FIXEDSPEEDPOLAR, s_ReList[iRe],
-                                                s_MachList[iRe], s_NCritList[iRe], s_XTop, s_XBot);
+            pPolar = Objects2d::createPolar(pFoil, xfl::FIXEDSPEEDPOLAR, s_ReList.at(iRe),
+                                            s_MachList[iRe], s_NCritList[iRe], s_XTop, s_XBot);
 
             //initiate the task
             XFoilTask *pXFoilTask = new XFoilTask(this);

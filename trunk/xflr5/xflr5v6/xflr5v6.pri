@@ -40,10 +40,8 @@ SOURCES += \
     twodwidgets/wingwt.cpp \
     xdirect/analysis/batchabstractdlg.cpp \
     xdirect/analysis/batchctrldlg.cpp \
-    xdirect/analysis/batchgraphdlg.cpp \
     xdirect/analysis/batchthreaddlg.cpp \
     xdirect/analysis/foilpolardlg.cpp \
-    xdirect/analysis/relistdlg.cpp \
     xdirect/analysis/xfoiladvanceddlg.cpp \
     xdirect/analysis/xfoilanalysisdlg.cpp \
     xdirect/analysis/xfoiltask.cpp \
@@ -115,10 +113,8 @@ HEADERS += \
     twodwidgets/wingwt.h \
     xdirect/analysis/batchabstractdlg.h \
     xdirect/analysis/batchctrldlg.h \
-    xdirect/analysis/batchgraphdlg.h \
     xdirect/analysis/batchthreaddlg.h \
     xdirect/analysis/foilpolardlg.h \
-    xdirect/analysis/relistdlg.h \
     xdirect/analysis/xfoiladvanceddlg.h \
     xdirect/analysis/xfoilanalysisdlg.h \
     xdirect/analysis/xfoiltask.h \
