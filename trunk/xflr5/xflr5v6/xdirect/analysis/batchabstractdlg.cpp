@@ -88,11 +88,11 @@ QByteArray BatchAbstractDlg::s_VSplitterSizes;
  */
 BatchAbstractDlg::BatchAbstractDlg(QWidget *pParent) : QDialog(pParent)
 {
+    setWindowFlag(Qt::WindowMinMaxButtonsHint);
     m_pXFile = nullptr;
     m_pFoil = nullptr;
 
     m_bCancel         = false;
-
     m_bIsRunning      = false;
 
     XFoil::setCancel(false);
@@ -592,6 +592,17 @@ void BatchAbstractDlg::outputReList()
     }
 
     m_pteTextOutput->appendPlainText("\n");
+}
+
+
+void BatchAbstractDlg::resizeEvent(QResizeEvent*)
+{
+    double w = double(m_pcptReTable->width())*.93;
+    int wCols  = int(w/4);
+    m_pcptReTable->setColumnWidth(0, wCols);
+    m_pcptReTable->setColumnWidth(1, wCols);
+    m_pcptReTable->setColumnWidth(2, wCols);
+    m_pcptReTable->setColumnWidth(3, wCols);
 }
 
 
