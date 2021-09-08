@@ -3428,7 +3428,6 @@ bool PanelAnalysis::computeTrimmedConditions()
         m_RHS[52*m_MatSize+p] = VInf.z;
     }
 
-    Lift = 0.0;
     u0 = 1.0;
 
     //extra drag is useless when calculating lifting velocity

@@ -175,7 +175,7 @@ void BatchThreadDlg::startAnalysis()
                 pAnalysis->pFoil = pFoil;
 
                 pAnalysis->pPolar = Objects2d::createPolar(pFoil, xfl::FIXEDSPEEDPOLAR,
-                                                           s_ReList[iRe], s_MachList[iRe], s_NCritList[iRe],
+                                                           s_ReList.at(iRe), s_MachList.at(iRe), s_NCritList.at(iRe),
                                                            s_XTop, s_XBot);
 
                 m_nAnalysis++;
@@ -186,7 +186,7 @@ void BatchThreadDlg::startAnalysis()
     m_pteTextOutput->insertPlainText(strong);
 
     // Start as many threads as the user has requested
-    // This is a complex way of doing things; QFuture and QRunnable are simpler
+    // This is a complicated way of doing things; QFuture and QRunnable are simpler
 
     XFoilTask::s_bCancel = false;
 
@@ -217,7 +217,7 @@ void BatchThreadDlg::onTimerEvent()
 
     if(m_AnalysisPair.size()<=0 || m_bCancel)
     {
-        //nothing left to launch... just wait and enjoy the show
+        //nothing left to launch...
         if(m_nTaskDone>=m_nAnalysis || m_bCancel)
         {
             QThreadPool::globalInstance()->waitForDone();
@@ -249,7 +249,6 @@ void BatchThreadDlg::onTimerEvent()
  */
 void BatchThreadDlg::startThread()
 {
-    FoilAnalysis *pAnalysis;
     QString strong;
     //  browse through the array until we find an available thread
 
@@ -258,7 +257,7 @@ void BatchThreadDlg::startThread()
         XFoilTask *pXFoilTask = new XFoilTask(this);
 
         //take the last analysis in the array
-        pAnalysis = m_AnalysisPair.at(m_AnalysisPair.size()-1);
+        FoilAnalysis *pAnalysis = m_AnalysisPair.at(m_AnalysisPair.size()-1);
 
         pAnalysis->pPolar->setVisible(true);
 
@@ -302,13 +301,13 @@ void BatchThreadDlg::cleanUp()
 {
     BatchAbstractDlg::cleanUp();
 
-    //in case we cancelled, delete all Analysis that are left
+    //in case we cancelled, delete all Analyses that are left
     for(int ia=m_AnalysisPair.count()-1; ia>=0; ia--)
     {
         FoilAnalysis *pAnalysis = m_AnalysisPair.at(ia);
         delete pAnalysis;
-        m_AnalysisPair.removeAt(ia);
     }
+    m_AnalysisPair.clear();
 }
 
 
