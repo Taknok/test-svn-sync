@@ -1,7 +1,7 @@
 /****************************************************************************
 
     EditPolarDefDlg Class
-    Copyright (C) 2018 André Deperrois
+    Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -39,44 +39,44 @@ class EditPolarDefDlg : public QDialog
     friend class Miarex;
     friend class WPolar;
 
-private slots:
-    void accept();
-    void onItemChanged();
-    void onButton(QAbstractButton *pButton);
+    private slots:
+        void accept() override;
+        void onItemChanged();
+        void onButton(QAbstractButton *pButton);
 
-public:
-    EditPolarDefDlg(QWidget *pParent=nullptr);
+    public:
+        EditPolarDefDlg(QWidget *pParent=nullptr);
 
-    void showEvent(QShowEvent *pEvent);
-    void hideEvent(QHideEvent *pEvent);
-    void resizeEvent(QResizeEvent *pEvent);
-    void keyPressEvent(QKeyEvent *pEvent);
+        void showEvent(QShowEvent *pEvent) override;
+        void hideEvent(QHideEvent *pEvent) override;
+        void resizeEvent(QResizeEvent *pEvent) override;
+        void keyPressEvent(QKeyEvent *pEvent) override;
 
-    QSize sizeHint() const {return QSize(700,900);}
+        QSize sizeHint() const override {return QSize(700,900);}
 
-    void initDialog(Plane *pPlane, WPolar *pWPolar);
-    void setupLayout();
-    void showWPolar();
-    void fillInertiaData(QList<QStandardItem *> inertiaFolder);
-    void fillControlFields(QList<QStandardItem *> stabControlFolder);
-    void readData();
-    void readViewLevel(QModelIndex indexLevel);
-    void readControlFields(QModelIndex indexLevel);
+        void initDialog(Plane *pPlane, WPolar *pWPolar);
+        void setupLayout();
+        void showWPolar();
+        void fillInertiaData(QList<QStandardItem *> inertiaFolder);
+        void fillControlFields(QList<QStandardItem *> stabControlFolder);
+        void readData();
+        void readViewLevel(QModelIndex indexLevel);
+        void readControlFields(QModelIndex indexLevel);
 
-    QList<QStandardItem *> prepareRow(const QString &object, const QString &field="", const QString &value="",  const QString &unit="");
-    QList<QStandardItem *> prepareBoolRow(const QString &first, const QString &second, const bool &third);
-    QList<QStandardItem *> prepareIntRow(const QString &object, const QString &field, const int &value);
-    QList<QStandardItem *> prepareDoubleRow(const QString &object, const QString &field, const double &value,  const QString &unit);
+        QList<QStandardItem *> prepareRow(const QString &object, const QString &field="", const QString &value="",  const QString &unit="");
+        QList<QStandardItem *> prepareBoolRow(const QString &first, const QString &second, const bool &third);
+        QList<QStandardItem *> prepareIntRow(const QString &object, const QString &field, const int &value);
+        QList<QStandardItem *> prepareDoubleRow(const QString &object, const QString &field, const double &value,  const QString &unit);
 
 
-private:
-    WPolar * m_pWPolar;
-    Plane * m_pPlane;
-    QTreeView * m_pStruct;
-    QStandardItemModel *m_pModel;
-    EditObjectDelegate *m_pDelegate;
-    QDialogButtonBox *m_pButtonBox;
+    private:
+        WPolar * m_pWPolar;
+        Plane * m_pPlane;
+        QTreeView * m_pStruct;
+        QStandardItemModel *m_pModel;
+        EditObjectDelegate *m_pDelegate;
+        QDialogButtonBox *m_pButtonBox;
 
-    static QByteArray s_Geometry;
+        static QByteArray s_Geometry;
 };
 

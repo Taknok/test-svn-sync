@@ -73,9 +73,11 @@ class BatchAbstractDlg : public QDialog
 
     protected:
         void keyPressEvent(QKeyEvent  *pEvent) override;
-        virtual void showEvent(    QShowEvent *pEvent) override;
-        virtual void hideEvent(    QHideEvent *pEvent) override;
+        virtual void showEvent(QShowEvent *pEvent) override;
+        virtual void hideEvent(QHideEvent *pEvent) override;
         void reject() override;
+        void resizeEvent(QResizeEvent *pEvent) override;
+
 
         virtual void cleanUp();
         void connectBaseSignals();
