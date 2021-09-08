@@ -514,7 +514,7 @@ OpPoint *Objects2d::getOpp(Foil *pFoil, Polar *pPolar, double Alpha)
 void Objects2d::insertOpPoint(OpPoint *pNewPoint)
 {
     if(!pNewPoint) return;
-qDebug()<<"Objects2d::insertOpPoint"<<pNewPoint->foilName()<<pNewPoint->polarName();
+
     Polar const *pPolar = getPolar(pNewPoint->foilName(), pNewPoint->polarName());
     if(!pPolar) return;
 

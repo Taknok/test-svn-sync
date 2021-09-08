@@ -209,7 +209,7 @@ void ActionDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
             {
                 if(col<m_Digits.count() && m_Digits.at(col)>=0)
                 {
-                    bool bOK = false;
+                    bool bOK(false);
                     double dble = var.toDouble(&bOK);
                     if(bOK)
                     {

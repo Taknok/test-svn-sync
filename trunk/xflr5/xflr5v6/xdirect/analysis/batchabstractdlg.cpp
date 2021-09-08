@@ -284,6 +284,7 @@ void BatchAbstractDlg::connectBaseSignals()
 
     connect(m_pcptReTable,        SIGNAL(clicked(QModelIndex)),                 SLOT(onReTableClicked(QModelIndex)));
     connect(m_pReModel,           SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(onCellChanged(QModelIndex,QModelIndex)));
+//    connect(m_pFloatDelegate,     SIGNAL(closeEditor(QWidget*)),                SLOT(onCellChanged()));
     connect(m_pDeleteAct,         SIGNAL(triggered(bool)),                      SLOT(onDelete()));
     connect(m_pInsertBeforeAct,   SIGNAL(triggered(bool)),                      SLOT(onInsertBefore()));
     connect(m_pInsertAfterAct,    SIGNAL(triggered(bool)),                      SLOT(onInsertAfter()));
@@ -699,8 +700,7 @@ void BatchAbstractDlg::loadSettings(QSettings &settings)
                 if(settings.contains(str2)) s_MachList.append(settings.value(str2).toDouble());
                 if(settings.contains(str3)) s_NCritList.append(settings.value(str3).toDouble());
             }
-            }
-
+        }
 
         s_VSplitterSizes = settings.value("VSplitterSizes").toByteArray();
         s_Geometry = settings.value("WindowGeom", QByteArray()).toByteArray();
@@ -782,6 +782,7 @@ void BatchAbstractDlg::onDelete()
     s_NCritList.removeAt(sel);
 
     fillReModel();
+    m_pcptReTable->closePersistentEditor(m_pcptReTable->currentIndex());
 }
 
 
@@ -810,6 +811,8 @@ void BatchAbstractDlg::onInsertBefore()
     }
 
     fillReModel();
+    m_pcptReTable->closePersistentEditor(m_pcptReTable->currentIndex());
+
 
     QModelIndex index = m_pReModel->index(sel, 0, QModelIndex());
     m_pcptReTable->setCurrentIndex(index);
@@ -842,6 +845,7 @@ void BatchAbstractDlg::onInsertAfter()
     }
 
     fillReModel();
+    m_pcptReTable->closePersistentEditor(m_pcptReTable->currentIndex());
 
     QModelIndex index = m_pReModel->index(sel, 0, QModelIndex());
     m_pcptReTable->setCurrentIndex(index);
