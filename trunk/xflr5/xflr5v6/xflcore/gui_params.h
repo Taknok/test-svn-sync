@@ -1,19 +1,11 @@
 
-/**
-*@file
-*
-* This files defines the values of the main constant parameters used throughout the program.
-*
-* A modification of this file triggers the compilation of the whole project.
-*
-*/
 
 #pragma once
 
-#define VERSIONNAME     "xflr5 v6.50"
+#define VERSIONNAME     "xflr5 v6.51"
 
 #define MAJOR_VERSION    6
-#define MINOR_VERSION    50
+#define MINOR_VERSION    51
 
 
 //General

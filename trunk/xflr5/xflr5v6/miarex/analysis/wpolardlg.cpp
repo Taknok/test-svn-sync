@@ -28,9 +28,7 @@
 #include <QMessageBox>
 
 
-
 #include "aerodatadlg.h"
-#include <xflwidgets/customwts/ctrltabledelegate.h>
 #include "wpolardlg.h"
 #include <miarex/miarex.h>
 
@@ -41,6 +39,9 @@
 #include <xflobjects/objects3d/wpolar.h>
 #include <xflobjects/objects_global.h>
 #include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/cptableview.h>
+#include <xflwidgets/customwts/ctrltabledelegate.h>
+#include <xflwidgets/customwts/ctrltablemodel.h>
 
 QByteArray WPolarDlg::s_Geometry;
 
@@ -62,51 +63,53 @@ WPolarDlg::WPolarDlg(QWidget *pParent) : QDialog(pParent)
 
 WPolarDlg::~WPolarDlg()
 {
-    delete m_pControlDelegate;
+    delete m_pExtraDragDelegate;
 }
 
 
 void WPolarDlg::connectSignals()
 {
-    connect(m_pchAutoName, SIGNAL(toggled(bool)), this, SLOT(onAutoName()));
-    connect(m_prbLLTMethod, SIGNAL(toggled(bool)), this, SLOT(onMethod()));
-    connect(m_prbVLM1Method, SIGNAL(toggled(bool)), this, SLOT(onMethod()));
-    connect(m_prbVLM2Method, SIGNAL(toggled(bool)), this, SLOT(onMethod()));
-    connect(m_prbPanelMethod, SIGNAL(toggled(bool)), this, SLOT(onMethod()));
+    connect(m_pchAutoName,         SIGNAL(toggled(bool)),  SLOT(onAutoName()));
+    connect(m_prbLLTMethod,        SIGNAL(toggled(bool)),  SLOT(onMethod()));
+    connect(m_prbVLM1Method,       SIGNAL(toggled(bool)),  SLOT(onMethod()));
+    connect(m_prbVLM2Method,       SIGNAL(toggled(bool)),  SLOT(onMethod()));
+    connect(m_prbPanelMethod,      SIGNAL(toggled(bool)),  SLOT(onMethod()));
 
-    connect(m_prbUnit1, SIGNAL(toggled(bool)), this, SLOT(onUnit()));
-    connect(m_prbUnit2, SIGNAL(toggled(bool)), this, SLOT(onUnit()));
+    connect(m_prbUnit1,            SIGNAL(toggled(bool)),  SLOT(onUnit()));
+    connect(m_prbUnit2,            SIGNAL(toggled(bool)),  SLOT(onUnit()));
 
-    connect(m_prbType1, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
-    connect(m_prbType2, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
-    connect(m_prbType4, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
-    connect(m_prbType5, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
+    connect(m_prbType1,            SIGNAL(toggled(bool)),  SLOT(onPolarType()));
+    connect(m_prbType2,            SIGNAL(toggled(bool)),  SLOT(onPolarType()));
+    connect(m_prbType4,            SIGNAL(toggled(bool)),  SLOT(onPolarType()));
+    connect(m_prbType5,            SIGNAL(toggled(bool)),  SLOT(onPolarType()));
 
-    connect(m_pchTiltGeom, SIGNAL(clicked()), this, SLOT(onTiltedGeom()));
-    connect(m_pchViscous, SIGNAL(clicked()), this, SLOT(onViscous()));
-    connect(m_pchIgnoreBodyPanels, SIGNAL(clicked()), this, SLOT(onIgnoreBodyPanels()));
+    connect(m_pchTiltGeom,         SIGNAL(clicked()),      SLOT(onTiltedGeom()));
+    connect(m_pchViscous,          SIGNAL(clicked()),      SLOT(onViscous()));
+    connect(m_pchIgnoreBodyPanels, SIGNAL(clicked()),      SLOT(onIgnoreBodyPanels()));
 
-    connect(m_pchGroundEffect, SIGNAL(clicked()), this, SLOT(onGroundEffect()));
-    connect(m_pchPlaneInertia, SIGNAL(clicked()), this, SLOT(onPlaneInertia()));
+    connect(m_pchGroundEffect,     SIGNAL(clicked()),      SLOT(onGroundEffect()));
+    connect(m_pchPlaneInertia,     SIGNAL(clicked()),      SLOT(onPlaneInertia()));
 
-    connect(m_pdeXCmRef,     SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeZCmRef,     SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeDensity,    SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeViscosity,  SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeAlpha,      SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeBeta,       SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeWeight,     SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeQInf,       SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeHeight,     SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeRefArea,    SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeRefSpan,    SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeRefChord,   SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pleWPolarName, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pleWPolarName, SIGNAL(textEdited ( const QString &  )), this, SLOT(onPolarName()));
+    connect(m_pdeXCmRef,           SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeZCmRef,           SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeDensity,          SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeViscosity,        SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeAlpha,            SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeBeta,             SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeWeight,           SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeQInf,             SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeHeight,           SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeRefArea,          SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeRefSpan,          SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pdeRefChord,         SIGNAL(valueChanged()), SLOT(onEditingFinished()));
+    connect(m_pleWPolarName,       SIGNAL(editingFinished()), SLOT(onEditingFinished()));
+//    connect(m_pleWPolarName,       SIGNAL(textEdited ( const QString &  )), SLOT(onPolarName()));
 
-    connect(m_prbArea1, SIGNAL(clicked()),this, SLOT(onArea()));
-    connect(m_prbArea2, SIGNAL(clicked()),this, SLOT(onArea()));
-    connect(m_prbArea3, SIGNAL(clicked()),this, SLOT(onArea()));
+    connect(m_prbArea1,            SIGNAL(clicked()),      SLOT(onArea()));
+    connect(m_prbArea2,            SIGNAL(clicked()),      SLOT(onArea()));
+    connect(m_prbArea3,            SIGNAL(clicked()),      SLOT(onArea()));
+
+    connect(m_pExtraDragDelegate,  SIGNAL(closeEditor(QWidget*)), SLOT(onEditingFinished()));
 }
 
 
@@ -415,7 +418,6 @@ void WPolarDlg::onArea()
 }
 
 
-
 void WPolarDlg::onEditingFinished()
 {
     readExtraDragData();
@@ -523,8 +525,8 @@ void WPolarDlg::readExtraDragData()
 {
     for(int i=0; i<MAXEXTRADRAG; i++)
     {
-        s_WPolar.m_ExtraDragArea[i]= m_pExtraDragControlModel->index(i, 1, QModelIndex()).data().toDouble()/Units::m2toUnit();
-        s_WPolar.m_ExtraDragCoef[i]= m_pExtraDragControlModel->index(i, 2, QModelIndex()).data().toDouble();
+        s_WPolar.m_ExtraDragArea[i]= m_pExtraDragModel->index(i, 1, QModelIndex()).data().toDouble()/Units::m2toUnit();
+        s_WPolar.m_ExtraDragCoef[i]= m_pExtraDragModel->index(i, 2, QModelIndex()).data().toDouble();
     }
 }
 
@@ -1029,35 +1031,35 @@ void WPolarDlg::setupLayout()
 
     QVBoxLayout *pExtraDragPageLayout  = new QVBoxLayout;
     {
-        m_ptvExtraDragControl = new QTableView(this);
-        m_ptvExtraDragControl->setFont(DisplayOptions::tableFont());
+        m_pcptExtraDrag = new CPTableView(this);
+        m_pcptExtraDrag->setFont(DisplayOptions::tableFont());
+        m_pcptExtraDrag->setEditTriggers(QAbstractItemView::CurrentChanged |
+                                         QAbstractItemView::DoubleClicked |
+                                         QAbstractItemView::SelectedClicked |
+                                         QAbstractItemView::EditKeyPressed |
+                                         QAbstractItemView::AnyKeyPressed);
+        m_pcptExtraDrag->setWindowTitle(tr("Extra drag"));
+        m_pcptExtraDrag->setSelectionMode(QAbstractItemView::SingleSelection);
+        m_pcptExtraDrag->setSelectionBehavior(QAbstractItemView::SelectRows);
+        m_pcptExtraDrag->horizontalHeader()->setStretchLastSection(true);
 
-        m_ptvExtraDragControl->setWindowTitle(tr("Extra drag"));
-        m_ptvExtraDragControl->setMinimumWidth(400);
-        m_ptvExtraDragControl->setMinimumHeight(150);
-        m_ptvExtraDragControl->setSelectionMode(QAbstractItemView::SingleSelection);
-        m_ptvExtraDragControl->setSelectionBehavior(QAbstractItemView::SelectRows);
-        m_ptvExtraDragControl->horizontalHeader()->setStretchLastSection(true);
-
-        m_pExtraDragControlModel = new QStandardItemModel(this);
-        m_pExtraDragControlModel->setColumnCount(3);
-        m_pExtraDragControlModel->setHeaderData(0, Qt::Horizontal, tr("Extra drag"));
-        m_pExtraDragControlModel->setHeaderData(1, Qt::Horizontal, tr("Extra area")+" ("+Units::areaUnitLabel()+")");
-        m_pExtraDragControlModel->setHeaderData(2, Qt::Horizontal, tr("Extra drag coef."));
+        m_pExtraDragModel = new CtrlTableModel(this);
+        m_pExtraDragModel->setColumnCount(3);
+        m_pExtraDragModel->setHeaderData(0, Qt::Horizontal, tr("Extra drag"));
+        m_pExtraDragModel->setHeaderData(1, Qt::Horizontal, tr("Extra area")+" ("+Units::areaUnitLabel()+")");
+        m_pExtraDragModel->setHeaderData(2, Qt::Horizontal, tr("Extra drag coef."));
 
 
-        m_ptvExtraDragControl->setModel(m_pExtraDragControlModel);
+        m_pcptExtraDrag->setModel(m_pExtraDragModel);
+        m_pExtraDragDelegate = new CtrlTableDelegate(this);
+        m_pExtraDragDelegate->setEditable({false, true, true});
+        m_pcptExtraDrag->setItemDelegate(m_pExtraDragDelegate);
 
-        m_pControlDelegate = new CtrlTableDelegate(this);
-        m_ptvExtraDragControl->setItemDelegate(m_pControlDelegate);
-
-        connect(m_pControlDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onEditingFinished()));
-
-        m_pControlDelegate->setPrecision({0,3,5});
+        m_pExtraDragDelegate->setPrecision({0,3,5});
 
         QLabel* pExtraLabel = new QLabel(QString::fromUtf8("D = 1/2 rho V² ( S (CD_induced+CD_Visc) + S_Extra1.CD_Extra1 + ... + S_ExtraN.Cd_ExtraN)"));
 
-        pExtraDragPageLayout->addWidget(m_ptvExtraDragControl);
+        pExtraDragPageLayout->addWidget(m_pcptExtraDrag);
         pExtraDragPageLayout->addWidget(pExtraLabel);
         pAngleControlPage->setLayout(pExtraDragPageLayout);
     }
@@ -1100,22 +1102,22 @@ void WPolarDlg::setupLayout()
 
 void WPolarDlg::fillExtraDragList()
 {
-    m_pExtraDragControlModel->setRowCount(MAXEXTRADRAG);
+    m_pExtraDragModel->setRowCount(MAXEXTRADRAG);
     QString str;
     QModelIndex ind;
     Units::getLengthUnitLabel(str);
 
     for(int i=0; i<MAXEXTRADRAG; i++)
     {
-        ind = m_pExtraDragControlModel->index(i, 0, QModelIndex());
-        m_pExtraDragControlModel->setData(ind, QString("Extra %1").arg(i));
-        ind = m_pExtraDragControlModel->index(i, 1, QModelIndex());
-        m_pExtraDragControlModel->setData(ind, s_WPolar.m_ExtraDragArea[i]*Units::m2toUnit());
-        ind = m_pExtraDragControlModel->index(i, 2, QModelIndex());
-        m_pExtraDragControlModel->setData(ind, s_WPolar.m_ExtraDragCoef[i]);
+        ind = m_pExtraDragModel->index(i, 0, QModelIndex());
+        m_pExtraDragModel->setData(ind, QString("Extra %1").arg(i));
+        ind = m_pExtraDragModel->index(i, 1, QModelIndex());
+        m_pExtraDragModel->setData(ind, s_WPolar.m_ExtraDragArea[i]*Units::m2toUnit());
+        ind = m_pExtraDragModel->index(i, 2, QModelIndex());
+        m_pExtraDragModel->setData(ind, s_WPolar.m_ExtraDragCoef[i]);
     }
 
-    m_ptvExtraDragControl->resizeColumnsToContents();
+    m_pcptExtraDrag->resizeColumnsToContents();
 }
 
 
@@ -1131,11 +1133,11 @@ void WPolarDlg::onTabChanged(int index)
 
 void WPolarDlg::resizeColumns()
 {
-    double wc = double(m_ptvExtraDragControl->width())*.97;
+    double wc = double(m_pcptExtraDrag->width())*.97;
     int wCols  = int(wc/3);
-    m_ptvExtraDragControl->setColumnWidth(0, wCols);
-    m_ptvExtraDragControl->setColumnWidth(1, wCols);
-    m_ptvExtraDragControl->setColumnWidth(2, wCols);
+    m_pcptExtraDrag->setColumnWidth(0, wCols);
+    m_pcptExtraDrag->setColumnWidth(1, wCols);
+    m_pcptExtraDrag->setColumnWidth(2, wCols);
 
 }
 
@@ -1207,9 +1209,9 @@ void WPolarDlg::setReynolds()
     }
     else if(s_WPolar.polarType() ==xfl::FIXEDAOAPOLAR)
     {
-        m_plabQInfCl->setText(" ");
-        m_plabRRe->setText(" ");
-        m_plabSRe->setText(" ");
+        m_plabQInfCl->setText(QString());
+        m_plabRRe->setText(QString());
+        m_plabSRe->setText(QString());
     }
 }
 
