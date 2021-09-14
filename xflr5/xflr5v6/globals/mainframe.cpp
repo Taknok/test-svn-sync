@@ -319,6 +319,12 @@ void MainFrame::aboutXFLR5()
 }
 
 
+void MainFrame::onReleaseNotes()
+{
+    QDesktopServices::openUrl(QUrl("https://xflr5.tech/ReleaseNotes.htm"));
+}
+
+
 void MainFrame::addRecentFile(const QString &PathName)
 {
     m_RecentFiles.removeAll(PathName);
@@ -495,6 +501,9 @@ void MainFrame::createActions()
     m_pOpenGLAct = new QAction(tr("OpenGL settings"), this);
     m_pOpenGLAct->setShortcut(QKeySequence(Qt::CTRL+Qt::ALT+Qt::Key_O));
     connect(m_pOpenGLAct, SIGNAL(triggered()), this, SLOT(onOpenGLInfo()));
+
+    m_pReleaseNotes = new QAction(tr("Release notes"), this);
+    connect(m_pReleaseNotes, SIGNAL(triggered()), SLOT(onReleaseNotes()));
 
     m_pAboutAct = new QAction(tr("About"), this);
     m_pAboutAct->setStatusTip(tr("More information about XFLR5"));
@@ -1053,6 +1062,8 @@ void MainFrame::createMenus()
 
     m_pHelpMenu = menuBar()->addMenu(tr("?"));
     {
+        m_pHelpMenu->addAction(m_pReleaseNotes);
+        m_pHelpMenu->addSeparator();
         m_pHelpMenu->addAction(m_pAboutQtAct);
         m_pHelpMenu->addAction(m_pAboutAct);
     }

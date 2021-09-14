@@ -86,7 +86,7 @@ gl3dSpace::gl3dSpace(QWidget *pParent) : gl3dTestGLView(pParent)
             pMainLayout->addWidget(pPlanetSize,     3, 2);
             pMainLayout->addWidget(m_plwGalaxies,   4, 1, 1, 2);
             pMainLayout->addWidget(pchAxes,         5, 1, 1, 2);
-            pMainLayout->addWidget(pNEARGALCATLink, 5, 1, 1, 2);
+            pMainLayout->addWidget(pNEARGALCATLink, 6, 1, 1, 2);
         }
 
         pFrame->setLayout(pMainLayout);

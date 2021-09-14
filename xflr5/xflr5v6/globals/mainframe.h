@@ -133,6 +133,7 @@ class MainFrame : public QMainWindow
         void onOpenRecentFile();
         void onPreferences();
         void onProjectModified();
+        void onReleaseNotes();
         void onResetCurGraphScales();
         void onResetSettings();
         void onRestoreToolbars();
@@ -276,7 +277,7 @@ class MainFrame : public QMainWindow
         QAction *m_pExecuteScript;
 
         QAction *m_pExitAct;
-        QAction *m_pAboutAct, *m_pAboutQtAct, *m_pOpenGLAct;
+        QAction *m_pAboutAct, *m_pAboutQtAct, *m_pOpenGLAct, *m_pReleaseNotes;
         QAction *m_pPreferencesAct;
         QAction *m_pRecentFileActs[MAXRECENTFILES];
         QAction *m_pSeparatorAct;

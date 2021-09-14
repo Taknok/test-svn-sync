@@ -1,4 +1,5 @@
 HEADERS += \
+    $$PWD/customwts/ctrltablemodel.h \
     xflwidgets/color/colorbtn.h \
     xflwidgets/color/colorgraddlg.h \
     xflwidgets/color/colormenubtn.h \
