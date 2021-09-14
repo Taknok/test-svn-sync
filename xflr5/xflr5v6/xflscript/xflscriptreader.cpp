@@ -86,7 +86,7 @@ bool XFLScriptReader::readScript()
     }
 
 
-    return(hasError());
+    return  hasError() ;
 }
 
 
@@ -194,7 +194,7 @@ bool XFLScriptReader::readFoilData()
         else
             skipCurrentElement();
     }
-    return(!hasError());
+    return !hasError();
 }
 
 
@@ -263,7 +263,7 @@ bool XFLScriptReader::readFoilAnalysisFiles()
         else
             skipCurrentElement();
     }
-    return(!hasError());
+    return !hasError();
 }
 
 

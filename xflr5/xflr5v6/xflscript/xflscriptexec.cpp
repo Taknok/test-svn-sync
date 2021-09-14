@@ -74,7 +74,7 @@ void XflScriptExec::makeFoilAnalysisList()
 
     // build from the xml files
     QStringList filters = {"*.xml"};
-    QStringList xmlanalyseslist = m_Reader.m_PolarList;
+    QStringList xmlanalyseslist = m_Reader.m_XmlFoilAnalysisList;
     if(m_Reader.bRunAllAnalyses())
     {
         xmlanalyseslist = xfl::findFiles(m_Reader.xmlAnalysisDirPath(), filters, false);
