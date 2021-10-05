@@ -746,31 +746,33 @@ void WPolarDlg::setupLayout()
 
             QGridLayout *pTypeDataLayout = new QGridLayout;
             {
-                QLabel *lab1 = new QLabel(tr("Free Stream Speed ="));
-                QLabel *lab5 = new QLabel(QString(QChar(0x03B1)) + "=");
-                QLabel *lab6 = new QLabel(QString(QChar(0x03B2)) + "=");
-                lab5->setFont(symbolFont);
-                lab6->setFont(symbolFont);
-                lab1->setAlignment(Qt::AlignRight | Qt::AlignCenter);
-                lab5->setAlignment(Qt::AlignRight | Qt::AlignCenter);
-                lab6->setAlignment(Qt::AlignRight | Qt::AlignCenter);
+                QLabel *pLab1 = new QLabel(tr("Free Stream Speed ="));
+//                QLabel *pLab5 = new QLabel(QString(QChar(0x03B1)) + "=");
+                QLabel *pLab5 = new QLabel("<p>&alpha;=</p>");
+//                QLabel *pLab6 = new QLabel(QString(QChar(0x03B2)) + "=");
+                QLabel *pLab6 = new QLabel("<p>&beta;=</p>");
+                pLab5->setFont(symbolFont);
+                pLab6->setFont(symbolFont);
+                pLab1->setAlignment(Qt::AlignRight | Qt::AlignCenter);
+                pLab5->setAlignment(Qt::AlignRight | Qt::AlignCenter);
+                pLab6->setAlignment(Qt::AlignRight | Qt::AlignCenter);
                 m_pdeQInf    = new DoubleEdit(10.05);
                 m_pdeQInf->setMin(0.0);
                 m_pdeAlpha   = new DoubleEdit(1.00,2);
                 m_pdeBeta    = new DoubleEdit(0.00,2);
-                QLabel *labSpeedUnit   = new QLabel(strSpeedUnit);
+                QLabel *pLabSpeedUnit   = new QLabel(strSpeedUnit);
+                QLabel *pLab7 = new QLabel("<p>&deg;</p>");
+                QLabel *pLab8 = new QLabel("<p>&deg;</p>");
 
-                QLabel *lab7 = new QLabel(QChar(0260));
-                QLabel *lab8 = new QLabel(QChar(0260));
-                pTypeDataLayout->addWidget(lab1,1,1);
-                pTypeDataLayout->addWidget(lab5,2,1);
-                pTypeDataLayout->addWidget(lab6,3,1);
-                pTypeDataLayout->addWidget(m_pdeQInf,1,2);
-                pTypeDataLayout->addWidget(m_pdeAlpha,2,2);
-                pTypeDataLayout->addWidget(m_pdeBeta,3,2);
-                pTypeDataLayout->addWidget(labSpeedUnit ,1,3);
-                pTypeDataLayout->addWidget(lab7 ,2,3);
-                pTypeDataLayout->addWidget(lab8 ,3,3);
+                pTypeDataLayout->addWidget(pLab1,         1,1);
+                pTypeDataLayout->addWidget(pLab5,         2,1);
+                pTypeDataLayout->addWidget(pLab6,         3,1);
+                pTypeDataLayout->addWidget(m_pdeQInf,     1,2);
+                pTypeDataLayout->addWidget(m_pdeAlpha,    2,2);
+                pTypeDataLayout->addWidget(m_pdeBeta,     3,2);
+                pTypeDataLayout->addWidget(pLabSpeedUnit, 1,3);
+                pTypeDataLayout->addWidget(pLab7,         2,3);
+                pTypeDataLayout->addWidget(pLab8,         3,3);
                 pTypeDataLayout->setRowStretch(4,1);
                 pTypeDataLayout->setColumnStretch(3,1);
             }

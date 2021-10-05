@@ -4216,10 +4216,9 @@ void XDirect::setupLayout()
 
             QHBoxLayout *pSpecVarsLayout = new QHBoxLayout;
             {
-                m_prbSpec1 = new QRadioButton(QChar(0x03B1));
+                m_prbSpec1 = new QRadioButton("<p>&alpha;</p>");
                 m_prbSpec2 = new QRadioButton(tr("Cl"));
                 m_prbSpec3 = new QRadioButton(tr("Re"));
-                m_prbSpec1->setFont(QFont("Symbol"));
                 pSpecVarsLayout->addWidget(m_prbSpec1);
                 pSpecVarsLayout->addWidget(m_prbSpec2);
                 pSpecVarsLayout->addWidget(m_prbSpec3);
@@ -4229,15 +4228,14 @@ void XDirect::setupLayout()
             {
                 QLabel *pAlphaMinLab   = new QLabel(tr("Start="));
                 QLabel *pAlphaMaxLab   = new QLabel(tr("End="));
-                QLabel *pDeltaAlphaLab = new QLabel(QString(QChar(0x0394))+"=");
-                pDeltaAlphaLab->setFont(QFont("Symbol"));
+                QLabel *pDeltaAlphaLab = new QLabel("<p>&Delta;=</p>");
                 pDeltaAlphaLab->setAlignment(Qt::AlignRight);
                 pAlphaMinLab->setAlignment(Qt::AlignRight);
                 pAlphaMaxLab->setAlignment(Qt::AlignRight);
 
-                m_plabUnit1 = new QLabel(QChar(0260));
-                m_plabUnit2 = new QLabel(QChar(0260));
-                m_plabUnit3 = new QLabel(QChar(0260));
+                m_plabUnit1 = new QLabel("<p>&deg;</p>");
+                m_plabUnit2 = new QLabel("<p>&deg;</p>");
+                m_plabUnit3 = new QLabel("<p>&deg;</p>");
 
                 m_pdeAlphaMin   = new DoubleEdit(0,3);
                 m_pdeAlphaMax   = new DoubleEdit(0,3);
@@ -4248,15 +4246,15 @@ void XDirect::setupLayout()
                 m_pdeAlphaMin->setAlignment(Qt::AlignRight);
                 m_pdeAlphaMax->setAlignment(Qt::AlignRight);
                 m_pdeAlphaDelta->setAlignment(Qt::AlignRight);
-                pSequenceGroupLayout->addWidget(pAlphaMinLab,1,1);
-                pSequenceGroupLayout->addWidget(pAlphaMaxLab,2,1);
-                pSequenceGroupLayout->addWidget(pDeltaAlphaLab,3,1);
-                pSequenceGroupLayout->addWidget(m_pdeAlphaMin,1,2);
-                pSequenceGroupLayout->addWidget(m_pdeAlphaMax,2,2);
-                pSequenceGroupLayout->addWidget(m_pdeAlphaDelta,3,2);
-                pSequenceGroupLayout->addWidget(m_plabUnit1,1,3);
-                pSequenceGroupLayout->addWidget(m_plabUnit2,2,3);
-                pSequenceGroupLayout->addWidget(m_plabUnit3,3,3);
+                pSequenceGroupLayout->addWidget(pAlphaMinLab,    1,1);
+                pSequenceGroupLayout->addWidget(pAlphaMaxLab,    2,1);
+                pSequenceGroupLayout->addWidget(pDeltaAlphaLab,  3,1);
+                pSequenceGroupLayout->addWidget(m_pdeAlphaMin,   1,2);
+                pSequenceGroupLayout->addWidget(m_pdeAlphaMax,   2,2);
+                pSequenceGroupLayout->addWidget(m_pdeAlphaDelta, 3,2);
+                pSequenceGroupLayout->addWidget(m_plabUnit1,     1,3);
+                pSequenceGroupLayout->addWidget(m_plabUnit2,     2,3);
+                pSequenceGroupLayout->addWidget(m_plabUnit3,     3,3);
             }
 
             QHBoxLayout *pAnalysisSettings = new QHBoxLayout;
