@@ -6569,11 +6569,7 @@ void Miarex::setAnalysisParams()
         m_plabUnit2->setText(str);
         m_plabUnit3->setText(str);
 
-        m_plabParameterName->setText("Freestream velocity");
-        QFont fontSymbol(DisplayOptions::textFont());
-        fontSymbol.setBold(true);
-        fontSymbol.setPointSize(DisplayOptions::textFont().pointSize()+2);
-        m_plabParameterName->setFont(fontSymbol);
+        m_plabParameterName->setText("<p>V<sub>&infin;</sub></p>");
     }
     else if(m_pCurWPolar && m_pCurWPolar->polarType()==xfl::STABILITYPOLAR)
     {
@@ -6582,9 +6578,6 @@ void Miarex::setAnalysisParams()
         m_plabUnit3->setText("");
 
         m_plabParameterName->setText("Control parameter");
-/*        QFont fontSymbol(DisplayOptions::textFont());
-        fontSymbol.setBold(true);
-        m_plabParameterName->setFont(fontSymbol);*/
     }
     else if(m_pCurWPolar && m_pCurWPolar->polarType()==xfl::BETAPOLAR)
     {

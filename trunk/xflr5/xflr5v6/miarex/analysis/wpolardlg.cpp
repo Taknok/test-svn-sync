@@ -746,7 +746,7 @@ void WPolarDlg::setupLayout()
 
             QGridLayout *pTypeDataLayout = new QGridLayout;
             {
-                QLabel *pLab1 = new QLabel(tr("Free Stream Speed ="));
+                QLabel *pLab1 = new QLabel("<p>V<sub>&infin;</sub>=</p>");
 //                QLabel *pLab5 = new QLabel(QString(QChar(0x03B1)) + "=");
                 QLabel *pLab5 = new QLabel("<p>&alpha;=</p>");
 //                QLabel *pLab6 = new QLabel(QString(QChar(0x03B2)) + "=");

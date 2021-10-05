@@ -4216,7 +4216,8 @@ void XDirect::setupLayout()
 
             QHBoxLayout *pSpecVarsLayout = new QHBoxLayout;
             {
-                m_prbSpec1 = new QRadioButton("<p>&alpha;</p>");
+                m_prbSpec1 = new QRadioButton(QChar(0x3B1));
+
                 m_prbSpec2 = new QRadioButton(tr("Cl"));
                 m_prbSpec3 = new QRadioButton(tr("Re"));
                 pSpecVarsLayout->addWidget(m_prbSpec1);
