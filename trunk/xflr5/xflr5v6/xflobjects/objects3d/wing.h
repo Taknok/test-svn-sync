@@ -63,9 +63,7 @@ class Panel;
 
 class Wing
 {
-    friend class Objects3D;
     friend class Miarex;
-    friend class MainFrame;
     friend class WPolar;
     friend class PlaneOpp;
     friend class WingOpp;
@@ -73,23 +71,12 @@ class Wing
     friend class Surface;
     friend class WingDlg;
     friend class PlaneTask;
-    friend class LLTAnalysisDlg;
-    friend class LLTAnalysis;
-    friend class PanelAnalysisDlg;
     friend class PanelAnalysis;
     friend class PlaneDlg;
     friend class ImportWingDlg;
-    friend class WPolarDlg;
-    friend class StabPolarDlg;
-    friend class GL3dWingDlg;
-    friend class ManageUFOsDlg;
     friend class InertiaDlg;
-    friend class StabViewDlg;
     friend class EditPlaneDlg;
-    friend class EditBodyDlg;
-    friend class gl3dXflView;
     friend class XMLPlaneReader;
-    friend class WingOpp;
 
 
     public:
@@ -175,7 +162,12 @@ class Wing
         double tipPos()        const {return m_Section.last().m_YPosition;}
         double planformSpan()  const {return m_PlanformSpan;}
         double projectedSpan() const {return m_ProjectedSpan;}
+        double planformArea()  const {return m_PlanformArea;}
+        double projectedArea() const {return m_ProjectedArea;}
 
+        double MAC()           const {return m_MAChord;}
+        double GChord()        const {return m_GChord;}
+        double aspectRatio()   const {return m_PlanformSpan*m_PlanformSpan/m_PlanformArea;}
 
         double Offset(int iSection)    const {return m_Section.at(iSection).m_Offset;}
         double Dihedral(int iSection)  const {return m_Section.at(iSection).m_Dihedral;}

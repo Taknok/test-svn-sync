@@ -86,10 +86,8 @@ class Miarex : public QWidget
 {
     friend class GL3DScales;
     friend class GL3dBodyDlg;
-    friend class GL3dWingDlg;
     friend class LLTAnalysisDlg;
     friend class MainFrame;
-    friend class ManageUFOsDlg;
     friend class PanelAnalysisDlg;
     friend class Plane;
     friend class PlaneDlg;

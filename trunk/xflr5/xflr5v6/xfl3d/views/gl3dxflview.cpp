@@ -916,8 +916,8 @@ void gl3dXflView::paintMasses(Plane const *pPlane)
     {
         if(pPlane->wingAt(iw))
         {
-            paintMasses(pPlane->wingAt(iw)->m_VolumeMass, pPlane->wingLE(iw),
-                        pPlane->wingAt(iw)->m_Name,   pPlane->wingAt(iw)->m_PointMass);
+            paintMasses(pPlane->wingAt(iw)->volumeMass(), pPlane->wingLE(iw),
+                        pPlane->wingAt(iw)->name(),   pPlane->wingAt(iw)->m_PointMass);
         }
     }
 

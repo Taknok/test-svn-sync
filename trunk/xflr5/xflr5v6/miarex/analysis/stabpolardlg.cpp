@@ -274,7 +274,7 @@ void StabPolarDlg::fillControlList()
         }
     }
 
-    for(int i=0; i<m_pWingList[0]->m_nFlaps; i++)
+    for(int i=0; i<m_pWingList[0]->nFlaps(); i++)
     {
         ind = m_pAngleModel->index(i+s_StabWPolar.m_nControls, 0, QModelIndex());
         strong = QString(tr("Wing Flap %1 ")+QString::fromUtf8("(°)")).arg(i+1);
@@ -283,12 +283,12 @@ void StabPolarDlg::fillControlList()
         ind = m_pAngleModel->index(i+s_StabWPolar.m_nControls, 1, QModelIndex());
         m_pAngleModel->setData(ind, s_StabWPolar.m_ControlGain[i+s_StabWPolar.m_nControls]);
     }
-    s_StabWPolar.m_nControls += m_pWingList[0]->m_nFlaps;
+    s_StabWPolar.m_nControls += m_pWingList[0]->nFlaps();
 
 
     if(m_pWingList[2])
     {
-        for(int i=0; i<m_pWingList[2]->m_nFlaps; i++)
+        for(int i=0; i<m_pWingList[2]->nFlaps(); i++)
         {
             ind = m_pAngleModel->index(i+s_StabWPolar.m_nControls, 0, QModelIndex());
             strong = QString(tr("Elevator Flap %1 ")+QString::fromUtf8("(°)")).arg(i+1);
@@ -297,11 +297,11 @@ void StabPolarDlg::fillControlList()
             ind = m_pAngleModel->index(i+s_StabWPolar.m_nControls, 1, QModelIndex());
             m_pAngleModel->setData(ind, s_StabWPolar.m_ControlGain[i+s_StabWPolar.m_nControls]);
         }
-        s_StabWPolar.m_nControls += m_pWingList[2]->m_nFlaps;
+        s_StabWPolar.m_nControls += m_pWingList[2]->nFlaps();
     }
     if(m_pWingList[3])
     {
-        for(int i=0; i<m_pWingList[3]->m_nFlaps; i++)
+        for(int i=0; i<m_pWingList[3]->nFlaps(); i++)
         {
             ind = m_pAngleModel->index(i+s_StabWPolar.m_nControls, 0, QModelIndex());
             strong = QString(tr("Fin Flap %1 ")+QString::fromUtf8("(°)")).arg(i+1);
@@ -310,7 +310,7 @@ void StabPolarDlg::fillControlList()
             ind = m_pAngleModel->index(i+s_StabWPolar.m_nControls, 1, QModelIndex());
             m_pAngleModel->setData(ind, s_StabWPolar.m_ControlGain[i+s_StabWPolar.m_nControls]);
         }
-        s_StabWPolar.m_nControls += m_pWingList[3]->m_nFlaps;
+        s_StabWPolar.m_nControls += m_pWingList[3]->nFlaps();
     }
 
     m_pcptAngle->resizeColumnsToContents();
@@ -404,7 +404,7 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     }
 
     s_StabWPolar.m_nControls = 0;
-    s_StabWPolar.m_nControls += m_pWingList[0]->m_nFlaps;
+    s_StabWPolar.m_nControls += m_pWingList[0]->nFlaps();
 
     if(!m_pPlane->isWing())
     {
@@ -412,9 +412,9 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
         if(m_pWingList[2])
         {
             s_StabWPolar.m_nControls++;//stab tilt
-            s_StabWPolar.m_nControls += m_pWingList[2]->m_nFlaps;
+            s_StabWPolar.m_nControls += m_pWingList[2]->nFlaps();
         }
-        if(m_pWingList[3]) s_StabWPolar.m_nControls+=m_pWingList[3]->m_nFlaps;
+        if(m_pWingList[3]) s_StabWPolar.m_nControls+=m_pWingList[3]->nFlaps();
 
     }
 

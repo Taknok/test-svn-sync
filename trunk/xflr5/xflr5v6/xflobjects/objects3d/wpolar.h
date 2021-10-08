@@ -139,7 +139,7 @@ class WPolar : public XflObject
         void setBoundaryCondition(xfl::enumBC bc) {m_BoundaryCondition=bc;}
 
         xfl::enumRefDimension referenceDim() const {return m_ReferenceDim;}
-        double referenceArea()  const {return m_RefArea;}
+        double referenceArea()        const {return m_RefArea;}
         double referenceSpanLength()  const {return m_RefSpan;}
         double referenceChordLength() const {return m_RefChord;}
         void setReferenceDim(xfl::enumRefDimension dim) {m_ReferenceDim=dim;}

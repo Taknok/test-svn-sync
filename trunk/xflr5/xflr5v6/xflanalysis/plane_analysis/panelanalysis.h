@@ -49,7 +49,6 @@ class PanelAnalysis : QObject
 
     friend class PanelAnalysisDlg;
     friend class Wing;
-    friend class Objects3D;
     friend class Miarex;
     friend class PlaneTask;
     friend class XflScriptExec;
