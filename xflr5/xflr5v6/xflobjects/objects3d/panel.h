@@ -57,13 +57,11 @@ class Panel
     friend class Surface;
     friend class Wing;
     friend class Miarex;
-    friend class Objects3D;
     friend class Body;
     friend class PlaneTask;
     friend class PanelAnalysis;
     friend class PanelAnalysisDlg;
     friend class GL3dBodyDlg;
-    friend class GL3dWingDlg;
     friend class gl3dSurfacePlot;
 
     public:

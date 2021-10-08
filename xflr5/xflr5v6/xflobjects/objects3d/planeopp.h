@@ -53,7 +53,6 @@ class WPolar;
 */
 class PlaneOpp : public XflObject
 {
-    friend class Objects3D;
     friend class Miarex;
     friend class MainFrame;
     friend class WPolar;
