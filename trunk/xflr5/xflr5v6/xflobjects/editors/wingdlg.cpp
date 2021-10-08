@@ -773,13 +773,13 @@ void WingDlg::onResetMesh()
 void WingDlg::onScaleWing()
 {
     WingScaleDlg dlg(this);
-    dlg.initDialog(m_pWing->m_PlanformSpan,
+    dlg.initDialog(m_pWing->planformSpan(),
                    m_pWing->Chord(0),
                    m_pWing->averageSweep(),
                    m_pWing->Twist(m_pWing->NWingSection()-1),
-                   m_pWing->m_PlanformArea,
-                   m_pWing->m_AR,
-                   m_pWing->m_TR);
+                   m_pWing->planformArea(),
+                   m_pWing->aspectRatio(),
+                   m_pWing->taperRatio());
 
     if(QDialog::Accepted == dlg.exec())
     {
@@ -1037,28 +1037,28 @@ void WingDlg::setWingData()
 
     QString str;
 
-    str = QString("%1").arg(m_pWing->m_PlanformArea*Units::m2toUnit(),7,'f',2);
+    str = QString("%1").arg(m_pWing->planformArea()*Units::m2toUnit(),7,'f',2);
     m_plabWingArea->setText(str);
 
-    str = QString("%1").arg(m_pWing->m_PlanformSpan*Units::mtoUnit(),5,'f',2);
+    str = QString("%1").arg(m_pWing->planformSpan()*Units::mtoUnit(),5,'f',2);
     m_plabWingSpan->setText(str);
 
-    str = QString("%1").arg(m_pWing->m_ProjectedArea*Units::m2toUnit(),7,'f',2);
+    str = QString("%1").arg(m_pWing->projectedArea()*Units::m2toUnit(),7,'f',2);
     m_plabProjectedArea->setText(str);
 
-    str = QString("%1").arg(m_pWing->m_ProjectedSpan*Units::mtoUnit(),5,'f',2);
+    str = QString("%1").arg(m_pWing->projectedSpan()*Units::mtoUnit(),5,'f',2);
     m_plabProjectedSpan->setText(str);
 
-    str = QString("%1").arg(m_pWing->m_GChord*Units::mtoUnit(),5,'f',2);
+    str = QString("%1").arg(m_pWing->GChord()*Units::mtoUnit(),5,'f',2);
     m_plabGeomChord->setText(str);
 
-    str = QString("%1").arg(m_pWing->m_MAChord*Units::mtoUnit(),5,'f',2);
+    str = QString("%1").arg(m_pWing->MAC()*Units::mtoUnit(),5,'f',2);
     m_plabMAC->setText(str);
 
-    str = QString("%1").arg(m_pWing->m_AR,5,'f',2);
+    str = QString("%1").arg(m_pWing->aspectRatio(),5,'f',2);
     m_plabAspectRatio->setText(str);
 
-    if(m_pWing->tipChord()>0.0) str = QString("%1").arg(m_pWing->m_TR,0,'f',2);
+    if(m_pWing->tipChord()>0.0) str = QString("%1").arg(m_pWing->taperRatio(),0,'f',2);
     else                        str = tr("Undefined");
     m_plabTaperRatio->setText(str);
 
@@ -1493,7 +1493,7 @@ int WingDlg::VLMGetPanelTotal()
 {
     double MinPanelSize;
     if(Wing::s_MinPanelSize>0.0) MinPanelSize = Wing::s_MinPanelSize;
-    else                         MinPanelSize = m_pWing->m_PlanformSpan/1000.0;
+    else                         MinPanelSize = m_pWing->planformSpan()/1000.0;
 
     int total = 0;
     for (int i=0; i<m_pWing->NWingSection()-1; i++)
@@ -1537,7 +1537,7 @@ bool WingDlg::VLMSetAutoMesh(int total)
         //        d2 = 5./2./m_pWing->m_Span/m_pWing->m_Span/m_pWing->m_Span *8. * pow(m_pWing->TPos(i+1),3) + 0.5;
         //        m_pWing->NYPanels(i) = (int) (NYTotal * (0.8*d1+0.2*d2)* (m_pWing->TPos(i+1)-m_pWing->TPos(i))/m_pWing->m_Span);
 
-        m_pWing->setNYPanels(i, int(qAbs(m_pWing->YPosition(i+1) - m_pWing->YPosition(i))* double(NYTotal)/m_pWing->m_PlanformSpan));
+        m_pWing->setNYPanels(i, int(qAbs(m_pWing->YPosition(i+1) - m_pWing->YPosition(i))* double(NYTotal)/m_pWing->planformSpan()));
 
         m_pWing->setNXPanels(i, int(size/NYTotal));
 

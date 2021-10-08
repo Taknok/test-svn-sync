@@ -999,15 +999,15 @@ void gl3dMiarexView::glMakeMoments(Wing const *pWing, const WPolar *pWPolar, con
     float angle=0.0f;//radian
     float endx, endy=0.0f, endz=0.0f, dx=0.0f, dy=0.0f, dz=0.0f, xae=0.0f, yae=0.0f, zae=0.0f;
     float factor = 10.0f;
-    float radius= float(pWing->m_PlanformSpan)/4.0f;
+    float radius= float(pWing->planformSpan())/4.0f;
 
     m_iMomentPoints = 0;
 
-    ampL = 0.5f*float(pWPolar->density() * pWPolar->referenceArea() * pWPolar->referenceChordLength()
+    ampL = 0.5f*float(pWPolar->density() * pWPolar->referenceArea() * pWPolar->referenceMAC()
                       *pPOpp->m_QInf*pPOpp->m_QInf * pPOpp->m_GRm * s_LiftScale)*factor;
-    ampM = 0.5f*float(pWPolar->density() * pWPolar->referenceArea() * pWPolar->referenceSpanLength()
+    ampM = 0.5f*float(pWPolar->density() * pWPolar->referenceArea() * pWPolar->referenceSpan()
                       *pPOpp->m_QInf*pPOpp->m_QInf * pPOpp->m_GCm * s_LiftScale)*factor;
-    ampN = 0.5f*float(pWPolar->density() * pWPolar->referenceArea() * pWPolar->referenceSpanLength()
+    ampN = 0.5f*float(pWPolar->density() * pWPolar->referenceArea() * pWPolar->referenceSpan()
                       *pPOpp->m_QInf*pPOpp->m_QInf*(pPOpp->m_GYm) * s_LiftScale)*factor;
 
     if(fabsf(ampL)>0.000001f)
@@ -1225,7 +1225,7 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, const Wing *pWing, const WPolar 
             for (k=0; k< pWing->surface(j)->nYPanels(); k++)
             {
                 pWing->surface(j)->getLeadingPt(k, C);
-                amp = float(pWing->surface(j)->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord);
+                amp = float(pWing->surface(j)->chord(k) / pWOpp->m_StripArea[i] / pWing->MAC());
                 amp *= float(s_LiftScale)/1000.0f;
                 C.x += pWOpp->m_XCPSpanRel[i] * pWing->surface(j)->chord(k);
 
@@ -1252,7 +1252,7 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, const Wing *pWing, const WPolar 
 
                 k=0;
                 pWing->surface(j)->getLeadingPt(k, C);
-                amp = pWing->surface(j)->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord * QMiarex::s_LiftScale/1000.0;
+                amp = pWing->surface(j)->chord(k) / pWOpp->m_StripArea[i] / pWing->MAC() * QMiarex::s_LiftScale/1000.0;
                 C.xf()+= pWOpp->m_XCPSpanRel[i] * pWing->surface(j)->chord(k);
 
                 pLiftVertexArray[iv++] = C.xf()+ pWOpp->m_F[i].xf()*amp;
@@ -1263,7 +1263,7 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, const Wing *pWing, const WPolar 
             for (k=0; k< pWing->surface(j)->nYPanels(); k++)
             {
                 pWing->surface(j)->getLeadingPt(k, C);
-                amp = float(pWing->surface(j)->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord);
+                amp = float(pWing->surface(j)->chord(k) / pWOpp->m_StripArea[i] / pWing->MAC());
                 amp *= float(s_LiftScale)/1000.0f;
                 C.x += pWOpp->m_XCPSpanRel[i] * pWing->surface(j)->chord(k);
                 CL.x = C.x + pWOpp->m_F[i].x * double(amp);
@@ -1594,8 +1594,8 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
             for (k=0; k< pWing->surface(j)->nYPanels(); k++)
             {
                 pWing->surface(j)->getTrailingPt(k, C);
-                amp1 = q0*float(pWOpp->m_ICd[i]*pWOpp->m_Chord[i]/pWing->m_MAChord*s_DragScale)/coef;
-                amp2 = q0*float(pWOpp->m_PCd[i]*pWOpp->m_Chord[i]/pWing->m_MAChord*s_DragScale)/coef;
+                amp1 = q0*float(pWOpp->m_ICd[i]*pWOpp->m_Chord[i]/pWing->MAC()*s_DragScale)/coef;
+                amp2 = q0*float(pWOpp->m_PCd[i]*pWOpp->m_Chord[i]/pWing->MAC()*s_DragScale)/coef;
                 if(s_pMiarex->m_bICd)
                 {
                     pICdVertexArray[ii++] = C.xf();
@@ -1640,7 +1640,7 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
                     for (k=0; k< pWing->surface(j)->nYPanels(); k++)
                     {
                         pWing->surface(j)->getTrailingPt(k, C);
-                        amp = q0*float(pWOpp->m_ICd[i]*pWOpp->m_Chord[i]/pWing->m_MAChord);
+                        amp = q0*float(pWOpp->m_ICd[i]*pWOpp->m_Chord[i]/pWing->MAC());
                         amp *= float(s_DragScale)/coef;
                         pICdVertexArray[ii++] = C.xf()+ amp*cosa * cosb;
                         pICdVertexArray[ii++] = C.yf() + amp*cosa * sinb;
@@ -1660,7 +1660,7 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
                         amp=0.0;
                         if(s_pMiarex->m_bICd) amp += float(pWOpp->m_ICd[i]);
                         amp += float(pWOpp->m_PCd[i]);
-                        amp *= q0*float(pWOpp->m_Chord[i]/pWing->m_MAChord);
+                        amp *= q0*float(pWOpp->m_Chord[i]/pWing->MAC());
                         amp *= float(s_DragScale)/coef;
 
                         pVCdVertexArray[iv++] = C.xf()+ amp*cosa*cosb;
@@ -1682,7 +1682,7 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
                     for (k=0; k< pWing->surface(j)->nYPanels(); k++)
                     {
                         pWing->surface(j)->getTrailingPt(k, C);
-                        amp = q0*float(pWOpp->m_ICd[i]*pWOpp->m_Chord[i]/pWing->m_MAChord);
+                        amp = q0*float(pWOpp->m_ICd[i]*pWOpp->m_Chord[i]/pWing->MAC());
                         amp *= float(s_DragScale)/coef;
                         pICdVertexArray[ii++] = C.xf()+ amp*cosa * cosb;
                         pICdVertexArray[ii++] = C.yf() + amp*cosa * sinb;
@@ -1702,7 +1702,7 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
                         amp=0.0;
                         if(s_pMiarex->m_bICd) amp+=float(pWOpp->m_ICd[i]);
                         amp += float(pWOpp->m_PCd[i]);
-                        amp *= q0*float(pWOpp->m_Chord[i]/pWing->m_MAChord);
+                        amp *= q0*float(pWOpp->m_Chord[i]/pWing->MAC());
                         amp *= float(s_DragScale)/coef;
 
                         pVCdVertexArray[iv++] = C.xf()+ amp*cosa*cosb;

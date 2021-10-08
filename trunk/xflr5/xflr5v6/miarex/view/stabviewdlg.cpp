@@ -160,8 +160,8 @@ void StabViewDlg::fillEigenThings()
     {
         //We normalize the mode before display and only for display purposes
         u0   = s_pMiarex->m_pCurPOpp->m_QInf;
-        mac  = s_pMiarex->m_pCurPlane->m_Wing[0].m_MAChord;
-        span = s_pMiarex->m_pCurPlane->m_Wing[0].m_PlanformSpan;
+        mac  = s_pMiarex->m_pCurPlane->m_Wing[0].MAC();
+        span = s_pMiarex->m_pCurPlane->m_Wing[0].planformSpan();
 
         eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenValue[m_iCurrentMode];
         if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%9.4f+%9.4fi", eigenvalue.real(), eigenvalue.imag());
@@ -436,7 +436,7 @@ void StabViewDlg::onAnimateRestart()
     //max 10% span
     norm1 = qMax(qAbs(ModeState[0]), qAbs(ModeState[1]));
     norm1 = qMax(norm1, qAbs(ModeState[2]));
-    if(norm1>PRECISION)  norm1 = pPlane->m_Wing[0].m_PlanformSpan *.10 / norm1;
+    if(norm1>PRECISION)  norm1 = pPlane->m_Wing[0].planformSpan() *.10 / norm1;
     else                 norm1 = 1.0;
 
     //max 10degrees

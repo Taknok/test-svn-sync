@@ -108,8 +108,8 @@ PlaneOpp::PlaneOpp(Plane *pPlane, WPolar *pWPolar, int PanelArraySize)
     {
         m_PlaneName = pPlane->name();
         m_MAChord   = pPlane->mac();
-        m_Span      = pPlane->span();
-        m_NStation  = pPlane->m_Wing[0].m_NStation;
+        m_Span      = pPlane->planformSpan();
+        m_NStation  = pPlane->m_Wing[0].NStations();
     }
 
     if(pWPolar)

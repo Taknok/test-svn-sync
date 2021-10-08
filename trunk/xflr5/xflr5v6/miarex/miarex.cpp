@@ -700,7 +700,7 @@ void Miarex::createCpCurves()
 
     m_CurSpanPos = qMax(-1.0, m_CurSpanPos);
     m_CurSpanPos = qMin( 1.0, m_CurSpanPos);
-    SpanPos = m_CurSpanPos*m_pCurPlane->span()/2.000001;
+    SpanPos = m_CurSpanPos*m_pCurPlane->planformSpan()/2.000001;
 
     //    str1 = m_pCurPlane->m_Wing[0].WingName();
     str2 = QString(" a=%1").arg(m_pCurPOpp->alpha(), 5, 'f', 2);
@@ -747,7 +747,7 @@ void Miarex::createCpCurves()
                     if(panel_i.m_bIsTrailing && panel_i.m_Pos<=xfl::MIDSURFACE)
                     {
                         SpanInc += panel_i.width();
-                        if(SpanPos<=SpanInc || qAbs(SpanPos-SpanInc)/pWing(iw)->m_PlanformSpan<0.001)
+                        if(SpanPos<=SpanInc || qAbs(SpanPos-SpanInc)/pWing(iw)->planformSpan()<0.001)
                         {
                             bFound = true;
                             break;
@@ -825,7 +825,7 @@ void Miarex::createWOppCurves()
             lift=0.0;
             for (int i=nStart; i<m_pCurPOpp->m_NStation; i++)
             {
-                x = m_pCurPOpp->m_pWOpp[0]->m_SpanPos[i]/m_pCurPlane->span()*2.0;
+                x = m_pCurPOpp->m_pWOpp[0]->m_SpanPos[i]/m_pCurPlane->planformSpan()*2.0;
                 y = sqrt(1.0 - x*x);
                 lift += y*m_pCurPOpp->m_pWOpp[0]->m_StripArea[i] ;
             }
@@ -842,8 +842,8 @@ void Miarex::createWOppCurves()
                 pCurve->setColor(QColor(100, 100, 100));
                 for (double id=-50.0; id<=50.5; id+=1.0)
                 {
-                    x = m_pCurPlane->span()/2.0 * cos(id*PI/50.0) * ( 1.0-PRECISION);
-                    y = maxlift*sqrt(1.0 - x*x/m_pCurPlane->span()/m_pCurPlane->span()*4.0);
+                    x = m_pCurPlane->planformSpan()/2.0 * cos(id*PI/50.0) * ( 1.0-PRECISION);
+                    y = maxlift*sqrt(1.0 - x*x/m_pCurPlane->planformSpan()/m_pCurPlane->planformSpan()*4.0);
                     pCurve->appendPoint(x*Units::mtoUnit(),y);
                 }
             }
@@ -852,10 +852,10 @@ void Miarex::createWOppCurves()
     //if the target bell curve is requested, and if the graph variable is local lift, then add the curve
     if(m_bShowBellCurve && m_pCurPOpp)
     {
-        double b2 = m_pCurPlane->span()/2.0;
+        double b2 = m_pCurPlane->planformSpan()/2.0;
         int nStart;
         if(m_pCurPOpp->analysisMethod()==xfl::LLTMETHOD) nStart = 1;
-        else                                               nStart = 0;
+        else                                             nStart = 0;
 
         double lift, maxlift, x, y;
         if(m_bMaxCL) maxlift = m_pCurPOpp->m_pWOpp[0]->maxLift();
@@ -2617,7 +2617,7 @@ void Miarex::onDefineStabPolar()
 
 
 
-        pNewStabPolar->setReferenceChordLength(m_pCurPlane->mac());
+        pNewStabPolar->setReferenceMAC(m_pCurPlane->mac());
 
         pNewStabPolar->duplicateSpec(&StabPolarDlg::s_StabWPolar);
 
@@ -2685,14 +2685,14 @@ void Miarex::onDefineWPolar()
         {
             pNewWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
             double area = m_pCurPlane->planformArea();
-            if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->m_PlanformArea;
+            if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->planformArea();
             pNewWPolar->setReferenceArea(area);
         }
         else if(pNewWPolar->referenceDim()==xfl::PROJECTEDREFDIM)
         {
             pNewWPolar->setReferenceSpanLength(m_pCurPlane->projectedSpan());
             double area = m_pCurPlane->projectedArea();
-            if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->m_ProjectedArea;
+            if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->projectedArea();
             pNewWPolar->setReferenceArea(area);
         }
 
@@ -2742,7 +2742,7 @@ void Miarex::onDefineWPolarObject()
     pNewWPolar->setPlaneName(m_pCurPlane->name());
     pNewWPolar->setReferenceArea(m_pCurPlane->planformArea());
     pNewWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
-    pNewWPolar->setReferenceChordLength(m_pCurPlane->mac());
+    pNewWPolar->setReferenceMAC(m_pCurPlane->mac());
 
     EditPolarDefDlg vpDlg(s_pMainFrame);
     vpDlg.initDialog(m_pCurPlane, pNewWPolar);
@@ -2756,14 +2756,14 @@ void Miarex::onDefineWPolarObject()
         {
             pNewWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
             double area = m_pCurPlane->planformArea();
-            if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->m_PlanformArea;
+            if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->planformArea();
             pNewWPolar->setReferenceArea(area);
         }
         else if(pNewWPolar->referenceDim()==xfl::PROJECTEDREFDIM)
         {
             pNewWPolar->setReferenceSpanLength(m_pCurPlane->projectedSpan());
             double area = m_pCurPlane->projectedArea();
-            if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->m_ProjectedArea;
+            if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->projectedArea();
             pNewWPolar->setReferenceArea(area);
         }
 
@@ -3970,7 +3970,7 @@ void Miarex::onExportCurPOpp()
             //            complex<double> c, angle;
             double u0 = m_pCurPOpp->m_QInf;
             double mac = m_pCurWPolar->referenceArea();
-            double b = m_pCurWPolar->referenceSpanLength();
+            double b = m_pCurWPolar->referenceSpan();
 
             strong = "\n\n   ___Longitudinal modes____\n\n";
             out << strong;
@@ -4289,7 +4289,7 @@ void Miarex::onExporttoAVL()
 
     strong = QString("%1   %2   %3   | Sref   Cref   Bref\n")
             .arg(m_pCurPlane->planformArea()*Units::mtoUnit()*Units::mtoUnit(),9,'f',5)
-            .arg(m_pCurPlane->m_Wing[0].m_MAChord*Units::mtoUnit(),9,'f',5)
+            .arg(m_pCurPlane->m_Wing[0].MAC()*Units::mtoUnit(),9,'f',5)
             .arg(m_pCurPlane->planformSpan()*Units::mtoUnit(), 9,'f',5);
     out << strong;
 
@@ -4869,7 +4869,7 @@ void Miarex::onImportWPolars()
 
                 pWPolar->setPlaneName(PlaneName);
                 pWPolar->setReferenceArea(pPlane->projectedArea());
-                pWPolar->setReferenceChordLength(pPlane->mac());
+                pWPolar->setReferenceMAC(pPlane->mac());
                 pWPolar->setReferenceSpanLength(pPlane->projectedSpan());
 
                 strong = inStream.readLine();
@@ -6165,7 +6165,7 @@ void Miarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
     painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
     /*        oswald=CZ^2/CXi/PI/allongement;*/
-    double cxielli=m_pCurPOpp->m_CL*m_pCurPOpp->m_CL/PI/m_pCurPlane->m_Wing[0].m_AR;
+    double cxielli=m_pCurPOpp->m_CL*m_pCurPOpp->m_CL/PI/m_pCurPlane->m_Wing[0].aspectRatio();
     Result = QString("Efficiency = %1   ").arg(cxielli/m_pCurPOpp->m_ICD, e,'f',f);
     D+=dheight;
     painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
@@ -6496,7 +6496,7 @@ void Miarex::setScale()
     {
         double bodyLength = 0.0;
         if(m_pCurPlane->body()) bodyLength = m_pCurPlane->body()->length();
-        m_pgl3dMiarexView->setReferenceLength(std::max(m_pCurPlane->span(), bodyLength));
+        m_pgl3dMiarexView->setReferenceLength(std::max(m_pCurPlane->planformSpan(), bodyLength));
     }
 }
 

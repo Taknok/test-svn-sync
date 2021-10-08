@@ -255,19 +255,19 @@ void ManagePlanesDlg::fillPlaneRow(int row)
     if(pPlane->description().length()) m_pPlaneModel->setData(ind, pPlane->description(), Qt::ToolTipRole);
 
     ind = m_pPlaneModel->index(row, 1, QModelIndex());
-    m_pPlaneModel->setData(ind, pWing->m_PlanformSpan*Units::mtoUnit());
+    m_pPlaneModel->setData(ind, pWing->planformSpan()*Units::mtoUnit());
 
     ind = m_pPlaneModel->index(row, 2, QModelIndex());
-    m_pPlaneModel->setData(ind, pWing->m_PlanformArea*Units::m2toUnit());
+    m_pPlaneModel->setData(ind, pWing->planformArea()*Units::m2toUnit());
 
     ind = m_pPlaneModel->index(row, 3, QModelIndex());
-    m_pPlaneModel->setData(ind, pWing->m_MAChord*Units::mtoUnit());
+    m_pPlaneModel->setData(ind, pWing->MAC()*Units::mtoUnit());
 
     ind = m_pPlaneModel->index(row, 4, QModelIndex());
-    m_pPlaneModel->setData(ind, pWing->m_AR);
+    m_pPlaneModel->setData(ind, pWing->aspectRatio());
 
     ind = m_pPlaneModel->index(row, 5, QModelIndex());
-    m_pPlaneModel->setData(ind, pWing->m_TR);
+    m_pPlaneModel->setData(ind, pWing->taperRatio());
 
     ind = m_pPlaneModel->index(row, 6, QModelIndex());
     m_pPlaneModel->setData(ind,pWing->averageSweep());
