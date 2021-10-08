@@ -168,6 +168,7 @@ class Wing
         double MAC()           const {return m_MAChord;}
         double GChord()        const {return m_GChord;}
         double aspectRatio()   const {return m_PlanformSpan*m_PlanformSpan/m_PlanformArea;}
+        double taperRatio()    const {if(tipChord()>0.0)  return tipChord()/rootChord(); else return 99999.0;}
 
         double Offset(int iSection)    const {return m_Section.at(iSection).m_Offset;}
         double Dihedral(int iSection)  const {return m_Section.at(iSection).m_Dihedral;}
@@ -251,8 +252,6 @@ class Wing
         double IntegralC2(double y1, double y2, double c1, double c2) const;
         double IntegralCy(double y1, double y2, double c1, double c2) const;
 
-        double mac() const {return m_MAChord;}
-
         int surfaceCount() const {return m_Surface.size();}
         Surface const *surface(int is) const {if (is>=0 && is<m_Surface.size()) return &m_Surface.at(is); else return nullptr;}
         Surface *surface(int is) {if (is>=0 && is<m_Surface.size()) return &m_Surface[is]; else return nullptr;}
@@ -334,19 +333,19 @@ class Wing
         Vector3d m_Vd[MAXSPANSTATIONS];             /**< the downwash vector at span stations */
         Vector3d m_F[MAXSPANSTATIONS];              /**< the lift vector at span stations */
 
-    public:
-        QVector<WingSection> m_Section;            /**< the array of wing sections. A WingSection extends between a foil and the next. */
-        QVector<PointMass> m_PointMass;            /**< the array of PointMass objects associated to this Wing object*/
-
-        QVector<Surface> m_Surface;                /**< the array of Surface objects associated to the wing */
-
         double m_MAChord;                          /**< the wing's mean aerodynamic chord */
         double m_PlanformSpan;                     /**< the planform span, i.e. if the dihedral was 0 at each junction */
         double m_ProjectedSpan;                    /**< the span projected on the xy plane defined by z=0 */
         double m_PlanformArea;                     /**< the planform wing area, i.e. if the dihedral was 0 at each junction */
         double m_ProjectedArea;                    /**< the wing area projected on the xy plane defined by z=0; */
         double m_AR;                               /**< the wing's aspect ratio */
-        double m_TR;                               /**< the wing's taper ratio */
+
+    public:
+        QVector<WingSection> m_Section;            /**< the array of wing sections. A WingSection extends between a foil and the next. */
+        QVector<PointMass> m_PointMass;            /**< the array of PointMass objects associated to this Wing object*/
+
+        QVector<Surface> m_Surface;                /**< the array of Surface objects associated to the wing */
+
         double m_CoGIxx;                           /**< the Ixx component of the inertia tensor, calculated at the CoG */
         double m_CoGIyy;                           /**< the Ixx component of the inertia tensor, calculated at the CoG */
         double m_CoGIzz;                           /**< the Ixx component of the inertia tensor, calculated at the CoG */

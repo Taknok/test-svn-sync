@@ -558,7 +558,7 @@ bool PanelAnalysis::initializeAnalysis()
     }
     strange = QString::fromUtf8("Reference Area   = %1m²").arg(m_pWPolar->referenceArea(), 11, 'g', 5);
     traceLog(strange+"\n");
-    strange = QString::fromUtf8("Reference length = %1m").arg(m_pWPolar->referenceSpanLength(), 11, 'g', 5);
+    strange = QString::fromUtf8("Reference length = %1m").arg(m_pWPolar->referenceSpan(), 11, 'g', 5);
     traceLog(strange+"\n\n");
 
     m_NSpanStations = 0;
@@ -1553,15 +1553,15 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
         }
 
 
-        m_GCm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceChordLength();
-        m_VCm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceChordLength();
-        m_ICm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceChordLength();
+        m_GCm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceMAC();
+        m_VCm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceMAC();
+        m_ICm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceMAC();
 
-        m_GRm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceSpanLength();
+        m_GRm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceSpan();
 
-        m_GYm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceSpanLength();
-        m_VYm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceSpanLength();
-        m_IYm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceSpanLength();
+        m_GYm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceSpan();
+        m_VYm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceSpan();
+        m_IYm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceSpan();
 
 
         if(m_pWPolar->isStabilityPolar()) computePhillipsFormulae();
@@ -2780,7 +2780,7 @@ void PanelAnalysis::computeNDStabDerivatives()
     double rho = m_pWPolar->density();
 
     q = 1./2. * m_pWPolar->density() * u0 * u0;
-    b   = m_pWPolar->referenceSpanLength();
+    b   = m_pWPolar->referenceSpan();
     S   = m_pWPolar->referenceArea();
     mac = m_pPlane->mac();
     theta0 = 0.0;//steady level flight only ?
@@ -5198,7 +5198,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
                     if(pWPolar->bVLM1() || panel_pp.m_bIsTrailing)
                     {
                         C = panel_pp.CtrlPt;
-                        C.x = pWing->m_PlanformSpan * 1000.0;
+                        C.x = pWing->planformSpan() * 1000.0;
 
                         getSpeedVector(C, Mu, Sigma, Wg, false);
 

@@ -332,11 +332,11 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     else if(m_prbArea3->isChecked())
     {
         m_pdeRefArea->setValue(s_WPolar.referenceArea()*Units::m2toUnit());
-        m_pdeRefSpan->setValue(s_WPolar.referenceSpanLength()*Units::mtoUnit());
+        m_pdeRefSpan->setValue(s_WPolar.referenceSpan()*Units::mtoUnit());
     }
 
-    s_WPolar.setReferenceChordLength(m_pPlane->mac());
-    m_pdeRefChord->setValue(s_WPolar.referenceChordLength()*Units::mtoUnit());
+    s_WPolar.setReferenceMAC(m_pPlane->mac());
+    m_pdeRefChord->setValue(s_WPolar.referenceMAC()*Units::mtoUnit());
 
     s_WPolar.setWakeRollUp(false);
 
@@ -669,7 +669,7 @@ void WPolarDlg::readValues()
         s_WPolar.setReferenceSpanLength(m_pdeRefSpan->value() /Units::mtoUnit());
     }
 
-    s_WPolar.setReferenceChordLength(m_pdeRefChord->value() /Units::mtoUnit());
+    s_WPolar.setReferenceMAC(m_pdeRefChord->value() /Units::mtoUnit());
 
     setDensity();
 

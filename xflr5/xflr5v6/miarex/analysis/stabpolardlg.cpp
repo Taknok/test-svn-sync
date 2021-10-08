@@ -387,7 +387,7 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     else if(m_prbArea3->isChecked())
     {
         m_pdeRefArea->setValue(s_StabWPolar.referenceArea()*Units::m2toUnit());
-        m_pdeRefSpan->setValue(s_StabWPolar.referenceSpanLength()*Units::mtoUnit());
+        m_pdeRefSpan->setValue(s_StabWPolar.referenceSpan()*Units::mtoUnit());
     }
     m_pdeRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
 
@@ -718,7 +718,7 @@ void StabPolarDlg::readData()
         s_StabWPolar.setReferenceArea(m_pdeRefArea->value() /Units::m2toUnit());
         s_StabWPolar.setReferenceSpanLength(m_pdeRefSpan->value() /Units::mtoUnit());
     }
-    s_StabWPolar.setReferenceChordLength(m_pdeRefChord->value() /Units::mtoUnit());
+    s_StabWPolar.setReferenceMAC(m_pdeRefChord->value() /Units::mtoUnit());
 }
 
 

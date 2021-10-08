@@ -109,7 +109,6 @@ Wing::Wing()
     m_NStation  = 0;
 
     m_AR         = 0.0;// Aspect ratio
-    m_TR         = 0.0;// Taper ratio
     m_GChord     = 0.0;// mean geometric chord
     m_MAChord    = 0.0;// mean aero chord
     m_yMac       = 0.0;
@@ -378,8 +377,6 @@ void Wing::computeGeometry()
         m_GChord  = m_PlanformArea/m_PlanformSpan*2.0;
         m_AR      = m_PlanformSpan*m_PlanformSpan/m_PlanformArea/2.0;
     }
-    if(tipChord()>0.0)  m_TR = tipChord()/rootChord();
-    else                m_TR = 99999.0;
 
     //calculate the number of flaps
     m_nFlaps = 0;
@@ -1037,7 +1034,6 @@ void Wing::duplicate(Wing const*pWing)
     m_PlanformArea  = pWing->m_PlanformArea;
     m_ProjectedArea = pWing->m_ProjectedArea;
     m_AR            = pWing->m_AR;
-    m_TR            = pWing->m_TR;
     m_GChord        = pWing->m_GChord;
     m_MAChord       = pWing->m_MAChord;
     m_Name      = pWing->m_Name;
@@ -2512,10 +2508,10 @@ void Wing::scaleAR(double newAR)
 */
 void Wing::scaleTR(double newTR)
 {
-    if(m_TR<PRECISION)  return;
+    if(taperRatio()<PRECISION)  return;
     if(newTR<PRECISION) return;
 
-    double Ratio = m_TR/newTR;
+    double Ratio = taperRatio()/newTR;
     for (int is=0; is<m_Section.size(); is++)
     {
         double yRel = YPosition(is)/m_PlanformSpan *2.0;

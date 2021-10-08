@@ -226,7 +226,7 @@ void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
         if(bOutRe) bPointOutRe = true;
         if(bError) bPointOutAlpha = true;
 
-        m_PCd[m]    = getCd(pFoil0, pFoil1, m_Re[m], Alpha+m_Ai[m]+m_Twist[m], tau, m_pWing->m_AR, bOutRe, bError);
+        m_PCd[m]    = getCd(pFoil0, pFoil1, m_Re[m], Alpha+m_Ai[m]+m_Twist[m], tau, m_pWing->aspectRatio(), bOutRe, bError);
         if(bOutRe) bPointOutRe = true;
         if(bError) bPointOutAlpha = true;
 
@@ -272,8 +272,8 @@ void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
         Vector3d Minv  = LeverArm * Finv;      // Inviscid moment, Nm/qS
         Vector3d Mvisc = LeverArm * Fvisc;     // Viscousmoment,   Nm/qS
 
-        double Cm_i = m_CmAirf[m] + Minv.y /m_pWing->mac();  // N.m/qSc
-        double Cm_v =               Mvisc.y/m_pWing->mac();  // N.m/qSc
+        double Cm_i = m_CmAirf[m] + Minv.y /m_pWing->MAC();  // N.m/qSc
+        double Cm_v =               Mvisc.y/m_pWing->MAC();  // N.m/qSc
 
         m_Cm[m] = Cm_i + Cm_v;                               // N.m/qSc
 
@@ -321,23 +321,23 @@ void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
         }
     }
 
-    m_CL    =  Integral0   * m_pWing->m_AR /m_pWing->planformSpan();
-    m_CDi   =  InducedDrag * m_pWing->m_AR /m_pWing->planformSpan()  * PI / 180.0;
+    m_CL    =  Integral0   * m_pWing->aspectRatio() /m_pWing->planformSpan();
+    m_CDi   =  InducedDrag * m_pWing->aspectRatio() /m_pWing->planformSpan()  * PI / 180.0;
     m_CDv   =  ViscousDrag / m_pWing->GChord();
 
     m_VYm = ViscousYawingMoment /m_pWing->GChord();
-    m_IYm = InducedYawingMoment /m_pWing->planformSpan() * PI * m_pWing->m_AR /180.0;
+    m_IYm = InducedYawingMoment /m_pWing->planformSpan() * PI * m_pWing->aspectRatio() /180.0;
     m_GYm = m_VYm + m_IYm;
     //    m_GCm = PitchingMoment / m_GChord / m_MAChord;
     m_VCm = VCm / m_pWing->GChord() / m_pWing->MAC();
     m_ICm = ICm / m_pWing->GChord() / m_pWing->MAC();
     m_GCm = m_VCm + m_ICm;
 
-    m_GRm = -Integral1   * m_pWing->m_AR /m_pWing->planformSpan();
+    m_GRm = -Integral1   * m_pWing->aspectRatio() /m_pWing->planformSpan();
 
     if(m_CL !=0.0)
     {
-        m_CP.x = Integral2 * m_pWing->m_AR /m_pWing->planformSpan()/m_CL;
+        m_CP.x = Integral2 * m_pWing->aspectRatio() /m_pWing->planformSpan()/m_CL;
         //        m_ZCP = Integral3 * m_pWing->m_AR /m_pWing->planformSpan()/m_CL;
         m_CP.z=0.0;//the ZCP position may make physical sense in 3D panel analysis, but not in LLT
 
@@ -347,7 +347,7 @@ void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
         m_CP.set(0.0,0.0,0.0);
     }
     if(m_pWing->isSymetric()) m_CP.y = 0.0;
-    else                      m_CP.y = m_pWing->m_AR/m_CL * Integral1;
+    else                      m_CP.y = m_pWing->aspectRatio()/m_CL * Integral1;
 
     setBending(QInf);
 }
@@ -533,7 +533,7 @@ int LLTAnalysis::iterate(double &QInf, double Alpha)
 
         if(m_pWPolar->polarType()==xfl::FIXEDLIFTPOLAR)
         {
-            Lift *= m_pWing->m_AR / m_pWing->planformSpan();
+            Lift *= m_pWing->aspectRatio() / m_pWing->planformSpan();
             if(Lift<=0.0)  return -1;
 
             QInf  = m_QInf0 / sqrt(Lift);
