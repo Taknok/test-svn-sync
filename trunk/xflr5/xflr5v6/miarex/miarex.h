@@ -261,7 +261,7 @@ class Miarex : public QWidget
         void panelAnalyze(double V0, double VMax, double VDelta, bool bSequence);
         void paintPlaneLegend(QPainter &painter, const Plane *pPlane, const WPolar *pWPolar, const QRect &drawRect, float devicePixelRatio);
         void paintPlaneOppLegend(QPainter &painter, QRect drawRect);
-        QString POppTitle(PlaneOpp *pPOpp);
+        QString POppTitle(const PlaneOpp *pPOpp);
         void renamePlane(QString PlaneName);
         bool saveSettings(QSettings &settings);
         void setAnalysisParams();

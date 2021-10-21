@@ -94,8 +94,8 @@ void GraphDlg::connectSignals()
     connect(m_plwXSel, SIGNAL(itemSelectionChanged()), SLOT(onVariableChanged()));
     connect(m_plwYSel, SIGNAL(itemSelectionChanged()), SLOT(onVariableChanged()));
 
-    connect(m_plwXSel, SIGNAL(itemDoubleClicked (QListWidgetItem *)), SLOT(onOK()));
-    connect(m_plwYSel, SIGNAL(itemDoubleClicked (QListWidgetItem *)), SLOT(onOK()));
+    connect(m_plwXSel, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(onOK()));
+    connect(m_plwYSel, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(onOK()));
 }
 
 
@@ -145,12 +145,12 @@ void GraphDlg::fillVariableList()
             //wing graph variable
             m_plwXSel->addItem(tr("Y - span"));
 
-            m_plwYSel->addItem(tr("Induced Angle"));                        //0
-            m_plwYSel->addItem(tr("Total Angle"));                        //1
+            m_plwYSel->addItem(tr("Induced Angle"));                       //0
+            m_plwYSel->addItem(tr("Total Angle"));                         //1
             m_plwYSel->addItem(tr("Local lift coef."));                    //2
-            m_plwYSel->addItem(tr("Local Lift C.Cl/M.A.C."));                //3
-            m_plwYSel->addItem(tr("Airfoil viscous drag coef."));            //4
-            m_plwYSel->addItem(tr("Induced drag coef."));                    //5
+            m_plwYSel->addItem(tr("Local Lift C.Cl/M.A.C."));              //3
+            m_plwYSel->addItem(tr("Airfoil viscous drag coef."));          //4
+            m_plwYSel->addItem(tr("Induced drag coef."));                  //5
             m_plwYSel->addItem(tr("Total drag coef."));                    //6
             m_plwYSel->addItem(tr("Local Drag C.Cd/M.A.C."));              //7
             m_plwYSel->addItem(tr("Airfoil Pitching moment coef."));       //8
@@ -160,6 +160,8 @@ void GraphDlg::fillVariableList()
             m_plwYSel->addItem(tr("Bottom Transition x-pos%"));            //12
             m_plwYSel->addItem(tr("Centre of Pressure x-pos%"));           //13
             m_plwYSel->addItem(tr("Bending moment"));                      //14
+            m_plwYSel->addItem("Cl/Cd");                                   //15
+            m_plwYSel->addItem("sqrt(Cl³/Cd²)");                           //16
             break;
         }
         case GRAPH::WPOLARGRAPH:

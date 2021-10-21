@@ -637,7 +637,7 @@ QString Polar::variableName(int iVar)
         case 10:
             return "Cl/Cd";
         case 11:
-            return "|Cl|^(3/2)/Cd";
+            return "sqrt(Cl³/Cd²)";
         case 12:
             return "1/Rt(Cl)";
         case 13:
