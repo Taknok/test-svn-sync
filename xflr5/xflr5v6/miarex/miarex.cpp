@@ -789,7 +789,7 @@ void Miarex::createWOppCurves()
     // add a curve for those selected, and fill them with data
     for (int k=0; k<Objects3d::planeOppCount(); k++)
     {
-        PlaneOpp *pPOpp = Objects3d::planeOppAt(k);
+        PlaneOpp const *pPOpp = Objects3d::planeOppAt(k);
         if (pPOpp->isVisible() && (!m_bCurPOppOnly || (m_pCurPOpp==pPOpp)))
         {
             for(int iw=0; iw<MAXWINGS; iw++)
@@ -813,12 +813,12 @@ void Miarex::createWOppCurves()
     //if the elliptic curve is requested, and if the graph variable is local lift, then add the curve
     if(m_bShowEllipticCurve && m_pCurPOpp)
     {
-        double x, y;
-        double lift, maxlift = 0.0;
+        double x(0), y(0);
+        double lift(0), maxlift(0);
 
-        int nStart;
+        int nStart(0);
         if(m_pCurPOpp->analysisMethod()==xfl::LLTMETHOD) nStart = 1;
-        else                                               nStart = 0;
+        else                                             nStart = 0;
         if(m_bMaxCL) maxlift = m_pCurPOpp->m_pWOpp[0]->maxLift();
         else
         {
@@ -853,7 +853,7 @@ void Miarex::createWOppCurves()
     if(m_bShowBellCurve && m_pCurPOpp)
     {
         double b2 = m_pCurPlane->planformSpan()/2.0;
-        int nStart;
+        int nStart(0);
         if(m_pCurPOpp->analysisMethod()==xfl::LLTMETHOD) nStart = 1;
         else                                             nStart = 0;
 
@@ -1291,6 +1291,7 @@ void Miarex::fillWOppCurve(WingOpp const *pWOpp, Graph *pGraph, Curve *pCurve)
 
     switch(Var)
     {
+        default:
         case 0:
         {
             for (int i=nStart; i<pWOpp->m_NStation; i++)
@@ -1430,13 +1431,30 @@ void Miarex::fillWOppCurve(WingOpp const *pWOpp, Graph *pGraph, Curve *pCurve)
             pGraph->setYTitle(tr("BM (") + str + ")");
             break;
         }
-        default:
+        case 15:
         {
             for (int i=nStart; i<pWOpp->m_NStation; i++)
             {
-                pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Ai[i]);
+                pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(),
+                                    pWOpp->m_Cl[i]/(pWOpp->m_ICd[i]+pWOpp->m_PCd[i]));
             }
-            pGraph->setYTitle(tr("Induced Angle"));
+            QString str;
+            Units::getMomentUnitLabel(str);
+            pGraph->setYTitle("Cl/Cd");
+            break;
+        }
+        case 16:
+        {
+            for (int i=nStart; i<pWOpp->m_NStation; i++)
+            {
+                pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(),
+                                    sqrt(  pWOpp->m_Cl[i] * pWOpp->m_Cl[i] * pWOpp->m_Cl[i]
+                                         /(pWOpp->m_ICd[i]+pWOpp->m_PCd[i])/(pWOpp->m_ICd[i]+pWOpp->m_PCd[i])));
+            }
+            QString str;
+            Units::getMomentUnitLabel(str);
+            pGraph->setYTitle("sqrt(Cl³/Cd²)");
+            break;
         }
     }
 }
@@ -8355,7 +8373,7 @@ void Miarex::exportToTextStream(WPolar const *pWPolar, QTextStream &out, xfl::en
  * @param pPOpp a pointer to the plane OpPoint instance.
  * @return the the plane OpPoint title.
  */
-QString Miarex::POppTitle(PlaneOpp *pPOpp)
+QString Miarex::POppTitle(PlaneOpp const*pPOpp)
 {
     QString strong;
 
@@ -8436,7 +8454,7 @@ QString Miarex::WPolarVariableName(int iVar)
         case 14:
             return "CL/CD";
         case 15:
-            return "CL^(3/2)/CD";
+            return "sqrt(Cl³/Cd²)";
         case 16:
             return "1/Rt(CL)";
         case 17:
