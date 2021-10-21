@@ -672,7 +672,6 @@ void Miarex::clearCpCurves()
  */
 void Miarex::createCpCurves()
 {
-    bool bFound(false);
     double SpanPos(0), SpanInc(0);
 
     Curve *pCurve(nullptr);
@@ -711,7 +710,6 @@ void Miarex::createCpCurves()
     //    if(m_bCurWOppOnly)
     {
         //        p=0;
-        bFound = false;
         //        if(m_pCurWPolar->bThinSurfaces()) p+=m_pCurPlane->m_Wing[0].m_Surface[0]->m_NXPanels;
 
         SpanInc = -m_pCurPlane->planformSpan()/2.0;
@@ -725,7 +723,6 @@ void Miarex::createCpCurves()
                 SpanInc += panel_i.width();
                 if(SpanPos<=SpanInc || qAbs(SpanPos-SpanInc)/m_pCurPlane->planformSpan()<0.001)
                 {
-                    bFound = true;
                     break;
                 }
             }
@@ -735,7 +732,7 @@ void Miarex::createCpCurves()
             if(pWing(iw) && m_bShowWingCurve[iw])
             {
                 int p=0;
-                bFound = false;
+                bool bFound = false;
                 //                if(m_pCurWPolar->bThinSurfaces()) p+=pWingList(iw)->m_Surface.at(0)->m_NXPanels;
 
                 SpanInc = -pWing(iw)->planformSpan()/2.0;
@@ -4435,7 +4432,7 @@ void Miarex::exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, d
         out << ("AFIL 0.0 1.0\n");
         if(aSurface.m_pFoilA)  out << (aSurface.m_pFoilA->name() +".dat\n");
         out << ("\n");
-        if(aSurface.m_bTEFlap)
+        if(aSurface.m_bTEFlap && aSurface.m_pFoilA)
         {
             out << ("CONTROL                                                     |  (keyword)\n");
             str = QString("_Flap_%1  ").arg(iFlap);
@@ -4473,7 +4470,7 @@ void Miarex::exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, d
         if(aSurface.m_pFoilB)  out << (aSurface.m_pFoilB->name() +".dat\n");
         out << ("\n");
 
-        if(aSurface.m_bTEFlap)
+        if(aSurface.m_bTEFlap && aSurface.m_pFoilB)
         {
             out << ("CONTROL                                                     |  (keyword)\n");
             str = QString("_Flap_%1  ").arg(iFlap);
@@ -4590,7 +4587,7 @@ void Miarex::exportAVLWing_Old(Wing *pWing, QTextStream &out, int index, double 
         out << ("AFIL 0.0 1.0\n");
         if(ASurface.m_pFoilA)  out << (ASurface.m_pFoilA->name() +".dat\n");
         out << ("\n");
-        if(ASurface.m_bTEFlap)
+        if(ASurface.m_bTEFlap && ASurface.m_pFoilA)
         {
             out << ("CONTROL                                                     |  (keyword)\n");
             str = QString("_Flap_%1  ").arg(iFlap);

@@ -602,8 +602,6 @@ void GraphDlg::setControls()
 
 void GraphDlg::setupLayout()
 {
-    QFontMetrics fm(font());
-
     m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Discard | QDialogButtonBox::Reset);
     {
         connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
@@ -826,7 +824,7 @@ void GraphDlg::setupLayout()
     m_pTabWidget->addTab(m_pFontPage, tr("Fonts and BackGround"));
 
     m_pTabWidget->setCurrentIndex(s_iActivePage);
-    connect(m_pTabWidget, SIGNAL(currentChanged (int)), this, SLOT(onActivePage(int)));
+    connect(m_pTabWidget, SIGNAL(currentChanged(int)), this, SLOT(onActivePage(int)));
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {

@@ -2085,7 +2085,7 @@ void XInverse::paintFoil(QPainter &painter)
     if(m_bModFoil && m_bLoaded)  str2 = QString("    %1%").arg(m_pModFoil->xCamber()*100.0, 6, 'f', 2);
     else str2 = "";
     painter.drawText(LeftPos,ZPos+D, str1+str2);
-    D += dD;
+//    D += dD;
 
     //convert screen coordinates to foil coordinates
 
