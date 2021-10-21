@@ -1033,8 +1033,6 @@ void XDirect::keyReleaseEvent(QKeyEvent *event)
  */
 void XDirect::loadSettings(QSettings &settings)
 {
-    QString str1, str2, str3;
-
     int oppVar = 0;
     settings.beginGroup("XDirect");
     {
@@ -2634,13 +2632,6 @@ void XDirect::onImportXFoilPolars()
  */
 Polar * XDirect::importXFoilPolar(QFile & txtFile)
 {
-    Polar *pPolar = new Polar;
-    double Re, alpha, CL, CD, CDp, CM, Xt, Xb,Cpmn, HMom;
-    QString FoilName, strong, str;
-    // JX-mod
-    Foil *pFoil;
-
-
     if (!txtFile.open(QIODevice::ReadOnly))
     {
         QString strange = tr("Could not read the file\n")+txtFile.fileName();
@@ -2648,13 +2639,18 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         return nullptr;
     }
 
-    QTextStream in(&txtFile);
-    int Line;
-    bool bOK, bOK2, bRead;
-    Line = 0;
+    double Re(0), alpha(0), CL(0), CD(0), CDp(0), CM(0), Xt(0), Xb(0), Cpmn(0), HMom(0);
+    QString FoilName, strong, str;
+    // JX-mod
+    Foil *pFoil(nullptr);
 
-    bRead  = xfl::readAVLString(in, Line, strong);// XFoil or XFLR5 version
-    bRead  = xfl::readAVLString(in, Line, strong);// Foil Name
+    QTextStream in(&txtFile);
+
+    bool bOK(false), bOK2(false);
+    int Line = 0;
+
+    xfl::readAVLString(in, Line, strong);// XFoil or XFLR5 version
+    xfl::readAVLString(in, Line, strong);// Foil Name
 
     FoilName = strong.right(strong.length()-22);
     FoilName = FoilName.trimmed();
@@ -2663,13 +2659,15 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     {
         str = tr("No Foil with the name ")+FoilName;
         str+= tr("\ncould be found. The polar(s) will not be stored");
-        delete pPolar;
         QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
         return nullptr;
     }
+
+    Polar *pPolar = new Polar;
+
     pPolar->setFoilName(FoilName);
 
-    bRead  = xfl::readAVLString(in, Line, strong);// analysis type
+    xfl::readAVLString(in, Line, strong);// analysis type
 
     pPolar->setReType(strong.midRef(0,2).toInt(&bOK));
     pPolar->setMaType(strong.midRef(2,2).toInt(&bOK2));
@@ -2742,7 +2740,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     }
     Re *=1000000.0;
 
-    pPolar->setNCrit(strong.mid(52,8).toDouble(&bOK));
+    pPolar->setNCrit(strong.midRef(52,8).toDouble(&bOK));
     if(!bOK)
     {
         str = QString("Error reading NCrit at line %1. The polar(s) will not be stored").arg(Line);
@@ -2752,9 +2750,10 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     }
     pPolar->setReynolds(Re);
 
-    bRead  = xfl::readAVLString(in, Line, strong);// column titles
-    bRead  = xfl::readAVLString(in, Line, strong);// underscores
+    xfl::readAVLString(in, Line, strong);// column titles
+    xfl::readAVLString(in, Line, strong);// underscores
 
+    bool bRead = true;
     while(bRead)
     {
         bRead  = xfl::readAVLString(in, Line, strong);// polar data
@@ -3765,7 +3764,6 @@ void XDirect::readParams()
  */
 void XDirect::saveSettings(QSettings &settings)
 {
-    QString str1, str2, str3;
     settings.beginGroup("XDirect");
     {
         settings.setValue("AlphaSpec", s_bAlpha);
