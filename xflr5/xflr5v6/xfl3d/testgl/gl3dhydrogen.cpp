@@ -48,7 +48,6 @@ gl3dHydrogen::gl3dHydrogen(QWidget *pParent) : gl3dTestGLView(pParent)
 
     m_BlockSize = 50;
 
-//    setReferenceLength(s_ObsRadius);
 
     QPalette palette;
     palette.setColor(QPalette::WindowText, s_TextColor);
@@ -206,20 +205,6 @@ gl3dHydrogen::gl3dHydrogen(QWidget *pParent) : gl3dTestGLView(pParent)
                     pchClip->setToolTip("Activate this checkbox to hide all objects positioned forward of the screen/viewport.<br>"
                                         "Use the X, Y, and Z keys to view the scene in the direction of each axis.");
                     connect(pchClip, SIGNAL(clicked(bool)), SLOT(onClipScreenPlane(bool)));
-/*                    QHBoxLayout *pClipLayout = new QHBoxLayout;
-                    {
-                        QLabel *plabClip = new QLabel("Clip plane:");
-                        QSlider *pslClip = new QSlider(Qt::Horizontal);
-                        pslClip->setMinimum(-100);
-                        pslClip->setMaximum(100);
-                        pslClip->setSliderPosition(0);
-                        pslClip->setTickInterval(10);
-                        pslClip->setTickPosition(QSlider::TicksBelow);
-                        pslClip->setValue(100);
-                        connect(pslClip, SIGNAL(sliderMoved(int)), SLOT(onClipPlane(int)));
-                        pClipLayout->addWidget(plabClip);
-                        pClipLayout->addWidget(pslClip);
-                    }*/
 
                     pDisplayLayout->addLayout(pWidthLayout);
                     pDisplayLayout->addLayout(pShaderLayout);
@@ -315,7 +300,7 @@ void gl3dHydrogen::glMake3dObjects()
         int stride = 8;
         int buffersize = m_Pts.size()*stride;
         QVector<float> pts(buffersize);
-        int iv =0;
+        int iv = 0;
         for(int i=0; i<m_Pts.size(); i++)
         {
             state = m_State.at(i)/m_StateMax;// state is converted to colour in the Point shader
@@ -527,7 +512,7 @@ void gl3dHydrogen::collapseBlock(QWidget *pParent) const
     do
     {
         rho   = pow(QRandomGenerator::global()->generateDouble(),0.33333)*s_ObsRadius;
-        r = rho*A0;// in Bohr radius units
+        r = rho*A0;
         phi   = QRandomGenerator::global()->bounded(2.0*PI);
         theta = acos(1.0-2.0*QRandomGenerator::global()->generateDouble());
 

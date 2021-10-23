@@ -16,5 +16,7 @@
         <file>resources/shaders/point/point_FS.glsl</file>
         <file>resources/shaders/point/point_GS.glsl</file>
         <file>resources/shaders/point/point_VS.glsl</file>
+        <file>resources/shaders/newton/newton_FS.glsl</file>
+        <file>resources/shaders/newton/newton_VS.glsl</file>
     </qresource>
 </RCC>

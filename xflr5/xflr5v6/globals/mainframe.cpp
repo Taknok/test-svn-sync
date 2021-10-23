@@ -77,6 +77,7 @@
 #include <xfl3d/controls/w3dprefs.h>
 #include <xfl3d/glinfo/opengldlg.h>
 #include <xfl3d/testgl/gl2dfractal.h>
+#include <xfl3d/testgl/gl2dnewton.h>
 #include <xfl3d/testgl/gl3dtestglview.h>
 #include <xfl3d/testgl/gl3dboids.h>
 #include <xfl3d/testgl/gl3dhydrogen.h>
@@ -228,6 +229,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
         W3dPrefs::loadSettings(settings);
         Units::loadSettings(settings);
         gl2dFractal::loadSettings(settings);
+        gl2dNewton::loadSettings(settings);
         gl3dBoids::loadSettings(settings);
         gl3dHydrogen::loadSettings(settings);
         gl3dSpace::loadSettings(settings);
@@ -2951,21 +2953,18 @@ void MainFrame::keyPressEvent(QKeyEvent *pEvent)
             }
             case Qt::Key_F2:
             {
-                gl2dFractal *pTestView = new gl2dFractal;
-                pTestView->setAttribute(Qt::WA_DeleteOnClose);
-                pTestView->show();
-                pTestView->activateWindow();
+                gl2dView *p2dView = new gl2dFractal;
+                p2dView->setAttribute(Qt::WA_DeleteOnClose);
+                p2dView->show();
+                p2dView->activateWindow();
                 break;
             }
             case Qt::Key_F3:
             {
-                gl3dTestGLView *pTestView = new gl3dTestGLView;
-                pTestView->setAttribute(Qt::WA_DeleteOnClose);
-//                pTestView->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-//                pTestView->showMaximized();
-                pTestView->show();
-                pTestView->activateWindow();
-
+                gl2dView *p2dView = new gl2dNewton;
+                p2dView->setAttribute(Qt::WA_DeleteOnClose);
+                p2dView->show();
+                p2dView->activateWindow();
                 break;
             }
             case Qt::Key_F4:
@@ -4576,6 +4575,7 @@ void MainFrame::saveSettings()
     W3dPrefs::saveSettings(settings);
     Units::saveSettings(settings);
     gl2dFractal::saveSettings(settings);
+    gl2dNewton::saveSettings(settings);
     gl3dBoids::saveSettings(settings);
     gl3dHydrogen::saveSettings(settings);
     gl3dOptim2d::saveSettings(settings);
