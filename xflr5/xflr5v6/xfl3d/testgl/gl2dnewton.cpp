@@ -24,7 +24,7 @@
 
 int gl2dNewton::s_MaxIter = 32;
 float gl2dNewton::s_Tolerance = 1.e-6;
-QColor gl2dNewton::s_Colors[3] = {QColor(187,187,187), QColor(55,101,107), QColor(0,37,57)};
+QColor gl2dNewton::s_Colors[3] = {QColor(67,17,11), QColor(55,101,107), QColor(0,37,67)};
 
 gl2dNewton::gl2dNewton(QWidget *pParent) : gl2dView(pParent)
 {
@@ -144,8 +144,6 @@ void gl2dNewton::loadSettings(QSettings &settings)
     {
         s_MaxIter   = settings.value("MaxIters", s_MaxIter).toInt();
         s_Tolerance = settings.value("MaxLength", s_Tolerance).toFloat();
-        for(int i=0; i<3; i++)
-            s_Colors[i] = settings.value(QString::asprintf("Color%d", i), s_Colors[i]).value<QColor>();
     }
     settings.endGroup();
 }
@@ -157,12 +155,9 @@ void gl2dNewton::saveSettings(QSettings &settings)
     {
         settings.setValue("MaxIters", s_MaxIter);
         settings.setValue("MaxLength", s_Tolerance);
-        for(int i=0; i<3; i++)
-            settings.setValue(QString::asprintf("Color%d", i), s_Colors[i]);
     }
     settings.endGroup();
 }
-
 
 
 void gl2dNewton::initializeGL()
@@ -247,6 +242,12 @@ void gl2dNewton::paintGL()
     m_shadNewton.release();
 
     m_plabScale->setText(QString::asprintf("Scale = %g", m_Scale));
+
+    if (!m_bInitialized)
+    {
+        m_bInitialized = true;
+        emit ready2d();
+    }
 }
 
 

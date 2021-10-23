@@ -1,4 +1,4 @@
-#version 410 core
+#version 330
 
 uniform vec2  ViewTrans;
 uniform float ViewScale;

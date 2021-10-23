@@ -98,7 +98,7 @@ class gl3dView : public QOpenGLWidget, protected QOpenGLExtraFunctions
 
         void setLightVisible(bool bShow) {m_bLightVisible=bShow;}
 
-        void getMemoryStatus(int &total_mem_kb, int &cur_avail_mem_kb);
+//        void getMemoryStatus(int &total_mem_kb, int &cur_avail_mem_kb);
 
         static void setFontStruct(FontStruct const & fntstruct) {s_glFontStruct=fntstruct;}
         static void setTextColor(QColor const &textclr) {s_TextColor=textclr;}

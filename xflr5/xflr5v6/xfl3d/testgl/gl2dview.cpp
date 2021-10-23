@@ -29,6 +29,7 @@ gl2dView::gl2dView(QWidget *pParent) : QOpenGLWidget(pParent)
     setFocusPolicy(Qt::WheelFocus);
     setCursor(Qt::CrossCursor);
 
+    m_bInitialized    = false;
     m_bDynTranslation = false;
     m_bDynScaling     = false;
     connect(&m_DynTimer, SIGNAL(timeout()), SLOT(onDynamicIncrement()));
