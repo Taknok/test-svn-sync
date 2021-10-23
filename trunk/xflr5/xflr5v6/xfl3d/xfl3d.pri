@@ -8,6 +8,8 @@ HEADERS += \
     xfl3d/gl_globals.h \
     xfl3d/glinfo/opengldlg.h \
     xfl3d/testgl/gl2dfractal.h \
+    xfl3d/testgl/gl2dnewton.h \
+    xfl3d/testgl/gl2dview.h \
     xfl3d/testgl/gl3dattractor.h \
     xfl3d/testgl/gl3dattractors.h \
     xfl3d/testgl/gl3dboids.h \
@@ -36,6 +38,8 @@ SOURCES += \
     xfl3d/gl_globals.cpp \
     xfl3d/glinfo/opengldlg.cpp \
     xfl3d/testgl/gl2dfractal.cpp \
+    xfl3d/testgl/gl2dnewton.cpp \
+    xfl3d/testgl/gl2dview.cpp \
     xfl3d/testgl/gl3dattractor.cpp \
     xfl3d/testgl/gl3dattractors.cpp \
     xfl3d/testgl/gl3dboids.cpp \
