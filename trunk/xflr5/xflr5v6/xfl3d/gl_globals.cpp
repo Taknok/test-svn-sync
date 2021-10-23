@@ -36,6 +36,21 @@
 double t_lmin(0), t_range(0);
 QVector<QVector<Segment3d>> t_futuresegs;
 
+
+#define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048
+#define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
+void getMemoryStatus(int &total_mem_kb, int &cur_avail_mem_kb)
+{
+    total_mem_kb = 0;
+    glGetIntegerv(GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX,
+                  &total_mem_kb);
+
+    cur_avail_mem_kb = 0;
+    glGetIntegerv(GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX,
+                  &cur_avail_mem_kb);
+}
+
+
 void glMakeTetra(Vector3d const &pt, double side, QOpenGLBuffer &vboFaces, QOpenGLBuffer &vboEdges)
 {
     Vector3d vtx[4];

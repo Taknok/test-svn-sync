@@ -44,6 +44,9 @@ class gl2dView : public QOpenGLWidget
     protected slots:
         void onDynamicIncrement();
 
+    signals:
+        void ready2d() const;
+
     protected:
         QOpenGLVertexArrayObject m_vao; /** generic vao required for the core profile >3.x*/
         QOpenGLBuffer m_vboQuad;
@@ -62,6 +65,8 @@ class gl2dView : public QOpenGLWidget
 
         bool m_bDynScaling;
         float m_ZoomFactor;
+
+        bool m_bInitialized;
 
         static float s_ScaleFactor;
 

@@ -102,20 +102,6 @@ gl3dView::gl3dView(QWidget *pParent) : QOpenGLWidget(pParent)
 }
 
 
-#define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048
-#define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
-void gl3dView::getMemoryStatus(int &total_mem_kb, int &cur_avail_mem_kb)
-{
-    total_mem_kb = 0;
-    glGetIntegerv(GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX,
-                  &total_mem_kb);
-
-    cur_avail_mem_kb = 0;
-    glGetIntegerv(GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX,
-                  &cur_avail_mem_kb);
-}
-
-
 void gl3dView::printFormat(QSurfaceFormat const &ctxtFormat, QString &log)
 {
     QString strange;

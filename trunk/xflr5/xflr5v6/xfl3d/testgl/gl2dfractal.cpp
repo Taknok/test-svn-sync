@@ -173,6 +173,12 @@ void gl2dFractal::paintGL()
     }
     m_shadFrac.release();
     m_plabScale->setText(QString::asprintf("Scale = %g", m_Scale));
+
+    if (!m_bInitialized)
+    {
+        m_bInitialized = true;
+        emit ready2d();
+    }
 }
 
 

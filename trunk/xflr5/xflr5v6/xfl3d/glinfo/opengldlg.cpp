@@ -28,6 +28,9 @@
 
 #include <xflwidgets/customwts/plaintextoutput.h>
 #include <xflwidgets/customwts/intedit.h>
+#include <xfl3d/gl_globals.h>
+#include <xfl3d/testgl/gl2dfractal.h>
+#include <xfl3d/testgl/gl2dnewton.h>
 #include <xfl3d/testgl/gl3dtestglview.h>
 #include <xfl3d/testgl/gl3dattractor.h>
 #include <xfl3d/testgl/gl3dattractors.h>
@@ -354,10 +357,14 @@ void OpenGlDlg::setupLayout()
 
             m_pStackWt = new QStackedWidget;
             {
-                m_pgl3dTestView = new gl3dTestGLView;
-                m_pStackWt->addWidget(m_pgl3dTestView);
-
-                connect(m_pgl3dTestView, SIGNAL(ready()), SLOT(onRenderWindowReady()));
+                m_pglTestView = getView(s_iView);
+                m_pStackWt->addWidget(m_pglTestView);
+                gl2dView *pgl2dTestView = dynamic_cast<gl2dView*>(m_pglTestView);
+                if(pgl2dTestView)
+                    connect(pgl2dTestView, SIGNAL(ready2d()), SLOT(onRenderWindowReady()));
+                gl3dTestGLView *pgl3dTestView = dynamic_cast<gl3dTestGLView*>(m_pglTestView);
+                if(pgl3dTestView)
+                    connect(pgl3dTestView, SIGNAL(ready()), SLOT(onRenderWindowReady()));
             }
 
             m_pHSplitter->addWidget(pTestContextBox);
@@ -375,6 +382,8 @@ void OpenGlDlg::setupLayout()
 
             QMenu *pViewSelMenu = new QMenu;
             {
+                QAction *pMandelbrotAct  = new QAction("Mandelbrot",         this);
+                QAction *pNewtonAct      = new QAction("Newton fractal",     this);
                 QAction *pSphereAct      = new QAction("Spheres",            this);
                 QAction *pLorenzAct      = new QAction("Lorenz attractor",   this);
                 QAction *pAttractorsAct  = new QAction("Attractors",         this);
@@ -385,16 +394,20 @@ void OpenGlDlg::setupLayout()
                 QAction *pSagittariusAct = new QAction("Sagittarius A*",     this);
                 QAction *pSpaceAct       = new QAction("The final frontier", this);
 
-                pSphereAct->setData(     0);
-                pLorenzAct->setData(     1);
-                pAttractorsAct->setData( 2);
-                pBoidsAct->setData(      3);
-                pPSOAct->setData(        4);
-                pHydrogenAct->setData(   5);
-                pSolarSysAct->setData(   6);
-                pSagittariusAct->setData(7);
-                pSpaceAct->setData(      8);
+                pMandelbrotAct->setData(  0);
+                pNewtonAct->setData(      1);
+                pSphereAct->setData(      2);
+                pLorenzAct->setData(      3);
+                pAttractorsAct->setData(  4);
+                pBoidsAct->setData(       5);
+                pPSOAct->setData(         6);
+                pHydrogenAct->setData(    7);
+                pSolarSysAct->setData(    8);
+                pSagittariusAct->setData( 9);
+                pSpaceAct->setData(      10);
 
+                connect(pMandelbrotAct,  SIGNAL(triggered()), SLOT(onViewType()));
+                connect(pNewtonAct,      SIGNAL(triggered()), SLOT(onViewType()));
                 connect(pSphereAct,      SIGNAL(triggered()), SLOT(onViewType()));
                 connect(pLorenzAct,      SIGNAL(triggered()), SLOT(onViewType()));
                 connect(pAttractorsAct,  SIGNAL(triggered()), SLOT(onViewType()));
@@ -405,6 +418,8 @@ void OpenGlDlg::setupLayout()
                 connect(pSagittariusAct, SIGNAL(triggered()), SLOT(onViewType()));
                 connect(pSpaceAct,       SIGNAL(triggered()), SLOT(onViewType()));
 
+                pViewSelMenu->addAction(pMandelbrotAct);
+                pViewSelMenu->addAction(pNewtonAct);
                 pViewSelMenu->addAction(pSphereAct);
                 pViewSelMenu->addAction(pLorenzAct);
                 pViewSelMenu->addAction(pAttractorsAct);
@@ -450,17 +465,24 @@ void OpenGlDlg::onCreateContext()
     Trace(log+"\n\n");
 
     m_pptglOutput->clear();
-    m_pStackWt->removeWidget(m_pgl3dTestView);
-    delete m_pgl3dTestView;
-    m_pgl3dTestView = getView(s_iView);
-    connect(m_pgl3dTestView, SIGNAL(ready()), SLOT(onRenderWindowReady()));
+    m_pStackWt->removeWidget(m_pglTestView);
+    delete m_pglTestView;
+    m_pglTestView = getView(s_iView);
 
-    m_pStackWt->addWidget(m_pgl3dTestView);
-    m_pStackWt->setCurrentWidget(m_pgl3dTestView);
+    gl2dView *pgl2dTestView = dynamic_cast<gl2dView*>(m_pglTestView);
+    if(pgl2dTestView)
+        connect(pgl2dTestView, SIGNAL(ready2d()), SLOT(onRenderWindowReady()));
+    gl3dTestGLView *pgl3dTestView = dynamic_cast<gl3dTestGLView*>(m_pglTestView);
+    if(pgl3dTestView)
+        connect(pgl3dTestView, SIGNAL(ready()), SLOT(onRenderWindowReady()));
+ //    connect(m_pglTestView, SIGNAL(ready()), SLOT(onRenderWindowReady()));
 
-    m_pgl3dTestView->update(); // force context initialization
+    m_pStackWt->addWidget(m_pglTestView);
+    m_pStackWt->setCurrentWidget(m_pglTestView);
 
-    if (!m_pgl3dTestView->context())
+    m_pglTestView->update(); // force context initialization
+
+    if (!m_pglTestView->context())
     {
         Trace("Context creation Error.................\n");
         m_pptglOutput->appendPlainText(tr("Failed to create context"));
@@ -469,20 +491,22 @@ void OpenGlDlg::onCreateContext()
 }
 
 
-gl3dTestGLView *OpenGlDlg::getView(int iView)
+QOpenGLWidget *OpenGlDlg::getView(int iView)
 {
     switch(iView)
     {
         default:
-        case 0: return new gl3dTestGLView;
-        case 1: return new gl3dAttractor;
-        case 2: return new gl3dAttractors;
-        case 3: return new gl3dBoids;
-        case 4: return new gl3dOptim2d;
-        case 5: return new gl3dHydrogen;
-        case 6: return new gl3dSolarSys;
-        case 7: return new gl3dSagittarius;
-        case 8: return new gl3dSpace;
+        case 0:  return new gl2dFractal;
+        case 1:  return new gl2dNewton;
+        case 2:  return new gl3dTestGLView;
+        case 3:  return new gl3dAttractor;
+        case 4:  return new gl3dAttractors;
+        case 5:  return new gl3dBoids;
+        case 6:  return new gl3dOptim2d;
+        case 7:  return new gl3dHydrogen;
+        case 8:  return new gl3dSolarSys;
+        case 9:  return new gl3dSagittarius;
+        case 10: return new gl3dSpace;
     }
     return nullptr;
 }
@@ -633,13 +657,13 @@ void OpenGlDlg::onRenderWindowReady()
 //    glEnable(GL_MULTISAMPLE);
 
     if ((p = glGetString(GL_VENDOR)))
-        vendor = QString::fromLatin1(reinterpret_cast<const char *>(p));
+        vendor = QString::fromLatin1(reinterpret_cast<const char*>(p));
     if ((p = glGetString(GL_RENDERER)))
-        renderer = QString::fromLatin1(reinterpret_cast<const char *>(p));
+        renderer = QString::fromLatin1(reinterpret_cast<const char*>(p));
     if ((p = glGetString(GL_VERSION)))
-        version = QString::fromLatin1(reinterpret_cast<const char *>(p));
+        version = QString::fromLatin1(reinterpret_cast<const char*>(p));
     if ((p = glGetString(GL_SHADING_LANGUAGE_VERSION)))
-        glslVersion = QString::fromLatin1(reinterpret_cast<const char *>(p));
+        glslVersion = QString::fromLatin1(reinterpret_cast<const char*>(p));
 
     m_pptglOutput->appendPlainText(QString("*** Context information ***"));
     m_pptglOutput->appendPlainText(QString("   Vendor:         %1").arg(vendor));
@@ -652,14 +676,15 @@ void OpenGlDlg::onRenderWindowReady()
     printFormat(gl3dView::defaultXflSurfaceFormat(), log, true);
     m_pptglOutput->appendPlainText(log);
 
-    QOpenGLContext *pContext = m_pgl3dTestView->context();
+    QOpenGLContext *pContext = m_pglTestView->context();
     m_pptglOutput->appendPlainText(QString("\n*** QSurfaceFormat from context = response of the OS ***"));
     log.clear();
     printFormat(pContext->format(), log, true);
     m_pptglOutput->appendPlainText(log );
 
     m_pptglOutput->appendPlainText("\n*** Shaders ***");
-    if(m_pgl3dTestView->bUsing120StyleShaders())
+    gl3dTestGLView *pgl3dTestView = dynamic_cast<gl3dTestGLView*>(m_pglTestView);
+    if(pgl3dTestView && pgl3dTestView->bUsing120StyleShaders())
         m_pptglOutput->appendPlainText("   Using glsl 120 style shaders\n");
     else
         m_pptglOutput->appendPlainText("   Using glsl 330 style shaders\n");
@@ -687,12 +712,12 @@ void OpenGlDlg::onRenderWindowReady()
     qApp->testAttribute(Qt::AA_UseSoftwareOpenGL)? strange += "true" : strange+="false";
     m_pptglOutput->appendPlainText(strange+"\n");
 
-    if(m_pgl3dTestView)
+    if(m_pglTestView)
     {
         if(vendor.contains("nvidia", Qt::CaseInsensitive))
         {
             int total=0, available=0; // kb
-            m_pgl3dTestView->getMemoryStatus(total, available);
+            getMemoryStatus(total, available);
 
             QString strange;
             strange = QString::asprintf("GPU memory usage: %g/%g MB", double(total-available)/1024, double(total)/1024);
@@ -722,7 +747,7 @@ void OpenGlDlg::showEvent(QShowEvent *)
 {
     restoreGeometry(s_Geometry);
     if(s_HSplitterSizes.length()>0) m_pHSplitter->restoreState(s_HSplitterSizes);
-    if(m_pgl3dTestView) m_pgl3dTestView->reset3dScale();
+//    if(m_pglTestView) m_pglTestView->reset3dScale();
 }
 
 

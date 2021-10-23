@@ -26,6 +26,8 @@ class Segment3d;
 class Triangle3d;
 class Vector3d;
 
+void getMemoryStatus(int &total_mem_kb, int &cur_avail_mem_kb);
+
 void glMakeCircle(double radius, Vector3d const &O, QOpenGLBuffer &vbo);
 void glMakeDisk(double radius, Vector3d const &O, QOpenGLBuffer &vbo);
 
