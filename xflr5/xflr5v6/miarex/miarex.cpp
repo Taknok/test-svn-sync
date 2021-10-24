@@ -1432,8 +1432,15 @@ void Miarex::fillWOppCurve(WingOpp const *pWOpp, Graph *pGraph, Curve *pCurve)
         {
             for (int i=nStart; i<pWOpp->m_NStation; i++)
             {
-                pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(),
-                                    pWOpp->m_Cl[i]/(pWOpp->m_ICd[i]+pWOpp->m_PCd[i]));
+                if(fabs(pWOpp->m_ICd[i]+pWOpp->m_PCd[i])>PRECISION)
+                {
+                    pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(),
+                                        pWOpp->m_Cl[i]/(pWOpp->m_ICd[i]+pWOpp->m_PCd[i]));
+                }
+                else
+                {
+                    pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), 0.0);
+                }
             }
             QString str;
             Units::getMomentUnitLabel(str);
@@ -1444,9 +1451,16 @@ void Miarex::fillWOppCurve(WingOpp const *pWOpp, Graph *pGraph, Curve *pCurve)
         {
             for (int i=nStart; i<pWOpp->m_NStation; i++)
             {
-                pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(),
-                                    sqrt(  pWOpp->m_Cl[i] * pWOpp->m_Cl[i] * pWOpp->m_Cl[i]
-                                         /(pWOpp->m_ICd[i]+pWOpp->m_PCd[i])/(pWOpp->m_ICd[i]+pWOpp->m_PCd[i])));
+                if(fabs(pWOpp->m_ICd[i]+pWOpp->m_PCd[i])>PRECISION && pWOpp->m_Cl[i]>PRECISION)
+                {
+                    pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(),
+                                        sqrt(  pWOpp->m_Cl[i] * pWOpp->m_Cl[i] * pWOpp->m_Cl[i]
+                                             /(pWOpp->m_ICd[i]+pWOpp->m_PCd[i])/(pWOpp->m_ICd[i]+pWOpp->m_PCd[i])));
+                }
+                else
+                {
+                    pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), 0.0);
+                }
             }
             QString str;
             Units::getMomentUnitLabel(str);

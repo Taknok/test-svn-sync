@@ -209,9 +209,10 @@ void gl2dNewton::paintGL()
         int stride = 2;
         s_MaxIter   = m_pieMaxIter->value();
         s_Tolerance = m_pdeTolerance->value();
+        float ratio = float(width())/float(height());
         m_shadNewton.setUniformValue(m_locIters,     s_MaxIter);
         m_shadNewton.setUniformValue(m_locTolerance, s_Tolerance);
-        m_shadNewton.setUniformValue(m_locViewRatio, float(width())/float(height()));
+        m_shadNewton.setUniformValue(m_locViewRatio, ratio);
         for(int i=0; i<3; i++)
             m_shadNewton.setUniformValue(m_locColor[i], s_Colors[i]);
 
@@ -220,7 +221,8 @@ void gl2dNewton::paintGL()
         m_shadNewton.setUniformValue(m_locRoot[2], m_Root[2]);
 
         double w = m_rectView.width();
-        QVector2D off(-m_ptOffset.x()/width()*w, m_ptOffset.y()/width()*w);
+        QVector2D off((-m_ptOffset.x())/width()*w+(ratio-1.0)/2.0, m_ptOffset.y()/width()*w);
+
         m_shadNewton.setUniformValue(m_locViewTrans,  off);
         m_shadNewton.setUniformValue(m_locViewScale,  m_Scale);
 
@@ -241,13 +243,13 @@ void gl2dNewton::paintGL()
     }
     m_shadNewton.release();
 
-    m_plabScale->setText(QString::asprintf("Scale = %g", m_Scale));
-
     if (!m_bInitialized)
     {
         m_bInitialized = true;
         emit ready2d();
     }
+
+    m_plabScale->setText(QString::asprintf("Scale = %g", m_Scale));
 }
 
 
