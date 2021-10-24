@@ -109,7 +109,7 @@ void gl3dSurface::glMakeSurface()
     }
     float range = zmax - zmin;
     range = std::max(range, 0.001f);
-    QColor clr;
+
     int iv = 0;
 
     int iLA{0},iTA{0},iLB{0},iTB{0};

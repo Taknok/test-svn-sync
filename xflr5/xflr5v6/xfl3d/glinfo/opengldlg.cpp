@@ -45,7 +45,7 @@
 QByteArray OpenGlDlg::s_Geometry;
 QByteArray OpenGlDlg::s_HSplitterSizes;
 
-int OpenGlDlg::s_iView = 0;
+int OpenGlDlg::s_iView = 2;
 
 struct Version {
     const char *str;
