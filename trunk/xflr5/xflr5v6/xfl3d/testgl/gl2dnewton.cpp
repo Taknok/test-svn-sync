@@ -23,7 +23,7 @@
 #include <xflwidgets/wt_globals.h>
 
 int gl2dNewton::s_MaxIter = 32;
-float gl2dNewton::s_Tolerance = 1.e-6;
+float gl2dNewton::s_Tolerance = 1.0e-6f;
 QColor gl2dNewton::s_Colors[3] = {QColor(67,17,11), QColor(55,101,107), QColor(0,37,67)};
 
 gl2dNewton::gl2dNewton(QWidget *pParent) : gl2dView(pParent)

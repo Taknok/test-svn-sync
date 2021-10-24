@@ -96,9 +96,9 @@ macx{
     QMAKE_MAC_SDK = macosx
 #    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
 
-    OTHER_FILES += ./mac/Info.plist
-    QMAKE_INFO_PLIST = ./mac/Info.plist
-    ICON = ./mac/xflr5.icns
+    OTHER_FILES += ../mac/Info.plist
+    QMAKE_INFO_PLIST = ../mac/Info.plist
+    ICON = ../mac/xflr5.icns
 
 #message($$OUT_PWD)
 #    LIBS += -F$$OUT_PWD/../XFoil-lib
