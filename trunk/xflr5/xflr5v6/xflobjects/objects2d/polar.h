@@ -56,14 +56,14 @@ class Polar : public XflObject
 
         void addPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
                       double Xtr1, double Xtr2, double HMom, double Cpmn, double Reynolds, double XCp);
-        void exportPolar(QTextStream &out, QString versionName, bool bCSV, bool bDataOnly=false) const;
+        void exportPolar(QTextStream &out, QString const &versionName, bool bCSV, bool bDataOnly=false) const;
         void resetPolar();
 
 
         void copySpecification(Polar const*pPolar);
         void copyPolar(Polar const*pPolar);
 
-        bool hasOpp(OpPoint const *pOpp) const;
+        bool hasOpp(OpPoint const *pOpp) const {return (pOpp->foilName()==m_FoilName && pOpp->polarName()==m_Name);}
 
         void replaceOppDataAt(int pos, const OpPoint *pOpp);
         void insertOppDataAt(int pos, OpPoint const*pOpp);
@@ -90,9 +90,6 @@ class Polar : public XflObject
 
         QVector<double> const &getPlrVariable(int iVar) const;
 
-
-
-
         double aoa()      const {return m_ASpec;}
         double Reynolds() const {return m_Reynolds;}
         double Mach()     const {return m_Mach;}
@@ -118,6 +115,14 @@ class Polar : public XflObject
         bool isFixedLiftPolar()   const {return m_PolarType==xfl::FIXEDLIFTPOLAR;}    /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/
         bool isFixedaoaPolar()    const {return m_PolarType==xfl::FIXEDAOAPOLAR;}     /**< returns true if the polar is of the FIXEDAOAPOLAR type, false otherwise >*/
         bool isRubberChordPolar() const {return m_PolarType==xfl::RUBBERCHORDPOLAR;}
+
+        double flapAngle() const {return m_FlapAngle;}
+        double xHinge()    const {return m_XHinge;}
+        double yHinge()    const {return m_YHinge;}
+        void setXHinge(double xh) {m_XHinge=xh;}
+        void setYHinge(double yh) {m_YHinge=yh;}
+        void setFlapAngle(double angledeg) {m_FlapAngle=angledeg;}
+        void setFlap(double xh, double yh, double angledeg) {m_XHinge=xh; m_YHinge=yh; m_FlapAngle=angledeg;}
 
 
         static QString autoPolarName(xfl::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec=0.0, double XTop=1.0, double XBot=1.0);
@@ -147,7 +152,7 @@ class Polar : public XflObject
         QString m_FoilName;                 /**< the name of the parent Foil to which this Polar object is attached */
 
         //Analysis specification
-        xfl::enumPolarType m_PolarType;          /**< the Polar type */
+        xfl::enumPolarType m_PolarType;     /**< the Polar type */
         int m_ReType;                       /**< the type of Reynolds number input, cf. XFoil documentation */
         int m_MaType;                       /**< the type of Mach number input, cf. XFoil documentation */
         double m_ASpec;                     /**< the specified aoa in the case of Type 4 polars */
@@ -157,6 +162,9 @@ class Polar : public XflObject
         double m_XBot;                      /**< the point of forced transition on the lower surface */
         double m_Reynolds;                  /**< the Reynolds number for a type 4 analysis */
 
+        double m_XHinge;                    /**< flap hinge x-position as  a fraction of chord;     provision for future coupling with flow5 scripts */
+        double m_YHinge;                    /**< flap hinge x-position as  a fraction of thickness; provision for future coupling with flow5 scripts */
+        double m_FlapAngle;                 /**< flap angle in degrees; provision for future coupling with flow5 scripts */
 };
 
 

@@ -699,42 +699,42 @@ void gl3dView::getGLError()
     switch(glGetError())
     {
         case GL_NO_ERROR:
-            Trace("No error has been recorded. The value of this symbolic constant is guaranteed to be 0.");
+            trace("No error has been recorded. The value of this symbolic constant is guaranteed to be 0.");
             break;
 
         case GL_INVALID_ENUM:
-            Trace("An unacceptable value is specified for an enumerated argument. "
+            trace("An unacceptable value is specified for an enumerated argument. "
                   "The offending command is ignored and has no other side effect than to set the error flag.");
             break;
 
         case GL_INVALID_VALUE:
-            Trace("A numeric argument is out of range. The offending command is ignored and has no other "
+            trace("A numeric argument is out of range. The offending command is ignored and has no other "
                   "side effect than to set the error flag.");
             break;
 
         case GL_INVALID_OPERATION:
-            Trace("The specified operation is not allowed in the current state. The offending command is "
+            trace("The specified operation is not allowed in the current state. The offending command is "
                   "ignored and has no other side effect than to set the error flag.");
             break;
 
         case GL_INVALID_FRAMEBUFFER_OPERATION:
-            Trace("The command is trying to render to or read from the framebuffer while the currently "
+            trace("The command is trying to render to or read from the framebuffer while the currently "
                   "bound framebuffer is not framebuffer complete (i.e. the return value from glCheckFramebufferStatus "
                   "is not GL_FRAMEBUFFER_COMPLETE). The offending command is ignored and has no other side effect than "
                   "to set the error flag.");
             break;
 
         case GL_OUT_OF_MEMORY:
-            Trace("There is not enough memory left to execute the command. The state of the GL is "
+            trace("There is not enough memory left to execute the command. The state of the GL is "
                   "undefined, except for the state of the error flags, after this error is recorded.");
             break;
 
         case GL_STACK_UNDERFLOW:
-            Trace("An attempt has been made to perform an operation that would cause an internal stack to underflow.");
+            trace("An attempt has been made to perform an operation that would cause an internal stack to underflow.");
             break;
 
         case GL_STACK_OVERFLOW:
-            Trace("An attempt has been made to perform an operation that would cause an internal stack to overflow.");
+            trace("An attempt has been made to perform an operation that would cause an internal stack to overflow.");
             break;
     }
 }
@@ -843,7 +843,7 @@ void gl3dView::initializeGL()
     {
         QString log;
         printFormat(ctxtFormat, log);
-        Trace(log);
+        trace(log);
     }
 
     glMakeAxes();
@@ -862,7 +862,7 @@ void gl3dView::initializeGL()
     if(m_shadLine.log().length())
     {
         strange = QString::asprintf("%s", QString("Line vertex shader log:"+m_shadLine.log()).toStdString().c_str());
-        Trace(strange);
+        trace(strange);
     }
 
     if(!m_bUse120StyleShaders)
@@ -872,7 +872,7 @@ void gl3dView::initializeGL()
         if(m_shadLine.log().length())
         {
             strange = QString::asprintf("%s", QString("Line geometry shader log:"+m_shadLine.log()).toStdString().c_str());
-            Trace(strange);
+            trace(strange);
         }
     }
 
@@ -881,7 +881,7 @@ void gl3dView::initializeGL()
     if(m_shadLine.log().length())
     {
         strange = QString::asprintf("%s", QString("Stipple fragment shader log:"+m_shadLine.log()).toStdString().c_str());
-        Trace(strange);
+        trace(strange);
     }
 
     m_shadLine.link();
@@ -908,10 +908,10 @@ void gl3dView::initializeGL()
     vsrc = m_bUse120StyleShaders ? ":/resources/shaders/surface/surface_VS_120.glsl" : ":/resources/shaders/surface/surface_VS.glsl";
     fsrc = m_bUse120StyleShaders ? ":/resources/shaders/surface/surface_FS_120.glsl" : ":/resources/shaders/surface/surface_FS.glsl";
     m_shadSurf.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
-    if(m_shadSurf.log().length()) Trace("Surface vertex shader log:"+m_shadSurf.log());
+    if(m_shadSurf.log().length()) trace("Surface vertex shader log:"+m_shadSurf.log());
 
     m_shadSurf.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
-    if(m_shadSurf.log().length()) Trace("Surface fragment shader log:"+m_shadSurf.log());
+    if(m_shadSurf.log().length()) trace("Surface fragment shader log:"+m_shadSurf.log());
 
     m_shadSurf.link();
     m_shadSurf.bind();
@@ -947,7 +947,7 @@ void gl3dView::initializeGL()
         if(m_shadPoint.log().length())
         {
             strange = QString::asprintf("%s", QString("Point vertex shader log:"+m_shadPoint.log()).toStdString().c_str());
-            Trace(strange);
+            trace(strange);
         }
 
         gsrc = ":/resources/shaders/point/point_GS.glsl";
@@ -955,7 +955,7 @@ void gl3dView::initializeGL()
         if(m_shadPoint.log().length())
         {
             strange = QString::asprintf("%s", QString("Point geometry shader log:"+m_shadPoint.log()).toStdString().c_str());
-            Trace(strange);
+            trace(strange);
         }
 
         fsrc = ":/resources/shaders/point/point_FS.glsl";
@@ -963,7 +963,7 @@ void gl3dView::initializeGL()
         if(m_shadPoint.log().length())
         {
             strange = QString::asprintf("%s", QString("Point fragment shader log:"+m_shadPoint.log()).toStdString().c_str());
-            Trace(strange);
+            trace(strange);
         }
 
         m_shadPoint.link();
@@ -1252,7 +1252,7 @@ void gl3dView::paintAxes()
         m_shadLine.setUniformValue(m_locLine.m_HasUniColor, 1);
         m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_AxisStyle.m_Color);
         m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_AxisStyle.m_Stipple));
-        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_AxisStyle.m_Width);
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, float(W3dPrefs::s_AxisStyle.m_Width));
         m_shadLine.setUniformValue(m_locLine.m_Viewport, QVector2D(float(m_GLViewRect.width()), float(m_GLViewRect.height())));
         m_vboAxes.bind();
         {
@@ -2167,39 +2167,39 @@ void gl3dView::paintSegments(QOpenGLBuffer &vbo, LineStyle const &ls, bool bHigh
 void gl3dView::paintSegments(QOpenGLBuffer &vbo, QColor const &clr, int thickness, Line::enumLineStipple stip, bool bHigh)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
-
+    int stride = 3;
     m_shadLine.bind();
     {
         vbo.bind();
         {
             m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
-            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, 3*sizeof(GLfloat));
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, stride*sizeof(GLfloat));
 
-            int nSegs = vbo.size()/2/3/int(sizeof(float)); // 2 vertices and (3 position components)
+            int nSegs = vbo.size()/2/stride/int(sizeof(float)); // 2 vertices and (3 position components)
 
             if(bHigh)
             {
                 m_shadLine.setUniformValue(m_locLine.m_UniColor, Qt::red);
 
                 if(m_bUse120StyleShaders)glLineWidth(thickness+2);
-                else m_shadLine.setUniformValue(m_locLine.m_Thickness, thickness+2);
+                else m_shadLine.setUniformValue(m_locLine.m_Thickness, float(thickness)+2.0f);
             }
             else
             {
                 m_shadLine.setUniformValue(m_locLine.m_UniColor, clr);
-            }
-            if(m_bUse120StyleShaders)
-            {
-                glEnable(GL_LINE_STIPPLE);
-                glLineStipple(1, GLStipple(stip));
-                glLineWidth(float(thickness));
-            }
-            else
-            {
-                m_shadLine.setUniformValue(m_locLine.m_Thickness, thickness);
-                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(stip));
-            }
 
+                if(m_bUse120StyleShaders)
+                {
+                    glEnable(GL_LINE_STIPPLE);
+                    glLineStipple(1, GLStipple(stip));
+                    glLineWidth(float(thickness));
+                }
+                else
+                {
+                    m_shadLine.setUniformValue(m_locLine.m_Thickness, thickness);
+                    m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(stip));
+                }
+            }
             glDrawArrays(GL_LINES, 0, nSegs*2);// 4 vertices defined but only 3 are used
             glDisable(GL_LINE_STIPPLE);
         }

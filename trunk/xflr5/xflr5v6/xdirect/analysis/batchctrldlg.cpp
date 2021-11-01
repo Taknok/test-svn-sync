@@ -37,6 +37,7 @@
 #include <xflwidgets/customwts/cptableview.h>
 #include <xflwidgets/customwts/actiondelegate.h>
 #include <xflwidgets/customwts/actionitemmodel.h>
+#include <xflwidgets/customwts/plaintextoutput.h>
 
 double BatchCtrlDlg::s_XHinge     = 0.7;
 double BatchCtrlDlg::s_YHinge     = 0.5;
@@ -135,6 +136,7 @@ void BatchCtrlDlg::setupLayout()
     }
 
     setLayout(pBoxesLayout);
+    m_pteTextOutput->setPlainText("Hell");
 }
 
 
@@ -256,8 +258,7 @@ void BatchCtrlDlg::customEvent(QEvent * pEvent)
 void BatchCtrlDlg::startAnalyses()
 {
     QString strange;
-    int nRe=0;
-
+    int nRe(0);
 
     QVector<Foil*> foils;
     readFoils(foils);

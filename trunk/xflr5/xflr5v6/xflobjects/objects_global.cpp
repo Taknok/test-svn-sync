@@ -879,7 +879,7 @@ bool xfl::serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
 
 
 /**
- * Loads or saves the data of this polar to a binary file
+ * Loads or saves the data of this polar to a legacy binary file
  * @param ar the QDataStream object from/to which the data should be serialized
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise

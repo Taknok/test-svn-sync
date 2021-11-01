@@ -30,8 +30,7 @@ class gl2dView : public QOpenGLWidget
         void mouseMoveEvent(QMouseEvent *pEvent) override;
         void keyPressEvent(QKeyEvent *pEvent) override;
 
-
-        static void setScaleFactor(double f) {s_ScaleFactor=float(f);}
+        void resizeGL(int width, int height)  override;
 
     protected:
 
@@ -39,7 +38,10 @@ class gl2dView : public QOpenGLWidget
         void startDynamicTimer();
         void stopDynamicTimer();
 
-        virtual void setDefaultOffset() = 0;
+        void screenToViewport(QPoint const &point, QVector2D &real) const;
+        void screenToWorld(QPoint const &screenpt, QVector2D &pt);
+
+        virtual QPointF defaultOffset() = 0;
 
     protected slots:
         void onDynamicIncrement();
@@ -55,7 +57,6 @@ class gl2dView : public QOpenGLWidget
         float m_Scale;
         QPointF m_ptOffset;
 
-        QRectF m_rectView;
 
         QElapsedTimer m_MoveTime;
         QTimer m_DynTimer;
@@ -66,10 +67,9 @@ class gl2dView : public QOpenGLWidget
         bool m_bDynScaling;
         float m_ZoomFactor;
 
+        QRectF m_rectView;
+        QRectF m_GLViewRect;    /**< The OpenGl viewport.*/
+
         bool m_bInitialized;
-
-        static float s_ScaleFactor;
-
 };
-
 

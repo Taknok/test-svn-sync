@@ -33,6 +33,7 @@
 #include <xdirect/xdirect.h>
 #include <xflobjects/objects2d/objects2d.h>
 #include <xflwidgets/customwts/cptableview.h>
+#include <xflwidgets/customwts/plaintextoutput.h>
 
 /**
  * The public contructor

@@ -3,8 +3,7 @@
 uniform int maxiters;
 uniform float maxlength;
 
-in float posx;
-in float posy;
+in vec2 pos;
 
 layout(location = 0) out vec4 FragmentColor;
 
@@ -21,8 +20,8 @@ void main(void)
         ptx2 = ptx*ptx;
         pty2 = pty*pty;
         tmpx = ptx;
-        ptx = ptx2 - pty2  + float(posx);
-        pty = 2.0*tmpx*pty + float(posy);
+        ptx = ptx2 - pty2  + float(pos.x);
+        pty = 2.0*tmpx*pty + float(pos.y);
         iter++;
     }
     while(ptx2 + pty2<maxlength*maxlength && iter<maxiters);

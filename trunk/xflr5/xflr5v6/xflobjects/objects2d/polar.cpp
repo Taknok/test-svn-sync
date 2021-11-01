@@ -50,6 +50,8 @@ Polar::Polar()
     m_XTop      = 1.0;
     m_XBot      = 1.0;
     m_FoilName.clear();
+
+    m_FlapAngle = m_XHinge = m_YHinge = 0.0;
 }
 
 
@@ -59,7 +61,7 @@ Polar::Polar()
  * @param FileType TXT if the data is separated by spaces, CSV for a comma separator
  * @param bDataOnly true if the analysis parameters should not be output
  */
-void Polar::exportPolar(QTextStream &out, QString versionName, bool bCSV, bool bDataOnly) const
+void Polar::exportPolar(QTextStream &out, const QString &versionName, bool bCSV, bool bDataOnly) const
 {
     QString Header, strong;
 
@@ -746,11 +748,6 @@ QString Polar::autoPolarName(xfl::enumPolarType polarType, double Re, double Mac
     return polarName;
 }
 
-
-bool Polar::hasOpp(OpPoint const *pOpp) const
-{
-    return (pOpp->foilName()==m_FoilName && pOpp->polarName()==m_Name);
-}
 
 QString Polar::properties() const
 {

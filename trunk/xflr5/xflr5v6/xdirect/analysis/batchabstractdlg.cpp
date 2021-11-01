@@ -51,7 +51,7 @@
 #include <xflwidgets/customwts/cptableview.h>
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/customwts/intedit.h>
-
+#include <xflwidgets/customwts/plaintextoutput.h>
 
 bool BatchAbstractDlg::s_bAlpha    = true;
 bool BatchAbstractDlg::s_bFromZero = true;
@@ -226,7 +226,7 @@ void BatchAbstractDlg::makeCommonWidgets()
     }
 
 
-    m_pteTextOutput = new QPlainTextEdit;
+    m_pteTextOutput = new PlainTextOutput;
     m_pteTextOutput->setReadOnly(true);
     m_pteTextOutput->setLineWrapMode(QPlainTextEdit::NoWrap);
     m_pteTextOutput->setWordWrapMode(QTextOption::NoWrap);
