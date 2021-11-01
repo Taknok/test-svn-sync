@@ -25,7 +25,8 @@ class gl2dFractal : public gl2dView
     public:
         gl2dFractal(QWidget *pParent = nullptr);
 
-        void setDefaultOffset() override {m_ptOffset = QPointF(0.25*width(),0);}
+        QPointF defaultOffset() override {return QPointF(+0.5*float(width()),0.0f);}
+
         void initializeGL() override;
         void paintGL()  override;
 
@@ -55,4 +56,5 @@ class gl2dFractal : public gl2dView
         static float s_MaxLength;
 
 };
+
 

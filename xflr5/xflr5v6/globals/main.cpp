@@ -58,7 +58,7 @@ void customLogHandler(QtMsgType type, const QMessageLogContext& context, const Q
             break;
     }
 
-    if(g_bTrace) Trace(msg);
+    if(g_bTrace) trace(msg);
 }
 
 

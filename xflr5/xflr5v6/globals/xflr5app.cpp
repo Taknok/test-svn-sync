@@ -301,12 +301,12 @@ void XFLR5App::parseCmdLine(XFLR5App &xflapp,
     bScript = parser.isSet(ScriptOption);
     if(bScript)
     {
-        Trace("Processing option -s", true);
+        trace("Processing option -s", true);
     }
 
     if(parser.isSet(TraceOption))
     {
-        Trace("Processing option -t", true);
+        trace("Processing option -t", true);
         g_bTrace=true;
     }
 
@@ -316,7 +316,7 @@ void XFLR5App::parseCmdLine(XFLR5App &xflapp,
         bool bOK=false;
         int version = parser.value(OGLOption).toInt(&bOK);
         if(bOK) OGLVersion = version; else OGLVersion = -1;
-        Trace("Processing option -o", OGLVersion);
+        trace("Processing option -o", OGLVersion);
     }
     else
     {

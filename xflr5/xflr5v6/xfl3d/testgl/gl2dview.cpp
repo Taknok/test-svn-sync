@@ -22,14 +22,13 @@
 #include <xflwidgets/wt_globals.h>
 
 
-float gl2dView::s_ScaleFactor = 0.06f;
 
 gl2dView::gl2dView(QWidget *pParent) : QOpenGLWidget(pParent)
 {
     setFocusPolicy(Qt::WheelFocus);
     setCursor(Qt::CrossCursor);
 
-    m_bInitialized    = false;
+    m_bInitialized = false;
     m_bDynTranslation = false;
     m_bDynScaling     = false;
     connect(&m_DynTimer, SIGNAL(timeout()), SLOT(onDynamicIncrement()));
@@ -63,7 +62,7 @@ void gl2dView::onDynamicIncrement()
             return;
         }
 
-        double scalefactor(1.0-s_ScaleFactor/3.0 * m_ZoomFactor/120);
+        double scalefactor(1.0-DisplayOptions::scaleFactor()/3.0 * m_ZoomFactor/120);
 
         m_Scale *= scalefactor;
         m_ZoomFactor *= (1.0-gl3dView::spinDamping());
@@ -91,6 +90,40 @@ void gl2dView::stopDynamicTimer()
 }
 
 
+/* triangle strip */
+void gl2dView::makeQuad()
+{
+    QVector<GLfloat> QuadVertexArray(12, 0);
+
+    int iv = 0;
+    QuadVertexArray[iv++] = 0.0f;
+    QuadVertexArray[iv++] = 0.0f;
+
+    QuadVertexArray[iv++] = m_rectView.left();
+    QuadVertexArray[iv++] = m_rectView.top();
+
+    QuadVertexArray[iv++] = m_rectView.right();
+    QuadVertexArray[iv++] = m_rectView.top();
+
+    QuadVertexArray[iv++] = m_rectView.right();
+    QuadVertexArray[iv++] = m_rectView.bottom();
+
+    QuadVertexArray[iv++] = m_rectView.left();
+    QuadVertexArray[iv++] = m_rectView.bottom();
+
+    QuadVertexArray[iv++] = m_rectView.left();
+    QuadVertexArray[iv++] = m_rectView.top();
+
+    Q_ASSERT(iv==QuadVertexArray.size());
+
+    m_vboQuad.destroy();
+    m_vboQuad.create();
+    m_vboQuad.bind();
+    m_vboQuad.allocate(QuadVertexArray.data(), QuadVertexArray.size() * sizeof(GLfloat));
+    m_vboQuad.release();
+}
+
+
 void gl2dView::keyPressEvent(QKeyEvent *pEvent)
 {
 //    bool bCtrl = (pEvent->modifiers() & Qt::ControlModifier);
@@ -109,7 +142,7 @@ void gl2dView::keyPressEvent(QKeyEvent *pEvent)
         case Qt::Key_R:
         {
             stopDynamicTimer();
-            setDefaultOffset();
+            m_ptOffset = defaultOffset();
             m_Scale = 1.0f;
             update();
             break;
@@ -123,9 +156,57 @@ void gl2dView::keyPressEvent(QKeyEvent *pEvent)
 void gl2dView::showEvent(QShowEvent *pEvent)
 {
     setFocus();
-    setDefaultOffset();
+    m_ptOffset = defaultOffset();
     QOpenGLWidget::showEvent(pEvent);
 }
+
+
+void gl2dView::wheelEvent(QWheelEvent *pEvent)
+{
+    int dy = pEvent->pixelDelta().y();
+    if(dy==0) dy = pEvent->angleDelta().y(); // pixeldelta usable on macOS and angleDelta on win/linux; depends also on driver and hardware
+
+    if(gl3dView::bSpinAnimation() && abs(dy)>120)
+    {
+        m_bDynScaling = true;
+        m_ZoomFactor = dy;
+
+        startDynamicTimer();
+    }
+    else
+    {
+        float zoomfactor(1.0f);
+        if(pEvent->angleDelta().y()>0) zoomfactor = 1.0/(1.0+DisplayOptions::scaleFactor());
+        else                           zoomfactor = 1.0+DisplayOptions::scaleFactor();
+
+        m_Scale *= zoomfactor;
+
+        int a = rect().center().x();
+        int b = rect().center().y();
+        m_ptOffset.rx() = a + (m_ptOffset.x()-a);
+        m_ptOffset.ry() = b + (m_ptOffset.y()-b);
+        update();
+    }
+
+    pEvent->accept();
+}
+
+
+void gl2dView::resizeGL(int width, int height)
+{
+    QOpenGLWidget::resizeGL(width, height);
+
+//    int side = std::min(width, height);
+//    glViewport((width - side) / 2, (height - side) / 2, side, side);
+
+    double w = double(width);
+    double h = double(height);
+    double s = 1.0;
+
+    if(w>h)	m_GLViewRect.setRect(-s, s*h/w, s, -s*h/w);
+    else    m_GLViewRect.setRect(-s*w/h, s, s*w/h, -s);
+}
+
 
 
 void gl2dView::mouseReleaseEvent(QMouseEvent *pEvent)
@@ -167,8 +248,9 @@ void gl2dView::mouseMoveEvent(QMouseEvent *pEvent)
     if(pEvent->buttons() & Qt::LeftButton)
     {
         //translate the view
-        m_ptOffset.rx() += (point.x() - m_LastPoint.x())/m_Scale;
-        m_ptOffset.ry() += (point.y() - m_LastPoint.y())/m_Scale;
+
+        QPoint delta = point - m_LastPoint;
+        m_ptOffset += delta/m_Scale;
 
         m_LastPoint.rx() = point.x();
         m_LastPoint.ry() = point.y();
@@ -181,69 +263,50 @@ void gl2dView::mouseMoveEvent(QMouseEvent *pEvent)
 }
 
 
-void gl2dView::wheelEvent(QWheelEvent *pEvent)
+void gl2dView::screenToViewport(QPoint const &point, QVector2D &real) const
 {
-    int dy = pEvent->pixelDelta().y();
-    if(dy==0) dy = pEvent->angleDelta().y(); // pixeldelta usable on macOS and angleDelta on win/linux; depends also on driver and hardware
+    double h2 = double(geometry().height()) /2.0;
+    double w2 = double(geometry().width())  /2.0;
 
-    if(gl3dView::bSpinAnimation() && abs(dy)>120)
+    real.setX( (double(point.x()) - w2) / w2);
+    real.setY(-(double(point.y()) - h2) / w2);
+}
+
+
+void gl2dView::screenToWorld(QPoint const &screenpt, QVector2D &pt)
+{
+    QMatrix4x4 m_matView, m;
+    QVector4D in, out;
+    QVector2D real;
+    double w = m_rectView.width();
+    QVector2D off((-m_ptOffset.x())/width()*w, m_ptOffset.y()/width()*w);
+
+    screenToViewport(screenpt, real);
+    in.setX(float(real.x()));
+    in.setY(float(real.y()));
+    in.setZ(0.0f);
+    in.setW(1.0f);
+
+    m_matView.scale(m_Scale, m_Scale, m_Scale);
+    m_matView.translate(-off.x(), -off.y(), 0.0f);
+
+    bool bInverted=false;
+    QMatrix4x4 vmMatrix = m_matView;
+    m = vmMatrix.inverted(&bInverted);
+    out = m * in;
+
+    if(fabs(double(out[3]))>PRECISION)
     {
-        m_bDynScaling = true;
-        m_ZoomFactor = dy;
-
-        startDynamicTimer();
+        pt.setX(double(out[0]/out[3]));
+        pt.setY(double(out[1]/out[3]));
     }
     else
     {
-        float zoomfactor(1.0f);
-        if(pEvent->angleDelta().y()>0) zoomfactor = 1.0/(1.0+s_ScaleFactor);
-        else                           zoomfactor = 1.0+s_ScaleFactor;
-
-        m_Scale *= zoomfactor;
-
-        int a = rect().center().x();
-        int b = rect().center().y();
-        m_ptOffset.rx() = a + (m_ptOffset.x()-a);
-        m_ptOffset.ry() = b + (m_ptOffset.y()-b);
-        update();
+        pt.setX(double(out[0]));
+        pt.setY(double(out[0]));
     }
-
-    pEvent->accept();
 }
 
-
-/* triangle strip */
-void gl2dView::makeQuad()
-{
-    QVector<GLfloat> QuadVertexArray(12, 0);
-
-    int iv = 0;
-    QuadVertexArray[iv++] = 0.0f;
-    QuadVertexArray[iv++] = 0.0f;
-
-    QuadVertexArray[iv++] = m_rectView.left();
-    QuadVertexArray[iv++] = m_rectView.top();
-
-    QuadVertexArray[iv++] = m_rectView.right();
-    QuadVertexArray[iv++] = m_rectView.top();
-
-    QuadVertexArray[iv++] = m_rectView.right();
-    QuadVertexArray[iv++] = m_rectView.bottom();
-
-    QuadVertexArray[iv++] = m_rectView.left();
-    QuadVertexArray[iv++] = m_rectView.bottom();
-
-    QuadVertexArray[iv++] = m_rectView.left();
-    QuadVertexArray[iv++] = m_rectView.top();
-
-    Q_ASSERT(iv==QuadVertexArray.size());
-
-    m_vboQuad.destroy();
-    m_vboQuad.create();
-    m_vboQuad.bind();
-    m_vboQuad.allocate(QuadVertexArray.data(), QuadVertexArray.size() * sizeof(GLfloat));
-    m_vboQuad.release();
-}
 
 
 

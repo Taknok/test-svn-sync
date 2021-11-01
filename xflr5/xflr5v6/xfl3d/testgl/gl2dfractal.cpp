@@ -19,7 +19,7 @@
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/wt_globals.h>
 
-int gl2dFractal::s_MaxIter = 32;
+int gl2dFractal::s_MaxIter = 64;
 float gl2dFractal::s_MaxLength = 10;
 
 
@@ -27,7 +27,9 @@ gl2dFractal::gl2dFractal(QWidget *pParent) : gl2dView(pParent)
 {
     setWindowTitle("Mandelbrot");
 
-    m_rectView = QRectF(-2.5, -1.0, 3.5, 2.0);
+//    m_rectView = QRectF(-2.5, -1.0, 3.5, 2.0);
+    m_rectView = QRectF(-1.0, -1.0, 2.0, 2.0);
+    m_Scale = 0.5f;
 
     m_locIters = m_locLength = -1;
     m_locViewTrans = -1;
@@ -111,7 +113,7 @@ void gl2dFractal::initializeGL()
     if(m_shadFrac.log().length())
     {
         strange = QString::asprintf("%s", QString("Frac vertex shader log:"+m_shadFrac.log()).toStdString().c_str());
-        Trace(strange);
+        trace(strange);
     }
 
     fsrc = ":/resources/shaders/fractal/fractal_FS.glsl";
@@ -119,7 +121,7 @@ void gl2dFractal::initializeGL()
     if(m_shadFrac.log().length())
     {
         strange = QString::asprintf("%s", QString("Frac fragment shader log:"+m_shadFrac.log()).toStdString().c_str());
-        Trace(strange);
+        trace(strange);
     }
 
     m_shadFrac.link();
@@ -133,7 +135,7 @@ void gl2dFractal::initializeGL()
         m_locViewScale = m_shadFrac.uniformLocation("ViewScale");
         m_locViewRatio = m_shadFrac.uniformLocation("ViewRatio");
     }
-    m_shadFrac.release();    
+    m_shadFrac.release();
 
     makeQuad();
 }

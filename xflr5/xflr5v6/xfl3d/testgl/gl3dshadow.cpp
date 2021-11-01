@@ -191,14 +191,14 @@ void gl3dShadow::initializeGL()
     if(m_shadDepth.log().length())
     {
         QString strange = QString::asprintf("%s", QString("Depth vertex shader log:"+m_shadDepth.log()).toStdString().c_str());
-        Trace(strange);
+        trace(strange);
     }
 
     m_shadDepth.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
     if(m_shadDepth.log().length())
     {
         QString strange = QString::asprintf("%s", QString("Depth fragment shader log:"+m_shadDepth.log()).toStdString().c_str());
-        Trace(strange);
+        trace(strange);
     }
 
     m_shadDepth.link();

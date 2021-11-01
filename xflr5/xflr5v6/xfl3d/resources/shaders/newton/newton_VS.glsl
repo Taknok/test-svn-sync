@@ -11,7 +11,7 @@ out vec2 pos;
 
 void main(void)
 {
-    pos.x = (VertexPosition.x/ViewScale*ViewRatio + ViewTrans.x);
-    pos.y = (VertexPosition.y/ViewScale           + ViewTrans.y);
+    pos.x = (VertexPosition.x/ViewScale             + ViewTrans.x);
+    pos.y = (VertexPosition.y/ViewScale/ViewRatio   + ViewTrans.y);
     gl_Position = vec4(VertexPosition.x, VertexPosition.y, 0.0f, 1.0f);
 }

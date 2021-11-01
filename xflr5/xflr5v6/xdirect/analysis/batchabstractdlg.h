@@ -49,6 +49,7 @@ class XDirect;
 class CPTableView;
 class ActionDelegate;
 class ActionItemModel;
+class PlainTextOutput;
 
 /**
  * @brief Abstract base class for BatchThreadDlg and BacthCtrlDlg
@@ -127,7 +128,7 @@ class BatchAbstractDlg : public QDialog
 
         QDialogButtonBox *m_pButtonBox;
         QPushButton *m_ppbAnalyze, *m_ppbAdvancedSettings;
-        QPlainTextEdit *m_pteTextOutput;
+        PlainTextOutput *m_pteTextOutput;
 
         QSplitter *m_pVSplitter;
 

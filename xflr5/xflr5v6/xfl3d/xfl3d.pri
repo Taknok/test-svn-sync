@@ -1,6 +1,7 @@
 
 
 HEADERS += \
+    $$PWD/views/shadloc.h \
     xfl3d/controls/arcball.h \
     xfl3d/controls/gllightdlg.h \
     xfl3d/controls/light.h \
