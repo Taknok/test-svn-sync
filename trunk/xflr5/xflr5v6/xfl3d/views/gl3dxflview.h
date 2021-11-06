@@ -90,7 +90,6 @@ class gl3dXflView : public gl3dView
         QOpenGLBuffer m_vboEditWingMesh[MAXWINGS];
         QOpenGLBuffer m_vboEditBodyMesh;
         QOpenGLBuffer m_vboHighlight;
-        QOpenGLBuffer m_vboNormals;
 
         QOpenGLBuffer m_vboBody;
         QOpenGLBuffer m_vboFuseLeft, m_vboFuseRight, m_vboFuseOutline;

@@ -1,5 +1,4 @@
 HEADERS += \
-    $$PWD/customwts/ctrltablemodel.h \
     xflwidgets/color/colorbtn.h \
     xflwidgets/color/colorgraddlg.h \
     xflwidgets/color/colormenubtn.h \
@@ -22,6 +21,7 @@ HEADERS += \
     xflwidgets/customwts/cptableview.h \
     xflwidgets/customwts/crosscheckbox.h \
     xflwidgets/customwts/ctrltabledelegate.h \
+    xflwidgets/customwts/ctrltablemodel.h \
     xflwidgets/customwts/curveactiondelegate.h \
     xflwidgets/customwts/doubleedit.h \
     xflwidgets/customwts/exponentialslider.h \

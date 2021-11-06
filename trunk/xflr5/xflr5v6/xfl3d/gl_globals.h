@@ -25,6 +25,7 @@
 class Segment3d;
 class Triangle3d;
 class Vector3d;
+class Panel;
 
 void getMemoryStatus(int &total_mem_kb, int &cur_avail_mem_kb);
 
@@ -55,6 +56,9 @@ void makeQuadContour(double threshold, int nrows,
 
 void lookUpQuadKey(int key, int *i);
 void glMakeQuadTex(double side, QOpenGLBuffer &vbo);
+
+void glMakePanelNormals(QVector<Panel> const &panel, float length, QOpenGLBuffer &vbo);
+
 
 /* external temp variables for multithreading  */
 extern double t_lmin, t_range;

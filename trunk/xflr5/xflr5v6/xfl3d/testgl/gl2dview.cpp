@@ -248,9 +248,8 @@ void gl2dView::mouseMoveEvent(QMouseEvent *pEvent)
     if(pEvent->buttons() & Qt::LeftButton)
     {
         //translate the view
-
-        QPoint delta = point - m_LastPoint;
-        m_ptOffset += delta/m_Scale;
+        m_ptOffset.rx() += (point.x() - m_LastPoint.x())/m_Scale;
+        m_ptOffset.ry() += (point.y() - m_LastPoint.y())/m_Scale;
 
         m_LastPoint.rx() = point.x();
         m_LastPoint.ry() = point.y();
