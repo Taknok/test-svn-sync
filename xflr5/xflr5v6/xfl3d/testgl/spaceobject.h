@@ -62,6 +62,7 @@ class Planet
         double m_mass;    // mass
         double m_Radius; // planet radius used for display - meters
 
+        float m_Tau;    // utility variable to store a color in the [0,1] range
         QColor m_Color;
         QString m_Name;
 
@@ -79,6 +80,7 @@ class Planet
 
         static double s_CentralMass;
 };
+
 
 
 /** Describes a star or a galaxy */

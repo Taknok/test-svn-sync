@@ -29,6 +29,7 @@
 #include <xflgeom/geom3d/vector3d.h>
 #include <xflgeom/geom3d/segment3d.h>
 #include <xflgeom/geom3d/triangle3d.h>
+#include <xflobjects/objects3d/panel.h>
 
 #define PIf    3.141592654f
 #define NPOINTS 300
@@ -1210,3 +1211,39 @@ void glMakeDisk(double radius, Vector3d const &O, QOpenGLBuffer &vbo)
     vbo.release();
 }
 
+
+void glMakePanelNormals(QVector<Panel> const &panel, float length, QOpenGLBuffer &vbo)
+{
+    // vertices array size:
+    //		n  Panels
+    //      x2 nodes per normal
+    //		x3 = 3 vertex components
+    int buffersize = panel.count() * 2 * 3;
+    QVector<float>NormalVertexArray(buffersize);
+
+    int iv = 0;
+    int vec=0;
+    for (int i=0; i<panel.count(); i++)
+    {
+        Panel const & p4 = panel.at(i);
+
+        Vector3d pt = p4.CollPt;
+
+        NormalVertexArray[iv++] = pt.xf();
+        NormalVertexArray[iv++] = pt.yf();
+        NormalVertexArray[iv++] = pt.zf();
+
+        NormalVertexArray[iv++] = pt.xf() + p4.normal().xf() * length;
+        NormalVertexArray[iv++] = pt.yf() + p4.normal().yf() * length;
+        NormalVertexArray[iv++] = pt.zf() + p4.normal().zf() * length;
+        vec++;
+    }
+
+    Q_ASSERT(iv==buffersize);
+
+    vbo.destroy();
+    vbo.create();
+    vbo.bind();
+    vbo.allocate(NormalVertexArray.data(), NormalVertexArray.size() * int(sizeof(GLfloat)));
+    vbo.release();
+}
