@@ -2349,6 +2349,8 @@ void gl3dView::paintColourSegments(QOpenGLBuffer &vbo, LineStyle const &ls)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
+    int stride = 7; //  3 coords + 4 color components
+
     m_shadLine.bind();
     {
         m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
@@ -2360,11 +2362,11 @@ void gl3dView::paintColourSegments(QOpenGLBuffer &vbo, LineStyle const &ls)
 
         vbo.bind();
         {
-            // 2 vertices x (3 coords + 4 color components)
-            int nSegs = vbo.size() /2 /7 /int(sizeof(float));
+            // 2 vertices x stride
+            int nSegs = vbo.size() /2 /stride /int(sizeof(float));
 
-            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex,    GL_FLOAT, 0,                  3, 7 * sizeof(GLfloat));
-            m_shadLine.setAttributeBuffer(m_locLine.m_attrColor, GL_FLOAT, 3* sizeof(GLfloat), 4, 7 * sizeof(GLfloat));
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0,                  3, stride * sizeof(GLfloat));
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrColor,  GL_FLOAT, 3* sizeof(GLfloat), 4, stride * sizeof(GLfloat));
 
             glDrawArrays(GL_LINES, 0, nSegs*2);
             vbo.release();
