@@ -35,6 +35,7 @@
 #include <xflobjects/objects2d/objects2d.h>
 #include <xdirect/xdirect.h>
 #include <xflcore/gui_params.h>
+#include <xflcore/xflcore.h>
 #include <xflgraph/containers/graphwt.h>
 #include <xflgraph/curve.h>
 #include <xflgraph/graph.h>
@@ -312,7 +313,7 @@ void XFoilAnalysisDlg::setFileHeader()
     QTextStream out(m_pXFile);
 
     out << "\n";
-    out << VERSIONNAME;
+    out << xfl::versionName();
     out << "\n";
     out << XDirect::curFoil()->name();
     out << "\n";

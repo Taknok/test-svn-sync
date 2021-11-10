@@ -33,15 +33,16 @@
 
 #include "lltanalysisdlg.h"
 #include <miarex/miarex.h>
-#include <xflobjects/objects3d/objects3d.h>
 #include <misc/options/settingswt.h>
 #include <xflanalysis/plane_analysis/lltanalysis.h>
 #include <xflanalysis/plane_analysis/planetask.h>
 #include <xflanalysis/plane_analysis/planetaskevent.h>
 #include <xflcore/gui_params.h>
+#include <xflcore/xflcore.h>
 #include <xflgraph/containers/graphwt.h>
 #include <xflgraph/curve.h>
 #include <xflgraph/graph.h>
+#include <xflobjects/objects3d/objects3d.h>
 #include <xflobjects/objects3d/wing.h>
 #include <xflobjects/objects3d/wpolar.h>
 
@@ -288,7 +289,7 @@ void LLTAnalysisDlg::onTaskFinished()
     {
         QTextStream outstream(pXFile);
         outstream << "\n";
-        outstream << VERSIONNAME;
+        outstream << xfl::versionName();
         outstream << "\n";
         QDateTime dt = QDateTime::currentDateTime();
         QString str = dt.toString("dd.MM.yyyy  hh:mm:ss");

@@ -37,13 +37,14 @@
 #include "xflr5app.h"
 #include <globals/mainframe.h>
 #include <xflcore/trace.h>
+#include <xflcore/xflcore.h>
 
 
 
 XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
 {
-    setApplicationDisplayName(VERSIONNAME);
-    setApplicationName(VERSIONNAME);
+    setApplicationDisplayName(xfl::versionName());
+    setApplicationName(xfl::versionName());
 //    setDesktopFileName(VERSIONNAME);
     setOrganizationName("Cere-Aero");
     setOrganizationDomain("cere-aero.tech");

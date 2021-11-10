@@ -1903,7 +1903,7 @@ void XDirect::onExportBLData()
 
     QTextStream out(&destFile);
 
-    out << VERSIONNAME;
+    out << xfl::versionName();
     out << ("\n");
     strong = Objects2d::curFoil()->name()+ "\n";
     out << (strong);
@@ -2057,7 +2057,7 @@ void XDirect::onExportAllPolarsTxt(QString DirName, xfl::enumTextFileType export
         XFile.setFileName(FileName);
         if (XFile.open(QIODevice::WriteOnly | QIODevice::Text))
         {
-            pPolar->exportPolar(out, VERSIONNAME, exporttype);
+            pPolar->exportPolar(out, xfl::versionName(), exporttype);
             XFile.close();
         }
         else
@@ -2210,7 +2210,7 @@ void XDirect::onExportCurOpp()
 
     QTextStream out(&XFile);
 
-    Objects2d::curOpp()->exportOpp(out, VERSIONNAME, Settings::s_ExportFileType, Objects2d::curFoil());
+    Objects2d::curOpp()->exportOpp(out, xfl::versionName(), Settings::s_ExportFileType, Objects2d::curFoil());
     XFile.close();
 }
 
@@ -2255,7 +2255,7 @@ void XDirect::onExportPolarOpps()
 
 
     QString Header, strong;
-    out<<VERSIONNAME;
+    out<<xfl::versionName();
     out<<"\n\n";
     strong = Objects2d::curFoil()->name() + "\n";
     out << strong;
@@ -2363,7 +2363,7 @@ void XDirect::onExportCurPolar()
 
     QTextStream out(&XFile);
 
-    Objects2d::curPolar()->exportPolar(out, VERSIONNAME, Settings::s_ExportFileType);
+    Objects2d::curPolar()->exportPolar(out, xfl::versionName(), Settings::s_ExportFileType);
     XFile.close();
 }
 

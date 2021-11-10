@@ -116,15 +116,15 @@ void BatchCtrlDlg::setupLayout()
 
         pLeftSideLayout->addWidget(m_pVSplitter);
         pLeftSideLayout->addWidget(pFlapBox);
-        pLeftSideLayout->addWidget(m_pTransVarsGroupBox);
-        pLeftSideLayout->addWidget(m_pRangeVarsGroupBox);
+        pLeftSideLayout->addWidget(m_pgbTransVars);
+        pLeftSideLayout->addWidget(m_pgbRangeVars);
         pLeftSideLayout->addWidget(m_pButtonBox);
     }
 
     QVBoxLayout *pRightSideLayout = new QVBoxLayout;
     {
         pRightSideLayout->addWidget(m_pchInitBL);
-        pRightSideLayout->addWidget(m_pOptionsFrame);
+        pRightSideLayout->addWidget(m_pfrOptions);
         pRightSideLayout->addWidget(m_pteTextOutput);
     }
 

@@ -145,7 +145,7 @@ bool MainFrame::s_bOpenGL = true;
 MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(parent, flags)
 {
     setAttribute(Qt::WA_DeleteOnClose);
-    setWindowTitle(VERSIONNAME);
+    setWindowTitle(xfl::versionName());
     setWindowIcon(QIcon(":/images/xflr5_64.png"));
 
 //    testConfiguration();
@@ -882,7 +882,7 @@ void MainFrame::createDockWindows()
     m_pMiarexTileWidget  = new MiarexTileWidget(this);
 
     m_pXDirect = new XDirect(this);
-    m_pXDirect->setObjectName("XDirect ???");
+    m_pXDirect->setObjectName("XDirect");
     m_pdwXDirect->setWidget(m_pXDirect);
     m_pdwXDirect->setVisible(false);
     m_pdwXDirect->setFloating(false);

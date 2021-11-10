@@ -2,10 +2,10 @@
 
 #pragma once
 
-#define VERSIONNAME     "xflr5 v6.51"
+//#define VERSIONNAME     "xflr5 v6.52"
 
 #define MAJOR_VERSION    6
-#define MINOR_VERSION    51
+#define MINOR_VERSION    52
 
 
 //General

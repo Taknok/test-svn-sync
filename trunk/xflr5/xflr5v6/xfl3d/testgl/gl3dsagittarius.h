@@ -1,15 +1,15 @@
 /****************************************************************************
 
-    xflr5v6 application
+    xflr5 v6
     Copyright (C) Andre Deperrois 
-    All rights reserved.
+    GNU General Public License v3
 
 *****************************************************************************/
 
 #pragma once
 
-#include <QComboBox>
 #include <QDate>
+#include <QComboBox>
 #include <QLabel>
 #include <QCheckBox>
 
@@ -44,7 +44,6 @@ class gl3dSagittarius : public gl3dTestGLView
 
         void glRenderView() override;
         void glMake3dObjects() override;
-
         void makeStars();
         Planet const &selectedStar() const;
 
@@ -52,9 +51,6 @@ class gl3dSagittarius : public gl3dTestGLView
 
         QDate m_Started, m_Current;
         bool m_bResetStars;
-        bool m_bResetTrail;
-
-        int m_iLead;
 
         QVector<Planet> m_Star;
 
@@ -66,7 +62,6 @@ class gl3dSagittarius : public gl3dTestGLView
 
         QLabel *m_plabInfo;
         QCheckBox *m_pchMultiThread;
-        QCheckBox *m_pchEllipse;
         QComboBox *m_pcbStar;
 
         GraphWt *m_pGraphDistWt;
@@ -75,21 +70,16 @@ class gl3dSagittarius : public gl3dTestGLView
         GraphWt *m_pGraphVelWt;
         Graph m_GraphVel;
 
-        QVector<QOpenGLBuffer> m_vboStar;
         QVector<QOpenGLBuffer> m_vboEllipse;
         QOpenGLBuffer m_vboEllipseFan;
+        QOpenGLBuffer m_vboTrail;
 
-        QVector<QOpenGLBuffer> m_vboTrace;
-        QVector<QVector<Vector3d>> m_Trace;
+        Light m_RefLight;
 
         static bool s_bMultithread;
         static int s_nStepsPerDay;
         static double s_dt;
-        static int s_TailSize;
 };
-
-
-
 
 
 

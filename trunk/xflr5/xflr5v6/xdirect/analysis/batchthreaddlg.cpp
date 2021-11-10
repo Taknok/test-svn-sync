@@ -73,15 +73,16 @@ void BatchThreadDlg::setupLayout()
     QVBoxLayout *pLeftSide = new QVBoxLayout;
     {
         pLeftSide->addWidget(m_pVSplitter);
-        pLeftSide->addWidget(m_pTransVarsGroupBox);
-        pLeftSide->addWidget(m_pRangeVarsGroupBox);
+        pLeftSide->addWidget(m_pgbPolarType);
+        pLeftSide->addWidget(m_pgbTransVars);
+        pLeftSide->addWidget(m_pgbRangeVars);
         pLeftSide->addWidget(m_pButtonBox);
     }
 
     QVBoxLayout *pRightSideLayout = new QVBoxLayout;
     {
-        pRightSideLayout->addWidget(m_pchInitBL);
-        pRightSideLayout->addWidget(m_pOptionsFrame);
+//        pRightSideLayout->addWidget(m_pchInitBL);
+        pRightSideLayout->addWidget(m_pfrOptions);
         pRightSideLayout->addWidget(m_pteTextOutput);
     }
 
@@ -139,7 +140,6 @@ void BatchThreadDlg::onAnalyze()
 void BatchThreadDlg::startAnalysis()
 {
     QString strong;
-    int nRe=0;
 
     QVector<Foil*> foils;
     readFoils(foils);
@@ -154,7 +154,7 @@ void BatchThreadDlg::startAnalysis()
 
     m_ppbAnalyze->setText(tr("Cancel"));
 
-    nRe = s_ReList.count();
+    int nRe = s_ReList.count();
 
     //    QThreadPool::globalInstance()->setExpiryTimeout(60000);//ms
 
@@ -175,7 +175,7 @@ void BatchThreadDlg::startAnalysis()
                 m_AnalysisPair.append(pAnalysis);
                 pAnalysis->pFoil = pFoil;
 
-                pAnalysis->pPolar = Objects2d::createPolar(pFoil, xfl::FIXEDSPEEDPOLAR,
+                pAnalysis->pPolar = Objects2d::createPolar(pFoil, s_PolarType,
                                                            s_ReList.at(iRe), s_MachList.at(iRe), s_NCritList.at(iRe),
                                                            s_XTop, s_XBot);
 
@@ -321,7 +321,8 @@ void BatchThreadDlg::customEvent(QEvent * pEvent)
     else if(pEvent->type() == XFOIL_END_OPP_EVENT)
     {
         XFoilOppEvent *pOppEvent = dynamic_cast<XFoilOppEvent*>(pEvent);
-        delete pOppEvent->theOpPoint();
+        if(OpPoint::bStoreOpp())  Objects2d::insertOpPoint(pOppEvent->theOpPoint());
+        else                      delete pOppEvent->theOpPoint();
     }
 }
 

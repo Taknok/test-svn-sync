@@ -160,7 +160,50 @@ void BatchAbstractDlg::makeCommonWidgets()
         m_pVSplitter->addWidget(m_pcptReTable);
     }
 
-    m_pRangeVarsGroupBox = new QGroupBox(tr("Analysis Range"));
+    m_pgbPolarType = new QGroupBox(tr("Polar type"));
+    {
+        QHBoxLayout *pPolarTypeLayout =new QHBoxLayout;
+        {
+            m_prbT1 = new QRadioButton("T1");
+            m_prbT1->setToolTip("Fixed speed polar");
+            m_prbT2 = new QRadioButton("T2");
+            m_prbT2->setToolTip("Fixed lift polar");
+            m_prbT3 = new QRadioButton("T3");
+            m_prbT3->setToolTip("Rubber chord polar");
+            pPolarTypeLayout->addStretch();
+            pPolarTypeLayout->addWidget(m_prbT1);
+            pPolarTypeLayout->addStretch();
+            pPolarTypeLayout->addWidget(m_prbT2);
+            pPolarTypeLayout->addStretch();
+            pPolarTypeLayout->addWidget(m_prbT3);
+            pPolarTypeLayout->addStretch();
+        }
+        m_pgbPolarType->setLayout(pPolarTypeLayout);
+    }
+
+    m_pgbTransVars = new QGroupBox(tr("Forced Transitions"));
+    {
+        QGridLayout *pTransVars = new QGridLayout;
+        {
+            pTransVars->setColumnStretch(0,4);
+            pTransVars->setColumnStretch(1,1);
+            QLabel *TopTransLabel = new QLabel(tr("Top transition location (x/c)"));
+            QLabel *BotTransLabel = new QLabel(tr("Bottom transition location (x/c)"));
+            TopTransLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+            BotTransLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+            m_pdeXTopTr = new DoubleEdit(1.00);
+            m_pdeXBotTr = new DoubleEdit(1.00);
+
+            pTransVars->addWidget(TopTransLabel, 2, 1);
+            pTransVars->addWidget(m_pdeXTopTr, 2, 2);
+            pTransVars->addWidget(BotTransLabel, 3, 1);
+            pTransVars->addWidget(m_pdeXBotTr, 3, 2);
+        }
+        m_pgbTransVars->setLayout(pTransVars);
+    }
+
+
+    m_pgbRangeVars = new QGroupBox(tr("Analysis Range"));
     {
         QHBoxLayout *pRangeSpecLayout = new QHBoxLayout;
         {
@@ -200,31 +243,9 @@ void BatchAbstractDlg::makeCommonWidgets()
         {
             pRangeVarsGroupLayout->addLayout(pRangeSpecLayout);
             pRangeVarsGroupLayout->addLayout(pRangeVarsLayout);
-            m_pRangeVarsGroupBox->setLayout(pRangeVarsGroupLayout);
+            m_pgbRangeVars->setLayout(pRangeVarsGroupLayout);
         }
     }
-
-    m_pTransVarsGroupBox = new QGroupBox(tr("Forced Transitions"));
-    {
-        QGridLayout *pTransVars = new QGridLayout;
-        {
-            pTransVars->setColumnStretch(0,4);
-            pTransVars->setColumnStretch(1,1);
-            QLabel *TopTransLabel = new QLabel(tr("Top transition location (x/c)"));
-            QLabel *BotTransLabel = new QLabel(tr("Bottom transition location (x/c)"));
-            TopTransLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
-            BotTransLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
-            m_pdeXTopTr = new DoubleEdit(1.00);
-            m_pdeXBotTr = new DoubleEdit(1.00);
-
-            pTransVars->addWidget(TopTransLabel, 2, 1);
-            pTransVars->addWidget(m_pdeXTopTr, 2, 2);
-            pTransVars->addWidget(BotTransLabel, 3, 1);
-            pTransVars->addWidget(m_pdeXBotTr, 3, 2);
-        }
-        m_pTransVarsGroupBox->setLayout(pTransVars);
-    }
-
 
     m_pteTextOutput = new PlainTextOutput;
     m_pteTextOutput->setReadOnly(true);
@@ -235,13 +256,12 @@ void BatchAbstractDlg::makeCommonWidgets()
     QFontMetrics fm(DisplayOptions::tableFont());
     m_pteTextOutput->setMinimumWidth(67*fm.averageCharWidth());
 
-    m_pchInitBL          = new QCheckBox(tr("Initialize BLs between polars"));
-
-
-    m_pOptionsFrame = new QFrame;
+    m_pfrOptions = new QFrame;
     {
-        QHBoxLayout *pOptionsLayout = new QHBoxLayout;
+        QGridLayout *pOptionsLayout = new QGridLayout;
         {
+            m_pchInitBL          = new QCheckBox(tr("Initialize BLs between polars"));
+            m_pchStoreOpp        = new QCheckBox(tr("Store operating points"));
             QLabel *pLab1 = new QLabel(tr("Max. Threads to use for the analysis:"));
             int maxThreads = QThread::idealThreadCount();
             m_pieMaxThreads = new IntEdit(std::min(s_nThreads, maxThreads));
@@ -250,13 +270,15 @@ void BatchAbstractDlg::makeCommonWidgets()
             m_pchUpdatePolarView = new QCheckBox(tr("Update polar view"));
             m_pchUpdatePolarView->setToolTip(tr("Update the polar graphs after the completion of each foil/polar pair.\nUncheck for increased analysis speed."));
 
-            pOptionsLayout->addWidget(pLab1);
-            pOptionsLayout->addWidget(m_pieMaxThreads);
-            pOptionsLayout->addWidget(pLab2);
-            pOptionsLayout->addStretch();
-            pOptionsLayout->addWidget(m_pchUpdatePolarView);
+            pOptionsLayout->addWidget(m_pchInitBL,          1, 1);
+            pOptionsLayout->addWidget(m_pchStoreOpp,        2, 1);
+            pOptionsLayout->addWidget(m_pchUpdatePolarView, 3, 1);
+            pOptionsLayout->addWidget(pLab1,                4, 1);
+            pOptionsLayout->addWidget(m_pieMaxThreads,      4, 2);
+            pOptionsLayout->addWidget(pLab2,                4, 3);
+            pOptionsLayout->setColumnStretch(4,1);
         }
-        m_pOptionsFrame->setLayout(pOptionsLayout);
+        m_pfrOptions->setLayout(pOptionsLayout);
     }
 
     m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Close, this);
@@ -383,11 +405,18 @@ void BatchAbstractDlg::initDialog()
     m_pteTextOutput->clear();
     m_pteTextOutput->setFont(DisplayOptions::tableFont());
 
-    s_PolarType = xfl::FIXEDSPEEDPOLAR; //no choice...
+//    s_PolarType = xfl::FIXEDSPEEDPOLAR; //no choice...
+    switch (s_PolarType)
+    {
+        default:
+        case xfl::FIXEDSPEEDPOLAR:    m_prbT1->setChecked(true);   break;
+        case xfl::FIXEDLIFTPOLAR:     m_prbT2->setChecked(true);   break;
+        case xfl::RUBBERCHORDPOLAR:   m_prbT3->setChecked(true);   break;
+    }
 
-    m_pdeSpecMin->setDigits(3);
+/*    m_pdeSpecMin->setDigits(3);
     m_pdeSpecMax->setDigits(3);
-    m_pdeSpecDelta->setDigits(3);
+    m_pdeSpecDelta->setDigits(3); */
 
     m_pdeSpecMin->setValue(s_AlphaMin);
     m_pdeSpecMax->setValue(s_AlphaMax);
@@ -403,6 +432,7 @@ void BatchAbstractDlg::initDialog()
     m_pchFromZero->setChecked(s_bFromZero);
 
     m_pchInitBL->setChecked(true);
+    m_pchStoreOpp->setChecked(OpPoint::bStoreOpp());
     m_pchUpdatePolarView->setChecked(s_bUpdatePolarView);
 
     fillReModel();
@@ -502,23 +532,26 @@ void BatchAbstractDlg::onInitBL(int)
  */
 void BatchAbstractDlg::readParams()
 {
-   s_bAlpha = m_prbAlpha->isChecked();
+    s_bAlpha = m_prbAlpha->isChecked();
 
-    if(s_PolarType!=xfl::FIXEDAOAPOLAR)
+    if     (m_prbT2->isChecked()) s_PolarType = xfl::FIXEDLIFTPOLAR;
+    else if(m_prbT3->isChecked()) s_PolarType = xfl::RUBBERCHORDPOLAR;
+    else                          s_PolarType = xfl::FIXEDSPEEDPOLAR;
+
+
+    if(s_bAlpha)
     {
-        if(s_bAlpha)
-        {
-            s_AlphaInc = qAbs(m_pdeSpecDelta->value());
-            s_AlphaMax = m_pdeSpecMax->value();
-            s_AlphaMin = m_pdeSpecMin->value();
-        }
-        else
-        {
-            s_ClInc = qAbs(m_pdeSpecDelta->value());
-            s_ClMin = m_pdeSpecMin->value();
-            s_ClMax = m_pdeSpecMax->value();
-        }
+        s_AlphaInc = qAbs(m_pdeSpecDelta->value());
+        s_AlphaMax = m_pdeSpecMax->value();
+        s_AlphaMin = m_pdeSpecMin->value();
     }
+    else
+    {
+        s_ClInc = qAbs(m_pdeSpecDelta->value());
+        s_ClMin = m_pdeSpecMin->value();
+        s_ClMax = m_pdeSpecMax->value();
+    }
+
 
     s_XTop   = m_pdeXTopTr->value();
     s_XBot   = m_pdeXBotTr->value();
@@ -529,6 +562,7 @@ void BatchAbstractDlg::readParams()
 
     s_bInitBL = m_pchInitBL->isChecked();
     s_bFromZero = m_pchFromZero->isChecked();
+    OpPoint::setStoreOpp(m_pchStoreOpp->isChecked());
 }
 
 
@@ -541,7 +575,7 @@ void BatchAbstractDlg::setFileHeader()
     QTextStream out(m_pXFile);
 
     out << "\n";
-    out << VERSIONNAME;
+    out << xfl::versionName();
     out << "\n";
 
     QDateTime dt = QDateTime::currentDateTime();
@@ -549,17 +583,6 @@ void BatchAbstractDlg::setFileHeader()
 
     out << str;
     out << "\n___________________________________\n\n";
-}
-
-
-/**
- * Creates the polar name for the input Polar
- * @param pNewPolar a pointer to the Polar object to name
- */
-void BatchAbstractDlg::setPlrName(Polar *pNewPolar)
-{
-    if(!pNewPolar) return;
-    pNewPolar->setAutoPolarName();
 }
 
 
@@ -595,7 +618,7 @@ void BatchAbstractDlg::outputReList()
 }
 
 
-void BatchAbstractDlg::resizeEvent(QResizeEvent*)
+void BatchAbstractDlg::resizeColumns()
 {
     double w = double(m_pcptReTable->width())*.93;
     int wCols  = int(w/4);
@@ -603,6 +626,12 @@ void BatchAbstractDlg::resizeEvent(QResizeEvent*)
     m_pcptReTable->setColumnWidth(1, wCols);
     m_pcptReTable->setColumnWidth(2, wCols);
     m_pcptReTable->setColumnWidth(3, wCols);
+}
+
+
+void BatchAbstractDlg::resizeEvent(QResizeEvent*)
+{
+    resizeColumns();
 }
 
 
@@ -614,6 +643,7 @@ void BatchAbstractDlg::showEvent(QShowEvent *)
 {
     restoreGeometry(s_Geometry);
     if(s_VSplitterSizes.length()>0) m_pVSplitter->restoreState(s_VSplitterSizes);
+    resizeColumns();
 }
 
 
@@ -681,6 +711,11 @@ void BatchAbstractDlg::loadSettings(QSettings &settings)
 {
     settings.beginGroup("BatchAbstractDlg");
     {
+        int iType   = settings.value("PolarType",    1).toInt();
+        if     (iType==2)  s_PolarType = xfl::FIXEDLIFTPOLAR;
+        else if(iType==3)  s_PolarType = xfl::RUBBERCHORDPOLAR;
+        else               s_PolarType = xfl::FIXEDSPEEDPOLAR;
+
         s_bInitBL   = settings.value("bInitBL",      s_bInitBL).toBool();
 
         s_bAlpha    = settings.value("bAlpha",       s_bAlpha).toBool();
@@ -725,6 +760,14 @@ void BatchAbstractDlg::saveSettings(QSettings &settings)
     settings.beginGroup("BatchAbstractDlg");
     {
         settings.setValue("bInitBL",      s_bInitBL);
+
+        switch (s_PolarType)
+        {
+            default:
+            case xfl::FIXEDSPEEDPOLAR:    settings.setValue("PolarType", 1);   break;
+            case xfl::FIXEDLIFTPOLAR:     settings.setValue("PolarType", 2);   break;
+            case xfl::RUBBERCHORDPOLAR:   settings.setValue("PolarType", 3);   break;
+        }
 
         settings.setValue("bAlpha",       s_bAlpha);
         settings.setValue("bFromZero",    s_bFromZero);
