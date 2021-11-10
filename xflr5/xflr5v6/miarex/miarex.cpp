@@ -35,6 +35,7 @@
 
 #include <globals/mainframe.h>
 
+
 #include <miarex/analysis/aerodatadlg.h>
 #include <miarex/analysis/editpolardefdlg.h>
 #include <miarex/analysis/panelanalysisdlg.h>
@@ -42,9 +43,6 @@
 #include <miarex/analysis/stabpolardlg.h>
 #include <miarex/analysis/wadvanceddlg.h>
 #include <miarex/analysis/wpolardlg.h>
-#include <xflobjects/editors/editplanedlg.h>
-#include <xflobjects/editors/wingdlg.h>
-#include <xflobjects/editors/planedlg.h>
 #include <miarex/mgt/manageplanesdlg.h>
 #include <miarex/planetreeview.h>
 #include <miarex/view/gl3dmiarexview.h>
@@ -62,15 +60,19 @@
 #include <xflcore/trace.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
+#include <xflcore/xflcore.h>
 #include <xflgraph/containers/graphtilewt.h>
 #include <xflgraph/containers/graphwt.h>
 #include <xflgraph/containers/miarextilewt.h>
 #include <xflgraph/curve.h>
 #include <xflgraph/graph.h>
-#include <xflobjects/editors/editbodydlg.h>
 #include <xflobjects/editors/bodydlg.h>
+#include <xflobjects/editors/editbodydlg.h>
+#include <xflobjects/editors/editplanedlg.h>
 #include <xflobjects/editors/inertiadlg.h>
+#include <xflobjects/editors/planedlg.h>
 #include <xflobjects/editors/renamedlg.h>
+#include <xflobjects/editors/wingdlg.h>
 #include <xflobjects/editors/wingscaledlg.h>
 #include <xflobjects/objects2d/objects2d.h>
 #include <xflobjects/objects3d/body.h>
@@ -3928,7 +3930,7 @@ void Miarex::onExportCurPOpp()
     if(exporttype==xfl::TXT) sep = ""; else sep=",";
 
 
-    out << VERSIONNAME;
+    out << xfl::versionName();
     out << "\n\n";
 
     out << m_pCurPOpp->planeName()<< "\n";
@@ -8282,7 +8284,7 @@ void Miarex::exportToTextStream(WPolar const *pWPolar, QTextStream &out, xfl::en
     {
         if(!bDataOnly)
         {
-            strong = VERSIONNAME;
+            strong = xfl::versionName();
             strong += "\n\n";
             out << strong;
 
@@ -8335,7 +8337,7 @@ void Miarex::exportToTextStream(WPolar const *pWPolar, QTextStream &out, xfl::en
     {
         if(!bDataOnly)
         {
-            strong = VERSIONNAME;
+            strong = xfl::versionName();
             strong += "\n\n";
             out << strong;
 

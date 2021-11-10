@@ -213,7 +213,7 @@ void PanelAnalysisDlg::analyze()
 
     clock.start(); // put some pressure
 
-    QString strange = "\n" + QString(VERSIONNAME) +"\n";
+    QString strange = "\n" + QString(xfl::versionName()) +"\n";
     updateOutput(strange);
     QDateTime dt = QDateTime::currentDateTime();
     strange = dt.toString("dd.MM.yyyy  hh:mm:ss\n\n");

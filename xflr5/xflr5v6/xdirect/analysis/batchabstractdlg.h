@@ -87,10 +87,10 @@ class BatchAbstractDlg : public QDialog
         void makeCommonWidgets();
         void outputReList();
         void setFileHeader();
-        void setPlrName(Polar *pNewPolar);
         void writeString(QString &strong);
         void fillReModel();
         void sortRe();
+        void resizeColumns();
 
         void readFoils(QVector<Foil *> &foils);
 
@@ -113,6 +113,9 @@ class BatchAbstractDlg : public QDialog
     protected:
         QListWidget *m_plwNameList;
 
+        QGroupBox *m_pgbPolarType;
+        QRadioButton *m_prbT1, *m_prbT2, *m_prbT3;
+
         QRadioButton *m_prbAlpha, *m_prbCl;
 
         DoubleEdit *m_pdeSpecMin, *m_pdeSpecMax, *m_pdeSpecDelta;
@@ -122,9 +125,10 @@ class BatchAbstractDlg : public QDialog
         QLabel *m_plabSpecVar;
         QLabel *m_plabMaType, *m_plabReType;
         QCheckBox *m_pchInitBL, *m_pchFromZero, *m_pchUpdatePolarView;
+        QCheckBox *m_pchStoreOpp;
 
-        QGroupBox *m_pRangeVarsGroupBox, *m_pTransVarsGroupBox;
-        QFrame *m_pOptionsFrame;
+        QGroupBox *m_pgbRangeVars, *m_pgbTransVars;
+        QFrame *m_pfrOptions;
 
         QDialogButtonBox *m_pButtonBox;
         QPushButton *m_ppbAnalyze, *m_ppbAdvancedSettings;

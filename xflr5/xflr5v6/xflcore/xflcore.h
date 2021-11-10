@@ -53,7 +53,7 @@ namespace xfl
 
     extern QVector <QColor> s_ColorList;
 
-    QString versionName(bool bFull);
+    QString versionName(bool bFull=true);
 
     inline QColor getColor(int index){return s_ColorList.at(index%s_ColorList.size());}
 
