@@ -388,6 +388,10 @@ void BatchAbstractDlg::initDialog()
 
     blockSignals(true);
 
+    if(s_ReList.size()==0 || s_MachList.size()==0 || s_NCritList.size()==0)
+        initReList();
+
+
     for(int i=0; i<Objects2d::foilCount(); i++)
     {
         Foil *pFoil = Objects2d::foilAt(i);
@@ -676,6 +680,7 @@ void BatchAbstractDlg::onAdvancedSettings()
     }
 }
 
+
 void BatchAbstractDlg::onUpdatePolarView()
 {
     s_bUpdatePolarView = m_pchUpdatePolarView->isChecked();
@@ -826,6 +831,8 @@ void BatchAbstractDlg::fillReModel()
 
 void BatchAbstractDlg::onDelete()
 {
+    if(m_pReModel->rowCount()<=1) return;
+
     QModelIndex index = m_pcptReTable->currentIndex();
     int sel = index.row();
 
