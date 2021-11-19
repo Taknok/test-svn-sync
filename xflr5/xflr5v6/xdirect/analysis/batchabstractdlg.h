@@ -91,6 +91,7 @@ class BatchAbstractDlg : public QDialog
         void fillReModel();
         void sortRe();
         void resizeColumns();
+        void setRowEnabled(int row, bool bEnabled);
 
         void readFoils(QVector<Foil *> &foils);
 
@@ -152,6 +153,7 @@ class BatchAbstractDlg : public QDialog
         static bool s_bAlpha;              /**< true if the analysis should be performed for a range of aoa rather than lift coefficient */
         static bool s_bFromZero;           /**< true if the iterations should start from aoa=0 rather than aoa=alpha_min */
 
+        static QVector<bool> s_ActiveList;    /**< the vector list of active Re numbers */
         static QVector<double> s_ReList;        /**< the user-defined list of Re numbers, used for batch analysis */
         static QVector<double> s_MachList;      /**< the user-defined list of Mach numbers, used for batch analysis */
         static QVector<double> s_NCritList;     /**< the user-defined list of NCrit numbers, used for batch analysis */

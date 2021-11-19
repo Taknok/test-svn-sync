@@ -179,7 +179,7 @@ bool XFoilTask::alphaSequence()
 {
     QString str;
 
-    double SpMin=0, SpMax=0, SpInc=0;
+    double SpMin(0), SpMax(0), SpInc(0);
 
     int MaxSeries = 1;
     if(m_bAlpha)

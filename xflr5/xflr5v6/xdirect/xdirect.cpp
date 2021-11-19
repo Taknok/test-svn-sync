@@ -1321,7 +1321,7 @@ void XDirect::onMultiThreadedBatchAnalysis()
 
     m_ppbAnalyze->setEnabled(false);
 
-    BatchThreadDlg *pBatchThreadDlg   = new BatchThreadDlg;
+    BatchThreadDlg *pBatchThreadDlg  = new BatchThreadDlg;
     pBatchThreadDlg->m_pFoil  = Objects2d::curFoil();
     pBatchThreadDlg->initDialog();
 
