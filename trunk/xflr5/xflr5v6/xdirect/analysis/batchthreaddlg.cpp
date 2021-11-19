@@ -154,7 +154,9 @@ void BatchThreadDlg::startAnalysis()
 
     m_ppbAnalyze->setText(tr("Cancel"));
 
-    int nRe = s_ReList.count();
+//    int nRe = s_ReList.count();
+    int nRe = 0;
+    for(int i=0; i<s_ActiveList.size(); i++) nRe += s_ActiveList.at(i) ? 1 : 0;
 
     //    QThreadPool::globalInstance()->setExpiryTimeout(60000);//ms
 
@@ -163,23 +165,24 @@ void BatchThreadDlg::startAnalysis()
     m_nTaskDone = 0;
     m_nTaskStarted = 0;
 
-    FoilAnalysis *pAnalysis=nullptr;
-    for(int i=0; i<foils.count(); i++)
+    for(int ifoil=0; ifoil<foils.count(); ifoil++)
     {
-        Foil *pFoil = foils.at(i);
+        Foil *pFoil = foils.at(ifoil);
         if(pFoil)
         {
-            for (int iRe=0; iRe<nRe; iRe++)
+            for (int iRe=0; iRe<s_ActiveList.size(); iRe++)
             {
-                pAnalysis = new FoilAnalysis;
-                m_AnalysisPair.append(pAnalysis);
-                pAnalysis->pFoil = pFoil;
+                if(s_ActiveList.at(iRe))
+                {
+                    FoilAnalysis *pAnalysis = new FoilAnalysis;
+                    m_AnalysisPair.append(pAnalysis);
+                    pAnalysis->pFoil = pFoil;
 
-                pAnalysis->pPolar = Objects2d::createPolar(pFoil, s_PolarType,
-                                                           s_ReList.at(iRe), s_MachList.at(iRe), s_NCritList.at(iRe),
-                                                           s_XTop, s_XBot);
-
-                m_nAnalysis++;
+                    pAnalysis->pPolar = Objects2d::createPolar(pFoil, s_PolarType,
+                                                               s_ReList.at(iRe), s_MachList.at(iRe), s_NCritList.at(iRe),
+                                                               s_XTop, s_XBot);
+                    m_nAnalysis++;
+                }
             }
         }
     }
