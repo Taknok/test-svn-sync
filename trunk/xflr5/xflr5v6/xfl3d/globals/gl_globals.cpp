@@ -25,7 +25,7 @@
 
 #include "gl_globals.h"
 
-#include <xfl3d/controls/w3dprefs.h>
+#include <xfl3d/globals/w3dprefs.h>
 #include <xflgeom/geom3d/vector3d.h>
 #include <xflgeom/geom3d/segment3d.h>
 #include <xflgeom/geom3d/triangle3d.h>
@@ -51,6 +51,35 @@ void getMemoryStatus(int &total_mem_kb, int &cur_avail_mem_kb)
                   &cur_avail_mem_kb);
 }
 
+
+
+/** note: glLineStipple is deprecated since OpenGL 3.1 */
+void GLLineStipple(Line::enumLineStipple stipple)
+{
+    switch(stipple)
+    {
+        default:
+        case Line::SOLID:       glLineStipple (1, 0xFFFF);   break;
+        case Line::DASH:        glLineStipple (1, 0xCFCF);   break;
+        case Line::DOT:         glLineStipple (1, 0x6666);   break;
+        case Line::DASHDOT:     glLineStipple (1, 0xFF18);   break;
+        case Line::DASHDOTDOT:  glLineStipple (1, 0x7E66);   break;
+    }
+}
+
+
+GLushort GLStipple(Line::enumLineStipple stipple)
+{
+    switch(stipple)
+    {
+        default:
+        case Line::SOLID:       return 0xFFFF;
+        case Line::DASH:        return 0x1F1F;
+        case Line::DOT:         return 0x6666;
+        case Line::DASHDOT:     return 0xFF18;
+        case Line::DASHDOTDOT:  return 0x7E66;
+    }
+}
 
 void glMakeTetra(Vector3d const &pt, double side, QOpenGLBuffer &vboFaces, QOpenGLBuffer &vboEdges)
 {

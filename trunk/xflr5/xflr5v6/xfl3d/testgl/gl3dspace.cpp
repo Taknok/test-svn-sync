@@ -12,8 +12,8 @@
 
 #include "gl3dspace.h"
 
-#include <xfl3d/gl_globals.h>
-#include <xfl3d/controls/w3dprefs.h>
+#include <xfl3d/globals/gl_globals.h>
+#include <xfl3d/globals/w3dprefs.h>
 #include <xflwidgets/customwts/intedit.h>
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/wt_globals.h>

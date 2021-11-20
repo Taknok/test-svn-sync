@@ -27,8 +27,8 @@
 #include "gl3dbodyview.h"
 
 #include <globals/mainframe.h>
-#include <xfl3d/controls/w3dprefs.h>
-#include <xfl3d/gl_globals.h>
+#include <xfl3d/globals/w3dprefs.h>
+#include <xfl3d/globals/gl_globals.h>
 #include <xflcore/displayoptions.h>
 #include <xflobjects/editors/bodydlg.h>
 #include <xflobjects/objects3d/body.h>

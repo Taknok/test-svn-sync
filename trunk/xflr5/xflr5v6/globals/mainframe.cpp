@@ -74,20 +74,20 @@
 #include <xdirect/xdirect.h>
 
 
-#include <xfl3d/controls/w3dprefs.h>
 #include <xfl3d/glinfo/opengldlg.h>
+#include <xfl3d/globals/w3dprefs.h>
 #include <xfl3d/testgl/gl2dfractal.h>
 #include <xfl3d/testgl/gl2dnewton.h>
-#include <xfl3d/testgl/gl3dtestglview.h>
-#include <xfl3d/testgl/gl3dboids.h>
-#include <xfl3d/testgl/gl3dhydrogen.h>
-#include <xfl3d/testgl/gl3dspace.h>
-#include <xfl3d/testgl/gl3dshadow.h>
-#include <xfl3d/testgl/gl3doptim2d.h>
 #include <xfl3d/testgl/gl3dattractor.h>
 #include <xfl3d/testgl/gl3dattractors.h>
-#include <xfl3d/testgl/gl3dsolarsys.h>
+#include <xfl3d/testgl/gl3dboids.h>
+#include <xfl3d/testgl/gl3dhydrogen.h>
+#include <xfl3d/testgl/gl3doptim2d.h>
 #include <xfl3d/testgl/gl3dsagittarius.h>
+#include <xfl3d/testgl/gl3dshadow.h>
+#include <xfl3d/testgl/gl3dsolarsys.h>
+#include <xfl3d/testgl/gl3dspace.h>
+#include <xfl3d/testgl/gl3dtestglview.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/trace.h>
 #include <xflcore/units.h>
@@ -98,9 +98,9 @@
 #include <xflgraph/containers/miarextilewt.h>
 #include <xflgraph/containers/xdirecttilewt.h>
 #include <xflgraph/controls/graphdlg.h>
+#include <xflobjects/editors/bodydlg.h>
 #include <xflobjects/editors/bodytransdlg.h>
 #include <xflobjects/editors/editobjectdelegate.h>
-#include <xflobjects/editors/bodydlg.h>
 #include <xflobjects/editors/inertiadlg.h>
 #include <xflobjects/editors/planedlg.h>
 #include <xflobjects/editors/renamedlg.h>
@@ -115,9 +115,9 @@
 #include <xflscript/xflscriptexec.h>
 #include <xflscript/xflscriptreader.h>
 #include <xflwidgets/color/colorpicker.h>
+#include <xflwidgets/customwts/cptableview.h>
 #include <xflwidgets/customwts/plaintextoutput.h>
 #include <xflwidgets/customwts/popup.h>
-#include <xflwidgets/customwts/cptableview.h>
 #include <xflwidgets/line/legendbtn.h>
 #include <xflwidgets/line/linepicker.h>
 #include <xflwidgets/mvc/expandabletreeview.h>
@@ -6080,12 +6080,9 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
     {
         ar << ArchiveFormat; // first format for XFL file
 
-        ar << pPolar->m_FoilName;
+        ar << pPolar->foilName();
         ar << pPolar->name();
 
-/*        ar << pPolar->m_Style << pPolar->m_Width;
-        writeColor(ar, pPolar->m_red, pPolar->m_green, pPolar->m_blue, pPolar->m_alphaChannel);
-        ar << pPolar->m_bIsVisible << false;*/
         pPolar->theStyle().serializeXfl(ar, bIsStoring);
 
         if     (pPolar->m_PolarType==xfl::FIXEDSPEEDPOLAR)  ar<<1;
@@ -6103,7 +6100,7 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         ar << pPolar->m_Alpha.size();
         for (i=0; i< pPolar->m_Alpha.size(); i++)
         {
-            ar << float(pPolar->m_Alpha[i]) << float(pPolar->m_Cd[i]) ;
+            ar << float(pPolar->m_Alpha[i]) << float(pPolar->m_Cd[i]);
             ar << float(pPolar->m_Cdp[i])   << float(pPolar->m_Cl[i]) << float(pPolar->m_Cm[i]);
             ar << float(pPolar->m_XTr1[i])  << float(pPolar->m_XTr2[i]);
             ar << float(pPolar->m_HMom[i])  << float(pPolar->m_Cpmn[i]);
@@ -6146,10 +6143,10 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         }
 
         ar >> n;
-        if     (n==1) pPolar->m_PolarType=xfl::FIXEDSPEEDPOLAR;
-        else if(n==2) pPolar->m_PolarType=xfl::FIXEDLIFTPOLAR;
+        if     (n==2) pPolar->m_PolarType=xfl::FIXEDLIFTPOLAR;
         else if(n==3) pPolar->m_PolarType=xfl::RUBBERCHORDPOLAR;
         else if(n==4) pPolar->m_PolarType=xfl::FIXEDAOAPOLAR;
+        else          pPolar->setPolarType(xfl::FIXEDSPEEDPOLAR);
 
         ar >> pPolar->m_MaType >> pPolar->m_ReType;
         ar >> pPolar->m_Reynolds >> pPolar->m_Mach;

@@ -8,17 +8,16 @@
 
 #pragma once
 
-#include <QRadioButton>
-#include <QOpenGLShaderProgram>
-#include <QSettings>
 #include <QCheckBox>
+#include <QOpenGLShaderProgram>
+#include <QRadioButton>
+#include <QSettings>
 
-#include <xfl3d/views/shadloc.h>
 #include <xfl3d/testgl/gl2dview.h>
+#include <xfl3d/views/shadloc.h>
 
 #include <QLabel>
 
-#define MAXROOTS 5
 
 
 class IntEdit;
@@ -47,9 +46,6 @@ class gl2dNewton : public gl2dView
         void onNRoots();
 
     private:
-        void paintPoints(QOpenGLBuffer &vbo, float width, int iShape, bool bLight, QColor const &clr, int stride);
-
-    private:
         QOpenGLShaderProgram m_shadNewton;
         // shader uniforms
         int m_locIters;
@@ -63,8 +59,6 @@ class gl2dNewton : public gl2dView
         //shader attributes
         int m_attrVertexPosition;
 
-        QOpenGLShaderProgram m_shadPoint;
-        ShaderLocations m_locPoint;
 
         bool m_bResetRoots;
         QOpenGLBuffer m_vboRoots;

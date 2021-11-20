@@ -24,7 +24,8 @@
 
 #include "gl3dxflview.h"
 
-#include <xfl3d/controls/w3dprefs.h>
+#include <xfl3d/globals/gl_globals.h>
+#include <xfl3d/globals/w3dprefs.h>
 #include <xflanalysis/plane_analysis/lltanalysis.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/units.h>

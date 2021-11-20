@@ -15,7 +15,7 @@
 #include "gl3dsagittarius.h"
 
 #include <xfl3d/controls/gllightdlg.h>
-#include <xfl3d/gl_globals.h>
+#include <xfl3d/globals/gl_globals.h>
 #include <xflcore/xflcore.h>
 #include <xflcore/displayoptions.h>
 #include <xflgraph/containers/graphwt.h>

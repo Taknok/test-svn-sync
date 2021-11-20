@@ -15,7 +15,7 @@
 
 #include <xflcore/xflcore.h>
 #include <xflcore/mathelem.h>
-#include <xfl3d/gl_globals.h>
+#include <xfl3d/globals/gl_globals.h>
 #include <xflwidgets/customwts/intedit.h>
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/wt_globals.h>

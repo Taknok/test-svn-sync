@@ -13,9 +13,9 @@
 
 #include "gl3dsurface.h"
 
-#include <xfl3d/gl_globals.h>
+#include <xfl3d/globals/gl_globals.h>
 #include <xflcore/xflcore.h>
-#include <xfl3d/controls/w3dprefs.h>
+#include <xfl3d/globals/w3dprefs.h>
 
 
 

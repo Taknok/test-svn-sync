@@ -81,9 +81,6 @@ class gl3dView : public QOpenGLWidget, protected QOpenGLExtraFunctions
         static void setLightPos(double x, double y, double z) {s_Light.m_X=x; s_Light.m_Y=y; s_Light.m_Z=z;}
         static void setSpecular(double s) {s_Light.m_Specular=s;}
 
-        static bool bSpinAnimation() {return s_bSpinAnimation;}
-        static double spinDamping() {return s_SpinDamping;}
-
         static void setMultiSample(bool bEnable) {s_bMultiSample=bEnable;}
         static bool bMultiSample() {return s_bMultiSample;}
 
@@ -294,8 +291,6 @@ class gl3dView : public QOpenGLWidget, protected QOpenGLExtraFunctions
         QMatrix4x4 m_LightViewMatrix;
 
 
-        static bool s_bSpinAnimation;
-        static double s_SpinDamping;
 
         static int s_AnimationTime;
         static bool s_bAnimateTransitions;  // ms
@@ -310,8 +305,5 @@ class gl3dView : public QOpenGLWidget, protected QOpenGLExtraFunctions
         static bool s_bMultiSample;
         static QSurfaceFormat s_GlSurfaceFormat;
 };
-
-GLushort GLStipple(Line::enumLineStipple stipple);
-void GLLineStipple(Line::enumLineStipple stipple);
 
 

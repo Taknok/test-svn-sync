@@ -9,6 +9,8 @@
 #pragma once
 
 #include <QOpenGLShaderProgram>
+#include <QRadioButton>
+#include <QCheckBox>
 #include <QSettings>
 
 #include <xfl3d/testgl/gl2dview.h>
@@ -30,14 +32,31 @@ class gl2dFractal : public gl2dView
         void initializeGL() override;
         void paintGL()  override;
 
+        void mousePressEvent(QMouseEvent *pEvent) override;
+        void mouseMoveEvent(QMouseEvent *pEvent) override;
+        void mouseReleaseEvent(QMouseEvent *pEvent) override;
+
         static void loadSettings(QSettings &settings);
         static void saveSettings(QSettings &settings);
 
+    private slots:
+        void onMode();
+
     private:
+        QRadioButton *m_prbMandelbrot, *m_prbJulia;
+        IntEdit *m_pieMaxIter;
+        DoubleEdit *m_pdeMaxLength;
+        QLabel *m_plabScale;
+        QCheckBox *m_pchShowSeed;
+
+        QOpenGLBuffer m_vboRoots;
+        QOpenGLBuffer m_vboSegs;
 
         QOpenGLShaderProgram m_shadFrac;
-
         // shader uniforms
+        int m_locJulia;
+        int m_locParamX;
+        int m_locParamY;
         int m_locIters;
         int m_locLength;
         int m_locViewTrans;
@@ -47,14 +66,15 @@ class gl2dFractal : public gl2dView
         //shader attributes
         int m_attrVertexPosition;
 
+        bool m_bResetRoots;
+        int m_iHoveredRoot;
+        int m_iSelectedRoot;
+        QVector2D m_Root[1];  /** The roots current position */
+        float m_amp0, m_phi0; /** The seed's initial position */
 
-        IntEdit *m_pieMaxIter;
-        DoubleEdit *m_pdeMaxLength;
-        QLabel *m_plabScale;
 
         static int s_MaxIter;
         static float s_MaxLength;
-
 };
 
 

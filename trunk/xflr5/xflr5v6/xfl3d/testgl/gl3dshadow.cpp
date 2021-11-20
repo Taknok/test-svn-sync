@@ -13,8 +13,8 @@
 
 
 #include <xfl3d/controls/gllightdlg.h>
-#include <xfl3d/controls/w3dprefs.h>
-#include <xfl3d/gl_globals.h>
+#include <xfl3d/globals/gl_globals.h>
+#include <xfl3d/globals/w3dprefs.h>
 #include <xflcore/trace.h>
 #include <xflgeom/geom_globals.h>
 #include <xflgeom/geom3d/triangle3d.h>
