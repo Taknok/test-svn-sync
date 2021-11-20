@@ -50,13 +50,6 @@ gl2dNewton::gl2dNewton(QWidget *pParent) : gl2dView(pParent)
 
     QFrame *pFrame = new QFrame(this);
     {
-        QPalette palette;
-        palette.setColor(QPalette::WindowText, gl3dView::textColor());
-        palette.setColor(QPalette::Text,  gl3dView::textColor());
-        QColor clr = gl3dView::backColor();
-        clr.setAlpha(0);
-        palette.setColor(QPalette::Window, clr);
-        palette.setColor(QPalette::Base, clr);
         pFrame->setCursor(Qt::ArrowCursor);
 
         pFrame->setFrameShape(QFrame::NoFrame);
@@ -116,8 +109,18 @@ gl2dNewton::gl2dNewton(QWidget *pParent) : gl2dView(pParent)
         }
 
         pFrame->setLayout(pFrameLayout);
+
+        QPalette palette;
+        palette.setColor(QPalette::WindowText, Qt::white);
+        palette.setColor(QPalette::Text,  Qt::white);
+        QColor clr = gl3dView::backColor();
+        clr.setAlpha(0);
+        palette.setColor(QPalette::Window, clr);
+        palette.setColor(QPalette::Base, clr);
+
         pFrame->setStyleSheet("QFrame{background-color: transparent;}");
-        setWidgetStyle(pFrame, palette);
+//        setWidgetStyle(pFrame, palette);
+        pFrame->setPalette(palette);
     }
 
     connect(&m_Timer, SIGNAL(timeout()), SLOT(onMoveRoots()));
