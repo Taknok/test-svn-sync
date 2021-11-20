@@ -29,7 +29,7 @@
 
 #include <xflobjects/editors/wingdlg.h>
 
-#include <xfl3d/controls/w3dprefs.h>
+#include <xfl3d/globals/w3dprefs.h>
 #include <xfl3d/views/gl3dwingview.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/units.h>

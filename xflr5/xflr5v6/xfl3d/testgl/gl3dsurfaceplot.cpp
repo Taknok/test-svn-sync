@@ -15,8 +15,8 @@
 
 
 
-#include <xfl3d/gl_globals.h>
-#include <xfl3d/controls/w3dprefs.h>
+#include <xfl3d/globals/gl_globals.h>
+#include <xfl3d/globals/w3dprefs.h>
 
 
 gl3dSurfacePlot::gl3dSurfacePlot(QWidget *pParent) : gl3dSurface(pParent)

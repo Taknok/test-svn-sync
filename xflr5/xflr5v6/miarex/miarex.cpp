@@ -55,7 +55,7 @@
 #include <twodwidgets/wingwt.h>
 
 #include <xfl3d/controls/gllightdlg.h>
-#include <xfl3d/controls/w3dprefs.h>
+#include <xfl3d/globals/w3dprefs.h>
 #include <xflcore/matrix.h>
 #include <xflcore/trace.h>
 #include <xflcore/units.h>

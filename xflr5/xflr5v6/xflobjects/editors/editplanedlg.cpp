@@ -34,7 +34,7 @@
 #include <globals/mainframe.h>
 #include <xflobjects/editors/editobjectdelegate.h>
 
-#include <xfl3d/controls/w3dprefs.h>
+#include <xfl3d/globals/w3dprefs.h>
 #include <xfl3d/views/gl3dplaneview.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/units.h>

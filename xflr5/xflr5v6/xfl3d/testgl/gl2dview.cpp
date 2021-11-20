@@ -10,15 +10,17 @@
 
 #include <QApplication>
 #include <QOpenGLPaintDevice>
+#include <QMatrix4x4>
 
 #include "gl2dview.h"
-#include <xfl3d/controls/w3dprefs.h>
-#include <xfl3d/views/gl3dview.h> // for the static variables
+
+#include <xfl3d/globals/gl_globals.h>
+#include <xfl3d/globals/w3dprefs.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/trace.h>
-
-#include <xflwidgets/customwts/intedit.h>
+#include <xflcore/constants.h>
 #include <xflwidgets/customwts/doubleedit.h>
+#include <xflwidgets/customwts/intedit.h>
 #include <xflwidgets/wt_globals.h>
 
 
@@ -27,11 +29,13 @@ gl2dView::gl2dView(QWidget *pParent) : QOpenGLWidget(pParent)
 {
     setFocusPolicy(Qt::WheelFocus);
     setCursor(Qt::CrossCursor);
+    setMouseTracking(true);
 
-    m_bInitialized = false;
     m_bDynTranslation = false;
     m_bDynScaling     = false;
     connect(&m_DynTimer, SIGNAL(timeout()), SLOT(onDynamicIncrement()));
+
+    m_nRoots = 0;
 
     m_Scale = 1.0f;
 }
@@ -50,7 +54,7 @@ void gl2dView::onDynamicIncrement()
         }
         m_ptOffset += m_Trans/10.0;
 
-        m_Trans *= (1.0-gl3dView::spinDamping());
+        m_Trans *= (1.0-W3dPrefs::spinDamping());
     }
 
     if(m_bDynScaling)
@@ -65,7 +69,7 @@ void gl2dView::onDynamicIncrement()
         double scalefactor(1.0-DisplayOptions::scaleFactor()/3.0 * m_ZoomFactor/120);
 
         m_Scale *= scalefactor;
-        m_ZoomFactor *= (1.0-gl3dView::spinDamping());
+        m_ZoomFactor *= (1.0-W3dPrefs::spinDamping());
     }
 
     update();
@@ -166,7 +170,7 @@ void gl2dView::wheelEvent(QWheelEvent *pEvent)
     int dy = pEvent->pixelDelta().y();
     if(dy==0) dy = pEvent->angleDelta().y(); // pixeldelta usable on macOS and angleDelta on win/linux; depends also on driver and hardware
 
-    if(gl3dView::bSpinAnimation() && abs(dy)>120)
+    if(W3dPrefs::bSpinAnimation() && abs(dy)>120)
     {
         m_bDynScaling = true;
         m_ZoomFactor = dy;
@@ -192,6 +196,101 @@ void gl2dView::wheelEvent(QWheelEvent *pEvent)
 }
 
 
+void gl2dView::initializeGL()
+{
+    QString strange, vsrc, gsrc, fsrc;
+
+    //--------- setup the shader to paint stippled thick lines -----------
+    vsrc = ":/resources/shaders/line/line_VS.glsl";
+    m_shadLine.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
+    if(m_shadLine.log().length())
+    {
+        strange = QString::asprintf("%s", QString("Line vertex shader log:"+m_shadLine.log()).toStdString().c_str());
+        trace(strange);
+    }
+
+
+    gsrc = ":/resources/shaders/line/line_GS.glsl";
+    m_shadLine.addShaderFromSourceFile(QOpenGLShader::Geometry, gsrc);
+    if(m_shadLine.log().length())
+    {
+        strange = QString::asprintf("%s", QString("Line geometry shader log:"+m_shadLine.log()).toStdString().c_str());
+        trace(strange);
+    }
+
+
+
+    fsrc = ":/resources/shaders/line/line_FS.glsl";
+    m_shadLine.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
+    if(m_shadLine.log().length())
+    {
+        strange = QString::asprintf("%s", QString("Stipple fragment shader log:"+m_shadLine.log()).toStdString().c_str());
+        trace(strange);
+    }
+
+    m_shadLine.link();
+    m_shadLine.bind();
+    {
+        m_locLine.m_attrVertex    = m_shadLine.attributeLocation("vertexPosition_modelSpace");
+        m_locLine.m_attrColor = m_shadLine.attributeLocation("vertexColor");
+        m_locLine.m_vmMatrix     = m_shadLine.uniformLocation("vmMatrix");
+        m_locLine.m_pvmMatrix    = m_shadLine.uniformLocation("pvmMatrix");
+        m_locLine.m_HasUniColor  = m_shadLine.uniformLocation("HasUniColor");
+        m_locLine.m_UniColor     = m_shadLine.uniformLocation("UniformColor");
+        m_locLine.m_ClipPlane    = m_shadLine.uniformLocation("clipPlane0");
+        m_locLine.m_Thickness    = m_shadLine.uniformLocation("Thickness");
+        m_locLine.m_Viewport     = m_shadLine.uniformLocation("Viewport");
+        m_locLine.m_Pattern      = m_shadLine.uniformLocation("pattern");
+        m_locLine.m_nPatterns    = m_shadLine.uniformLocation("nPatterns");
+        GLint nPatterns = 300; // number of patterns per unit projected length (viewport half width = 1)
+        m_shadLine.setUniformValue(m_locLine.m_nPatterns, nPatterns);
+    }
+    m_shadLine.release();
+
+    vsrc = ":/resources/shaders/point/point_VS.glsl";
+    m_shadPoint.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
+    if(m_shadPoint.log().length())
+    {
+        strange = QString::asprintf("%s", QString("Point vertex shader log:"+m_shadPoint.log()).toStdString().c_str());
+        trace(strange);
+    }
+
+    gsrc = ":/resources/shaders/point/point_GS.glsl";
+    m_shadPoint.addShaderFromSourceFile(QOpenGLShader::Geometry, gsrc);
+    if(m_shadPoint.log().length())
+    {
+        strange = QString::asprintf("%s", QString("Point geometry shader log:"+m_shadPoint.log()).toStdString().c_str());
+        trace(strange);
+    }
+
+    fsrc = ":/resources/shaders/point/point_FS.glsl";
+    m_shadPoint.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
+    if(m_shadPoint.log().length())
+    {
+        strange = QString::asprintf("%s", QString("Point fragment shader log:"+m_shadPoint.log()).toStdString().c_str());
+        trace(strange);
+    }
+
+    m_shadPoint.link();
+    m_shadPoint.bind();
+    {
+        m_locPoint.m_attrVertex = m_shadPoint.attributeLocation("vertexPosition_modelSpace");
+        m_locPoint.m_State      = m_shadPoint.attributeLocation("PointState");
+        m_locPoint.m_vmMatrix   = m_shadPoint.uniformLocation("vmMatrix");
+        m_locPoint.m_pvmMatrix  = m_shadPoint.uniformLocation("pvmMatrix");
+        m_locPoint.m_ClipPlane  = m_shadPoint.uniformLocation("clipPlane0");
+        m_locPoint.m_UniColor   = m_shadPoint.uniformLocation("Color");
+        m_locPoint.m_Thickness  = m_shadPoint.uniformLocation("Thickness");
+        m_locPoint.m_Shape      = m_shadPoint.uniformLocation("Shape");
+        m_locPoint.m_Viewport   = m_shadPoint.uniformLocation("Viewport");
+        m_locPoint.m_Light      = m_shadPoint.uniformLocation("LightOn");
+        m_locPoint.m_TwoSided   = m_shadPoint.uniformLocation("TwoSided");
+    }
+    m_shadPoint.release();
+    makeQuad();
+}
+
+
 void gl2dView::resizeGL(int width, int height)
 {
     QOpenGLWidget::resizeGL(width, height);
@@ -211,7 +310,7 @@ void gl2dView::resizeGL(int width, int height)
 
 void gl2dView::mouseReleaseEvent(QMouseEvent *pEvent)
 {
-    if(gl3dView::bSpinAnimation())
+    if(W3dPrefs::bSpinAnimation())
     {
         int movetime = m_MoveTime.elapsed();
         if(movetime<300 && !m_PressedPoint.isNull())
@@ -235,7 +334,7 @@ void gl2dView::mousePressEvent(QMouseEvent *pEvent)
 
     stopDynamicTimer();
     m_MoveTime.restart();
-    QApplication::setOverrideCursor(Qt::ClosedHandCursor);
+    if(hasFocus()) QApplication::setOverrideCursor(Qt::ClosedHandCursor);
 }
 
 
@@ -248,8 +347,10 @@ void gl2dView::mouseMoveEvent(QMouseEvent *pEvent)
     if(pEvent->buttons() & Qt::LeftButton)
     {
         //translate the view
-        m_ptOffset.rx() += (point.x() - m_LastPoint.x())/m_Scale;
-        m_ptOffset.ry() += (point.y() - m_LastPoint.y())/m_Scale;
+
+        QPoint delta = point - m_LastPoint;
+        m_ptOffset.setX(m_ptOffset.x() + double(delta.x())/m_Scale);
+        m_ptOffset.setY(m_ptOffset.y() + double(delta.y())/m_Scale);
 
         m_LastPoint.rx() = point.x();
         m_LastPoint.ry() = point.y();
@@ -306,6 +407,79 @@ void gl2dView::screenToWorld(QPoint const &screenpt, QVector2D &pt)
     }
 }
 
+
+void gl2dView::paintPoints(QOpenGLBuffer &vbo, float width, int iShape, bool bLight, QColor const &clr, int stride)
+{
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+    m_shadPoint.bind();
+    {
+        // iShape 0: Pentagon, 1: Icosahedron, 2: Cube
+        m_shadPoint.setUniformValue(m_locPoint.m_Shape, iShape);
+        m_shadPoint.setUniformValue(m_locPoint.m_UniColor, clr); // only used if vertex state is invalid 0< or >1
+        m_shadPoint.setUniformValue(m_locPoint.m_Thickness, width);
+        if(bLight)m_shadPoint.setUniformValue(m_locPoint.m_Light, 1);
+        else      m_shadPoint.setUniformValue(m_locPoint.m_Light, 0);
+
+        if(vbo.bind())
+        {
+            m_shadPoint.enableAttributeArray(m_locPoint.m_attrVertex);
+            m_shadPoint.setAttributeBuffer(m_locPoint.m_attrVertex, GL_FLOAT, 0, 3, stride*sizeof(float));
+            m_shadPoint.enableAttributeArray(m_locPoint.m_State);
+            m_shadPoint.setAttributeBuffer(m_locPoint.m_State, GL_FLOAT, 3*sizeof(float), 1, stride*sizeof(float));
+            int npts = vbo.size()/stride/int(sizeof(float));
+            glDrawArrays(GL_POINTS, 0, npts);// 4 vertices defined but only 3 are used
+            m_shadPoint.disableAttributeArray(m_locPoint.m_attrVertex);
+            m_shadPoint.disableAttributeArray(m_locPoint.m_State);
+        }
+        vbo.release();
+    }
+    m_shadPoint.release();
+}
+
+
+
+void gl2dView::paintSegments(QOpenGLBuffer &vbo, LineStyle const &ls, bool bHigh)
+{
+    paintSegments(vbo, ls.m_Color, ls.m_Width, ls.m_Stipple, bHigh);
+}
+
+
+void gl2dView::paintSegments(QOpenGLBuffer &vbo, QColor const &clr, float thickness, Line::enumLineStipple stip, bool bHigh)
+{
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+    int stride = 3; // 3 position components
+    m_shadLine.bind();
+    {
+        vbo.bind();
+        {
+            m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, stride*sizeof(GLfloat));
+
+            int nSegs = vbo.size()/2/stride/int(sizeof(float));
+
+            if(bHigh)
+            {
+                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(Line::SOLID));
+                m_shadLine.setUniformValue(m_locLine.m_UniColor, Qt::red);
+
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, thickness+2);
+            }
+            else
+            {
+                m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(stip));
+                m_shadLine.setUniformValue(m_locLine.m_UniColor, clr);
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, thickness);
+            }
+
+            glDrawArrays(GL_LINES, 0, nSegs*2);// 4 vertices defined but only 3 are used
+            glDisable(GL_LINE_STIPPLE);
+        }
+        vbo.release();
+
+        m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
+    }
+    m_shadLine.release();
+}
 
 
 

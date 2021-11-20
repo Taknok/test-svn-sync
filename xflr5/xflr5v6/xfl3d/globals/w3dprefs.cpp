@@ -62,6 +62,9 @@ int W3dPrefs::s_iBodyHoopRes  = 17;
 bool W3dPrefs::s_bAnimateTransitions = true;
 bool W3dPrefs::s_bEnableClipPlane = false;
 
+bool W3dPrefs::s_bSpinAnimation = true;
+double W3dPrefs::s_SpinDamping = 0.01;
+
 
 W3dPrefs::W3dPrefs(QWidget *pParent) : QDialog(pParent)
 {

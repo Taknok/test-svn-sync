@@ -12,7 +12,7 @@
 #include <QCheckBox>
 
 #include "gl3dsolarsys.h"
-#include <xfl3d/gl_globals.h>
+#include <xfl3d/globals/gl_globals.h>
 #include <xflcore/xflcore.h>
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/customwts/intedit.h>

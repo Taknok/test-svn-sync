@@ -28,7 +28,7 @@
 
 #include <xflwidgets/customwts/plaintextoutput.h>
 #include <xflwidgets/customwts/intedit.h>
-#include <xfl3d/gl_globals.h>
+#include <xfl3d/globals/gl_globals.h>
 #include <xfl3d/testgl/gl2dfractal.h>
 #include <xfl3d/testgl/gl2dnewton.h>
 #include <xfl3d/testgl/gl3dtestglview.h>

@@ -17,7 +17,7 @@
 #include <xflwidgets/wt_globals.h>
 #include <xflwidgets/line/linebtn.h>
 #include <xflwidgets/line/linemenu.h>
-#include <xfl3d/gl_globals.h>
+#include <xfl3d/globals/gl_globals.h>
 
 #define NATTRACTORS 13
 

@@ -22,12 +22,17 @@
 #pragma once
 #include <QOpenGLBuffer>
 
+#include <xflcore/linestyle.h>
+
 class Segment3d;
 class Triangle3d;
 class Vector3d;
 class Panel;
 
 void getMemoryStatus(int &total_mem_kb, int &cur_avail_mem_kb);
+GLushort GLStipple(Line::enumLineStipple stipple);
+void GLLineStipple(Line::enumLineStipple stipple);
+
 
 void glMakeCircle(double radius, Vector3d const &O, QOpenGLBuffer &vbo);
 void glMakeDisk(double radius, Vector3d const &O, QOpenGLBuffer &vbo);

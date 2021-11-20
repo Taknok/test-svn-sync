@@ -26,7 +26,8 @@
 #include "wingwt.h"
 #include <miarex/miarex.h>
 
-#include <xfl3d/controls/w3dprefs.h>
+
+#include <xfl3d/globals/w3dprefs.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/xflcore.h>
 #include <xflgraph/graph.h>

@@ -4,9 +4,9 @@ HEADERS += \
     xfl3d/controls/arcball.h \
     xfl3d/controls/gllightdlg.h \
     xfl3d/controls/light.h \
-    xfl3d/controls/w3dprefs.h \
-    xfl3d/gl_globals.h \
     xfl3d/glinfo/opengldlg.h \
+    xfl3d/globals/gl_globals.h \
+    xfl3d/globals/w3dprefs.h \
     xfl3d/testgl/gl2dfractal.h \
     xfl3d/testgl/gl2dnewton.h \
     xfl3d/testgl/gl2dview.h \
@@ -35,9 +35,9 @@ HEADERS += \
 SOURCES += \
     xfl3d/controls/arcball.cpp \
     xfl3d/controls/gllightdlg.cpp \
-    xfl3d/controls/w3dprefs.cpp \
-    xfl3d/gl_globals.cpp \
     xfl3d/glinfo/opengldlg.cpp \
+    xfl3d/globals/gl_globals.cpp \
+    xfl3d/globals/w3dprefs.cpp \
     xfl3d/testgl/gl2dfractal.cpp \
     xfl3d/testgl/gl2dnewton.cpp \
     xfl3d/testgl/gl2dview.cpp \

@@ -28,8 +28,8 @@
 #include <QDir>
 
 #include "gl3dview.h"
-#include <xfl3d/gl_globals.h>
-#include <xfl3d/controls/w3dprefs.h>
+#include <xfl3d/globals/gl_globals.h>
+#include <xfl3d/globals/w3dprefs.h>
 #include <xflcore/displayoptions.h>
 #include <xflcore/trace.h>
 #include <xflcore/xflcore.h>
@@ -50,9 +50,6 @@ Light gl3dView::s_Light;
 
 QColor gl3dView::s_TextColor = Qt::white;
 QColor gl3dView::s_BackgroundColor = QColor(5,10,17);
-
-bool gl3dView::s_bSpinAnimation = true;
-double gl3dView::s_SpinDamping = 0.01;
 
 bool gl3dView::s_bAnimateTransitions = true;
 int gl3dView::s_AnimationTime = 500; //ms
@@ -453,7 +450,7 @@ void gl3dView::wheelEvent(QWheelEvent *pEvent)
     int dy = pEvent->pixelDelta().y();
     if(dy==0) dy = pEvent->angleDelta().y(); // pixeldelta usabel on macOS and angleDelta on win/linux; depends also on driver and hardware
 
-    if(s_bSpinAnimation && abs(dy)>120)
+    if(W3dPrefs::bSpinAnimation() && abs(dy)>120)
     {
         m_bDynScaling = true;
         m_ZoomFactor = dy;
@@ -497,7 +494,7 @@ void gl3dView::mouseReleaseEvent(QMouseEvent * pEvent )
     m_ArcBall.getRotationMatrix(m_MatOut, true);
     setViewportTranslation();
 
-    if(s_bSpinAnimation)
+    if(W3dPrefs::bSpinAnimation())
     {
         int movetime = m_MoveTime.elapsed();
         if(movetime<300 && !m_PressedPoint.isNull())
@@ -1686,35 +1683,6 @@ void gl3dView::startResetTimer()
 }
 
 
-/** note: glLineStipple is deprecated since OpenGL 3.1 */
-void GLLineStipple(Line::enumLineStipple stipple)
-{
-    switch(stipple)
-    {
-        default:
-        case Line::SOLID:       glLineStipple (1, 0xFFFF);   break;
-        case Line::DASH:        glLineStipple (1, 0xCFCF);   break;
-        case Line::DOT:         glLineStipple (1, 0x6666);   break;
-        case Line::DASHDOT:     glLineStipple (1, 0xFF18);   break;
-        case Line::DASHDOTDOT:  glLineStipple (1, 0x7E66);   break;
-    }
-}
-
-
-GLushort GLStipple(Line::enumLineStipple stipple)
-{
-    switch(stipple)
-    {
-        default:
-        case Line::SOLID:       return 0xFFFF;
-        case Line::DASH:        return 0x1F1F;
-        case Line::DOT:         return 0x6666;
-        case Line::DASHDOT:     return 0xFF18;
-        case Line::DASHDOTDOT:  return 0x7E66;
-    }
-}
-
-
 /**
  * @brief since glLineStipple is deprecated, make an array of simple lines for all 3 axis
  */
@@ -2271,7 +2239,7 @@ void gl3dView::onDynamicIncrement()
             update();
             return;
         }
-        m_SpinInc = Quaternion(m_SpinInc.angle()*(1.0-s_SpinDamping), m_SpinInc.axis());
+        m_SpinInc = Quaternion(m_SpinInc.angle()*(1.0-W3dPrefs::spinDamping()), m_SpinInc.axis());
         m_ArcBall.applyRotation(m_SpinInc, false);
     }
 
@@ -2287,7 +2255,7 @@ void gl3dView::onDynamicIncrement()
         m_glRotCenter += m_Trans/10.0;
         setViewportTranslation();
 
-        m_Trans *= (1.0-s_SpinDamping);
+        m_Trans *= (1.0-W3dPrefs::spinDamping());
     }
 
     if(m_bDynScaling)
@@ -2302,7 +2270,7 @@ void gl3dView::onDynamicIncrement()
         double scalefactor(1.0-DisplayOptions::scaleFactor()/3.0 * m_ZoomFactor/120);
 
         m_glScalef *= scalefactor;
-        m_ZoomFactor *= (1.0-s_SpinDamping);
+        m_ZoomFactor *= (1.0-W3dPrefs::spinDamping());
     }
 
     update();
