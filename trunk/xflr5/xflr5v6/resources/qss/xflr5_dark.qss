@@ -504,7 +504,6 @@ QTabBar::tab:selected
 
 QCheckBox
 {
-    color: white;
     background: transparent;
     padding: 1px;
     border: 1px transparent;

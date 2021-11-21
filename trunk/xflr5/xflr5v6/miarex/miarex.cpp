@@ -55,6 +55,7 @@
 #include <twodwidgets/wingwt.h>
 
 #include <xfl3d/controls/gllightdlg.h>
+#include <xfl3d/globals/gl_globals.h>
 #include <xfl3d/globals/w3dprefs.h>
 #include <xflcore/matrix.h>
 #include <xflcore/trace.h>
@@ -7539,7 +7540,7 @@ void Miarex::drawColorGradient(QPainter &painter, QRect const & gradientRect)
     for (int i=0; i<MAXCPCOLORS; i++)
     {
         float fi = float(i)/float(MAXCPCOLORS-1);
-        QColor clr = QColor(int(xfl::GLGetRed(fi)*255.0f), int(xfl::GLGetGreen(fi)*255.0f), int(xfl::GLGetBlue(fi)*255.0f));
+        QColor clr = QColor(int(glGetRed(fi)*255.0f), int(glGetGreen(fi)*255.0f), int(glGetBlue(fi)*255.0f));
         gradient.setColorAt(double(fi), clr);
     }
     painter.fillRect(gradientRect, gradient);

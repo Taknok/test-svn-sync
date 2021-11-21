@@ -416,16 +416,16 @@ void gl3dMiarexView::glMakeCpLegendClr()
         pColorVertexArray[iv++] = Right1;
         pColorVertexArray[iv++] = ZPos+2*fi;
         pColorVertexArray[iv++] = 0.0;
-        pColorVertexArray[iv++] = xfl::GLGetRed(color);
-        pColorVertexArray[iv++] = xfl::GLGetGreen(color);
-        pColorVertexArray[iv++] = xfl::GLGetBlue(color);
+        pColorVertexArray[iv++] = glGetRed(color);
+        pColorVertexArray[iv++] = glGetGreen(color);
+        pColorVertexArray[iv++] = glGetBlue(color);
 
         pColorVertexArray[iv++] = Right2;
         pColorVertexArray[iv++] = ZPos+2*fi;
         pColorVertexArray[iv++] = 0.0;
-        pColorVertexArray[iv++] = xfl::GLGetRed(color);
-        pColorVertexArray[iv++] = xfl::GLGetGreen(color);
-        pColorVertexArray[iv++] = xfl::GLGetBlue(color);
+        pColorVertexArray[iv++] = glGetRed(color);
+        pColorVertexArray[iv++] = glGetGreen(color);
+        pColorVertexArray[iv++] = glGetBlue(color);
     }
     Q_ASSERT(iv==bufferSize);
 
@@ -2045,9 +2045,9 @@ void gl3dMiarexView::glMakePanelForces(int nPanels, Panel const *pPanel, WPolar 
         //scale force for display
         force *= float(s_LiftScale) *coef;
 
-        float r = xfl::GLGetRed(color);
-        float g= xfl::GLGetGreen(color);
-        float b= xfl::GLGetBlue(color);
+        float r = glGetRed(color);
+        float g= glGetGreen(color);
+        float b= glGetBlue(color);
 
         if(pPanel->m_Pos==xfl::MIDSURFACE) O = pPanel[p].CtrlPt;
         else                          O = pPanel[p].CollPt;
@@ -2314,9 +2314,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         if(pPOpp)
         {
             color = (float(pPOpp->m_dCp[p])-lmin)/range;
-            nodeVertexArray[iv++] = xfl::GLGetRed(color);
-            nodeVertexArray[iv++] = xfl::GLGetGreen(color);
-            nodeVertexArray[iv++] = xfl::GLGetBlue(color);
+            nodeVertexArray[iv++] = glGetRed(color);
+            nodeVertexArray[iv++] = glGetGreen(color);
+            nodeVertexArray[iv++] = glGetBlue(color);
         }
         else
         {
@@ -2331,9 +2331,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         if(pPOpp)
         {
             color = (float(pPOpp->m_dCp[p])-lmin)/range;
-            nodeVertexArray[iv++] = xfl::GLGetRed(color);
-            nodeVertexArray[iv++] = xfl::GLGetGreen(color);
-            nodeVertexArray[iv++] = xfl::GLGetBlue(color);
+            nodeVertexArray[iv++] = glGetRed(color);
+            nodeVertexArray[iv++] = glGetGreen(color);
+            nodeVertexArray[iv++] = glGetBlue(color);
         }
         else
         {
@@ -2348,9 +2348,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         if(pPOpp)
         {
             color = (float(pPOpp->m_dCp[p])-lmin)/range;
-            nodeVertexArray[iv++] = xfl::GLGetRed(color);
-            nodeVertexArray[iv++] = xfl::GLGetGreen(color);
-            nodeVertexArray[iv++] = xfl::GLGetBlue(color);
+            nodeVertexArray[iv++] = glGetRed(color);
+            nodeVertexArray[iv++] = glGetGreen(color);
+            nodeVertexArray[iv++] = glGetBlue(color);
         }
         else
         {
@@ -2367,9 +2367,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         if(pPOpp)
         {
             color = (float(pPOpp->m_dCp[p])-lmin)/range;
-            nodeVertexArray[iv++] = xfl::GLGetRed(color);
-            nodeVertexArray[iv++] = xfl::GLGetGreen(color);
-            nodeVertexArray[iv++] = xfl::GLGetBlue(color);
+            nodeVertexArray[iv++] = glGetRed(color);
+            nodeVertexArray[iv++] = glGetGreen(color);
+            nodeVertexArray[iv++] = glGetBlue(color);
         }
         else
         {
@@ -2384,9 +2384,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         if(pPOpp)
         {
             color = (float(pPOpp->m_dCp[p])-lmin)/range;
-            nodeVertexArray[iv++] = xfl::GLGetRed(color);
-            nodeVertexArray[iv++] = xfl::GLGetGreen(color);
-            nodeVertexArray[iv++] = xfl::GLGetBlue(color);
+            nodeVertexArray[iv++] = glGetRed(color);
+            nodeVertexArray[iv++] = glGetGreen(color);
+            nodeVertexArray[iv++] = glGetBlue(color);
         }
         else
         {
@@ -2401,9 +2401,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         if(pPOpp)
         {
             color = (float(pPOpp->m_dCp[p])-lmin)/range;
-            nodeVertexArray[iv++] = xfl::GLGetRed(color);
-            nodeVertexArray[iv++] = xfl::GLGetGreen(color);
-            nodeVertexArray[iv++] = xfl::GLGetBlue(color);
+            nodeVertexArray[iv++] = glGetRed(color);
+            nodeVertexArray[iv++] = glGetGreen(color);
+            nodeVertexArray[iv++] = glGetBlue(color);
         }
         else
         {

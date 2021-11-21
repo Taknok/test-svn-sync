@@ -59,53 +59,6 @@ QVector <QColor> xfl::s_ColorList = {{ 85, 170, 255},
                                      {153,  85,  36},
                                      {215, 215,  75}};
 
-
-/**
-* Returns the red component of a color scale depending on an input parameter with value between 0 and 1.
-* Used to draw a color scale between 0=blue and 1=red
-*@param tau the input parameter between 0 and 1.
-*@return the red component of the color
-*/
-float xfl::GLGetRed(float tau)
-{
-    if(tau>2.0f/3.0f)      return 1.0f;
-    else if(tau>1.0f/3.0f) return (3.0f*(tau-1.0f/3.0f));
-    else                   return 0.0;
-}
-
-
-/**
-* Returns the green component of a color scale depending on an input parameter with value between 0 and 1.
-* Used to draw a color scale between 0=blue and 1=red
-*@param tau the input parameter between 0 and 1.
-*@return the green component of the color
-*/
-float xfl::GLGetGreen(float tau)
-{
-    if(tau<0.f || tau>1.0f)     return 0.0f;
-    else if(tau<1.0f/4.0f)     return (4.0f*tau);
-    else if(tau>3.0f/4.0f)     return (1.0f-4.0f*(tau-3.0f/4.0f));
-    else                    return 1.0f;
-}
-
-
-/**
-* Returns the blue component of a color scale depending on an input parameter with value between 0 and 1.
-* Used to draw a color scale between 0=blue and 1=red
-*@param tau the input parameter between 0 and 1.
-*@return the blue component of the color
-*/
-float xfl::GLGetBlue(float tau)
-{
-    if(tau>2.0f/3.0f)      return 0.0;
-    else if(tau>1.0f/3.0f) return (1.0f-3.0f*(tau-1.0f/3.0f));
-    else                   return 1.0;
-}
-
-
-
-
-
 QColor xfl::randomColor(bool bLightColor)
 {
     QColor clr;

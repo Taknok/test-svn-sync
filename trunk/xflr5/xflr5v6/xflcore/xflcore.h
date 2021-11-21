@@ -66,11 +66,6 @@ namespace xfl
     inline void setPlrDirName(QString dirname) {s_plrDirName=dirname;}
     inline QString plrDirName() {return s_plrDirName;}
 
-    float GLGetRed(float tau);
-    float GLGetGreen(float tau);
-    float GLGetBlue(float tau);
-
-
     QColor randomColor(bool bLightColor);
     inline QString colorNameARGB(QColor const &colour) {return QString::asprintf("rgba(%d,%d,%3d,%g)", colour.red(), colour.green(), colour.blue(), colour.alphaF());}
 
