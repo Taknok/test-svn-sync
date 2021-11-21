@@ -90,7 +90,8 @@ gl3dSpace::gl3dSpace(QWidget *pParent) : gl3dTestGLView(pParent)
         }
 
         pFrame->setLayout(pMainLayout);
-//        setWidgetStyle(pFrame, palette);
+        pFrame->setStyleSheet("QFrame{background-color: transparent;}");
+        setWidgetStyle(pFrame, palette);
     }
 
     makeGalaxies();

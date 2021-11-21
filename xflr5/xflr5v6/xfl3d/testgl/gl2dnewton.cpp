@@ -118,9 +118,11 @@ gl2dNewton::gl2dNewton(QWidget *pParent) : gl2dView(pParent)
         palette.setColor(QPalette::Window, clr);
         palette.setColor(QPalette::Base, clr);
 
-        pFrame->setStyleSheet("QFrame{background-color: transparent;}");
+        pFrame->setStyleSheet("QFrame{background-color: transparent; color: white}"
+                              "QRadioButton{background-color: transparent; color: white}"
+                              "QCheckBox{background-color: transparent; color: white}");
 //        setWidgetStyle(pFrame, palette);
-        pFrame->setPalette(palette);
+//        pFrame->setPalette(palette);
     }
 
     connect(&m_Timer, SIGNAL(timeout()), SLOT(onMoveRoots()));

@@ -132,25 +132,25 @@ void gl3dSurface::glMakeSurface()
             surfvertexarray[iv++] = TB.yf();
             surfvertexarray[iv++] = TB.zf();
             tau = (TB.zf()-zmin)/range;
-            surfvertexarray[iv++] = xfl::GLGetRed(tau);
-            surfvertexarray[iv++] = xfl::GLGetGreen(tau);
-            surfvertexarray[iv++] = xfl::GLGetBlue(tau);
+            surfvertexarray[iv++] = glGetRed(tau);
+            surfvertexarray[iv++] = glGetGreen(tau);
+            surfvertexarray[iv++] = glGetBlue(tau);
 
             surfvertexarray[iv++] = TA.xf();
             surfvertexarray[iv++] = TA.yf();
             surfvertexarray[iv++] = TA.zf();
             tau = (TA.zf()-zmin)/range;
-            surfvertexarray[iv++] = xfl::GLGetRed(tau);
-            surfvertexarray[iv++] = xfl::GLGetGreen(tau);
-            surfvertexarray[iv++] = xfl::GLGetBlue(tau);
+            surfvertexarray[iv++] = glGetRed(tau);
+            surfvertexarray[iv++] = glGetGreen(tau);
+            surfvertexarray[iv++] = glGetBlue(tau);
 
             surfvertexarray[iv++] = LA.xf();
             surfvertexarray[iv++] = LA.yf();
             surfvertexarray[iv++] = LA.zf();
             tau = (LA.zf()-zmin)/range;
-            surfvertexarray[iv++] = xfl::GLGetRed(tau);
-            surfvertexarray[iv++] = xfl::GLGetGreen(tau);
-            surfvertexarray[iv++] = xfl::GLGetBlue(tau);
+            surfvertexarray[iv++] = glGetRed(tau);
+            surfvertexarray[iv++] = glGetGreen(tau);
+            surfvertexarray[iv++] = glGetBlue(tau);
 
 
             //second triangle
@@ -158,25 +158,25 @@ void gl3dSurface::glMakeSurface()
             surfvertexarray[iv++] = LA.yf();
             surfvertexarray[iv++] = LA.zf();
             tau = (LA.zf()-zmin)/range;
-            surfvertexarray[iv++] = xfl::GLGetRed(tau);
-            surfvertexarray[iv++] = xfl::GLGetGreen(tau);
-            surfvertexarray[iv++] = xfl::GLGetBlue(tau);
+            surfvertexarray[iv++] = glGetRed(tau);
+            surfvertexarray[iv++] = glGetGreen(tau);
+            surfvertexarray[iv++] = glGetBlue(tau);
 
             surfvertexarray[iv++] = LB.xf();
             surfvertexarray[iv++] = LB.yf();
             surfvertexarray[iv++] = LB.zf();
             tau = (LB.zf()-zmin)/range;
-            surfvertexarray[iv++] = xfl::GLGetRed(tau);
-            surfvertexarray[iv++] = xfl::GLGetGreen(tau);
-            surfvertexarray[iv++] = xfl::GLGetBlue(tau);
+            surfvertexarray[iv++] = glGetRed(tau);
+            surfvertexarray[iv++] = glGetGreen(tau);
+            surfvertexarray[iv++] = glGetBlue(tau);
 
             surfvertexarray[iv++] = TB.xf();
             surfvertexarray[iv++] = TB.yf();
             surfvertexarray[iv++] = TB.zf();
             tau = (TB.zf()-zmin)/range;
-            surfvertexarray[iv++] = xfl::GLGetRed(tau);
-            surfvertexarray[iv++] = xfl::GLGetGreen(tau);
-            surfvertexarray[iv++] = xfl::GLGetBlue(tau);
+            surfvertexarray[iv++] = glGetRed(tau);
+            surfvertexarray[iv++] = glGetGreen(tau);
+            surfvertexarray[iv++] = glGetBlue(tau);
         }
     }
 

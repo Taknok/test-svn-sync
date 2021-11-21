@@ -33,6 +33,9 @@ void getMemoryStatus(int &total_mem_kb, int &cur_avail_mem_kb);
 GLushort GLStipple(Line::enumLineStipple stipple);
 void GLLineStipple(Line::enumLineStipple stipple);
 
+float glGetRed(float tau);
+float glGetGreen(float tau);
+float glGetBlue(float tau);
 
 void glMakeCircle(double radius, Vector3d const &O, QOpenGLBuffer &vbo);
 void glMakeDisk(double radius, Vector3d const &O, QOpenGLBuffer &vbo);

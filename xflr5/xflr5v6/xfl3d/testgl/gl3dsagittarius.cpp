@@ -69,7 +69,6 @@ gl3dSagittarius::gl3dSagittarius(QWidget *pParent) : gl3dTestGLView(pParent)
             QGridLayout*pParamsLayout = new QGridLayout;
             {
                 QLabel *pLabTitle = new QLabel("In honor of Genzel, Ghez and Penrose");
-                pLabTitle->setStyleSheet("font: bold");
 
                 QLabel *pLabInc = new QLabel(QString::asprintf("Increment (days) @%.0f Hz:", QGuiApplication::primaryScreen()->refreshRate()));
                 m_pdeDt = new DoubleEdit(s_dt);
@@ -312,7 +311,7 @@ void gl3dSagittarius::makeStars()
     for(int is=0; is<m_Star.size(); is++)
     {
         Planet &star = m_Star[is];
-        m_Star[is].m_Color.setRgbF(xfl::GLGetRed(m_Star[is].m_Tau), xfl::GLGetGreen(m_Star[is].m_Tau), xfl::GLGetBlue(m_Star[is].m_Tau));
+        m_Star[is].m_Color.setRgbF(glGetRed(m_Star[is].m_Tau), glGetGreen(m_Star[is].m_Tau), glGetBlue(m_Star[is].m_Tau));
 
         // set a default position
         star.m_var[0] = star.m_a + star.m_a*star.m_e;

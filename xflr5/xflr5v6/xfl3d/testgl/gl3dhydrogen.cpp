@@ -309,9 +309,9 @@ void gl3dHydrogen::glMake3dObjects()
             pts[iv++] = m_Pts.at(i).zf();
             pts[iv++] = state;
 
-            pts[iv++] = xfl::GLGetRed(state); // for the surface shader
-            pts[iv++] = xfl::GLGetGreen(state);
-            pts[iv++] = xfl::GLGetBlue(state);
+            pts[iv++] = glGetRed(state); // for the surface shader
+            pts[iv++] = glGetGreen(state);
+            pts[iv++] = glGetBlue(state);
             pts[iv++] = 1.0; //alpha
         }
 
