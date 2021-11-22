@@ -368,6 +368,8 @@ void gl3dView::mousePressEvent(QMouseEvent *pEvent)
                 m_bCrossPoint = true;
             }
         }
+        else
+            setFocus();
         update();
     }
 
