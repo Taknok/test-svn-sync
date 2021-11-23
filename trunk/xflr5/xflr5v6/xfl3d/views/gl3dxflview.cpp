@@ -690,7 +690,7 @@ void gl3dXflView::paintSectionHighlight()
         m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
         m_shadLine.setUniformValue(m_locLine.m_UniColor, QColor(255,0,0));
         m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(Line::SOLID));
-        m_shadLine.setUniformValue(m_locLine.m_Thickness, 3);
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, 3.0f);
         m_vboHighlight.bind();
         {
             m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
@@ -724,7 +724,7 @@ void gl3dXflView::paintEditWingMesh(QOpenGLBuffer &vbo)
         m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
         m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_VLMStyle.m_Color);
         m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_VLMStyle.m_Stipple));
-        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_VLMStyle.m_Width);
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, float(W3dPrefs::s_VLMStyle.m_Width));
 
         vbo.bind();
         {
@@ -1222,7 +1222,7 @@ void gl3dXflView::paintNormals(QOpenGLBuffer &vbo)
         m_shadLine.setUniformValue(m_locLine.m_UniColor, QColor(135,105,35));
 
         if(m_bUse120StyleShaders) glLineWidth(2);
-        else m_shadLine.setUniformValue(m_locLine.m_Thickness, 1);
+        else m_shadLine.setUniformValue(m_locLine.m_Thickness, 1.0f);
 
         m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(Line::SOLID));
 
@@ -1254,7 +1254,7 @@ void gl3dXflView::paintMesh(QOpenGLBuffer &vbo, bool bBackGround)
         m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
         m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_VLMStyle.m_Color);
         m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_VLMStyle.m_Stipple));
-        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_VLMStyle.m_Width);
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, float(W3dPrefs::s_VLMStyle.m_Width));
 
         vbo.bind();
         {

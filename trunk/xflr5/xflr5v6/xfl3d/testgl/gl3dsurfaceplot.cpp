@@ -161,8 +161,8 @@ void gl3dSurfacePlot::paintPolygon()
 
         m_shadLine.setUniformValue(m_locLine.m_UniColor, QColor(255,0,0));
 
-        if(m_bUse120StyleShaders) glLineWidth(5);
-        else m_shadLine.setUniformValue(m_locLine.m_Thickness, 5);
+        if(m_bUse120StyleShaders) glLineWidth(5.0f);
+        else m_shadLine.setUniformValue(m_locLine.m_Thickness, 5.0f);
         m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(Line::SOLID));
 
         if(m_vboPolygon.size()>=0)

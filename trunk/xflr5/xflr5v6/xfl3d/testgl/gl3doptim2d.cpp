@@ -453,8 +453,8 @@ void gl3dOptim2d::glRenderView()
             m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*vmMat);
             m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, pvmMat);
             m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(Line::SOLID));
-            if(m_bUse120StyleShaders) glLineWidth(2);
-            else m_shadLine.setUniformValue(m_locLine.m_Thickness, 2);
+            if(m_bUse120StyleShaders) glLineWidth(2.0f);
+            else m_shadLine.setUniformValue(m_locLine.m_Thickness, 2.0f);
         }
         m_shadLine.release();
 
