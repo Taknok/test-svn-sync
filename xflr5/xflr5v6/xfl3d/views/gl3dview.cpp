@@ -1203,7 +1203,7 @@ void gl3dView::paintArcBall()
             m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
             m_shadLine.setUniformValue(m_locLine.m_UniColor, QColor(43,43,43,175));
             m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(Line::SOLID));
-            m_shadLine.setUniformValue(m_locLine.m_Thickness, 2);
+            m_shadLine.setUniformValue(m_locLine.m_Thickness, 2.0f);
 
             if(m_bUse120StyleShaders) glLineWidth(2);
 
@@ -1226,7 +1226,7 @@ void gl3dView::paintArcBall()
                 m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, 0);
                 m_shadLine.setUniformValue(m_locLine.m_UniColor, QColor(70, 25, 40));
                 m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(Line::SOLID));
-                m_shadLine.setUniformValue(m_locLine.m_Thickness, 3);
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, 3.0f);
                 if(m_bUse120StyleShaders) glLineWidth(5);
 
                 int nSegs = m_vboArcPoint.size()/2/3/int(sizeof(float)); // 2 vertices and (3 position components)
@@ -1977,14 +1977,14 @@ void gl3dView::paintTriangle(QOpenGLBuffer &vbo, bool bHighlight, bool bBackgrou
     if(bHighlight)
     {
         if(m_bUse120StyleShaders) glLineWidth(W3dPrefs::s_OutlineStyle.m_Width+2);
-        else m_shadLine.setUniformValue(m_locLine.m_Thickness,W3dPrefs::s_OutlineStyle.m_Width+2);
+        else m_shadLine.setUniformValue(m_locLine.m_Thickness, float(W3dPrefs::s_OutlineStyle.m_Width+2));
 
         m_shadLine.setUniformValue(m_locLine.m_UniColor, Qt::red);
     }
     else
     {
         if(m_bUse120StyleShaders) glLineWidth(W3dPrefs::s_OutlineStyle.m_Width);
-        else m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_OutlineStyle.m_Width);
+        else m_shadLine.setUniformValue(m_locLine.m_Thickness, float(W3dPrefs::s_OutlineStyle.m_Width));
 
         m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_OutlineStyle.m_Color);
     }
@@ -2166,7 +2166,7 @@ void gl3dView::paintSegments(QOpenGLBuffer &vbo, QColor const &clr, int thicknes
                 }
                 else
                 {
-                    m_shadLine.setUniformValue(m_locLine.m_Thickness, thickness);
+                    m_shadLine.setUniformValue(m_locLine.m_Thickness, float(thickness));
                     m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(stip));
                 }
             }
@@ -2298,7 +2298,7 @@ void gl3dView::paintLineStrip(QOpenGLBuffer &vbo, QColor const &clr, int width, 
         glLineStipple(1, GLStipple(stipple));
     }
 
-    m_shadLine.setUniformValue(m_locLine.m_Thickness, width);
+    m_shadLine.setUniformValue(m_locLine.m_Thickness, float(width));
     m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(stipple));
 
     vbo.bind();
@@ -2325,7 +2325,7 @@ void gl3dView::paintColourSegments(QOpenGLBuffer &vbo, LineStyle const &ls)
         m_shadLine.enableAttributeArray(m_locLine.m_attrColor);
 
         m_shadLine.setUniformValue(m_locLine.m_HasUniColor, 0);
-        m_shadLine.setUniformValue(m_locLine.m_Thickness, ls.m_Width);
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, float(ls.m_Width));
         m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(ls.m_Stipple));
 
         vbo.bind();

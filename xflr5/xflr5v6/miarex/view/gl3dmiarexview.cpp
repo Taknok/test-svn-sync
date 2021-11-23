@@ -905,7 +905,7 @@ void gl3dMiarexView::paintDownwash(int iWing)
         m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
         m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_DownwashStyle.m_Color);
         m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_DownwashStyle.m_Stipple));
-        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_DownwashStyle.m_Width);
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, float(W3dPrefs::s_DownwashStyle.m_Width));
 
         m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
         m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
@@ -1297,7 +1297,7 @@ void gl3dMiarexView::paintLift(int iWing)
         m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
         m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_XCPStyle.m_Color);
         m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_XCPStyle.m_Stipple));
-        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_XCPStyle.m_Width);
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, float(W3dPrefs::s_XCPStyle.m_Width));
 
         m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
         m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
@@ -1341,7 +1341,7 @@ void gl3dMiarexView::paintMoments()
         m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
         m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_MomentStyle.m_Color);
         m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_MomentStyle.m_Stipple));
-        m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_MomentStyle.m_Width);
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, float(W3dPrefs::s_MomentStyle.m_Width));
         m_shadLine.setUniformValue(m_locLine.m_vmMatrix, m_matView*m_matModel);
         m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, m_matProj*m_matView*m_matModel);
 
@@ -1753,7 +1753,7 @@ void gl3dMiarexView::paintDrag(int iWing)
             {
                 m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_IDragStyle.m_Color);
                 m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_IDragStyle.m_Stipple));
-                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_IDragStyle.m_Width);
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, float(W3dPrefs::s_IDragStyle.m_Width));
                 GLLineStipple(W3dPrefs::s_IDragStyle.m_Stipple);
 
                 glLineWidth(GLfloat(W3dPrefs::s_IDragStyle.m_Width));
@@ -1773,7 +1773,7 @@ void gl3dMiarexView::paintDrag(int iWing)
             {
                 m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_VDragStyle.m_Color);
                 m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_VDragStyle.m_Stipple));
-                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_VDragStyle.m_Width);
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, float(W3dPrefs::s_VDragStyle.m_Width));
                 GLLineStipple(W3dPrefs::s_VDragStyle.m_Stipple);
 
                 glLineWidth(GLfloat(W3dPrefs::s_VDragStyle.m_Width));
@@ -1816,7 +1816,7 @@ void gl3dMiarexView::paintStreamLines()
 
             m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_StreamStyle.m_Color);
             m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_StreamStyle.m_Stipple));
-            m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_StreamStyle.m_Width);
+            m_shadLine.setUniformValue(m_locLine.m_Thickness, float(W3dPrefs::s_StreamStyle.m_Width));
 
             GLLineStipple(W3dPrefs::s_StreamStyle.m_Stipple);
 
@@ -1861,7 +1861,7 @@ void gl3dMiarexView::paintTransitions(int iWing)
             {
                 m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_TopStyle.m_Color);
                 m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_TopStyle.m_Stipple));
-                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_TopStyle.m_Width);
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, float(W3dPrefs::s_TopStyle.m_Width));
                 GLLineStipple(W3dPrefs::s_TopStyle.m_Stipple);
 
                 glLineWidth(GLfloat(W3dPrefs::s_TopStyle.m_Width));
@@ -1873,7 +1873,7 @@ void gl3dMiarexView::paintTransitions(int iWing)
             {
                 m_shadLine.setUniformValue(m_locLine.m_UniColor, W3dPrefs::s_BotStyle.m_Color);
                 m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(W3dPrefs::s_BotStyle.m_Stipple));
-                m_shadLine.setUniformValue(m_locLine.m_Thickness, W3dPrefs::s_BotStyle.m_Width);
+                m_shadLine.setUniformValue(m_locLine.m_Thickness, float(W3dPrefs::s_BotStyle.m_Width));
                 GLLineStipple(W3dPrefs::s_BotStyle.m_Stipple);
                 glLineWidth(GLfloat(W3dPrefs::s_BotStyle.m_Width));
                 glDrawArrays(GL_LINE_STRIP, m_Ny[iWing], m_Ny[iWing]);

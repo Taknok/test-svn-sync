@@ -44,13 +44,13 @@ LineStyle W3dPrefs::s_AxisStyle      = {true, Line::DASHDOT, 1, QColor(150,150,1
 LineStyle W3dPrefs::s_VLMStyle       = {true, Line::SOLID,   1, QColor(180,180,180),     Line::NOSYMBOL};
 
 LineStyle W3dPrefs::s_OutlineStyle   = {true, Line::SOLID,   1, QColor(73,73,73),        Line::NOSYMBOL};
-LineStyle W3dPrefs::s_XCPStyle       = {true, Line::SOLID,   2, QColor(50, 150, 50),     Line::NOSYMBOL};
-LineStyle W3dPrefs::s_MomentStyle    = {true, Line::SOLID,   2, QColor(200, 100, 100),   Line::NOSYMBOL};
-LineStyle W3dPrefs::s_IDragStyle     = {true, Line::SOLID,   2, QColor(255,200,0),       Line::NOSYMBOL};
-LineStyle W3dPrefs::s_DownwashStyle  = {true, Line::SOLID,   2, QColor(255, 100, 100),   Line::NOSYMBOL};
+LineStyle W3dPrefs::s_XCPStyle       = {true, Line::SOLID,   1, QColor(50, 150, 50),     Line::NOSYMBOL};
+LineStyle W3dPrefs::s_MomentStyle    = {true, Line::SOLID,   1, QColor(200, 100, 100),   Line::NOSYMBOL};
+LineStyle W3dPrefs::s_IDragStyle     = {true, Line::SOLID,   1, QColor(255,200,0),       Line::NOSYMBOL};
+LineStyle W3dPrefs::s_DownwashStyle  = {true, Line::SOLID,   1, QColor(255, 100, 100),   Line::NOSYMBOL};
 LineStyle W3dPrefs::s_WakeStyle      = {true, Line::SOLID,   1, QColor(0, 150, 200),     Line::NOSYMBOL};
-LineStyle W3dPrefs::s_CpStyle        = {true, Line::SOLID,   2, QColor(255,0,0),         Line::NOSYMBOL};
-LineStyle W3dPrefs::s_StreamStyle    = {true, Line::SOLID,   2, QColor(200, 150, 255),   Line::NOSYMBOL};
+LineStyle W3dPrefs::s_CpStyle        = {true, Line::SOLID,   1, QColor(255,0,0),         Line::NOSYMBOL};
+LineStyle W3dPrefs::s_StreamStyle    = {true, Line::DASH,    1, QColor(105, 105, 105),   Line::NOSYMBOL};
 
 LineStyle W3dPrefs::s_VDragStyle     = {true, Line::SOLID,   1, QColor(200,100,220),     Line::NOSYMBOL};
 LineStyle W3dPrefs::s_TopStyle       = {true, Line::SOLID,   1, QColor(171, 103, 220),   Line::NOSYMBOL};
