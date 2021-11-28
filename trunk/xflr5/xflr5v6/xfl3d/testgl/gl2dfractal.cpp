@@ -14,14 +14,17 @@
 
 #include <xflcore/displayoptions.h>
 #include <xflcore/trace.h>
-#include <xfl3d/views/gl3dview.h> // for the static variables
+
+#include <xfl3d/views/gl3dview.h>
 #include <xflwidgets/customwts/intedit.h>
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/wt_globals.h>
 
-int gl2dFractal::s_MaxIter = 32;
-float gl2dFractal::s_MaxLength = 10;
 
+int gl2dFractal::s_Hue(1000);
+int gl2dFractal::s_MaxIter(1024);
+float gl2dFractal::s_MaxLength(10);
+QVector2D gl2dFractal::s_Seed(-0.35099, -0.605502f);
 
 gl2dFractal::gl2dFractal(QWidget *pParent) : gl2dView(pParent)
 {
@@ -31,22 +34,21 @@ gl2dFractal::gl2dFractal(QWidget *pParent) : gl2dView(pParent)
     m_Scale = 0.5f;
 
     m_nRoots = 1;
-    m_Root[0] = QVector2D(0.213f, 0.407f);
     m_iHoveredRoot = m_iSelectedRoot = -1;
     m_bResetRoots = true;
 
     m_locJulia = m_locParamX = m_locParamY = -1;
-    m_locIters = m_locLength = -1;
+    m_locIters = m_locLength = m_locHue = -1;
     m_locViewTrans = -1;
     m_locViewScale = -1;
     m_locViewRatio = -1;
 
-    QFrame *pFrame = new QFrame(this);
+    QFrame *m_pCmdFrame = new QFrame(this);
     {
-        pFrame->setCursor(Qt::ArrowCursor);
+        m_pCmdFrame->setCursor(Qt::ArrowCursor);
 
-        pFrame->setFrameShape(QFrame::NoFrame);
-        pFrame->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+        m_pCmdFrame->setFrameShape(QFrame::NoFrame);
+        m_pCmdFrame->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
         QVBoxLayout *pFrameLayout = new QVBoxLayout;
         {
@@ -82,6 +84,22 @@ gl2dFractal::gl2dFractal(QWidget *pParent) : gl2dView(pParent)
             connect(m_pchShowSeed, SIGNAL(clicked()), SLOT(onMode()));
             m_pchShowSeed->setToolTip("Use the mouse to drag the seed and update the corresponding Julia set");
 
+            QHBoxLayout *pHueLayout = new QHBoxLayout;
+            {
+                QLabel *pLabHue = new QLabel("Hue:");
+                m_pslTau = new QSlider(Qt::Horizontal);
+                m_pslTau->setMinimum(0);
+                m_pslTau->setMaximum(1000);
+                m_pslTau->setSliderPosition(500);
+                m_pslTau->setTickInterval(50);
+                m_pslTau->setTickPosition(QSlider::TicksBelow);
+                m_pslTau->setValue(s_Hue);
+                connect(m_pslTau, SIGNAL(sliderMoved(int)), SLOT(update()));
+                pHueLayout->addWidget(pLabHue);
+                pHueLayout->addWidget(m_pslTau);
+            }
+
+
             m_plabScale = new QLabel();
             m_plabScale->setFont(DisplayOptions::textFont());
 
@@ -95,25 +113,16 @@ gl2dFractal::gl2dFractal(QWidget *pParent) : gl2dView(pParent)
             pFrameLayout->addLayout(pModeLayout);
             pFrameLayout->addLayout(pParamLayout);
             pFrameLayout->addWidget(m_pchShowSeed);
+            pFrameLayout->addLayout(pHueLayout);
             pFrameLayout->addWidget(m_plabScale);
             pFrameLayout->addWidget(pRefLink);
         }
 
-        pFrame->setLayout(pFrameLayout);
+        m_pCmdFrame->setLayout(pFrameLayout);
 
-        QPalette palette;
-        palette.setColor(QPalette::WindowText, Qt::white);
-        palette.setColor(QPalette::Text,  Qt::white);
-        QColor clr = gl3dView::backColor();
-        clr.setAlpha(0);
-        palette.setColor(QPalette::Window, clr);
-        palette.setColor(QPalette::Base, clr);
-
-        pFrame->setStyleSheet("QFrame{background-color: transparent; color: white}"
+        m_pCmdFrame->setStyleSheet("QFrame{background-color: transparent; color: white}"
                               "QRadioButton{background-color: transparent; color: white}"
                               "QCheckBox{background-color: transparent; color: white}");
-//        setWidgetStyle(pFrame, palette);
-//        pFrame->setPalette(palette);
     }
 }
 
@@ -122,8 +131,11 @@ void gl2dFractal::loadSettings(QSettings &settings)
 {
     settings.beginGroup("gl2dFractal");
     {
-        s_MaxIter   = settings.value("MaxIters", s_MaxIter).toInt();
+        s_Hue       = settings.value("Hue",       s_Hue).toInt();
+        s_MaxIter   = settings.value("MaxIters",  s_MaxIter).toInt();
         s_MaxLength = settings.value("MaxLength", s_MaxLength).toFloat();
+        s_Seed.setX(settings.value("SeedX", s_Seed.x()).toFloat());
+        s_Seed.setY(settings.value("SeedY", s_Seed.y()).toFloat());
     }
     settings.endGroup();
 }
@@ -133,8 +145,11 @@ void gl2dFractal::saveSettings(QSettings &settings)
 {
     settings.beginGroup("gl2dFractal");
     {
-        settings.setValue("MaxIters", s_MaxIter);
+        settings.setValue("Hue",       s_Hue);
+        settings.setValue("MaxIters",  s_MaxIter);
         settings.setValue("MaxLength", s_MaxLength);
+        settings.setValue("SeedX", s_Seed.x());
+        settings.setValue("SeedY", s_Seed.y());
     }
     settings.endGroup();
 }
@@ -150,7 +165,7 @@ void gl2dFractal::onMode()
 void gl2dFractal::initializeGL()
 {
     QString strange, vsrc, fsrc;
-    vsrc = ":/resources/shaders/fractal/fractal_VS.glsl";
+    vsrc = ":/shaders/fractal/fractal_VS.glsl";
     m_shadFrac.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
     if(m_shadFrac.log().length())
     {
@@ -158,7 +173,7 @@ void gl2dFractal::initializeGL()
         trace(strange);
     }
 
-    fsrc = ":/resources/shaders/fractal/fractal_FS.glsl";
+    fsrc = ":/shaders/fractal/fractal_FS.glsl";
     m_shadFrac.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
     if(m_shadFrac.log().length())
     {
@@ -176,6 +191,7 @@ void gl2dFractal::initializeGL()
         m_locParamY    = m_shadFrac.uniformLocation("paramy");
         m_locLength    = m_shadFrac.uniformLocation("maxlength");
         m_locIters     = m_shadFrac.uniformLocation("maxiters");
+        m_locHue       = m_shadFrac.uniformLocation("tau");
         m_locViewTrans = m_shadFrac.uniformLocation("ViewTrans");
         m_locViewScale = m_shadFrac.uniformLocation("ViewScale");
         m_locViewRatio = m_shadFrac.uniformLocation("ViewRatio");
@@ -199,11 +215,15 @@ void gl2dFractal::paintGL()
         s_MaxLength = m_pdeMaxLength->value();
         if(m_prbJulia->isChecked()) m_shadFrac.setUniformValue(m_locJulia,  1);
         else                        m_shadFrac.setUniformValue(m_locJulia,  0);
-        m_shadFrac.setUniformValue(m_locParamX,    m_Root[0].x());
-        m_shadFrac.setUniformValue(m_locParamY,    m_Root[0].y());
+        m_shadFrac.setUniformValue(m_locParamX,    s_Seed.x());
+        m_shadFrac.setUniformValue(m_locParamY,    s_Seed.y());
         m_shadFrac.setUniformValue(m_locIters,     s_MaxIter);
         m_shadFrac.setUniformValue(m_locLength,    s_MaxLength);
         m_shadFrac.setUniformValue(m_locViewRatio, float(width())/float(height()));
+
+        s_Hue = m_pslTau->value();
+        float tau = float(s_Hue)/1000.0f;
+        m_shadFrac.setUniformValue(m_locHue, tau);
 
         m_shadFrac.setUniformValue(m_locViewTrans,  off);
         m_shadFrac.setUniformValue(m_locViewScale,  m_Scale);
@@ -235,8 +255,8 @@ void gl2dFractal::paintGL()
             QVector<float> pts(buffersize);
             int iv = 0;
 
-            pts[iv++] = m_Root[0].x();
-            pts[iv++] = m_Root[0].y();
+            pts[iv++] = s_Seed.x();
+            pts[iv++] = s_Seed.y();
             pts[iv++] = 0.0f;
             if (m_iHoveredRoot==0)
                 pts[iv++] = 1.0f;
@@ -256,8 +276,8 @@ void gl2dFractal::paintGL()
                              *3;                 // three components/vertex
                 pts.resize(buffersize);
 
-                float x(m_Root[0].x());
-                float y(m_Root[0].y());
+                float x(s_Seed.x());
+                float y(s_Seed.y());
                 float xn(0), yn(0);
                 iv = 0;
                 for(int is=0; is<s_MaxIter; is++)
@@ -266,8 +286,8 @@ void gl2dFractal::paintGL()
                     pts[iv++] = y;
                     pts[iv++] = 0.0f;
 
-                    xn = x*x - y*y + m_Root[0].x();
-                    yn = 2.0*x*y   + m_Root[0].y();
+                    xn = x*x - y*y + s_Seed.x();
+                    yn = 2.0*x*y   + s_Seed.y();
 //qDebug(" %17g %17g", x, y);
                     if(std::isnormal(x) && std::isnormal(y))
                     {
@@ -350,7 +370,7 @@ void gl2dFractal::mousePressEvent(QMouseEvent *pEvent)
     int nroots = 1;
     for(int i=0; i<nroots; i++)
     {
-        if(pt.distanceToPoint(m_Root[0])<0.025/m_Scale)
+        if(pt.distanceToPoint(s_Seed)<0.025/m_Scale)
         {
 //            m_Timer.stop();
 //            m_pchAnimateRoots->setChecked(false);
@@ -370,9 +390,9 @@ void gl2dFractal::mouseMoveEvent(QMouseEvent *pEvent)
 
     if(m_iSelectedRoot>=0)
     {
-        m_Root[0] = pt;
-        m_amp0 = sqrt(m_Root[0].x()*m_Root[0].x()+m_Root[0].y()*m_Root[0].y());
-        m_phi0 = atan2f(m_Root[0].y(), m_Root[0].x());
+        s_Seed = pt;
+        m_amp0 = sqrt(s_Seed.x()*s_Seed.x()+s_Seed.y()*s_Seed.y());
+        m_phi0 = atan2f(s_Seed.y(), s_Seed.x());
 //        m_Time = 0;
         m_bResetRoots = true;
         update();
@@ -382,7 +402,7 @@ void gl2dFractal::mouseMoveEvent(QMouseEvent *pEvent)
     {
         for(int i=0; i<m_nRoots; i++)
         {
-            if(pt.distanceToPoint(m_Root[0])<0.025/m_Scale)
+            if(pt.distanceToPoint(s_Seed)<0.025/m_Scale)
             {
                 m_iHoveredRoot = 0;
                 m_bResetRoots = true;
@@ -412,8 +432,4 @@ void gl2dFractal::mouseReleaseEvent(QMouseEvent *pEvent)
     }
     gl2dView::mouseReleaseEvent(pEvent);
 }
-
-
-
-
 

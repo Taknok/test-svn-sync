@@ -201,7 +201,7 @@ void gl2dView::initializeGL()
     QString strange, vsrc, gsrc, fsrc;
 
     //--------- setup the shader to paint stippled thick lines -----------
-    vsrc = ":/resources/shaders/line/line_VS.glsl";
+    vsrc = ":/shaders/line/line_VS.glsl";
     m_shadLine.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
     if(m_shadLine.log().length())
     {
@@ -210,7 +210,7 @@ void gl2dView::initializeGL()
     }
 
 
-    gsrc = ":/resources/shaders/line/line_GS.glsl";
+    gsrc = ":/shaders/line/line_GS.glsl";
     m_shadLine.addShaderFromSourceFile(QOpenGLShader::Geometry, gsrc);
     if(m_shadLine.log().length())
     {
@@ -220,7 +220,7 @@ void gl2dView::initializeGL()
 
 
 
-    fsrc = ":/resources/shaders/line/line_FS.glsl";
+    fsrc = ":/shaders/line/line_FS.glsl";
     m_shadLine.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
     if(m_shadLine.log().length())
     {
@@ -247,7 +247,7 @@ void gl2dView::initializeGL()
     }
     m_shadLine.release();
 
-    vsrc = ":/resources/shaders/point/point_VS.glsl";
+    vsrc = ":/shaders/point/point_VS.glsl";
     m_shadPoint.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
     if(m_shadPoint.log().length())
     {
@@ -255,7 +255,7 @@ void gl2dView::initializeGL()
         trace(strange);
     }
 
-    gsrc = ":/resources/shaders/point/point_GS.glsl";
+    gsrc = ":/shaders/point/point_GS.glsl";
     m_shadPoint.addShaderFromSourceFile(QOpenGLShader::Geometry, gsrc);
     if(m_shadPoint.log().length())
     {
@@ -263,7 +263,7 @@ void gl2dView::initializeGL()
         trace(strange);
     }
 
-    fsrc = ":/resources/shaders/point/point_FS.glsl";
+    fsrc = ":/shaders/point/point_FS.glsl";
     m_shadPoint.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
     if(m_shadPoint.log().length())
     {
