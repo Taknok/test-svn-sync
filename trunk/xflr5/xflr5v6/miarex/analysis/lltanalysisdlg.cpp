@@ -23,7 +23,7 @@
 #include <QApplication>
 #include <QDir>
 #include <QThreadPool>
-#include <QtConcurrent/QtConcurrentRun>
+#include <QtConcurrent/QtConcurrent>
 #include <QFontDatabase>
 #include <QDateTime>
 #include <QDesktopWidget>

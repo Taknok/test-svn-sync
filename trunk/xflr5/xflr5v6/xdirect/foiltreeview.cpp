@@ -32,8 +32,8 @@
 //#include <xfl/xdirect/menus/xdirectmenus.h>
 
 
-MainFrame *FoilTreeView::s_pMainFrame = nullptr;
-XDirect *FoilTreeView::s_pXDirect   = nullptr;
+MainFrame *FoilTreeView::s_pMainFrame(nullptr);
+XDirect *FoilTreeView::s_pXDirect(nullptr);
 
 
 FoilTreeView::FoilTreeView(QWidget *pParent) : QWidget(pParent)
@@ -80,7 +80,7 @@ FoilTreeView::FoilTreeView(QWidget *pParent) : QWidget(pParent)
 
     connect(m_pStruct, SIGNAL(pressed(QModelIndex)), SLOT(onItemClicked(QModelIndex)));
     //	connect(m_pStruct, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(onItemDoubleClicked(QModelIndex)));
-    connect(m_pStruct->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)), SLOT(onCurrentRowChanged(QModelIndex, QModelIndex)));
+    connect(m_pStruct->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)), SLOT(onCurrentRowChanged(QModelIndex,QModelIndex)));
 }
 
 
@@ -261,8 +261,8 @@ void FoilTreeView::fillPolars(ObjectTreeItem *pFoilItem, Foil const *pFoil)
 
 Qt::CheckState FoilTreeView::foilState(Foil const *pFoil) const
 {
-    bool bAll = true;
-    bool bNone = true;
+    bool bAll(true);
+    bool bNone(true);
     if(s_pXDirect->isPolarView())
     {
         for(int iplr=0; iplr<Objects2d::polarCount(); iplr++)
@@ -301,8 +301,8 @@ Qt::CheckState FoilTreeView::polarState(Polar const *pPolar) const
 {
     if(s_pXDirect->isOppView())
     {
-        bool bAll = true;
-        bool bNone = true;
+        bool bAll(true);
+        bool bNone(true);
         for(int iopp=0; iopp<Objects2d::oppCount(); iopp++)
         {
             OpPoint const *pOpp = Objects2d::oppAt(iopp);
@@ -342,8 +342,8 @@ void FoilTreeView::setObjectFromIndex(const QModelIndex &index)
 
     if(pSelectedItem->level()==1)
     {
-        Foil *m_pFoil = Objects2d::foil(pSelectedItem->name());
-        s_pXDirect->setFoil(m_pFoil);
+        Foil *pFoil = Objects2d::foil(pSelectedItem->name());
+        s_pXDirect->setFoil(pFoil);
         XDirect::setCurPolar(nullptr);
         XDirect::setCurOpp(nullptr);
         m_Selection = xfl::FOIL;
@@ -387,8 +387,6 @@ void FoilTreeView::onCurrentRowChanged(QModelIndex currentIndex, QModelIndex)
 
 void FoilTreeView::onItemClicked(const QModelIndex &index)
 {
-    if(QDate::currentDate().daysTo(QDate(2021,11,27))<=0)    return; // set a limit date for safety
-
     Foil *pFoil   = s_pXDirect->curFoil();
     Polar *pPolar = s_pXDirect->curPolar();
     OpPoint *pOpp = s_pXDirect->curOpp();
@@ -408,7 +406,7 @@ void FoilTreeView::onItemClicked(const QModelIndex &index)
             pOpp->setLineColor(ls.m_Color);
             pOpp->setPointStyle(ls.m_Symbol);
             pItem->setTheStyle(ls);
-            emit(s_pXDirect->projectModified());
+            emit s_pXDirect->projectModified();
         }
         else if(pPolar)
         {
@@ -433,7 +431,7 @@ void FoilTreeView::onItemClicked(const QModelIndex &index)
             //			pItem->setData(QVariant::fromValue(ls), Qt::DisplayRole);
             setCurveParams();
             //			s_pXDirect->updateBufferFoil();
-            emit(s_pXDirect->projectModified());
+            emit s_pXDirect->projectModified();
         }
     }
     else if (index.column()==2)
@@ -442,7 +440,7 @@ void FoilTreeView::onItemClicked(const QModelIndex &index)
         {
             pOpp->setVisible(!pOpp->isVisible());
             setCurveParams(); // to update polar and foil states
-            emit(s_pXDirect->projectModified());
+            emit s_pXDirect->projectModified();
         }
         else if(pPolar)
         {
@@ -460,7 +458,7 @@ void FoilTreeView::onItemClicked(const QModelIndex &index)
             }
 
             setCurveParams();
-            emit(s_pXDirect->projectModified());
+            emit s_pXDirect->projectModified();
         }
         else if(pFoil)
         {
@@ -472,7 +470,7 @@ void FoilTreeView::onItemClicked(const QModelIndex &index)
                 Objects2d::setFoilVisible(pFoil, false, false);
 
             setCurveParams();
-            emit(s_pXDirect->projectModified());
+            emit s_pXDirect->projectModified();
         }
         setOverallCheckStatus();
     }

@@ -33,12 +33,11 @@
 #include <misc/editplrdlg.h>
 #include <misc/options/settingswt.h>
 #include <misc/polarfilterdlg.h>
-#include <xflobjects/editors/renamedlg.h>
-#include <xdirect/foiltreeview.h>
 #include <xdirect/analysis/batchctrldlg.h>
 #include <xdirect/analysis/batchthreaddlg.h>
 #include <xdirect/analysis/foilpolardlg.h>
 #include <xdirect/analysis/xfoiladvanceddlg.h>
+#include <xdirect/foiltreeview.h>
 #include <xdirect/geometry/cadddlg.h>
 #include <xdirect/geometry/flapdlg.h>
 #include <xdirect/geometry/foilcoorddlg.h>
@@ -48,7 +47,6 @@
 #include <xdirect/geometry/nacafoildlg.h>
 #include <xdirect/geometry/tegapdlg.h>
 #include <xdirect/geometry/twodpaneldlg.h>
-#include <xflobjects/objects2d/objects2d.h>
 #include <xdirect/optim2d/optim2d.h>
 #include <xdirect/xdirect.h>
 #include <xdirect/xdirectstyledlg.h>
@@ -59,6 +57,8 @@
 #include <xflgraph/containers/xdirecttilewt.h>
 #include <xflgraph/controls/graphdlg.h>
 #include <xflgraph/curve.h>
+#include <xflobjects/editors/renamedlg.h>
+#include <xflobjects/objects2d/objects2d.h>
 #include <xflobjects/objects_global.h>
 #include <xflwidgets/customwts/doubleedit.h>
 #include <xflwidgets/customwts/mintextedit.h>
@@ -294,40 +294,13 @@ void XDirect::connectSignals()
 */
 void XDirect::createOppCurves(OpPoint *pOpp)
 {
-    OpPoint *pOpPoint = nullptr;
+    OpPoint *pOpPoint(nullptr);
     if(pOpp) pOpPoint = pOpp; else pOpPoint = Objects2d::curOpp();
 
-    Curve *pCurve1;
+    Curve *pCurve1(nullptr);
     QString str;
 
     m_CpGraph.deleteCurves();
-
-    /*    if(pOpPoint)
-    {
-        if(!pOpPoint || !pOpPoint->isVisible()) return;
-        pCurve1    = m_CpGraph.addCurve();
-        int r,g,b,a;
-        pOpPoint->getColor(r,g,b,a);
-
-        pCurve1->setLineStyle(pOpPoint->oppStyle(), pOpPoint->oppWidth(), colour(pOpPoint), pOpPoint->pointStyle(), pOpPoint->isVisible());
-        pCurve1->setCurveName(pOpPoint->opPointName());
-
-        fillOppCurve(pOpPoint, &m_CpGraph, pCurve1);
-
-        if(m_bShowInviscid && pOpPoint && m_CpGraph.yVariable()<2)
-        {
-            Curve *pCpi = m_CpGraph.addCurve();
-            pCpi->setPoints(pOpPoint->pointStyle());
-            pCpi->setStyle(1);
-            pCpi->setColor(colour(pOpPoint).darker(150));
-            pCpi->setWidth(pOpPoint->oppWidth());
-            str= QString("-Re=%1-Alpha=%2_Inviscid").arg(pOpPoint->Reynolds(),8,'f',0).arg(pOpPoint->aoa(),5,'f',2);
-            str = pOpPoint->foilName()+str;
-            pCpi->setCurveName(str);
-            fillOppCurve(pOpPoint, &m_CpGraph, pCpi, true);
-        }
-    }*/
-
 
     for (int k=0; k<m_poaOpp->size(); k++)
     {
@@ -367,17 +340,11 @@ void XDirect::createOppCurves(OpPoint *pOpp)
 */
 void XDirect::createPolarCurves()
 {
-    // curves must be entirely reconstructed each time from the
-    // operating points database, since user may have added
-    // or deleted points & polars
-
-    Polar *pPolar = nullptr;
-
     for(int ig=0; ig<MAXPOLARGRAPHS; ig++) m_PlrGraph[ig]->deleteCurves();
 
     for (int k=0; k<m_poaPolar->size(); k++)
     {
-        pPolar = m_poaPolar->at(k);
+        Polar *pPolar = m_poaPolar->at(k);
 
         if (pPolar->isVisible() && pPolar->m_Alpha.size()>0)
         {
@@ -397,19 +364,6 @@ void XDirect::createPolarCurves()
 
                     fillPolarCurve(pCurve[ig], pPolar, m_PlrGraph[ig]->xVariable(), m_PlrGraph[ig]->yVariable());
                     pCurve[ig]->setName(pPolar->polarName());
-
-                    /*                    if(m_PlrGraph[ig]->yVariable() == 6)    pTr2Curve = m_PlrGraph[ig]->addCurve();
-                    else                                    pTr2Curve = nullptr;
-                    if(pTr2Curve)
-                    {
-                        pTr2Curve->setLineStyle(pPolar->polarStyle(), pPolar->polarWidth(), pPolar->color(), pPolar->pointStyle(), pPolar->isVisible());
-                        fillPolarCurve(pTr2Curve, pPolar, m_PlrGraph[ig]->xVariable(), 7);
-
-                        str = pPolar->polarName() + " / Xtr1";
-                        pCurve[ig]->setCurveName(str);
-                        str = pPolar->polarName() + " / Xtr2";
-                        pTr2Curve->setCurveName(str);
-                    }*/
                 }
             }
         }
@@ -849,7 +803,7 @@ void XDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar)
 */
 QVector<double> *XDirect::getVariable(Polar *pPolar, int iVar)
 {
-    QVector<double> * pVar=nullptr;
+    QVector<double> * pVar(nullptr);
     switch (iVar){
         case 0:
             pVar = &pPolar->m_Alpha;
@@ -1146,14 +1100,11 @@ void XDirect::onAnimate(bool bChecked)
         return;
     }
 
-    OpPoint* pOpPoint;
-    int l;
-
     if(bChecked)
     {
-        for (l=0; l< m_poaOpp->size(); l++)
+        for (int l=0; l< m_poaOpp->size(); l++)
         {
-            pOpPoint = m_poaOpp->at(l);
+            OpPoint*pOpPoint = m_poaOpp->at(l);
 
             if (pOpPoint &&
                     pOpPoint->polarName()  == Objects2d::curPolar()->polarName() &&
@@ -1228,12 +1179,8 @@ void XDirect::onAnimateSingle()
             createOppCurves(pOpPoint);
             setCurOpp(pOpPoint);
 
-            //select current OpPoint in Combobox
             if(!Objects2d::curPolar()->isFixedaoaPolar()) str = QString("%1").arg(Objects2d::curOpp()->m_Alpha,8,'f',2);
             else                                str = QString("%1").arg(Objects2d::curOpp()->Reynolds(),8,'f',2);
-//            indexCbBox = s_pMainFrame->m_pcbOpPoint->findText(str);
-//            if(indexCbBox>=0) s_pMainFrame->m_pcbOpPoint->setCurrentIndex(indexCbBox);
-
             updateView();
         }
     }
@@ -1535,8 +1482,8 @@ void XDirect::onDeleteCurOpp()
 void XDirect::onDeleteCurPolar()
 {
     if(!Objects2d::curPolar()) return;
-    OpPoint *pOpPoint;
-    int l;
+    OpPoint *pOpPoint(nullptr);
+
     QString str;
 
     str = tr("Are you sure you want to delete the polar :\n  ") + Objects2d::curPolar()->polarName();
@@ -1546,7 +1493,7 @@ void XDirect::onDeleteCurPolar()
                                                   QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel))
     {
         // start by removing all OpPoints
-        for (l=m_poaOpp->size()-1; l>=0; l--)
+        for (int l=m_poaOpp->size()-1; l>=0; l--)
         {
             pOpPoint = m_poaOpp->at(l);
             if (pOpPoint->polarName()  == Objects2d::curPolar()->polarName() &&
@@ -1557,7 +1504,7 @@ void XDirect::onDeleteCurPolar()
             }
         }
         // then remove the CPolar and update views
-        for (l=m_poaPolar->size()-1; l>=0; l--)
+        for (int l=m_poaPolar->size()-1; l>=0; l--)
         {
             if(Objects2d::curPolar() == m_poaPolar->at(l))
             {
@@ -1789,7 +1736,6 @@ void XDirect::onDerotateFoil()
 }
 
 
-
 /**
  * The user has requested that the length of the current foil be normalized to 1.
  */
@@ -1822,7 +1768,6 @@ void XDirect::onNormalizeFoil()
     if(Objects2d::curFoil()) m_XFoil.initXFoilGeometry(Objects2d::curFoil()->m_n, Objects2d::curFoil()->m_x, Objects2d::curFoil()->m_y, Objects2d::curFoil()->m_nx, Objects2d::curFoil()->m_ny);
     updateView();
 }
-
 
 
 /**
@@ -2153,7 +2098,7 @@ void XDirect::onSaveFoilPolars()
  */
 void XDirect::onExportCurFoil()
 {
-    if(!Objects2d::curFoil())    return;
+    if(!Objects2d::curFoil()) return;
 
     QString FileName;
 
@@ -2260,11 +2205,11 @@ void XDirect::onExportPolarOpps()
     strong = Objects2d::curFoil()->name() + "\n";
     out << strong;
 
-    OpPoint *pOpPoint;
+
 
     for (i=0; i<m_poaOpp->size(); i++)
     {
-        pOpPoint = m_poaOpp->at(i);
+        OpPoint *pOpPoint = m_poaOpp->at(i);
         if(pOpPoint->foilName() == Objects2d::curPolar()->foilName() && pOpPoint->polarName() == Objects2d::curPolar()->polarName() )
         {
             if(Settings::s_ExportFileType==xfl::TXT)
@@ -2499,10 +2444,9 @@ void XDirect::onFoilGeom()
  */
 void XDirect::onHideAllOpps()
 {
-    OpPoint *pOpp;
     for (int i=0; i<m_poaOpp->size(); i++)
     {
-        pOpp = m_poaOpp->at(i);
+        OpPoint *pOpp = m_poaOpp->at(i);
         pOpp->setVisible(false);
     }
     m_bResetCurves = true;
@@ -2581,11 +2525,9 @@ void XDirect::onHidePolarOpps()
 {
     if(!Objects2d::curFoil() || !Objects2d::curPolar()) return;
 
-    OpPoint *pOpp;
-
     for(int i=0; i<m_poaOpp->size(); i++)
     {
-        pOpp = m_poaOpp->at(i);
+        OpPoint *pOpp = m_poaOpp->at(i);
         if(pOpp->foilName()==Objects2d::curFoil()->name() && pOpp->polarName()==Objects2d::curPolar()->polarName())
             pOpp->setVisible(false);
     }
@@ -2848,7 +2790,7 @@ void XDirect::onImportJavaFoilPolar()
     QString PathName;
     bool bOK(false);
     QByteArray textline;
-    const char *text;
+    const char *text(nullptr);
 
     PathName = QFileDialog::getOpenFileName(s_pMainFrame, tr("Open File"),
                                             xfl::s_LastDirName,
@@ -2868,11 +2810,11 @@ void XDirect::onImportJavaFoilPolar()
     QTextStream in(&XFile);
 
     bool bIsReading = true;
-    int res, Line;
+    int res(0), Line(0);
     int NPolars = 0;
-    double Re;
+    double Re(0);
 
-    double alpha, CL, CD, CM, Xt,  Xb;
+    double alpha(0), CL(0), CD(0), CM(0), Xt(0), Xb(0);
 
     Line = 0;
     if(!xfl::readAVLString(in, Line, FoilName)) return;
@@ -2949,7 +2891,6 @@ void XDirect::onImportJavaFoilPolar()
 }
 
 
-
 /**
  * The user has requested the launch of the interface to create a foil from the interpolation of two existing Foil objects.
  */
@@ -2998,7 +2939,6 @@ void XDirect::onInterpolateFoils()
     delete pNewFoil;
     updateView();
 }
-
 
 
 /**
@@ -3213,7 +3153,6 @@ void XDirect::onQGraph()
 }
 
 
-
 /**
  * The user has requested to rename the Polar
  */
@@ -3222,13 +3161,13 @@ void XDirect::onRenameCurPolar()
     if(!Objects2d::curPolar()) return;
     if(!Objects2d::curFoil()) return;
 
-    int resp, k,l;
-    Polar* pPolar = nullptr;
+    int resp(0);
+    Polar* pPolar(nullptr);
     OpPoint * pOpp;
     QString OldName = Objects2d::curPolar()->polarName();
 
     QStringList NameList;
-    for(k=0; k<m_poaPolar->size(); k++)
+    for(int k=0; k<m_poaPolar->size(); k++)
     {
         pPolar = m_poaPolar->at(k);
         if(pPolar->foilName() == Objects2d::curFoil()->name())
@@ -3248,7 +3187,7 @@ void XDirect::onRenameCurPolar()
             if (OldName == renDlg.newName()) return;
             //Is the new name already used ?
             bExists = false;
-            for (k=0; k<m_poaPolar->size(); k++)
+            for (int k=0; k<m_poaPolar->size(); k++)
             {
                 pPolar = m_poaPolar->at(k);
                 if ((pPolar->foilName()==Objects2d::curFoil()->name()) && (pPolar->polarName() == renDlg.newName()))
@@ -3259,7 +3198,7 @@ void XDirect::onRenameCurPolar()
             }
             if(!bExists)
             {
-                for (l=m_poaOpp->size()-1;l>=0; l--)
+                for (int l=m_poaOpp->size()-1;l>=0; l--)
                 {
                     pOpp = m_poaOpp->at(l);
                     if (pOpp->polarName() == OldName &&
@@ -3273,8 +3212,10 @@ void XDirect::onRenameCurPolar()
             emit projectModified();
         }
         else if(resp ==10)
-        {//user wants to overwrite
+        {
+            //user wants to overwrite
             if (OldName == renDlg.newName()) return;
+            int k(0);
             for (k=0; k<m_poaPolar->size(); k++)
             {
                 pPolar = m_poaPolar->at(k);
@@ -3284,7 +3225,7 @@ void XDirect::onRenameCurPolar()
                     break;
                 }
             }
-            for (l=m_poaOpp->size()-1;l>=0; l--)
+            for (int l=m_poaOpp->size()-1;l>=0; l--)
             {
                 pOpp = m_poaOpp->at(l);
                 if (pOpp->polarName() == Objects2d::curPolar()->polarName())
@@ -3305,7 +3246,7 @@ void XDirect::onRenameCurPolar()
             if(Objects2d::curPolar())
                 Objects2d::curPolar()->setPolarName(renDlg.newName());
 
-            for (l=m_poaOpp->size()-1;l>=0; l--)
+            for (int l=m_poaOpp->size()-1;l>=0; l--)
             {
                 pOpp = m_poaOpp->at(l);
                 if (pOpp->polarName() == OldName &&
@@ -3353,10 +3294,9 @@ void XDirect::onResetCurPolar()
     if(!Objects2d::curPolar()) return;
     Objects2d::curPolar()->resetPolar();
 
-    OpPoint*pOpp;
     for(int i=m_poaOpp->size()-1;i>=0;i--)
     {
-        pOpp = m_poaOpp->at(i);
+        OpPoint*pOpp = m_poaOpp->at(i);
         if(pOpp->foilName()==Objects2d::curFoil()->name() && pOpp->polarName()==Objects2d::curPolar()->polarName())
         {
             m_poaOpp->removeAt(i);
