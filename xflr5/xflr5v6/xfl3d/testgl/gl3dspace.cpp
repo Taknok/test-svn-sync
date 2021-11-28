@@ -20,6 +20,7 @@
 #include <xflgeom/geom_globals.h>
 
 
+
 int gl3dSpace::s_NObjects = 869;
 double gl3dSpace::s_SphereRadius = 31.0;
 
@@ -90,8 +91,7 @@ gl3dSpace::gl3dSpace(QWidget *pParent) : gl3dTestGLView(pParent)
         }
 
         pFrame->setLayout(pMainLayout);
-        pFrame->setStyleSheet("QFrame{background-color: transparent;}");
-        setWidgetStyle(pFrame, palette);
+//        setWidgetStyle(pFrame, palette);
     }
 
     makeGalaxies();
@@ -348,7 +348,7 @@ void gl3dSpace::onObjectRadius(int size)
 
 void gl3dSpace::makeGalaxies()
 {
-    QFile XFile(":/resources/textfiles/galaxies.csv");
+    QFile XFile(":/textfiles/galaxies.csv");
 
     if(!XFile.open(QIODevice::ReadOnly)) return;
     m_Galaxies.clear();

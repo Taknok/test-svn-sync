@@ -856,7 +856,7 @@ void gl3dView::initializeGL()
     QString strange;
     QString vsrc, gsrc, fsrc;
     //--------- setup the shader to paint stippled thick lines -----------
-    vsrc = m_bUse120StyleShaders ? ":/resources/shaders/line/line_VS_120.glsl"   : ":/resources/shaders/line/line_VS.glsl";
+    vsrc = m_bUse120StyleShaders ? ":/shaders/line/line_VS_120.glsl"   : ":/shaders/line/line_VS.glsl";
     m_shadLine.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
     if(m_shadLine.log().length())
     {
@@ -866,7 +866,7 @@ void gl3dView::initializeGL()
 
     if(!m_bUse120StyleShaders)
     {
-        gsrc = ":/resources/shaders/line/line_GS.glsl";
+        gsrc = ":/shaders/line/line_GS.glsl";
         m_shadLine.addShaderFromSourceFile(QOpenGLShader::Geometry, gsrc);
         if(m_shadLine.log().length())
         {
@@ -875,7 +875,7 @@ void gl3dView::initializeGL()
         }
     }
 
-    fsrc = m_bUse120StyleShaders? ":/resources/shaders/line/line_FS_120.glsl" : ":/resources/shaders/line/line_FS.glsl";
+    fsrc = m_bUse120StyleShaders? ":/shaders/line/line_FS_120.glsl" : ":/shaders/line/line_FS.glsl";
     m_shadLine.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
     if(m_shadLine.log().length())
     {
@@ -904,8 +904,8 @@ void gl3dView::initializeGL()
 
 
     //setup the shader to paint colored surfaces
-    vsrc = m_bUse120StyleShaders ? ":/resources/shaders/surface/surface_VS_120.glsl" : ":/resources/shaders/surface/surface_VS.glsl";
-    fsrc = m_bUse120StyleShaders ? ":/resources/shaders/surface/surface_FS_120.glsl" : ":/resources/shaders/surface/surface_FS.glsl";
+    vsrc = m_bUse120StyleShaders ? ":/shaders/surface/surface_VS_120.glsl" : ":/shaders/surface/surface_VS.glsl";
+    fsrc = m_bUse120StyleShaders ? ":/shaders/surface/surface_FS_120.glsl" : ":/shaders/surface/surface_FS.glsl";
     m_shadSurf.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
     if(m_shadSurf.log().length()) trace("Surface vertex shader log:"+m_shadSurf.log());
 
@@ -941,7 +941,7 @@ void gl3dView::initializeGL()
     //--------- setup the shader to paint stippled large points -----------
     if(!m_bUse120StyleShaders)
     {
-        vsrc = ":/resources/shaders/point/point_VS.glsl";
+        vsrc = ":/shaders/point/point_VS.glsl";
         m_shadPoint.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
         if(m_shadPoint.log().length())
         {
@@ -949,7 +949,7 @@ void gl3dView::initializeGL()
             trace(strange);
         }
 
-        gsrc = ":/resources/shaders/point/point_GS.glsl";
+        gsrc = ":/shaders/point/point_GS.glsl";
         m_shadPoint.addShaderFromSourceFile(QOpenGLShader::Geometry, gsrc);
         if(m_shadPoint.log().length())
         {
@@ -957,7 +957,7 @@ void gl3dView::initializeGL()
             trace(strange);
         }
 
-        fsrc = ":/resources/shaders/point/point_FS.glsl";
+        fsrc = ":/shaders/point/point_FS.glsl";
         m_shadPoint.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
         if(m_shadPoint.log().length())
         {

@@ -33,7 +33,6 @@
 #include <QPainter>
 #include <QTextStream>
 #include <QStandardItem>
-#include <QNetworkReply>
 #include <QThread>
 
 
@@ -165,8 +164,6 @@ namespace xfl
     bool writeXmlFile(QIODevice &device, const QSettings::SettingsMap &map); // dummy argument function
 
     void listSysInfo(QString &info);
-
-    void getNetworkError(QNetworkReply::NetworkError neterror, QString &errorstring);
 
 
     QList<QStandardItem *> prepareRow(const QString &first, const QString &second=QString(), const QString &third=QString(),  const QString &fourth=QString());

@@ -27,7 +27,6 @@
 #include <QDate>
 #include <QDir>
 #include <QFile>
-#include <QNetworkInterface>
 #include <QPen>
 #include <QRandomGenerator>
 #include <QTextStream>
@@ -869,132 +868,14 @@ void xfl::listSysInfo(QString &info)
 
 
     info += "MAC adresses:";
-    foreach(QNetworkInterface netInterface, QNetworkInterface::allInterfaces())
+/*    foreach(QNetworkInterface netInterface, QNetworkInterface::allInterfaces())
     {
         // Return only the first non-loopback MAC Address
         if (!(netInterface.flags() & QNetworkInterface::IsLoopBack))
             info += prefix + netInterface.hardwareAddress();
-    }
+    }*/
     info += "\n";
 }
-
-
-void xfl::getNetworkError(QNetworkReply::NetworkError neterror, QString &errorstring)
-{
-    switch(neterror)
-    {
-        case QNetworkReply::NoError:
-            errorstring = "no error condition.";
-            break;
-        case QNetworkReply::ConnectionRefusedError:
-            errorstring = "The remote server refused the connection (the server is not accepting requests)";
-            break;
-        case QNetworkReply::RemoteHostClosedError:
-            errorstring = "The remote server closed the connection prematurely, before the entire reply was received and processed";
-            break;
-        case QNetworkReply::HostNotFoundError:
-            errorstring = "The remote host name was not found (invalid hostname)";
-            break;
-        case QNetworkReply::TimeoutError:
-            errorstring = "The connection to the remote server timed out";
-            break;
-        case QNetworkReply::OperationCanceledError:
-            errorstring = "The operation was canceled via calls to abort() or close() before it was finished.";
-            break;
-        case QNetworkReply::SslHandshakeFailedError:
-            errorstring = "The SSL/TLS handshake failed and the encrypted channel could not be established. The sslErrors() signal should have been emitted.";
-            break;
-        case QNetworkReply::TemporaryNetworkFailureError:
-            errorstring = "The connection was broken due to disconnection from the network, however the system has initiated roaming to another access point."
-                  " The request should be resubmitted and will be processed as soon as the connection is re-established.";
-            break;
-        case QNetworkReply::NetworkSessionFailedError:
-            errorstring = "The connection was broken due to disconnection from the network or failure to start the network.";
-            break;
-        case QNetworkReply::BackgroundRequestNotAllowedError:
-            errorstring = "The background request is not currently allowed due to platform policy.";
-            break;
-        case QNetworkReply::TooManyRedirectsError:
-            errorstring = "While following redirects, the maximum limit was reached. "
-                  "The limit is by default set to 50 or as set by QNetworkRequest::setMaxRedirectsAllowed(). "
-                  "(This value was introduced in 5.6.)";
-            break;
-        case QNetworkReply::InsecureRedirectError:
-            errorstring = "While following redirects, the network access API detected a redirect from a encrypted protocol (https) "
-                  "to an unencrypted one (http). (This value was introduced in 5.6.)";
-            break;
-        case QNetworkReply::ProxyConnectionRefusedError:
-            errorstring = "The connection to the proxy server was refused (the proxy server is not accepting requests)";
-            break;
-        case QNetworkReply::ProxyConnectionClosedError:
-            errorstring = "The proxy server closed the connection prematurely, before the entire reply was received and processed";
-            break;
-        case QNetworkReply::ProxyNotFoundError:
-            errorstring = "The proxy host name was not found (invalid proxy hostname)";
-            break;
-        case QNetworkReply::ProxyTimeoutError:
-            errorstring = "The connection to the proxy timed out or the proxy did not reply in time to the request sent";
-            break;
-        case QNetworkReply::ProxyAuthenticationRequiredError:
-            errorstring = "The proxy requires authentication in order to honour the request but did not accept any credentials "
-                  "offered (if any)";
-            break;
-        case QNetworkReply::ContentAccessDenied:
-            errorstring = "The access to the remote content was denied (similar to HTTP error 403)";
-            break;
-        case QNetworkReply::ContentOperationNotPermittedError:
-            errorstring = "The operation requested on the remote content is not permitted";
-            break;
-        case QNetworkReply::ContentNotFoundError:
-            errorstring = "The remote content was not found at the server (similar to HTTP error 404)";
-            break;
-        case QNetworkReply::AuthenticationRequiredError:
-            errorstring = "The remote server requires authentication to serve the content but the credentials provided "
-                  "were not accepted (if any)";
-            break;
-        case QNetworkReply::ContentReSendError:
-            errorstring = "The request needed to be sent again, but this failed for example because the upload data "
-                  "could not be read a second time.";
-            break;
-        case QNetworkReply::ContentConflictError:
-            errorstring = "The request could not be completed due to a conflict with the current state of the resource.";
-            break;
-        case QNetworkReply::ContentGoneError:
-            errorstring = "The requested resource is no longer available at the server.";
-            break;
-        case QNetworkReply::InternalServerError:
-            errorstring = "The server encountered an unexpected condition which prevented it from fulfilling the request.";
-            break;
-        case QNetworkReply::OperationNotImplementedError:
-            errorstring = "The server does not support the functionality required to fulfill the request.";
-            break;
-        case QNetworkReply::ServiceUnavailableError:
-            errorstring = "The server is unable to handle the request at this time.";
-            break;
-        case QNetworkReply::ProtocolUnknownError:
-            errorstring = "The Network Access API cannot honor the request because the protocol is not known";
-            break;
-        case QNetworkReply::ProtocolInvalidOperationError:
-            errorstring = "The requested operation is invalid for this protocol";
-            break;
-        case QNetworkReply::UnknownNetworkError:
-            errorstring = "An unknown network-related error was detected";
-            break;
-        case QNetworkReply::UnknownProxyError:
-            errorstring = "An unknown proxy-related error was detected";
-            break;
-        case QNetworkReply::UnknownContentError:
-            errorstring = "An unknown error related to the remote content was detected";
-            break;
-        case QNetworkReply::ProtocolFailure:
-            errorstring = "A breakdown in protocol was detected (parsing error, invalid or unexpected responses, etc.)";
-            break;
-        case QNetworkReply::UnknownServerError:
-            errorstring = "An unknown error related to the server response was detected";
-            break;
-    }
-}
-
 
 
 QList<QStandardItem*> xfl::prepareRow(const QString &object, const QString &field, const QString &value,  const QString &unit)

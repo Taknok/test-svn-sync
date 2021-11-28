@@ -185,8 +185,8 @@ void gl3dShadow::initializeGL()
 {
     gl3dView::initializeGL();
     //setup the depth shader
-    QString vsrc(":/resources/shaders/shadow/depth_VS.glsl");
-    QString fsrc(":/resources/shaders/shadow/depth_FS.glsl");
+    QString vsrc(":/shaders/shadow/depth_VS.glsl");
+    QString fsrc(":/shaders/shadow/depth_FS.glsl");
     m_shadDepth.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
     if(m_shadDepth.log().length())
     {

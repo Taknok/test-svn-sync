@@ -156,7 +156,7 @@ void gl2dNewton::saveSettings(QSettings &settings)
 void gl2dNewton::initializeGL()
 {
     QString strange, vsrc, fsrc;
-    vsrc = ":/resources/shaders/newton/newton_VS.glsl";
+    vsrc = ":/shaders/newton/newton_VS.glsl";
     m_shadNewton.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
     if(m_shadNewton.log().length())
     {
@@ -164,7 +164,7 @@ void gl2dNewton::initializeGL()
         trace(strange);
     }
 
-    fsrc = ":/resources/shaders/newton/newton_FS.glsl";
+    fsrc = ":/shaders/newton/newton_FS.glsl";
     m_shadNewton.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
     if(m_shadNewton.log().length())
     {

@@ -62,5 +62,6 @@ SOURCES += \
 
 
 RESOURCES += \
-    xfl3d/shaders.qrc \
-    xfl3d/text_files.qrc \
+    xfl3d/resources/shaders.qrc \
+    xfl3d/resources/text_files.qrc
+

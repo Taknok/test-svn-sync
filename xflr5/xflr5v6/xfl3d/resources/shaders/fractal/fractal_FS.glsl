@@ -4,12 +4,38 @@ uniform int julia;
 uniform float paramx; // the real part of the Julia set parameter
 uniform float paramy; // the imag part of the Julia set parameter
 
+uniform float tau;
+
 uniform int maxiters;
 uniform float maxlength;
 
 in vec2 pos;
 
 layout(location = 0) out vec4 FragmentColor;
+
+
+
+float glGetRed(float tau)
+{
+    if     (tau>3.0f/4.0f) return 1.0f;
+    else if(tau>1.0f/2.0f) return (4.0f*(tau-1.0f/2.0f));
+    else                   return 0.0f;
+}
+
+float glGetGreen(float tau)
+{
+    if     (tau<0.0f || tau>1.0f) return 0.0f;
+    else if(tau<1.0f/4.0f)        return (4.0f*tau);
+    else if(tau>3.0f/4.0f)        return (1.0f-4.0f*(tau-3.0f/4.0f));
+    else                          return 1.0;
+}
+
+float glGetBlue(float tau)
+{
+    if     (tau>1.0f/2.0f) return 0.0f;
+    else if(tau>1.0f/4.0f) return (4.0f*(1.0f/2.0f-tau));
+    else                   return 1.0f;
+}
 
 
 void main(void)
@@ -19,6 +45,8 @@ void main(void)
     float ptx2=0.0;
     float pty2=0.0;
     float tmpx=0.0f;
+    float length=0.0;
+    float tlength=0.0;
 
     if(julia==1)
     {
@@ -44,13 +72,22 @@ void main(void)
             ptx = ptx2 - pty2  + pos.x;
             pty = 2.0*tmpx*pty + pos.y;
         }
+
+        length = sqrt(ptx2 + pty2);
+        tlength += length;
         iter++;
     }
-    while(ptx2 + pty2<maxlength*maxlength && iter<maxiters);
+    while(length<maxlength && iter<maxiters);
 
-    if(iter == maxiters) FragmentColor = vec4(0,0,0,1);
+    if(iter == maxiters)
+    {
+        FragmentColor = vec4(0,0,0,tlength/1000.0);
+//        float tau1 = min(1.0, tlength/200.0);
+//        FragmentColor =  0.5*vec4(glGetRed(tau1), glGetGreen(tau1), glGetBlue(tau1), 1.0);
+    }
 //    else                 FragmentColor = vec4(float(iter)/float(maxiters), 0, 0, 1);
-    else                 FragmentColor = vec4(min(32.0, float(iter))/32.0, 0, 0, 1);
+//    else                 FragmentColor = vec4(min(32.0, float(iter))/32.0 *0.5, 0.2, 0.3, 1);
+    else FragmentColor = min(32.0, float(iter))/32.0 * vec4(glGetRed(tau), glGetGreen(tau), glGetBlue(tau), 1.0);
 }
 
 

@@ -16,6 +16,7 @@
 #include <xfl3d/testgl/gl2dview.h>
 
 #include <QLabel>
+#include <QSlider>
 
 
 class IntEdit;
@@ -48,6 +49,7 @@ class gl2dFractal : public gl2dView
         DoubleEdit *m_pdeMaxLength;
         QLabel *m_plabScale;
         QCheckBox *m_pchShowSeed;
+        QSlider *m_pslTau;
 
         QOpenGLBuffer m_vboRoots;
         QOpenGLBuffer m_vboSegs;
@@ -58,6 +60,7 @@ class gl2dFractal : public gl2dView
         int m_locParamX;
         int m_locParamY;
         int m_locIters;
+        int m_locHue;
         int m_locLength;
         int m_locViewTrans;
         int m_locViewScale;
@@ -69,12 +72,10 @@ class gl2dFractal : public gl2dView
         bool m_bResetRoots;
         int m_iHoveredRoot;
         int m_iSelectedRoot;
-        QVector2D m_Root[1];  /** The roots current position */
         float m_amp0, m_phi0; /** The seed's initial position */
 
-
+        static int s_Hue;
         static int s_MaxIter;
         static float s_MaxLength;
+        static QVector2D s_Seed;
 };
-
-
