@@ -20,7 +20,8 @@
 *****************************************************************************/
 
 #include <QDebug>
-#include <QtConcurrent/QtConcurrentRun>
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QMessageBox>
