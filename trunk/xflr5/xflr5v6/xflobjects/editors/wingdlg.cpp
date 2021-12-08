@@ -264,11 +264,9 @@ void WingDlg::onButton(QAbstractButton *pButton)
 void WingDlg::createXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFoilB, double *xPointA, double *xPointB, int &NXLead, int &NXFlap)
 {
     // the chordwise panel distribution is set i.a.w. with the flap hinges;
-
-    int l;
-    int NXFlapA, NXFlapB, NXLeadA, NXLeadB;
-    double dl, dl2;
-    double xHingeA, xHingeB;
+    int NXFlapA(0), NXFlapB(0), NXLeadA(0), NXLeadB(0);
+    double dl(0), dl2(0);
+    double xHingeA(0), xHingeB(0);
     if(pFoilA && pFoilA->m_bTEFlap) xHingeA=pFoilA->m_TEXHinge/100.0; else xHingeA=1.0;
     if(pFoilB && pFoilB->m_bTEFlap) xHingeB=pFoilB->m_TEXHinge/100.0; else xHingeB=1.0;
 
@@ -283,6 +281,7 @@ void WingDlg::createXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFoilB,
     if(NXFlap>NXPanels/2) NXFlap=int(NXPanels/2);
     NXLead  = NXPanels - NXFlap;
 
+    int l=0;
     for(l=0; l<NXFlapA; l++)
     {
         dl =  double(l);
@@ -708,7 +707,6 @@ void WingDlg::onItemClicked(const QModelIndex &index)
 }
 
 
-
 void WingDlg::onOK()
 {
     readParams();
@@ -877,11 +875,11 @@ void WingDlg::readParams()
 void WingDlg::readSectionData(int sel)
 {
     if(sel>=m_pWingModel->rowCount()) return;
-    double d=0;
+    double d(0);
 
-    bool bOK=false;
+    bool bOK(false);
     QString strong;
-    QStandardItem *pItem=nullptr;
+    QStandardItem *pItem(nullptr);
 
     pItem = m_pWingModel->item(sel,0);
 
@@ -1491,7 +1489,7 @@ void WingDlg::resizeEvent(QResizeEvent *)
 
 int WingDlg::VLMGetPanelTotal()
 {
-    double MinPanelSize;
+    double MinPanelSize(0);
     if(Wing::s_MinPanelSize>0.0) MinPanelSize = Wing::s_MinPanelSize;
     else                         MinPanelSize = m_pWing->planformSpan()/1000.0;
 
@@ -1514,7 +1512,7 @@ bool WingDlg::VLMSetAutoMesh(int total)
     m_bChanged = true;
     //split (NYTotal) panels on each side proportionnaly to length, and space evenly
     //Set VLMMATSIZE/NYTotal panels along chord
-    int NYTotal, size;
+    int NYTotal(0), size(0);
 
     if(!total)
     {
@@ -1681,7 +1679,7 @@ bool WingDlg::intersectObject(Vector3d AA,  Vector3d U, Vector3d &I)
 
 void WingDlg::loadSettings(QSettings &settings)
 {
-    settings.beginGroup("GL3dWingDlg");
+    settings.beginGroup("WingDlg");
     {
         s_WindowGeometry = settings.value("Geometry").toByteArray();
         s_HSplitterSizes = settings.value("HorizontalSplitterSizes").toByteArray();
@@ -1693,7 +1691,7 @@ void WingDlg::loadSettings(QSettings &settings)
 
 void WingDlg::saveSettings(QSettings &settings)
 {
-    settings.beginGroup("GL3dWingDlg");
+    settings.beginGroup("WingDlg");
     {
         settings.setValue("Geometry", s_WindowGeometry);
         settings.setValue("HorizontalSplitterSizes", s_HSplitterSizes);

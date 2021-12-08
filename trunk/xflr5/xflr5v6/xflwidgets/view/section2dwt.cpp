@@ -77,8 +77,7 @@ Section2dWt::Section2dWt(QWidget *parent) : QWidget(parent)
 }
 
 
-
-void Section2dWt::createActions()
+void Section2dWt::createBaseActions()
 {
     m_ActionList.clear();
 

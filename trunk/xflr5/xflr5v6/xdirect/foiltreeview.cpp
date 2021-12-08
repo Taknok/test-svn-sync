@@ -1144,7 +1144,7 @@ void FoilTreeView::setOverallCheckStatus()
 void FoilTreeView::onSetFilter()
 {
     QString filter = m_pStruct->filter();
-    QStringList filters = filter.split(QRegExp("\\s+"));
+    QStringList filters = filter.split(QRegularExpression("\\s+"));
 
     if(filters.size()==0)
     {

@@ -287,7 +287,6 @@ void BodyLineWt::createActions()
 {
     m_ActionList.clear();
 
-
     QAction *pScaleBody = new QAction(tr("Scale Body"), this);
     connect(pScaleBody,  SIGNAL(triggered()), this, SLOT(onScaleBody()));
     m_ActionList.append(pScaleBody);

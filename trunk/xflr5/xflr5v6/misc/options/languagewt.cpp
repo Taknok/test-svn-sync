@@ -25,7 +25,6 @@
 #include <QLabel>
 #include <QStringList>
 #include <QListWidgetItem>
-#include <QMutableStringListIterator>
 #include <QDir>
 #include <QMessageBox>
 #include <QTranslator>
