@@ -21,7 +21,7 @@
 #include <xflwidgets/wt_globals.h>
 
 int gl2dNewton::s_MaxIter = 32;
-float gl2dNewton::s_Tolerance = 1.e-6;
+float gl2dNewton::s_Tolerance = 1.e-6f;
 QColor gl2dNewton::s_Colors[5] = {QColor(77,27,21), QColor(75,111,117), QColor(11,47,77), QColor(77,77,77), QColor(131,120,107)};
 
 

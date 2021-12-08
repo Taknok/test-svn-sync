@@ -82,6 +82,7 @@ QVector<double> BatchAbstractDlg::s_MachList;
 QVector<double> BatchAbstractDlg::s_NCritList;
 
 QByteArray BatchAbstractDlg::s_Geometry;
+QByteArray BatchAbstractDlg::s_HSplitterSizes;
 QByteArray BatchAbstractDlg::s_VSplitterSizes;
 
 /**
@@ -119,6 +120,7 @@ BatchAbstractDlg::~BatchAbstractDlg()
  */
 void BatchAbstractDlg::makeCommonWidgets()
 {
+    m_pHSplitter = nullptr; // defined in the subclasses
     m_pVSplitter = new QSplitter(Qt::Vertical);
     {
         m_plwNameList = new QListWidget;
@@ -628,7 +630,7 @@ void BatchAbstractDlg::outputReList()
 }
 
 
-void BatchAbstractDlg::resizeColumns()
+void BatchAbstractDlg::onResizeColumns()
 {
     double w = double(m_pcptReTable->width())*.93;
     int wCols  = int(w/10);
@@ -637,12 +639,13 @@ void BatchAbstractDlg::resizeColumns()
     m_pcptReTable->setColumnWidth(2, 2*wCols);
     m_pcptReTable->setColumnWidth(3, 2*wCols);
     m_pcptReTable->setColumnWidth(4, 2*wCols);
+    update();
 }
 
 
 void BatchAbstractDlg::resizeEvent(QResizeEvent*)
 {
-    resizeColumns();
+    onResizeColumns();
 }
 
 
@@ -653,8 +656,11 @@ void BatchAbstractDlg::resizeEvent(QResizeEvent*)
 void BatchAbstractDlg::showEvent(QShowEvent *)
 {
     restoreGeometry(s_Geometry);
-    if(s_VSplitterSizes.length()>0) m_pVSplitter->restoreState(s_VSplitterSizes);
-    resizeColumns();
+
+    if(m_pHSplitter) m_pHSplitter->restoreState(s_HSplitterSizes);
+    m_pVSplitter->restoreState(s_VSplitterSizes);
+
+    onResizeColumns();
 }
 
 
@@ -665,6 +671,7 @@ void BatchAbstractDlg::showEvent(QShowEvent *)
 void BatchAbstractDlg::hideEvent(QHideEvent *)
 {
     s_Geometry = saveGeometry();
+    if(m_pHSplitter) s_HSplitterSizes = m_pHSplitter->saveState();
     s_VSplitterSizes  = m_pVSplitter->saveState();
 }
 
@@ -766,6 +773,7 @@ void BatchAbstractDlg::loadSettings(QSettings &settings)
             }
         }
 
+        s_HSplitterSizes = settings.value("HSplitterSizes").toByteArray();
         s_VSplitterSizes = settings.value("VSplitterSizes").toByteArray();
         s_Geometry = settings.value("WindowGeom", QByteArray()).toByteArray();
     }
@@ -813,8 +821,9 @@ void BatchAbstractDlg::saveSettings(QSettings &settings)
             settings.setValue(str3, s_NCritList.at(i));
         }
 
+        settings.setValue("VSplitterSizes",  s_HSplitterSizes);
         settings.setValue("VSplitterSizes",  s_VSplitterSizes);
-        settings.setValue("WindowGeom",   s_Geometry);
+        settings.setValue("WindowGeom",      s_Geometry);
     }
     settings.endGroup();
 }

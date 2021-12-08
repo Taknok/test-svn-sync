@@ -28,6 +28,7 @@
 #include <QMessageBox>
 #include <QFontDatabase>
 #include <QHBoxLayout>
+#include <QRegularExpression>
 
 #include "settingswt.h"
 #include <globals/mainframe.h>
@@ -91,18 +92,8 @@ void Settings::setupLayout()
         QVBoxLayout *pWidgetStyleLayout = new QVBoxLayout;
         {
             m_pcbStyles = new QComboBox;
-
-            QRegExp regExp("Q(.*)Style");
-            QString defaultStyle = QApplication::style()->metaObject()->className();
-            if (defaultStyle == QLatin1String("QMacStyle"))
-                defaultStyle = QLatin1String("Macintosh (Aqua)");
-            else if (defaultStyle == QLatin1String("OxygenStyle"))
-                defaultStyle = QLatin1String("Oxygen");
-            else if (regExp.exactMatch(defaultStyle))
-                defaultStyle = regExp.cap(1);
-
             m_pcbStyles->addItems(QStyleFactory::keys());
-            m_pcbStyles->setCurrentIndex(m_pcbStyles->findText(defaultStyle));
+            m_pcbStyles->setCurrentIndex(m_pcbStyles->findText("Fusion"));
 
 
             m_pchStyleSheetOverride = new QCheckBox("Application dark mode override");

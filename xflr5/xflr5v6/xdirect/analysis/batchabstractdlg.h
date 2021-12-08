@@ -90,7 +90,6 @@ class BatchAbstractDlg : public QDialog
         void writeString(QString &strong);
         void fillReModel();
         void sortRe();
-        void resizeColumns();
         void setRowEnabled(int row, bool bEnabled);
 
         void readFoils(QVector<Foil *> &foils);
@@ -110,6 +109,8 @@ class BatchAbstractDlg : public QDialog
         void onInsertAfter();
         void onCellChanged(QModelIndex topLeft, QModelIndex botRight);
         void onReTableClicked(QModelIndex index);
+
+        void onResizeColumns();
 
     protected:
         QListWidget *m_plwNameList;
@@ -135,7 +136,7 @@ class BatchAbstractDlg : public QDialog
         QPushButton *m_ppbAnalyze, *m_ppbAdvancedSettings;
         PlainTextOutput *m_pteTextOutput;
 
-        QSplitter *m_pVSplitter;
+        QSplitter *m_pHSplitter, *m_pVSplitter;
 
         CPTableView *m_pcptReTable;
         ActionItemModel *m_pReModel;
@@ -177,7 +178,7 @@ class BatchAbstractDlg : public QDialog
         static bool s_bUpdatePolarView;    /**< true if the polar graphs should be updated during the analysis */
         static int s_nThreads;             /**< the number of available threads */
 
-        static QByteArray s_VSplitterSizes;
+        static QByteArray s_HSplitterSizes, s_VSplitterSizes;
 };
 
 

@@ -27,7 +27,6 @@
 #include <QMessageBox>
 #include <QApplication>
 #include <QDateTime>
-#include <QDesktopWidget>
 #include <QTimer>
 #include <QDir>
 #include <QKeyEvent>
@@ -287,7 +286,7 @@ void PanelAnalysisDlg::onTaskFinished()
         outstream << m_pteOutput->toPlainText();
         outstream << "\n";
         QDateTime dt = QDateTime::currentDateTime();
-        QString str = dt.toString(Qt::DefaultLocaleLongDate);
+        QString str = dt.toString(Qt::TextDate);
         outstream << "Analysis ended "<<str<<"\n";
         outstream << "Elapsed: "<<double(clock.elapsed())/1000.0<<" s";
         outstream << "\n";

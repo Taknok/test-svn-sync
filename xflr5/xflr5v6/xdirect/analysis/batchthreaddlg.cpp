@@ -70,27 +70,39 @@ BatchThreadDlg::~BatchThreadDlg()
  */
 void BatchThreadDlg::setupLayout()
 {
-    QVBoxLayout *pLeftSide = new QVBoxLayout;
+    m_pHSplitter = new QSplitter(Qt::Horizontal);
     {
-        pLeftSide->addWidget(m_pVSplitter);
-        pLeftSide->addWidget(m_pgbPolarType);
-        pLeftSide->addWidget(m_pgbTransVars);
-        pLeftSide->addWidget(m_pgbRangeVars);
-        pLeftSide->addWidget(m_pButtonBox);
-    }
+        m_pHSplitter->setChildrenCollapsible(false);
+        connect(m_pHSplitter, SIGNAL(splitterMoved(int,int)), SLOT(onResizeColumns()));
+        QFrame *pLeftFrame = new QFrame;
+        {
+            QVBoxLayout *pLeftSide = new QVBoxLayout;
+            {
+                pLeftSide->addWidget(m_pVSplitter);
+                pLeftSide->addWidget(m_pgbPolarType);
+                pLeftSide->addWidget(m_pgbTransVars);
+                pLeftSide->addWidget(m_pgbRangeVars);
+                pLeftSide->addWidget(m_pButtonBox);
+            }
+            pLeftFrame->setLayout(pLeftSide);
+        }
 
-    QVBoxLayout *pRightSideLayout = new QVBoxLayout;
-    {
-//        pRightSideLayout->addWidget(m_pchInitBL);
-        pRightSideLayout->addWidget(m_pfrOptions);
-        pRightSideLayout->addWidget(m_pteTextOutput);
+        QFrame *pRightFrame = new QFrame;
+        {
+            QVBoxLayout *pRightSideLayout = new QVBoxLayout;
+            {
+                pRightSideLayout->addWidget(m_pfrOptions);
+                pRightSideLayout->addWidget(m_pteTextOutput);
+            }
+            pRightFrame->setLayout(pRightSideLayout);
+        }
+        m_pHSplitter->addWidget(pLeftFrame);
+        m_pHSplitter->addWidget(pRightFrame);
     }
 
     QHBoxLayout *pBoxesLayout = new QHBoxLayout;
     {
-        pBoxesLayout->addLayout(pLeftSide);
-        pBoxesLayout->addLayout(pRightSideLayout);
-        pBoxesLayout->setStretchFactor(pRightSideLayout, 1);
+        pBoxesLayout->addWidget(m_pHSplitter);
     }
 
     setLayout(pBoxesLayout);

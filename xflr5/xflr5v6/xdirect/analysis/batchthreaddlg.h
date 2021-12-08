@@ -67,6 +67,5 @@ class BatchThreadDlg : public BatchAbstractDlg
         QTimer *m_pTimer;
 
         QVector<FoilAnalysis *> m_AnalysisPair;  /**< the list of all analysis to be performed. Once performed, an analysis is removed from the list. */
-
 };
 

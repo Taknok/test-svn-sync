@@ -1023,7 +1023,7 @@ void Wing::computeChords(int NStation, double *chord, double *offset, double *tw
 
 
 /**
-* Copies the gemetrical data from an existing Wing
+* Copies the geometrical data from an existing Wing
 *@param pWing a pointer to the instance of the source Wing object
 */
 void Wing::duplicate(Wing const*pWing)

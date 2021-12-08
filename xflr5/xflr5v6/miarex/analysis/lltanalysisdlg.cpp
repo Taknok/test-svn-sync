@@ -26,7 +26,6 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QFontDatabase>
 #include <QDateTime>
-#include <QDesktopWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QKeyEvent>
