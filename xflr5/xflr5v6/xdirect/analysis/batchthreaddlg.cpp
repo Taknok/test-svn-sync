@@ -26,6 +26,7 @@
 #include <QThreadPool>
 #include <QTimer>
 #include <QDir>
+#include <QDebug>
 
 #include "batchthreaddlg.h"
 
@@ -42,7 +43,7 @@ BatchThreadDlg::BatchThreadDlg(QWidget *pParent) : BatchAbstractDlg(pParent)
 {
     setWindowTitle(tr("Multi-threaded batch analysis"));
 
-    m_pTimer = nullptr;
+    connect(&m_Timer, SIGNAL(timeout()), SLOT(onTimerEvent()));
 
     m_nTaskDone    = 0;
     m_nTaskStarted = 0;
@@ -137,20 +138,8 @@ void BatchThreadDlg::onAnalyze()
     setFileHeader();
     s_bInitBL = m_pchInitBL->isChecked();
 
-    QThreadPool::globalInstance()->setMaxThreadCount(2);
-
     m_ppbAnalyze->setFocus();
-    startAnalysis();
-}
 
-
-/**
- * Starts the multithreaded analysis.
- * First, creates a pool list of all (Foil, pairs) to analyze.
- * Then, starts the threads which will pick the pairs from the pool and remove them once the analayis is finished.
- */
-void BatchThreadDlg::startAnalysis()
-{
     QString strong;
 
     QVector<Foil*> foils;
@@ -210,14 +199,8 @@ void BatchThreadDlg::startAnalysis()
     m_pteTextOutput->insertPlainText(strong);
     m_pteTextOutput->insertPlainText(tr("\nStarted/Done/Total\n"));
 
-    if(m_pTimer)
-    {
-        m_pTimer->stop();
-        delete m_pTimer;
-    }
-    m_pTimer = new QTimer(this);
-    connect(m_pTimer, SIGNAL(timeout()), SLOT(onTimerEvent()));
-    m_pTimer->start(100);
+    if(m_Timer.isActive())  m_Timer.stop();
+    m_Timer.start(30);
 }
 
 
@@ -243,7 +226,7 @@ void BatchThreadDlg::onTimerEvent()
             m_pteTextOutput->insertPlainText(strong);
             m_pteTextOutput->ensureCursorVisible();
 
-            m_pTimer->stop();
+            m_Timer.stop();
             cleanUp();
 
             if(s_pXDirect->m_bPolarView && s_bUpdatePolarView)
@@ -255,52 +238,39 @@ void BatchThreadDlg::onTimerEvent()
     }
     else if(m_bIsRunning)
     {
-        //need to check if we are still running in case a timer event arrives after a cancellation for instance.
-        startThread(); // analyze a new pair
-    }
-}
+        QString strong;
+        if(QThreadPool::globalInstance()->activeThreadCount()<s_nThreads && m_AnalysisPair.count())
+        {
+            XFoilTask *pXFoilTask = new XFoilTask(this);
 
-/**
- * Starts an individual thread
- */
-void BatchThreadDlg::startThread()
-{
-    QString strong;
-    //  browse through the array until we find an available thread
+            //take the last analysis in the array
+            FoilAnalysis *pAnalysis = m_AnalysisPair.at(m_AnalysisPair.size()-1);
 
-    if(QThreadPool::globalInstance()->activeThreadCount()<s_nThreads && m_AnalysisPair.count())
-    {
-        XFoilTask *pXFoilTask = new XFoilTask(this);
+            pAnalysis->pPolar->setVisible(true);
 
-        //take the last analysis in the array
-        FoilAnalysis *pAnalysis = m_AnalysisPair.at(m_AnalysisPair.size()-1);
+            //initiate the task
+            if(s_bAlpha) pXFoilTask->setSequence(true,  s_AlphaMin, s_AlphaMax, s_AlphaInc);
+            else         pXFoilTask->setSequence(false, s_ClMin, s_ClMax, s_ClInc);
 
-        pAnalysis->pPolar->setVisible(true);
+            pXFoilTask->initializeXFoilTask(pAnalysis->pFoil, pAnalysis->pPolar, true, s_bInitBL, s_bFromZero);
 
-        //initiate the task
-        if(s_bAlpha) pXFoilTask->setSequence(true,  s_AlphaMin, s_AlphaMax, s_AlphaInc);
-        else         pXFoilTask->setSequence(false, s_ClMin, s_ClMax, s_ClInc);
+            //launch it
+            m_nTaskStarted++;
+            strong = tr("Starting ")+pAnalysis->pFoil->name()+" / "+pAnalysis->pPolar->polarName() + "\n";
+            updateOutput(strong);
+            QThreadPool::globalInstance()->start(pXFoilTask);
 
-        pXFoilTask->initializeXFoilTask(pAnalysis->pFoil, pAnalysis->pPolar, true, s_bInitBL, s_bFromZero);
 
-        //launch it
-        m_nTaskStarted++;
-        strong = tr("Starting ")+pAnalysis->pFoil->name()+" / "+pAnalysis->pPolar->polarName()+"\n";
-        updateOutput(strong);
-        QThreadPool::globalInstance()->start(pXFoilTask);
-
-        //remove it from the array of pairs to analyze
-        pAnalysis = m_AnalysisPair.last();
-        m_AnalysisPair.removeLast();
-        delete pAnalysis;
+            //remove it from the array of pairs to analyze
+            pAnalysis = m_AnalysisPair.last();
+            m_AnalysisPair.removeLast();
+            delete pAnalysis;
+        }
     }
 }
 
 
-/**
- * Adds a text message to the ouput widget
- * @param str the message to output
- */
+
 void BatchThreadDlg::updateOutput(QString const&str)
 {
     QString strong;
@@ -331,28 +301,23 @@ void BatchThreadDlg::customEvent(QEvent * pEvent)
 {
     if(pEvent->type() == XFOIL_END_TASK_EVENT)
     {
-        handleXFoilTaskEvent(static_cast<XFoilTaskEvent *>(pEvent));
+        XFoilTaskEvent*pXFEvent = static_cast<XFoilTaskEvent *>(pEvent);
+        m_nTaskDone++; //one down, more to go
+        QString str = tr("   ...Finished ")+ (pXFEvent->foil())->name()+" / "
+                      +(pXFEvent->polar())->polarName()+"\n";
+        updateOutput(str);
+
+        if(s_bUpdatePolarView)
+        {
+            s_pXDirect->createPolarCurves();
+            s_pXDirect->updateView();
+        }
     }
     else if(pEvent->type() == XFOIL_END_OPP_EVENT)
     {
         XFoilOppEvent *pOppEvent = dynamic_cast<XFoilOppEvent*>(pEvent);
         if(OpPoint::bStoreOpp())  Objects2d::insertOpPoint(pOppEvent->theOpPoint());
         else                      delete pOppEvent->theOpPoint();
-    }
-}
-
-
-void BatchThreadDlg::handleXFoilTaskEvent(const XFoilTaskEvent *pEvent)
-{
-    m_nTaskDone++; //one down, more to go
-    QString str = tr("   ...Finished ")+ (pEvent->foil())->name()+" / "
-                  +(pEvent->polar())->polarName()+"\n";
-    updateOutput(str);
-
-    if(s_bUpdatePolarView)
-    {
-        s_pXDirect->createPolarCurves();
-        s_pXDirect->updateView();
     }
 }
 

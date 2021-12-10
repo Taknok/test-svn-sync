@@ -774,7 +774,7 @@ void Objects2d::setPolarChildrenStyle(Polar const *pPolar)
  * @param NCrit the transition parameter
  * @return a pointer to the created Polar object
  */
-Polar *Objects2d::createPolar(Foil *pFoil, xfl::enumPolarType PolarType, double Spec, double Mach, double NCrit, double m_XTop, double m_XBot)
+Polar *Objects2d::createPolar(Foil const*pFoil, xfl::enumPolarType PolarType, double Spec, double Mach, double NCrit, double XTop, double XBot)
 {
     if(!pFoil) return nullptr;
 
@@ -825,8 +825,8 @@ Polar *Objects2d::createPolar(Foil *pFoil, xfl::enumPolarType PolarType, double 
     }
     pNewPolar->setMach(Mach);
     pNewPolar->setNCrit(NCrit);
-    pNewPolar->setXtrTop(m_XTop);
-    pNewPolar->setXtrBot(m_XBot);
+    pNewPolar->setXtrTop(XTop);
+    pNewPolar->setXtrBot(XBot);
 
     pNewPolar->setAutoPolarName();
     Polar *pOldPolar = Objects2d::getPolar(pFoil, pNewPolar->polarName());
