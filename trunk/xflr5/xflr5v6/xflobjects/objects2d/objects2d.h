@@ -105,6 +105,6 @@ namespace Objects2d
     inline QVector<Polar*> * pOAPolar() {return &s_oaPolar;}
     inline QVector<OpPoint*> * pOAOpp() {return &s_oaOpp;}
 
-    Polar* createPolar(Foil *pFoil, xfl::enumPolarType PolarType, double Spec, double Mach, double NCrit, double m_XTop, double m_XBot);
+    Polar* createPolar(const Foil *pFoil, xfl::enumPolarType PolarType, double Spec, double Mach, double NCrit, double XTop, double XBot);
 };
 
