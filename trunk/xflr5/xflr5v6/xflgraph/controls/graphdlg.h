@@ -48,13 +48,13 @@ class GraphDlg : public QDialog
         void setGraph(Graph *pGraph);
         Graph* graph() {return m_pGraph;}
         bool bVariableChanged(){return m_bVariableChanged;}
-        QSize sizeHint() const override {return QSize(1100,750);}
+        QSize sizeHint() const override {return QSize(900,550);}
         void setXSel(int ix) {m_XSel=ix;}
         void setYSel(int iy) {m_YSel=iy;}
 
         static void setActivePage(int iPage);
-        static bool loadSettings(QSettings &settings);
-        static bool saveSettings(QSettings &settings);
+        static void loadSettings(QSettings &settings);
+        static void saveSettings(QSettings &settings);
 
 
 

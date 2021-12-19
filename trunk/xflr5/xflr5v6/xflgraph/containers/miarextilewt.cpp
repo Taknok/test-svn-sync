@@ -1,7 +1,7 @@
 /****************************************************************************
 
     MiarexTileWidget Class
-        Copyright (C) 2015 André Deperrois
+        Copyright (C) André Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -47,11 +47,6 @@ MiarexTileWidget::MiarexTileWidget(QWidget *pParent) : GraphTileWidget(pParent)
     m_SingleGraphOrientation = Qt::Horizontal;
 
     setupMainLayout();
-}
-
-
-MiarexTileWidget::~MiarexTileWidget()
-{
 }
 
 
@@ -196,8 +191,6 @@ void MiarexTileWidget::adjustLayout()
 }
 
 
-
-
 void MiarexTileWidget::setMiarexGraphList(xfl::enumMiarexViews miarexView, QVector<Graph*>pGraphList,
                                           int nGraphs, int iGraphWidget, Qt::Orientation orientation)
 {
@@ -230,14 +223,11 @@ void MiarexTileWidget::setMiarexGraphList(xfl::enumMiarexViews miarexView, QVect
 }
 
 
-void MiarexTileWidget::onSplitterMoved(int pos, int index)
+void MiarexTileWidget::onSplitterMoved(int , int )
 {
-    Q_UNUSED(pos);
-    Q_UNUSED(index);
     if(m_MiarexView==xfl::WOPPVIEW)
     {
         m_pWingWidget->setWingScale();
-        //        update();
     }
 }
 

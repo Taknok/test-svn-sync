@@ -56,18 +56,12 @@ XDirectTileWidget::XDirectTileWidget(QWidget *pParent) :  GraphTileWidget(pParen
 
 }
 
-XDirectTileWidget::~XDirectTileWidget()
-{
-
-}
-
 
 void XDirectTileWidget::connectSignals()
 {
     connect(s_pMainFrame->m_pResetFoilScale,  SIGNAL(triggered()), m_pOpPointWidget, SLOT(onResetFoilScale()));
     connect(s_pMainFrame->m_pXDirectStyleAct, SIGNAL(triggered()), m_pOpPointWidget, SLOT(onXDirectStyle()));
     connect(s_pMainFrame->m_pShowNeutralLine, SIGNAL(triggered()), m_pOpPointWidget, SLOT(onShowNeutralLine()));
-    //    connect(pMainFrame->m_pShowPanels,      SIGNAL(triggered()), m_pOpPointWidget, SLOT(onShowPanels()));
     connect(m_pOpPointWidget, SIGNAL(graphChanged(Graph*)), this, SLOT(onResetCurves(Graph*)));
 
     for(int igw=0; igw<m_GraphWidget.count(); igw++)
@@ -76,7 +70,6 @@ void XDirectTileWidget::connectSignals()
     }
 
     connect(m_GraphWidget.at(0), SIGNAL(graphResized(Graph*)), m_pOpPointWidget, SLOT(onResetFoilScale()));
-
 }
 
 
@@ -116,13 +109,7 @@ void XDirectTileWidget::adjustLayout()
         m_pOpPointWidget->setVisible(true);
         m_pLegendWidget->setVisible(false);
 
-        //        m_pMainGridLayout->addWidget(m_GraphWidget.at(0),1,1);
         m_pMainGridLayout->addWidget(m_pOpPointWidget,1,1,2,3);
-        /*        m_pMainGridLayout->setRowStretch(1,5);
-        m_pMainGridLayout->setRowStretch(2,3);
-        m_pMainGridLayout->setColumnStretch(1,1);
-        m_pMainGridLayout->setColumnStretch(2,0);
-        m_pMainGridLayout->setColumnStretch(3,0);*/
     }
     else
     {
@@ -235,8 +222,6 @@ void XDirectTileWidget::setGraphList(QVector<Graph*>pGraphList, int nGraphs, int
 }
 
 
-
-
 void XDirectTileWidget::onResetCurGraphScales()
 {
     if(!isVisible()) return;
@@ -251,11 +236,6 @@ void XDirectTileWidget::onResetCurGraphScales()
     }
     setFocus();
 }
-
-
-
-
-
 
 
 
