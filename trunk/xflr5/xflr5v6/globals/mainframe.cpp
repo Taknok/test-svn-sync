@@ -193,7 +193,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
     QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #elif defined Q_OS_LINUX
-    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5v649");
+    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
     QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
@@ -215,32 +215,9 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
         }
     }
 
-    if(loadSettings())
-    {
-        Settings::loadSettings(settings);
-
-        m_pAFoil->loadSettings(settings);
-        m_pXDirect->loadSettings(settings);
-        m_pMiarex->loadSettings(settings);
-        m_pXInverse->loadSettings(settings);
-
-        LogWt::loadSettings(settings);
-        GL3DScales::loadSettings(settings);
-        W3dPrefs::loadSettings(settings);
-        Units::loadSettings(settings);
-        gl2dFractal::loadSettings(settings);
-        gl2dNewton::loadSettings(settings);
-        gl3dBoids::loadSettings(settings);
-        gl3dHydrogen::loadSettings(settings);
-        gl3dSpace::loadSettings(settings);
-        gl3dOptim2d::loadSettings(settings);
-        gl3dAttractor::loadSettings(settings);
-        gl3dAttractors::loadSettings(settings);
-        gl3dSolarSys::loadSettings(settings);
-        gl3dSagittarius::loadSettings(settings);
-    }
-
+    loadSettings();
     pushSettings();
+    m_pMiarex->updateUnits();
 
     if(m_pSaveTimer)
     {
@@ -3223,17 +3200,15 @@ bool MainFrame::loadSettings()
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
     QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #elif defined Q_OS_LINUX
-    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5v649");
+    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
     QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
 
+    if(!QFile(settings.fileName()).exists()) return false;
+
     settings.beginGroup("MainFrame");
     {
-        int SettingsFormat = settings.value("SettingsFormat").toInt();
-        if(SettingsFormat != SETTINGSFORMAT) return false;
-
-
         Settings::s_StyleName = settings.value("StyleName","").toString();
 
         Settings::setStyleName(settings.value("Style", Settings::styleName()).toString());
@@ -3335,6 +3310,30 @@ bool MainFrame::loadSettings()
 
         ManageFoilsDlg::s_Geometry = settings.value("ManageFoilsDlgGeom").toByteArray();
     }
+    settings.endGroup();
+
+    Settings::loadSettings(settings);
+
+    m_pAFoil->loadSettings(settings);
+    m_pXDirect->loadSettings(settings);
+    m_pMiarex->loadSettings(settings);
+    m_pXInverse->loadSettings(settings);
+
+    GraphDlg::loadSettings(settings);
+    LogWt::loadSettings(settings);
+    GL3DScales::loadSettings(settings);
+    W3dPrefs::loadSettings(settings);
+    Units::loadSettings(settings);
+    gl2dFractal::loadSettings(settings);
+    gl2dNewton::loadSettings(settings);
+    gl3dBoids::loadSettings(settings);
+    gl3dHydrogen::loadSettings(settings);
+    gl3dSpace::loadSettings(settings);
+    gl3dOptim2d::loadSettings(settings);
+    gl3dAttractor::loadSettings(settings);
+    gl3dAttractors::loadSettings(settings);
+    gl3dSolarSys::loadSettings(settings);
+    gl3dSagittarius::loadSettings(settings);
 
     return true;
 }
@@ -3788,7 +3787,7 @@ void MainFrame::onResetSettings()
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
         QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #elif defined Q_OS_LINUX
-        QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5v649");
+        QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
         QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
@@ -4488,13 +4487,12 @@ void MainFrame::saveSettings()
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
     QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #elif defined Q_OS_LINUX
-    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5v649");
+    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
     QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
     settings.beginGroup("MainFrame");
     {
-        settings.setValue("SettingsFormat", SETTINGSFORMAT);
         settings.setValue("FrameGeometryx", frameGeometry().x());
         settings.setValue("FrameGeometryy", frameGeometry().y());
         settings.setValue("SizeWidth",      size().width());
@@ -4568,7 +4566,9 @@ void MainFrame::saveSettings()
     m_pXDirect->saveSettings(settings);
     m_pMiarex->saveSettings(settings);
     m_pXInverse->saveSettings(settings);
+
     Settings::saveSettings(settings);
+    GraphDlg::saveSettings(settings);
     LogWt::saveSettings(settings);
     gl3dView::saveSettings(settings);
     GL3DScales::saveSettings(settings);
@@ -6264,6 +6264,7 @@ void MainFrame::onPreferences()
     gl3dMiarexView::s_bResetglBody = true;
     gl3dMiarexView::s_bResetglLegend = true;
 
+    m_pMiarex->updateUnits();
     m_pMiarex->m_CpGraph.setInverted(true);
     m_pMiarex->m_bResetTextLegend = true;
     m_pMiarex->setControls();
@@ -6372,7 +6373,6 @@ void MainFrame::pushSettings()
 
     PlainTextOutput::setTableFontStruct(DisplayOptions::tableFontStruct());
     LineBtn::setBackgroundColor(DisplayOptions::backgroundColor());
-    update();
 }
 
 

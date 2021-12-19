@@ -317,7 +317,7 @@ void Section2dWt::mouseMoveEvent(QMouseEvent *pEvent)
         dragSelectedPoint(m_MousePos.x, m_MousePos.y);
 //        emit objectModified();
     }
-    else if ((pEvent->buttons() & Qt::MidButton))
+    else if ((pEvent->buttons() & Qt::MiddleButton))
     {
         // user is zooming with mouse button down rather than with wheel
         double scale = m_fScale;

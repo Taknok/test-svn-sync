@@ -22,15 +22,17 @@
 
 #include <QFontDialog>
 #include <QColorDialog>
-
+#include <QPushButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QDebug>
 
+#include <miarex/miarex.h>
+
 #include <xflgraph/graph.h>
 #include <xflgraph/controls/graphdlg.h>
-#include <miarex/miarex.h>
+
 #include <xflwidgets/color/colorbtn.h>
 #include <xflwidgets/line/linebtn.h>
 #include <xflwidgets/line/linemenu.h>
@@ -40,6 +42,7 @@
 #include <xflobjects/objects2d/polar.h>
 #include <xflobjects/objects3d/wpolar.h>
 
+QByteArray GraphDlg::s_Geometry;
 
 int GraphDlg::s_iActivePage = 0;
 
@@ -201,9 +204,16 @@ void GraphDlg::reject()
 }
 
 
+void GraphDlg::hideEvent(QHideEvent *)
+{
+    s_Geometry = saveGeometry();
+}
+
+
 void GraphDlg::showEvent(QShowEvent *pEvent)
 {
     m_pTabWidget->setCurrentIndex(s_iActivePage);
+    restoreGeometry(s_Geometry);
     pEvent->ignore();
 }
 
@@ -842,6 +852,27 @@ void GraphDlg::setGraph(Graph *pGraph)
     setControls();
 }
 
+
+bool GraphDlg::loadSettings(QSettings &settings)
+{
+    settings.beginGroup("GraphDlg");
+    {
+        s_Geometry = settings.value("WindowGeom", QByteArray()).toByteArray();
+    }
+    settings.endGroup();
+    return true;
+}
+
+
+bool GraphDlg::saveSettings(QSettings &settings)
+{
+    settings.beginGroup("GraphDlg");
+    {
+        settings.setValue("WindowGeom", s_Geometry);
+    }
+    settings.endGroup();
+    return true;
+}
 
 
 void GraphDlg::setActivePage(int iPage)

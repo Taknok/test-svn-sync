@@ -1899,18 +1899,17 @@ bool Miarex::loadSettings(QSettings &settings)
     m_CpGraph.loadSettings(settings);
 
     for(int ig=0; ig<MAXWINGGRAPHS; ig++)
-    {
         m_WingGraph[ig]->loadSettings(settings);
-    }
+
     for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
     {
         m_WPlrGraph[ig]->loadSettings(settings);
         setWGraphTitles(m_WPlrGraph[ig]);
     }
+
     for(int ig=0; ig<MAXTIMEGRAPHS; ig++)
-    {
         m_TimeGraph[ig]->loadSettings(settings);
-    }
+
     m_StabPlrGraph.at(0)->loadSettings(settings);
     m_StabPlrGraph.at(1)->loadSettings(settings);
 
@@ -1923,7 +1922,7 @@ bool Miarex::loadSettings(QSettings &settings)
 
 
 /**
- * Updates the display after the user has requested a switch to the OpenGL 3D view
+ * Updates the display after the user has requested a switch to the 3d view
  */
 void Miarex::on3DView()
 {
@@ -6470,9 +6469,12 @@ bool Miarex::saveSettings(QSettings &settings)
     m_StabPlrGraph.at(0)->saveSettings(settings);
     m_StabPlrGraph.at(1)->saveSettings(settings);
 
-    for(int ig=0; ig<m_WPlrGraph.count(); ig++) m_WPlrGraph[ig]->saveSettings(settings);
-    for(int ig=0; ig<m_WingGraph.count(); ig++) m_WingGraph[ig]->saveSettings(settings);
-    for(int ig=0; ig<m_TimeGraph.count(); ig++) m_TimeGraph[ig]->saveSettings(settings);
+    for(int ig=0; ig<m_WPlrGraph.count(); ig++)
+        m_WPlrGraph[ig]->saveSettings(settings);
+    for(int ig=0; ig<m_WingGraph.count(); ig++)
+        m_WingGraph[ig]->saveSettings(settings);
+    for(int ig=0; ig<m_TimeGraph.count(); ig++)
+        m_TimeGraph[ig]->saveSettings(settings);
 
     PlaneTreeView::saveSettings(settings);
     GLLightDlg::saveSettings(settings);

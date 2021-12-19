@@ -21,7 +21,7 @@
 
 
 #include <cmath>
-
+#include <QDebug>
 #include <QPainter>
 #include <QFontMetrics>
 #include <QTextStream>
@@ -829,7 +829,7 @@ void Graph::loadSettings(QSettings &settings)
         yunit    = settings.value("YUnit",   0.2).toDouble();
 
 
-        clr  = settings.value("BackgroundColor", QColor(15,19,20)).value<QColor>();
+        clr  = settings.value("BackgroundColor", QColor(0,0,0)).value<QColor>();
         setBkColor(clr);
 
         m_iMargin = settings.value("margin", 61).toInt();
