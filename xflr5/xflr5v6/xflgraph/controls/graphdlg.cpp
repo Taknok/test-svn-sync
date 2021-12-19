@@ -414,7 +414,7 @@ void GraphDlg::onTitleColor()
 
 void GraphDlg::onTitleFont()
 {
-    bool bOk=false;
+    bool bOk(false);
     QFont TitleFont("Arial");
     m_pGraph->getTitleFont(TitleFont);
 
@@ -535,7 +535,6 @@ void GraphDlg::onYMinGridShow(int state)
 void GraphDlg::setApplied(bool bApplied)
 {
     m_bApplied = bApplied;
-    //    ApplyButton->setEnabled(!bApplied);
 }
 
 
@@ -853,25 +852,23 @@ void GraphDlg::setGraph(Graph *pGraph)
 }
 
 
-bool GraphDlg::loadSettings(QSettings &settings)
+void GraphDlg::loadSettings(QSettings &settings)
 {
     settings.beginGroup("GraphDlg");
     {
         s_Geometry = settings.value("WindowGeom", QByteArray()).toByteArray();
     }
     settings.endGroup();
-    return true;
 }
 
 
-bool GraphDlg::saveSettings(QSettings &settings)
+void GraphDlg::saveSettings(QSettings &settings)
 {
     settings.beginGroup("GraphDlg");
     {
         settings.setValue("WindowGeom", s_Geometry);
     }
     settings.endGroup();
-    return true;
 }
 
 

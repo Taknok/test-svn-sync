@@ -972,12 +972,11 @@ void Graph::deleteCurve(Curve *pCurve)
 }
 
 
-void Graph::deleteCurve(QString CurveTitle)
+void Graph::deleteCurve(QString const &CurveTitle)
 {
-    Curve *pOldCurve = nullptr;
     for(int i=0; i<m_oaCurves.size(); i++)
     {
-        pOldCurve = m_oaCurves.at(i);
+        Curve *pOldCurve = m_oaCurves.at(i);
         if(pOldCurve->m_CurveName==CurveTitle)
         {
             m_oaCurves.removeAt(i);
