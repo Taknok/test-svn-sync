@@ -64,7 +64,7 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
     QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #elif defined Q_OS_LINUX
-    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5v649");
+    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
     QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
@@ -75,10 +75,9 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
     bool bOK= false;
     bool bSheet = false;
     int k=0;
-    settings.beginGroup("MainFrame");
+    if(QFile(settings.fileName()).exists())
     {
-        int SettingsFormat = settings.value("SettingsFormat").toInt();
-        if(SettingsFormat == SETTINGSFORMAT)
+        settings.beginGroup("MainFrame");
         {
             k = settings.value("FrameGeometryx").toInt(&bOK);
             if(bOK) a = k;
@@ -100,9 +99,8 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
 
             bSheet = settings.value("bStyleSheet", false).toBool();
         }
+        settings.endGroup();
     }
-    settings.endGroup();
-
     QTranslator xflr5Translator;
     if(LanguagePath.length())
     {

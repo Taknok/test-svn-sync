@@ -216,7 +216,7 @@ void OpPointWt::mouseMoveEvent(QMouseEvent *pEvent)
             m_FoilOffset.ry() += pt.y()-m_LastPoint.y();
         }
     }
-    else if (Objects2d::curFoil() && ((pEvent->buttons() & Qt::MidButton) || pEvent->modifiers().testFlag(Qt::AltModifier)))
+    else if (Objects2d::curFoil() && ((pEvent->buttons() & Qt::MiddleButton) || pEvent->modifiers().testFlag(Qt::AltModifier)))
     {
         // we zoom the graph or the foil
         if(Objects2d::curFoil())

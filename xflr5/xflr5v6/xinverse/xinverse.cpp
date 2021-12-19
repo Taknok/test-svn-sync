@@ -692,24 +692,24 @@ void XInverse::doubleClickEvent(QPoint pos)
  * Dispatches the event
  * @param event the QMouseEvent
  */
-void XInverse::mouseMoveEvent(QMouseEvent *event)
+void XInverse::mouseMoveEvent(QMouseEvent *pEvent)
 {
     double x1(0), y1(0), xmin(0), xmax(0), ymin(0), ymax(0), xpt(0), ypt(0), scale(0), ux(0), uy(0), unorm(0), vx(0), vy(0), vnorm(0), scal(0);
     double xx0(0),xx1(0),xx2(0),yy0(0),yy1(0),yy2(0), dist(0);
 
     QPoint point;
-    point = event->pos();
+    point = pEvent->pos();
 
     if(m_bGetPos)
     {
         m_tmpPos = m_pMCurve->closestPoint(m_QGraph.clientTox(point.x()), m_QGraph.clientToy(point.y()), dist);
     }
-    else if(m_bZoomPlus && (event->buttons() & Qt::LeftButton))
+    else if(m_bZoomPlus && (pEvent->buttons() & Qt::LeftButton))
     {
         m_ZoomRect.setRight(point.x());
         m_ZoomRect.setBottom(point.y());
     }
-    else if(m_rCltRect.contains(point) && (event->buttons() & Qt::LeftButton) && m_bTrans)
+    else if(m_rCltRect.contains(point) && (pEvent->buttons() & Qt::LeftButton) && m_bTrans)
     {
         if(m_bTransGraph)
         {
@@ -734,7 +734,7 @@ void XInverse::mouseMoveEvent(QMouseEvent *event)
             m_ptOffset.ry() += point.y() - m_PointDown.y();
         }
     }
-    else if ((event->buttons() & Qt::LeftButton)  && !m_bZoomPlus && m_bSpline && m_Spline.m_iSelect>=0)
+    else if ((pEvent->buttons() & Qt::LeftButton)  && !m_bZoomPlus && m_bSpline && m_Spline.m_iSelect>=0)
     {
         // user is dragging the point
         x1 =  m_QGraph.clientTox(point.x()) ;
@@ -900,7 +900,7 @@ void XInverse::mouseMoveEvent(QMouseEvent *event)
             }
         }
     }
-    else if((event->buttons() & Qt::MidButton)  || event->modifiers().testFlag(Qt::AltModifier))
+    else if((pEvent->buttons() & Qt::MiddleButton)  || pEvent->modifiers().testFlag(Qt::AltModifier))
     {
         releaseZoom();
         QPoint pttmp(point.x(), point.y());
@@ -1423,8 +1423,8 @@ void XInverse::onQGraphSettings()
 {
     GraphDlg *pGraphDlg = new GraphDlg(s_pMainFrame);
 
-    pGraphDlg->XSel() = 0;
-    pGraphDlg->YSel() = 0;
+    pGraphDlg->setXSel(0);
+    pGraphDlg->setYSel(0);
     pGraphDlg->setGraph(&m_QGraph);
 
     pGraphDlg->exec();

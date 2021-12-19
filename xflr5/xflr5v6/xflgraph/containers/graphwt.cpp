@@ -225,7 +225,7 @@ void GraphWt::mouseMoveEvent(QMouseEvent *pEvent)
         update();
     }
 
-    else if ((pEvent->buttons() & Qt::MidButton) && !bCtrl)
+    else if ((pEvent->buttons() & Qt::MiddleButton) && !bCtrl)
     //scaling
     {
         //zoom graph
@@ -236,7 +236,7 @@ void GraphWt::mouseMoveEvent(QMouseEvent *pEvent)
         update();
     }
     // we zoom the graph or the foil
-    else if ((pEvent->buttons() & Qt::MidButton) || pEvent->modifiers().testFlag(Qt::AltModifier))
+    else if ((pEvent->buttons() & Qt::MiddleButton) || pEvent->modifiers().testFlag(Qt::AltModifier))
     {
         if(m_pGraph)
         {
