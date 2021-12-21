@@ -23,6 +23,7 @@
 #include <QSplitter>
 #include <QSurfaceFormat>
 #include <QVBoxLayout>
+#include <QColorSpace>
 
 #include "opengldlg.h"
 
@@ -565,7 +566,7 @@ void OpenGlDlg::printFormat(QSurfaceFormat const &format, QString &log, bool bFu
     }
     log += "   Swap behaviour:  "+strange + "\n";
 
-    switch(format.colorSpace())
+/*    switch (format.colorSpace())
     {
         case QSurfaceFormat::DefaultColorSpace:
             strange = "The default";
@@ -574,7 +575,7 @@ void OpenGlDlg::printFormat(QSurfaceFormat const &format, QString &log, bool bFu
             strange = "sRGB-capable default framebuffer";
             break;
     }
-    log += "   Colour space:    "+strange +"\n";
+    log += "   Colour space:    "+strange +"\n"; */
 
 
     QString opts = "   Options: ";
@@ -693,8 +694,8 @@ void OpenGlDlg::onRenderWindowReady()
     const char *gltype[] = { "Desktop", "GLES 2", "GLES 1" };
     m_pptglOutput->appendPlainText(QString("   Qt OpenGL configuration  : %1")
                      .arg(QString::fromLatin1(gltype[QOpenGLContext::openGLModuleType()])));
-    m_pptglOutput->appendPlainText(QString("   Qt OpenGL library handle : %1")
-                     .arg(QString::number(qintptr(QOpenGLContext::openGLModuleHandle()), 16)));
+/*    m_pptglOutput->appendPlainText(QString("   Qt OpenGL library handle : %1")
+                     .arg(QString::number(qintptr(QOpenGLContext::openGLModuleHandle()), 16)));*/
 
     m_pptglOutput->moveCursor(QTextCursor::Start);
 

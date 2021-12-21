@@ -69,7 +69,6 @@ void MiarexTileWidget::setupMainLayout()
                 if(3*i+j<m_GraphWidget.count()) m_pMainGridLayout->addWidget(m_GraphWidget.at(3*i+j),i,j);
 
         m_pMainGridLayout->setSpacing(0);
-        m_pMainGridLayout->setMargin(0);
     }
 
     setLayout(m_pMainGridLayout);

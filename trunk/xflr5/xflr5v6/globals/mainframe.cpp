@@ -386,51 +386,51 @@ void MainFrame::createActions()
     connect(m_pSaveProjectAsAct, SIGNAL(triggered()), this, SLOT(onSaveProjectAs()));
 
     m_pExecuteScript = new QAction(tr("Execute script"), this);
-    m_pExecuteScript->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_X));
+    m_pExecuteScript->setShortcut(QKeySequence(Qt::CTRL|Qt::Key_X));
     connect(m_pExecuteScript, SIGNAL(triggered()), SLOT(onExecuteScript()));
 
     m_pCloseProjectAct = new QAction(QIcon(":/images/new.png"), tr("Close the Project"), this);
-    m_pCloseProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F4));
+    m_pCloseProjectAct->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_F4));
     m_pCloseProjectAct->setStatusTip(tr("Save and close the current project"));
     connect(m_pCloseProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
 
     m_pInsertAct = new QAction(tr("Insert Project"), this);
     m_pInsertAct->setStatusTip(tr("Insert an existing project in the current project"));
-    m_pInsertAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_I));
+    m_pInsertAct->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_I));
     connect(m_pInsertAct, SIGNAL(triggered()), this, SLOT(onInsertProject()));
 
     m_pOnAFoilAct = new QAction(tr("Direct Foil Design"), this);
-    m_pOnAFoilAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
+    m_pOnAFoilAct->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_1));
     m_pOnAFoilAct->setStatusTip(tr("Open Foil Design application"));
     connect(m_pOnAFoilAct, SIGNAL(triggered()), this, SLOT(onAFoil()));
 
     m_pOnXInverseAct = new QAction(tr("XFoil Inverse Design"), this);
-    m_pOnXInverseAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
+    m_pOnXInverseAct->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_3));
     m_pOnXInverseAct->setStatusTip(tr("Open XFoil inverse analysis application"));
     connect(m_pOnXInverseAct, SIGNAL(triggered()), this, SLOT(onXInverse()));
 
     m_pOnMixedInverseAct = new QAction(tr("XFoil Mixed Inverse Design"), this);
-    m_pOnMixedInverseAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_4));
+    m_pOnMixedInverseAct->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_4));
     m_pOnMixedInverseAct->setStatusTip(tr("Open XFoil Mixed Inverse analysis application"));
     connect(m_pOnMixedInverseAct, SIGNAL(triggered()), this, SLOT(onXInverseMixed()));
 
     m_pOnXDirectAct = new QAction(tr("XFoil Direct Analysis"), this);
-    m_pOnXDirectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
+    m_pOnXDirectAct->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_5));
     m_pOnXDirectAct->setStatusTip(tr("Open XFoil direct analysis application"));
     connect(m_pOnXDirectAct, SIGNAL(triggered()), this, SLOT(onXDirect()));
 
     m_pOnMiarexAct = new QAction(tr("Wing and Plane Design"), this);
-    m_pOnMiarexAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
+    m_pOnMiarexAct->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_6));
     m_pOnMiarexAct->setStatusTip(tr("Open Wing/plane design and analysis application"));
     connect(m_pOnMiarexAct, SIGNAL(triggered()), this, SLOT(onMiarex()));
 
     m_pNoAppAct = new QAction(tr("Close all"), this);
-    m_pNoAppAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
+    m_pNoAppAct->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_0));
     m_pNoAppAct->setStatusTip(tr("Close all modules, but do not unload the active project"));
     connect(m_pNoAppAct, SIGNAL(triggered()), SLOT(onSetNoApp()));
 
     m_pLoadLastProjectAction = new QAction(tr("Load Last Project"), this);
-    m_pLoadLastProjectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_O));
+    m_pLoadLastProjectAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_O));
     m_pLoadLastProjectAction->setStatusTip(tr("Loads the last saved project"));
     connect(m_pLoadLastProjectAction, SIGNAL(triggered()), this, SLOT(onLoadLastProject()));
 
@@ -443,7 +443,7 @@ void MainFrame::createActions()
     connect(m_pRestoreToolbarsAct, SIGNAL(triggered()), this, SLOT(onRestoreToolbars()));
 
     m_pSaveViewToImageFileAct = new QAction(tr("Save View to Image File"), this);
-    m_pSaveViewToImageFileAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_I));
+    m_pSaveViewToImageFileAct->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_I));
     m_pSaveViewToImageFileAct->setStatusTip(tr("Saves the current view to a file on disk"));
     connect(m_pSaveViewToImageFileAct, SIGNAL(triggered()), this, SLOT(onSaveViewToImageFile()));
 
@@ -478,7 +478,7 @@ void MainFrame::createActions()
     connect(m_pExitAct, SIGNAL(triggered()), this, SLOT(close()));
 
     m_pOpenGLAct = new QAction(tr("OpenGL settings"), this);
-    m_pOpenGLAct->setShortcut(QKeySequence(Qt::CTRL+Qt::ALT+Qt::Key_O));
+    m_pOpenGLAct->setShortcut(QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_O));
     connect(m_pOpenGLAct, SIGNAL(triggered()), this, SLOT(onOpenGLInfo()));
 
     m_pReleaseNotes = new QAction(tr("Release notes"), this);
@@ -564,7 +564,7 @@ void MainFrame::createAFoilActions()
     connect(m_pAFoilRefineGlobalFoil, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilPanels()));
 
     m_pAFoilRefineLocalFoil = new QAction(tr("Refine Locally")/*+"\t(Shift+F3)"*/, this);
-    m_pAFoilRefineLocalFoil->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F3));
+    m_pAFoilRefineLocalFoil->setShortcut(QKeySequence(Qt::SHIFT | Qt::Key_F3));
     connect(m_pAFoilRefineLocalFoil, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilCadd()));
 
     m_pAFoilEditCoordsFoil = new QAction(tr("Edit Foil Coordinates"), this);
@@ -593,7 +593,7 @@ void MainFrame::createAFoilActions()
     connect(m_pAFoilInterpolateFoils, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilInterpolateFoils()));
 
     m_pAFoilNacaFoils = new QAction(tr("Naca Foils"), this);
-    m_pAFoilNacaFoils->setShortcut(QKeySequence(Qt::ALT+Qt::Key_N));
+    m_pAFoilNacaFoils->setShortcut(QKeySequence(Qt::ALT | Qt::Key_N));
     connect(m_pAFoilNacaFoils, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilNacaFoils()));
 
     m_pAFoilTableColumns = new QAction(tr("Set Table Columns"), this);
@@ -1186,43 +1186,43 @@ void MainFrame::createMiarexActions()
     connect(m_pDefinePlaneAct, SIGNAL(triggered()), m_pMiarex, SLOT(onNewPlane()));
 
     m_pDefinePlaneObjectAct = new QAction(tr("Define (Advanced users)")/*+"\tF3"*/, this);
-    m_pDefinePlaneObjectAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F3));
+    m_pDefinePlaneObjectAct->setShortcut(QKeySequence(Qt::SHIFT|Qt::Key_F3));
     m_pDefinePlaneObjectAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
     connect(m_pDefinePlaneObjectAct, SIGNAL(triggered()), m_pMiarex, SLOT(onNewPlaneObject()));
 
     m_pEditPlaneAct = new QAction(tr("Edit"), this);
     m_pEditPlaneAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
-    m_pEditPlaneAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_P));
+    m_pEditPlaneAct->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_P));
     connect(m_pEditPlaneAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurPlane()));
 
     m_pEditObjectAct = new QAction(tr("Edit (advanced users)"), this);
     m_pEditObjectAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
-    m_pEditObjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT+Qt::Key_P));
+    m_pEditObjectAct->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT|Qt::Key_P));
     connect(m_pEditObjectAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurObject()));
 
     m_pEditWingAct = new QAction(tr("Edit wing"), this);
     m_pEditWingAct->setStatusTip(tr("Shows a form to edit the wing of the currently selected plane"));
-    m_pEditWingAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
+    m_pEditWingAct->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
     m_pEditWingAct->setData(0);
     connect(m_pEditWingAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWing()));
 
     m_pEditStabAct = new QAction(tr("Edit elevator"), this);
     m_pEditStabAct->setData(2);
-    m_pEditStabAct->setShortcut(Qt::CTRL + Qt::Key_E);
+    m_pEditStabAct->setShortcut(Qt::CTRL | Qt::Key_E);
     connect(m_pEditStabAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWing()));
 
     m_pEditFinAct = new QAction(tr("Edit fin"), this);
     m_pEditFinAct->setData(3);
-    m_pEditFinAct->setShortcut(Qt::CTRL + Qt::Key_F);
+    m_pEditFinAct->setShortcut(Qt::CTRL | Qt::Key_F);
     connect(m_pEditFinAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWing()));
 
     m_pEditBodyAct = new QAction(tr("Edit body"), this);
     m_pEditBodyAct->setStatusTip(tr("Shows a form to edit the body of the currently selected plane"));
-    m_pEditBodyAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));
+    m_pEditBodyAct->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_B));
     connect(m_pEditBodyAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurBody()));
 
     m_pEditBodyObjectAct= new QAction(tr("Edit body (advanced users)"), this);
-    m_pEditBodyObjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
+    m_pEditBodyObjectAct->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_B));
     connect(m_pEditBodyObjectAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurBodyObject()));
 
     m_pRenameCurPlaneAct = new QAction(tr("Rename")+"\tF2", this);
@@ -1347,7 +1347,7 @@ void MainFrame::createMiarexActions()
     connect(m_pHidePlaneWPlrs, SIGNAL(triggered()), m_pMiarex, SLOT(onHidePlaneWPolars()));
 
     m_pShowPlaneWPlrsOnly = new QAction(tr("Show only associated Polars"), this);
-    m_pShowPlaneWPlrsOnly->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_U));
+    m_pShowPlaneWPlrsOnly->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_U));
     connect(m_pShowPlaneWPlrsOnly, SIGNAL(triggered()), m_pMiarex, SLOT(onShowPlaneWPolarsOnly()));
 
     m_pShowPlaneWPlrs = new QAction(tr("Show Associated Polars"), this);
@@ -2152,7 +2152,7 @@ void MainFrame::createXDirectActions()
     connect(m_pDeleteFoilPolars, SIGNAL(triggered()), m_pXDirect, SLOT(onDeleteFoilPolars()));
 
     m_pShowFoilPolarsOnly = new QAction(tr("Show only associated polars"), this);
-    m_pShowFoilPolarsOnly->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_U));
+    m_pShowFoilPolarsOnly->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_U));
     connect(m_pShowFoilPolarsOnly, SIGNAL(triggered()), m_pXDirect, SLOT(onShowFoilPolarsOnly()));
 
     m_pShowFoilPolars = new QAction(tr("Show associated polars"), this);
@@ -2191,12 +2191,12 @@ void MainFrame::createXDirectActions()
     connect(m_pDefinePolarAct, SIGNAL(triggered()), m_pXDirect, SLOT(onDefinePolar()));
 
     m_pMultiThreadedBatchAct = new QAction(tr("Batch Analysis"), this);
-    m_pMultiThreadedBatchAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F6));
+    m_pMultiThreadedBatchAct->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_F6));
     m_pMultiThreadedBatchAct->setStatusTip(tr("Launches a batch of analysis calculation using all available computer CPU cores"));
     connect(m_pMultiThreadedBatchAct, SIGNAL(triggered()), m_pXDirect, SLOT(onMultiThreadedBatchAnalysis()));
 
     m_pBatchCtrlAct = new QAction(tr("Batch flap analysis")/*+"\tCtrl+F6"*/, this);
-    m_pBatchCtrlAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_F6));
+    m_pBatchCtrlAct->setShortcut(QKeySequence(Qt::ALT | Qt::Key_F6));
     m_pBatchCtrlAct->setStatusTip(tr("Experimental"));
     connect(m_pBatchCtrlAct, SIGNAL(triggered()), m_pXDirect, SLOT(onBatchCtrlAnalysis()));
 
@@ -2235,7 +2235,7 @@ void MainFrame::createXDirectActions()
     connect(m_pManageFoilsAct, SIGNAL(triggered()), this, SLOT(onManageFoils()));
 
     m_pRenamePolarAct = new QAction(tr("Rename")/*+"\t(Shift+F2)"*/, this);
-    m_pRenamePolarAct->setShortcut(QKeySequence(Qt::SHIFT +Qt::Key_F2));
+    m_pRenamePolarAct->setShortcut(QKeySequence(Qt::SHIFT | Qt::Key_F2));
     connect(m_pRenamePolarAct, SIGNAL(triggered()), m_pXDirect, SLOT(onRenameCurPolar()));
 
     m_pShowInviscidCurve = new QAction(tr("Show Inviscid Curve"), this);
@@ -2274,7 +2274,7 @@ void MainFrame::createXDirectActions()
     connect(m_pNormalizeFoil, SIGNAL(triggered()), m_pXDirect, SLOT(onNormalizeFoil()));
 
     m_pRefineLocalFoil = new QAction(tr("Refine Locally")/*+"\t(Shift+F3)"*/, this);
-    m_pRefineLocalFoil->setShortcut(QKeySequence(Qt::SHIFT +Qt::Key_F3));
+    m_pRefineLocalFoil->setShortcut(QKeySequence(Qt::SHIFT | Qt::Key_F3));
     connect(m_pRefineLocalFoil, SIGNAL(triggered()), m_pXDirect, SLOT(onCadd()));
 
     m_pRefineGlobalFoil = new QAction(tr("Refine Globally")/*+"\t(F3)"*/, this);
@@ -2303,7 +2303,7 @@ void MainFrame::createXDirectActions()
     connect(m_pInterpolateFoils, SIGNAL(triggered()), m_pXDirect, SLOT(onInterpolateFoils()));
 
     m_pNacaFoils = new QAction(tr("Naca Foils"), this);
-    m_pNacaFoils->setShortcut(QKeySequence(Qt::ALT+Qt::Key_N));
+    m_pNacaFoils->setShortcut(QKeySequence(Qt::ALT | Qt::Key_N));
     connect(m_pNacaFoils, SIGNAL(triggered()), m_pXDirect, SLOT(onNacaFoils()));
 
     m_psetCpVarGraph = new QAction(tr("Cp Variable"), this);
@@ -6331,7 +6331,7 @@ void MainFrame::setPlainColorsFromFile()
     {
         QString colorline = stream.readLine().simplified();
 #if QT_VERSION >= 0x050F00
-        QStringList colorpair = colorline.split(QRegExp("[,\\s\t]"), Qt::SkipEmptyParts);
+        QStringList colorpair = colorline.split(QRegularExpression("[,\\s\t]"), Qt::SkipEmptyParts);
 #else
         QStringList colorpair = colorline.split(QRegExp("[,\\s\t]"), QString::SkipEmptyParts);
 #endif

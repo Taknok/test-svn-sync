@@ -219,10 +219,12 @@ class gl3dView : public QOpenGLWidget, protected QOpenGLExtraFunctions
         QOpenGLShaderProgram m_shadLine;
         QOpenGLShaderProgram m_shadSurf;
         QOpenGLShaderProgram m_shadPoint;
+        QOpenGLShaderProgram m_shadPoint2;
 
         ShaderLocations m_locSurf;
         ShaderLocations m_locLine;
         ShaderLocations m_locPoint;
+        ShaderLocations m_locPt2;
 
         int m_uHasShadow;
         int m_uShadowLightViewMatrix;

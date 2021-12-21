@@ -37,7 +37,7 @@ bool XmlPolarReader::readXMLPolarFile()
 {
     if (readNextStartElement())
     {
-        if (name() == "Foil_Polar" && attributes().value("version") == "1.0")
+        if (name().toString() == "Foil_Polar" && attributes().value("version").toString() == "1.0")
         {
             while(!atEnd() && !hasError() && readNextStartElement() )
             {

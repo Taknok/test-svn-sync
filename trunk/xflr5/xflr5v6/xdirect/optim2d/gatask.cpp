@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include <QApplication>
-#include <QtConcurrent/QtConcurrent>
+#include <QtConcurrent/QtConcurrentRun>
 #include <QFutureSynchronizer>
 #include <QRandomGenerator>
 
@@ -69,7 +69,11 @@ void GATask::makeSwarm()
         for (int isw=0; isw<m_Swarm.size(); isw++)
         {
             Particle &particle = m_Swarm[isw];
+#if (QT_VERSION >= QT_VERSION_CHECK(6,0,0))
+            futureSync.addFuture(QtConcurrent::run(&GATask::makeRandomParticle, this, &particle));
+#else
             futureSync.addFuture(QtConcurrent::run(this, &GATask::makeRandomParticle, &particle));
+#endif
         }
         futureSync.waitForFinished();
         outputMsg("   ...done");
@@ -305,7 +309,11 @@ void GATask::evaluatePopulation()
         for (int isw=0; isw<m_Swarm.size(); isw++)
         {
             Particle &particle = m_Swarm[isw];
+#if (QT_VERSION >= QT_VERSION_CHECK(6,0,0))
+            futureSync.addFuture(QtConcurrent::run(&GATask::evaluateParticle, this, &particle));
+#else
             futureSync.addFuture(QtConcurrent::run(this, &GATask::evaluateParticle, &particle));
+#endif
         }
         futureSync.waitForFinished();
     }

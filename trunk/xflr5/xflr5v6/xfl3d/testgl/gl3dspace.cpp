@@ -9,6 +9,7 @@
 
 #include <QGridLayout>
 #include <QLabel>
+#include <QFile>
 
 #include "gl3dspace.h"
 
@@ -455,7 +456,7 @@ void gl3dSpace::mouseMoveEvent(QMouseEvent *pEvent)
 
         double radius = double(s_SphereRadius)/2500.0/m_glScalef;
 
-        s_NObjects = std::min(s_NObjects, m_Galaxies.size());
+        s_NObjects = qMin(s_NObjects, m_Galaxies.size());
 
         m_iCloseIndex = -1;
         for(int in=0; in<s_NObjects; in++)

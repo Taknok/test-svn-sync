@@ -242,8 +242,12 @@ void LLTAnalysisDlg::analyze()
 
     //run the instance asynchronously
     disconnect(m_pTheTask, nullptr, nullptr, nullptr);
-    connect(m_pTheTask,  SIGNAL(taskFinished()),   this,          SLOT(onTaskFinished()));
+    connect(m_pTheTask,  SIGNAL(taskFinished()),   this, SLOT(onTaskFinished()));
+#if (QT_VERSION >= QT_VERSION_CHECK(6,0,0))
+    QFuture<void> future = QtConcurrent::run(&PlaneTask::run, m_pTheTask);
+#else
     QFuture<void> future = QtConcurrent::run(m_pTheTask, &PlaneTask::run);
+#endif
 }
 
 

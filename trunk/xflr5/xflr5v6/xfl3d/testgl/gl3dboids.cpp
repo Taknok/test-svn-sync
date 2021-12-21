@@ -417,8 +417,12 @@ void gl3dBoids::onMoveBoids()
         m_nBlocks = QThread::idealThreadCount();
         QFutureSynchronizer<void> futureSync;
         for(int iBlock=0; iBlock<m_nBlocks; iBlock++)
-        {
+        {           
+#if (QT_VERSION >= QT_VERSION_CHECK(6,0,0))
+            futureSync.addFuture(QtConcurrent::run(&gl3dBoids::moveBoidBlock, this, iBlock, accel.data()));
+#else
             futureSync.addFuture(QtConcurrent::run(this, &gl3dBoids::moveBoidBlock, iBlock, accel.data()));
+#endif
         }
         futureSync.waitForFinished();
     }

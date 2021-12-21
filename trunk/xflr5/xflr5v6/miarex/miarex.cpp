@@ -1919,8 +1919,6 @@ bool Miarex::loadSettings(QSettings &settings)
 }
 
 
-
-
 /**
  * Updates the display after the user has requested a switch to the 3d view
  */
@@ -7933,14 +7931,14 @@ void Miarex::onImportFromXml()
 
     do{
         xmlReader.readNextStartElement();
-        if (xmlReader.name().compare(QString("Plane_Polar"), Qt::CaseInsensitive)==0 && xmlReader.attributes().value("version") == "1.0")
+        if (xmlReader.name().compare(QString("Plane_Polar"), Qt::CaseInsensitive)==0 && xmlReader.attributes().value("version").toString() == "1.0")
         {
             // the file contains the definition of a WPolar
             xmlFile.close();
             importWPolarFromXML(xmlFile);
             break;
         }
-        else if (xmlReader.name().compare(QString("explane"), Qt::CaseInsensitive)==0 && xmlReader.attributes().value("version") == "1.0")
+        else if (xmlReader.name().compare(QString("explane"), Qt::CaseInsensitive)==0 && xmlReader.attributes().value("version").toString() == "1.0")
         {
             // the file contains the definition of a Plane
             xmlFile.close();

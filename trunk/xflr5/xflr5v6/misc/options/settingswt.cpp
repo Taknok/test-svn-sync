@@ -70,8 +70,11 @@ Settings::Settings(QWidget *pParent) : QWidget(pParent)
 #endif
 
     setupLayout();
-
-    connect(m_pcbStyles,             SIGNAL(activated(QString)),         SLOT(onStyleChanged(QString)));
+#if (QT_VERSION >= QT_VERSION_CHECK(6,0,0))
+    connect(m_pcbStyles,             SIGNAL(activated(int)),         SLOT(onStyleChanged()));
+#else
+    connect(m_pcbStyles,             SIGNAL(activated(QString)),         SLOT(onStyleChanged()));
+#endif
 
     connect(m_pcbBackColor,          SIGNAL(clicked()),                  SLOT(onBackgroundColor2d()));
     connect(m_ppbGraphSettings,      SIGNAL(clicked()),                  SLOT(onGraphSettings()));
@@ -244,11 +247,11 @@ void Settings::initWidget()
 }
 
 
-void Settings::onStyleChanged(const QString &StyleName)
+void Settings::onStyleChanged()
 {
     QApplication::setOverrideCursor(Qt::WaitCursor);
-    qApp->setStyle(StyleName);
-    s_StyleName = StyleName;
+    s_StyleName = m_pcbStyles->currentText();
+    qApp->setStyle(s_StyleName);
     QApplication::restoreOverrideCursor();
 }
 

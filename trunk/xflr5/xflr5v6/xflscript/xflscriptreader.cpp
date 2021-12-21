@@ -63,7 +63,7 @@ bool XFLScriptReader::readScript()
     // level 0
     if (readNextStartElement())
     {
-        if (name().compare(QString("xflscript"), Qt::CaseInsensitive)!=0 || attributes().value("version") < "1.0")
+        if (name().compare(QString("xflscript"), Qt::CaseInsensitive)!=0 || attributes().value("version").toString() < "1.0")
         {
             raiseError(QObject::tr("The file is not an xflr5 readable script"));
             return false;
