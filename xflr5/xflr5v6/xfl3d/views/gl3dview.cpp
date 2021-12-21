@@ -983,6 +983,37 @@ void gl3dView::initializeGL()
         m_shadPoint.release();
     }
 
+    // setup the flat point shader
+    vsrc = m_bUse120StyleShaders? ":/shaders/point2/point2_VS_120.glsl" : ":/shaders/point2/point2_VS.glsl";
+    fsrc = m_bUse120StyleShaders? ":/shaders/point2/point2_FS_120.glsl" : ":/shaders/point2/point2_FS.glsl";
+
+    m_shadPoint2.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
+    if(m_shadPoint2.log().length())
+    {
+        strange = QString::asprintf("%s", QString("point2 vertex shader log:"+m_shadPoint2.log()).toStdString().c_str());
+        trace(strange);
+    }
+
+
+    m_shadPoint2.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
+    if(m_shadPoint2.log().length())
+    {
+        strange = QString::asprintf("%s", QString("point2 fragment shader log:"+m_shadPoint2.log()).toStdString().c_str());
+        trace(strange);
+    }
+
+    m_shadPoint2.link();
+    m_shadPoint2.bind();
+    {
+        m_locPt2.m_attrVertex = m_shadPoint2.attributeLocation("vertexPosition_modelSpace");
+        m_locPt2.m_attrColor  = m_shadPoint2.attributeLocation("vertexColor");
+        m_locPt2.m_vmMatrix   = m_shadPoint2.uniformLocation("vmMatrix");
+        m_locPt2.m_pvmMatrix  = m_shadPoint2.uniformLocation("pvmMatrix");
+        m_locPt2.m_ClipPlane  = m_shadPoint2.uniformLocation("clipPlane0");
+        m_locPt2.m_Shape      = m_shadPoint2.uniformLocation("pointsize");
+    }
+    m_shadPoint2.release();
+
     glSetupLight();
 }
 

@@ -75,7 +75,11 @@ class gl3dXflView : public gl3dView
         void setSpanStations(Plane const *pPlane, WPolar const *pWPolar, PlaneOpp const *pPOpp);
 
     private:
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+        void enterEvent(QEnterEvent *pEvent) override;
+#else
         void enterEvent(QEvent *pEvent) override;
+#endif
 
     protected slots:
         void onSurfaces(  bool bChecked);

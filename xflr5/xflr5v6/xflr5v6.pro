@@ -27,6 +27,10 @@ VERSION = 6.53
 CONFIG += qt
 QT += widgets opengl xml
 
+equals(QT_MAJOR_VERSION, 6){
+   QT += openglwidgets
+}
+
 TEMPLATE = app
 TARGET = xflr5
 

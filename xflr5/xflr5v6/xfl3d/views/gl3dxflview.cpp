@@ -72,8 +72,11 @@ gl3dXflView::~gl3dXflView()
     }
 }
 
-
+#if (QT_VERSION >= QT_VERSION_CHECK(6,0,0))
+void gl3dXflView::enterEvent(QEnterEvent *pEvent)
+#else
 void gl3dXflView::enterEvent(QEvent *pEvent)
+#endif
 {
     setFocus();
     gl3dView::enterEvent(pEvent);

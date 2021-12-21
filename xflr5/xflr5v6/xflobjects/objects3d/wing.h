@@ -84,8 +84,8 @@ class Wing
         Wing();
         ~Wing();
 
-        bool importDefinition(QString path_to_file, QString errorMessage);
-        bool exportDefinition(QString path_to_file, QString errorMessage);
+        bool importDefinition(const QString &path_to_file, QString &errorMessage);
+        bool exportDefinition(const QString &path_to_file, QString &errorMessage);
 
         void createSurfaces(Vector3d const &T, double XTilt, double YTilt);//generic surface, LLT, VLM or Panel
 
@@ -327,8 +327,8 @@ class Wing
         double m_BendingMoment[MAXSPANSTATIONS+1]; /**< the bending moment at stations */
         double m_SpanPos[MAXSPANSTATIONS+1];       /**< the span positions of LLT stations */
 
-        QVarLengthArray<double> m_xHinge;           /**< the chorwise position of flap hinges */
-        QVarLengthArray<double> m_xPanel;           /**< the chorwise distribution of VLM panels */
+        QVector<double> m_xHinge;           /**< the chorwise position of flap hinges */
+        QVector<double> m_xPanel;           /**< the chorwise distribution of VLM panels */
 
         Vector3d m_Vd[MAXSPANSTATIONS];             /**< the downwash vector at span stations */
         Vector3d m_F[MAXSPANSTATIONS];              /**< the lift vector at span stations */

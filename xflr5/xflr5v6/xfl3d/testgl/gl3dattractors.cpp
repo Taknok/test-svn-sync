@@ -376,7 +376,7 @@ void gl3dAttractors::onRandomSeed()
     switch(s_iAttractor)
     {
         default:
-        case 0:  xmin=ymin=-5; zmin=0.0; amp=20; break;
+        case 0:  xmin=ymin=-5; zmin=3.0; amp=10; break;
         case 1:  xmin=ymin=-15; amp = 30; break;
         case 2:  xmin = ymin = zmin = 0; amp = 3; break;
         case 3:  xmin = ymin = zmin = -5; amp = 10; break;

@@ -341,7 +341,11 @@ void gl3dSagittarius::onMoveStars()
         QFutureSynchronizer<void> futureSync;
         for(int irow=0; irow<m_Star.size(); irow++)
         {
+#if (QT_VERSION >= QT_VERSION_CHECK(6,0,0))
+            futureSync.addFuture(QtConcurrent::run(&Planet::rk4_step, &m_Star[irow], dt, s_nStepsPerDay));
+#else
             futureSync.addFuture(QtConcurrent::run(&m_Star[irow], &Planet::rk4_step, dt, s_nStepsPerDay));
+#endif
         }
         futureSync.waitForFinished();
     }
