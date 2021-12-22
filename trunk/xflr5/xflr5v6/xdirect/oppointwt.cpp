@@ -137,8 +137,11 @@ void OpPointWt::keyReleaseEvent(QKeyEvent *pEvent)
 */
 void OpPointWt::mousePressEvent(QMouseEvent *pEvent)
 {
-    QPointF pt = pEvent->position();
-
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    QPointF const pos = pEvent->position();
+#else
+    QPointF const pos = pEvent->pos();
+#endif
     if(pEvent->buttons() & Qt::LeftButton)
     {
         if (m_pCpGraph->isInDrawRect(pEvent->pos()))
@@ -149,8 +152,7 @@ void OpPointWt::mousePressEvent(QMouseEvent *pEvent)
         {
             m_bTransFoil = true;
         }
-        m_LastPoint.setX(pt.x());
-        m_LastPoint.setY(pt.y());
+        m_LastPoint = pos;
         setCursor(Qt::ClosedHandCursor);
 //        if(!m_bAnimate) update();
     }
@@ -177,9 +179,13 @@ void OpPointWt::mouseReleaseEvent(QMouseEvent *pEvent)
 */
 void OpPointWt::mouseMoveEvent(QMouseEvent *pEvent)
 {
-    QPointF pt = pEvent->position();
-    double scale;
-    double a;
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    QPointF const pt = pEvent->position();
+#else
+    QPointF const pt = pEvent->pos();
+#endif
+    double scale(0);
+    double a(0);
 
     setFocus();
 
@@ -338,7 +344,7 @@ void OpPointWt::setFoilScale()
 */
 void OpPointWt::wheelEvent(QWheelEvent *pEvent)
 {
-    QPoint pt;
+    QPointF pt;
 #if QT_VERSION >= 0x050F00
     pt = pEvent->position().toPoint();
 #else
