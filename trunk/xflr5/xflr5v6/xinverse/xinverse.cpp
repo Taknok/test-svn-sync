@@ -1214,8 +1214,8 @@ void XInverse::mouseReleaseEvent(QMouseEvent *event)
 
                 m_Mk1 = m_Pos1;
                 m_Mk2 = m_Pos2;
-                m_pXFoil->iq1 = min(m_Pos1, m_Pos2)+1;
-                m_pXFoil->iq2 = max(m_Pos1, m_Pos2)+1;
+                m_pXFoil->iq1 = std::min(m_Pos1, m_Pos2)+1;
+                m_pXFoil->iq2 = std::max(m_Pos1, m_Pos2)+1;
                 if(m_pXFoil->iq1<=1) m_pXFoil->iq1 = 2;
                 if(m_pXFoil->iq2>=m_pXFoil->n) m_pXFoil->iq2 = m_pXFoil->n-1;
                 m_pXFoil->liqset = true;
@@ -1574,7 +1574,7 @@ void XInverse::onPertubate()
     {
         for (int m=0; m<=qMin(32, m_pXFoil->nc); m++)
         {
-            m_pXFoil->cn[m] = complex<double>(PerturbDlg.m_cnr[m], PerturbDlg.m_cni[m]);
+            m_pXFoil->cn[m] = std::complex<double>(PerturbDlg.m_cnr[m], PerturbDlg.m_cni[m]);
         }
 
         m_pXFoil->pert_process(1);
@@ -2369,7 +2369,7 @@ void XInverse::setTAngle(double a)
  */
 void XInverse::setTGap(double tr, double ti)
 {
-    m_pXFoil->dzte = complex<double>(tr,ti);
+    m_pXFoil->dzte = std::complex<double>(tr,ti);
 }
 
 

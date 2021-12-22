@@ -137,7 +137,7 @@ void OpPointWt::keyReleaseEvent(QKeyEvent *pEvent)
 */
 void OpPointWt::mousePressEvent(QMouseEvent *pEvent)
 {
-    QPoint pt(pEvent->x(), pEvent->y()); //client coordinates
+    QPointF pt = pEvent->position();
 
     if(pEvent->buttons() & Qt::LeftButton)
     {
@@ -177,12 +177,10 @@ void OpPointWt::mouseReleaseEvent(QMouseEvent *pEvent)
 */
 void OpPointWt::mouseMoveEvent(QMouseEvent *pEvent)
 {
-    QPoint pt;
+    QPointF pt = pEvent->position();
     double scale;
     double a;
 
-    pt.setX(pEvent->x());
-    pt.setY(pEvent->y()); //client coordinates
     setFocus();
 
     if (pEvent->buttons() & Qt::LeftButton)
@@ -971,7 +969,7 @@ void OpPointWt::onXDirectStyle()
  * @param point the screen coordinates
  * @return the viewport coordinates
  */
-Vector3d OpPointWt::mousetoReal(const QPoint &point) const
+Vector3d OpPointWt::mousetoReal(const QPointF &point) const
 {
     Vector3d Real;
 

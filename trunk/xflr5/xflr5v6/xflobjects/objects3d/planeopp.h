@@ -39,7 +39,6 @@
 class Plane;
 class WPolar;
 
-//using namespace std;
 
 /**
 *@brief

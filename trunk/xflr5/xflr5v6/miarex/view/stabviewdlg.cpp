@@ -146,13 +146,11 @@ void StabViewDlg::readControlModelData()
 
 void StabViewDlg::fillEigenThings()
 {
-    complex<double> eigenvalue;
-    double OmegaN, Omega1, Zeta;
+    std::complex<double> eigenvalue;
+    double OmegaN(0), Omega1(0), Zeta(0);
     QString strange;
-    double u0, mac, span;
-    complex<double> angle;
-
-    OmegaN = Omega1 = Zeta = u0 = mac = span = 0;
+    double u0(0), mac(0), span(0);
+    std::complex<double> angle;
 
     QString ModeDescription = tr("<small>Mode Properties:")+"<br/>";
 
@@ -1218,8 +1216,8 @@ void StabViewDlg::fillCurveList()
 
 double StabViewDlg::getControlInput(const double &time)
 {
-    double t1, t2, in1, in2;
-    t1 = t2 = 0.0;
+    double t1(0), t2(0), in1(0), in2(0);
+
     t1 = m_pControlModel->index(0, 0, QModelIndex()).data().toDouble();
     for(int i=1; i<m_pControlModel->rowCount()-1; i++)
     {

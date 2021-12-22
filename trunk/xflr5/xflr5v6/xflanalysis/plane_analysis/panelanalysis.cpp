@@ -4430,8 +4430,8 @@ void PanelAnalysis::computePhillipsFormulae()
     Fph = sqrt(rlPH*rlPH+ilPH*ilPH)/(2.*PI);
     zeta_ph = -rlPH/ilPH;
 
-    m_phiPH = complex<double>(rlPH, ilPH);
-    m_phiDR = complex<double>(rlDR, ilDR);
+    m_phiPH = std::complex<double>(rlPH, ilPH);
+    m_phiDR = std::complex<double>(rlDR, ilDR);
 
     QString strange;
     traceLog("\n");
