@@ -24,7 +24,7 @@
 int gl2dFractal::s_Hue(1000);
 int gl2dFractal::s_MaxIter(1024);
 float gl2dFractal::s_MaxLength(10);
-QVector2D gl2dFractal::s_Seed(-0.35099, -0.605502f);
+QVector2D gl2dFractal::s_Seed(-0.35099f, -0.605502f);
 
 gl2dFractal::gl2dFractal(QWidget *pParent) : gl2dView(pParent)
 {

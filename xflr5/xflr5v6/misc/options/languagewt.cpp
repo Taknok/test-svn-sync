@@ -46,7 +46,7 @@ void LanguageWt::setupLayout()
 {
     QLabel *lab = new QLabel(tr("Select the application's default language:"));
     m_plwLanguageList = new QListWidget;
-    connect(m_plwLanguageList, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(readLanguage()));
+    connect(m_plwLanguageList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(readLanguage()));
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {

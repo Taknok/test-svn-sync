@@ -871,7 +871,7 @@ int PlaneTask::createSurfaceElements(Plane const*pPlane, WPolar const*pWPolar, S
         for (int l=0; l<pSurface->nXPanels(); l++)
         {
             pSurface->getPanel(k,l,side);
-            Q_ASSERT(!isnan(pSurface->LA.x));
+            Q_ASSERT(!std::isnan(pSurface->LA.x));
             n0 = isNode(pSurface->LA);
             n1 = isNode(pSurface->TA);
             n2 = isNode(pSurface->LB);

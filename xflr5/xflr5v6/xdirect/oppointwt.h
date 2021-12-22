@@ -86,7 +86,7 @@ class OpPointWt : public QWidget
         void showPressure(bool bPressure){m_bPressure = bPressure;}
         void showBL(bool bBL){m_bBL = bBL;}
 
-        Vector3d mousetoReal(QPoint const &point) const;
+        Vector3d mousetoReal(const QPointF &point) const;
 
     private:
         static MainFrame *s_pMainFrame;   /**< A void pointer to the instance of the MainFrame object. */
@@ -111,6 +111,6 @@ class OpPointWt : public QWidget
 
         Graph *m_pCpGraph;
 
-        QPoint m_LastPoint;
+        QPointF m_LastPoint;
 };
 

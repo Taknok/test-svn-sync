@@ -40,8 +40,6 @@
 #include <xflcore/core_enums.h>
 
 
-using namespace std;
-
 
 namespace xfl
 {

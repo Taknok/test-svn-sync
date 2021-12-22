@@ -944,11 +944,11 @@ void Miarex::createStabilityCurves()
 */
 void Miarex::createStabTimeCurves()
 {
-    complex<double> M[16];// the modal matrix
-    complex<double> InvM[16];// the inverse of the modal matrix
-    complex<double> q[4],q0[4],y[4];//the part of each mode in the solution
+    std::complex<double> M[16];// the modal matrix
+    std::complex<double> InvM[16];// the inverse of the modal matrix
+    std::complex<double> q[4],q0[4],y[4];//the part of each mode in the solution
 
-    complex<double> in[4];
+    std::complex<double> in[4];
     QString strong, CurveTitle;
 
     StabViewDlg *pStabView = s_pMainFrame->m_pStabView;
@@ -986,10 +986,10 @@ void Miarex::createStabTimeCurves()
     if(m_StabilityResponseType==0)
     {
         //start with the user input initial conditions
-        in[0] = complex<double>(m_TimeInput[0], 0.0);
-        in[1] = complex<double>(m_TimeInput[1], 0.0);
-        in[2] = complex<double>(m_TimeInput[2]*PI/180.0, 0.0);
-        in[3] = complex<double>(m_TimeInput[3]*PI/180.0, 0.0);
+        in[0] = std::complex<double>(m_TimeInput[0], 0.0);
+        in[1] = std::complex<double>(m_TimeInput[1], 0.0);
+        in[2] = std::complex<double>(m_TimeInput[2]*PI/180.0, 0.0);
+        in[3] = std::complex<double>(m_TimeInput[3]*PI/180.0, 0.0);
     }
     else if(m_StabilityResponseType==2)
     {
@@ -3963,7 +3963,7 @@ void Miarex::onExportCurPOpp()
         //export non dimensional stability derivatives
         if(exporttype==xfl::TXT)
         {
-            //            complex<double> c, angle;
+            //            std::complex<double> c, angle;
             double u0 = m_pCurPOpp->m_QInf;
             double mac = m_pCurWPolar->referenceArea();
             double b = m_pCurWPolar->referenceSpan();

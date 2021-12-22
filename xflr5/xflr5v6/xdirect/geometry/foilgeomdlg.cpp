@@ -306,12 +306,11 @@ void FoilGeomDlg::apply()
 }
 
 
-
-bool FoilGeomDlg::isXFoilOk () const
+bool FoilGeomDlg::isXFoilOk() const
 {
     for (int j=0; j< s_pXFoil->nb; j++)
     {
-        if (isnan(s_pXFoil->xb[j+1]) || isnan(s_pXFoil->xb[j+1]))
+        if (std::isnan(s_pXFoil->xb[j+1]) || std::isnan(s_pXFoil->xb[j+1]))
         {
             return false;
         }
