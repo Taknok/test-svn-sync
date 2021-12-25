@@ -20,5 +20,6 @@
         <file>shaders/surface/surface_FS_120.glsl</file>
         <file>shaders/surface/surface_VS.glsl</file>
         <file>shaders/surface/surface_VS_120.glsl</file>
+        <file>shaders/lorenz2/lorenz2_CS.glsl</file>
     </qresource>
 </RCC>

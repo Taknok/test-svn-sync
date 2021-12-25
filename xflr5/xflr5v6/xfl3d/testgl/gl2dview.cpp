@@ -79,7 +79,7 @@ void gl2dView::onDynamicIncrement()
 void gl2dView::startDynamicTimer()
 {
     m_DynTimer.start(17);
-    setMouseTracking(false);
+//    setMouseTracking(false);
 }
 
 
@@ -90,7 +90,7 @@ void gl2dView::stopDynamicTimer()
         m_DynTimer.stop();
     }
     m_bDynTranslation  = m_bDynScaling = false;
-    setMouseTracking(true);
+//    setMouseTracking(true);
 }
 
 

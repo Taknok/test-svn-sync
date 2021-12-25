@@ -129,10 +129,18 @@ PanelAnalysis::PanelAnalysis()
     memset(m_R,     0,  9*sizeof(double));
     memset(m_Is,    0,  9*sizeof(double));
     memset(m_Ib,    0,  9*sizeof(double));
-    memset(m_rLong, 0,  8*sizeof(double));
-    memset(m_rLat,  0,  8*sizeof(double));
-    memset(m_vLong, 0, 32*sizeof(double));
-    memset(m_vLat,  0, 32*sizeof(double));
+
+    for(int i=0; i<4; i++)
+    {
+        m_rLong[i] = std::complex<double>(0.0,0.0);
+        m_rLat[i]  = std::complex<double>(0.0,0.0);
+    }
+
+    for(int i=0; i<16; i++)
+    {
+        m_vLong[i] = std::complex<double>(0.0,0.0);
+        m_vLat[i]  = std::complex<double>(0.0,0.0);
+    }
 }
 
 
@@ -1223,8 +1231,15 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
                 memcpy(m_Cl  + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_Cl,  uint(m_pWingList[iw]->m_NStation)*sizeof(double));
                 memcpy(m_ICd + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_ICd, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
                 memcpy(m_Ai  + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_Ai,  uint(m_pWingList[iw]->m_NStation)*sizeof(double));
-                memcpy(m_F   + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_F,   uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
-                memcpy(m_Vd  + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_Vd,  uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
+
+                int idx = (q*MAXWINGS+iw)*m_NSpanStations;
+                for(int is=0; is<m_pWingList[iw]->m_NStation; is++)
+                {
+                    m_F[idx+is] = m_pWingList[iw]->m_F[is];
+                    m_Vd[idx+is] = m_pWingList[iw]->m_Vd[is];
+                }
+//                memcpy(m_F   + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_F,   uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
+//                memcpy(m_Vd  + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_Vd,  uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
 
                 pos += m_pWingList[iw]->m_nPanels;
 
@@ -1485,16 +1500,30 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
                     memcpy(m_pWingList[iw]->m_Cl,  m_Cl  + (qrhs*MAXWINGS+iw)*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
                     memcpy(m_pWingList[iw]->m_ICd, m_ICd + (qrhs*MAXWINGS+iw)*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
                     memcpy(m_pWingList[iw]->m_Ai,  m_Ai  + (qrhs*MAXWINGS+iw)*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
-                    memcpy(m_pWingList[iw]->m_F,   m_F   + (qrhs*MAXWINGS+iw)*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
-                    memcpy(m_pWingList[iw]->m_Vd,  m_Vd  + (qrhs*MAXWINGS+iw)*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
+
+                    int idx = (qrhs*MAXWINGS+iw)*m_NSpanStations;
+                    for(int is=0; is<m_pWingList[iw]->m_NStation; is++)
+                    {
+                        m_pWingList[iw]->m_F[is]  = m_F[idx+is];
+                        m_pWingList[iw]->m_Vd[is] = m_Vd[idx+is];
+                    }
+//                    memcpy(m_pWingList[iw]->m_F,   m_F   + (qrhs*MAXWINGS+iw)*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
+//                    memcpy(m_pWingList[iw]->m_Vd,  m_Vd  + (qrhs*MAXWINGS+iw)*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
                 }
                 else
                 {
                     memcpy(m_pWingList[iw]->m_Cl,  m_Cl +iw*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
                     memcpy(m_pWingList[iw]->m_ICd, m_ICd+iw*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
                     memcpy(m_pWingList[iw]->m_Ai,  m_Ai +iw*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
-                    memcpy(m_pWingList[iw]->m_F,   m_F  +iw*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
-                    memcpy(m_pWingList[iw]->m_Vd,  m_Vd +iw*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
+
+                    int idx = iw*m_NSpanStations;
+                    for(int is=0; is<m_pWingList[iw]->m_NStation; is++)
+                    {
+                        m_pWingList[iw]->m_F[is]  = m_F[idx+is];
+                        m_pWingList[iw]->m_Vd[is] = m_Vd[idx+is];
+                    }
+//                    memcpy(m_pWingList[iw]->m_F,   m_F  +iw*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
+//                    memcpy(m_pWingList[iw]->m_Vd,  m_Vd +iw*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
                 }
 
                 Force += m_WingForce[qrhs*MAXWINGS+iw];

@@ -10,10 +10,11 @@ HEADERS += \
     xfl3d/testgl/gl2dfractal.h \
     xfl3d/testgl/gl2dnewton.h \
     xfl3d/testgl/gl2dview.h \
-    xfl3d/testgl/gl3dattractor.h \
     xfl3d/testgl/gl3dattractors.h \
     xfl3d/testgl/gl3dboids.h \
     xfl3d/testgl/gl3dhydrogen.h \
+    xfl3d/testgl/gl3dlorenz.h \
+    xfl3d/testgl/gl3dlorenz2.h \
     xfl3d/testgl/gl3doptim2d.h \
     xfl3d/testgl/gl3dsagittarius.h \
     xfl3d/testgl/gl3dshadow.h \
@@ -41,10 +42,11 @@ SOURCES += \
     xfl3d/testgl/gl2dfractal.cpp \
     xfl3d/testgl/gl2dnewton.cpp \
     xfl3d/testgl/gl2dview.cpp \
-    xfl3d/testgl/gl3dattractor.cpp \
     xfl3d/testgl/gl3dattractors.cpp \
     xfl3d/testgl/gl3dboids.cpp \
     xfl3d/testgl/gl3dhydrogen.cpp \
+    xfl3d/testgl/gl3dlorenz.cpp \
+    xfl3d/testgl/gl3dlorenz2.cpp \
     xfl3d/testgl/gl3doptim2d.cpp \
     xfl3d/testgl/gl3dsagittarius.cpp \
     xfl3d/testgl/gl3dshadow.cpp \

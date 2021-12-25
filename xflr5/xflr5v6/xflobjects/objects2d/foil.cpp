@@ -71,12 +71,12 @@ Foil::Foil()
 
     m_TEGap  = 0.0;
 
-    memset(m_rpExtrados, 0, sizeof(m_rpExtrados));
+/*    memset(m_rpExtrados, 0, sizeof(m_rpExtrados));
     memset(m_rpIntrados, 0, sizeof(m_rpIntrados));
     memset(m_rpMid, 0, sizeof(m_rpMid));
 
     memset(m_BaseExtrados, 0, sizeof(m_BaseExtrados));
-    memset(m_BaseIntrados, 0, sizeof(m_BaseIntrados));
+    memset(m_BaseIntrados, 0, sizeof(m_BaseIntrados)); */
 
     m_bTEFlap     = false;
     m_TEFlapAngle = 0.0;

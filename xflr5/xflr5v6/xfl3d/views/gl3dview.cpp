@@ -1828,11 +1828,10 @@ void gl3dView::set3dRotationCenter(QPoint const &point)
 }
 
 
-
 void gl3dView::startDynamicTimer()
 {
     m_DynTimer.start(17);
-    setMouseTracking(false);
+//    setMouseTracking(false);
 }
 
 
@@ -1847,9 +1846,8 @@ void gl3dView::stopDynamicTimer()
         setViewportTranslation();
     }
     m_bDynTranslation = m_bDynRotation = m_bDynScaling = false;
-    setMouseTracking(true);
+//    setMouseTracking(true);
 }
-
 
 
 void gl3dView::setViewportTranslation()
