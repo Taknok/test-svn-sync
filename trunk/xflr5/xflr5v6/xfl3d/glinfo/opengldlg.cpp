@@ -33,7 +33,8 @@
 #include <xfl3d/testgl/gl2dfractal.h>
 #include <xfl3d/testgl/gl2dnewton.h>
 #include <xfl3d/testgl/gl3dtestglview.h>
-#include <xfl3d/testgl/gl3dattractor.h>
+#include <xfl3d/testgl/gl3dlorenz.h>
+#include <xfl3d/testgl/gl3dlorenz2.h>
 #include <xfl3d/testgl/gl3dattractors.h>
 #include <xfl3d/testgl/gl3dboids.h>
 #include <xfl3d/testgl/gl3doptim2d.h>
@@ -386,7 +387,8 @@ void OpenGlDlg::setupLayout()
                 QAction *pMandelbrotAct  = new QAction("Mandelbrot",         this);
                 QAction *pNewtonAct      = new QAction("Newton fractal",     this);
                 QAction *pSphereAct      = new QAction("Spheres",            this);
-                QAction *pLorenzAct      = new QAction("Lorenz attractor",   this);
+                QAction *pLorenzAct      = new QAction("Lorenz (CPU)",       this);
+                QAction *pLorenz2Act     = new QAction("Lorenz (GPU)",       this);
                 QAction *pAttractorsAct  = new QAction("Attractors",         this);
                 QAction *pBoidsAct       = new QAction("Boids",              this);
                 QAction *pPSOAct         = new QAction("2d optimization",    this);
@@ -399,18 +401,20 @@ void OpenGlDlg::setupLayout()
                 pNewtonAct->setData(      1);
                 pSphereAct->setData(      2);
                 pLorenzAct->setData(      3);
-                pAttractorsAct->setData(  4);
-                pBoidsAct->setData(       5);
-                pPSOAct->setData(         6);
-                pHydrogenAct->setData(    7);
-                pSolarSysAct->setData(    8);
-                pSagittariusAct->setData( 9);
-                pSpaceAct->setData(      10);
+                pLorenz2Act->setData(     4);
+                pAttractorsAct->setData(  5);
+                pBoidsAct->setData(       6);
+                pPSOAct->setData(         7);
+                pHydrogenAct->setData(    8);
+                pSolarSysAct->setData(    9);
+                pSagittariusAct->setData(10);
+                pSpaceAct->setData(      11);
 
                 connect(pMandelbrotAct,  SIGNAL(triggered()), SLOT(onViewType()));
                 connect(pNewtonAct,      SIGNAL(triggered()), SLOT(onViewType()));
                 connect(pSphereAct,      SIGNAL(triggered()), SLOT(onViewType()));
                 connect(pLorenzAct,      SIGNAL(triggered()), SLOT(onViewType()));
+                connect(pLorenz2Act,     SIGNAL(triggered()), SLOT(onViewType()));
                 connect(pAttractorsAct,  SIGNAL(triggered()), SLOT(onViewType()));
                 connect(pBoidsAct,       SIGNAL(triggered()), SLOT(onViewType()));
                 connect(pPSOAct,         SIGNAL(triggered()), SLOT(onViewType()));
@@ -423,6 +427,7 @@ void OpenGlDlg::setupLayout()
                 pViewSelMenu->addAction(pNewtonAct);
                 pViewSelMenu->addAction(pSphereAct);
                 pViewSelMenu->addAction(pLorenzAct);
+                pViewSelMenu->addAction(pLorenz2Act);
                 pViewSelMenu->addAction(pAttractorsAct);
                 pViewSelMenu->addAction(pBoidsAct);
                 pViewSelMenu->addAction(pPSOAct);
@@ -500,14 +505,15 @@ QOpenGLWidget *OpenGlDlg::getView(int iView)
         case 0:  return new gl2dFractal;
         case 1:  return new gl2dNewton;
         case 2:  return new gl3dTestGLView;
-        case 3:  return new gl3dAttractor;
-        case 4:  return new gl3dAttractors;
-        case 5:  return new gl3dBoids;
-        case 6:  return new gl3dOptim2d;
-        case 7:  return new gl3dHydrogen;
-        case 8:  return new gl3dSolarSys;
-        case 9:  return new gl3dSagittarius;
-        case 10: return new gl3dSpace;
+        case 3:  return new gl3dLorenz;
+        case 4:  return new gl3dLorenz2;
+        case 5:  return new gl3dAttractors;
+        case 6:  return new gl3dBoids;
+        case 7:  return new gl3dOptim2d;
+        case 8:  return new gl3dHydrogen;
+        case 9:  return new gl3dSolarSys;
+        case 10: return new gl3dSagittarius;
+        case 11: return new gl3dSpace;
     }
     return nullptr;
 }

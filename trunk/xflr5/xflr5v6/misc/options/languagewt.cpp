@@ -109,7 +109,7 @@ QStringList LanguageWt::findQmFiles()
 QString LanguageWt::languageName(const QString &qmFile)
 {
     QTranslator translator;
-    translator.load(qmFile);
+    if(!translator.load(qmFile)) return QString();
 
     return translator.translate("Language", "English");
 }

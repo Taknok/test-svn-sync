@@ -61,7 +61,6 @@ class Panel
     friend class PlaneTask;
     friend class PanelAnalysis;
     friend class PanelAnalysisDlg;
-    friend class GL3dBodyDlg;
     friend class gl3dSurfacePlot;
 
     public:

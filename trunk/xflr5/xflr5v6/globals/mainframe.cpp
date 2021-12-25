@@ -78,7 +78,8 @@
 #include <xfl3d/globals/w3dprefs.h>
 #include <xfl3d/testgl/gl2dfractal.h>
 #include <xfl3d/testgl/gl2dnewton.h>
-#include <xfl3d/testgl/gl3dattractor.h>
+#include <xfl3d/testgl/gl3dlorenz.h>
+#include <xfl3d/testgl/gl3dlorenz2.h>
 #include <xfl3d/testgl/gl3dattractors.h>
 #include <xfl3d/testgl/gl3dboids.h>
 #include <xfl3d/testgl/gl3dhydrogen.h>
@@ -2964,7 +2965,7 @@ void MainFrame::keyPressEvent(QKeyEvent *pEvent)
             }
             case Qt::Key_F6:
             {
-                gl3dAttractor *pTestView = new gl3dAttractor;
+                gl3dLorenz2 *pTestView = new gl3dLorenz2;
                 pTestView->setAttribute(Qt::WA_DeleteOnClose);
                 pTestView->show();
                 pTestView->activateWindow();
@@ -3330,7 +3331,8 @@ bool MainFrame::loadSettings()
     gl3dHydrogen::loadSettings(settings);
     gl3dSpace::loadSettings(settings);
     gl3dOptim2d::loadSettings(settings);
-    gl3dAttractor::loadSettings(settings);
+    gl3dLorenz::loadSettings(settings);
+    gl3dLorenz2::loadSettings(settings);
     gl3dAttractors::loadSettings(settings);
     gl3dSolarSys::loadSettings(settings);
     gl3dSagittarius::loadSettings(settings);
@@ -4579,7 +4581,8 @@ void MainFrame::saveSettings()
     gl3dBoids::saveSettings(settings);
     gl3dHydrogen::saveSettings(settings);
     gl3dOptim2d::saveSettings(settings);
-    gl3dAttractor::saveSettings(settings);
+    gl3dLorenz::saveSettings(settings);
+    gl3dLorenz2::saveSettings(settings);
     gl3dAttractors::saveSettings(settings);
     gl3dSolarSys::saveSettings(settings);
     gl3dSpace::saveSettings(settings);
