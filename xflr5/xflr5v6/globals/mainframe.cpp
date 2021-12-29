@@ -2965,7 +2965,12 @@ void MainFrame::keyPressEvent(QKeyEvent *pEvent)
             }
             case Qt::Key_F6:
             {
+#ifdef Q_OS_MAC
+//            Compute shaders require OpenGL 4.3< whereas macOS only supports OpenGL 4.1
+                gl3dLorenz *pTestView = new gl3dLorenz;
+#else
                 gl3dLorenz2 *pTestView = new gl3dLorenz2;
+#endif
                 pTestView->setAttribute(Qt::WA_DeleteOnClose);
                 pTestView->show();
                 pTestView->activateWindow();

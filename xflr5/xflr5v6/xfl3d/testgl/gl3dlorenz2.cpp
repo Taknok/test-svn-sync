@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 
-#include <QGuiApplication>
+#include <QApplication>
 #include <QScreen>
 #include <QGridLayout>
 #include <QRandomGenerator>
@@ -83,6 +83,12 @@ gl3dLorenz2::gl3dLorenz2(QWidget *pParent) : gl3dTestGLView(pParent)
         QVBoxLayout *pFrameLayout = new QVBoxLayout;
         {
             QLabel *plabTitle = new QLabel("Using OpenGL's compute shader<br>to compute the Lorenz attractor");
+#ifdef Q_OS_MAC
+            plabTitle->setText("Compute shaders require OpenGL 4.3<br>whereas macOS only supports OpenGL 4.1");
+            plabTitle->setStyleSheet("color: blue; font: bold");
+#endif
+
+
             QGridLayout*pMainLayout = new QGridLayout;
             {
                 QLabel *plabCS = new QLabel("<b>Compute shader settings:</b>");
@@ -217,8 +223,10 @@ void gl3dLorenz2::saveSettings(QSettings &settings)
 void gl3dLorenz2::initializeGL()
 {
     gl3dTestGLView::initializeGL();
+#ifdef Q_OS_MAC
+    return; // Compute shaders require OpenGL 4.3 whereas macOS only supports OpenGL 4.1
+#else
     QString csrc, strange;
-
     csrc = ":/shaders/lorenz2/lorenz2_CS.glsl";
     m_shadCompute.addShaderFromSourceFile(QOpenGLShader::Compute, csrc);
     if(m_shadCompute.log().length())
@@ -265,6 +273,7 @@ void gl3dLorenz2::initializeGL()
     }while(n>1);
 
     m_plabNMaxGroups->setText(QString("Max. number of groups = 2<sup>")+QString::asprintf("%d", pow)+QString("</sup>"));
+#endif
 }
 
 
@@ -350,7 +359,9 @@ void gl3dLorenz2::glMake3dObjects()
 void gl3dLorenz2::glRenderView()
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
-
+#ifdef Q_OS_MAC
+    return; // Compute shaders require OpenGL 4.3 whereas macOS only supports OpenGL 4.1
+#else
     m_shadCompute.bind();
     {
         s_dt = m_pdeDt->value();
@@ -364,7 +375,7 @@ void gl3dLorenz2::glRenderView()
         getGLError();
     }
     m_shadCompute.release();
-
+#endif
     m_shadPoint2.bind();
     {
         // Bind the VBO
