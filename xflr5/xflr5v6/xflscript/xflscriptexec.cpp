@@ -447,7 +447,7 @@ void XflScriptExec::runFoilAnalyses()
     m_nTaskDone = 0;
     m_nTaskStarted = 0;
 
-    strong = QString::asprintf("Found %d (foil, polar) pairs to analyze.\n",m_FoilExecList.size());
+    strong = QString::asprintf("Found %d (foil, polar) pairs to analyze.\n", int(m_FoilExecList.size()));
     traceLog(strong+"\n");
 
     XFoilTask::s_bCancel = false;

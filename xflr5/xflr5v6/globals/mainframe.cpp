@@ -3325,6 +3325,7 @@ bool MainFrame::loadSettings()
     GL3DScales::loadSettings(settings);
     W3dPrefs::loadSettings(settings);
     Units::loadSettings(settings);
+    OpenGlDlg::loadSettings(settings);
     gl2dFractal::loadSettings(settings);
     gl2dNewton::loadSettings(settings);
     gl3dBoids::loadSettings(settings);
@@ -4576,6 +4577,7 @@ void MainFrame::saveSettings()
     GL3DScales::saveSettings(settings);
     W3dPrefs::saveSettings(settings);
     Units::saveSettings(settings);
+    OpenGlDlg::saveSettings(settings);
     gl2dFractal::saveSettings(settings);
     gl2dNewton::saveSettings(settings);
     gl3dBoids::saveSettings(settings);
