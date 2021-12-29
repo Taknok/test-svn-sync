@@ -754,7 +754,6 @@ void OpenGlDlg::showEvent(QShowEvent *)
 {
     restoreGeometry(s_Geometry);
     if(s_HSplitterSizes.length()>0) m_pHSplitter->restoreState(s_HSplitterSizes);
-//    if(m_pglTestView) m_pglTestView->reset3dScale();
 }
 
 

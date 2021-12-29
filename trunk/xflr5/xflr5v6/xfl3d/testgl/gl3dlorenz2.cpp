@@ -351,10 +351,11 @@ void gl3dLorenz2::glRenderView()
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
-   if(!m_shadCompute.bind()) qDebug("Compute shader not bound");
+    m_shadCompute.bind();
     {
-       m_shadCompute.setUniformValue(m_locRadius, 10.0f);
-       m_shadCompute.setUniformValue(m_locDt, float(s_dt));
+        s_dt = m_pdeDt->value();
+        m_shadCompute.setUniformValue(m_locRadius, 10.0f);
+        m_shadCompute.setUniformValue(m_locDt, float(s_dt));
 
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_ssbParticle.bufferId());
         glDispatchCompute(s_NGroups, 1, 1);
