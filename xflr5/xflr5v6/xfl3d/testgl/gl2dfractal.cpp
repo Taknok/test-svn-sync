@@ -94,7 +94,7 @@ gl2dFractal::gl2dFractal(QWidget *pParent) : gl2dView(pParent)
                 m_pslTau->setTickInterval(50);
                 m_pslTau->setTickPosition(QSlider::TicksBelow);
                 m_pslTau->setValue(s_Hue);
-                connect(m_pslTau, SIGNAL(sliderMoved(int)), SLOT(update()));
+                connect(m_pslTau, SIGNAL(valueChanged(int)), SLOT(update()));
                 pHueLayout->addWidget(pLabHue);
                 pHueLayout->addWidget(m_pslTau);
             }

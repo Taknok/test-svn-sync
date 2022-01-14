@@ -172,7 +172,8 @@ void XFoilAnalysisDlg::initDialog()
         else            m_pXFoilTask->setSequence(false, s_Cl, s_Cl, s_ClDelta);
     }
 
-    m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReDelta);
+    if(s_bSequence)     m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReDelta);
+    else                m_pXFoilTask->setReRange(m_ReMin, m_ReMin, m_ReDelta);
     m_pXFoilTask->initializeXFoilTask(XDirect::curFoil(), XDirect::curPolar(),
                                       XDirect::s_bViscous, XDirect::s_bInitBL, false);
 

@@ -279,7 +279,7 @@ void XDirect::connectSignals()
     connect(m_pchStoreOpp,      SIGNAL(clicked()),            SLOT(onStoreOpp()));
 
     connect(m_pchAnimate,       SIGNAL(clicked(bool)),    SLOT(onAnimate(bool)));
-    connect(m_pslAnimateSpeed,  SIGNAL(sliderMoved(int)), SLOT(onAnimateSpeed(int)));
+    connect(m_pslAnimateSpeed,  SIGNAL(valueChanged(int)), SLOT(onAnimateSpeed(int)));
     connect(m_pAnimateTimer,    SIGNAL(timeout()),        SLOT(onAnimateSingle()));
 
     connect(m_pchActiveOppOnly, SIGNAL(clicked(bool)), SLOT(onCurOppOnly()));
@@ -3663,9 +3663,9 @@ void XDirect::readParams()
 
     XFoilAnalysisDlg::s_bSequence = m_pchSequence->isChecked();
 
-    double Alpha=0, AlphaMax=0, AlphaDelta=0;
-    double Cl=0, ClMax=0, ClDelta=0;
-    double Reynolds=0, ReynoldsMax=0, ReynoldsDelta=0;
+    double Alpha(0), AlphaMax(0), AlphaDelta(0);
+    double Cl(0), ClMax(0), ClDelta(0);
+    double Reynolds(0), ReynoldsMax(0), ReynoldsDelta(0);
     if(Objects2d::curPolar()->polarType()!=xfl::FIXEDAOAPOLAR)
     {
         if(s_bAlpha)

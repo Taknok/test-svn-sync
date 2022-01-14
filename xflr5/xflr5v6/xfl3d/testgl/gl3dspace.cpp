@@ -66,7 +66,7 @@ gl3dSpace::gl3dSpace(QWidget *pParent) : gl3dTestGLView(pParent)
             pPlanetSize->setTickPosition(QSlider::TicksBelow);
             pPlanetSize->setValue(int(s_SphereRadius));
 
-            connect(pPlanetSize,  SIGNAL(sliderMoved(int)),  SLOT(onObjectRadius(int)));
+            connect(pPlanetSize,  SIGNAL(valueChanged(int)),  SLOT(onObjectRadius(int)));
 
             m_plwGalaxies = new QListWidget;
             connect(m_plwGalaxies, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(onSelGalaxy(QListWidgetItem*)));

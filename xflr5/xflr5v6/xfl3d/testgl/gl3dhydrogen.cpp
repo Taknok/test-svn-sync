@@ -175,7 +175,7 @@ gl3dHydrogen::gl3dHydrogen(QWidget *pParent) : gl3dTestGLView(pParent)
                         pPlanetSize->setTickInterval(5);
                         pPlanetSize->setTickPosition(QSlider::TicksBelow);
                         pPlanetSize->setValue(int(s_ElectronSize));
-                        connect(pPlanetSize,  SIGNAL(sliderMoved(int)),  SLOT(onObjectRadius(int)));
+                        connect(pPlanetSize,  SIGNAL(valueChanged(int)),  SLOT(onObjectRadius(int)));
 
                         pWidthLayout->addWidget(plabPtWidth);
                         pWidthLayout->addWidget(pPlanetSize);

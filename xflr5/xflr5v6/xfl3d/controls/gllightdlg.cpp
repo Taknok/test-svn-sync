@@ -57,17 +57,17 @@ void GLLightDlg::connectSignals()
     connect(m_ppbClose,          SIGNAL(clicked()),        SLOT(accept()));
     connect(m_ppbDefaults,       SIGNAL(clicked()),        SLOT(onDefaults()));
 
-    connect(m_pslRed,            SIGNAL(sliderMoved(int)), SLOT(onChanged()));
-    connect(m_pslGreen,          SIGNAL(sliderMoved(int)), SLOT(onChanged()));
-    connect(m_pslBlue,           SIGNAL(sliderMoved(int)), SLOT(onChanged()));
-    connect(m_peslLightAmbient,  SIGNAL(sliderMoved(int)), SLOT(onChanged()));
-    connect(m_peslLightDiffuse,  SIGNAL(sliderMoved(int)), SLOT(onChanged()));
-    connect(m_peslLightSpecular, SIGNAL(sliderMoved(int)), SLOT(onChanged()));
-    connect(m_peslXLight,        SIGNAL(sliderMoved(int)), SLOT(onChanged()));
-    connect(m_peslYLight,        SIGNAL(sliderMoved(int)), SLOT(onChanged()));
-    connect(m_peslZLight,        SIGNAL(sliderMoved(int)), SLOT(onChanged()));
+    connect(m_pslRed,            SIGNAL(valueChanged(int)), SLOT(onChanged()));
+    connect(m_pslGreen,          SIGNAL(valueChanged(int)), SLOT(onChanged()));
+    connect(m_pslBlue,           SIGNAL(valueChanged(int)), SLOT(onChanged()));
+    connect(m_peslLightAmbient,  SIGNAL(valueChanged(int)), SLOT(onChanged()));
+    connect(m_peslLightDiffuse,  SIGNAL(valueChanged(int)), SLOT(onChanged()));
+    connect(m_peslLightSpecular, SIGNAL(valueChanged(int)), SLOT(onChanged()));
+    connect(m_peslXLight,        SIGNAL(valueChanged(int)), SLOT(onChanged()));
+    connect(m_peslYLight,        SIGNAL(valueChanged(int)), SLOT(onChanged()));
+    connect(m_peslZLight,        SIGNAL(valueChanged(int)), SLOT(onChanged()));
 
-    connect(m_pslMatShininess,   SIGNAL(sliderMoved(int)), SLOT(onChanged()));
+    connect(m_pslMatShininess,   SIGNAL(valueChanged(int)), SLOT(onChanged()));
 
     connect(m_pdeConstantAttenuation,  SIGNAL(editingFinished()), SLOT(onChanged()));
     connect(m_pdeLinearAttenuation,    SIGNAL(editingFinished()), SLOT(onChanged()));
