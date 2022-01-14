@@ -273,7 +273,7 @@ void gl2dFractal::paintGL()
             {
                 buffersize = s_MaxIter           // number of segments
                              *2                  // two vertices/segment
-                             *3;                 // three components/vertex
+                             *4;                 // three components/vertex
                 pts.resize(buffersize);
 
                 float x(s_Seed.x());
@@ -285,10 +285,10 @@ void gl2dFractal::paintGL()
                     pts[iv++] = x;
                     pts[iv++] = y;
                     pts[iv++] = 0.0f;
+                    pts[iv++] = 1.0f;
 
                     xn = x*x - y*y + s_Seed.x();
                     yn = 2.0*x*y   + s_Seed.y();
-//qDebug(" %17g %17g", x, y);
                     if(std::isnormal(x) && std::isnormal(y))
                     {
                         x = xn;
@@ -298,16 +298,17 @@ void gl2dFractal::paintGL()
                     pts[iv++] = x;
                     pts[iv++] = y;
                     pts[iv++] = 0.0f;
+                    pts[iv++] = 1.0f;
                 }
-//qDebug()<<"___";
+
+                Q_ASSERT(iv==buffersize);
+
                 if(m_vboSegs.isCreated()) m_vboSegs.destroy();
                 m_vboSegs.create();
                 m_vboSegs.bind();
                 m_vboSegs.allocate(pts.data(), buffersize * int(sizeof(GLfloat)));
                 m_vboSegs.release();
             }
-
-
             m_bResetRoots = false;
         }
 

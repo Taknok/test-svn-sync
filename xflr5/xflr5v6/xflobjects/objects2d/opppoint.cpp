@@ -27,7 +27,7 @@
 #include <xflobjects/objects_global.h>
 #include <xflcore/xflcore.h>
 
-bool OpPoint::s_bStoreOpp = true;
+bool OpPoint::s_bStoreOpp = false;
 
 /**
  * The public constructor

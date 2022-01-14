@@ -23,7 +23,6 @@
 #include <QSplitter>
 #include <QSurfaceFormat>
 #include <QVBoxLayout>
-#include <QColorSpace>
 
 #include "opengldlg.h"
 

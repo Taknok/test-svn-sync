@@ -2166,13 +2166,13 @@ void gl3dView::paintSegments(QOpenGLBuffer &vbo, LineStyle const &ls, bool bHigh
 void gl3dView::paintSegments(QOpenGLBuffer &vbo, QColor const &clr, int thickness, Line::enumLineStipple stip, bool bHigh)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
-    int stride = 3;
+    int stride = 4;
     m_shadLine.bind();
     {
         vbo.bind();
         {
             m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
-            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, stride*sizeof(GLfloat));
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 4, stride*sizeof(GLfloat));
 
             int nSegs = vbo.size()/2/stride/int(sizeof(float)); // 2 vertices and (3 position components)
 
@@ -2318,27 +2318,31 @@ void gl3dView::paintLineStrip(QOpenGLBuffer &vbo, QColor const &clr, int width, 
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
+    int stride = 4;
     m_shadLine.bind();
-    m_shadLine.setUniformValue(m_locLine.m_UniColor, clr);
-    if(m_bUse120StyleShaders)
     {
-        glLineWidth(width);
-        glEnable(GL_LINE_STIPPLE);
-        glLineStipple(1, GLStipple(stipple));
+        m_shadLine.setUniformValue(m_locLine.m_UniColor, clr);
+        if(m_bUse120StyleShaders)
+        {
+            glLineWidth(width);
+            glEnable(GL_LINE_STIPPLE);
+            glLineStipple(1, GLStipple(stipple));
+        }
+
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, float(width));
+        m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(stipple));
+
+        vbo.bind();
+        {
+            m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 4, stride * sizeof(GLfloat));
+            int nPoints = vbo.size()/4/int(sizeof(float));
+            glDrawArrays(GL_LINE_STRIP, 0, nPoints);
+            m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
+        }
+        vbo.release();
+        if(m_bUse120StyleShaders) glDisable(GL_LINE_STIPPLE);
     }
-
-    m_shadLine.setUniformValue(m_locLine.m_Thickness, float(width));
-    m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(stipple));
-
-    vbo.bind();
-    m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
-    m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
-    int nPoints = vbo.size()/3/int(sizeof(float));
-    glDrawArrays(GL_LINE_STRIP, 0, nPoints);
-    m_shadLine.disableAttributeArray(m_locLine.m_attrVertex);
-    vbo.release();
-    if(m_bUse120StyleShaders) glDisable(GL_LINE_STIPPLE);
-
     m_shadLine.release();
 }
 
@@ -2348,6 +2352,7 @@ void gl3dView::paintColourSegments(QOpenGLBuffer &vbo, LineStyle const &ls)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
+    int stride = 8; // 4 coords + 4 color components
     m_shadLine.bind();
     {
         m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
@@ -2359,11 +2364,11 @@ void gl3dView::paintColourSegments(QOpenGLBuffer &vbo, LineStyle const &ls)
 
         vbo.bind();
         {
-            // 2 vertices x (3 coords + 4 color components)
-            int nSegs = vbo.size() /2 /7 /int(sizeof(float));
+            // 2 vertices x stride
+            int nSegs = vbo.size() /2 /stride /int(sizeof(float));
 
-            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex,    GL_FLOAT, 0,                  3, 7 * sizeof(GLfloat));
-            m_shadLine.setAttributeBuffer(m_locLine.m_attrColor, GL_FLOAT, 3* sizeof(GLfloat), 4, 7 * sizeof(GLfloat));
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0,                  4, stride * sizeof(GLfloat));
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrColor,  GL_FLOAT, 4* sizeof(GLfloat), 4, stride * sizeof(GLfloat));
 
             glDrawArrays(GL_LINES, 0, nSegs*2);
             vbo.release();

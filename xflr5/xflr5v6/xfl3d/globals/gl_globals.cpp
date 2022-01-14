@@ -502,7 +502,7 @@ void glMakeCube(Vector3d const &pt, double dx, double dy, double dz,
     vboFaces.allocate(CubeVertexArray.data(), buffersize* int(sizeof(GLfloat)));
     vboFaces.release();
 
-    buffersize = 12 * 2 *3; //12 edges x2 vertices x3 components
+    buffersize = 12 * 2 *4; //12 edges x2 vertices x4 components
     QVector<float> EdgeVertexArray(buffersize);
     iv=0;
 
@@ -511,30 +511,38 @@ void glMakeCube(Vector3d const &pt, double dx, double dy, double dz,
         EdgeVertexArray[iv++] = T000.xf();
         EdgeVertexArray[iv++] = T000.yf();
         EdgeVertexArray[iv++] = T000.zf();
+        EdgeVertexArray[iv++] = 1.0f;
         EdgeVertexArray[iv++] = T100.xf();
         EdgeVertexArray[iv++] = T100.yf();
         EdgeVertexArray[iv++] = T100.zf();
+        EdgeVertexArray[iv++] = 1.0f;
 
         EdgeVertexArray[iv++] = T100.xf();
         EdgeVertexArray[iv++] = T100.yf();
         EdgeVertexArray[iv++] = T100.zf();
+        EdgeVertexArray[iv++] = 1.0f;
         EdgeVertexArray[iv++] = T110.xf();
         EdgeVertexArray[iv++] = T110.yf();
         EdgeVertexArray[iv++] = T110.zf();
+        EdgeVertexArray[iv++] = 1.0f;
 
         EdgeVertexArray[iv++] = T110.xf();
         EdgeVertexArray[iv++] = T110.yf();
         EdgeVertexArray[iv++] = T110.zf();
+        EdgeVertexArray[iv++] = 1.0f;
         EdgeVertexArray[iv++] = T010.xf();
         EdgeVertexArray[iv++] = T010.yf();
         EdgeVertexArray[iv++] = T010.zf();
+        EdgeVertexArray[iv++] = 1.0f;
 
         EdgeVertexArray[iv++] = T010.xf();
         EdgeVertexArray[iv++] = T010.yf();
         EdgeVertexArray[iv++] = T010.zf();
+        EdgeVertexArray[iv++] = 1.0f;
         EdgeVertexArray[iv++] = T000.xf();
         EdgeVertexArray[iv++] = T000.yf();
         EdgeVertexArray[iv++] = T000.zf();
+        EdgeVertexArray[iv++] = 1.0f;
     }
 
     //top face
@@ -542,30 +550,38 @@ void glMakeCube(Vector3d const &pt, double dx, double dy, double dz,
         EdgeVertexArray[iv++] = T001.xf();
         EdgeVertexArray[iv++] = T001.yf();
         EdgeVertexArray[iv++] = T001.zf();
+        EdgeVertexArray[iv++] = 1.0f;
         EdgeVertexArray[iv++] = T101.xf();
         EdgeVertexArray[iv++] = T101.yf();
         EdgeVertexArray[iv++] = T101.zf();
+        EdgeVertexArray[iv++] = 1.0f;
 
         EdgeVertexArray[iv++] = T101.xf();
         EdgeVertexArray[iv++] = T101.yf();
         EdgeVertexArray[iv++] = T101.zf();
+        EdgeVertexArray[iv++] = 1.0f;
         EdgeVertexArray[iv++] = T111.xf();
         EdgeVertexArray[iv++] = T111.yf();
         EdgeVertexArray[iv++] = T111.zf();
+        EdgeVertexArray[iv++] = 1.0f;
 
         EdgeVertexArray[iv++] = T111.xf();
         EdgeVertexArray[iv++] = T111.yf();
         EdgeVertexArray[iv++] = T111.zf();
+        EdgeVertexArray[iv++] = 1.0f;
         EdgeVertexArray[iv++] = T011.xf();
         EdgeVertexArray[iv++] = T011.yf();
         EdgeVertexArray[iv++] = T011.zf();
+        EdgeVertexArray[iv++] = 1.0f;
 
         EdgeVertexArray[iv++] = T011.xf();
         EdgeVertexArray[iv++] = T011.yf();
         EdgeVertexArray[iv++] = T011.zf();
+        EdgeVertexArray[iv++] = 1.0f;
         EdgeVertexArray[iv++] = T001.xf();
         EdgeVertexArray[iv++] = T001.yf();
         EdgeVertexArray[iv++] = T001.zf();
+        EdgeVertexArray[iv++] = 1.0f;
     }
 
     //lateral edges
@@ -573,30 +589,38 @@ void glMakeCube(Vector3d const &pt, double dx, double dy, double dz,
         EdgeVertexArray[iv++] = T000.xf();
         EdgeVertexArray[iv++] = T000.yf();
         EdgeVertexArray[iv++] = T000.zf();
+        EdgeVertexArray[iv++] = 1.0f;
         EdgeVertexArray[iv++] = T001.xf();
         EdgeVertexArray[iv++] = T001.yf();
         EdgeVertexArray[iv++] = T001.zf();
+        EdgeVertexArray[iv++] = 1.0f;
 
         EdgeVertexArray[iv++] = T100.xf();
         EdgeVertexArray[iv++] = T100.yf();
         EdgeVertexArray[iv++] = T100.zf();
+        EdgeVertexArray[iv++] = 1.0f;
         EdgeVertexArray[iv++] = T101.xf();
         EdgeVertexArray[iv++] = T101.yf();
         EdgeVertexArray[iv++] = T101.zf();
+        EdgeVertexArray[iv++] = 1.0f;
 
         EdgeVertexArray[iv++] = T110.xf();
         EdgeVertexArray[iv++] = T110.yf();
         EdgeVertexArray[iv++] = T110.zf();
+        EdgeVertexArray[iv++] = 1.0f;
         EdgeVertexArray[iv++] = T111.xf();
         EdgeVertexArray[iv++] = T111.yf();
         EdgeVertexArray[iv++] = T111.zf();
+        EdgeVertexArray[iv++] = 1.0f;
 
         EdgeVertexArray[iv++] = T010.xf();
         EdgeVertexArray[iv++] = T010.yf();
         EdgeVertexArray[iv++] = T010.zf();
+        EdgeVertexArray[iv++] = 1.0f;
         EdgeVertexArray[iv++] = T011.xf();
         EdgeVertexArray[iv++] = T011.yf();
         EdgeVertexArray[iv++] = T011.zf();
+        EdgeVertexArray[iv++] = 1.0f;
     }
 
     Q_ASSERT(iv==buffersize);
@@ -705,8 +729,8 @@ void glMakeQuadContoursOnGrid(QOpenGLBuffer &vbo, int nrows, int ncols,
     // vertex array size
     // nsegs
     // x 2 vertices
-    // x 3 components
-    int nodeVertexSize = segs.size() * 2 * 3;
+    // x 4 components
+    int nodeVertexSize = segs.size() * 2 * 4;
     QVector<float> nodeVertexArray(nodeVertexSize);
 
     int iv=0;
@@ -717,9 +741,11 @@ void glMakeQuadContoursOnGrid(QOpenGLBuffer &vbo, int nrows, int ncols,
         nodeVertexArray[iv++] = n0.xf();
         nodeVertexArray[iv++] = n0.yf();
         nodeVertexArray[iv++] = n0.zf();
+        nodeVertexArray[iv++] = 1.0f;
         nodeVertexArray[iv++] = n1.xf();
         nodeVertexArray[iv++] = n1.yf();
         nodeVertexArray[iv++] = n1.zf();
+        nodeVertexArray[iv++] = 1.0f;
     }
 
     Q_ASSERT(iv==nodeVertexSize);
@@ -957,11 +983,10 @@ void lookUpQuadKey(int key, int *i)
 }
 
 
-
 void glMakeEllipseLineStrip(double a, double e, Vector3d const &O, QOpenGLBuffer &vbo)
 {
     int arcbuffersize = NPOINTS;
-    arcbuffersize *= 3; // 3 components per vertex for the surface shader
+    arcbuffersize *= 4; // 4 components per vertex for the line shader
 
     // NPOINTS-1 triangles
 
@@ -979,6 +1004,7 @@ void glMakeEllipseLineStrip(double a, double e, Vector3d const &O, QOpenGLBuffer
         ArcVertexArray[iv++] = C.xf()+x;
         ArcVertexArray[iv++] = C.yf()+y;
         ArcVertexArray[iv++] = C.zf();
+        ArcVertexArray[iv++] = 1.0f;
     }
 
     Q_ASSERT(iv==arcbuffersize);
@@ -1119,9 +1145,9 @@ void glMakeTrianglesOutline(QVector<Triangle3d> const &triangles, Vector3d const
     //		n triangular Panels
     //      x3 edges
     //      x2 nodes per edges
-    //		x3 vertex components
+    //		x4 vertex components
 
-    int buffersize = nPanel3*3*2*3;
+    int buffersize = nPanel3*3*2*4;
 
     QVector<float> nodeVertexArray(buffersize);
 
@@ -1135,10 +1161,12 @@ void glMakeTrianglesOutline(QVector<Triangle3d> const &triangles, Vector3d const
             nodeVertexArray[iv++] = t3d.vertexAt(i).xf() + position.xf();
             nodeVertexArray[iv++] = t3d.vertexAt(i).yf() + position.yf();
             nodeVertexArray[iv++] = t3d.vertexAt(i).zf() + position.zf();
+            nodeVertexArray[iv++] = 1.0f;
 
             nodeVertexArray[iv++] = t3d.vertexAt(i+1).xf() + position.xf();
             nodeVertexArray[iv++] = t3d.vertexAt(i+1).yf() + position.yf();
             nodeVertexArray[iv++] = t3d.vertexAt(i+1).zf() + position.zf();
+            nodeVertexArray[iv++] = 1.0f;
         }
     }
 
@@ -1217,7 +1245,7 @@ void glMakeCircle(double radius, Vector3d const &O, QOpenGLBuffer &vbo)
 {
     int arcbuffersize = NPOINTS-1; // 1 segment less than the number of points
     arcbuffersize *= 2; // two vertices per segment
-    arcbuffersize *= 3; // three components per vertex
+    arcbuffersize *= 4; // four components per vertex
 
     QVector<GLfloat> ArcVertexArray(arcbuffersize, 0);
 
@@ -1231,9 +1259,11 @@ void glMakeCircle(double radius, Vector3d const &O, QOpenGLBuffer &vbo)
         ArcVertexArray[iv++] = O.xf()+radius*cosf(theta);
         ArcVertexArray[iv++] = O.yf()+radius*sinf(theta);
         ArcVertexArray[iv++] = O.zf();
+        ArcVertexArray[iv++] = 1.0f;
         ArcVertexArray[iv++] = O.xf()+radius*cosf(theta1);
         ArcVertexArray[iv++] = O.yf()+radius*sinf(theta1);
         ArcVertexArray[iv++] = O.zf();
+        ArcVertexArray[iv++] = 1.0f;
     }
 
     Q_ASSERT(iv==arcbuffersize);

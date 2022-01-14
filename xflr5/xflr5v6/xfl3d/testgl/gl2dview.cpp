@@ -447,13 +447,13 @@ void gl2dView::paintSegments(QOpenGLBuffer &vbo, LineStyle const &ls, bool bHigh
 void gl2dView::paintSegments(QOpenGLBuffer &vbo, QColor const &clr, float thickness, Line::enumLineStipple stip, bool bHigh)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
-    int stride = 3; // 3 position components
+    int stride = 4; // 3 position components
     m_shadLine.bind();
     {
         vbo.bind();
         {
             m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
-            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 3, stride*sizeof(GLfloat));
+            m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 4, stride*sizeof(GLfloat));
 
             int nSegs = vbo.size()/2/stride/int(sizeof(float));
 
