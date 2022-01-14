@@ -124,11 +124,18 @@ bool XFoilTask::initializeXFoilTask(Foil const*pFoil, Polar *pPolar, bool bVisco
 
     m_XFoilStream.setString(&m_XFoilLog);
     double nx[IBX], ny[IBX];     //needed because XFoil requires a const Foil
-    if(!m_XFoilInstance.initXFoilGeometry(m_pFoil->m_n, m_pFoil->m_x,m_pFoil->m_y, nx, ny))  return false;
+
+    double xh(0), yh(0);
+    if(m_pFoil->m_bTEFlap) m_pFoil->getHingeAbsolutePos(xh, yh);
+
+    if(!m_XFoilInstance.initXFoilGeometry(m_pFoil->m_n, m_pFoil->m_x,m_pFoil->m_y, nx, ny,
+                                          m_pFoil->m_bTEFlap, xh, yh))
+        return false;
     if(!m_XFoilInstance.initXFoilAnalysis(m_pPolar->Reynolds(), m_pPolar->aoa(), m_pPolar->Mach(),
                                           m_pPolar->NCrit(), m_pPolar->XtrTop(), m_pPolar->XtrBot(),
                                           m_pPolar->ReType(), m_pPolar->MaType(),
-                                          bViscous, m_XFoilStream)) return false;
+                                          bViscous, m_XFoilStream))
+        return false;
 
     return true;
 }
@@ -328,8 +335,6 @@ bool XFoilTask::alphaSequence()
 bool XFoilTask::ReSequence()
 {
     QString str;
-    int ia;
-    double Re;
 
     if(m_ReMax< m_ReMin) m_ReInc = -qAbs(m_ReInc);
 
@@ -339,7 +344,7 @@ bool XFoilTask::ReSequence()
 
     QString strange;
 
-    for (ia=0; ia<=total; ia++)
+    for (int ia=0; ia<=total; ia++)
     {
         if(s_bCancel) break;
         if(s_bSkipPolar)
@@ -351,7 +356,7 @@ bool XFoilTask::ReSequence()
             return false;
         }
 
-        Re = m_ReMin+ia*m_ReInc;
+        double Re = m_ReMin+ia*m_ReInc;
         strange =QString("Re = %1 ........ ").arg(Re,0,'f',0);
         traceLog(strange);
         m_XFoilInstance.reinf1 = Re;
@@ -393,6 +398,7 @@ bool XFoilTask::ReSequence()
             pOpPoint->setPolarName(m_pPolar->name());
             pOpPoint->setTheStyle(m_pPolar->theStyle());
             addXFoilData(pOpPoint, &m_XFoilInstance, m_pFoil);
+            m_pPolar->addOpPointData(pOpPoint); // store the data on the fly; a polar is only used by one task at a time
             qApp->postEvent(m_pParent, new XFoilOppEvent(pOpPoint));
         }
 
@@ -548,9 +554,11 @@ void XFoilTask::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil const*pFoil)
     if(pOpp->m_bTEFlap || pOpp->m_bLEFlap)
     {
         pOpp->setHingeMoments(pFoil);
+//qDebug("XFoilTask::xfl    %11f %11f %11f", pOpp->m_TEHMom, pOpp->XForce, pOpp->YForce);
         pOpp->m_TEHMom = pXFoil->hmom;
         pOpp->XForce   = pXFoil->hfx;
         pOpp->YForce   = pXFoil->hfy;
+//qDebug("XFoilTask::xfoil  %11f %11f %11f", pOpp->m_TEHMom, pOpp->XForce, pOpp->YForce);
     }
 
     if(!pXFoil->lvisc || !pXFoil->lvconv)    return;

@@ -453,7 +453,7 @@ void Miarex::connectSignals()
     connect(m_pchSurfVel,     SIGNAL(clicked()), SLOT(onSurfaceSpeeds()));
 
     connect(m_pchWOppAnimate,      SIGNAL(clicked()),        SLOT(onAnimateWOpp()));
-    connect(m_pslAnimateWOppSpeed, SIGNAL(sliderMoved(int)), SLOT(onAnimateWOppSpeed(int)));
+    connect(m_pslAnimateWOppSpeed, SIGNAL(valueChanged(int)), SLOT(onAnimateWOppSpeed(int)));
     connect(m_pTimerWOpp,          SIGNAL(timeout()),        SLOT(onAnimateWOppSingle()));
     connect(m_pTimerMode,          SIGNAL(timeout()),        SLOT(onAnimateModeSingle()));
 
@@ -467,7 +467,7 @@ void Miarex::connectSignals()
 
     connect(m_ppbKeepCpSection,   SIGNAL(clicked()),         SLOT(onKeepCpSection()));
     connect(m_ppbResetCpSection,  SIGNAL(clicked()),         SLOT(onResetCpSection()));
-    connect(m_pslCpSectionSlider, SIGNAL(sliderMoved(int)),  SLOT(onCpSectionSlider(int)));
+    connect(m_pslCpSectionSlider, SIGNAL(valueChanged(int)),  SLOT(onCpSectionSlider(int)));
     connect(m_pdeSpanPos,         SIGNAL(editingFinished()), SLOT(onCpPosition()));
 
     connect(m_pchAxes,  SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onAxes(bool)));
@@ -477,7 +477,7 @@ void Miarex::connectSignals()
     connect(m_ptbIso,   SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3dIso()));
     connect(m_ptbFlip,  SIGNAL(clicked()),     m_pgl3dMiarexView, SLOT(on3dFlip()));
 
-    connect(m_pslClipPlanePos, SIGNAL(sliderMoved(int)), m_pgl3dMiarexView, SLOT(onClipPlane(int)));
+    connect(m_pslClipPlanePos, SIGNAL(valueChanged(int)), m_pgl3dMiarexView, SLOT(onClipPlane(int)));
 
     connect(m_ppb3DResetScale, SIGNAL(clicked()), SLOT(on3DResetScale()));
 

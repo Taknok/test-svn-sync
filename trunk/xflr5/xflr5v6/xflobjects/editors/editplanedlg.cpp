@@ -596,7 +596,7 @@ void EditPlaneDlg::connectSignals()
     connect(m_ptbZ,          SIGNAL(clicked()), m_pglPlaneView, SLOT(on3dTop()));
     connect(m_ptbFlip,       SIGNAL(clicked()), m_pglPlaneView, SLOT(on3dFlip()));
 
-    connect(m_pslClipPlanePos, SIGNAL(sliderMoved(int)), m_pglPlaneView, SLOT(onClipPlane(int)));
+    connect(m_pslClipPlanePos, SIGNAL(valueChanged(int)), m_pglPlaneView, SLOT(onClipPlane(int)));
 
     connect(m_pHorizontalSplitter, SIGNAL(splitterMoved(int,int)), this, SLOT(onResize()));
 

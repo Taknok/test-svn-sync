@@ -1445,6 +1445,15 @@ void Foil::setFlap()
 }
 
 
+void Foil::getHingeAbsolutePos(double &xh, double &yh) const
+{
+    xh = m_TEXHinge/100.0;
+    double ymin = baseLowerY(xh);
+    double ymax = baseUpperY(xh);
+    yh = ymin + (ymax-ymin) * m_TEYHinge/100.0;
+}
+
+
 /** For debug purposes only */
 void Foil::displayCoords(bool bBaseCoords) const
 {
@@ -1501,3 +1510,5 @@ QString Foil::properties() const
 
     return props;
 }
+
+

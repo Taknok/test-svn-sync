@@ -148,7 +148,7 @@ void BodyDlg::connectSignals()
 
     connect(&m_gl3dBodyview, SIGNAL(viewModified()), SLOT(onCheckViewIcons()));
 
-    connect(m_pslPanelBunch, SIGNAL(sliderMoved(int)), SLOT(onNURBSPanels()));
+    connect(m_pslPanelBunch, SIGNAL(valueChanged(int)), SLOT(onNURBSPanels()));
 
     connect(m_prbFlatPanels, SIGNAL(clicked()), SLOT(onLineType()));
     connect(m_prbBSplines,   SIGNAL(clicked()), SLOT(onLineType()));

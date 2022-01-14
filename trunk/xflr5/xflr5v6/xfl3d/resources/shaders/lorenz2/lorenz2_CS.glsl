@@ -102,9 +102,12 @@ void main()
         // Calculate the vertex position
         vec4 oldpos = outBuffer.data[storePos].v;
         vec4 newpos = moveIt(outBuffer.data[storePos].v);
-        outBuffer.data[storePos].v = newpos;
+        outBuffer.data[storePos].v = newpos;        
 
-        float step = length(newpos-oldpos)*2.0 * 0.002/dt;
+        float dx = f(newpos.x, newpos.y, newpos.z);
+        float dy = g(newpos.x, newpos.y, newpos.z);
+        float dz = h(newpos.x, newpos.y, newpos.z);
+        float step = sqrt(dx*dx+dy*dy+dz*dz)/300.0;
         outBuffer.data[storePos].c = vec4(glGetRed(step), glGetGreen(step), glGetBlue(step), 1.0);
 }
 

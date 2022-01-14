@@ -3991,17 +3991,18 @@ bool XFoil::iblsys()
 /** Loads the Foil's geometry in XFoil,
  *  calculates the normal vectors,
  *  and sets the results in current foil */
-bool XFoil::initXFoilGeometry(int fn, double const *fx, double const *fy, double*fnx, double*fny)
+bool XFoil::initXFoilGeometry(int fn, double const *fx, double const *fy, double*fnx, double*fny, bool bFLap, double xhinge, double yhinge)
 {
-    for (int i =0; i<fn; i++)
+    for (int i=0; i<fn; i++)
     {
         xb[i+1] = fx[i];
         yb[i+1] = fy[i];
     }
 
     nb = fn;
-    lflap  = false;
-    lbflap = false;
+    lflap  = bFLap;
+    xof = xhinge;
+    yof = yhinge;
 
     ddef = 0.0;
     xbf  = 1.0;
@@ -4253,10 +4254,10 @@ bool XFoil::ludcmp(int n, double a[IQX][IQX], int indx[IQX])
  * ---------------------------------------------------- */
 bool XFoil::mhinge()
 {
-    int i=0;
-    double tops=0,bots=0,botp=0,botx=0,boty=0,frac=0,topp=0,topx=0,topy=0;
-    double xmid=0,ymid=0,pmid=0;
-    double dx=0,dy=0;
+    int i(0);
+    double tops(0),bots(0),botp(0),botx(0),boty(0),frac(0),topp(0),topx(0),topy(0);
+    double xmid(0),ymid(0),pmid(0);
+    double dx(0),dy(0);
 
     if(!lflap)
     {
@@ -4283,7 +4284,7 @@ bool XFoil::mhinge()
     hfy  = 0.0;
 
     //---- integrate pressures on top and bottom sides of flap
-    for (i=2;i<=n; i++)
+    for (i=2; i<=n; i++)
     {
         if(s[i-1]<tops || s[i]>bots)
         {
@@ -4302,19 +4303,19 @@ bool XFoil::mhinge()
     }
 
     //---- find s[i]..s[i-1] interval containing s=tops
-    i=2;
+/*    i=2;
     bool bexit = false;
     while (!bexit)
     {
         if(s[i]<tops) i++;
         else bexit  =true;
         if (i>n) {} //we have a problem...
+    }*/
+
+
+    for (i=2; i<=n; i++)  {
+        if(s[i]>tops) break;
     }
-
-
-    //    for (i=2; i<=n; i++)  {
-    //        if(s[i]>tops) goto stop31;
-    //    }
 
     //stop31
     //---- add on top surface chunk tops..s[i-1],  missed in the do 20 loop.
@@ -4348,10 +4349,9 @@ bool XFoil::mhinge()
 
     //---- find s[i]..s[i-1] interval containing s=bots
     for (i=n; i>= 2;i--){
-        if(s[i-1]<bots) goto stop41;
+        if(s[i-1]<bots) break;
     }
 
-stop41:
     //---- add on bottom surface chunk bots..s[i],    missed in the do 20 loop.
     dx = x[i] - botx;
     dy = y[i] - boty;
@@ -4397,7 +4397,6 @@ stop41:
 }
 
 
-
 /** ----------------------------------------------------
  *      marches the bls and wake in mixed mode using
  *      the current ue and hk.  the calculated ue
@@ -4415,12 +4414,12 @@ bool XFoil::mrchdu()
     memset(vtmp, 0, 30*sizeof(double));
     memset(vztmp, 0, 5*sizeof(double));
     double deps = 0.000005;
-    int is=0, ibl=0, ibm=0, itrold=0, iw=0, itbl=0;//icom
+    int is(0), ibl(0), ibm(0), itrold(0), iw(0), itbl(0);//icom
 
-    double senswt=0.0, thi=0.0, uei=0.0, dsi=0.0, cti=0.0, dswaki=0.0, ratlen=0.0;
-    double sens=0.0, sennew=0.0, dummy=0.0, msq=0.0, thm=0.0, dsm=0.0, uem=0.0;
-    double xsi=0.0, hklim=0.0, dsw=0.0;
-    double ami=0.0, dte=0.0, cte=0.0, tte=0.0, ueref=0.0, hkref=0.0, dmax=0.0;
+    double senswt(0.0), thi, uei, dsi(0.0), cti(0.0), dswaki(0.0), ratlen(0.0);
+    double sens(0.0), sennew(0.0), dummy(0.0), msq(0.0), thm(0.0), dsm(0.0), uem(0.0);
+    double xsi(0.0), hklim(0.0), dsw(0.0);
+    double ami(0.0), dte(0.0), cte(0.0), tte(0.0), ueref(0.0), hkref(0.0), dmax(0.0);
 
     //---- constant controlling how far hk is allowed to deviate
     //    from the specified value.
@@ -10158,28 +10157,28 @@ void XFoil::flap()
     //     break vicinity to clean things up.
     //----------------------------------------------------
 
-    bool lchange=0;
-    bool insid=0;
-    int i=0, it2q=0, ib2q=0, idif=0;
-    int npadd=0, ip=0;
-    double atop=0, abot=0, chx=0, chy=0, fvx=0, fvy=0, crsp=0;
-    double st1=0, st2=0, sb1=0, sb2=0, xt1=0, yt1=0, xb1=0;
-    double yb1=0, sb1p=0, sb1q=0, sb2p=0, sb2q=0;
+    bool lchange(false);
+    bool insid(false);
+    int i(0), it2q(0), ib2q(0), idif(0);
+    int npadd(0), ip(0);
+    double atop(0), abot(0), chx(0), chy(0), fvx(0), fvy(0), crsp(0);
+    double st1(0), st2(0), sb1(0), sb2(0), xt1(0), yt1(0), xb1(0);
+    double yb1(0), sb1p(0), sb1q(0), sb2p(0), sb2q(0);
     //    double xb2, yb2, xt2, yt2;
-    double dsavg=0, sfrac=0, st1p=0, st1q=0, st2p=0, st2q=0;
-    double dsnew=0;
-    double tops=0, bots=0;
-    double sind=0, cosd=0, dang=0, ang=0, ca=0, sa=0;
-    double xbar=0, ybar=0;
-    double stol=0;
-    bool lt1new = false;// initialization techwinder added to suppress level 4 warnings at compile time
-    bool lt2new = false;
-    bool lb1new = false;
-    bool lb2new = false;
-    int it1 = 0;
-    int it2 = 0;
-    int ib1 = 0;
-    int ib2 = 0;
+    double dsavg(0), sfrac(0), st1p(0), st1q(0), st2p(0), st2q(0);
+    double dsnew(0);
+    double tops(0), bots(0);
+    double sind(0), cosd(0), dang(0), ang(0), ca(0), sa(0);
+    double xbar(0), ybar(0);
+    double stol(0);
+    bool lt1new(false);
+    bool lt2new(false);
+    bool lb1new(false);
+    bool lb2new(false);
+    int it1(0);
+    int it2(0);
+    int ib1(0);
+    int ib2(0);
 
     double xt1new = 0.0;
     double yt1new= 0.0;

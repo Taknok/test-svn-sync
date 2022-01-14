@@ -77,7 +77,7 @@ gl3dBoids::gl3dBoids(QWidget *pParent) : gl3dTestGLView(pParent)
             m_pslCohesion->setTickInterval(10);
             m_pslCohesion->setTickPosition(QSlider::TicksBelow);
             m_pslCohesion->setValue(int(s_Cohesion*30.0));
-            connect(m_pslCohesion, SIGNAL(sliderMoved(int)), SLOT(onSlider()));
+            connect(m_pslCohesion, SIGNAL(valueChanged(int)), SLOT(onSlider()));
             m_plabCohesion = new QLabel;
             m_plabCohesion->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 
@@ -88,7 +88,7 @@ gl3dBoids::gl3dBoids(QWidget *pParent) : gl3dTestGLView(pParent)
             m_pslSeparation->setTickInterval(10);
             m_pslSeparation->setTickPosition(QSlider::TicksBelow);
             m_pslSeparation->setValue(int(s_Separation*30.0));
-            connect(m_pslSeparation, SIGNAL(sliderMoved(int)), SLOT(onSlider()));
+            connect(m_pslSeparation, SIGNAL(valueChanged(int)), SLOT(onSlider()));
             m_plabSeparation = new QLabel;
             m_plabSeparation->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 
@@ -100,7 +100,7 @@ gl3dBoids::gl3dBoids(QWidget *pParent) : gl3dTestGLView(pParent)
             m_pslAlignment->setTickInterval(10);
             m_pslAlignment->setTickPosition(QSlider::TicksBelow);
             m_pslAlignment->setValue(int(s_Alignment*30.0));
-            connect(m_pslAlignment, SIGNAL(sliderMoved(int)), SLOT(onSlider()));
+            connect(m_pslAlignment, SIGNAL(valueChanged(int)), SLOT(onSlider()));
             m_plabAlignment = new QLabel;
             m_plabAlignment->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 

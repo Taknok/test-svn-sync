@@ -67,21 +67,21 @@ gl3dShadow::gl3dShadow(QWidget *pParent) : gl3dTestGLView(pParent)
                     m_peslXObj->setMaximum(100);
                     m_peslXObj->setTickInterval(10);
                     m_peslXObj->setTickPosition(QSlider::TicksBelow);
-                    connect(m_peslXObj, SIGNAL(sliderMoved(int)), SLOT(onObjectPos()));
+                    connect(m_peslXObj, SIGNAL(valueChanged(int)), SLOT(onObjectPos()));
 
                     m_peslYObj = new ExponentialSlider(Qt::Horizontal);
                     m_peslYObj->setMinimum(0);
                     m_peslYObj->setMaximum(100);
                     m_peslYObj->setTickInterval(10);
                     m_peslYObj->setTickPosition(QSlider::TicksBelow);
-                    connect(m_peslYObj, SIGNAL(sliderMoved(int)), SLOT(onObjectPos()));
+                    connect(m_peslYObj, SIGNAL(valueChanged(int)), SLOT(onObjectPos()));
 
                     m_peslZObj  = new ExponentialSlider(false, 1, Qt::Horizontal);
                     m_peslZObj->setMinimum(0);
                     m_peslZObj->setMaximum(100);
                     m_peslZObj->setTickInterval(10);
                     m_peslZObj->setTickPosition(QSlider::TicksBelow);
-                    connect(m_peslZObj, SIGNAL(sliderMoved(int)), SLOT(onObjectPos()));
+                    connect(m_peslZObj, SIGNAL(valueChanged(int)), SLOT(onObjectPos()));
 
                     pObjectLayout->addWidget(plabX ,     2, 1);
                     pObjectLayout->addWidget(m_peslXObj, 2, 2);

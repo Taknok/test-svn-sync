@@ -92,9 +92,10 @@ public:
     void ExecMDES();
     bool ExecQDES();
     bool initialize();
-    bool initXFoilGeometry(int fn, const double *fx, const double *fy, double *fnx, double *fny);
+    bool initXFoilGeometry(int fn, const double *fx, const double *fy, double *fnx, double *fny,
+                           bool bFLap=false, double xhinge=0.0, double yhinge=0.0);
     bool initXFoilAnalysis(double Re, double alpha, double Mach, double NCrit, double XtrTop, double XtrBot,
-                                  int reType, int maType, bool bViscous, QTextStream &outStream);
+                           int reType, int maType, bool bViscous, QTextStream &outStream);
 
     void splqsp(int kqsp);
     void qspcir();
