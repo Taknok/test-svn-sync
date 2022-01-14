@@ -521,7 +521,7 @@ void gl3dSagittarius::glMake3dObjects()
             LineStyle ls(true, Line::SOLID, 3, m_Star.at(is).m_Color, Line::NOSYMBOL);
 
             int buffersize =  (s_TailSize-1)  // NSegments
-                             *2*(3+4);     // 2 vertices * (3 coordinates+ 4 color components)
+                             *2*(4+4);     // 2 vertices * (3 coordinates+ 4 color components)
             QVector<float> buffer(buffersize);
 
             QVector<Vector3d> const &trace = m_Trace.at(is);
@@ -534,22 +534,21 @@ void gl3dSagittarius::glMake3dObjects()
                 buffer[iv++] = trace[ip0].xf()/SCALEFACTOR;
                 buffer[iv++] = trace[ip0].yf()/SCALEFACTOR;
                 buffer[iv++] = trace[ip0].zf()/SCALEFACTOR;
+                buffer[iv++] = 1.0f;
 
                 buffer[iv++] = ls.m_Color.redF();
                 buffer[iv++] = ls.m_Color.greenF();
                 buffer[iv++] = ls.m_Color.blueF();
-
-
                 buffer[iv++] = double(trace.size()-j+1)/double(trace.size()-1);
 
                 buffer[iv++] = trace[ip1].xf()/SCALEFACTOR;
                 buffer[iv++] = trace[ip1].yf()/SCALEFACTOR;
                 buffer[iv++] = trace[ip1].zf()/SCALEFACTOR;
+                buffer[iv++] = 1.0f;
 
                 buffer[iv++] = ls.m_Color.redF();
                 buffer[iv++] = ls.m_Color.greenF();
                 buffer[iv++] = ls.m_Color.blueF();
-
                 buffer[iv++] = double(trace.size()-j)/double(trace.size()-1);
             }
             Q_ASSERT(iv==buffersize);

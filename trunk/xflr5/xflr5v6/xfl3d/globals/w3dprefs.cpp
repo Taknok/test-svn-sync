@@ -59,10 +59,10 @@ LineStyle W3dPrefs::s_BotStyle       = {true, Line::DASH,    1, QColor(171, 103,
 int W3dPrefs::s_iChordwiseRes = 31;
 int W3dPrefs::s_iBodyAxialRes = 23;
 int W3dPrefs::s_iBodyHoopRes  = 17;
-bool W3dPrefs::s_bAnimateTransitions = true;
-bool W3dPrefs::s_bEnableClipPlane = false;
+bool W3dPrefs::s_bAnimateTransitions(true);
+bool W3dPrefs::s_bEnableClipPlane(true);
+bool W3dPrefs::s_bSpinAnimation(true);
 
-bool W3dPrefs::s_bSpinAnimation = true;
 double W3dPrefs::s_SpinDamping = 0.01;
 
 

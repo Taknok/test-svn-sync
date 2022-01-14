@@ -191,7 +191,7 @@ void gl3dSurface::glMakeSurface()
 
     //Make the grid
     int nsegs = m_Size_x * (m_Size_y-1) + m_Size_y * (m_Size_x-1);
-    bufferSize = nsegs * 2 * 3; // 3 vertex components
+    bufferSize = nsegs * 2 * 4; // 4 vertex components
 
     QVector<float>gridvertexarray(bufferSize);
     iv=0;
@@ -206,10 +206,11 @@ void gl3dSurface::glMakeSurface()
             gridvertexarray[iv++] = TA.xf();
             gridvertexarray[iv++] = TA.yf();
             gridvertexarray[iv++] = TA.zf();
-
+            gridvertexarray[iv++] = 1.0f;
             gridvertexarray[iv++] = LA.xf();
             gridvertexarray[iv++] = LA.yf();
             gridvertexarray[iv++] = LA.zf();
+            gridvertexarray[iv++] = 1.0f;
         }
     }
 
@@ -224,10 +225,12 @@ void gl3dSurface::glMakeSurface()
             gridvertexarray[iv++] = TA.xf();
             gridvertexarray[iv++] = TA.yf();
             gridvertexarray[iv++] = TA.zf();
+            gridvertexarray[iv++] = 1.0f;
 
             gridvertexarray[iv++] = TB.xf();
             gridvertexarray[iv++] = TB.yf();
             gridvertexarray[iv++] = TB.zf();
+            gridvertexarray[iv++] = 1.0f;
         }
     }
     Q_ASSERT(iv==bufferSize);

@@ -278,7 +278,7 @@ void gl3dLorenz::glMake3dObjects()
     if(m_bResetAttractor)
     {
         int buffersize = (s_MaxPts-1)  // NSegments
-                         *2*(3+4);     // 2 vertices * (3 coordinates+ 4 color components)
+                         *2*(4+4);     // 2 vertices * (4 coordinates+ 4 color components)
         QVector<float> buffer(buffersize);
 
         int ip0(0), ip1(0);
@@ -292,6 +292,7 @@ void gl3dLorenz::glMake3dObjects()
             buffer[iv++] = m_Trace[ip0].xf();
             buffer[iv++] = m_Trace[ip0].yf();
             buffer[iv++] = m_Trace[ip0].zf();
+            buffer[iv++] = 1.0f;
 
             buffer[iv++] = s_ls.m_Color.redF();
             buffer[iv++] = s_ls.m_Color.greenF();
@@ -301,6 +302,7 @@ void gl3dLorenz::glMake3dObjects()
             buffer[iv++] = m_Trace[ip1].xf();
             buffer[iv++] = m_Trace[ip1].yf();
             buffer[iv++] = m_Trace[ip1].zf();
+            buffer[iv++] = 1.0f;
 
             buffer[iv++] = s_ls.m_Color.redF();
             buffer[iv++] = s_ls.m_Color.greenF();

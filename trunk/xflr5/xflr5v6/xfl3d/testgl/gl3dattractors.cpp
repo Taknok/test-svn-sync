@@ -250,7 +250,7 @@ void gl3dAttractors::glMake3dObjects()
 
         int buffersize =  s_NTrace
                          *(s_TailSize-1)  // NSegments
-                         *2*(3+4);     // 2 vertices * (3 coordinates+ 4 color components)
+                         *2*(4+4);     // 2 vertices * (4 coordinates+ 4 color components)
         QVector<float> buffer(buffersize);
 
         int ip0(0), ip1(0);
@@ -267,6 +267,7 @@ void gl3dAttractors::glMake3dObjects()
                 buffer[iv++] = trace[ip0].xf();
                 buffer[iv++] = trace[ip0].yf();
                 buffer[iv++] = trace[ip0].zf();
+                buffer[iv++] = 1.0f;
                 if(s_bDynColor)
                 {
                     buffer[iv++] = glGetRed(  velocity.at(ip0)/m_MaxVelocity);
@@ -279,12 +280,12 @@ void gl3dAttractors::glMake3dObjects()
                     buffer[iv++] = s_ls.m_Color.greenF();
                     buffer[iv++] = s_ls.m_Color.blueF();
                 }
-
                 buffer[iv++] = double(trace.size()-j+1)/double(trace.size()-1);
 
                 buffer[iv++] = trace[ip1].xf();
                 buffer[iv++] = trace[ip1].yf();
                 buffer[iv++] = trace[ip1].zf();
+                buffer[iv++] = 1.0f;
                 if(s_bDynColor)
                 {
                     buffer[iv++] = glGetRed(  velocity.at(ip1)/m_MaxVelocity);
@@ -297,8 +298,6 @@ void gl3dAttractors::glMake3dObjects()
                     buffer[iv++] = s_ls.m_Color.greenF();
                     buffer[iv++] = s_ls.m_Color.blueF();
                 }
-
-
                 buffer[iv++] = double(trace.size()-j)/double(trace.size()-1);
             }
         }
