@@ -61,7 +61,6 @@
 #include <xflcore/trace.h>
 #include <xflcore/units.h>
 #include <xflcore/xflcore.h>
-#include <xflcore/xflcore.h>
 #include <xflgraph/containers/graphtilewt.h>
 #include <xflgraph/containers/graphwt.h>
 #include <xflgraph/containers/miarextilewt.h>
@@ -7355,7 +7354,7 @@ void Miarex::paintCpLegendText(QPainter &painter)
     int labellength = fm.horizontalAdvance(strong)+5;
     painter.drawText(ixPos-labellength, iyPos-dy, strong);
 
-    for (int i=0; i<=20; i ++)
+    for (int i=0; i<=20; i++)
     {
         double f = gl3dMiarexView::s_LegendMax - double(i) * delta;
         strong = QString("%1").arg(f, 5,'f',2);
@@ -7423,7 +7422,6 @@ void Miarex::paintPanelForceLegendText(QPainter &painter)
     rmax *= qdyn *Units::PatoUnit();
     range = rmax - rmin;
 
-
     QFontMetrics fm(font);
     int fmw = fm.averageCharWidth();
     int back = fmw * 5;
@@ -7443,7 +7441,7 @@ void Miarex::paintPanelForceLegendText(QPainter &painter)
 
     for (int i=0; i<=20; i++)
     {
-        double f = rmin + double(i) * delta;
+        double f = rmax - double(i) * delta;
         strong = QString::asprintf("%6.3f", f);
         labellength = (fm.horizontalAdvance(strong)+5);
         painter.drawText(ixPos-labellength, iyPos+i*dy, strong);
