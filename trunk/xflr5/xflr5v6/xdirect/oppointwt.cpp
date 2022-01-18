@@ -595,12 +595,12 @@ void OpPointWt::paintOpPoint(QPainter &painter)
     }
 
     Back = 6;
-    Polar   *pPolar   = Objects2d::curPolar();
-    OpPoint *pOpPoint = Objects2d::curOpp();
+    Polar   const *pPolar   = Objects2d::curPolar();
+    OpPoint const *pOpPoint = Objects2d::curOpp();
     if(pOpPoint)
     {
         Back = 12;
-        if(pOpPoint->m_bTEFlap) Back++;
+        if(pOpPoint->m_bTEFlap) Back+=3;
         if(pOpPoint->m_bLEFlap) Back++;
         if(pOpPoint->m_bViscResults && qAbs(pOpPoint->Cd)>0.0) Back++;
         if(pPolar->isFixedLiftPolar()) Back++;
@@ -726,14 +726,20 @@ void OpPointWt::paintOpPoint(QPainter &painter)
 
             if(pOpPoint->m_bTEFlap)
             {
-                Result = QString(tr("TE Hinge Moment/span = %1")).arg(pOpPoint->m_TEHMom, 9, 'e', 2);
+                Result = QString(tr("TE Hinge Moment/span = %1")).arg(pOpPoint->m_TE_HMom, 9, 'g',3);
+                painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
+                D += dD;
+                Result = QString::asprintf("TE Hinge Fx/span = %9.3g", pOpPoint->m_TE_HFx);
+                painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
+                D += dD;
+                Result = QString::asprintf("TE Hinge Fy/span = %9.3g", pOpPoint->m_TE_HFy);
                 painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
                 D += dD;
             }
 
             if(pOpPoint->m_bLEFlap)
             {
-                Result = QString(tr("LE Hinge Moment/span = %1")).arg(pOpPoint->m_LEHMom, 9, 'e', 2);
+                Result = QString(tr("LE Hinge Moment/span = %1")).arg(pOpPoint->m_LE_HMom, 9, 'e', 2);
                 painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
             }
         }

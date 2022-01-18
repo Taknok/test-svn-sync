@@ -2236,7 +2236,7 @@ void XDirect::onExportPolarOpps()
                         .arg(pOpPoint->Cm,7,'f',3)
                         .arg(pOpPoint->Xtr1,7,'f',3)
                         .arg(pOpPoint->Xtr2,7,'f',3)
-                        .arg(pOpPoint->m_TEHMom,7,'f',4)
+                        .arg(pOpPoint->m_TE_HMom,7,'f',4)
                         .arg(pOpPoint->Cpmn,7,'f',4);
             else
                 strong = QString("%1,%2,%3,%4,%5,%6,%7,%8\n")
@@ -2246,7 +2246,7 @@ void XDirect::onExportPolarOpps()
                         .arg(pOpPoint->Cm,7,'f',3)
                         .arg(pOpPoint->Xtr1,7,'f',3)
                         .arg(pOpPoint->Xtr2,7,'f',3)
-                        .arg(pOpPoint->m_TEHMom,7,'f',4)
+                        .arg(pOpPoint->m_TE_HMom,7,'f',4)
                         .arg(pOpPoint->Cpmn,7,'f',4);
 
             out<<strong;
@@ -2635,7 +2635,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         return nullptr;
     }
 
-    pPolar->setXtrBot(strong.mid(9,6).toDouble(&bOK));
+    pPolar->setXtrBot(strong.midRef(9,6).toDouble(&bOK));
     if(!bOK)
     {
         str = QString("Error reading Bottom Transition value at line %1. The polar(s) will not be stored").arg(Line);
@@ -2644,7 +2644,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         return nullptr;
     }
 
-    pPolar->setXtrTop(strong.mid(28,6).toDouble(&bOK));
+    pPolar->setXtrTop(strong.midRef(28,6).toDouble(&bOK));
     if(!bOK)
     {
         str = QString("Error reading Top Transition value at line %1. The polar(s) will not be stored").arg(Line);
@@ -2672,7 +2672,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         return nullptr;
     }
 
-    Re = strong.mid(24,10).toDouble(&bOK);
+    Re = strong.midRef(24,10).toDouble(&bOK);
     if(!bOK)
     {
         str = QString("Error reading Reynolds Number at line %1. The polar(s) will not be stored").arg(Line);
@@ -2682,7 +2682,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     }
     Re *=1000000.0;
 
-    pPolar->setNCrit(strong.mid(52,8).toDouble(&bOK));
+    pPolar->setNCrit(strong.midRef(52,8).toDouble(&bOK));
     if(!bOK)
     {
         str = QString("Error reading NCrit at line %1. The polar(s) will not be stored").arg(Line);
@@ -3859,12 +3859,15 @@ Foil* XDirect::setFoil(Foil* pFoil)
         {
             QString strange;
             strange = QString::asprintf("Cannot initialize the foil %s:\nNumber of panels=%d, Max. size=%d,\nRecommended size=100-150 panels",
-                            pCurFoil->name().toStdString().c_str(), pCurFoil->m_n, IQX-2);
+                                        pCurFoil->name().toStdString().c_str(), pCurFoil->m_n, IQX-2);
             QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
         }
         else
         {
-            bRes = m_XFoil.initXFoilGeometry(pCurFoil->m_n, pCurFoil->m_x,pCurFoil->m_y, pCurFoil->m_nx, pCurFoil->m_ny);
+            double xh(0), yh(0);
+            if(pCurFoil->m_bTEFlap) pCurFoil->getHingeAbsolutePos(xh, yh);
+            bRes = m_XFoil.initXFoilGeometry(pCurFoil->m_n, pCurFoil->m_x,pCurFoil->m_y, pCurFoil->m_nx, pCurFoil->m_ny,
+                                             pCurFoil->m_bTEFlap, xh, yh);
             if(!bRes)
             {
                 QString strange;
