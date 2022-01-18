@@ -21,9 +21,6 @@
 *****************************************************************************/
 
 
-#include <QtCore>
-#include <QCoreApplication>
-#include <QDataStream>
 #include <QDebug>
 
 #include "xfoil.h"
@@ -686,7 +683,8 @@ bool XFoil::abcopy()
     }
     lgsame = true;
 
-    if(lbflap) {
+    if(lbflap)
+    {
         xof = xbf;
         yof = ybf;
         lflap = true;
@@ -2502,16 +2500,15 @@ bool XFoil::comset()
  * ---------------------------------------------- */
 bool XFoil::cpcalc(int n, double q[], double qinf, double minf, double cp[])
 {
-    int i;
-    bool denneg;
-    double cpinc, den, beta, bfac;
+    bool denneg(false);
+    double cpinc(0), den(0), beta(0), bfac(0);
 
     beta = sqrt(1.0 - minf*minf);
     bfac = 0.5*minf*minf / (1.0 + beta);
 
     denneg = false;
 
-    for (i=1; i<=n; i++)
+    for (int i=1; i<=n; i++)
     {
         cpinc = 1.0 - (q[i]/qinf)*(q[i]/qinf);
         den = beta + bfac*cpinc;
@@ -2553,8 +2550,8 @@ void XFoil::writeString(QString str, bool bFullReport)
  * ------------------------------------------------ */
 double XFoil::curv(double ss, double x[], double xs[], double y[], double ys[], double s[], int n)
 {
-    int ilow, i, imid;
-    double crv,ds, t, cx1, cx2, xd, xdd, cy1, cy2, yd, ydd, sd;
+    int ilow(0), i(0), imid(0);
+    double crv(0), ds(0), t(0), cx1(0), cx2(0), xd(0), xdd(0), cy1(0), cy2(0), yd(0), ydd(0), sd(0);
 
 
     ilow = 1;
@@ -2597,8 +2594,8 @@ stop11:
  * --------------------------------------------------- */
 double XFoil::d2val(double ss, double x[], double xs[], double s[], int n)
 {
-    int i, imid, ilow;
-    double ds, t, cx1, cx2, dtwoval;
+    int i(0), imid(0), ilow(0);
+    double ds(0), t(0), cx1(0), cx2(0), dtwoval(0);
 
     ilow = 1;
     i = n;
@@ -2662,10 +2659,10 @@ bool XFoil::dampl(double hk, double th, double rt, double &ax, double &ax_hk, do
 {
     double dgr = 0.08;
 
-    double hmi=0.0, hmi_hk=0.0, aa=0.0, aa_hk=0.0, bb=0.0, bb_hk=0.0, grcrit=0.0, grc_hk=0.0, gr=0.0, gr_rt=0.0;
-    double rnorm=0.0, rn_hk=0.0, rn_rt=0.0, rfac=0.0, rfac_hk=0.0, rfac_rt=0.0;
-    double rfac_rn=0.0, arg_hk=0.0,ex=0.0, f_arg=0.0, ex_hk=0.0;
-    double af=0.0, af_hmi=0.0, af_hk=0.0, dadr=0.0, dadr_hk=0.0;
+    double hmi(0), hmi_hk(0), aa(0), aa_hk(0), bb(0), bb_hk(0), grcrit(0), grc_hk(0), gr(0), gr_rt(0);
+    double rnorm(0), rn_hk(0), rn_rt(0), rfac(0), rfac_hk(0), rfac_rt(0);
+    double rfac_rn(0), arg_hk(0),ex(0), f_arg(0), ex_hk(0);
+    double af(0), af_hmi(0), af_hk(0), dadr(0), dadr_hk(0);
 
 
     hmi = 1.0/(hk - 1.0);
@@ -2747,8 +2744,8 @@ bool XFoil::dampl(double hk, double th, double rt, double &ax, double &ax_hk, do
  * -------------------------------------------------- */
 double XFoil::deval(double ss, double x[], double xs[], double s[], int n)
 {
-    int ilow, i, imid;
-    double ds, t, cx1, cx2, deval;
+    int ilow(0), i(0), imid(0);
+    double ds(0), t(0), cx1(0), cx2(0), deval(0);
 
     ilow = 1;
     //    i = nc;
@@ -2798,7 +2795,7 @@ bool XFoil::dil(double hk, double rt, double &di, double &di_hk, double &di_rt)
 bool XFoil::dilw(double hk, double rt, double &di, double &di_hk, double &di_rt)
 {
     //    double msq = 0.0;
-    double hs, hs_hk, hs_rt, hs_msq;
+    double hs(0), hs_hk(0), hs_rt(0), hs_msq(0);
 
     hsl(hk, hs, hs_hk, hs_rt, hs_msq);
     //---- laminar wake dissipation function  ( 2 cd/h* )
@@ -2815,7 +2812,7 @@ bool XFoil::dilw(double hk, double rt, double &di, double &di_hk, double &di_rt)
 
 bool XFoil::dslim(double &dstr, double thet, double msq, double hklim)
 {
-    double h, hk, hk_h, hk_m, dh;
+    double h(0), hk(0), hk_h(0), hk_m(0), dh(0);
     h = (dstr)/thet;
 
     hkin(h, msq, hk, hk_h, hk_m);
@@ -2832,13 +2829,12 @@ bool XFoil::dslim(double &dstr, double thet, double msq, double hklim)
  * ------------------------------------------------ */
 bool XFoil::fcpmin()
 {
-    int i;
     xcpmni = x[1];
     xcpmnv = x[1];
     cpmni = cpi[1];
     cpmnv = cpv[1];
 
-    for (i = 2; i<=n + nw; i++)
+    for (int i=2; i<=n+nw; i++)
     {
         if(cpi[i] < cpmni)
         {
@@ -2896,10 +2892,10 @@ bool XFoil::gamqv()
 bool XFoil::Gauss(int nn, double z[][6], double r[5]){
     // dimension z(nsiz,nsiz), r(nsiz,nrhs)
 
-    int loc;
-    int np, nnpp, nt, nx, k;
+    int loc(0);
+    int np(0), nnpp(0), nt(0), nx(0), k(0);
 
-    double temp, ztmp, pivot;
+    double temp(0), ztmp(0), pivot(0);
 
     for (np=1; np<=nn-1; np++){
         nnpp = np+1;
@@ -2964,10 +2960,10 @@ bool XFoil::Gauss(int nn, double z[IQX][IQX], double r[IQX]){
     // techwinder : only one rhs is enough ! nrhs = 1
     // dimension z(nsiz,nsiz), r(nsiz,nrhs)
 
-    int loc;
-    int np, nnpp, nt, nx, k;
+    int loc(0);
+    int np(0), nnpp(0), nt(0), nx(0), k(0);
 
-    double temp, ztmp, pivot;
+    double temp(0), ztmp(0), pivot(0);
 
     for (np=1; np<=nn-1; np++)
     {
@@ -3026,8 +3022,7 @@ bool XFoil::geopar(double x[], double xp[], double y[], double yp[], double s[],
                    double &ei11a, double &ei22a, double &apx1a, double &apx2a,
                    double &ei11t, double &ei22t, double &apx1t, double &apx2t)
 {
-    int i;
-    double chsq, curvle, ang1, ang2, xcena, ycena, slen, xcent, ycent;
+    double chsq(0), curvle(0), ang1(0), ang2(0), xcena(0), ycena(0), slen(0), xcent(0), ycent(0);
 
     lefind(sle,x,xp,y,yp,s,n);
 
@@ -3048,18 +3043,18 @@ bool XFoil::geopar(double x[], double xp[], double y[], double yp[], double s[],
     ang2 = atanc(  yp[n] ,  xp[n] , ang1 );
     angte = ang2 - ang1;
 
-    for (i=1; i<=n; i++) t[i] = 1.0;
+    for (int i=1; i<=n; i++) t[i] = 1.0;
 
     aecalc(n,x,y,t, 1, area,xcena,ycena,ei11a,ei22a,apx1a,apx2a);
     aecalc(n,x,y,t, 2, slen,xcent,ycent,ei11t,ei22t,apx1t,apx2t);
 
+    // techwinder 22/18/01 updated source code i.a.w. XFoil 6.99
     //--- old, approximate thickness,camber routine (on discrete points only)
-    //    tccalc(x,xp,y,yp,s,n, &thick, &xthick, &cambr, &xcambr );
+    tccalc(x,xp,y,yp,s,n, thick, xthick, cambr, xcambr);
     //--- more accurate thickness and camber estimates
-
-    getcam(xcam,ycam,ncam,xthk,ythk,nthk,x,xp,y,yp,s,n );
+/*    getcam(xcam,ycam,ncam,xthk,ythk,nthk,x,xp,y,yp,s,n );
     getmax(xcam,ycam,ycamp,ncam,xcambr,cambr);
-    getmax(xthk,ythk,ythkp,nthk,xthick,thick);
+    getmax(xthk,ythk,ythkp,nthk,xthick,thick);*/
     thick = 2.0*thick;
 
     thickb = thick;
@@ -3069,7 +3064,72 @@ bool XFoil::geopar(double x[], double xp[], double y[], double yp[], double s[],
     // 1000 format( ' max thickness = ',f12.6,'  at x = ',f7.3,/' max camber    = ',f12.6,'  at x = ',f7.3)
 
     return true;
+}
 
+
+
+void XFoil::tccalc(double x[], double xp[], double y[], double yp[], double s[],
+                  int n, double &thick, double &xthick, double &cambr, double &xcambr)
+{
+//---------------------------------------------------------------
+//    calculates max thickness and camber at airfoil points
+//
+//    note: this routine does not find the maximum camber or
+//          thickness exactly as it only looks at discrete points
+//
+//    input:
+//      n      number of points
+//      x(.)   shape coordinate point arrays
+//      y(.)
+//
+//    output:
+//      thick  max thickness
+//      cambr  max camber
+//---------------------------------------------------------------
+    lefind(sle,x,xp,y,yp,s,n);
+    xle = seval(sle,x,xp,s,n);
+    yle = seval(sle,y,yp,s,n);
+    xte = 0.5*(x[1]+x[n]);
+    yte = 0.5*(y[1]+y[n]);
+    chord = sqrt((xte-xle)*(xte-xle) + (yte-yle)*(yte-yle));
+
+//---- set unit chord-line vector
+    double dxc = (xte-xle) / chord;
+    double dyc = (yte-yle) / chord;
+
+    thick  = 0.0;
+    xthick = 0.0;
+    cambr  = 0.0;
+    xcambr = 0.0;
+
+//---- go over each point, finding the y-thickness and camber
+    for(int i=1; i<=n; i++)
+    {
+//        double xbar = (x[i]-xle)*dxc + (y[i]-yle)*dyc;
+        double ybar = (y[i]-yle)*dxc - (x[i]-xle)*dyc;
+
+//------ set point on the opposite side with the same chord x value
+        double sopp(0);
+        sopps(sopp, s[i], x,xp,y,yp,s,n, sle);
+        double xopp = seval(sopp,x,xp,s,n);
+        double yopp = seval(sopp,y,yp,s,n);
+
+        double ybarop = (yopp-yle)*dxc - (xopp-xle)*dyc;
+
+        double yc = 0.5*(ybar+ybarop);
+        double yt =  abs(ybar-ybarop);
+
+        if(abs(yc)>abs(cambr))
+        {
+            cambr = yc;
+            xcambr = xopp;
+        }
+        if(abs(yt)>abs(thick))
+        {
+            thick = yt;
+            xthick = xopp;
+        }
+    }
 }
 
 
@@ -3077,23 +3137,34 @@ bool XFoil::geopar(double x[], double xp[], double y[], double yp[], double s[],
  *      finds camber and thickness
  *      distribution for input airfoil
  * ------------------------------------------------------ */
-void XFoil::getcam(double xcm[],double ycm[], int &ncm,double xtk[],double ytk[],int &ntk,
-                   double x[],double xp[],double y[],double yp[],double s[],int n ){
-
-    double sl, xl, yl, sopp, xopp,yopp, tol;
-    int i;
+void XFoil::getcam(double xcm[], double ycm[], int &ncm, double xtk[], double ytk[], int &ntk,
+                   double x[], double xp[], double y[], double yp[],double s[], int n)
+{
+    double sl(0), xl(0), yl(0), sopp(0), xopp(0), yopp(0), tol(0);
 
     xlfind(sl,x,xp,y,yp,s,n);
     xl = seval(sl,x,xp,s,n);
     yl = seval(sl,y,yp,s,n);
 
     //---- go over each point, finding opposite points, getting camber and thickness
-    for (i=1; i<=n; i++)
+    for (int i=1; i<=n; i++)
     {
         //------ coordinates of point on the opposite side with the same x value
         sopps(sopp, s[i], x,xp,y,yp,s,n,sl);
         xopp = seval(sopp,x,xp,s,n);
         yopp = seval(sopp,y,yp,s,n);
+
+        // techwinder 22/18/01 updated source code i.a.w. XFoil 6.99
+        if(i==1)
+        {
+            xopp = x[n];
+            yopp = y[n];
+        }
+        else if(i==n)
+        {
+            xopp = x[1];
+            yopp = y[1];
+        } // end techwinder insertion
 
         //------ get camber and thickness
         xcm[i] = 0.5*(x[i]+xopp);
@@ -3101,10 +3172,10 @@ void XFoil::getcam(double xcm[],double ycm[], int &ncm,double xtk[],double ytk[]
         xtk[i] = 0.5*(x[i]+xopp);
         ytk[i] = 0.5*(y[i]-yopp);
         ytk[i] = fabs(ytk[i]);
-        //        if (xopp.gt.0.9) then
-        //         write(*,*) 'cm i,x,y ',i,xcm(i),ycm(i)
-        //         write(*,*) 'tk i,x,y ',i,xtk(i),ytk(i)
-        //        endif
+//        if (xopp.gt.0.9) then
+//         write(*,*) 'cm i,x,y ',i,xcm(i),ycm(i)
+//         write(*,*) 'tk i,x,y ',i,xtk(i),ytk(i)
+//        endif
     }
 
     //---- tolerance for nominally identical points
@@ -3121,7 +3192,7 @@ void XFoil::getcam(double xcm[],double ycm[], int &ncm,double xtk[],double ytk[]
     //--- reorigin camber from le so camberlines start at y=0  4/24/01 hhy
     //    policy now to generate camber independent of y-offsets
     yof = ycm[1];
-    for (i=1; i<=ncm; i++)
+    for (int i=1; i<=ncm; i++)
     {
         ycm[i] -= yof;
     }
@@ -3139,11 +3210,11 @@ void XFoil::getcam(double xcm[],double ycm[], int &ncm,double xtk[],double ytk[]
  *      calculates camber or thickness highpoint
  *      and x position
  * ------------------------------------------------ */
-void XFoil::getmax(double x[],double y[], double yp[], int n,double &xmax, double &ymax)
+void XFoil::getmax(double x[],double y[], double yp[], int n, double &xmax, double &ymax)
 {
-    double xlen, xtol;
-    double xmax0, ymax0, ddx, res, resp, dx;
-    int i, iter;
+    double xlen(0), xtol(0);
+    double xmax0(0), ymax0(0), ddx(0), res(0), resp(0), dx(0);
+
     ddx = 0.0;
 
     xlen = x[n] - x[1];
@@ -3154,7 +3225,7 @@ void XFoil::getmax(double x[],double y[], double yp[], int n,double &xmax, doubl
     //---- get approx max point and rough interval size
     ymax0 = y[1];
     xmax0 = x[1];
-    for (i = 2; i<=n; i++)
+    for (int i=2; i<=n; i++)
     {
         if (fabs(y[i])>fabs(ymax0))
         {
@@ -3167,7 +3238,7 @@ void XFoil::getmax(double x[],double y[], double yp[], int n,double &xmax, doubl
 
     //---- do a newton loop to refine estimate
     bool bConv =false;
-    for (iter=1; iter<= 10; iter++)
+    for (int iter=1; iter<= 10; iter++)
     {
         ymax  = seval(xmax,y,yp,x,n);
         res   = deval(xmax,y,yp,x,n);
@@ -3205,11 +3276,11 @@ void XFoil::getmax(double x[],double y[], double yp[], int n,double &xmax, doubl
  * ------------------------------------------------------ */
 void XFoil::xlfind(double &sle, double x[], double xp[], double y[], double yp[], double s[], int n)
 {
-    Q_UNUSED(y);
-    Q_UNUSED(yp);
+    (void)y;
+    (void)yp;
 
-    double dslen, dseps, dx, dxds, dxdd, dsle, res, ress;
-    int i, iter;
+    double dslen(0), dseps(0), dx(0), dxds(0), dxdd(0), dsle(0), res(0), ress(0);
+    int i(0), iter(0);
     dslen = s[n] - s[1];
 
     //---- convergence tolerance
@@ -3410,7 +3481,8 @@ void XFoil::sopps(double &sopp, double si, double x[], double xp[], double y[], 
 
 
 bool XFoil::getxyf(double x[], double xp[], double y[], double yp[], double s[],
-                   int n, double &tops, double &bots, double xf, double &yf){
+                   int n, double &tops, double &bots, double xf, double &yf)
+{
     double topy, boty, yrel;
     //    if(xf <= -999.0)  {   //  askr("enter flap hinge x location",xf)
     //        xf = 0.5;//arcs added
@@ -3987,7 +4059,6 @@ bool XFoil::iblsys()
 }
 
 
-
 /** Loads the Foil's geometry in XFoil,
  *  calculates the normal vectors,
  *  and sets the results in current foil */
@@ -4012,7 +4083,7 @@ bool XFoil::initXFoilGeometry(int fn, double const *fx, double const *fy, double
     lqspec = false;
     lvisc  = false;
 
-    if(Preprocess())
+    if(PreProcess())
     {
         CheckAngles();
         for (int k=0; k<n;k++)
@@ -4020,7 +4091,7 @@ bool XFoil::initXFoilGeometry(int fn, double const *fx, double const *fy, double
             fnx[k] = nx[k+1];
             fny[k] = ny[k+1];
         }
-        fn = n;
+//        fn = n;
         return true;
     }
     else
@@ -4247,7 +4318,6 @@ bool XFoil::ludcmp(int n, double a[IQX][IQX], int indx[IQX])
 }
 
 
-
 /** ----------------------------------------------------
  *        calculates the hinge moment of the flap about
  *        (xof,yof) by integrating surface pressures.
@@ -4266,7 +4336,6 @@ bool XFoil::mhinge()
     }
     else
     {
-
         //------ find top and bottom y at hinge x location
         tops = xof;
         bots = s[n] - xof;
@@ -4286,7 +4355,7 @@ bool XFoil::mhinge()
     //---- integrate pressures on top and bottom sides of flap
     for (i=2; i<=n; i++)
     {
-        if(s[i-1]<tops || s[i]>bots)
+        if(s[i-1]>=tops && s[i]<=bots) continue;
         {
             dx = x[i] - x[i-1];
             dy = y[i] - y[i-1];
@@ -4303,16 +4372,6 @@ bool XFoil::mhinge()
     }
 
     //---- find s[i]..s[i-1] interval containing s=tops
-/*    i=2;
-    bool bexit = false;
-    while (!bexit)
-    {
-        if(s[i]<tops) i++;
-        else bexit  =true;
-        if (i>n) {} //we have a problem...
-    }*/
-
-
     for (i=2; i<=n; i++)  {
         if(s[i]>tops) break;
     }
@@ -4348,7 +4407,7 @@ bool XFoil::mhinge()
     hfy  = hfy  + pmid* dx;
 
     //---- find s[i]..s[i-1] interval containing s=bots
-    for (i=n; i>= 2;i--){
+    for (i=n; i>=2; i--){
         if(s[i-1]<bots) break;
     }
 
@@ -4392,6 +4451,9 @@ bool XFoil::mhinge()
     hmom = hmom + pmid*(xmid*dx + ymid*dy);
     hfx  = hfx  - pmid* dy;
     hfy  = hfy  + pmid* dx;
+
+//    qDebug("Result xof=%9.3g  yof=%9.3g", xof, yof);
+//    qDebug("hmom=%9.3g   hfx= %9.3g  hfy=%9.3g\n", hmom, hfx, hfy);
 
     return true;
 }
@@ -5734,7 +5796,7 @@ stop25:
 
 
 
-bool XFoil::Preprocess()
+bool XFoil::PreProcess()
 {
     //    double xble, yble, xbte, ybte;
     //    double xinl, xout, ybot, ytop;

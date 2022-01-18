@@ -555,9 +555,9 @@ void XFoilTask::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil const*pFoil)
     {
         pOpp->setHingeMoments(pFoil);
 //qDebug("XFoilTask::xfl    %11f %11f %11f", pOpp->m_TEHMom, pOpp->XForce, pOpp->YForce);
-        pOpp->m_TEHMom = pXFoil->hmom;
-        pOpp->XForce   = pXFoil->hfx;
-        pOpp->YForce   = pXFoil->hfy;
+        pOpp->m_TE_HMom = pXFoil->hmom;
+        pOpp->m_TE_HFx   = pXFoil->hfx;
+        pOpp->m_TE_HFy   = pXFoil->hfy;
 //qDebug("XFoilTask::xfoil  %11f %11f %11f", pOpp->m_TEHMom, pOpp->XForce, pOpp->YForce);
     }
 

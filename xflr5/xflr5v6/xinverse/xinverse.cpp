@@ -503,7 +503,7 @@ bool XInverse::initXFoil(Foil * pFoil)
     m_pXFoil->lqspec = false;
     m_pXFoil->lscini = false;
 
-    if(m_pXFoil->Preprocess())
+    if(m_pXFoil->PreProcess())
     {
         m_pXFoil->CheckAngles();
 

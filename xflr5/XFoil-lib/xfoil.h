@@ -83,7 +83,7 @@ public:
                      double xf2[], double yf2[], int n2, double mixt);
 
     bool CheckAngles();
-    bool Preprocess();
+    bool PreProcess();
     void pangen();
     void pert_process(int kqsp);
     void pert_init(int kqsp);
@@ -175,7 +175,8 @@ private:
 
     bool setMach();
     void scheck(double x[], double y[], int *n, double stol, bool *lchange);
-    void sss(double ss, double *s1, double *s2, double del, double xbf, double ybf,    double x[], double xp[], double y[], double yp[], double s[],int n, int iside);
+    void sss(double ss, double *s1, double *s2, double del, double xbf, double ybf,
+             double x[], double xp[], double y[], double yp[], double s[],int n, int iside);
     bool inside(double xb[], double yb[], int nb, double xbf, double ybf);
     void flap();
     int arefine(double x[],double y[], double s[], double xs[], double ys[],
@@ -224,6 +225,9 @@ private:
                double &area, double &radle, double &angte,
                double &ei11a, double &ei22a, double &apx1a, double &apx2a,
                double &ei11t, double &ei22t, double &apx1t, double &apx2t);
+    void tccalc(double x[], double xp[], double y[], double yp[], double s[],
+                int n, double &thick, double &xthick, double &cambr, double &xcambr);
+
     void sopps(double &sopp, double si, double x[], double xp[], double y[], double yp[], double s[],
                   int n, double sle);
     void getcam(double xcm[],double ycm[], int &ncm,double xtk[],double ytk[],int &ntk,

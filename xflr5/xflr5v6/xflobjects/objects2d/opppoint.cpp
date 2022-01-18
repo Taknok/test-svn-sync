@@ -52,11 +52,13 @@ OpPoint::OpPoint()
 
     Xtr1   = 0.0;
     Xtr2   = 0.0;
-    XForce = 0.0;
-    YForce = 0.0;
+    m_TE_HFx = 0.0;
+    m_TE_HFy = 0.0;
     Cpmn   = 0.0;
     m_XCP  = 0.0;
-    m_LEHMom   = 0.0; m_TEHMom = 0.0;
+    m_LE_HMom = 0.0;
+    m_TE_HMom = 0.0;
+    m_TE_HFx  = m_TE_HFy = 0.0;
 
     memset(Qi,  0, sizeof(Qi));
     memset(Qv,  0, sizeof(Qv));
@@ -149,9 +151,9 @@ void OpPoint::setHingeMoments(Foil const*pFoil)
         //Next add internal hinge to bottom surface contribution
 
         //store the results
-        m_TEHMom = hmom;
-        XForce   = hfx;
-        YForce   = hfy;
+        m_TE_HMom = hmom;
+        m_TE_HFx   = hfx;
+        m_TE_HFy   = hfy;
     }
 }
 
@@ -255,12 +257,12 @@ void OpPoint::getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bDa
 
     if(m_bTEFlap)
     {
-        strong  = QString(QObject::tr("T.E. Flap moment")+" = %1 ").arg(m_TEHMom,9,'f',5);
+        strong  = QString(QObject::tr("T.E. Flap moment")+" = %1 ").arg(m_TE_HMom,9,'f',5);
         OpPointProperties += strong + "\n";
     }
     if(m_bLEFlap)
     {
-        strong  = QString(QObject::tr("L.E. Flap moment")+" = %1 ").arg(m_LEHMom,9,'f',5);
+        strong  = QString(QObject::tr("L.E. Flap moment")+" = %1 ").arg(m_LE_HMom,9,'f',5);
         OpPointProperties += strong + "\n";
     }
 
@@ -325,7 +327,7 @@ bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
         ar >> f; Xtr1 = double(f);
         ar >> f; Xtr2 = double(f);
         ar >> f; ACrit = double(f);
-        ar >> f; m_TEHMom = double(f);
+        ar >> f; m_TE_HMom = double(f);
         ar >> f; Cpmn = double(f);
         for (k=0; k<m_n; k++)
         {
@@ -420,7 +422,7 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring)
 
         ar << Cl << Cm << Cd << Cdp;
         ar << Xtr1 << Xtr2 << m_XCP;
-        ar << ACrit << m_TEHMom << Cpmn;
+        ar << ACrit << m_TE_HMom << Cpmn;
 
         for (k=0; k<m_n; k++)          ar << float(Cpv[k])     << float(Cpi[k]);
         for (k=0; k<m_n; k++)          ar << float(Qv[k])      << float(Qi[k]);
@@ -462,7 +464,7 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring)
 
         ar >> Cl >> Cm >> Cd >> Cdp;
         ar >> Xtr1 >> Xtr2 >> m_XCP;
-        ar >> ACrit >> m_TEHMom >> Cpmn;
+        ar >> ACrit >> m_TE_HMom >> Cpmn;
 
         for (k=0; k<m_n; k++)
         {

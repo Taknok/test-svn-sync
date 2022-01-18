@@ -274,7 +274,7 @@ void Polar::replaceOppDataAt(int pos, OpPoint const*pOpp)
     m_Cm[pos]    =  pOpp->Cm;
     m_XTr1[pos]  =  pOpp->Xtr1;
     m_XTr2[pos]  =  pOpp->Xtr2;
-    m_HMom[pos]  =  pOpp->m_TEHMom;
+    m_HMom[pos]  =  pOpp->m_TE_HMom;
     m_Cpmn[pos]  =  pOpp->Cpmn;
     m_ClCd[pos]  =  pOpp->Cl/pOpp->Cd;
     m_XCp[pos]   =  pOpp->m_XCP;
@@ -310,7 +310,7 @@ void Polar::insertOppDataAt(int i, const OpPoint *pOpp)
     m_Cm.insert(   i, pOpp->Cm);
     m_XTr1.insert( i, pOpp->Xtr1);
     m_XTr2.insert( i, pOpp->Xtr2);
-    m_HMom.insert( i, pOpp->m_TEHMom);
+    m_HMom.insert( i, pOpp->m_TE_HMom);
     m_Cpmn.insert( i, pOpp->Cpmn);
     m_ClCd.insert( i, pOpp->Cl/pOpp->Cd);
     m_XCp.insert(  i, pOpp->m_XCP);
@@ -361,7 +361,7 @@ void Polar::addPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm, 
     pOpp->Cm         = Cm;
     pOpp->Xtr1       = Xtr1;
     pOpp->Xtr2       = Xtr2;
-    pOpp->m_TEHMom   = HMom;
+    pOpp->m_TE_HMom   = HMom;
     pOpp->Cpmn       = Cpmn;
     pOpp->m_Reynolds = Reynolds;
     pOpp->m_XCP      = XCp;
