@@ -308,7 +308,8 @@ void BatchCtrlDlg::startAnalyses()
 //            QFuture<Polar*> future = QtConcurrent::run(pXFoilTask, &XFoilTask::runFuture);
 //            futureSync.addFuture(future);
 
-            QThreadPool::globalInstance()->start(pXFoilTask);
+//            QThreadPool::globalInstance()->start(pXFoilTask);
+            QtConcurrent::run(pXFoilTask, &XFoilTask::run);
         }
 //        futureSync.waitForFinished(); // maybe unnecessary: "The destructor of QFutureSynchronizer calls waitForFinished()"
         m_pteTextOutput->appendPlainText("   finished launching XFoil tasks for " + pFoil->name());

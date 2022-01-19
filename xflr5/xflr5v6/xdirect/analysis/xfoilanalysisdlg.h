@@ -39,6 +39,7 @@
 class GraphWt;
 class Graph;
 class XDirect;
+class PlainTextOutput;
 
 /**
 * @class XFoilAnalysisDlg
@@ -64,8 +65,10 @@ class XFoilAnalysisDlg : public QDialog
         void onCancelAnalysis();
         void onLogFile();
         void onSkipPoint();
-        void onProgress();
         void onButton(QAbstractButton *pButton);
+
+    signals:
+        void analysisFinished(Polar*);
 
     private:
         void accept() override;
@@ -85,7 +88,7 @@ class XFoilAnalysisDlg : public QDialog
 
         //variables
         GraphWt * m_pGraphWt;
-        QTextEdit *m_pteTextOutput;
+        PlainTextOutput *m_ppto;
 
         QCheckBox* m_pchLogFile;
         QPushButton *m_ppbSkip;
@@ -98,7 +101,7 @@ class XFoilAnalysisDlg : public QDialog
 
 
         QFile *m_pXFile;               /**< a pointer to the log file>*/
-        Graph *m_pRmsGraph;           /**< a pointer to the output graph >*/
+        Graph *m_pRmsGraph;            /**< a pointer to the output graph >*/
 
         XFoilTask *m_pXFoilTask;       /**< A pointer to the instance of the XFoilTask associated to this analysis. >*/
 

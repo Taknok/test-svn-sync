@@ -43,7 +43,6 @@ class Polar;
 class IntEdit;
 class DoubleEdit;
 class XFoilTask;
-class XFoilTaskEvent;
 struct FoilAnalysis;
 class XDirect;
 class CPTableView;

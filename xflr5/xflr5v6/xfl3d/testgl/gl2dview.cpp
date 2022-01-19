@@ -358,6 +358,17 @@ void gl2dView::mouseMoveEvent(QMouseEvent *pEvent)
         update();
         return;
     }
+    else if(pEvent->modifiers().testFlag(Qt::AltModifier))
+    {
+        float zoomfactor=1.0f;
+
+        if(point.y()-m_LastPoint.y()<0) zoomfactor = 1.0/(1.0+DisplayOptions::scaleFactor());
+        else                            zoomfactor = 1.0+DisplayOptions::scaleFactor();
+
+        m_Scale *= zoomfactor;
+        update();
+    }
+    m_LastPoint = point;
 
     pEvent->accept();
 }

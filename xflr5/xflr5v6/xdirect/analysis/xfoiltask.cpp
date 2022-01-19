@@ -42,7 +42,7 @@ bool XFoilTask::s_bSkipPolar = false;
 */
 XFoilTask::XFoilTask(QObject *pParent)
 {
-    setAutoDelete(true);
+//    setAutoDelete(true);
 
     m_pParent = pParent;
     m_pFoil  = nullptr;
@@ -57,7 +57,6 @@ XFoilTask::XFoilTask(QObject *pParent)
     m_bFromZero = false;
     m_bInitBL   = true;
 
-    m_OutMessage.clear();
     m_OutStream.setDevice(nullptr);
 
     m_bErrors = false;
@@ -84,7 +83,7 @@ void XFoilTask::run()
     // post an event to notify the parent window that the task is done
     if(m_pParent)
     {
-        qApp->postEvent(m_pParent, new XFoilTaskEvent(m_pFoil, m_pPolar));
+        qApp->postEvent(m_pParent, new XFoilTaskEvent(this, m_pFoil, m_pPolar));
     }
 }
 
@@ -497,7 +496,11 @@ void XFoilTask::traceLog(const QString &str)
     if(m_OutStream.device() || m_OutStream.string())
     {
         m_OutStream << str;
-        m_OutMessage += str;
+    }
+
+    if(m_pParent)
+    {
+        qApp->postEvent(m_pParent, new MessageEvent(str));
     }
 }
 
