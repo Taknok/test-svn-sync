@@ -154,7 +154,6 @@ class XDirect : public QWidget
         void onImportJavaFoilPolar();
         void onImportXFoilPolars();
         void onImportXMLAnalysis();
-        void onInputChanged();
         void onInterpolateFoils();
         void onMultiThreadedBatchAnalysis();
         void onNacaFoils();
@@ -184,7 +183,7 @@ class XDirect : public QWidget
         void onStoreOpp();
         void onViscous();
         void onXFoilAdvanced();
-
+        void onTaskFinished(Polar *pPolar);
 
     private:
         void keyPressEvent(QKeyEvent *event);
@@ -201,7 +200,6 @@ class XDirect : public QWidget
         Polar *importXFoilPolar(QFile &txtFile);
 
         void loadSettings(QSettings &settings);
-        void readParams();
         Foil *addNewFoil(Foil *pFoil);
         void renameFoil(Foil *pFoil);
         void saveSettings(QSettings &settings);

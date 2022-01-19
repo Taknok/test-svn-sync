@@ -26,6 +26,7 @@
 #include <QThreadPool>
 #include <QTimer>
 #include <QDir>
+#include <QtConcurrent/QtConcurrentRun>
 #include <QDebug>
 
 #include "batchthreaddlg.h"
@@ -242,7 +243,6 @@ void BatchThreadDlg::onTimerEvent()
         if(QThreadPool::globalInstance()->activeThreadCount()<s_nThreads && m_AnalysisPair.count())
         {
             XFoilTask *pXFoilTask = new XFoilTask(this);
-
             //take the last analysis in the array
             FoilAnalysis *pAnalysis = m_AnalysisPair.at(m_AnalysisPair.size()-1);
 
@@ -258,8 +258,9 @@ void BatchThreadDlg::onTimerEvent()
             m_nTaskStarted++;
             strong = tr("Starting ")+pAnalysis->pFoil->name()+" / "+pAnalysis->pPolar->polarName() + "\n";
             updateOutput(strong);
-            QThreadPool::globalInstance()->start(pXFoilTask);
 
+//            QThreadPool::globalInstance()->start(pXFoilTask);
+            QtConcurrent::run(pXFoilTask, &XFoilTask::run);
 
             //remove it from the array of pairs to analyze
             pAnalysis = m_AnalysisPair.last();
@@ -312,6 +313,7 @@ void BatchThreadDlg::customEvent(QEvent * pEvent)
             s_pXDirect->createPolarCurves();
             s_pXDirect->updateView();
         }
+        delete pXFEvent->task();
     }
     else if(pEvent->type() == XFOIL_END_OPP_EVENT)
     {

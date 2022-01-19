@@ -90,6 +90,7 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
     setAttribute(Qt::WA_DeleteOnClose);
 
     m_pXFADlg = new XFoilAnalysisDlg(this);
+    connect(m_pXFADlg, SIGNAL(analysisFinished(Polar*)), SLOT(onTaskFinished(Polar*)));
 
     m_pOpPointWidget = nullptr;
 
@@ -178,7 +179,7 @@ XDirect::~XDirect()
         delete m_PlrGraph.at(ig);
         m_PlrGraph.removeAt(ig);
     }
-    delete m_pXFADlg;
+    if(m_pXFADlg) delete m_pXFADlg;
 }
 
 
@@ -271,16 +272,13 @@ void XDirect::connectSignals()
     connect(m_prbSpec2,         SIGNAL(clicked()),            SLOT(onSpec()));
     connect(m_prbSpec3,         SIGNAL(clicked()),            SLOT(onSpec()));
     connect(m_ppbAnalyze,       SIGNAL(clicked()),            SLOT(onAnalyze()));
-    connect(m_pdeAlphaMin,      SIGNAL(editingFinished()),    SLOT(onInputChanged()));
-    connect(m_pdeAlphaMax,      SIGNAL(editingFinished()),    SLOT(onInputChanged()));
-    connect(m_pdeAlphaDelta,    SIGNAL(editingFinished()),    SLOT(onInputChanged()));
     connect(m_pchSequence,      SIGNAL(clicked()),            SLOT(onSequence()));
     connect(m_pchViscous,       SIGNAL(clicked()),            SLOT(onViscous()));
     connect(m_pchStoreOpp,      SIGNAL(clicked()),            SLOT(onStoreOpp()));
 
-    connect(m_pchAnimate,       SIGNAL(clicked(bool)),    SLOT(onAnimate(bool)));
-    connect(m_pslAnimateSpeed,  SIGNAL(valueChanged(int)), SLOT(onAnimateSpeed(int)));
-    connect(m_pAnimateTimer,    SIGNAL(timeout()),        SLOT(onAnimateSingle()));
+    connect(m_pchAnimate,       SIGNAL(clicked(bool)),        SLOT(onAnimate(bool)));
+    connect(m_pslAnimateSpeed,  SIGNAL(valueChanged(int)),    SLOT(onAnimateSpeed(int)));
+    connect(m_pAnimateTimer,    SIGNAL(timeout()),            SLOT(onAnimateSingle()));
 
     connect(m_pchActiveOppOnly, SIGNAL(clicked(bool)), SLOT(onCurOppOnly()));
     connect(m_pchShowBL,        SIGNAL(clicked(bool)), s_pMainFrame->m_pXDirectTileWidget->opPointWidget(), SLOT(onShowBL(bool)));
@@ -810,16 +808,12 @@ void XDirect::keyPressEvent(QKeyEvent *pEvent)
     {
         case Qt::Key_Return:
         case Qt::Key_Enter:
-            readParams();
             if(m_ppbAnalyze->hasFocus())  onAnalyze();
             else
             {
                 activateWindow();
                 m_ppbAnalyze->setFocus();
             }
-            break;
-        case Qt::Key_Tab:
-            readParams();
             break;
         case Qt::Key_Escape:
             stopAnimate();
@@ -1015,15 +1009,6 @@ void XDirect::loadSettings(QSettings &settings)
 
 
 /**
- * The user has changed one of the analysis parameters. Reads all the data and maps it.
- */
-void XDirect::onInputChanged()
-{
-    readParams();
-}
-
-
-/**
  * The user has clicked the animate checkcbox
  * @param bChecked the new state of the checkbox
  */
@@ -1146,34 +1131,72 @@ void XDirect::onAnalyze()
 {
     if(!Objects2d::curFoil() || !Objects2d::curPolar()) return;
 
-    readParams();
+    if      (m_prbSpec1->isChecked()) s_bAlpha = true;
+    else if (m_prbSpec2->isChecked()) s_bAlpha = false;
+    else if (m_prbSpec3->isChecked()) s_bAlpha = false;
+
+    XFoilAnalysisDlg::s_bSequence = m_pchSequence->isChecked();
+
+    double Alpha(0), AlphaMax(0), AlphaDelta(0);
+    double Cl(0), ClMax(0), ClDelta(0);
+    double Reynolds(0), ReynoldsMax(0), ReynoldsDelta(0);
+    if(Objects2d::curPolar()->polarType()!=xfl::FIXEDAOAPOLAR)
+    {
+        if(s_bAlpha)
+        {
+            Alpha      = m_pdeAlphaMin->value();
+            AlphaMax   = m_pdeAlphaMax->value();
+            AlphaDelta = m_pdeAlphaDelta->value();
+        }
+        else
+        {
+            Cl      = m_pdeAlphaMin->value();
+            ClMax   = m_pdeAlphaMax->value();
+            ClDelta = m_pdeAlphaDelta->value();
+        }
+    }
+    else
+    {
+        Reynolds      = m_pdeAlphaMin->value();
+        ReynoldsMax   = m_pdeAlphaMax->value();
+        ReynoldsDelta = m_pdeAlphaDelta->value();
+    }
+
+    m_pXFADlg->setAlpha(Alpha, AlphaMax, AlphaDelta);
+    m_pXFADlg->setCl(Cl, ClMax, ClDelta);
+    m_pXFADlg->setRe(Reynolds, ReynoldsMax, ReynoldsDelta);
+
+    s_bInitBL   = m_pchInitBL->isChecked();
+    s_bViscous  = m_pchViscous->isChecked();
+    OpPoint::setStoreOpp(m_pchStoreOpp->isChecked());
 
     m_ppbAnalyze->setEnabled(false);
 
-    bool bHigh = Graph::isHighLighting();
-    Graph::setOppHighlighting(false);
 
     m_pXFADlg->m_pRmsGraph->copySettings(&Settings::s_RefGraph);
 
     m_pXFADlg->m_bAlpha = s_bAlpha;
 
-    m_pXFADlg->initDialog();
     m_pXFADlg->show();
+    m_pXFADlg->initDialog();
+    m_pXFADlg->update();
     m_pXFADlg->analyze();
+}
+
+
+void XDirect::onTaskFinished(Polar *pPolar)
+{
     if(!s_bKeepOpenErrors || !m_pXFADlg->m_bErrors) m_pXFADlg->hide();
-
-
     m_ppbAnalyze->setEnabled(true);
 
     s_bInitBL = !m_XFoil.isBLInitialized();
     m_pchInitBL->setChecked(s_bInitBL);;
 
-    m_pFoilTreeView->addOpps(Objects2d::curPolar());
+    m_pFoilTreeView->addOpps(pPolar);
     if(s_bAlpha) setOpp(XFoilAnalysisDlg::s_Alpha);
     else         setOpp();
     m_pFoilTreeView->selectOpPoint();
 
-    Graph::setOppHighlighting(bHigh);
 
     m_bResetCurves = true;
 
@@ -3582,54 +3605,6 @@ void XDirect::onXFoilAdvanced()
         XFoilTask::s_bAutoInitBL  = xfaDlg.m_bAutoInitBL;
         XFoilTask::s_IterLim      = xfaDlg.m_IterLimit;
     }
-}
-
-
-/**
- * Reads the analysis parameters from the widgets.
- */
-void XDirect::readParams()
-{
-    if(!Objects2d::curPolar()) return;
-
-    if      (m_prbSpec1->isChecked()) s_bAlpha = true;
-    else if (m_prbSpec2->isChecked()) s_bAlpha = false;
-    else if (m_prbSpec3->isChecked()) s_bAlpha = false;
-
-    XFoilAnalysisDlg::s_bSequence = m_pchSequence->isChecked();
-
-    double Alpha(0), AlphaMax(0), AlphaDelta(0);
-    double Cl(0), ClMax(0), ClDelta(0);
-    double Reynolds(0), ReynoldsMax(0), ReynoldsDelta(0);
-    if(Objects2d::curPolar()->polarType()!=xfl::FIXEDAOAPOLAR)
-    {
-        if(s_bAlpha)
-        {
-            Alpha      = m_pdeAlphaMin->value();
-            AlphaMax   = m_pdeAlphaMax->value();
-            AlphaDelta = m_pdeAlphaDelta->value();
-        }
-        else
-        {
-            Cl      = m_pdeAlphaMin->value();
-            ClMax   = m_pdeAlphaMax->value();
-            ClDelta = m_pdeAlphaDelta->value();
-        }
-    }
-    else
-    {
-        Reynolds      = m_pdeAlphaMin->value();
-        ReynoldsMax   = m_pdeAlphaMax->value();
-        ReynoldsDelta = m_pdeAlphaDelta->value();
-    }
-
-    m_pXFADlg->setAlpha(Alpha, AlphaMax, AlphaDelta);
-    m_pXFADlg->setCl(Cl, ClMax, ClDelta);
-    m_pXFADlg->setRe(Reynolds, ReynoldsMax, ReynoldsDelta);
-
-    s_bInitBL   = m_pchInitBL->isChecked();
-    s_bViscous  = m_pchViscous->isChecked();
-    OpPoint::setStoreOpp(m_pchStoreOpp->isChecked());
 }
 
 

@@ -879,11 +879,11 @@ QString Polar::variableName(int iVar)
         case 7:
             return "Xtr bot";
         case 8:
-            return "HMom";
+            return "Hinge Moment";
         case 9:
-            return "HFx";
+            return "Hinge Fx";
         case 10:
-            return "HFy";
+            return "Hinge Fy";
         case 11:
             return "Cpmin";
         case 12:
