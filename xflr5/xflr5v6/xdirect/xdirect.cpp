@@ -19,8 +19,7 @@
 
 *****************************************************************************/
 
-
-#include <QColorDialog>
+#include <QDebug>
 #include <QFileDialog>
 #include <QGroupBox>
 #include <QMenu>
@@ -181,6 +180,7 @@ XDirect::~XDirect()
     }
     delete m_pXFADlg;
 }
+
 
 void XDirect::setCurFoil(Foil*pFoil)    {Objects2d::setCurFoil(pFoil);}
 void XDirect::setCurPolar(Polar*pPolar) {Objects2d::setCurPolar(pPolar);}
@@ -735,8 +735,8 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 */
 void XDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar)
 {
-    QVector<double> const *pX = getVariable(pPolar, XVar);
-    QVector<double> const *pY = getVariable(pPolar, YVar);
+    QVector<double> const *pX = pPolar->getGraphVariable(XVar);
+    QVector<double> const *pY = pPolar->getGraphVariable(YVar);
     double fx = 1.0;
     double fy = 1.0;
 
@@ -791,70 +791,6 @@ void XDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar)
             }
         }
     }
-}
-
-
-
-/**
-* Returns a void pointer to the array of the specified variable of the input Polar
-* @param pPolar a pointer to the Polar object
-* @param iVar the index of the variable for which a pointer is requested
-* @return a pointer to the array of the requested variable
-*/
-QVector<double> *XDirect::getVariable(Polar *pPolar, int iVar)
-{
-    QVector<double> * pVar(nullptr);
-    switch (iVar){
-        case 0:
-            pVar = &pPolar->m_Alpha;
-            break;
-        case 1:
-            pVar = &pPolar->m_Cl;
-            break;
-        case 2:
-            pVar = &pPolar->m_Cd;
-            break;
-        case 3:
-            pVar = &pPolar->m_Cd;
-            break;
-        case 4:
-            pVar = &pPolar->m_Cdp;
-            break;
-        case 5:
-            pVar = &pPolar->m_Cm;
-            break;
-        case 6:
-            pVar = &pPolar->m_XTr1;
-            break;
-        case 7:
-            pVar = &pPolar->m_XTr2;
-            break;
-        case 8:
-            pVar = &pPolar->m_HMom;
-            break;
-        case 9:
-            pVar = &pPolar->m_Cpmn;
-            break;
-        case 10:
-            pVar = &pPolar->m_ClCd;
-            break;
-        case 11:
-            pVar = &pPolar->m_Cl32Cd;
-            break;
-        case 12:
-            pVar = &pPolar->m_Cl;
-            break;
-        case 13:
-            pVar = &pPolar->m_Re;
-            break;
-        case 14:
-            pVar = &pPolar->m_XCp;
-            break;
-        default:
-            pVar = &pPolar->m_Alpha;
-            break;
-    }
-    return pVar;
 }
 
 
@@ -1232,10 +1168,9 @@ void XDirect::onAnalyze()
     s_bInitBL = !m_XFoil.isBLInitialized();
     m_pchInitBL->setChecked(s_bInitBL);;
 
+    m_pFoilTreeView->addOpps(Objects2d::curPolar());
     if(s_bAlpha) setOpp(XFoilAnalysisDlg::s_Alpha);
     else         setOpp();
-
-    m_pFoilTreeView->addOpps(Objects2d::curPolar());
     m_pFoilTreeView->selectOpPoint();
 
     Graph::setOppHighlighting(bHigh);
@@ -2611,8 +2546,8 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 
     xfl::readAVLString(in, Line, strong);// analysis type
 
-    pPolar->setReType(strong.mid(0,2).toInt(&bOK));
-    pPolar->setMaType(strong.mid(2,2).toInt(&bOK2));
+    pPolar->setReType(strong.midRef(0,2).toInt(&bOK));
+    pPolar->setMaType(strong.midRef(2,2).toInt(&bOK2));
     if(!bOK || !bOK2)
     {
         str = QString("Error reading line %1: Unrecognized Mach and Reynolds type.\nThe polar(s) will not be stored").arg(Line);
@@ -2663,7 +2598,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         return nullptr;
     }
 
-    pPolar->setMach(strong.mid(8,6).toDouble(&bOK));
+    pPolar->setMach(strong.midRef(8,6).toDouble(&bOK));
     if(!bOK)
     {
         str = QString("Error reading Mach Number at line %1. The polar(s) will not be stored").arg(Line);
@@ -2729,11 +2664,11 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
                     {
                         Cpmn    = values.at(7).toDouble();
                         HMom    = values.at(8).toDouble();
-                        pPolar->addPoint(alpha, CD, CDp, CL, CM, Xt, Xb, Cpmn, HMom,Re,0.0);
+                        pPolar->addPoint(alpha, CD, CDp, CL, CM, Xt, Xb, Cpmn, HMom,0.0,0.0,Re,0.0);
                     }
                     else
                     {
-                        pPolar->addPoint(alpha, CD, CDp, CL, CM, Xt, Xb, 0.0, 0.0,Re,0.0);
+                        pPolar->addPoint(alpha, CD, CDp, CL, CM, Xt, Xb, 0.0, 0.0,0.0,0.0,Re,0.0);
 
                     }
                 }
@@ -2874,7 +2809,7 @@ void XDirect::onImportJavaFoilPolar()
                     text = textline.constData();
 
                     res = sscanf(text, "%lf%lf%lf%lf%lf%lf",&alpha, &CL, &CD, &CM, &Xt, &Xb);
-                    if (res == 6)     pPolar->addPoint(alpha, CD, 0.0, CL, CM, Xt, Xb, 0.0, 0.0, Re,0.0);
+                    if (res == 6)     pPolar->addPoint(alpha, CD, 0.0, CL, CM, Xt, Xb, 0.0, 0.0, 0.0, 0.0, Re,0.0);
                 }
                 else
                 {
@@ -4510,7 +4445,7 @@ void XDirect::importAnalysisFromXML(QFile &xmlFile)
         {
             s_pMainFrame->statusBar()->showMessage(tr("Attaching the analysis to the active foil"));
             pPolar->setFoilName(Objects2d::curFoil()->name());
-            pFoil = Objects2d::curFoil();
+//            pFoil = Objects2d::curFoil();
         }
         else if(!pFoil)
         {

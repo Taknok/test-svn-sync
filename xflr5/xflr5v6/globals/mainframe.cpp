@@ -6112,12 +6112,13 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         ar << pPolar->m_NCrit;
 
         ar << pPolar->m_Alpha.size();
-        for (i=0; i< pPolar->m_Alpha.size(); i++)
+        for (i=0; i<pPolar->m_Alpha.size(); i++)
         {
             ar << float(pPolar->m_Alpha[i]) << float(pPolar->m_Cd[i]);
             ar << float(pPolar->m_Cdp[i])   << float(pPolar->m_Cl[i]) << float(pPolar->m_Cm[i]);
             ar << float(pPolar->m_XTr1[i])  << float(pPolar->m_XTr2[i]);
-            ar << float(pPolar->m_HMom[i])  << float(pPolar->m_Cpmn[i]);
+            ar << float(pPolar->m_HMom[i]);
+            ar << float(pPolar->m_Cpmn[i]);
             ar << float(pPolar->m_Re[i]);
             ar << float(pPolar->m_XCp[i]);
         }
@@ -6134,7 +6135,8 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
     {
         //read variables
         QString strange;
-        float Alpha(0), Cd(0), Cdp(0), Cl(0), Cm(0), XTr1(0), XTr2(0), HMom(0), Cpmn(0), Re(0), XCp(0);
+        float Alpha(0), Cd(0), Cdp(0), Cl(0), Cm(0), XTr1(0), XTr2(0), HMom(0);
+        float Cpmn(0), Re(0), XCp(0);
 
         ar >> ArchiveFormat;
         if (ArchiveFormat <100000 || ArchiveFormat>110000) return false;
@@ -6172,9 +6174,12 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
 
         for (i=0; i< n; i++)
         {
-            ar >> Alpha >> Cd >> Cdp >> Cl >> Cm >> XTr1 >> XTr2 >> HMom >> Cpmn >> Re >> XCp;
+            ar >> Alpha >> Cd >> Cdp >> Cl >> Cm >> XTr1 >> XTr2 >> HMom;
+            ar >> Cpmn >> Re >> XCp;
             pPolar->addPoint(double(Alpha), double(Cd), double(Cdp), double(Cl), double(Cm),
-                             double(XTr1), double(XTr2), double(HMom), double(Cpmn), double(Re), double(XCp));
+                             double(XTr1), double(XTr2),
+                             double(HMom), 0.0, 0.0,
+                             double(Cpmn), double(Re), double(XCp));
         }
 
         if(ArchiveFormat<100005)

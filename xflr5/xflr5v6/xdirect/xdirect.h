@@ -215,8 +215,6 @@ class XDirect : public QWidget
         void stopAnimate();
         void updateCurveStyle(const LineStyle &ls);
 
-        QVector<double> * getVariable(Polar *pPolar, int iVar);
-
         Foil *setFoil(Foil* pFoil=nullptr);
         Polar *setPolar(Polar *pPolar=nullptr);
         OpPoint *setOpp(OpPoint *pOpp);
