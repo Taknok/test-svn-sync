@@ -55,7 +55,7 @@ class Polar : public XflObject
 
 
         void addPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
-                      double Xtr1, double Xtr2, double HMom, double Cpmn, double Reynolds, double XCp);
+                      double Xtr1, double Xtr2, double HMom, double HFx, double HFy, double Cpmn, double Reynolds, double XCp);
         void exportPolar(QTextStream &out, QString const &versionName, bool bCSV, bool bDataOnly=false) const;
         void resetPolar();
 
@@ -128,6 +128,7 @@ class Polar : public XflObject
         static QString autoPolarName(xfl::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec=0.0, double XTop=1.0, double XBot=1.0);
         static QString variableName(int iVar);
 
+        QVector<double> *getGraphVariable(int iVar);
 
     public:
 
@@ -140,6 +141,8 @@ class Polar : public XflObject
         QVector<double> m_XTr1;              /**< the array of transition points on the top surface */
         QVector<double> m_XTr2;              /**< the array of transition points on the bottom surface */
         QVector<double> m_HMom;              /**< the array of flap hinge moments */
+        QVector<double> m_HFx;             /**< the array of flap force-x*/
+        QVector<double> m_HFy;             /**< the array of flap force-y*/
         QVector<double> m_Cpmn;              /**< the array of Cpmn ? */
         QVector<double> m_ClCd;              /**< the array of glide ratios */
         QVector<double> m_Cl32Cd;            /**< the array of power factors*/

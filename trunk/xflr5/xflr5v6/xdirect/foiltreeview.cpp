@@ -585,7 +585,7 @@ void FoilTreeView::selectOpPoint(OpPoint *pOpp)
 
     bool bSelected = false;
 
-    for(int ir = 0; ir<m_pModel->rowCount(); ir++)
+    for(int ir=0; ir<m_pModel->rowCount(); ir++)
     {
         ObjectTreeItem *pFoilItem = m_pModel->item(ir);
 

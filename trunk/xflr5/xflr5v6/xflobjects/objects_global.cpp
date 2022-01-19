@@ -922,7 +922,7 @@ bool xfl::serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         ar<<pPolar->m_Symbol;*/
         pPolar->theStyle().serializeXfl(ar, bIsStoring);
 
-        for (i=0; i< pPolar->m_Alpha.size(); i++){
+        for (i=0; i<pPolar->m_Alpha.size(); i++){
             ar << float(pPolar->m_Alpha[i]) << float(pPolar->m_Cd[i]) ;
             ar << float(pPolar->m_Cdp[i])   << float(pPolar->m_Cl[i]) << float(pPolar->m_Cm[i]);
             ar << float(pPolar->m_XTr1[i])  << float(pPolar->m_XTr2[i]);
@@ -1045,7 +1045,8 @@ bool xfl::serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
             }
             if(!bExists)
             {
-                pPolar->addPoint(double(Alpha), double(Cd), double(Cdp), double(Cl), double(Cm), double(XTr1), double(XTr2), double(HMom), double(Cpmn), double(Re), double(XCp));
+                pPolar->addPoint(double(Alpha), double(Cd), double(Cdp), double(Cl), double(Cm), double(XTr1), double(XTr2),
+                                 double(HMom), 0.0, 0.0, double(Cpmn), double(Re), double(XCp));
             }
         }
         if(ArchiveFormat>=1003)
