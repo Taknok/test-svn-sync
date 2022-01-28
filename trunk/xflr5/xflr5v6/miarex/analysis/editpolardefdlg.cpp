@@ -476,7 +476,7 @@ void EditPolarDefDlg::readViewLevel(QModelIndex indexLevel)
         else
         {
             //no more children
-            QString object = indexLevel.sibling(indexLevel.row(),0).data().toString();
+//            QString object = indexLevel.sibling(indexLevel.row(),0).data().toString();
             QString field = indexLevel.sibling(indexLevel.row(),1).data().toString();
 
             QModelIndex dataIndex = indexLevel.sibling(indexLevel.row(),2);
@@ -525,8 +525,8 @@ void EditPolarDefDlg::readControlFields(QModelIndex indexLevel)
     do
     {
         QString object = indexLevel.sibling(indexLevel.row(),0).data().toString();
-        QString field  = indexLevel.sibling(indexLevel.row(),1).data().toString();
-        QString value  = indexLevel.sibling(indexLevel.row(),2).data().toString();
+//        QString field  = indexLevel.sibling(indexLevel.row(),1).data().toString();
+//        QString value  = indexLevel.sibling(indexLevel.row(),2).data().toString();
         QStandardItem *pItem = m_pModel->item(indexLevel.row());
 
         if(pItem->child(0,0))
@@ -538,9 +538,9 @@ void EditPolarDefDlg::readControlFields(QModelIndex indexLevel)
                 QModelIndex childIndex= pItem->child(0,0)->index();
                 do
                 {
-                    QString childObject = childIndex.sibling(childIndex.row(),0).data().toString();
+ //                   QString childObject = childIndex.sibling(childIndex.row(),0).data().toString();
                     QString childField = childIndex.sibling(childIndex.row(),1).data().toString();
-                    QString childValue = childIndex.sibling(childIndex.row(),2).data().toString();
+//                    QString childValue = childIndex.sibling(childIndex.row(),2).data().toString();
 
                     QModelIndex dataIndex = childIndex.sibling(childIndex.row(),2);
 

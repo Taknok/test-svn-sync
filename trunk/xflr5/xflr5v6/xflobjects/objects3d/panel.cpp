@@ -574,13 +574,13 @@ void Panel::sourceNASA4023(Vector3d const &C,  Vector3d &V, double &phi) const
         if(m_pR[i]->isSame(*m_pR[i+1]))
         {
             //no contribution from this side
-            CJKi = 0.0;
+//            CJKi = 0.0;
         }
         else if ((((h.x*h.x+h.y*h.y+h.z*h.z)/(s.x*s.x+s.y*s.y+s.z*s.z) <= CoreSize*CoreSize) && a.x*s.x+a.y*s.y+a.z*s.z>=0.0 && b.x*s.x+b.y*s.y+b.z*s.z<=0.0) ||
                  A < CoreSize || B < CoreSize)
         {
             //if lying on the panel's side... no contribution
-            CJKi = 0.0;
+//            CJKi = 0.0;
         }
         else
         {

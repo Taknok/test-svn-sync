@@ -100,8 +100,8 @@ void GATask::makeRandomParticle(Particle *pParticle) const
     int dim=m_HHn, nobj=1, nbest=1;
     pParticle->resizeArrays(dim, nobj, nbest);
 
-    double pos=0, posmin=0, posmax=0;
-    double deltapos = posmax-posmin;
+    double pos(0), posmin(0), posmax(0);
+    double deltapos(0);
 
     for(int i=0; i<pParticle->dimension(); i++)
     {

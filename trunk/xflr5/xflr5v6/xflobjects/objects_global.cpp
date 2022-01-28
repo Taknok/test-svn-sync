@@ -209,10 +209,10 @@ Foil *xfl::readFoilFile(QFile &xFoilFile)
     QString tempStr;
     QString FoilName;
 
-    Foil* pFoil = nullptr;
-    int pos=0;
-    double x=0, y=0, z=0, area=0;
-    double xp=0, yp=0;
+    Foil* pFoil(nullptr);
+    int pos(0);
+    double x(0), y(0), z(0), area(0);
+    double xp(0), yp(0);
 
     QTextStream in(&xFoilFile);
 
@@ -253,8 +253,8 @@ Foil *xfl::readFoilFile(QFile &xFoilFile)
                 pFoil->m_xb[0] = x;
                 pFoil->m_yb[0] = y;
                 pFoil->m_nb=1;
-                xp = x;
-                yp = y;
+//                xp = x;
+//                yp = y;
             }
         }
         else FoilName = strong;

@@ -40,6 +40,16 @@ class OpPointWt : public QWidget
     public:
         OpPointWt(QWidget *parent = nullptr);
 
+        void setNeutralLineColor(QColor clr){m_NeutralStyle.m_Color = clr;}
+        QColor neutralLineColor() const {return m_NeutralStyle.m_Color;}
+
+        void setGraph(Graph* pGraph){m_pCpGraph = pGraph;}
+        void loadSettings(QSettings &settings);
+        void saveSettings(QSettings &settings);
+
+        static void setMainFrame(MainFrame*pMainFrame) {s_pMainFrame=pMainFrame;}
+        static void setXDirect(XDirect *pXDirect) {s_pXDirect=pXDirect;}
+
     public slots:
         void onXDirectStyle();
         void onShowNeutralLine();
@@ -50,14 +60,6 @@ class OpPointWt : public QWidget
 
         void onGraphSettings();
 
-        void setNeutralLineColor(QColor clr){m_NeutralStyle.m_Color = clr;}
-        QColor neutralLineColor() const {return m_NeutralStyle.m_Color;}
-        void setGraph(Graph* pGraph){m_pCpGraph = pGraph;}
-        void loadSettings(QSettings &settings);
-        void saveSettings(QSettings &settings);
-
-        static void setMainFrame(MainFrame*pMainFrame) {s_pMainFrame=pMainFrame;}
-        static void setXDirect(XDirect *pXDirect) {s_pXDirect=pXDirect;}
 
     signals:
         void graphChanged(Graph *);

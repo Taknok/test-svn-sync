@@ -41,7 +41,7 @@ class gl3dTestGLView : public gl3dView
 
 
     signals:
-        void ready() const;
+        void ready();
 
 
     protected:

@@ -87,35 +87,35 @@ StabPolarDlg::~StabPolarDlg()
 
 void StabPolarDlg::connectSignals()
 {
-    connect(m_prbUnit1,   SIGNAL(clicked()), this, SLOT(onUnit()));
-    connect(m_prbUnit2,   SIGNAL(clicked()), this, SLOT(onUnit()));
-    connect(m_pchViscous, SIGNAL(clicked()), this, SLOT(onViscous()));
-    connect(m_pchIgnoreBodyPanels, SIGNAL(clicked()), this, SLOT(onIgnoreBodyPanels()));
-    connect(m_prbArea1, SIGNAL(clicked()),this, SLOT(onArea()));
-    connect(m_prbArea2, SIGNAL(clicked()),this, SLOT(onArea()));
-    connect(m_prbArea3, SIGNAL(clicked()),this, SLOT(onArea()));
+    connect(m_prbUnit1,            SIGNAL(clicked()),             SLOT(onUnit()));
+    connect(m_prbUnit2,            SIGNAL(clicked()),             SLOT(onUnit()));
+    connect(m_pchViscous,          SIGNAL(clicked()),             SLOT(onViscous()));
+    connect(m_pchIgnoreBodyPanels, SIGNAL(clicked()),             SLOT(onIgnoreBodyPanels()));
+    connect(m_prbArea1,            SIGNAL(clicked()),             SLOT(onArea()));
+    connect(m_prbArea2,            SIGNAL(clicked()),             SLOT(onArea()));
+    connect(m_prbArea3,            SIGNAL(clicked()),             SLOT(onArea()));
 
-    connect(m_prbWingMethod2, SIGNAL(toggled(bool)), this, SLOT(onMethod()));
-    connect(m_prbWingMethod3, SIGNAL(toggled(bool)), this, SLOT(onMethod()));
+    connect(m_prbWingMethod2,      SIGNAL(toggled(bool)),         SLOT(onMethod()));
+    connect(m_prbWingMethod3,      SIGNAL(toggled(bool)),         SLOT(onMethod()));
 
-    connect(m_pdeDensity,   SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeViscosity, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeBeta, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdePhi,  SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+    connect(m_pdeDensity,          SIGNAL(valueChanged()),        SLOT(onEditingFinished()));
+    connect(m_pdeViscosity,        SIGNAL(valueChanged()),        SLOT(onEditingFinished()));
+    connect(m_pdeBeta,             SIGNAL(valueChanged()),        SLOT(onEditingFinished()));
+    connect(m_pdePhi,              SIGNAL(valueChanged()),        SLOT(onEditingFinished()));
 
-    connect(m_pdeRefArea,  SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeRefSpan,  SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    connect(m_pdeRefChord, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+    connect(m_pdeRefArea,          SIGNAL(valueChanged()),        SLOT(onEditingFinished()));
+    connect(m_pdeRefSpan,          SIGNAL(valueChanged()),        SLOT(onEditingFinished()));
+    connect(m_pdeRefChord,         SIGNAL(valueChanged()),        SLOT(onEditingFinished()));
 
-    connect(m_pleWPolarName, SIGNAL(editingFinished()), this, SLOT(onWPolarName()));
-    connect(m_pchAutoName, SIGNAL(toggled(bool)), this, SLOT(onAutoName()));
+    connect(m_pleWPolarName,       SIGNAL(valueChanged()),        SLOT(onWPolarName()));
+    connect(m_pchAutoName,         SIGNAL(toggled(bool)),         SLOT(onAutoName()));
 
-    connect(m_pchAutoPlaneInertia, SIGNAL(clicked(bool)), this, SLOT(onAutoInertia(bool)));
-    connect(m_ptwMain, SIGNAL(currentChanged(int)), this, SLOT(onTabChanged(int)));
+    connect(m_pchAutoPlaneInertia, SIGNAL(clicked(bool)),         SLOT(onAutoInertia(bool)));
+    connect(m_ptwMain,             SIGNAL(currentChanged(int)),   SLOT(onTabChanged(int)));
 
-    connect(m_pInertiaDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onInertiaCellChanged(QWidget *)));
-    connect(m_pAngleCtrlDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onAngleCellChanged(QWidget *)));
-    connect(m_pExtraDragDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onDragCellChanged(QWidget *)));
+    connect(m_pInertiaDelegate,    SIGNAL(closeEditor(QWidget*)), SLOT(onInertiaCellChanged(QWidget*)));
+    connect(m_pAngleCtrlDelegate,  SIGNAL(closeEditor(QWidget*)), SLOT(onAngleCellChanged(QWidget*)));
+    connect(m_pExtraDragDelegate,  SIGNAL(closeEditor(QWidget*)), SLOT(onDragCellChanged(QWidget*)));
 }
 
 

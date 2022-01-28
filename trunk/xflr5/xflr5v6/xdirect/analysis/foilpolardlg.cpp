@@ -254,30 +254,30 @@ void FoilPolarDlg::setupLayout()
 
 void FoilPolarDlg::connectSignals()
 {
-    connect(m_prbAuto1, SIGNAL(clicked()), this, SLOT(onAutoName()));
-    connect(m_prbAuto2, SIGNAL(clicked()), this, SLOT(onAutoName()));
+    connect(m_prbAuto1, SIGNAL(clicked()), SLOT(onAutoName()));
+    connect(m_prbAuto2, SIGNAL(clicked()), SLOT(onAutoName()));
 
-    connect(m_rbtype1, SIGNAL(clicked()), this, SLOT(onPolarType()));
-    connect(m_rbtype2, SIGNAL(clicked()), this, SLOT(onPolarType()));
-    connect(m_rbtype3, SIGNAL(clicked()), this, SLOT(onPolarType()));
-    connect(m_rbtype4, SIGNAL(clicked()), this, SLOT(onPolarType()));
+    connect(m_rbtype1, SIGNAL(clicked()), SLOT(onPolarType()));
+    connect(m_rbtype2, SIGNAL(clicked()), SLOT(onPolarType()));
+    connect(m_rbtype3, SIGNAL(clicked()), SLOT(onPolarType()));
+    connect(m_rbtype4, SIGNAL(clicked()), SLOT(onPolarType()));
 
-    connect(m_pdeReynolds, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
-    connect(m_pdeMach,     SIGNAL(editingFinished()), this, SLOT(editingFinished()));
-    connect(m_pdeNCrit,    SIGNAL(editingFinished()), this, SLOT(editingFinished()));
-    connect(m_pdeTopTrans, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
-    connect(m_pdeBotTrans, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
+    connect(m_pdeReynolds, SIGNAL(valueChanged()), SLOT(editingFinished()));
+    connect(m_pdeMach,     SIGNAL(valueChanged()), SLOT(editingFinished()));
+    connect(m_pdeNCrit,    SIGNAL(valueChanged()), SLOT(editingFinished()));
+    connect(m_pdeTopTrans, SIGNAL(valueChanged()), SLOT(editingFinished()));
+    connect(m_pdeBotTrans, SIGNAL(valueChanged()), SLOT(editingFinished()));
 
-    connect(m_pleAnalysisName, SIGNAL(textEdited (const QString &)), this, SLOT(onNameChanged()));
+    connect(m_pleAnalysisName, SIGNAL(textEdited(QString&)), SLOT(onNameChanged()));
 
-    connect(m_prbFluidUnit1, SIGNAL(clicked(bool)), this, SLOT(onFluiUnit()));
-    connect(m_prbFluidUnit2, SIGNAL(clicked(bool)), this, SLOT(onFluiUnit()));
+    connect(m_prbFluidUnit1, SIGNAL(clicked(bool)), SLOT(onFluiUnit()));
+    connect(m_prbFluidUnit2, SIGNAL(clicked(bool)), SLOT(onFluiUnit()));
 
-    connect(m_pdeChord,     SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
-    connect(m_pdeSpan,      SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
-    connect(m_pdeMass,      SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
-    connect(m_pdeViscosity, SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
-    connect(m_pdeDensity,   SIGNAL(editingFinished()), this, SLOT(onCalcReynolds()));
+    connect(m_pdeChord,     SIGNAL(valueChanged()), SLOT(onCalcReynolds()));
+    connect(m_pdeSpan,      SIGNAL(valueChanged()), SLOT(onCalcReynolds()));
+    connect(m_pdeMass,      SIGNAL(valueChanged()), SLOT(onCalcReynolds()));
+    connect(m_pdeViscosity, SIGNAL(valueChanged()), SLOT(onCalcReynolds()));
+    connect(m_pdeDensity,   SIGNAL(valueChanged()), SLOT(onCalcReynolds()));
 }
 
 

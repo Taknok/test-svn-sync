@@ -30,7 +30,7 @@ gl3dSolarSys::gl3dSolarSys(QWidget *pParent) : gl3dTestGLView(pParent)
 
     m_bResetPlanet = true;
     m_bResetStars  = true;
-    m_bHalley = false;
+    m_bHalley = true;
     m_Elapsed = QDate::currentDate();
 
     connect(&m_Timer, SIGNAL(timeout()), SLOT(onMovePlanets()));
@@ -105,7 +105,7 @@ gl3dSolarSys::gl3dSolarSys(QWidget *pParent) : gl3dTestGLView(pParent)
     }
 
     makePlanets();
-
+    makeStars();
 
     // save the current light
     m_RefLight = s_Light;
@@ -114,9 +114,10 @@ gl3dSolarSys::gl3dSolarSys(QWidget *pParent) : gl3dTestGLView(pParent)
     setSpecular(0);
 
     setReferenceLength(m_Planet.last().distance()/SCALEFACTOR);
-    reset3dScale();
 
     onRestart();
+
+    reset3dScale();
 }
 
 
@@ -242,6 +243,29 @@ void gl3dSolarSys::glRenderView()
         }
     }
 
+    m_matModel.setToIdentity();
+    m_matModel.rotate(m_Pluto.m_omega, 0.0f,0.0f,1.0f);
+    m_matModel.rotate(m_Pluto.m_i,     0.0f,1.0f,0.0f);
+
+    vmMat = m_matView*m_matModel;
+    pvmMat = m_matProj*vmMat;
+
+    m_shadSurf.bind();
+    {
+        m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix,  vmMat);
+        m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, pvmMat);
+    }
+    m_shadSurf.release();
+    m_shadLine.bind();
+    {
+        m_shadLine.setUniformValue(m_locLine.m_pvmMatrix, pvmMat);
+    }
+    paintLineStrip(m_vboPlutoEllipse, m_Pluto.m_Color, 1, Line::SOLID);
+
+    pos = m_Pluto.position()/SCALEFACTOR; // million km
+    paintSphere(pos, m_Pluto.m_Radius/SCALEFACTOR*s_PlanetSize, m_Pluto.m_Color, true);
+    glRenderText(pos.x, pos.y, pos.z*s_PlanetSize*1.1, m_Pluto.m_Name, s_TextColor);
+
     if(m_bHalley)
     {
         //paint Halley's comet
@@ -312,10 +336,10 @@ void gl3dSolarSys::glMake3dObjects()
         }
         glMakeDisk(270.0e6/2.0/SCALEFACTOR, Vector3d(), m_vboSaturnDisk); // 270 000 km diameter
 
+        glMakeEllipseLineStrip(m_Pluto.m_a/SCALEFACTOR, m_Pluto.m_e, Vector3d(), m_vboPlutoEllipse);
+
         // make Halley's ellipse
-        double a = 17.834 * 1.495978707e11; // semi-major axis length
-        double e = 0.96714; //excentricity
-        glMakeEllipseFan(a/SCALEFACTOR, e, Vector3d(), m_vboHalleyEllipse);
+        glMakeEllipseFan(m_Halley.m_a/SCALEFACTOR, m_Halley.m_e, Vector3d(), m_vboHalleyEllipse);
 
        m_bResetPlanet = false;
     }
@@ -501,13 +525,25 @@ void gl3dSolarSys::makePlanets()
     m_Planet[p].setPosition(Distance*cos(angle), Distance*sin(angle));
     m_Planet[p].setCircularVelocity();
 
-    m_Halley.m_Name = "Halley";
-    m_Halley.m_Color = Qt::gray;
+    m_Pluto.m_Name = "Pluto";
+    m_Pluto.m_Color = QColor(137,137,137);
+    m_Pluto.m_Radius = 1.188 * 1.e6;
+    m_Pluto.m_a = 39.482 * 1.495978707e11; // semi-major axis length
+    m_Pluto.m_e = 0.2488; //excentricity
+    m_Pluto.m_i = 17.16;
+    m_Pluto.m_omega = 113.834;
+    Distance = m_Pluto.m_a*(m_Pluto.m_e+1.0); // apogee distance to Sun
+    m_Pluto.setPosition(Distance, 0.0);
+    v = sqrt(GRAVITY*Planet::s_CentralMass*(2.0/m_Pluto.distance()-1.0/m_Pluto.m_a)); // vis-viva equation
+    m_Pluto.setVelocity(0,v);
+    m_Pluto.setRefEnergy();
 
+    m_Halley.m_Name = "Halley";
+    m_Halley.m_Color = Qt::lightGray;
     m_Halley.m_Radius = 1.0; // whatever
     m_Halley.m_a = 17.834 * 1.495978707e11; // semi-major axis length
     m_Halley.m_e = 0.96714; //excentricity
-    m_Halley.m_i = -180.0f+162.26f;
+    m_Halley.m_i = -180.0+162.26;
     m_Halley.m_omega = 111.33;
     Distance = m_Halley.m_a*(m_Halley.m_e+1.0); // apogee distance to Sun
     m_Halley.setPosition(Distance, 0.0);
@@ -516,6 +552,66 @@ void gl3dSolarSys::makePlanets()
     // or clockwise from above the Sun's north pole
     m_Halley.setVelocity(0,-v);
     m_Halley.setRefEnergy();
+}
+
+
+void gl3dSolarSys::makeStars()
+{
+    QFile XFile(":/textfiles/cns3-gliese.txt");
+
+    if(!XFile.open(QIODevice::ReadOnly)) return;
+    m_Stars.clear();
+    m_Stars.reserve(3810);
+
+    QTextStream stream(&XFile);
+    stream.readLine(); //field names
+    int iGal=0;
+    double refdist = 0.0001;
+    QStringList nbrs;
+    double tau(0), dist(0);
+    while(!stream.atEnd())
+    {
+        QString line = stream.readLine().simplified();
+        QStringList fields = line.split("|");
+        if(fields.count()>=4)
+        {
+            m_Stars.append(Star());
+            Star &star = m_Stars.last();
+            star.m_Name = fields.at(1).simplified();
+            nbrs = fields.at(2).simplified().split(" ");
+            star.m_Ra  = nbrs.at(0).toDouble()/24.0*360.0;
+            star.m_Ra += nbrs.at(1).toDouble();
+            star.m_Ra += nbrs.at(2).toDouble()/60.0;
+
+            nbrs = fields.at(3).simplified().split(" ");
+            star.m_Da  = nbrs.at(0).toDouble();
+            star.m_Da += nbrs.at(1).toDouble()/60.0;
+            star.m_Da += nbrs.at(2).toDouble()/60.0/60.0;
+
+            star.m_Magnitude = fields.at(4).toDouble();
+
+            dist = 1000.0/fields.at(6).toDouble(); // To calculate the distance D in parsecs based on this value, D = 1000/RP.
+            dist *= 3.0857e16; // to meters
+            // spherical to cartesian
+            star.m_Position.x = dist * cos(star.m_Da*PI/180.0)*cos(star.m_Ra*PI/180.0);
+            star.m_Position.y = dist * cos(star.m_Da*PI/180.0)*sin(star.m_Ra*PI/180.0);
+            star.m_Position.z = dist * sin(star.m_Da*PI/180.0);
+
+            tau = (fields.at(7).toDouble()+1.0)/4.0;
+            star.m_Color.setBlueF(glGetRed(tau));  // invert red and blue
+            star.m_Color.setGreenF(glGetGreen(tau));
+            star.m_Color.setRedF(glGetBlue(tau));
+
+            refdist = std::max(refdist, star.m_Position.norm());
+
+            iGal++;
+        }
+    }
+    m_Stars.squeeze();
+
+    m_bResetStars = true;
+    setReferenceLength(refdist);
+    reset3dScale();
 }
 
 
@@ -534,7 +630,9 @@ void gl3dSolarSys::onMovePlanets()
     {
         m_Planet[p].rk4_step(dt, nSteps);
     }
-//    m_Moon.rk4_step(dt, nSteps);
+
+
+    m_Pluto.rk4_step(dt, nSteps);
     m_Halley.rk4_step(dt, nSteps);
 
 

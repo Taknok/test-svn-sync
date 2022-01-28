@@ -35,7 +35,6 @@ class gl3dLorenz2 : public gl3dTestGLView
 
     private slots:
         void onRestart();
-        void onMoveThem();
         void onParticleSize();
 
     private:

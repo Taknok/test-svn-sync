@@ -52,7 +52,6 @@ gl3dLorenz2::gl3dLorenz2(QWidget *pParent) : gl3dTestGLView(pParent)
     m_stackInterval.resize(50);
     m_stackInterval.fill(0);
 
-    connect(&m_Timer, SIGNAL(timeout()), SLOT(onMoveThem()));
 
     QSurfaceFormat Surfformat;
     Surfformat.setProfile(QSurfaceFormat::CoreProfile);
@@ -182,9 +181,9 @@ gl3dLorenz2::gl3dLorenz2(QWidget *pParent) : gl3dTestGLView(pParent)
 
     setReferenceLength(100.0);
 
-    int period = int(1000.0/QGuiApplication::primaryScreen()->refreshRate());
-
-    m_Timer.start(period);
+//    int period = int(1000.0/QGuiApplication::primaryScreen()->refreshRate());
+    m_Timer.start(0);
+    connect(&m_Timer, SIGNAL(timeout()), SLOT(update()));
 }
 
 
@@ -288,12 +287,6 @@ void gl3dLorenz2::onRestart()
     s_Size = m_pdeParticleSize->value();
 
     m_bResetParticles = true;
-}
-
-
-void gl3dLorenz2::onMoveThem()
-{
-    update();
 }
 
 

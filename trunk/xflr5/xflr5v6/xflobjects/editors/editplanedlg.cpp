@@ -248,11 +248,11 @@ void EditPlaneDlg::setupLayout()
 
     QItemSelectionModel *selectionModel = new QItemSelectionModel(m_pModel);
     m_pStruct->setSelectionModel(selectionModel);
-    connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
+    connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(onItemClicked(QModelIndex)));
 
     m_pDelegate = new EditObjectDelegate(this);
     m_pStruct->setItemDelegate(m_pDelegate);
-    connect(m_pDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onEndEdit()));
+    connect(m_pDelegate,  SIGNAL(closeEditor(QWidget*)), SLOT(onEndEdit()));
 
     QSizePolicy szPolicyMinimumExpanding;
     szPolicyMinimumExpanding.setHorizontalPolicy(QSizePolicy::MinimumExpanding);
@@ -388,8 +388,6 @@ void EditPlaneDlg::setupLayout()
                 }
                 p3DCtrlBox->setLayout(pThreeDViewControlsLayout);
             }
-            m_pglPlaneView->sizePolicy().setVerticalStretch(5);
-            p3DCtrlBox->sizePolicy().setVerticalStretch(1);
 
             m_pRightSideSplitter->addWidget(m_pglPlaneView);
             m_pRightSideSplitter->addWidget(p3DCtrlBox);
@@ -419,9 +417,6 @@ void EditPlaneDlg::setupLayout()
                 }
                 pCommandWidget->setLayout(pCommandLayout);
             }
-
-            m_pStruct->sizePolicy().setVerticalStretch(17);
-            pCommandWidget->sizePolicy().setVerticalStretch(1);
 
             m_pLeftSideSplitter->addWidget(m_pStruct);
             m_pLeftSideSplitter->addWidget(pCommandWidget);
@@ -1329,8 +1324,6 @@ void EditPlaneDlg::readWingTree(Wing *pWing, Vector3d &wingLE, double &tiltAngle
 }
 
 
-
-
 void EditPlaneDlg::readBodyTree(Body *pBody, QModelIndex indexLevel)
 {
     if(!pBody) return;
@@ -1408,7 +1401,7 @@ void EditPlaneDlg::readBodyTree(Body *pBody, QModelIndex indexLevel)
                     value = subIndex.sibling(subIndex.row(),2).data().toString();
                     dataIndex = subIndex.sibling(subIndex.row(),2);
 
-                    int idx = field.right(field.length()-22).toInt()-1;
+                    int idx = field.rightRef(field.length()-22).toInt()-1;
                     pBody->m_hPanels[idx] =  dataIndex.data().toInt();
 
                     subIndex = subIndex.sibling(subIndex.row()+1,0);
@@ -1626,7 +1619,7 @@ void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
 
         if(object.indexOf("Section_", 0, Qt::CaseInsensitive)>=0)
         {
-            m_iActiveSection = object.right(object.length()-8).toInt() -1;
+            m_iActiveSection = object.rightRef(object.length()-8).toInt() -1;
 
             //get the wing identification
             indexLevel = indexLevel.parent();
@@ -1650,7 +1643,7 @@ void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
         else if(object.indexOf("Frame_", 0, Qt::CaseInsensitive)>=0)
         {
             m_enumActiveObject = BODY;
-            m_iActiveFrame = object.right(object.length()-6).toInt() -1;
+            m_iActiveFrame = object.rightRef(object.length()-6).toInt() -1;
             m_iActiveSection = -1;
             m_iActivePointMass = -1;
             m_pglPlaneView->m_bResetglSectionHighlight = true;
@@ -1658,7 +1651,7 @@ void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
         }
         else if(object.indexOf("Point_Mass_", 0, Qt::CaseInsensitive)>=0)
         {
-            m_iActivePointMass = object.right(object.length()-11).toInt() -1;
+            m_iActivePointMass = object.rightRef(object.length()-11).toInt() -1;
             m_iActiveSection = -1;
             m_iActiveFrame   = -1;
             //the parent object may be a wing, a body or the plane itself
@@ -2067,7 +2060,7 @@ void EditPlaneDlg::paintPlaneLegend(QPainter &painter, Plane *pPlane, QRect draw
 
     str1 = QString(tr("TailVolume     =")+"%1").arg(pPlane->tailVolume(), 10,'f',3);
     painter.drawText(LeftPos, ZPos+D, str1);
-    D+=dheight;
+//    D+=dheight;
 
     painter.restore();
 }

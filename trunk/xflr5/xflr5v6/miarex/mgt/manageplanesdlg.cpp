@@ -49,10 +49,10 @@ ManagePlanesDlg::ManagePlanesDlg(QWidget *pParent) : QDialog(pParent)
 
     setupLayout();
 
-    connect(m_ppbDelete, SIGNAL(clicked()),this, SLOT(onDelete()));
-    connect(m_ppbRename, SIGNAL(clicked()),this, SLOT(onRename()));
-    connect(m_ptvPlanes, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(onDoubleClickTable(const QModelIndex &)));
-    connect(m_pteDescription, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
+    connect(m_ppbDelete,      SIGNAL(clicked()),                         SLOT(onDelete()));
+    connect(m_ppbRename,      SIGNAL(clicked()),                         SLOT(onRename()));
+    connect(m_ptvPlanes,      SIGNAL(doubleClicked(QModelIndex const&)), SLOT(onDoubleClickTable(QModelIndex const&)));
+    connect(m_pteDescription, SIGNAL(textChanged()),                     SLOT(onDescriptionChanged()));
 }
 
 

@@ -11190,7 +11190,8 @@ void XFoil::qccalc(int ispec,double *alfa, double *cl, double *cm,
         cpcom1 = cpinc1 / (beta + bfac*cpinc1);
         cpc_q1 = (1.0 - bfac*cpcom1)/(beta + bfac*cpinc1) * cpi_q1;
         cpc_a1 = cpc_q1*qc_a[ic];
-        for(ic=1;ic<= nc;ic++){
+        for(ic=1; ic<=nc; ic++)
+        {
             icp = ic+1;
             if(ic==nc) icp = 1;
 
