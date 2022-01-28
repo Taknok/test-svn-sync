@@ -1800,14 +1800,13 @@ int Body::readValues(QString line, double &x, double &y, double &z) const
  */
 bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &errorMessage)
 {
-    int res=0, Line=0, NSideLines=0;
+    int res(0), Line(0), NSideLines(0);
     QString strong;
-    bool bRead, bOK;
-    double xo,yo,zo;
-    xo = yo = zo = 0.0;
+    bool bRead(false), bOK(false);
+    double xo(0), yo(0), zo(0);
 
     Line = 0;
-    bRead  = xfl::readAVLString(inStream, Line, strong);
+    xfl::readAVLString(inStream, Line, strong);
     m_Name = strong.trimmed();
     m_SplineSurface.clearFrames();
     m_xPanels.clear();

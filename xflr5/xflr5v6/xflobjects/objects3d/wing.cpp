@@ -500,7 +500,7 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
     for (int j=0; j<m_Surface.size(); j++)
     {
         Surface const &surf = m_Surface.at(j);
-        LocalSpan = surf.m_Length/double(NYSTATIONS);
+//        LocalSpan = surf.m_Length/double(NYSTATIONS);
         for (int k=0; k<NYSTATIONS; k++)
         {
             tau  = double(k)     / double(NYSTATIONS);
@@ -1725,15 +1725,13 @@ void Wing::panelComputeViscous(double QInf, const WPolar *pWPolar, double &WingV
 {
     QString string, strong, strLength;
 
-    bool bPointOutRe, bPointOutCl, bOutRe, bError;
+    bool bPointOutRe(false), bPointOutCl(false), bOutRe(false), bError(false);
     double tau = 0.0;
     Vector3d PtC4;
 
     OutString.clear();
 
     WingVDrag = 0.0;
-
-    bOutRe = bError = bPointOutRe = bPointOutCl = false;
 
     strLength = "m";
 
@@ -3121,27 +3119,28 @@ Foil* Wing::foil(QString const &strFoilName)
 */
 double Wing::getInterpolatedVariable(int nVar, Foil *pFoil0, Foil *pFoil1, double Re, double Cl, double Tau, bool &bOutRe, bool &bError)
 {
-    bool IsOutRe = false;
-    bool IsError  = false;
+    bool IsOutRe(false);
+    bool IsError(false);
     bOutRe = false;
     bError = false;
-    double Var0, Var1;
+    double Var0(0), Var1(0);
+
     if(!pFoil0)
     {
         Cl = 0.0;
         Var0 = 0.0;
     }
-    else Var0 = getPlrPointFromCl(pFoil0, Re, Cl,nVar, IsOutRe, IsError);
+    else Var0 = getPlrPointFromCl(pFoil0, Re, Cl, nVar, IsOutRe, IsError);
     if(IsOutRe) bOutRe = true;
     if(IsError) bError = true;
 
 
     if(!pFoil1)
     {
-        Cl = 0.0;
+//        Cl = 0.0;
         Var1 = 0.0;
     }
-    else Var1 = getPlrPointFromCl(pFoil1, Re, Cl,nVar, IsOutRe, IsError);
+    else Var1 = getPlrPointFromCl(pFoil1, Re, Cl, nVar, IsOutRe, IsError);
     if(IsOutRe) bOutRe = true;
     if(IsError) bError = true;
 
@@ -3150,8 +3149,6 @@ double Wing::getInterpolatedVariable(int nVar, Foil *pFoil0, Foil *pFoil1, doubl
 
     return ((1-Tau) * Var0 + Tau * Var1);
 }
-
-
 
 
 /**
@@ -3181,9 +3178,9 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 */
     double Clmin(0), Clmax(0);
     Polar *pPolar(nullptr);
-    double Var1=0, Var2=0, u(0), dist(0);
-    int pt=0;
-    int n=0;
+    double Var1(0), Var2(0), u(0), dist(0);
+    int pt(0);
+    int n(0);
 
     bOutRe = false;
     bError = false;

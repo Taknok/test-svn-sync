@@ -245,12 +245,12 @@ void EditBodyDlg::setupLayout()
 
     QItemSelectionModel *selectionModel = new QItemSelectionModel(m_pModel);
     m_pStruct->setSelectionModel(selectionModel);
-    connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
+    connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(onItemClicked(QModelIndex)));
 
 
     m_pDelegate = new EditObjectDelegate(this);
     m_pStruct->setItemDelegate(m_pDelegate);
-    connect(m_pDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onRedraw()));
+    connect(m_pDelegate,  SIGNAL(closeEditor(QWidget*)), SLOT(onRedraw()));
 
 
     QSizePolicy szPolicyMinimumExpanding;
@@ -375,7 +375,6 @@ void EditBodyDlg::setupLayout()
             }
             m_pBodyLineWidget = new BodyLineWt(this);
             m_pBodyLineWidget->setSizePolicy(szPolicyMaximum);
-            m_pBodyLineWidget->sizePolicy().setVerticalStretch(2);
 
             m_pglBodyView = new gl3dBodyView(this);
             m_pglBodyView->m_bOutline    = s_bOutline;
@@ -385,8 +384,6 @@ void EditBodyDlg::setupLayout()
             m_pglBodyView->m_bShowMasses = s_bShowMasses;
             m_pglBodyView->m_bFoilNames  = s_bFoilNames;
 
-            m_pglBodyView->sizePolicy().setVerticalStretch(5);
-            p3DCtrlBox->sizePolicy().setVerticalStretch(2);
 
             m_pMiddleSplitter->addWidget(m_pBodyLineWidget);
             m_pMiddleSplitter->addWidget(m_pglBodyView);
@@ -898,7 +895,7 @@ void EditBodyDlg::readBodyTree(QModelIndex indexLevel)
                     value = subIndex.sibling(subIndex.row(),2).data().toString();
                     dataIndex = subIndex.sibling(subIndex.row(),2);
 
-                    int idx = field.right(field.length()-22).toInt()-1;
+                    int idx = field.rightRef(field.length()-22).toInt()-1;
                     m_pBody->m_hPanels[idx] =  dataIndex.data().toInt();
 
                     subIndex = subIndex.sibling(subIndex.row()+1,0);
@@ -921,6 +918,8 @@ void EditBodyDlg::readBodyTree(QModelIndex indexLevel)
                             readBodyFrameTree(pFrame, pSubItem->child(0,0)->index());
                             m_pBody->m_SplineSurface.appendFrame(pFrame);
                         }
+                        else
+                            delete pFrame;
                     }
 
                     subIndex = subIndex.sibling(subIndex.row()+1,0);
@@ -1122,7 +1121,7 @@ void EditBodyDlg::identifySelection(const QModelIndex &indexSel)
 
         if(object.indexOf("Frame_", 0, Qt::CaseInsensitive)>=0)
         {
-            setActiveFrame(object.right(object.length()-6).toInt() -1);
+            setActiveFrame(object.rightRef(object.length()-6).toInt() -1);
             //            Frame::setSelected(-1);
             m_pglBodyView->m_bResetglFrameHighlight = true;
             m_iActivePointMass = -1;
@@ -1130,13 +1129,13 @@ void EditBodyDlg::identifySelection(const QModelIndex &indexSel)
         }
         else if(object.indexOf("Point_Mass_", 0, Qt::CaseInsensitive)>=0)
         {
-            m_iActivePointMass = object.right(object.length()-11).toInt() -1;
+            m_iActivePointMass = object.rightRef(object.length()-11).toInt() -1;
             setActiveFrame(-1);
             return;
         }
         else if(object.indexOf("Point", 0, Qt::CaseInsensitive)==0)
         {
-            Frame::setSelected(object.right(object.length()-6).toInt() -1);
+            Frame::setSelected(object.rightRef(object.length()-6).toInt() -1);
             //identify the parent Frame object
 
             indexLevel = indexLevel.parent();

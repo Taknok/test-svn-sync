@@ -64,7 +64,6 @@ XFoilTask::XFoilTask(QObject *pParent)
 
 
 /**
-* Implements the run method of the QRunnable virtual base method
 * Asssumes that XFoil has been initialized with Foil and Polar
 */
 void XFoilTask::run()

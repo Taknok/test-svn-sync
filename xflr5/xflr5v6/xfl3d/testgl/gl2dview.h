@@ -57,7 +57,7 @@ class gl2dView : public QOpenGLWidget
         void onDynamicIncrement();
 
     signals:
-        void ready2d() const;
+        void ready2d();
 
     protected:
         QOpenGLVertexArrayObject m_vao; /** generic vao required for the core profile >3.x*/

@@ -46,7 +46,7 @@ class gl3dSolarSys : public gl3dTestGLView
         void keyPressEvent(QKeyEvent *pEvent) override;
 
         void makePlanets();
-
+        void makeStars();
 
     private:
         QDate m_Elapsed;
@@ -56,6 +56,7 @@ class gl3dSolarSys : public gl3dTestGLView
 
         QVector<Planet> m_Planet;
 
+        Planet m_Pluto;
         Planet m_Halley;
 
         QTimer m_Timer;
@@ -69,6 +70,7 @@ class gl3dSolarSys : public gl3dTestGLView
         QVector<QOpenGLBuffer> m_vboCircle;
         QOpenGLBuffer m_vboSaturnDisk;
         QOpenGLBuffer m_vboHalleyEllipse;
+        QOpenGLBuffer m_vboPlutoEllipse;
         QOpenGLBuffer m_vboStars;
 
         Light m_RefLight;
@@ -76,5 +78,8 @@ class gl3dSolarSys : public gl3dTestGLView
         static double s_dt;
         static double s_PlanetSize;
 };
+
+
+
 
 

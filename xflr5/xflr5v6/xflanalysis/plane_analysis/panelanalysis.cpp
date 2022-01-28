@@ -4385,7 +4385,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double const *Gamma, double 
  * The message is read and cleared from the calling dialog class.
  * @param str the message to output
 */
-void PanelAnalysis::traceLog(QString str) const
+void PanelAnalysis::traceLog(QString str)
 {
     emit outputMsg(str);
 }

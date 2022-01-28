@@ -113,7 +113,7 @@ class PanelAnalysis : QObject
         void rotateGeomY(double Alpha, Vector3d const &P, int NXWakePanels);
         void rotateGeomZ(double Beta, Vector3d const &P, int NXWakePanels);
 
-        void traceLog(QString str) const;
+        void traceLog(QString str);
 
         void setControlPositions(double t, int &NCtrls, QString &out, bool bBCOnly);
 
@@ -136,7 +136,7 @@ class PanelAnalysis : QObject
         static void setMaxWakeIter(int nMaxWakeIter) {s_MaxWakeIter = nMaxWakeIter;}
 
     signals:
-        void outputMsg(QString msg) const;
+        void outputMsg(QString msg);
 
     public slots:
         void onCancel();

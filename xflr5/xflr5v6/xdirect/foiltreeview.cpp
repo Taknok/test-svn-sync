@@ -418,7 +418,7 @@ void FoilTreeView::onItemClicked(const QModelIndex &index)
             Objects2d::setPolarStyle(pPolar, ls, pLineMenu->styleChanged(), pLineMenu->widthChanged(), pLineMenu->colorChanged(), pLineMenu->pointsChanged());
             //			pItem->setData(QVariant::fromValue(ls), Qt::DisplayRole);
             setCurveParams();
-            emit(s_pXDirect->projectModified());
+            emit s_pXDirect->projectModified();
         }
         else if(pFoil)
         {

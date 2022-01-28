@@ -330,7 +330,7 @@ bool PlaneTask::initializePanels()
         }
 
 //        Trace("");
-        memsize += MatrixSize;
+//        memsize += MatrixSize;
     }
 
     // all set to create the panels

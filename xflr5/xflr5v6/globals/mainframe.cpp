@@ -1027,7 +1027,7 @@ void MainFrame::createMenus()
 
     m_pGraphMenu = menuBar()->addMenu(tr("Graphs"));
     {
-        for(int ig=0; ig<MAXGRAPHS; ig++)
+        for(int ig=0; ig<MAXGRAPHS-1; ig++)
             m_pGraphMenu->addAction(m_pSingleGraph[ig]);
         m_pGraphMenu->addSeparator();
         m_pGraphMenu->addAction(m_pTwoGraphs);
@@ -4048,18 +4048,21 @@ void MainFrame::onXDirect()
     m_pdwXDirect->show();
     m_pdwFoilTreeView->show();
 
-    m_pXDirect->setFoil();
-    m_pXDirect->m_pFoilTreeView->fillModelView();
-    m_pXDirect->m_pFoilTreeView->selectObjects();
-    m_pXDirect->m_pFoilTreeView->setObjectProperties();
+    if(m_pXDirect)
+    {
+        m_pXDirect->setFoil();
+        m_pXDirect->m_pFoilTreeView->fillModelView();
+        m_pXDirect->m_pFoilTreeView->selectObjects();
+        m_pXDirect->m_pFoilTreeView->setObjectProperties();
 
-    setMainFrameCentralWidget();
-    setMenus();
-    checkGraphActions();
+        setMainFrameCentralWidget();
+        setMenus();
+        checkGraphActions();
 
-    m_pXDirect->setControls();
-    m_pXDirect->setFoilScale();
-    m_pXDirect->updateView();
+        m_pXDirect->setControls();
+        m_pXDirect->setFoilScale();
+        m_pXDirect->updateView();
+    }
 }
 
 
@@ -4074,20 +4077,25 @@ void MainFrame::onMiarex()
     m_pdwMiarex->show();
     m_pdwPlaneTreeView->show();
 
-    m_pMiarex->m_pPlaneTreeView->fillModelView();
-    m_pMiarex->setPlane();
-    m_pMiarex->setWPolar();
-    m_pMiarex->setPlaneOpp(nullptr);
-    m_pMiarex->updateTreeView();
-    m_pMiarex->m_pPlaneTreeView->selectObjects();
-    m_pMiarex->m_pPlaneTreeView->setObjectProperties();
+    if(m_pMiarex && m_pMiarex->m_pPlaneTreeView)
+        m_pMiarex->m_pPlaneTreeView->fillModelView();
 
-    setMenus();
-    setMainFrameCentralWidget();
-    checkGraphActions();
-    m_pMiarex->setControls();
+    if(m_pMiarex)
+    {
+        m_pMiarex->setPlane();
+        m_pMiarex->setWPolar();
+        m_pMiarex->setPlaneOpp(nullptr);
+        m_pMiarex->updateTreeView();
+        m_pMiarex->m_pPlaneTreeView->selectObjects();
+        m_pMiarex->m_pPlaneTreeView->setObjectProperties();
 
-    m_pMiarex->setAnalysisParams();
+        setMenus();
+        setMainFrameCentralWidget();
+        checkGraphActions();
+        m_pMiarex->setControls();
+        m_pMiarex->setAnalysisParams();
+    }
+
     updateView();
 }
 
@@ -4124,12 +4132,15 @@ void MainFrame::onXInverseMixed()
     m_ptbXInverse->show();
     m_pdwXInverse->show();
 
-    m_pXInverse->m_bFullInverse = false;
-    setMainFrameCentralWidget();
-    setMenus();
-    checkGraphActions();
-    m_pXInverse->setParams();
-    m_pXInverse->updateView();
+    if(m_pXInverse)
+    {
+        m_pXInverse->m_bFullInverse = false;
+        setMainFrameCentralWidget();
+        setMenus();
+        checkGraphActions();
+        m_pXInverse->setParams();
+        m_pXInverse->updateView();
+    }
 }
 
 
@@ -5961,8 +5972,7 @@ void MainFrame::showEvent(QShowEvent *)
     // the foil operating point view
     m_pXDirect->m_CpGraph.initializeGraph(m_pswCentralWidget->width(), m_pswCentralWidget->height());
 
-
-    switch(m_iApp)
+/*    switch(m_iApp)
     {
         case xfl::NOAPP: break;
         case xfl::DIRECTDESIGN:
@@ -5983,12 +5993,11 @@ void MainFrame::showEvent(QShowEvent *)
         }
         case xfl::MIAREX:
         {
-            onXDirect();
             onMiarex();
             m_pMiarex->setScale();
             break;
         }
-    }
+    }*/
 }
 
 

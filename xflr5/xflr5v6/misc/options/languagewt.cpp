@@ -36,7 +36,7 @@
 LanguageWt::LanguageWt(QWidget *pParent): QWidget(pParent)
 {
     setWindowTitle(tr("Language settings"));
-    QString LanguageName = tr("English");// will be translated in the ts & qm files and this will be used to fill the QListWidget
+//    QString LanguageName = tr("English");// will be translated in the ts & qm files and this will be used to fill the QListWidget
     m_bChanged = false;
     setupLayout();
 }

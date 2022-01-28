@@ -206,13 +206,13 @@ class MainFrame : public QMainWindow
 
     private:
 
-        AFoil *m_pAFoil;     /**< A void pointer to the instance of the QAFoil application. The pointer will be cast to the QAFoil type at runtime. This is necessary to prevent loop includes of header files. */
-        Miarex *m_pMiarex;    /**< A void pointer to the instance of the QMiarex application. The pointer will be cast to the QMiarex type at runtime. This is necessary to prevent loop includes of header files. */
-        XInverse *m_pXInverse;  /**< A void pointer to the instance of the QXInverse application. The pointer will be cast to the QXInverse type at runtime. This is necessary to prevent loop includes of header files. */
-        XDirect *m_pXDirect;   /**< A void pointer to the instance of the QXDirect application. The pointer will be cast to the QXDirect type at runtime. This is necessary to prevent loop includes of header files. */
-        StabViewDlg *m_pStabView;  /** < A void pointer to the instance of the StabViewDlg window. */
+        AFoil *m_pAFoil=nullptr;     /**< A void pointer to the instance of the QAFoil application. The pointer will be cast to the QAFoil type at runtime. This is necessary to prevent loop includes of header files. */
+        Miarex *m_pMiarex=nullptr;    /**< A void pointer to the instance of the QMiarex application. The pointer will be cast to the QMiarex type at runtime. This is necessary to prevent loop includes of header files. */
+        XInverse *m_pXInverse=nullptr;  /**< A void pointer to the instance of the QXInverse application. The pointer will be cast to the QXInverse type at runtime. This is necessary to prevent loop includes of header files. */
+        XDirect *m_pXDirect=nullptr;   /**< A void pointer to the instance of the QXDirect application. The pointer will be cast to the QXDirect type at runtime. This is necessary to prevent loop includes of header files. */
+        StabViewDlg *m_pStabView=nullptr;  /** < A void pointer to the instance of the StabViewDlg window. */
 
-        GL3DScales *m_pGL3DScales;
+        GL3DScales *m_pGL3DScales=nullptr;
 
         static QPointer<MainFrame> _self; /**< necessary for MacOS >*/
 
