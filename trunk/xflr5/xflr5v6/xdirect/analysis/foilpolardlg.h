@@ -63,7 +63,7 @@ class FoilPolarDlg : public QDialog
         void onPolarType();
         void onNameChanged();
         void editingFinished();
-        void onFluiUnit();
+        void onFluidUnit();
         void onCalcReynolds();
         void onButton(QAbstractButton *pButton);
 

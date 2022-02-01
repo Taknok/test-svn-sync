@@ -94,9 +94,9 @@ gl3dLorenz::gl3dLorenz(QWidget *pParent) : gl3dTestGLView (pParent)
                     m_plbStyle->setPalette(palette);
                     connect(m_plbStyle, SIGNAL(clickedLB(LineStyle)), SLOT(onLineStyle(LineStyle)));
 
-                    QLabel *pLabSigma     = new QLabel(QString(QChar(963))+"=");    pLabSigma->setPalette(palette);
-                    QLabel *pLabRho       = new QLabel(QString(QChar(961))+"=");    pLabRho->setPalette(palette);
-                    QLabel *pLabBeta      = new QLabel(QString(QChar(946))+"=");    pLabBeta->setPalette(palette);
+                    QLabel *pLabSigma     = new QLabel("&sigma;=");    pLabSigma->setPalette(palette);   pLabSigma->setTextFormat(Qt::RichText);
+                    QLabel *pLabRho       = new QLabel("&rho;=");      pLabRho->setPalette(palette);     pLabRho->setTextFormat(Qt::RichText);
+                    QLabel *pLabBeta      = new QLabel("&beta;=");     pLabBeta->setPalette(palette);    pLabBeta->setTextFormat(Qt::RichText);
                     QLabel *pLabX0        = new QLabel("X<sub>0</sub>=");           pLabX0->setPalette(palette);
                     QLabel *pLabY0        = new QLabel("Y<sub>0</sub>=");           pLabY0->setPalette(palette);
                     QLabel *pLabZ0        = new QLabel("Z<sub>0</sub>=");           pLabZ0->setPalette(palette);
