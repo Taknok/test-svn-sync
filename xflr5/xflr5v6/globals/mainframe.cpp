@@ -2912,14 +2912,6 @@ void MainFrame::keyPressEvent(QKeyEvent *pEvent)
                 if(bCtrl) onMiarex();
                 break;
             }
-                /*            case Qt::Key_7:
-            {
-                if(bCtrl)
-                {
-                    onloadLastProject();
-                }
-                break;
-            }*/
             case Qt::Key_8:
             {
                 break;
@@ -4068,6 +4060,7 @@ void MainFrame::onXDirect()
 
 void MainFrame::onMiarex()
 {
+    qDebug()<<"onmiarex";
     if(m_pXDirect) m_pXDirect->stopAnimate();
     m_iApp = xfl::MIAREX;
 
@@ -5556,16 +5549,6 @@ void MainFrame::setupDataDir()
     s_TranslationDir.setPath("/usr/local/share/xflr5/translations");
     s_StylesheetDir.setPath("/usr/local/share/xflr5/qss");
 #endif
-
-/*    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
-    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
-    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
-    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
-    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
-    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::DataLocation);
-    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
-    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
-    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::AppLocalDataLocation);*/
 }
 
 
@@ -5812,6 +5795,7 @@ void MainFrame::onLoadLastProject()
     if(!m_RecentFiles.size()) return;
 
     xfl::enumApp iApp = loadXFLR5File(m_RecentFiles.at(0));
+
     if(m_iApp==xfl::NOAPP) m_iApp = iApp;
     if(m_iApp==xfl::XFOILANALYSIS)
     {
@@ -5972,7 +5956,7 @@ void MainFrame::showEvent(QShowEvent *)
     // the foil operating point view
     m_pXDirect->m_CpGraph.initializeGraph(m_pswCentralWidget->width(), m_pswCentralWidget->height());
 
-/*    switch(m_iApp)
+    switch(m_iApp)
     {
         case xfl::NOAPP: break;
         case xfl::DIRECTDESIGN:
@@ -5997,7 +5981,7 @@ void MainFrame::showEvent(QShowEvent *)
             m_pMiarex->setScale();
             break;
         }
-    }*/
+    }
 }
 
 

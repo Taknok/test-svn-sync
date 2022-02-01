@@ -107,7 +107,7 @@ void StabPolarDlg::connectSignals()
     connect(m_pdeRefSpan,          SIGNAL(valueChanged()),        SLOT(onEditingFinished()));
     connect(m_pdeRefChord,         SIGNAL(valueChanged()),        SLOT(onEditingFinished()));
 
-    connect(m_pleWPolarName,       SIGNAL(valueChanged()),        SLOT(onWPolarName()));
+    connect(m_pleWPolarName,       SIGNAL(editingFinished()),     SLOT(onWPolarName()));
     connect(m_pchAutoName,         SIGNAL(toggled(bool)),         SLOT(onAutoName()));
 
     connect(m_pchAutoPlaneInertia, SIGNAL(clicked(bool)),         SLOT(onAutoInertia(bool)));
@@ -559,15 +559,15 @@ void StabPolarDlg::onUnit()
     {
         m_UnitType   = 1;
         m_pdeViscosity->setValue(s_StabWPolar.viscosity());
-        m_plabDensityUnit->setText("kg/m3");
-        m_plabViscosityUnit->setText("m"+QString::fromUtf8("²")+"/s");
+        m_plabDensityUnit->setText("kg/m<sup>3</sup>");
+        m_plabViscosityUnit->setText("m<sup>2</sup>/s");
     }
     else
     {
         m_UnitType   = 2;
         m_pdeViscosity->setValue(s_StabWPolar.viscosity()* 10.7182881);
-        m_plabDensityUnit->setText("slugs/ft3");
-        m_plabViscosityUnit->setText("ft"+QString::fromUtf8("²")+"/s");
+        m_plabDensityUnit->setText("slugs/ft<sup>3</sup>");
+        m_plabViscosityUnit->setText("ft<sup>2</sup>/s");
     }
     setDensity();
 }
@@ -763,7 +763,6 @@ void StabPolarDlg::setupLayout()
     Units::getMassUnitLabel(strMass);
     strInertia = strMass+"."+strLen+QString::fromUtf8("²");
 
-    QFont symbolFont("Symbol");
     QFont italicFnt;
     italicFnt.setItalic(true);
 
@@ -835,10 +834,8 @@ void StabPolarDlg::setupLayout()
         {
             QGridLayout *pAttitudeLayout = new QGridLayout;
             {
-                QLabel *lab2 = new QLabel(tr("b ="));
-                QLabel *lab3 = new QLabel(tr("f ="));
-                lab2->setFont(QFont("Symbol"));
-                lab3->setFont(QFont("Symbol"));
+                QLabel *lab2 = new QLabel("<p>&beta; =</p>");
+                QLabel *lab3 = new QLabel("<p>&phi; =</p>");
                 lab2->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
                 lab3->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
                 QLabel *lab4 = new QLabel(QChar(0260));
@@ -1004,37 +1001,34 @@ void StabPolarDlg::setupLayout()
             {
                 QHBoxLayout *pAeroUnitLayout = new QHBoxLayout;
                 {
-                    QLabel *lab9 = new QLabel(tr("Unit"));
-                    lab9->setAlignment(Qt::AlignRight | Qt::AlignCenter);
+                    QLabel *plab9 = new QLabel(tr("Unit"));
+                    plab9->setAlignment(Qt::AlignRight | Qt::AlignCenter);
                     m_prbUnit1 = new QRadioButton(tr("International"));
                     m_prbUnit2 = new QRadioButton(tr("Imperial"));
-                    pAeroUnitLayout->addWidget(lab9);
+                    pAeroUnitLayout->addWidget(plab9);
                     pAeroUnitLayout->addWidget(m_prbUnit1);
                     pAeroUnitLayout->addWidget(m_prbUnit2);
                     pAeroUnitLayout->addStretch();
                 }
                 QGridLayout *pAeroDataValuesLayout = new QGridLayout;
                 {
-                    m_plabRho = new QLabel("r =");
-                    m_pdeDensity = new DoubleEdit(1.225,3);
-                    m_plabDensityUnit = new QLabel("kg/m3");
-                    m_plabNu = new QLabel("n =");
+                    m_plabRho = new QLabel("<p>&rho; =</p>");
+                    m_pdeDensity = new DoubleEdit(1.225);
+                    m_plabDensityUnit = new QLabel("kg/m<sup>3</sip>");
+                    m_plabNu = new QLabel("<p>&nu; =</p>");
                     m_plabRho->setAlignment(Qt::AlignRight | Qt::AlignCenter);
                     m_plabNu->setAlignment(Qt::AlignRight | Qt::AlignCenter);
-                    m_pdeViscosity = new DoubleEdit(1.500e-5,3);
-                    m_plabViscosityUnit = new QLabel("m2/s");
-                    m_plabRho->setFont(symbolFont);
-                    m_plabNu->setFont(symbolFont);
-                    m_pdeDensity->setDigits(5);
-                    m_pdeViscosity->setDigits(3);
+                    m_pdeViscosity = new DoubleEdit(1.500e-5);
+                    m_plabViscosityUnit = new QLabel("m<sup>2</sup>/s");
+
                     m_pdeDensity->setMin(0.0);
                     m_pdeViscosity->setMin(0.0);
-                    pAeroDataValuesLayout->addWidget(m_plabRho,1,1);
-                    pAeroDataValuesLayout->addWidget(m_pdeDensity,1,2);
-                    pAeroDataValuesLayout->addWidget(m_plabDensityUnit,1,3);
-                    pAeroDataValuesLayout->addWidget(m_plabNu,2,1);
-                    pAeroDataValuesLayout->addWidget(m_pdeViscosity,2,2);
-                    pAeroDataValuesLayout->addWidget(m_plabViscosityUnit,2,3);
+                    pAeroDataValuesLayout->addWidget(m_plabRho,            1,1);
+                    pAeroDataValuesLayout->addWidget(m_pdeDensity,         1,2);
+                    pAeroDataValuesLayout->addWidget(m_plabDensityUnit,    1,3);
+                    pAeroDataValuesLayout->addWidget(m_plabNu,             2,1);
+                    pAeroDataValuesLayout->addWidget(m_pdeViscosity,       2,2);
+                    pAeroDataValuesLayout->addWidget(m_plabViscosityUnit,  2,3);
                     pAeroDataValuesLayout->setRowStretch(3,1);
                     pAeroDataValuesLayout->setColumnStretch(1,3);
                     pAeroDataValuesLayout->setColumnStretch(4,3);

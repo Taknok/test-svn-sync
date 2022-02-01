@@ -181,7 +181,6 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
         {
             bProjectFile = true;
             int iApp = pMainFrame->loadXFLR5File(PathName);
-
             if      (iApp == xfl::MIAREX)        pMainFrame->onMiarex();
             else if (iApp == xfl::XFOILANALYSIS) pMainFrame->onXDirect();
         }

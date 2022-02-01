@@ -21,6 +21,7 @@
 
 #include <QGroupBox>
 #include <QVBoxLayout>
+
 #include "foilpolardlg.h"
 #include <xflcore/xflcore.h>
 #include <xflcore/units.h>
@@ -129,15 +130,16 @@ void FoilPolarDlg::setupLayout()
                         m_prbFluidUnit1 = new QRadioButton(tr("International"));
                         m_prbFluidUnit2 = new QRadioButton(tr("Imperial"));
                         QLabel *plabRho = new QLabel("<p>&rho; =</p>");
-                        m_pdeDensity = new DoubleEdit(1.225,3);
-                        m_plabDensityUnit = new QLabel("kg/m3");
+                        m_pdeDensity = new DoubleEdit(1.225);
+                        m_plabDensityUnit = new QLabel("kg/m<sup>3</sup>");
+
                         QLabel *plabNu = new QLabel("<p>&nu; =</p>");
                         plabRho->setAlignment(Qt::AlignRight | Qt::AlignCenter);
                         plabNu->setAlignment(Qt::AlignRight | Qt::AlignCenter);
-                        m_pdeViscosity = new DoubleEdit(1.500e-5,3);
+                        m_pdeViscosity = new DoubleEdit(1.5e-5);
                         m_plabViscosityUnit = new QLabel(QString::fromUtf8("m²/s"));
-                        m_pdeDensity->setDigits(5);
-                        m_pdeViscosity->setDigits(3);
+//                        m_pdeDensity->setDigits(5);
+//                        m_pdeViscosity->setDigits(3);
                         m_pdeDensity->setMin(0.0);
                         m_pdeViscosity->setMin(0.0);
                         pAeroDataLayout->addWidget(plab9,1,1);
@@ -268,10 +270,10 @@ void FoilPolarDlg::connectSignals()
     connect(m_pdeTopTrans, SIGNAL(valueChanged()), SLOT(editingFinished()));
     connect(m_pdeBotTrans, SIGNAL(valueChanged()), SLOT(editingFinished()));
 
-    connect(m_pleAnalysisName, SIGNAL(textEdited(QString&)), SLOT(onNameChanged()));
+    connect(m_pleAnalysisName, SIGNAL(editingFinished()), SLOT(onNameChanged()));
 
-    connect(m_prbFluidUnit1, SIGNAL(clicked(bool)), SLOT(onFluiUnit()));
-    connect(m_prbFluidUnit2, SIGNAL(clicked(bool)), SLOT(onFluiUnit()));
+    connect(m_prbFluidUnit1, SIGNAL(clicked(bool)), SLOT(onFluidUnit()));
+    connect(m_prbFluidUnit2, SIGNAL(clicked(bool)), SLOT(onFluidUnit()));
 
     connect(m_pdeChord,     SIGNAL(valueChanged()), SLOT(onCalcReynolds()));
     connect(m_pdeSpan,      SIGNAL(valueChanged()), SLOT(onCalcReynolds()));
@@ -351,7 +353,7 @@ void FoilPolarDlg::initDialog()
     m_prbFluidUnit1->setChecked(s_UnitType==1);
     m_prbFluidUnit2->setChecked(s_UnitType!=1);
     m_pdeViscosity->setValue(s_Viscosity);
-    onFluiUnit();
+    onFluidUnit();
 
     m_pdeMass->setValue(s_Mass*Units::kgtoUnit());
     m_pdeSpan->setValue(s_Span*Units::mtoUnit());
@@ -488,7 +490,7 @@ void FoilPolarDlg::setPlrName()
 }
 
 
-void FoilPolarDlg::onFluiUnit()
+void FoilPolarDlg::onFluidUnit()
 {
     if(m_prbFluidUnit1->isChecked())
     {
@@ -498,14 +500,14 @@ void FoilPolarDlg::onFluiUnit()
         m_plabViscosityUnit->setText("m"+QString::fromUtf8("²")+"/s");
 
         m_pdeDensity->setValue(s_Density);
-        m_plabDensityUnit->setText("kg/m3");
+        m_plabDensityUnit->setText("kg/m<sup>3</sup>");
     }
     else
     {
         s_UnitType   = 2;
 
         m_pdeViscosity->setValue(s_Viscosity* 10.7182881);
-        m_plabViscosityUnit->setText("ft"+QString::fromUtf8("²")+"/s");
+        m_plabViscosityUnit->setText("ft<sup>2</sup>/s");
 
         m_pdeDensity->setValue(s_Density*0.00194122);
         m_plabDensityUnit->setText("slugs/ft3");
