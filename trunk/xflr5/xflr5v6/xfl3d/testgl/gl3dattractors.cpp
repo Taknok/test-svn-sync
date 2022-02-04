@@ -226,13 +226,16 @@ void gl3dAttractors::glRenderView()
 
             paintSphere(m_Trace.at(i).at(m_iLead), 0.0061f/m_glScalef, clr, true);
         } */
-        m_shadPoint.bind();
+        if(!m_bUse120StyleShaders)
         {
-            m_shadPoint.setUniformValue(m_locPoint.m_vmMatrix, m_matView*m_matModel);
-            m_shadPoint.setUniformValue(m_locPoint.m_pvmMatrix, m_matProj*m_matView);
+            m_shadPoint.bind();
+            {
+                m_shadPoint.setUniformValue(m_locPoint.m_vmMatrix, m_matView*m_matModel);
+                m_shadPoint.setUniformValue(m_locPoint.m_pvmMatrix, m_matProj*m_matView);
+            }
+            m_shadPoint.release();
+            paintPoints(m_vboPoints, 1.0f, 0, false, s_ls.m_Color, 4);
         }
-        m_shadPoint.release();
-        paintPoints(m_vboPoints, 1.0f, 0, false, s_ls.m_Color, 4);
     }
     if (!m_bInitialized)
     {
