@@ -451,17 +451,20 @@ void gl3dSagittarius::glRenderView()
         else
             paintColourSegments(m_vboTrace[is], {true, Line::SOLID, 1, Qt::red});
 
-        m_shadPoint.bind();
+        if(!m_bUse120StyleShaders)
         {
-            QMatrix4x4  trans;
-            trans.translate(pos.xf(), pos.yf(), pos.zf());
-            m_shadPoint.setUniformValue(m_locPoint.m_vmMatrix, vmMat*trans);
-            m_shadPoint.setUniformValue(m_locPoint.m_pvmMatrix, pvmMat*trans);
-            paintPoints(m_vboStar[is], 1.0, 0, false, Qt::red, 4);
-        }
-        m_shadPoint.release();
+            m_shadPoint.bind();
+            {
+                QMatrix4x4  trans;
+                trans.translate(pos.xf(), pos.yf(), pos.zf());
+                m_shadPoint.setUniformValue(m_locPoint.m_vmMatrix, vmMat*trans);
+                m_shadPoint.setUniformValue(m_locPoint.m_pvmMatrix, pvmMat*trans);
+                paintPoints(m_vboStar[is], 1.0, 0, false, Qt::red, 4);
+            }
+            m_shadPoint.release();
 
-        glRenderText(pos.x+0.013/m_glScalef, pos.y+0.013/m_glScalef, pos.z+0.013/m_glScalef, star.m_Name, star.m_Color);
+            glRenderText(pos.x+0.013/m_glScalef, pos.y+0.013/m_glScalef, pos.z+0.013/m_glScalef, star.m_Name, star.m_Color);
+        }
     }
     m_matModel.setToIdentity();
 
