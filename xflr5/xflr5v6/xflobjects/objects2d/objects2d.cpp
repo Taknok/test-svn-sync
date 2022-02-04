@@ -18,9 +18,6 @@
 
 *****************************************************************************/
 
-#include <QDebug>
-
-
 #include "objects2d.h"
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects2d/polar.h>
@@ -59,7 +56,7 @@ void Objects2d::deleteAllFoils()
  * @param pFoil a pointer to the Foil to delete
  * @return a pointer to the next or previous Foil in the array, or NULL if none
  */
-Foil * Objects2d::deleteFoil(Foil *pFoil)
+Foil *Objects2d::deleteFoil(Foil *pFoil)
 {
     if(!pFoil || !pFoil->name().length()) return nullptr;
 

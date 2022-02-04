@@ -48,7 +48,6 @@ class gl3dHydrogen : public gl3dTestGLView
         void collapseBlock(QWidget *pParent) const;
 
     private slots:
-        void onHarmonic();
         void onCollapse();
         void onObjectRadius(int size);
         void onRenderer();

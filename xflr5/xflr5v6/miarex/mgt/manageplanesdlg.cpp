@@ -238,17 +238,15 @@ void ManagePlanesDlg::fillPlaneTable()
 }
 
 
-
-
 void ManagePlanesDlg::fillPlaneRow(int row)
 {
     QModelIndex ind;
 
-    if(row>=Objects3d::s_oaPlane.size()) return;
+    if(row>=Objects3d::planeCount()) return;
 
-    Plane *pPlane = Objects3d::s_oaPlane.at(row);
+    Plane const*pPlane = Objects3d::planeAt(row);
     if(!pPlane) return;
-    Wing *pWing = pPlane->wing();
+    Wing const*pWing = pPlane->wing();
 
     ind = m_pPlaneModel->index(row, 0, QModelIndex());
     m_pPlaneModel->setData(ind,pPlane->name());
@@ -270,16 +268,16 @@ void ManagePlanesDlg::fillPlaneRow(int row)
     m_pPlaneModel->setData(ind, pWing->taperRatio());
 
     ind = m_pPlaneModel->index(row, 6, QModelIndex());
-    m_pPlaneModel->setData(ind,pWing->averageSweep());
+    m_pPlaneModel->setData(ind, pWing->averageSweep());
 
     ind = m_pPlaneModel->index(row, 7, QModelIndex());
-    m_pPlaneModel->setData(ind,pPlane->tailVolume());
+    m_pPlaneModel->setData(ind, pPlane->tailVolume());
 }
 
 
 void ManagePlanesDlg::onRename()
 {
-    if(m_pPlane)      Objects3d::renamePlane(m_pPlane->name());
+    if(m_pPlane) Objects3d::renamePlane(m_pPlane->name());
 
     fillPlaneTable();
 

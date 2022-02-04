@@ -2315,7 +2315,7 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
         }
 
         ar << m_VolumeMass;
-        ar << m_PointMass.size();
+        ar << int(m_PointMass.size());
         for(int im=0; im<m_PointMass.size(); im++)
         {
             PointMass const &pm = m_PointMass.at(im);

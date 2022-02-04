@@ -1401,7 +1401,7 @@ void EditPlaneDlg::readBodyTree(Body *pBody, QModelIndex indexLevel)
                     value = subIndex.sibling(subIndex.row(),2).data().toString();
                     dataIndex = subIndex.sibling(subIndex.row(),2);
 
-                    int idx = field.rightRef(field.length()-22).toInt()-1;
+                    int idx = field.right(field.length()-22).toInt()-1;
                     pBody->m_hPanels[idx] =  dataIndex.data().toInt();
 
                     subIndex = subIndex.sibling(subIndex.row()+1,0);
@@ -1619,7 +1619,7 @@ void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
 
         if(object.indexOf("Section_", 0, Qt::CaseInsensitive)>=0)
         {
-            m_iActiveSection = object.rightRef(object.length()-8).toInt() -1;
+            m_iActiveSection = object.right(object.length()-8).toInt() -1;
 
             //get the wing identification
             indexLevel = indexLevel.parent();
@@ -1643,7 +1643,7 @@ void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
         else if(object.indexOf("Frame_", 0, Qt::CaseInsensitive)>=0)
         {
             m_enumActiveObject = BODY;
-            m_iActiveFrame = object.rightRef(object.length()-6).toInt() -1;
+            m_iActiveFrame = object.right(object.length()-6).toInt() -1;
             m_iActiveSection = -1;
             m_iActivePointMass = -1;
             m_pglPlaneView->m_bResetglSectionHighlight = true;
@@ -1651,7 +1651,7 @@ void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
         }
         else if(object.indexOf("Point_Mass_", 0, Qt::CaseInsensitive)>=0)
         {
-            m_iActivePointMass = object.rightRef(object.length()-11).toInt() -1;
+            m_iActivePointMass = object.right(object.length()-11).toInt() -1;
             m_iActiveSection = -1;
             m_iActiveFrame   = -1;
             //the parent object may be a wing, a body or the plane itself

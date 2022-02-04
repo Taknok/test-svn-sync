@@ -183,7 +183,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     m_bAutoLoadLast = false;
     m_bAutoSave     = false;
     m_bSaveOpps     = false;
-    m_bSaveWOpps    = true;
+    m_bSavePOpps    = true;
     m_bSaveSettings = true;
 
     m_SaveInterval = 10;
@@ -3288,7 +3288,7 @@ bool MainFrame::loadSettings()
 
         m_bAutoLoadLast = settings.value("AutoLoadLastProject").toBool();
         m_bSaveOpps   = settings.value("SaveOpps").toBool();
-        m_bSaveWOpps  = settings.value("SaveWOpps").toBool();
+        m_bSavePOpps  = settings.value("SaveWOpps").toBool();
 
         m_bAutoSave = settings.value("AutoSaveProject", false).toBool();
 
@@ -3497,9 +3497,10 @@ xfl::enumApp MainFrame::loadXFLR5File(QString pathname)
         QApplication::setOverrideCursor(Qt::WaitCursor);
         if(!serializeProjectXFL(ar, false))
         {
+            QApplication::restoreOverrideCursor();
             QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
         }
-        QApplication::restoreOverrideCursor();
+        else QApplication::restoreOverrideCursor();
 
         addRecentFile(pathname);
         setSaveState(true);
@@ -3508,7 +3509,7 @@ xfl::enumApp MainFrame::loadXFLR5File(QString pathname)
         XFile.close();
 
         if(Objects3d::planeCount()) return xfl::MIAREX;
-        else                            return xfl::XFOILANALYSIS;
+        else                        return xfl::XFOILANALYSIS;
     }
 
 
@@ -4060,7 +4061,6 @@ void MainFrame::onXDirect()
 
 void MainFrame::onMiarex()
 {
-    qDebug()<<"onmiarex";
     if(m_pXDirect) m_pXDirect->stopAnimate();
     m_iApp = xfl::MIAREX;
 
@@ -4557,7 +4557,7 @@ void MainFrame::saveSettings()
         settings.setValue("AutoSaveInterval", m_SaveInterval);
         settings.setValue("AutoLoadLastProject",m_bAutoLoadLast);
         settings.setValue("SaveOpps", m_bSaveOpps);
-        settings.setValue("SaveWOpps", m_bSaveWOpps);
+        settings.setValue("SaveWOpps", m_bSavePOpps);
         settings.setValue("RecentFileSize", m_RecentFiles.size());
 
 
@@ -4653,10 +4653,10 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
     Polar *pPolar(nullptr);
     OpPoint *pOpp(nullptr);
 
-    int i=0, n=0;
-    float f=0;
-    double dble=0;
-    bool boolean=false;
+    int n(0);
+    float f(0);
+    double dble(0);
+    bool boolean(false);
 
     if (bIsStoring)
     {
@@ -4678,8 +4678,8 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         WPolarDlg::s_WPolar.serializeWPlrXFL(ar, true);
 
         // save the planes...
-        ar << Objects3d::s_oaPlane.size();
-        for (i=0; i<Objects3d::planeCount();i++)
+        ar << int(Objects3d::planeCount());
+        for (int i=0; i<Objects3d::planeCount();i++)
         {
             pPlane = Objects3d::planeAt(i);
             pPlane->serializePlaneXFL(ar, bIsStoring);
@@ -4687,17 +4687,17 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 
         // save the WPolars
         ar << Objects3d::polarCount();
-        for (i=0; i<Objects3d::polarCount();i++)
+        for (int i=0; i<Objects3d::polarCount(); i++)
         {
             pWPolar = Objects3d::polarAt(i);
             pWPolar->serializeWPlrXFL(ar, bIsStoring);
         }
 
-        if(m_bSaveWOpps)
+        if(m_bSavePOpps)
         {
             // not forgetting their POpps
             ar << Objects3d::planeOppCount();
-            for (i=0; i<Objects3d::planeOppCount();i++)
+            for (int i=0; i<Objects3d::planeOppCount();i++)
             {
                 pPOpp = Objects3d::planeOppAt(i);
                 pPOpp->serializePOppXFL(ar, bIsStoring);
@@ -4800,26 +4800,31 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
             ar >> boolean;  WPolarDlg::s_WPolar.setTilted(boolean);
             ar >> boolean;  WPolarDlg::s_WPolar.setWakeRollUp(boolean);
         }
-        else if(ArchiveFormat==200002) WPolarDlg::s_WPolar.serializeWPlrXFL(ar, false);
+        else if(ArchiveFormat>=200002)
+        {
+            if(!WPolarDlg::s_WPolar.serializeWPlrXFL(ar, false))
+            {
+                return false;
+            }
+        }
 
         // load the planes...
-        // assumes all object have been deleted and the array cleared.
+        // assumes that all objects have been deleted and the array cleared.
         ar >> n;
-        for(i=0; i<n; i++)
+        for(int i=0; i<n; i++)
         {
             pPlane = new Plane();
             if(pPlane->serializePlaneXFL(ar, bIsStoring)) Objects3d::appendPlane(pPlane);
             else
             {
                 delete pPlane;
-                QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
                 return false;
             }
         }
 
         // load the WPolars
         ar >> n;
-        for(i=0; i<n; i++)
+        for(int i=0; i<n; i++)
         {
             pWPolar = new WPolar();
             if(pWPolar->serializeWPlrXFL(ar, bIsStoring))
@@ -4852,39 +4857,35 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
             else
             {
                 delete pWPolar;
-                QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
                 return false;
             }
         }
 
         // the PlaneOpps
         ar >> n;
-        for(i=0; i<n; i++)
+        for(int i=0; i<n; i++)
         {
             pPOpp = new PlaneOpp();
             if(pPOpp->serializePOppXFL(ar, bIsStoring))
             {
-                //just append, since POpps have been sorted when first inserted
+                //just append, since PlaneOpps have been sorted when first inserted
                 pPlane = Objects3d::getPlane(pPOpp->planeName());
                 pWPolar = Objects3d::getWPolar(pPlane, pPOpp->polarName());
 
-                // clean up : the project may be carrying useless PlaneOpps due to past programming errors
+                // clean up: the project may be carrying useless PlaneOpps due to past programming errors
                 if(pPlane && pWPolar) Objects3d::insertPOpp(pPOpp);
-                else
-                {
-                }
+                else delete pPOpp;
             }
             else
             {
                 delete pPOpp;
-                QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
                 return false;
             }
         }
 
         // load the Foils
         ar >> n;
-        for(i=0; i<n; i++)
+        for(int i=0; i<n; i++)
         {
             Foil *pFoil = new Foil();
             if(serializeFoilXFL(pFoil, ar, bIsStoring))
@@ -4898,7 +4899,6 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
             else
             {
                 delete pFoil;
-                QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
                 return false;
             }
         }
@@ -4906,28 +4906,26 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         // load the Polars
         ar >> n;
 
-        for(i=0; i<n; i++)
+        for(int i=0; i<n; i++)
         {
             pPolar = new Polar();
             if(serializePolarXFL(pPolar, ar, bIsStoring)) Objects2d::appendPolar(pPolar);
             else
             {
                 delete pPolar;
-                QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
                 return false;
             }
         }
 
         // OpPoints
         ar >> n;
-        for(i=0; i<n; i++)
+        for(int i=0; i<n; i++)
         {
             pOpp = new OpPoint();
             if(pOpp->serializeOppXFL(ar, bIsStoring))  Objects2d::appendOpp(pOpp);
             else
             {
                 delete pOpp;
-                QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
                 return false;
             }
         }
@@ -5428,13 +5426,13 @@ void MainFrame::updateRecentFileActions()
     for (int i=0; i<numRecentFiles; ++i)
     {
         text = tr("&%1 %2").arg(i + 1).arg(shortenFileName(m_RecentFiles[i]));
-        if(i==0) text +="\tCtrl+7";
+        if(i==0) text +="\tCtrl+Shift+O";
 
         m_pRecentFileActs[i]->setText(text);
         m_pRecentFileActs[i]->setData(m_RecentFiles[i]);
         m_pRecentFileActs[i]->setVisible(true);
     }
-    for (int j = numRecentFiles; j < MAXRECENTFILES; ++j)
+    for (int j=numRecentFiles; j<MAXRECENTFILES; j++)
         m_pRecentFileActs[j]->setVisible(false);
 
     m_pSeparatorAct->setVisible(numRecentFiles > 0);
@@ -5457,7 +5455,8 @@ void MainFrame::updateView()
         }
         case xfl::MIAREX:
         {
-            m_pMiarex->updateView();
+            if(m_pMiarex)
+                m_pMiarex->updateView();
             break;
         }
         case xfl::INVERSEDESIGN:
@@ -6078,7 +6077,7 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
 {
     double dble(0);
     bool boolean(false);
-    int i(0), k(0), n(0);
+    int k(0), n(0);
     // identifies the format of the file
     // 100005: new style format
     int ArchiveFormat=100005;
@@ -6104,8 +6103,8 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         ar << pPolar->m_XTop << pPolar->m_XBot;
         ar << pPolar->m_NCrit;
 
-        ar << pPolar->m_Alpha.size();
-        for (i=0; i<pPolar->m_Alpha.size(); i++)
+        ar << int(pPolar->m_Alpha.size());
+        for (int i=0; i<pPolar->m_Alpha.size(); i++)
         {
             ar << float(pPolar->m_Alpha[i]) << float(pPolar->m_Cd[i]);
             ar << float(pPolar->m_Cdp[i])   << float(pPolar->m_Cl[i]) << float(pPolar->m_Cm[i]);
@@ -6165,7 +6164,7 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
 
         ar >> n;
 
-        for (i=0; i< n; i++)
+        for (int i=0; i< n; i++)
         {
             ar >> Alpha >> Cd >> Cdp >> Cl >> Cm >> XTr1 >> XTr2 >> HMom;
             ar >> Cpmn >> Re >> XCp;
@@ -6190,7 +6189,7 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
 
 
 /**
- * The user has requested of the graph data to a text file
+ * The user has requested the export of the graph data to a text file
  */
 void MainFrame::exportGraph(Graph *pGraph)
 {
@@ -6227,7 +6226,7 @@ void MainFrame::exportGraph(Graph *pGraph)
 void MainFrame::onPreferences()
 {
     PreferencesDlg dlg(this);
-    dlg.m_pSaveOptionsWt->initWidget(m_bAutoLoadLast, m_bSaveOpps, m_bSaveWOpps, m_bAutoSave, m_SaveInterval);
+    dlg.m_pSaveOptionsWt->initWidget(m_bAutoLoadLast, m_bSaveOpps, m_bSavePOpps, m_bAutoSave, m_SaveInterval);
     dlg.m_pUnitsWt->initWidget();
     dlg.m_pDisplayOptionsWt->initWidget();
     dlg.m_pLanguageWt->initWidget();
@@ -6238,7 +6237,7 @@ void MainFrame::onPreferences()
         m_bAutoSave     = dlg.m_pSaveOptionsWt->m_bAutoSave;
         m_SaveInterval  = dlg.m_pSaveOptionsWt->m_SaveInterval;
         m_bSaveOpps     = dlg.m_pSaveOptionsWt->m_bOpps;
-        m_bSaveWOpps    = dlg.m_pSaveOptionsWt->m_bWOpps;
+        m_bSavePOpps    = dlg.m_pSaveOptionsWt->m_bWOpps;
 
         if(m_bAutoSave)
         {

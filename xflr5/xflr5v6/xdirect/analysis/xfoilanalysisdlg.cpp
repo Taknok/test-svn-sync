@@ -26,7 +26,6 @@
 #include <QHBoxLayout>
 #include <QFontDatabase>
 #include <QThread>
-#include <QDebug>
 #include <QtConcurrent/QtConcurrentRun>
 
 #include "xfoilanalysisdlg.h"
@@ -361,7 +360,12 @@ void XFoilAnalysisDlg::analyze()
 
     //Launch the task
 //    m_pXFoilTask->run();
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6,0,0))
+    QtConcurrent::run(&XFoilTask::run, m_pXFoilTask);
+#else
     QtConcurrent::run(m_pXFoilTask, &XFoilTask::run);
+#endif
 //    pTimer->stop();
 //    delete pTimer;
 //    qApp->processEvents(); // make sure that all custom events are received before exiting the dialog

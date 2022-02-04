@@ -287,14 +287,15 @@ QString OpPoint::opPointName() const
 
 /**
  * Loads or saves the data of this OpPoint to a binary file
+ * @deprecated
  * @param ar the QDataStream object from/to which the data should be serialized
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
 bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveFormat)
 {
-    int a, b, k, Format;
-    float f,gg;
+    int a(0), b(0), k(0), Format(0);
+    float f(0),gg(0);
 
     if(bIsStoring)
     {
@@ -424,8 +425,8 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring)
         ar << Xtr1 << Xtr2 << m_XCP;
         ar << ACrit << m_TE_HMom << Cpmn;
 
-        for (k=0; k<m_n; k++)          ar << float(Cpv[k])     << float(Cpi[k]);
-        for (k=0; k<m_n; k++)          ar << float(Qv[k])      << float(Qi[k]);
+        for (k=0; k<m_n; k++)        ar << float(Cpv[k])     << float(Cpi[k]);
+        for (k=0; k<m_n; k++)        ar << float(Qv[k])      << float(Qi[k]);
         for (k=0; k<=blx.nd1; k++)   ar << float(blx.xd1[k]) << float(blx.yd1[k]);
         for (k=0; k<blx.nd2; k++)    ar << float(blx.xd2[k]) << float(blx.yd2[k]);
         for (k=0; k<blx.nd3; k++)    ar << float(blx.xd3[k]) << float(blx.yd3[k]);
