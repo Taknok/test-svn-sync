@@ -809,7 +809,7 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
             m_Body.serializeBodyXFL(ar, true);
         }
 
-        ar << m_PointMass.size();
+        ar << int(m_PointMass.count());
         for(int i=0; i<m_PointMass.size(); i++)
         {
             ar << m_PointMass.at(i).mass();

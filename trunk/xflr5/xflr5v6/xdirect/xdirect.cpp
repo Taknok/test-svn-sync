@@ -2569,8 +2569,8 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 
     xfl::readAVLString(in, Line, strong);// analysis type
 
-    pPolar->setReType(strong.midRef(0,2).toInt(&bOK));
-    pPolar->setMaType(strong.midRef(2,2).toInt(&bOK2));
+    pPolar->setReType(strong.mid(0,2).toInt(&bOK));
+    pPolar->setMaType(strong.mid(2,2).toInt(&bOK2));
     if(!bOK || !bOK2)
     {
         str = QString("Error reading line %1: Unrecognized Mach and Reynolds type.\nThe polar(s) will not be stored").arg(Line);
@@ -2583,7 +2583,6 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     else if(pPolar->ReType() ==3 && pPolar->MaType() ==1) pPolar->setPolarType(xfl::RUBBERCHORDPOLAR);
     else                                                  pPolar->setPolarType(xfl::FIXEDSPEEDPOLAR);
 
-
     xfl::readAVLString(in, Line, strong);
     if(strong.length() < 34)
     {
@@ -2593,7 +2592,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         return nullptr;
     }
 
-    pPolar->setXtrBot(strong.midRef(9,6).toDouble(&bOK));
+    pPolar->setXtrBot(strong.mid(9,6).toDouble(&bOK));
     if(!bOK)
     {
         str = QString("Error reading Bottom Transition value at line %1. The polar(s) will not be stored").arg(Line);
@@ -2602,7 +2601,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         return nullptr;
     }
 
-    pPolar->setXtrTop(strong.midRef(28,6).toDouble(&bOK));
+    pPolar->setXtrTop(strong.mid(28,6).toDouble(&bOK));
     if(!bOK)
     {
         str = QString("Error reading Top Transition value at line %1. The polar(s) will not be stored").arg(Line);
@@ -2621,7 +2620,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         return nullptr;
     }
 
-    pPolar->setMach(strong.midRef(8,6).toDouble(&bOK));
+    pPolar->setMach(strong.mid(8,6).toDouble(&bOK));
     if(!bOK)
     {
         str = QString("Error reading Mach Number at line %1. The polar(s) will not be stored").arg(Line);
@@ -2630,7 +2629,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         return nullptr;
     }
 
-    Re = strong.midRef(24,10).toDouble(&bOK);
+    Re = strong.mid(24,10).toDouble(&bOK);
     if(!bOK)
     {
         str = QString("Error reading Reynolds Number at line %1. The polar(s) will not be stored").arg(Line);
@@ -2640,7 +2639,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     }
     Re *=1000000.0;
 
-    pPolar->setNCrit(strong.midRef(52,8).toDouble(&bOK));
+    pPolar->setNCrit(strong.mid(52,8).toDouble(&bOK));
     if(!bOK)
     {
         str = QString("Error reading NCrit at line %1. The polar(s) will not be stored").arg(Line);

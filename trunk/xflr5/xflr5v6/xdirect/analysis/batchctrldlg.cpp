@@ -23,7 +23,6 @@
 #include <QMenu>
 #include <QApplication>
 #include <QDir>
-#include <QFutureSynchronizer>
 #include <QHeaderView>
 #include <QVBoxLayout>
 #include <QtConcurrent/QtConcurrent>
@@ -309,7 +308,12 @@ void BatchCtrlDlg::startAnalyses()
 //            futureSync.addFuture(future);
 
 //            QThreadPool::globalInstance()->start(pXFoilTask);
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6,0,0))
+            QFuture<void> future = QtConcurrent::run(&XFoilTask::run, pXFoilTask);
+#else
             QtConcurrent::run(pXFoilTask, &XFoilTask::run);
+#endif
         }
 //        futureSync.waitForFinished(); // maybe unnecessary: "The destructor of QFutureSynchronizer calls waitForFinished()"
         m_pteTextOutput->appendPlainText("   finished launching XFoil tasks for " + pFoil->name());

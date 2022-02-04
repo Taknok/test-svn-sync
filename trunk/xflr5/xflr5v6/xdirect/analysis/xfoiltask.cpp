@@ -28,7 +28,6 @@
 
 #include <QThread>
 #include <QCoreApplication>
-#include <QDebug>
 
 
 int XFoilTask::s_IterLim=100;

@@ -1622,7 +1622,7 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
         }
 
         ar << m_VolumeMass;
-        ar << m_PointMass.size();
+        ar << int(m_PointMass.size());
         for(i=0; i<m_PointMass.size(); i++)
         {
             ar << m_PointMass.at(i).mass();
@@ -1803,7 +1803,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
     int res(0), Line(0), NSideLines(0);
     QString strong;
     bool bRead(false), bOK(false);
-    double xo(0), yo(0), zo(0);
+    double xo(0), zo(0);
 
     Line = 0;
     xfl::readAVLString(inStream, Line, strong);
@@ -1846,7 +1846,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
             if(values.length()==3)
             {
                 xo  = values.at(0).toDouble();
-                yo  = values.at(1).toDouble();
+//                yo  = values.at(1).toDouble();
                 zo  = values.at(2).toDouble();
                 xo /= mtoUnit;
                 zo /= mtoUnit;

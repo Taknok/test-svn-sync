@@ -331,12 +331,8 @@ void Settings::onTableFont()
 
 void Settings::onTreeFont()
 {
-    QFontDialog::FontDialogOptions dialogoptions = QFontDialog::MonospacedFonts;
-#ifdef Q_OS_MAC
-    if(s_bDontUseNativeDlg) dialogoptions |= QFontDialog::DontUseNativeDialog;
-#endif
     bool bOK(false);
-    QFont TreeFont = QFontDialog::getFont(&bOK, DisplayOptions::treeFont(), this, QString("Tree font"), dialogoptions);
+    QFont TreeFont = QFontDialog::getFont(&bOK, DisplayOptions::treeFont(), this, QString("Tree font"));
 
     if (bOK)
     {

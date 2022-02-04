@@ -234,6 +234,7 @@ xfl::enumWingType xfl::wingType(const QString &strWingType)
     else                                                               return xfl::OTHERWING;
 }
 
+
 QString xfl::wingType(xfl::enumWingType wingType)
 {
     switch(wingType)
@@ -246,6 +247,7 @@ QString xfl::wingType(xfl::enumWingType wingType)
     }
     return "OTHERWING";
 }
+
 
 /**
 * Reads the RGB int values of a color from binary datastream and returns a QColor. Inherited from the MFC versions of XFLR5.

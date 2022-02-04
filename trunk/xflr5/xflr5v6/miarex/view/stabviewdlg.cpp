@@ -567,8 +567,6 @@ void StabViewDlg::setMode(int iMode)
 
 void StabViewDlg::setupLayout()
 {
-    QFont SymbolFont("Symbol");
-
     //____________Stability direction__________
     QGroupBox *pStabilityDirBox = new QGroupBox(tr("Stability direction"));
     {

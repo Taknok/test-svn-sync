@@ -260,8 +260,12 @@ void BatchThreadDlg::onTimerEvent()
             updateOutput(strong);
 
 //            QThreadPool::globalInstance()->start(pXFoilTask);
-            QtConcurrent::run(pXFoilTask, &XFoilTask::run);
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6,0,0))
+            QFuture<void> future = QtConcurrent::run(&XFoilTask::run, pXFoilTask);
+#else
+            QtConcurrent::run(pXFoilTask, &XFoilTask::run);
+#endif
             //remove it from the array of pairs to analyze
             pAnalysis = m_AnalysisPair.last();
             m_AnalysisPair.removeLast();

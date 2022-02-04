@@ -895,7 +895,7 @@ void EditBodyDlg::readBodyTree(QModelIndex indexLevel)
                     value = subIndex.sibling(subIndex.row(),2).data().toString();
                     dataIndex = subIndex.sibling(subIndex.row(),2);
 
-                    int idx = field.rightRef(field.length()-22).toInt()-1;
+                    int idx = field.right(field.length()-22).toInt()-1;
                     m_pBody->m_hPanels[idx] =  dataIndex.data().toInt();
 
                     subIndex = subIndex.sibling(subIndex.row()+1,0);
@@ -1121,7 +1121,7 @@ void EditBodyDlg::identifySelection(const QModelIndex &indexSel)
 
         if(object.indexOf("Frame_", 0, Qt::CaseInsensitive)>=0)
         {
-            setActiveFrame(object.rightRef(object.length()-6).toInt() -1);
+            setActiveFrame(object.right(object.length()-6).toInt() -1);
             //            Frame::setSelected(-1);
             m_pglBodyView->m_bResetglFrameHighlight = true;
             m_iActivePointMass = -1;
@@ -1129,13 +1129,13 @@ void EditBodyDlg::identifySelection(const QModelIndex &indexSel)
         }
         else if(object.indexOf("Point_Mass_", 0, Qt::CaseInsensitive)>=0)
         {
-            m_iActivePointMass = object.rightRef(object.length()-11).toInt() -1;
+            m_iActivePointMass = object.right(object.length()-11).toInt() -1;
             setActiveFrame(-1);
             return;
         }
         else if(object.indexOf("Point", 0, Qt::CaseInsensitive)==0)
         {
-            Frame::setSelected(object.rightRef(object.length()-6).toInt() -1);
+            Frame::setSelected(object.right(object.length()-6).toInt() -1);
             //identify the parent Frame object
 
             indexLevel = indexLevel.parent();
