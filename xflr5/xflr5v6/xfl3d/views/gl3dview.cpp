@@ -2310,11 +2310,11 @@ void gl3dView::onDynamicIncrement()
 
 void gl3dView::paintLineStrip(QOpenGLBuffer &vbo, LineStyle const &ls)
 {
-    paintLineStrip(vbo, ls.m_Color, ls.m_Width, ls.m_Stipple);
+    paintLineStrip(vbo, ls.m_Color, float(ls.m_Width), ls.m_Stipple);
 }
 
 
-void gl3dView::paintLineStrip(QOpenGLBuffer &vbo, QColor const &clr, int width, Line::enumLineStipple stipple)
+void gl3dView::paintLineStrip(QOpenGLBuffer &vbo, QColor const &clr, float width, Line::enumLineStipple stipple)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
@@ -2329,7 +2329,7 @@ void gl3dView::paintLineStrip(QOpenGLBuffer &vbo, QColor const &clr, int width, 
             glLineStipple(1, GLStipple(stipple));
         }
 
-        m_shadLine.setUniformValue(m_locLine.m_Thickness, float(width));
+        m_shadLine.setUniformValue(m_locLine.m_Thickness, width);
         m_shadLine.setUniformValue(m_locLine.m_Pattern, GLStipple(stipple));
 
         vbo.bind();

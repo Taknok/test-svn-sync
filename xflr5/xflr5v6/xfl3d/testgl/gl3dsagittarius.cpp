@@ -269,7 +269,6 @@ void gl3dSagittarius::keyPressEvent(QKeyEvent *pEvent)
 void gl3dSagittarius::makeStars()
 {
     Planet::s_CentralMass = 4.154e6 * 2e30;// kg
-//    Planet::s_CentralMass = 1.0e6;
 
     m_Star.resize(9);
     m_Trace.resize(m_Star.size());
@@ -296,8 +295,6 @@ void gl3dSagittarius::makeStars()
     m_Star[7].setOrbit(0.0905, 0.9760, 72.76,  122.61,  42.62);
     m_Star[8].setOrbit(0.102,  0.985,  127.7,  129.28, 357.25);
 
-    double vel = 0;
-
     m_Star[0].m_Tau = 0.025f;
     m_Star[1].m_Tau = 0.15f;
     m_Star[2].m_Tau = 0.22f;
@@ -311,13 +308,7 @@ void gl3dSagittarius::makeStars()
     for(int is=0; is<m_Star.size(); is++)
     {
         Planet &star = m_Star[is];
-        m_Star[is].m_Color.setRgbF(glGetRed(m_Star[is].m_Tau), glGetGreen(m_Star[is].m_Tau), glGetBlue(m_Star[is].m_Tau));
-
-        // set a default position
-        star.m_var[0] = star.m_a + star.m_a*star.m_e;
-        star.m_var[1] = 0.0;
-        vel = sqrt(GRAVITY*Planet::s_CentralMass*(2.0/star.distance()-1.0/star.m_a)); // vis-viva equation
-        star.setVelocity(0,vel);
+        m_Star[is].m_Color.setRgbF(glGetRed(m_Star[is].m_Tau),glGetGreen(m_Star[is].m_Tau),glGetBlue(m_Star[is].m_Tau));
         star.setRefEnergy();
         m_Trace[is].resize(s_TailSize);
         m_Trace[is].fill(star.position());
@@ -391,40 +382,11 @@ void gl3dSagittarius::glRenderView()
     Vector3d pos;
     QMatrix4x4 vmMat, pvmMat;
 
-    if(m_pchEllipse->isChecked())
-    {
-        // paint the selected disk
-        Planet const &star = selectedStar();
-        QMatrix4x4 hrotate;
-        m_matModel.setToIdentity();
-        m_matModel.rotate(star.m_i, cos(star.m_Omega*PI/180.0), sin(star.m_Omega*PI/180.0), 0.0f);
-        m_matModel.rotate(star.m_omega, 0.0,0.0,1.0f);
-
-        vmMat = m_matView*m_matModel;
-        pvmMat = m_matProj*vmMat;
-        m_shadSurf.bind();
-        {
-            m_shadSurf.setUniformValue(m_locSurf.m_vmMatrix,  vmMat);
-            m_shadSurf.setUniformValue(m_locSurf.m_pvmMatrix, pvmMat);
-        }
-        m_shadSurf.release();
-        QColor clr = star.m_Color;
-        clr.setAlpha(125);
-        paintTriangleFan(m_vboEllipseFan, clr, false, false);
-        m_matModel.setToIdentity();
-
-    }
-/*    vmMat = m_matView*m_matModel;
-    pvmMat = m_matProj*vmMat;*/
-
     for(int is=0; is<m_Star.size(); is++)
     {
         Planet const &star = m_Star.at(is);
 
-        m_matModel.setToIdentity();
-        m_matModel.rotate(star.m_i, cos(star.m_Omega*PI/180.0), sin(star.m_Omega*PI/180.0), 0.0f);
-        m_matModel.rotate(star.m_omega, 0.0,0.0,1.0f);
-//        m_pvmMatrix = m_matProj * m_matView * m_matModel;
+        m_matModel = star.orbitMat();
 
         vmMat = m_matView*m_matModel;
         pvmMat = m_matProj*vmMat;
@@ -445,26 +407,29 @@ void gl3dSagittarius::glRenderView()
 
         pos = star.position()/SCALEFACTOR;
 
-//        paintSphere(pos, 0.01/m_glScalef, star.m_Color, true);
         if(m_pchEllipse->isChecked())
-            paintLineStrip(m_vboEllipse[is], star.m_Color, 1, Line::SOLID);
+            paintLineStrip(m_vboEllipse[is], star.m_Color, 0.5f, Line::SOLID);
         else
             paintColourSegments(m_vboTrace[is], {true, Line::SOLID, 1, Qt::red});
 
-        if(!m_bUse120StyleShaders)
+        if(is==m_pcbStar->currentIndex() && m_pchEllipse->isChecked())
         {
-            m_shadPoint.bind();
-            {
-                QMatrix4x4  trans;
-                trans.translate(pos.xf(), pos.yf(), pos.zf());
-                m_shadPoint.setUniformValue(m_locPoint.m_vmMatrix, vmMat*trans);
-                m_shadPoint.setUniformValue(m_locPoint.m_pvmMatrix, pvmMat*trans);
-                paintPoints(m_vboStar[is], 1.0, 0, false, Qt::red, 4);
-            }
-            m_shadPoint.release();
-
-            glRenderText(pos.x+0.013/m_glScalef, pos.y+0.013/m_glScalef, pos.z+0.013/m_glScalef, star.m_Name, star.m_Color);
+            QColor clr = star.m_Color;
+            clr.setAlpha(125);
+            paintTriangleFan(m_vboEllipseFan, clr, false, false);
         }
+
+        m_shadPoint.bind();
+        {
+            QMatrix4x4  trans;
+            trans.translate(pos.xf(), pos.yf(), pos.zf());
+            m_shadPoint.setUniformValue(m_locPoint.m_vmMatrix, vmMat*trans);
+            m_shadPoint.setUniformValue(m_locPoint.m_pvmMatrix, pvmMat*trans);
+            paintPoints(m_vboStar[is], 1.0, 0, false, Qt::red, 4);
+        }
+        m_shadPoint.release();
+
+        glRenderText(pos.x+0.013/m_glScalef, pos.y+0.013/m_glScalef, pos.z+0.013/m_glScalef, star.m_Name, star.m_Color);
     }
     m_matModel.setToIdentity();
 
@@ -485,6 +450,7 @@ void gl3dSagittarius::glRenderView()
 
     // paint the black hole
     paintSphere(Vector3d(), 0.01/m_glScalef, Qt::black, true);
+
 
     if (!m_bInitialized)
     {

@@ -1324,7 +1324,7 @@ double Wing::zPos(double y) const
  * Assumes the array of force vectors has been calculated previously
  * @param bThinSurface true if the calculation has been performed on thin VLM surfaces, false in the case of a 3D-panelanalysis
  */
-void Wing::panelComputeBending(Panel const*pPanel, bool bThinSurface)
+void Wing::panelComputeBending(QVector<Panel> const&pPanel, bool bThinSurface)
 {
     QVector<double> ypos, zpos;
     int coef(0),p(0);
@@ -1393,6 +1393,7 @@ void Wing::panelComputeBending(Panel const*pPanel, bool bThinSurface)
         m_BendingMoment[j] = bm;
     }
 }
+
 
 /**
 * Scales the wing chord-wise so that the root chord is set to the NewChord value
@@ -1546,7 +1547,7 @@ int Wing::VLMPanelTotal(bool bThinSurface) const
 void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double const*Gamma,
                               double &XCP, double &YCP, double &ZCP,
                               double &GCm, double &VCm, double &ICm, double &GRm, double &GYm, double &VYm,double &IYm,
-                              WPolar const*pWPolar, Vector3d const &CoG, Panel const *pPanel)
+                              WPolar const*pWPolar, Vector3d const &CoG, QVector<Panel> const &pPanel)
 
 {
     double CPStrip(0), tau(0), NForce(0), cosa(0), sina(0);
@@ -1809,7 +1810,7 @@ void Wing::panelComputeViscous(double QInf, const WPolar *pWPolar, double &WingV
  * @param nPanel the index of the panel
  * @return true if the panel belongs to the wing, false otherwise
  */
-bool Wing::isWingPanel(int nPanel, Panel const *pPanel)
+bool Wing::isWingPanel(int nPanel, QVector<Panel> const &pPanel)
 {
     for(int p=0; p<m_nPanels; p++)
     {
@@ -1824,14 +1825,14 @@ bool Wing::isWingPanel(int nPanel, Panel const *pPanel)
  * @param nNode the index of a node
  * @return true if the node belongs to the wing, false otherwise
  */
-bool Wing::isWingNode(int nNode, Panel const *pPanel)
+bool Wing::isWingNode(int nNode, QVector<Panel> const &panel)
 {
     for(int p=0; p<m_nPanels; p++)
     {
-        if(nNode==pPanel[m_FirstPanelIndex+p].m_iLA) return true;
-        if(nNode==pPanel[m_FirstPanelIndex+p].m_iLB) return true;
-        if(nNode==pPanel[m_FirstPanelIndex+p].m_iTA) return true;
-        if(nNode==pPanel[m_FirstPanelIndex+p].m_iTB) return true;
+        if(nNode==panel[m_FirstPanelIndex+p].m_iLA) return true;
+        if(nNode==panel[m_FirstPanelIndex+p].m_iLB) return true;
+        if(nNode==panel[m_FirstPanelIndex+p].m_iTA) return true;
+        if(nNode==panel[m_FirstPanelIndex+p].m_iTB) return true;
     }
     return false;
 }

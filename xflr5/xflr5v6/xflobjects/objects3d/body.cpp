@@ -153,7 +153,7 @@ void Body::setNURBSKnots()
  */
 void Body::computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
                        double &GCm, double &GRm, double &GYm, double &Alpha, Vector3d const &CoG,
-                       Panel const*pPanel) const
+                       QVector<Panel> const&panels) const
 {
     Vector3d PanelForce, LeverArm, WindNormal, WindDirection;
     Vector3d GeomMoment;
@@ -168,7 +168,7 @@ void Body::computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
     for (int p=0; p<m_NElements; p++)
     {
         int ip = m_FirstPanelIndex+p;
-        Panel const &panel = pPanel[ip];
+        Panel const &panel = panels.at(ip);
         PanelForce.x = panel.Normal.x * (-Cp[p]) * panel.Area;
         PanelForce.y = panel.Normal.y * (-Cp[p]) * panel.Area;
         PanelForce.z = panel.Normal.z * (-Cp[p]) * panel.Area; // N/q
