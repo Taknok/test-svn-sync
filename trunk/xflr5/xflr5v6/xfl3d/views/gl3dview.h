@@ -180,7 +180,7 @@ class gl3dView : public QOpenGLWidget, protected QOpenGLExtraFunctions
         void paintSegments(QOpenGLBuffer &vbo, LineStyle const &ls, bool bHigh = false);
         void paintSegments(QOpenGLBuffer &vbo, const QColor &clr, int thickness, Line::enumLineStipple stip=Line::SOLID, bool bHigh=false);
         void paintLineStrip(QOpenGLBuffer &vbo, LineStyle const &ls);
-        void paintLineStrip(QOpenGLBuffer &vbo, const QColor &clr, int width, Line::enumLineStipple stipple=Line::SOLID);
+        void paintLineStrip(QOpenGLBuffer &vbo, const QColor &clr, float width, Line::enumLineStipple stipple=Line::SOLID);
         void paintBox(double x, double y, double z, double dx, double dy, double dz, QColor const &clr, bool bLight);
         void paintCube(double x, double y, double z, double side, QColor const &clr, bool bLight);
         void paintColourSegments(QOpenGLBuffer &vbo, LineStyle const &ls);

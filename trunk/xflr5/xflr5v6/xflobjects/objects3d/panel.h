@@ -76,10 +76,10 @@ class Panel
         void setPanelFrame(Vector3d const &LA, Vector3d const &LB, Vector3d const &TA, Vector3d const &TB);
         bool intersect(Vector3d const &A, Vector3d const &U, Vector3d &I, double &dist);
         bool invert33(double *l);
-        void globalToLocal(Vector3d const &V, Vector3d &VLocal);
-        Vector3d globalToLocal(Vector3d const &VTest);
-        Vector3d globalToLocal(double const &Vx, double const &Vy, double const &Vz);
-        Vector3d localToGlobal(Vector3d const &VTest);
+        void globalToLocal(Vector3d const &V, Vector3d &VLocal) const;
+        Vector3d globalToLocal(Vector3d const &VTest) const;
+        Vector3d globalToLocal(double const &Vx, double const &Vy, double const &Vz) const;
+        Vector3d localToGlobal(Vector3d const &VTest) const;
 
         double width() const;
         double area() const {return Area;}

@@ -94,14 +94,14 @@ class Wing
 
         void panelComputeOnBody(double QInf, double Alpha, double *Cp, const double *Gamma, double &XCP, double &YCP, double &ZCP,
                                 double &GCm, double &VCm, double &ICm, double &GRm, double &GYm, double &VYm, double &IYm,
-                                const WPolar *pWPolar, const Vector3d &CoG, const Panel *pPanel);
+                                const WPolar *pWPolar, const Vector3d &CoG, const QVector<Panel> &pPanel);
 
 
         void panelComputeViscous(double QInf, WPolar const*pWPolar, double &WingVDrag, bool bViscous, QString &OutString);
-        void panelComputeBending(const Panel *pPanel, bool bThinSurface);
+        void panelComputeBending(const QVector<Panel> &pPanel, bool bThinSurface);
 
-        bool isWingPanel(int nPanel, Panel const *pPanel);
-        bool isWingNode(int nNode, Panel const *pPanel);
+        bool isWingPanel(int nPanel, const QVector<Panel> &pPanel);
+        bool isWingNode(int nNode, const QVector<Panel> &panel);
 
         void getFoils(Foil **pFoil0, Foil **pFoil1, double y, double &t);
         void duplicate(const Wing *pWing);
