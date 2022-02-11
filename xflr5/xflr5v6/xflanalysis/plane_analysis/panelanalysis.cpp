@@ -31,7 +31,7 @@
 #include <xflobjects/objects3d/plane.h>
 #include <xflobjects/objects3d/body.h>
 #include <xflobjects/objects3d/surface.h>
-
+#include <xflobjects/objects_global.h>
 
 
 bool PanelAnalysis::s_bCancel = false;
@@ -86,7 +86,6 @@ PanelAnalysis::PanelAnalysis()
 
     m_bSequence      = false;
 
-    m_CL  = m_CX  = m_CY  = 0.0;
     m_GCm = m_GRm = m_GYm = m_VCm = m_ICm = m_VYm = m_IYm = 0.0;
     m_CP.set( 0.0, 0.0, 0.0);
     m_ViscousDrag = m_InducedDrag = 0.0;
@@ -1194,7 +1193,8 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
             if(m_pWingList[iw])
             {
                 WingForce.set(0.0, 0.0, 0.0);
-                panelTrefftz(m_pWingList[iw], QInf, alpha, Mu, Sigma, pos, WingForce, IDrag, m_pWPolar, m_WakePanel, m_WakeNode);
+                panelTrefftz(m_pWingList[iw], QInf, alpha, Mu, Sigma, pos, WingForce, IDrag,
+                             m_pWPolar, m_WakePanel, m_WakeNode);
 
                 //save the results... will save another FF calculation when computing the operating point
                 m_WingForce[q*MAXWINGS+iw] = WingForce;  // N/q
@@ -1538,9 +1538,8 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 
         if(!s_bTrefftz) sumPanelForces(m_Cp+qrhs*MatSize, Alpha, Lift, IDrag);
 
-        m_CL          =       Force.dot(WindNormal)    /m_pWPolar->referenceArea();
-        m_CX          =       Force.dot(WindDirection) /m_pWPolar->referenceArea();
-        m_CY          =       Force.dot(WindSide)      /m_pWPolar->referenceArea();
+
+        m_Force = Force / m_pWPolar->referenceArea();
 
         m_InducedDrag =  1.0*IDrag/m_pWPolar->referenceArea();
         m_ViscousDrag =  1.0*VDrag/m_pWPolar->referenceArea();
@@ -1569,7 +1568,7 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
         m_IYm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceSpan();
 
 
-        if(m_pWPolar->isStabilityPolar()) computePhillipsFormulae();
+        if(m_pWPolar->isStabilityPolar()) computePhillipsFormulae(Alpha);
 
         if(m_bPointOut) s_bWarning = true;
 
@@ -4175,8 +4174,6 @@ void PanelAnalysis::restorePanels()
 */
 PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double const *Gamma, double const *Sigma)
 {
-    double Cb = 0.0;
-
     int MatSize = m_Panel.size();
 
     PlaneOpp *pPOpp = new PlaneOpp(m_pPlane, m_pWPolar, MatSize);
@@ -4197,6 +4194,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double const *Gamma, double 
 
     WingOpp *pWOpp = pPOpp->m_pWOpp[0];
 
+    double Cb = 0.0;
     for (int l=0; l<m_pPlane->m_Wing[0].m_NStation; l++)
     {
         if(qAbs(m_pPlane->m_Wing[0].m_BendingMoment[l])>qAbs(Cb))    Cb = m_pPlane->m_Wing[0].m_BendingMoment[l];
@@ -4216,9 +4214,11 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double const *Gamma, double 
 
         pPOpp->setAlpha(m_OpAlpha);
         pPOpp->m_QInf                = m_QInf;
-        pPOpp->m_CL                  = m_CL;
-        pPOpp->m_CX                  = m_CX;
-        pPOpp->m_CY                  = m_CY;
+
+        pPOpp->m_CL  = m_Force.dot(xfl::windNormal(   m_OpAlpha, m_OpBeta));
+        pPOpp->m_CX  = m_Force.dot(xfl::windDirection(m_OpAlpha, m_OpBeta));
+        pPOpp->m_CY  = m_Force.dot(xfl::windSide(     m_OpAlpha, m_OpBeta));
+
         pPOpp->m_ICD                 = m_InducedDrag;
         pPOpp->m_VCD                 = m_ViscousDrag;
 
@@ -4234,10 +4234,10 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double const *Gamma, double 
 
         pPOpp->m_CP                  = m_CP;
 
-        if(m_pWPolar->polarType()!=xfl::BETAPOLAR) pPOpp->m_Beta = m_pWPolar->m_BetaSpec;
-        else                                         pPOpp->m_Beta = m_OpBeta;
+        if(!m_pWPolar->isBetaPolar()) pPOpp->m_Beta = m_pWPolar->m_BetaSpec;
+        else                          pPOpp->m_Beta = m_OpBeta;
 
-        if(m_pWPolar->polarType()==xfl::STABILITYPOLAR)
+        if(m_pWPolar->isStabilityPolar())
         {
             pPOpp->setAlpha(m_AlphaEq);
             pPOpp->m_QInf             = u0;
@@ -4322,9 +4322,8 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double const *Gamma, double 
                     pPOpp->m_EigenVector[i][j] = std::complex<double>(0,0);
             }
             memset(pPOpp->m_ALong, 0, 16*sizeof(double));
-            memset(pPOpp->m_ALat,  0,  16*sizeof(double));
+            memset(pPOpp->m_ALat,  0, 16*sizeof(double));
         }
-
     }
 
     for(int iw=0;iw<MAXWINGS; iw++)
@@ -4384,8 +4383,7 @@ void PanelAnalysis::traceLog(QString str)
 }
 
 
-
-void PanelAnalysis::computePhillipsFormulae()
+void PanelAnalysis::computePhillipsFormulae(double Alpha)
 {
     //    Phugoid Approximation for Conventional Airplanes, JOURNAL OF AIRCRAFT,     Vol. 37, No. 1, January– February 2000
     //    Improved Closed-Form Approximation for Dutch Roll, JOURNAL OF AIRCRAFT,    Vol. 37, No. 3, May– June 2000
@@ -4407,8 +4405,9 @@ void PanelAnalysis::computePhillipsFormulae()
     Ixx      = m_Is[0][0];
     Iyy      = m_Is[1][1];
     Izz      = m_Is[2][2];
-    CL_C     = m_CL;
-    CDtot_C  = m_CX;
+
+    CL_C     = m_Force.dot(xfl::windNormal(Alpha, 0.0));
+    CDtot_C  = m_Force.dot(xfl::windDirection(Alpha, 0.0));
     for(int i=0; i<MAXEXTRADRAG; i++)
     {
         if(fabs(m_pWPolar->m_ExtraDragCoef[i])>PRECISION && fabs(m_pWPolar->m_ExtraDragArea[i])>PRECISION)

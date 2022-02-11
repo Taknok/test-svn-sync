@@ -71,7 +71,6 @@ Foil *Objects2d::deleteFoil(Foil *pFoil)
         }
     }
 
-
     for (int j=s_oaPolar.size()-1; j>=0; j--)
     {
         Polar*pPolar = s_oaPolar.at(j);
@@ -206,10 +205,7 @@ void Objects2d::insertThisFoil(Foil *pFoil)
 */
 OpPoint* Objects2d::addOpPoint(Foil const *pFoil, Polar *pPolar, OpPoint *pOpPoint, bool bStoreOpp)
 {
-    if(!pFoil || !pOpPoint) return nullptr;
-
-//    if(!pPolar) pPolar = m_pCurPolar; // risky
-    if(!pPolar) return nullptr;
+    if(!pFoil || !pPolar || !pOpPoint) return nullptr;
 
     if(DisplayOptions::isAlignedChildrenStyle())
     {
@@ -525,7 +521,7 @@ void Objects2d::insertOpPoint(OpPoint *pNewPoint)
             s_oaOpp.insert(i, pNewPoint);
             return;
         }
-        else if (pNewPoint->foilName() == pOpPoint->foilName())
+        else if (pNewPoint->foilName().compare(pOpPoint->foilName())==0 && pNewPoint->polarName().compare(pOpPoint->polarName())==0)
         {
             if (pNewPoint->Reynolds() < pOpPoint->Reynolds())
             {

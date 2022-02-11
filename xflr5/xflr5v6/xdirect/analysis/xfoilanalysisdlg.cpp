@@ -143,6 +143,8 @@ void XFoilAnalysisDlg::onButton(QAbstractButton *pButton)
         onCancelAnalysis();
     else if (m_ppbSkip == pButton)
         onSkipPoint();
+    else if (m_pchLogFile == pButton)
+        onLogFile();
 }
 
 
@@ -220,6 +222,7 @@ void XFoilAnalysisDlg::showEvent(QShowEvent *)
 void XFoilAnalysisDlg::hideEvent(QHideEvent *)
 {
     s_Geometry = saveGeometry();
+    XDirect::s_bKeepOpenErrors = m_pchLogFile->isChecked();
 }
 
 
@@ -275,15 +278,15 @@ void XFoilAnalysisDlg::accept()
 }
 
 
-void XFoilAnalysisDlg::onLogFile()
-{
-    XDirect::s_bKeepOpenErrors = m_pchLogFile->isChecked();
-}
-
-
 void XFoilAnalysisDlg::onSkipPoint()
 {
     XFoilTask::s_bSkipOpp= true;
+}
+
+
+void XFoilAnalysisDlg::onLogFile()
+{
+    XDirect::s_bKeepOpenErrors = m_pchLogFile->isChecked();
 }
 
 
@@ -395,6 +398,14 @@ void XFoilAnalysisDlg::customEvent(QEvent * pEvent)
         m_pButtonBox->button(QDialogButtonBox::Close)->setText(tr("Close"));
         m_ppbSkip->setEnabled(false);
         update();
+        if(m_bErrors && XDirect::s_bKeepOpenErrors)
+        {
+        }
+        else
+        {
+            emit analysisFinished(Objects2d::curPolar());
+            hide();
+        }
     }
     else if(pEvent->type() == XFOIL_ITER_EVENT)
     {

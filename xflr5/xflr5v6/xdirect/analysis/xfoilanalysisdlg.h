@@ -57,15 +57,16 @@ class XFoilAnalysisDlg : public QDialog
         ~XFoilAnalysisDlg();
 
         void initDialog();
+        bool bLogFile() const {return m_pchLogFile->isChecked();}
 
         static void loadSettings(QSettings &settings);
         static void saveSettings(QSettings &settings);
 
     private slots:
         void onCancelAnalysis();
-        void onLogFile();
         void onSkipPoint();
         void onButton(QAbstractButton *pButton);
+        void onLogFile();
 
     signals:
         void analysisFinished(Polar*);
