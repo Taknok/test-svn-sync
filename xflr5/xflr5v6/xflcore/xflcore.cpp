@@ -415,16 +415,17 @@ QString xfl::versionName(bool bFull)
 }
 
 
- /**
- * Takes a double number holding the value of a Reynolds number and returns a string.
- *@param str the return string  with the formatted number
- *@param f the Reynolds number to be formatted
- */
- void xfl::ReynoldsFormat(QString &str, double f)
+/**
+* Takes a double number holding the value of a Reynolds number and returns a string.
+*@param str the return string  with the formatted number
+*@param f the Reynolds number to be formatted
+*/
+QString xfl::ReynoldsFormat(double f)
  {
-     f = (int(f/1000.0))*1000.0;
+//     f = (int(f/1000.0))*1000.0;
 
-     int exp = int(log10(f));
+     return QString("%L1").arg(f,9,'f',0);
+/*     int exp = int(log10(f));
      int r = exp%3;
      int q = (exp-r)/3;
 
@@ -442,7 +443,7 @@ QString xfl::versionName(bool bFull)
          strong = " "+strong;
      }
 
-     str = strong;
+     str = strong;*/
  }
 
 

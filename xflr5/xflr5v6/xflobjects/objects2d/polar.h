@@ -78,7 +78,7 @@ class Polar : public XflObject
         QString const &foilName() const {return m_FoilName;}
         QString const &polarName() const {return m_Name;}
 
-        void setPolarType(xfl::enumPolarType type);
+        void setPolarType(xfl::enumPolarType type) {m_PolarType=type;}
 
         void setFoilName(QString const &newFoilName) {m_FoilName = newFoilName;}
         void setPolarName(QString const &newPolarName) {m_Name = newPolarName;}
@@ -104,10 +104,8 @@ class Polar : public XflObject
         void setXtrTop(double xtr)  {m_XTop=xtr;}
         void setXtrBot(double xtr)  {m_XBot=xtr;}
 
-        int ReType()  const {return m_ReType;}
-        int MaType()  const {return m_MaType;}
-        void setReType(int type) {m_ReType=type;}
-        void setMaType(int type) {m_MaType=type;}
+        int ReType() const;
+        int MaType() const;
 
         xfl::enumPolarType polarType() const {return m_PolarType;}
 
@@ -156,8 +154,6 @@ class Polar : public XflObject
 
         //Analysis specification
         xfl::enumPolarType m_PolarType;     /**< the Polar type */
-        int m_ReType;                       /**< the type of Reynolds number input, cf. XFoil documentation */
-        int m_MaType;                       /**< the type of Mach number input, cf. XFoil documentation */
         double m_ASpec;                     /**< the specified aoa in the case of Type 4 polars */
         double m_Mach;                      /**< the Mach number */
         double m_NCrit;                     /**< the transition criterion */

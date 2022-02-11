@@ -910,7 +910,7 @@ bool xfl::serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         else if(pPolar->m_PolarType==xfl::FIXEDAOAPOLAR)    ar<<4;
         else                                                ar<<1;
 
-        ar << pPolar->m_MaType << pPolar->m_ReType;
+        ar << pPolar->MaType() << pPolar->ReType();  // redundant
         ar << int(pPolar->m_Reynolds) << float(pPolar->m_Mach);
         ar << float(pPolar->m_ASpec);
         ar << n << float(pPolar->m_NCrit);
@@ -964,16 +964,7 @@ bool xfl::serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         else          pPolar->m_PolarType = xfl::FIXEDSPEEDPOLAR;
 
 
-        ar >> pPolar->m_MaType >> pPolar->m_ReType;
-
-        if(pPolar->m_MaType!=1 && pPolar->m_MaType!=2 && pPolar->m_MaType!=3)
-        {
-            return false;
-        }
-        if(pPolar->m_ReType!=1 && pPolar->m_ReType!=2 && pPolar->m_ReType!=3)
-        {
-            return false;
-        }
+        ar >> k >> k; // formerly MaType and ReType
 
         ar >> iRe;
         pPolar->m_Reynolds = double(iRe);

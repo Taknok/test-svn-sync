@@ -20,6 +20,8 @@
 *****************************************************************************/
 
 #include <QCoreApplication>
+#include <QDebug>
+
 #include "xfoiltask.h"
 #include <xflcore/xflevents.h>
 #include <xflcore/constants.h>
@@ -41,8 +43,6 @@ bool XFoilTask::s_bSkipPolar = false;
 */
 XFoilTask::XFoilTask(QObject *pParent)
 {
-//    setAutoDelete(true);
-
     m_pParent = pParent;
     m_pFoil  = nullptr;
     m_pPolar = nullptr;
@@ -128,6 +128,7 @@ bool XFoilTask::initializeXFoilTask(Foil const*pFoil, Polar *pPolar, bool bVisco
     if(!m_XFoilInstance.initXFoilGeometry(m_pFoil->m_n, m_pFoil->m_x,m_pFoil->m_y, nx, ny,
                                           m_pFoil->m_bTEFlap, xh, yh))
         return false;
+
     if(!m_XFoilInstance.initXFoilAnalysis(m_pPolar->Reynolds(), m_pPolar->aoa(), m_pPolar->Mach(),
                                           m_pPolar->NCrit(), m_pPolar->XtrTop(), m_pPolar->XtrBot(),
                                           m_pPolar->ReType(), m_pPolar->MaType(),

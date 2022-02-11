@@ -2566,8 +2566,8 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 
     xfl::readAVLString(in, Line, strong);// analysis type
 
-    pPolar->setReType(strong.mid(0,2).toInt(&bOK));
-    pPolar->setMaType(strong.mid(2,2).toInt(&bOK2));
+    int matype = strong.mid(0,2).toInt(&bOK);
+    int retype = strong.mid(2,2).toInt(&bOK2);
     if(!bOK || !bOK2)
     {
         str = QString("Error reading line %1: Unrecognized Mach and Reynolds type.\nThe polar(s) will not be stored").arg(Line);
@@ -2575,10 +2575,11 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
         return nullptr;
     }
-    if     (pPolar->ReType() ==1 && pPolar->MaType() ==1) pPolar->setPolarType(xfl::FIXEDSPEEDPOLAR);
-    else if(pPolar->ReType() ==2 && pPolar->MaType() ==2) pPolar->setPolarType(xfl::FIXEDLIFTPOLAR);
-    else if(pPolar->ReType() ==3 && pPolar->MaType() ==1) pPolar->setPolarType(xfl::RUBBERCHORDPOLAR);
-    else                                                  pPolar->setPolarType(xfl::FIXEDSPEEDPOLAR);
+
+    if     (retype ==1 && matype ==1) pPolar->setPolarType(xfl::FIXEDSPEEDPOLAR);
+    else if(retype ==2 && matype ==2) pPolar->setPolarType(xfl::FIXEDLIFTPOLAR);
+    else if(retype ==3 && matype ==1) pPolar->setPolarType(xfl::RUBBERCHORDPOLAR);
+    else                              pPolar->setPolarType(xfl::FIXEDSPEEDPOLAR);
 
     xfl::readAVLString(in, Line, strong);
     if(strong.length() < 34)
@@ -3843,11 +3844,11 @@ Polar * XDirect::setPolar(Polar *pPolar)
     {
         if(Objects2d::curPolar()->foilName() != Objects2d::curFoil()->name())
         {
-            Polar *pOldPolar;
+
             bool bFound = false;
             for (int i=0; i<m_poaPolar->size(); i++)
             {
-                pOldPolar = m_poaPolar->at(i);
+                Polar *pOldPolar = m_poaPolar->at(i);
                 if ((pOldPolar->foilName() == Objects2d::curFoil()->name()) &&
                         (pOldPolar->polarName() == Objects2d::curPolar()->polarName()))
                 {

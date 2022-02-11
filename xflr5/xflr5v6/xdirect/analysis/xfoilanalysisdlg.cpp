@@ -292,8 +292,7 @@ void XFoilAnalysisDlg::onLogFile()
 
 void XFoilAnalysisDlg::resetCurves()
 {
-    Curve*pCurve;
-    pCurve = m_pRmsGraph->curve(0);
+    Curve* pCurve = m_pRmsGraph->curve(0);
     if(pCurve) pCurve->clear();
     pCurve = m_pRmsGraph->curve(1);
     if(pCurve) pCurve->clear();

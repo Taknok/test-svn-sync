@@ -787,27 +787,6 @@ Polar *Objects2d::createPolar(Foil const*pFoil, xfl::enumPolarType PolarType, do
     pNewPolar->setVisible(true);
     pNewPolar->setPolarType(PolarType);
 
-    switch (pNewPolar->polarType())
-    {
-        default:
-        case xfl::FIXEDSPEEDPOLAR:
-            pNewPolar->setMaType(1);
-            pNewPolar->setReType(1);
-            break;
-        case xfl::FIXEDLIFTPOLAR:
-            pNewPolar->setMaType(2);
-            pNewPolar->setReType(2);
-            break;
-        case xfl::RUBBERCHORDPOLAR:
-            pNewPolar->setMaType(1);
-            pNewPolar->setReType(3);
-            break;
-        case xfl::FIXEDAOAPOLAR:
-            pNewPolar->setMaType(1);
-            pNewPolar->setReType(1);
-            break;
-    }
-
     if(PolarType!=xfl::FIXEDAOAPOLAR)
     {
         pNewPolar->setReynolds(Spec);

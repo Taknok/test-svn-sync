@@ -625,7 +625,7 @@ void OpPointWt::paintOpPoint(QPainter &painter)
         D += dD;
         if(pPolar->isFixedSpeedPolar())
         {
-            xfl::ReynoldsFormat(strong, pPolar->Reynolds());
+            strong = xfl::ReynoldsFormat(pPolar->Reynolds());
             strong ="Reynolds = " + strong;
             painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
             D += dD;
@@ -635,7 +635,7 @@ void OpPointWt::paintOpPoint(QPainter &painter)
         }
         else if(pPolar->isFixedLiftPolar())
         {
-            xfl::ReynoldsFormat(strong, pPolar->Reynolds());
+            strong = xfl::ReynoldsFormat(pPolar->Reynolds());
             strong = tr("Re.sqrt(Cl) = ") + strong;
             painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
             D += dD;
@@ -646,7 +646,7 @@ void OpPointWt::paintOpPoint(QPainter &painter)
         }
         else if(pPolar->isRubberChordPolar())
         {
-            xfl::ReynoldsFormat(strong, pPolar->Reynolds());
+            strong = xfl::ReynoldsFormat(pPolar->Reynolds());
             strong = tr("Re.Cl = ") + strong;
             painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
             D += dD;
@@ -680,7 +680,7 @@ void OpPointWt::paintOpPoint(QPainter &painter)
         {
             if(!pPolar->isFixedSpeedPolar())
             {
-                xfl::ReynoldsFormat(Result, pOpPoint->Reynolds()/pOpPoint->Cl);
+                Result = xfl::ReynoldsFormat(pOpPoint->Reynolds());
                 Result = "Re = "+ Result;
                 painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
                 D += dD;

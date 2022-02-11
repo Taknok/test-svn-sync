@@ -6097,7 +6097,7 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         else if(pPolar->m_PolarType==xfl::FIXEDAOAPOLAR)    ar<<4;
         else                                                ar<<1;
 
-        ar << pPolar->m_MaType << pPolar->m_ReType;
+        ar << pPolar->MaType() << pPolar->ReType(); // redundant
         ar << pPolar->m_Reynolds << pPolar->m_Mach;
         ar << pPolar->m_ASpec;
         ar << pPolar->m_XTop << pPolar->m_XBot;
@@ -6156,7 +6156,7 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         else if(n==4) pPolar->m_PolarType=xfl::FIXEDAOAPOLAR;
         else          pPolar->setPolarType(xfl::FIXEDSPEEDPOLAR);
 
-        ar >> pPolar->m_MaType >> pPolar->m_ReType;
+        ar >> k >> k;  // formerly MaType and ReType
         ar >> pPolar->m_Reynolds >> pPolar->m_Mach;
         ar >> pPolar->m_ASpec;
         ar >> pPolar->m_XTop >> pPolar->m_XBot;

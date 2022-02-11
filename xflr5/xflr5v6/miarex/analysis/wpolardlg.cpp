@@ -1171,12 +1171,12 @@ void WPolarDlg::setReynolds()
     if(s_WPolar.polarType() == xfl::FIXEDSPEEDPOLAR)
     {
         double RRe = m_pPlane->rootChord() * s_WPolar.m_QInfSpec/s_WPolar.m_Viscosity;
-        xfl::ReynoldsFormat(str, RRe);
+        str = xfl::ReynoldsFormat(RRe);
         strange = tr("Root Re =");
         m_plabRRe->setText(strange+str);
 
         double SRe = m_pPlane->tipChord() * s_WPolar.m_QInfSpec/s_WPolar.m_Viscosity;
-        xfl::ReynoldsFormat(str, SRe);
+        str = xfl::ReynoldsFormat(SRe);
         strange = tr("Tip Re =");
         m_plabSRe->setText(strange+str);
 
@@ -1191,12 +1191,12 @@ void WPolarDlg::setReynolds()
         m_plabQInfCl->setText(strange+str);
 
         double RRe = m_pPlane->rootChord() * QCl/s_WPolar.m_Viscosity;
-        xfl::ReynoldsFormat(str, RRe);
+        str = xfl::ReynoldsFormat(RRe);
         strange = tr("Root Re.sqrt(Cl) =");
         m_plabRRe->setText(strange+str);
 
         double SRe = m_pPlane->tipChord() * QCl/s_WPolar.m_Viscosity;
-        xfl::ReynoldsFormat(str, SRe);
+        str = xfl::ReynoldsFormat(SRe);
         strange = tr("Tip Re.sqrt(Cl) =");
         m_plabSRe->setText(strange+str);
     }
