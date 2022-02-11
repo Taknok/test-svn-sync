@@ -42,8 +42,6 @@ Polar::Polar()
 
     m_ASpec     = 0.0;
     m_PolarType = xfl::FIXEDSPEEDPOLAR;
-    m_ReType    = 1;
-    m_MaType    = 1;
     m_Reynolds  = 100000.0;
     m_Mach      = 0.0;
     m_NCrit     = 9.0;
@@ -74,15 +72,15 @@ void Polar::exportPolar(QTextStream &out, const QString &versionName, bool bCSV,
         strong += m_FoilName + "\n\n";
         out << strong;
 
-        strong = QString(" %1 %2").arg(m_ReType).arg(m_MaType);
+        strong = QString(" %1 %2").arg(ReType()).arg(MaType());
 
-        if(m_ReType==1)      strong += (" Reynolds number fixed       ");
-        else if(m_ReType==2) strong += (" Reynolds number ~ 1/sqrt(CL)");
-        else if(m_ReType==3) strong += (" Reynolds number ~ 1/CL      ");
+        if     (ReType()==1) strong += (" Reynolds number fixed       ");
+        else if(ReType()==2) strong += (" Reynolds number ~ 1/sqrt(CL)");
+        else if(ReType()==3) strong += (" Reynolds number ~ 1/CL      ");
 
-        if(m_MaType==1)      strong += ("   Mach number fixed         ");
-        else if(m_MaType==2) strong += ("   Mach number ~ 1/sqrt(CL)  ");
-        else if(m_MaType==3) strong += ("   Mach number ~ 1/CL        ");
+        if     (MaType()==1) strong += ("   Mach number fixed         ");
+        else if(MaType()==2) strong += ("   Mach number ~ 1/sqrt(CL)  ");
+        else if(MaType()==3) strong += ("   Mach number ~ 1/CL        ");
         strong +="\n\n";
         out << strong;
 
@@ -441,8 +439,6 @@ void Polar::copyPolar(const Polar *pPolar)
 void Polar::copySpecification(const Polar *pPolar)
 {
     m_PolarType = pPolar->m_PolarType;
-    m_ReType    = pPolar->m_ReType;
-    m_MaType    = pPolar->m_MaType;
     m_Reynolds  = pPolar->m_Reynolds;
     m_ASpec     = pPolar->m_ASpec;
     m_Mach      = pPolar->m_Mach;
@@ -634,35 +630,6 @@ void Polar::getLinearizedCl(double &Alpha0, double &slope) const
 
     slope  = b1; //in cl/°
     Alpha0 = -b2/b1;
-}
-
-
-void Polar::setPolarType(xfl::enumPolarType type)
-{
-    m_PolarType=type;
-    switch (m_PolarType)
-    {
-        case xfl::FIXEDSPEEDPOLAR:
-            m_MaType = 1;
-            m_ReType = 1;
-            break;
-        case xfl::FIXEDLIFTPOLAR:
-            m_MaType = 2;
-            m_ReType = 2;
-            break;
-        case xfl::RUBBERCHORDPOLAR:
-            m_MaType = 1;
-            m_ReType = 3;
-            break;
-        case xfl::FIXEDAOAPOLAR:
-            m_MaType = 1;
-            m_ReType = 1;
-            break;
-        default:
-            m_ReType = 1;
-            m_MaType = 1;
-            break;
-    }
 }
 
 
@@ -987,3 +954,37 @@ QVector<double> *Polar::getGraphVariable(int iVar)
     }
     return pVar;
 }
+
+
+int Polar::ReType() const
+{
+    switch(m_PolarType)
+    {
+        default:
+        case xfl::FIXEDSPEEDPOLAR:
+        case xfl::FIXEDAOAPOLAR:
+            return 1;
+        case xfl::FIXEDLIFTPOLAR:
+            return 2;
+        case xfl::RUBBERCHORDPOLAR:
+            return 3;
+    }
+}
+
+
+int Polar::MaType() const
+{
+    switch(m_PolarType)
+    {
+        default:
+        case xfl::FIXEDSPEEDPOLAR:
+        case xfl::FIXEDAOAPOLAR:
+            return 1;
+        case xfl::FIXEDLIFTPOLAR:
+            return 2;
+        case xfl::RUBBERCHORDPOLAR:
+            return 1;
+    }
+}
+
+

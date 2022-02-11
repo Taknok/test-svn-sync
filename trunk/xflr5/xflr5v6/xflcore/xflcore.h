@@ -97,7 +97,7 @@ namespace xfl
 
 
 
-    void ReynoldsFormat(QString &str, double f);
+    QString ReynoldsFormat(double f);
 
 
 
