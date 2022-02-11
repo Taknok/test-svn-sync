@@ -1604,11 +1604,11 @@ void PlaneTask::PanelAnalyze()
 
     m_pthePanelAnalysis->m_OpBeta = m_pWPolar->Beta();
 
-    if(m_pWPolar->polarType()==xfl::FIXEDAOAPOLAR)
+    if(m_pWPolar->isFixedaoaPolar())
     {
         m_pthePanelAnalysis->m_Alpha  = m_pWPolar->Alpha();
     }
-    else if(m_pWPolar->polarType()==xfl::STABILITYPOLAR)
+    else if(m_pWPolar->isStabilityPolar())
     {
         m_pthePanelAnalysis->m_Alpha  = m_pWPolar->Alpha();
     }

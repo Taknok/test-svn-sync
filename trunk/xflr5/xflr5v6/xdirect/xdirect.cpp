@@ -1186,7 +1186,12 @@ void XDirect::onAnalyze()
 
 void XDirect::onTaskFinished(Polar *pPolar)
 {
-    if(!s_bKeepOpenErrors || !m_pXFADlg->m_bErrors) m_pXFADlg->hide();
+    if(m_pXFADlg->m_bErrors && s_bKeepOpenErrors)
+    {
+    }
+    else
+        m_pXFADlg->hide();
+
     m_ppbAnalyze->setEnabled(true);
 
     s_bInitBL = !m_XFoil.isBLInitialized();
@@ -1344,28 +1349,29 @@ void XDirect::onDefinePolar()
     int res = fpDlg.exec();
     if (res == QDialog::Accepted)
     {
-        setCurPolar(new Polar());
+//        setCurPolar();
+        Polar *pNewPolar = new Polar();
 
         if(DisplayOptions::isAlignedChildrenStyle())
         {
-            Objects2d::curPolar()->setTheStyle(Objects2d::curFoil()->theStyle());
+            pNewPolar->setTheStyle(Objects2d::curFoil()->theStyle());
         }
         else
         {
             QColor clr = xfl::randomColor(!DisplayOptions::isLightTheme());
-            Objects2d::curPolar()->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+            pNewPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
         }
 
-        Objects2d::curPolar()->setFoilName(Objects2d::curFoil()->name());
-        Objects2d::curPolar()->setPolarName(fpDlg.m_PlrName);
-        Objects2d::curPolar()->setVisible(true);
-        Objects2d::curPolar()->copySpecification(&FoilPolarDlg::s_RefPolar);
+        pNewPolar->setFoilName(Objects2d::curFoil()->name());
+        pNewPolar->setPolarName(fpDlg.m_PlrName);
+        pNewPolar->setVisible(true);
+        pNewPolar->copySpecification(&FoilPolarDlg::s_RefPolar);
 
-        Objects2d::addPolar(Objects2d::curPolar());
-        setPolar(Objects2d::curPolar());
+        Objects2d::addPolar(pNewPolar);
+        setPolar(pNewPolar);
 
-        m_pFoilTreeView->insertPolar(Objects2d::curPolar());
-        m_pFoilTreeView->selectPolar(Objects2d::curPolar());
+        m_pFoilTreeView->insertPolar(pNewPolar);
+        m_pFoilTreeView->selectPolar(pNewPolar);
         updateView();
         emit projectModified();
     }
@@ -1618,7 +1624,6 @@ void XDirect::onCadd()
     Foil *pNewFoil = new Foil();
     pNewFoil->copyFoil(curFoil());
 
-    OpPoint* pOpPoint = Objects2d::curOpp();
     setCurOpp(nullptr);
     m_bResetCurves = true;
 
@@ -1636,12 +1641,11 @@ void XDirect::onCadd()
     {
         pNewFoil->setPointStyle(psState);
         xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
-        setCurOpp(pOpPoint);
 
         if(addNewFoil(pNewFoil))
         {
             m_pFoilTreeView->insertFoil(pNewFoil);
-            setFoil(pNewFoil);
+            m_pFoilTreeView->selectFoil(pNewFoil);
             emit projectModified();
             updateView();
             return;
@@ -1650,7 +1654,6 @@ void XDirect::onCadd()
 
     //reset everything
     setFoil(pCurFoil);
-    setCurOpp(pOpPoint);
 
     if(Objects2d::curFoil())
         m_XFoil.initXFoilGeometry(Objects2d::curFoil()->m_n, Objects2d::curFoil()->m_x, Objects2d::curFoil()->m_y, Objects2d::curFoil()->m_nx, Objects2d::curFoil()->m_ny);
@@ -1681,8 +1684,8 @@ void XDirect::onDerotateFoil()
 
     if(addNewFoil(pNewFoil))
     {
-        setFoil(pNewFoil);
         m_pFoilTreeView->insertFoil(pNewFoil);
+        m_pFoilTreeView->selectFoil(pNewFoil);
         emit projectModified();
         updateView();
         return;
@@ -1714,8 +1717,8 @@ void XDirect::onNormalizeFoil()
     s_pMainFrame->statusBar()->showMessage(str);
     if(addNewFoil(pNewFoil))
     {
-        setFoil(pNewFoil);
         m_pFoilTreeView->insertFoil(pNewFoil);
+        m_pFoilTreeView->selectFoil(pNewFoil);
         emit projectModified();
         updateView();
         return;
@@ -2284,7 +2287,6 @@ void XDirect::onFoilCoordinates()
     Foil *pNewFoil = new Foil;
     pNewFoil->copyFoil(pCurFoil);
     pNewFoil->setPointStyle(Line::LITTLECIRCLE);
-    OpPoint* pOpPoint = Objects2d::curOpp();
     setCurOpp(nullptr);
     m_bResetCurves = true;
 
@@ -2314,18 +2316,15 @@ void XDirect::onFoilCoordinates()
 
         xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
 
-        setCurOpp(pOpPoint);
-
         if(addNewFoil(pNewFoil))
         {
             m_pFoilTreeView->insertFoil(pNewFoil);
-            setFoil(pNewFoil);
+            m_pFoilTreeView->selectFoil(pNewFoil);
         }
         else
         {
             //reset everything
             setFoil(pCurFoil);
-            setCurOpp(pOpPoint);
             m_XFoil.initXFoilGeometry(pCurFoil->m_n, pCurFoil->m_x, pCurFoil->m_y, pCurFoil->m_nx, pCurFoil->m_ny);
             delete pNewFoil;
         }
@@ -2336,7 +2335,6 @@ void XDirect::onFoilCoordinates()
     {
         //reset everything
         setCurFoil(pCurFoil);
-        setCurOpp(pOpPoint);
         if(Objects2d::curFoil())
             m_XFoil.initXFoilGeometry(Objects2d::curFoil()->m_n, Objects2d::curFoil()->m_x, Objects2d::curFoil()->m_y, Objects2d::curFoil()->m_nx, Objects2d::curFoil()->m_ny);
         delete pNewFoil;
@@ -2363,7 +2361,6 @@ void XDirect::onFoilGeom()
     pNewFoil->copyFoil(pCurFoil);
     setCurFoil(pNewFoil);
 
-    OpPoint* pOpPoint = Objects2d::curOpp();
     setCurOpp(nullptr);
     m_bResetCurves = true;
     updateView();
@@ -2376,12 +2373,12 @@ void XDirect::onFoilGeom()
     if(fgeDlg.exec() == QDialog::Accepted)
     {
         xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
-        setCurOpp(pOpPoint);
+
 
         if(addNewFoil(pNewFoil))
         {
-            setFoil(pNewFoil);
             m_pFoilTreeView->insertFoil(pNewFoil);
+            m_pFoilTreeView->selectFoil(pNewFoil);
             emit projectModified();
             updateView();
             return;
@@ -2390,7 +2387,7 @@ void XDirect::onFoilGeom()
 
     delete pNewFoil;
     setCurFoil(pCurFoil);
-    setCurOpp(pOpPoint);
+
     if(Objects2d::curFoil()) m_XFoil.initXFoilGeometry(Objects2d::curFoil()->m_n, Objects2d::curFoil()->m_x, Objects2d::curFoil()->m_y, Objects2d::curFoil()->m_nx, Objects2d::curFoil()->m_ny);
 
     updateView();
@@ -2881,8 +2878,8 @@ void XDirect::onInterpolateFoils()
 
         if(addNewFoil(pNewFoil))
         {
-            setFoil(pNewFoil);
             m_pFoilTreeView->insertFoil(pNewFoil);
+            m_pFoilTreeView->selectFoil(pNewFoil);
             emit projectModified();
             updateView();
             return;
@@ -2907,8 +2904,8 @@ void XDirect::onNacaFoils()
     onOpPointView();
 
     Foil* pCurFoil = Objects2d::curFoil();
-    OpPoint* pCurOpp  = Objects2d::curOpp();
     setCurFoil(nullptr);
+    setCurPolar(nullptr);
     setCurOpp(nullptr);
 
     m_bResetCurves = true;
@@ -2947,12 +2944,10 @@ void XDirect::onNacaFoils()
         xfl::setRandomFoilColor(pNacaFoil, !DisplayOptions::isLightTheme());
         pNacaFoil->setName(str);
 
-        setCurOpp(pCurOpp);
-
         if(addNewFoil(pNacaFoil))
         {
-            setFoil(pNacaFoil);
             m_pFoilTreeView->insertFoil(pNacaFoil);
+            m_pFoilTreeView->selectFoil(pNacaFoil);
             emit projectModified();
             updateView();
             return;
@@ -2960,7 +2955,7 @@ void XDirect::onNacaFoils()
     }
     //reset everything
     setCurFoil(pCurFoil);
-    setCurOpp(pCurOpp);
+
     if(Objects2d::curFoil()) m_XFoil.initXFoilGeometry(Objects2d::curFoil()->m_n, Objects2d::curFoil()->m_x, Objects2d::curFoil()->m_y, Objects2d::curFoil()->m_nx, Objects2d::curFoil()->m_ny);
     delete pNacaFoil;
     updateView();
@@ -3049,7 +3044,6 @@ void XDirect::onRefinePanelsGlobally()
     pNewFoil->copyFoil(pCurFoil);
     setFoil(pNewFoil);
 
-    OpPoint* pOpPoint = Objects2d::curOpp();
     setCurOpp(nullptr);
     m_bResetCurves = true;
 
@@ -3067,11 +3061,11 @@ void XDirect::onRefinePanelsGlobally()
     {
         pNewFoil->setPointStyle(psState);
         xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
-        setCurOpp(pOpPoint);
+
         if(addNewFoil(pNewFoil))
         {
-            setFoil(pNewFoil);
             m_pFoilTreeView->insertFoil(pNewFoil);
+            m_pFoilTreeView->selectFoil(pNewFoil);
             emit projectModified();
             updateView();
             return;
@@ -3079,7 +3073,7 @@ void XDirect::onRefinePanelsGlobally()
     }
     //reset everything
     setFoil(pCurFoil);
-    setCurOpp(pOpPoint);
+
     m_XFoil.initXFoilGeometry(pCurFoil->m_n, pCurFoil->m_x, pCurFoil->m_y, pCurFoil->m_nx, pCurFoil->m_ny);
     delete pNewFoil;
     updateView();
@@ -3294,9 +3288,8 @@ void XDirect::onSetFlap()
     Foil *pNewFoil = new Foil();
     pNewFoil->copyFoil(curFoil());
     setCurFoil(pNewFoil);
-
-    OpPoint *pOpPoint = Objects2d::curOpp();
     setCurOpp(nullptr);
+
     m_bResetCurves = true;
 
     FlapDlg flpDlg(s_pMainFrame);
@@ -3306,15 +3299,12 @@ void XDirect::onSetFlap()
 
     if(QDialog::Accepted == flpDlg.exec())
     {
-        //        pNewFoil->copyFoil(curFoil());
         xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
-
-        setCurOpp(pOpPoint);
 
         if(addNewFoil(pNewFoil))
         {
-            setFoil(pNewFoil);
             m_pFoilTreeView->insertFoil(pNewFoil);
+            m_pFoilTreeView->selectFoil(pNewFoil);
             emit projectModified();
             updateView();
             return;
@@ -3323,7 +3313,6 @@ void XDirect::onSetFlap()
 
     //reset everything
     setCurFoil(pCurFoil);
-    setCurOpp(pOpPoint);
 
     if(Objects2d::curFoil())  m_XFoil.initXFoilGeometry(Objects2d::curFoil()->m_n, Objects2d::curFoil()->m_x, Objects2d::curFoil()->m_y, Objects2d::curFoil()->m_nx, Objects2d::curFoil()->m_ny);
 
@@ -3346,7 +3335,7 @@ void XDirect::onSetLERadius()
     pNewFoil->copyFoil(curFoil());
     setCurFoil(pNewFoil);
 
-    OpPoint *pOpPoint = Objects2d::curOpp();
+
     setCurOpp(nullptr);
     m_bResetCurves = true;
 
@@ -3358,12 +3347,11 @@ void XDirect::onSetLERadius()
     if(QDialog::Accepted == lDlg.exec())
     {
         xfl::setRandomFoilColor(pNewFoil, !DisplayOptions::isLightTheme());
-        setCurOpp(pOpPoint);
 
         if(addNewFoil(pNewFoil))
         {
-            setFoil(pNewFoil);
             m_pFoilTreeView->insertFoil(pNewFoil);
+            m_pFoilTreeView->selectFoil(pNewFoil);
             emit projectModified();
             updateView();
             return;
@@ -3371,7 +3359,6 @@ void XDirect::onSetLERadius()
     }
     //reset everything
     setCurFoil(pCurFoil);
-    setCurOpp(pOpPoint);
 
     if(Objects2d::curFoil())
         m_XFoil.initXFoilGeometry(Objects2d::curFoil()->m_n, Objects2d::curFoil()->m_x, Objects2d::curFoil()->m_y, Objects2d::curFoil()->m_nx, Objects2d::curFoil()->m_ny);
@@ -3392,7 +3379,7 @@ void XDirect::onSetTEGap()
     Foil *pNewFoil = new Foil();
     Foil *pCurFoil = curFoil();
     pNewFoil->copyFoil(pCurFoil);
-    OpPoint *pOpPoint = Objects2d::curOpp();
+
     setCurOpp(nullptr);
     m_bResetCurves = true;
 
@@ -3410,8 +3397,8 @@ void XDirect::onSetTEGap()
 
         if(addNewFoil(pNewFoil))
         {
-            setFoil(pNewFoil);
             m_pFoilTreeView->insertFoil(pNewFoil);
+            m_pFoilTreeView->selectFoil(pNewFoil);
             emit projectModified();
             updateView();
             return;
@@ -3419,7 +3406,7 @@ void XDirect::onSetTEGap()
     }
     //reset everything
     setCurFoil(pCurFoil);
-    setCurOpp(pOpPoint);
+
     if(Objects2d::curFoil())
         m_XFoil.initXFoilGeometry(Objects2d::curFoil()->m_n, Objects2d::curFoil()->m_x, Objects2d::curFoil()->m_y, Objects2d::curFoil()->m_nx, Objects2d::curFoil()->m_ny);
     delete pNewFoil;

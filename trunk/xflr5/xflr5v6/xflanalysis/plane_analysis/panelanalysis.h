@@ -128,7 +128,7 @@ class PanelAnalysis : QObject
         PlaneOpp* createPlaneOpp(double *Cp, const double *Gamma, const double *Sigma);
 
         void getSpeedVector(Vector3d const &C, const double *Mu, const double *Sigma, Vector3d &VT, bool bAll=true) const;
-        void computePhillipsFormulae();
+        void computePhillipsFormulae(double Alpha);
 
         void clearPOppList();
 
@@ -170,9 +170,7 @@ class PanelAnalysis : QObject
         double m_QInf;              /**< The freestream velocity of the current calculation in m/s >*/
         double m_OpBeta;            /**< The sideslip angle of the current calculation, in degrees >*/
 
-        double m_CL;                /**< The lift coefficient */
-        double m_CX;                /**< The drag coefficient */
-        double m_CY;                /**< The side force coefficient */
+        Vector3d m_Force;
 
         double m_InducedDrag;       /**< The UFO's induced drag coefficient */
         double m_ViscousDrag;       /**< The UFO's viscous drag coefficient */

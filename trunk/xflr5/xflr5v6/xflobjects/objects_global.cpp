@@ -1054,3 +1054,106 @@ bool xfl::serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
     }
     return true;
 }
+
+
+
+Vector3d xfl::windDirection(double alpha, double beta)
+{
+/*  Using AVL convention
+    | x |          | cos(b) sin(b)    | | x |
+    | y |       =  |-sin(b) cos(b)    | | y |
+    | z |_wind     |                1 | | z |
+
+                   | cos(b)cos(a)      sin(b)    cos(b)sin(a)| | X |
+                =  |-sin(b)cos(a)      cos(b)   -sin(b)sin(a)| | Y |
+                   |      -sin(a)        0             cos(a)| | Z |
+
+    | X |	       | cos(b)cos(a)   -sin(b)cos(a)     -sin(a)| | x |
+    | Y | 		=  | sin(b)             cos(b)            0  | | y |
+    | Z |		   | cos(b)sin(a)   -sin(b)sin(a)      cos(a)| | z |_wind
+    */
+
+    // V=(1,0,0)_wind
+    Vector3d Vinf;
+    Vinf.x =   cos(alpha*PI/180.0) * cos(beta*PI/180.0);
+    Vinf.y =   sin(beta*PI/180.0);
+    Vinf.z =   sin(alpha*PI/180.0) * cos(beta*PI/180.0);
+    return Vinf;
+}
+
+
+Vector3d xfl::windSide(double alpha, double beta)
+{
+    Vector3d Vinf;
+    Vinf.x =  -cos(alpha*PI/180.0) * sin(beta*PI/180.0);
+    Vinf.y =   cos(beta*PI/180.0);
+    Vinf.z =  -sin(alpha*PI/180.0) * sin(beta*PI/180.0);
+    return Vinf;
+}
+
+
+Vector3d xfl::windNormal(double alpha, double beta)
+{
+    (void)beta;
+    // V=(0,0,1)_wind
+    Vector3d Vinf;
+    Vinf.x = -sin(alpha*PI/180.0);
+    Vinf.y = 0.0;
+    Vinf.z = cos(alpha*PI/180.0);
+    return Vinf;
+}
+
+
+Vector3d xfl::windToGeomAxes(Vector3d const &Vw, double alpha, double beta)
+{
+/*  Using AVL convention
+    | x |          | cos(b) sin(b)    | | x |
+    | y |       =  |-sin(b) cos(b)    | | y |
+    | z |_wind     |                1 | | z |
+
+                   | cos(b)cos(a)      sin(b)    cos(b)sin(a)| | X |
+                =  |-sin(b)cos(a)      cos(b)   -sin(b)sin(a)| | Y |
+                   |      -sin(a)        0             cos(a)| | Z |
+
+    | X |	       | cos(b)cos(a)   -sin(b)cos(a)     -sin(a)| | x |
+    | Y | 		=  | sin(b)             cos(b)            0  | | y |
+    | Z |		   | cos(b)sin(a)   -sin(b)sin(a)      cos(a)| | z |_wind
+    */
+    double cosa = cos(alpha*PI/180.0);
+    double sina = sin(alpha*PI/180.0);
+    double cosb = cos(beta*PI/180.0);
+    double sinb = sin(beta*PI/180.0);
+
+    double i[9];
+    i[0] = cosb*cosa;    i[1] = -sinb*cosa;     i[2] = -sina;
+    i[3] = sinb;         i[4] = cosb;           i[5] = 0;
+    i[6] = cosb*sina;    i[7] = -sinb*sina;     i[8] = cosa;
+
+    Vector3d Vg;
+    Vg.x = i[0]*Vw.x +i[1]*Vw.y + i[2]*Vw.z;
+    Vg.y = i[3]*Vw.x +i[4]*Vw.y + i[5]*Vw.z;
+    Vg.z = i[6]*Vw.x +i[7]*Vw.y + i[8]*Vw.z;
+    return Vg;
+}
+
+
+Vector3d xfl::geomToWindAxes(Vector3d const &Vw, double alpha, double beta)
+{
+    double cosa = cos(alpha*PI/180.0);
+    double sina = sin(alpha*PI/180.0);
+    double cosb = cos(beta*PI/180.0);
+    double sinb = sin(beta*PI/180.0);
+
+    double i[9]; // transposed
+    i[0] = cosb*cosa;    i[3] = -sinb*cosa;     i[6] = -sina;
+    i[1] = sinb;         i[4] = cosb;           i[7] = 0;
+    i[2] = cosb*sina;    i[5] = -sinb*sina;     i[8] = cosa;
+
+    Vector3d Vg;
+    Vg.x = i[0]*Vw.x +i[1]*Vw.y + i[2]*Vw.z;
+    Vg.y = i[3]*Vw.x +i[4]*Vw.y + i[5]*Vw.z;
+    Vg.z = i[6]*Vw.x +i[7]*Vw.y + i[8]*Vw.z;
+    return Vg;
+}
+
+

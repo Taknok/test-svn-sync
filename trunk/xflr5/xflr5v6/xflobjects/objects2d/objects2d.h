@@ -93,9 +93,9 @@ namespace Objects2d
     void setFoilVisible(Foil *pFoil, bool bVisible, bool bChildrenOnly);
     void setPolarVisible(Polar *pPolar, bool bVisible);
 
-    inline void setCurFoil(Foil*pFoil)    {m_pCurFoil = pFoil;}
+    inline void setCurFoil(Foil*pFoil)    {m_pCurFoil  = pFoil;}
     inline void setCurPolar(Polar*pPolar) {m_pCurPolar = pPolar;}
-    inline void setCurOpp(OpPoint* pOpp)  {m_pCurOpp = pOpp;}
+    inline void setCurOpp(OpPoint* pOpp)  {m_pCurOpp   = pOpp;}
 
     inline Foil *   curFoil()  {return m_pCurFoil;}
     inline Polar*   curPolar() {return m_pCurPolar;}

@@ -757,45 +757,63 @@ void Polar::getProperties(QString &polarProps) const
     polarProps.clear();
 
     int iPolarNumber = 0;
-    if (m_PolarType==xfl::FIXEDSPEEDPOLAR)     iPolarNumber = 1;
-    else if (m_PolarType==xfl::FIXEDLIFTPOLAR) iPolarNumber = 2;
-    else if (m_PolarType==xfl::FIXEDAOAPOLAR)  iPolarNumber = 4;
-    else if (m_PolarType==xfl::STABILITYPOLAR) iPolarNumber = 7;
-    else if (m_PolarType==xfl::BETAPOLAR)      iPolarNumber = 5;
+    switch(m_PolarType)
+    {
+        case xfl::FIXEDSPEEDPOLAR:   iPolarNumber = 1;   break;
+        case xfl::FIXEDLIFTPOLAR:    iPolarNumber = 2;   break;
+        case xfl::RUBBERCHORDPOLAR:  iPolarNumber = 3;   break;
+        case xfl::FIXEDAOAPOLAR:     iPolarNumber = 4;   break;
+        default:                     iPolarNumber = 0;   break;
+    }
     strong = QString(QObject::tr("Type")+" = %1").arg(iPolarNumber);
 
-    if(m_PolarType==xfl::FIXEDSPEEDPOLAR)      strong += " ("+QObject::tr("Fixed speed") +")\n";
-    else if(m_PolarType==xfl::FIXEDLIFTPOLAR) strong += " ("+QObject::tr("Fixed lift") +")\n";
-    else if(m_PolarType==xfl::FIXEDAOAPOLAR) strong += " ("+QObject::tr("Fixed angle of attack") +")\n";
+    switch(m_PolarType)
+    {
+        case xfl::FIXEDSPEEDPOLAR:   strong += " ("+QObject::tr("Fixed speed") +")\n";             break;
+        case xfl::FIXEDLIFTPOLAR:    strong += " ("+QObject::tr("Fixed lift") +")\n";              break;
+        case xfl::RUBBERCHORDPOLAR:  strong += " ("+QObject::tr("Rubber chord") +")\n";            break;
+        case xfl::FIXEDAOAPOLAR:     strong += " ("+QObject::tr("Fixed angle of attack") +")\n";   break;
+        default:   break;
+    }
     polarProps += strong;
 
-    if(m_PolarType==xfl::FIXEDSPEEDPOLAR)
+    switch(m_PolarType)
     {
-        strong = QString(QObject::tr("Reynolds number")+" = %L1\n").arg(m_Reynolds,0,'f',0);
-        polarProps += strong;
-        strong = QString(QObject::tr("Mach number") + " = %L1\n").arg(m_Mach,5,'f',2);
-        polarProps += strong;
-    }
-    else if(m_PolarType==xfl::FIXEDLIFTPOLAR)
-    {
-        strong = QString("Re.sqrt(Cl) = %L1\n").arg(m_Reynolds,0,'f',0);
-        polarProps += strong;
-        strong = QString("Ma.sqrt(Cl) = %L1\n").arg(m_Mach,5,'f',2);
-        polarProps += strong;
-    }
-    else if(m_PolarType==xfl::RUBBERCHORDPOLAR)
-    {
-        strong = QString(QObject::tr("Re.Cl")+" = %L1\n").arg(m_Reynolds,0,'f',0);
-        polarProps += strong;
-        strong = QString(QObject::tr("Mach number") + " = %L1\n").arg(m_Mach,5,'f',2);
-        polarProps += strong;
-    }
-    else if(m_PolarType==xfl::FIXEDAOAPOLAR)
-    {
-        strong = QString(QObject::tr("Alpha")+" = %L1"+QChar(0260)+"\n").arg(m_ASpec,7,'f',2);
-        polarProps += strong;
-        strong = QString(QObject::tr("Mach number") + " = %L1\n").arg(m_Mach,5,'f',2);
-        polarProps += strong;
+            case xfl::FIXEDSPEEDPOLAR:
+            {
+                strong = QString(QObject::tr("Reynolds number")+" = %L1\n").arg(m_Reynolds,0,'f',0);
+                polarProps += strong;
+                strong = QString(QObject::tr("Mach number") + " = %L1\n").arg(m_Mach,5,'f',2);
+                polarProps += strong;
+                break;
+            }
+            case xfl::FIXEDLIFTPOLAR:
+            {
+                strong = QString("Re.sqrt(Cl) = %L1\n").arg(m_Reynolds,0,'f',0);
+                polarProps += strong;
+                strong = QString("Ma.sqrt(Cl) = %L1\n").arg(m_Mach,5,'f',2);
+                polarProps += strong;
+                break;
+            }
+            case xfl::RUBBERCHORDPOLAR:
+            {
+                strong = QString(QObject::tr("Re.Cl")+" = %L1\n").arg(m_Reynolds,0,'f',0);
+                polarProps += strong;
+                strong = QString(QObject::tr("Mach number") + " = %L1\n").arg(m_Mach,5,'f',2);
+                polarProps += strong;
+                break;
+            }
+            case xfl::FIXEDAOAPOLAR:
+            {
+                strong = QString(QObject::tr("Alpha")+" = %L1"+QChar(0260)+"\n").arg(m_ASpec,7,'f',2);
+                polarProps += strong;
+                strong = QString(QObject::tr("Mach number") + " = %L1\n").arg(m_Mach,5,'f',2);
+                polarProps += strong;
+                break;
+            }
+            default:
+                polarProps += QObject::tr("Unrecognized polar type");
+                break;
     }
 
 

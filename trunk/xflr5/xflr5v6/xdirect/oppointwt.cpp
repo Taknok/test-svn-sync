@@ -647,7 +647,7 @@ void OpPointWt::paintOpPoint(QPainter &painter)
         else if(pPolar->isRubberChordPolar())
         {
             xfl::ReynoldsFormat(strong, pPolar->Reynolds());
-            strong = tr("Re.sqrt(Cl) = ") + strong;
+            strong = tr("Re.Cl = ") + strong;
             painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
             D += dD;
 
@@ -680,7 +680,7 @@ void OpPointWt::paintOpPoint(QPainter &painter)
         {
             if(!pPolar->isFixedSpeedPolar())
             {
-                xfl::ReynoldsFormat(Result, pOpPoint->Reynolds());
+                xfl::ReynoldsFormat(Result, pOpPoint->Reynolds()/pOpPoint->Cl);
                 Result = "Re = "+ Result;
                 painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
                 D += dD;
