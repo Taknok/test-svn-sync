@@ -73,9 +73,6 @@ bool XDirect::s_bAlpha = true;
 bool XDirect::s_bInitBL = true;
 bool XDirect::s_bKeepOpenErrors = true;
 
-double XDirect::s_Re      =  100000.0;
-double XDirect::s_ReMax   = 1000000.0;
-double XDirect::s_ReDelta =  100000.0;
 
 int XDirect::s_TimeUpdateInterval = 100;
 
@@ -934,10 +931,6 @@ void XDirect::loadSettings(QSettings &settings)
         m_bCurOppOnly     = settings.value("CurOppOnly").toBool();
         m_bShowInviscid   = settings.value("ShowInviscid", false).toBool();
         m_bCpGraph        = settings.value("ShowCpGraph", true).toBool();
-
-        s_Re              = settings.value("Reynolds",      s_Re).toDouble();
-        s_ReMax           = settings.value("ReynoldsMax",   s_ReMax).toDouble();
-        s_ReDelta         = settings.value("ReynoldsDelta", s_ReDelta).toDouble();
 
         oppVar = settings.value("OppVar",0).toInt();
         s_TimeUpdateInterval = settings.value("TimeUpdateInterval",100).toInt();
@@ -3644,9 +3637,6 @@ void XDirect::saveSettings(QSettings &settings)
         settings.setValue("BatchUpdatePolarView", BatchThreadDlg::s_bUpdatePolarView);
         settings.setValue("MaxThreads", BatchThreadDlg::s_nThreads);
 
-        settings.setValue("Reynolds",      s_Re);
-        settings.setValue("ReynoldsMax",   s_ReMax);
-        settings.setValue("ReynoldsDelta", s_ReDelta);
 
         settings.setValue("VAccel", m_XFoil.VAccel());
         settings.setValue("KeepOpenErrors", s_bKeepOpenErrors);
@@ -3677,10 +3667,9 @@ void XDirect::setAnalysisParams()
     m_pchViscous->setChecked(s_bViscous);
     m_pchInitBL->setChecked(s_bInitBL);
     m_pchStoreOpp->setChecked(OpPoint::bStoreOpp());
-
     if(Objects2d::curPolar())
     {
-        if(Objects2d::curPolar()->polarType()!=xfl::FIXEDAOAPOLAR)
+        if(!Objects2d::curPolar()->isFixedaoaPolar())
         {
             m_pdeAlphaMin->setDigits(3);
             m_pdeAlphaMax->setDigits(3);
@@ -3688,9 +3677,9 @@ void XDirect::setAnalysisParams()
             if(s_bAlpha) m_prbSpec1->setChecked(true);
             else         m_prbSpec2->setChecked(true);
             m_prbSpec3->setEnabled(false);
-            m_plabUnit1->setText(QChar(0260));
-            m_plabUnit2->setText(QChar(0260));
-            m_plabUnit3->setText(QChar(0260));
+            m_plabUnit1->setText("<p>&deg;</p>");
+            m_plabUnit2->setText("<p>&deg;</p>");
+            m_plabUnit3->setText("<p>&deg;</p>");
         }
         else
         {
@@ -3699,9 +3688,10 @@ void XDirect::setAnalysisParams()
             m_pdeAlphaMin->setDigits(0);
             m_pdeAlphaMax->setDigits(0);
             m_pdeAlphaDelta->setDigits(0);
-            m_plabUnit1->setText(" ");
-            m_plabUnit2->setText(" ");
-            m_plabUnit3->setText(" ");
+
+            m_plabUnit1->clear();
+            m_plabUnit2->clear();
+            m_plabUnit3->clear();
         }
     }
     else
@@ -3992,13 +3982,13 @@ void XDirect::setOpPointSequence()
         m_prbSpec2->setEnabled(true);
         m_prbSpec3->setEnabled(false);
     }
-    else if(Objects2d::curPolar() && Objects2d::curPolar()->polarType()==xfl::FIXEDAOAPOLAR)
+    else if(Objects2d::curPolar() && Objects2d::curPolar()->isFixedaoaPolar())
     {
         m_prbSpec3->setChecked(true);
         s_bAlpha = true;        // no choice with type 4 polars
-        m_pdeAlphaMin->setValue(s_Re);
-        m_pdeAlphaMax->setValue(s_ReMax);
-        m_pdeAlphaDelta->setValue(s_ReDelta);
+        m_pdeAlphaMin->setValue(XFoilAnalysisDlg::s_ReMin);
+        m_pdeAlphaMax->setValue(XFoilAnalysisDlg::s_ReMax);
+        m_pdeAlphaDelta->setValue(XFoilAnalysisDlg::s_ReDelta);
         m_prbSpec1->setEnabled(false);
         m_prbSpec2->setEnabled(false);
         m_prbSpec3->setEnabled(true);

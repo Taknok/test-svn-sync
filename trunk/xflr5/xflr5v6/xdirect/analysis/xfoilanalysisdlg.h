@@ -98,7 +98,6 @@ class XFoilAnalysisDlg : public QDialog
         bool m_bAlpha;                 /**< true if the analysis should be performed for a range of aoa, false if for a range of lift coefficient.>*/
         bool m_bErrors;                /**< true if some points are unconverged. Used by the calling class to know if the window should be kept visible at the end of the analysis.>*/
 
-        double m_ReMin, m_ReMax, m_ReDelta;  /**< The range of Re values to analyze>*/
 
 
         QFile *m_pXFile;               /**< a pointer to the log file>*/
@@ -109,6 +108,7 @@ class XFoilAnalysisDlg : public QDialog
         static bool s_bSequence;
         static double s_Alpha, s_AlphaMax, s_AlphaDelta;  /**< The range of aoa for a Type 1/2/3 Polar >*/
         static double s_Cl, s_ClMax, s_ClDelta;           /**< The range of lift coefficient for a Type 1/2/3 Polar>*/
+        static double s_ReMin, s_ReMax, s_ReDelta;  /**< The range of Re values to analyze>*/
 
         static QByteArray s_Geometry;
         static XDirect* s_pXDirect;     /**< a void pointer to the instance of the QXDirect object >*/
