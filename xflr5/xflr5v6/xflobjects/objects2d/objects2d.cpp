@@ -499,6 +499,8 @@ OpPoint *Objects2d::getOpp(Foil *pFoil, Polar *pPolar, double Alpha)
 }
 
 
+#define ANGLEPRECISION 0.001
+#define REPRECISION    0.1
 /**
  * Inserts a new OpPoint in the array. The OpPoints are sorted by FoilName first, then by Re number, then by aoa.
  * If an OpPoint already exists with the same combination of (FoilName, Re, aoa), it is overwritten.
@@ -523,32 +525,85 @@ void Objects2d::insertOpPoint(OpPoint *pNewPoint)
         }
         else if (pNewPoint->foilName().compare(pOpPoint->foilName())==0 && pNewPoint->polarName().compare(pOpPoint->polarName())==0)
         {
-            if (pNewPoint->Reynolds() < pOpPoint->Reynolds())
+            if(pPolar->isFixedSpeedPolar() || pPolar->isFixedLiftPolar())
             {
-                //insert point
-                s_oaOpp.insert(i, pNewPoint);
-                return;
-            }
-            else if (fabs(pNewPoint->Reynolds()-pOpPoint->Reynolds())<1.0)
-            {
-                if(     fabs(pNewPoint->aoa() - pOpPoint->aoa())<0.005 &&
-                        fabs(pNewPoint->ACrit - pOpPoint->ACrit)<0.1   &&
-                        fabs(pNewPoint->Xtr1  - pOpPoint->Xtr1) <0.001 &&
-                        fabs(pNewPoint->Xtr2  - pOpPoint->Xtr2) <0.001)
-                {
-
-                    //replace existing point
-                    m_pCurOpp = nullptr;
-                    s_oaOpp.removeAt(i);
-                    delete pOpPoint;
-                    s_oaOpp.insert(i, pNewPoint);
-                    return;
-                }
-                else if (pNewPoint->m_Alpha < pOpPoint->aoa())
+                if (pNewPoint->Reynolds() < pOpPoint->Reynolds())
                 {
                     //insert point
                     s_oaOpp.insert(i, pNewPoint);
                     return;
+                }
+                else if (fabs(pNewPoint->Reynolds()-pOpPoint->Reynolds())<REPRECISION)
+                {
+                    if(     fabs(pNewPoint->aoa() - pOpPoint->aoa())<ANGLEPRECISION &&
+                            fabs(pNewPoint->ACrit - pOpPoint->ACrit)<0.1   &&
+                            fabs(pNewPoint->Xtr1  - pOpPoint->Xtr1) <0.001 &&
+                            fabs(pNewPoint->Xtr2  - pOpPoint->Xtr2) <0.001)
+                    {
+
+                        //replace existing point
+                        m_pCurOpp = nullptr;
+                        s_oaOpp.removeAt(i);
+                        delete pOpPoint;
+                        s_oaOpp.insert(i, pNewPoint);
+                        return;
+                    }
+                    else if (pNewPoint->aoa() < pOpPoint->aoa())
+                    {
+                        //insert point
+                        s_oaOpp.insert(i, pNewPoint);
+                        return;
+                    }
+                }
+            }
+            else if(pPolar->isRubberChordPolar())
+            {
+                if (pNewPoint->aoa() < pOpPoint->aoa())
+                {
+                    //insert point
+                    s_oaOpp.insert(i, pNewPoint);
+                    return;
+                }
+                else if (fabs(pNewPoint->aoa()-pOpPoint->aoa())<0.001)
+                {
+                    if(     fabs(pNewPoint->Reynolds() - pOpPoint->Reynolds())<REPRECISION &&
+                            fabs(pNewPoint->ACrit - pOpPoint->ACrit)<0.1   &&
+                            fabs(pNewPoint->Xtr1  - pOpPoint->Xtr1) <0.001 &&
+                            fabs(pNewPoint->Xtr2  - pOpPoint->Xtr2) <0.001)
+                    {
+
+                        //replace existing point
+                        m_pCurOpp = nullptr;
+                        s_oaOpp.removeAt(i);
+                        delete pOpPoint;
+                        s_oaOpp.insert(i, pNewPoint);
+                        return;
+                    }
+                }
+            }
+            else if(pPolar->isFixedaoaPolar())
+            {
+                // sort by crescending aoa then by cresending Re number
+                if (pNewPoint->Reynolds() < pOpPoint->Reynolds())
+                {
+                    //insert point
+                    s_oaOpp.insert(i, pNewPoint);
+                    return;
+                }
+                else if (fabs(pNewPoint->aoa()-pOpPoint->aoa())<ANGLEPRECISION)
+                {
+                    if(     fabs(pNewPoint->Reynolds() - pOpPoint->Reynolds())<REPRECISION &&
+                            fabs(pNewPoint->ACrit - pOpPoint->ACrit)<0.1   &&
+                            fabs(pNewPoint->Xtr1  - pOpPoint->Xtr1) <0.001 &&
+                            fabs(pNewPoint->Xtr2  - pOpPoint->Xtr2) <0.001)
+                    {
+                        //replace existing point
+                        m_pCurOpp = nullptr;
+                        s_oaOpp.removeAt(i);
+                        delete pOpPoint;
+                        s_oaOpp.insert(i, pNewPoint);
+                        return;
+                    }
                 }
             }
         }
@@ -574,7 +629,7 @@ void Objects2d::addPolar(Polar *pPolar)
     {
         Polar *pOldPlr = s_oaPolar.at(ip);
         if (pOldPlr->polarName().compare(pPolar->polarName())==0 &&
-                pOldPlr->foilName().compare(pPolar->foilName())==0)
+            pOldPlr->foilName().compare(pPolar->foilName())==0)
         {
             bExists = true;
             s_oaPolar.removeAt(ip);

@@ -285,7 +285,6 @@ class XDirect : public QWidget
 
         XFoil m_XFoil;                /**< the unique instance of the XFoil object */
 
-        static double s_Re, s_ReMax, s_ReDelta;
         static bool s_bViscous;           /**< true if performing a viscous calculation, false if inviscid */
         static bool s_bAlpha;             /**< true if performing an analysis based on aoa, false if based on Cl */
         static bool s_bInitBL;            /**< true if the boundary layer should be initialized for the next xfoil calculation */

@@ -54,6 +54,10 @@ double XFoilAnalysisDlg::s_Cl         = 0.0;
 double XFoilAnalysisDlg::s_ClMax      = 1.0;
 double XFoilAnalysisDlg::s_ClDelta    = 0.1;
 
+double XFoilAnalysisDlg::s_ReMin   =  100000.0;
+double XFoilAnalysisDlg::s_ReMax   = 1000000.0;
+double XFoilAnalysisDlg::s_ReDelta =  100000.0;
+
 XFoilAnalysisDlg::XFoilAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle(tr("XFoil Analysis"));
@@ -68,7 +72,7 @@ XFoilAnalysisDlg::XFoilAnalysisDlg(QWidget *pParent) : QDialog(pParent)
     m_pGraphWt->setGraph(m_pRmsGraph);
 
     m_pRmsGraph->setXTitle(tr("Iter"));
-    m_pRmsGraph->setYTitle("");//Change from BL newton system solution
+    m_pRmsGraph->setYTitle(QString());//Change from BL newton system solution
 
     m_pRmsGraph->setXMajGrid(true, QColor(120,120,120),2,1);
     m_pRmsGraph->setYMajGrid(true, QColor(120,120,120),2,1);
@@ -95,9 +99,9 @@ XFoilAnalysisDlg::XFoilAnalysisDlg(QWidget *pParent) : QDialog(pParent)
     s_Cl      = 0.0;
     s_ClMax      = 1.0;
     s_ClDelta    = 0.1;
-    m_ReMin      =  10000.0;
-    m_ReMax      = 100000.0;
-    m_ReDelta    =  10000.0;
+    s_ReMin      =  10000.0;
+    s_ReMax      = 100000.0;
+    s_ReDelta    =  10000.0;
 }
 
 XFoilAnalysisDlg::~XFoilAnalysisDlg()
@@ -180,8 +184,8 @@ void XFoilAnalysisDlg::initDialog()
         else            m_pXFoilTask->setSequence(false, s_Cl, s_Cl, s_ClDelta);
     }
 
-    if(s_bSequence)     m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReDelta);
-    else                m_pXFoilTask->setReRange(m_ReMin, m_ReMin, m_ReDelta);
+    if(s_bSequence)     m_pXFoilTask->setReRange(s_ReMin, s_ReMax, s_ReDelta);
+    else                m_pXFoilTask->setReRange(s_ReMin, s_ReMin, s_ReDelta);
     m_pXFoilTask->initializeXFoilTask(XDirect::curFoil(), Objects2d::curPolar(),
                                       XDirect::s_bViscous, XDirect::s_bInitBL, false);
 
@@ -317,9 +321,9 @@ void XFoilAnalysisDlg::setCl(double ClMin, double ClMax, double DeltaCl)
 
 void XFoilAnalysisDlg::setRe(double ReMin, double ReMax, double DeltaRe)
 {
-    m_ReMin = ReMin;
-    m_ReMax = ReMax;
-    m_ReDelta = DeltaRe;
+    s_ReMin = ReMin;
+    s_ReMax = ReMax;
+    s_ReDelta = DeltaRe;
 }
 
 
@@ -437,13 +441,20 @@ void XFoilAnalysisDlg::loadSettings(QSettings &settings)
     {
         s_Geometry = settings.value("WindowGeom", QByteArray()).toByteArray();
 
-        s_bSequence  = settings.value("Sequence", false).toBool();
-        s_Alpha      = settings.value("AlphaMin",   s_Alpha).toDouble();
-        s_AlphaMax   = settings.value("AlphaMax",   s_AlphaMax).toDouble();
-        s_AlphaDelta = settings.value("AlphaDelta", s_AlphaDelta).toDouble();
-        s_Cl         = settings.value("ClMin",      s_Cl).toDouble();
-        s_ClMax      = settings.value("ClMax",      s_ClMax).toDouble();
-        s_ClDelta    = settings.value("ClDelta",    s_ClDelta).toDouble();
+        s_bSequence  = settings.value("Sequence",      s_bSequence).toBool();
+
+        s_Alpha      = settings.value("AlphaMin",      s_Alpha).toDouble();
+        s_AlphaMax   = settings.value("AlphaMax",      s_AlphaMax).toDouble();
+        s_AlphaDelta = settings.value("AlphaDelta",    s_AlphaDelta).toDouble();
+
+        s_Cl         = settings.value("ClMin",         s_Cl).toDouble();
+        s_ClMax      = settings.value("ClMax",         s_ClMax).toDouble();
+        s_ClDelta    = settings.value("ClDelta",       s_ClDelta).toDouble();
+
+        s_ReMin      = settings.value("Reynolds",      s_ReMin).toDouble();
+        s_ReMax      = settings.value("ReynoldsMax",   s_ReMax).toDouble();
+        s_ReDelta    = settings.value("ReynoldsDelta", s_ReDelta).toDouble();
+
     }
     settings.endGroup();
 }
@@ -456,13 +467,19 @@ void XFoilAnalysisDlg::saveSettings(QSettings &settings)
     {
         settings.setValue("WindowGeom", s_Geometry);
 
-        settings.setValue("Sequence",   s_bSequence);
-        settings.setValue("AlphaMin",   s_Alpha);
-        settings.setValue("AlphaMax",   s_AlphaMax);
-        settings.setValue("AlphaDelta", s_AlphaDelta);
-        settings.setValue("ClMin",      s_Cl);
-        settings.setValue("ClMax",      s_ClMax);
-        settings.setValue("ClDelta",    s_ClDelta);
+        settings.setValue("Sequence",     s_bSequence);
+
+        settings.setValue("AlphaMin",     s_Alpha);
+        settings.setValue("AlphaMax",     s_AlphaMax);
+        settings.setValue("AlphaDelta",   s_AlphaDelta);
+
+        settings.setValue("ClMin",         s_Cl);
+        settings.setValue("ClMax",         s_ClMax);
+        settings.setValue("ClDelta",       s_ClDelta);
+
+        settings.setValue("Reynolds",      s_ReMin);
+        settings.setValue("ReynoldsMax",   s_ReMax);
+        settings.setValue("ReynoldsDelta", s_ReDelta);
     }
     settings.endGroup();
 }
