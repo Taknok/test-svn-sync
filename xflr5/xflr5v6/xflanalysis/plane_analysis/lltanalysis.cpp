@@ -1389,7 +1389,7 @@ double LLTAnalysis::getPlrPointFromAlpha(Foil const*pFoil, double Re, double Alp
             {
                 bOutRe = true;
                 //interpolate Alpha on this polar
-                QVector<double> const &pX = pPolar->getPlrVariable(PlrVar);
+                QVector<double> const &pX = pPolar->getVariable(PlrVar);
                 size = pPolar->m_Alpha.size();
                 if(Alpha<pPolar->m_Alpha.front())
                 {
@@ -1462,7 +1462,7 @@ double LLTAnalysis::getPlrPointFromAlpha(Foil const*pFoil, double Re, double Alp
             return 0.000;
         }
 
-        QVector<double> const &pX1 = pPolar1->getPlrVariable(PlrVar);
+        QVector<double> const &pX1 = pPolar1->getVariable(PlrVar);
         if (Alpha < pPolar1->m_Alpha.front())  return pX1.front();
         if (Alpha > pPolar1->m_Alpha.back())   return pX1.back();
         for (int i=0; i<size-1; i++)
@@ -1502,7 +1502,7 @@ double LLTAnalysis::getPlrPointFromAlpha(Foil const*pFoil, double Re, double Alp
             return 0.000;
         }
 
-        QVector<double> const &pX1 = pPolar1->getPlrVariable(PlrVar);
+        QVector<double> const &pX1 = pPolar1->getVariable(PlrVar);
         if(Alpha < pPolar1->m_Alpha.front())     Var1 = pX1.front();
         else if(Alpha > pPolar1->m_Alpha.back()) Var1 = pX1.back();
         else
@@ -1529,7 +1529,7 @@ double LLTAnalysis::getPlrPointFromAlpha(Foil const*pFoil, double Re, double Alp
             bError = true;
             return 0.000;
         }
-        QVector<double> const &pX2 = pPolar2->getPlrVariable(PlrVar);
+        QVector<double> const &pX2 = pPolar2->getVariable(PlrVar);
         if(Alpha < pPolar2->m_Alpha.front())
         {
             bOutRe = true;
@@ -1548,7 +1548,7 @@ double LLTAnalysis::getPlrPointFromAlpha(Foil const*pFoil, double Re, double Alp
                 if(pPolar2->m_Alpha.at(i)<=Alpha && Alpha<pPolar2->m_Alpha.at(i+1))
                 {
                     //interpolate
-                    QVector<double> const &pX2 = pPolar2->getPlrVariable(PlrVar);
+                    QVector<double> const &pX2 = pPolar2->getVariable(PlrVar);
                     if(pPolar2->m_Alpha.at(i+1)-pPolar2->m_Alpha.at(i) < 0.00001)//do not divide by zero
                         Var2 =pX2.at(i);
                     else

@@ -88,7 +88,7 @@ class Polar : public XflObject
         void getProperties(QString &polarProps) const;
         QString properties() const;
 
-        QVector<double> const &getPlrVariable(int iVar) const;
+        QVector<double> const &getVariable(int iVar) const;
 
         double aoa()      const {return m_ASpec;}
         double Reynolds() const {return m_Reynolds;}

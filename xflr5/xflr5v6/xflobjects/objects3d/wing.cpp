@@ -3224,7 +3224,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
             {
                 bOutRe = true;
                 //interpolate Cl on this polar
-                QVector<double> const &pX = pPolar->getPlrVariable(PlrVar);
+                QVector<double> const &pX = pPolar->getVariable(PlrVar);
                 int size = pPolar->m_Cl.size();
                 if(Cl < pPolar->m_Cl[0])
                 {
@@ -3298,7 +3298,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
             return 0.000;
         }
 
-        QVector<double> const &pX = pPolar1->getPlrVariable(PlrVar);
+        QVector<double> const &pX = pPolar1->getVariable(PlrVar);
         if(Cl < pPolar1->m_Cl[0])       return pX.front();
         if(Cl > pPolar1->m_Cl[size-1]) return pX.back();
         for (int i=0; i<size-1; i++)
@@ -3339,7 +3339,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
             return 0.000;
         }
 
-        QVector<double> const &pX = pPolar1->getPlrVariable(PlrVar);
+        QVector<double> const &pX = pPolar1->getVariable(PlrVar);
         pPolar1->getClLimits(Clmin, Clmax);
         if(Cl < Clmin)
         {
@@ -3417,7 +3417,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
             return 0.000;
         }
 
-        QVector<double> const &pX2 = pPolar2->getPlrVariable(PlrVar);
+        QVector<double> const &pX2 = pPolar2->getVariable(PlrVar);
         pPolar2->getClLimits(Clmin, Clmax);
 
         if(Cl < Clmin)

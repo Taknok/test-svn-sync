@@ -186,14 +186,14 @@ class XDirect : public QWidget
         void onTaskFinished(Polar *pPolar);
 
     private:
-        void keyPressEvent(QKeyEvent *event);
-        void keyReleaseEvent(QKeyEvent *event);
+        void keyPressEvent(QKeyEvent *pEvent);
+        void keyReleaseEvent(QKeyEvent *pEvent);
 
         void setControls();
         void connectSignals();
         void createOppCurves(OpPoint *pOpp=nullptr);
         void createPolarCurves();
-        void fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar);
+        void fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar) const;
         void fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bInviscid=false);
 
         void importAnalysisFromXML(QFile &xmlFile);

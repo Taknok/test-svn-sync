@@ -728,7 +728,7 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 * @param XVar the index of the variable for the curve's x-axis
 * @param YVar the index of the variable for the curve's y-axis
 */
-void XDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar)
+void XDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar) const
 {
     QVector<double> const *pX = pPolar->getGraphVariable(XVar);
     QVector<double> const *pY = pPolar->getGraphVariable(YVar);
@@ -742,7 +742,7 @@ void XDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar)
 
     for (int i=0; i<pPolar->m_Alpha.size(); i++)
     {
-        if (XVar==12)
+        if (XVar==14)
         {
             if((*pX)[i]>0.0)
             {
@@ -760,7 +760,7 @@ void XDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar)
             }
         }
         else{
-            if (YVar==12)
+            if (YVar==14)
             {
                 if((*pY)[i]>0.0)
                 {
@@ -890,21 +890,21 @@ void XDirect::keyPressEvent(QKeyEvent *pEvent)
  * Dispatches the key release event
  * @param event the QKeyEvent
  */
-void XDirect::keyReleaseEvent(QKeyEvent *event)
+void XDirect::keyReleaseEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_X:
-            if(!event->isAutoRepeat()) m_bXPressed = false;
+            if(!pEvent->isAutoRepeat()) m_bXPressed = false;
             break;
         case Qt::Key_Y:
-            if(!event->isAutoRepeat()) m_bYPressed = false;
+            if(!pEvent->isAutoRepeat()) m_bYPressed = false;
             break;
         default:
-            QWidget::keyReleaseEvent(event);
+            QWidget::keyReleaseEvent(pEvent);
     }
 
-    event->accept();
+    pEvent->accept();
 }
 
 

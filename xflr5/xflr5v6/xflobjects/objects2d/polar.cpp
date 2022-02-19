@@ -804,36 +804,23 @@ void Polar::getProperties(QString &polarProps) const
 * @param iVar the index of the variable
 * @return the pointer to the array holding the values of the variable
 */
-QVector<double> const & Polar::getPlrVariable(int iVar) const
+QVector<double> const & Polar::getVariable(int iVar) const
 {
     switch (iVar)
     {
-        case 0:
-            return m_Alpha;
-        case 1:
-            return m_Cl;
-        case 2:
-            return m_Cd;
-        case 3:
-            return m_Cdp;
-        case 4:
-            return m_Cm;
-        case 5:
-            return m_XTr1;
-        case 6:
-            return m_XTr2;
-        case 7:
-            return m_HMom;
-        case 8:
-            return m_Cpmn;
-        case 9:
-            return m_ClCd;
-        case 10:
-            return m_Cl32Cd;
-        case 11:
-            return m_XCp;
         default:
-            return m_Alpha;
+        case 0:            return m_Alpha;
+        case 1:            return m_Cl;
+        case 2:            return m_Cd;
+        case 3:            return m_Cdp;
+        case 4:            return m_Cm;
+        case 5:            return m_XTr1;
+        case 6:            return m_XTr2;
+        case 7:            return m_HMom;
+        case 8:            return m_Cpmn;
+        case 9:            return m_ClCd;
+        case 10:           return m_Cl32Cd;
+        case 11:           return m_XCp;
     }
 }
 
@@ -847,42 +834,24 @@ QString Polar::variableName(int iVar)
 {
     switch (iVar)
     {
-        case 0:
-            return "Alpha";
-        case 1:
-            return "Cl";
-        case 2:
-            return "Cd";
-        case 3:
-            return "Cd x 10000";
-        case 4:
-            return "Cdp";
-        case 5:
-            return "Cm";
-        case 6:
-            return "Xtr top";
-        case 7:
-            return "Xtr bot";
-        case 8:
-            return "Hinge Moment";
-        case 9:
-            return "Hinge Fx";
-        case 10:
-            return "Hinge Fy";
-        case 11:
-            return "Cpmin";
-        case 12:
-            return "Cl/Cd";
-        case 13:
-            return "sqrt(Cl³/Cd²)";
-        case 14:
-            return "1/Rt(Cl)";
-        case 15:
-            return "Re";
-        case 16:
-            return "XCp";
         default:
-            return "Alpha";
+        case 0:            return "Alpha";
+        case 1:            return "Cl";
+        case 2:            return "Cd";
+        case 3:            return "Cd x 10000";
+        case 4:            return "Cdp";
+        case 5:            return "Cm";
+        case 6:            return "Xtr top";
+        case 7:            return "Xtr bot";
+        case 8:            return "Hinge Moment";
+        case 9:            return "Hinge Fx";
+        case 10:           return "Hinge Fy";
+        case 11:           return "Cpmin";
+        case 12:           return "Cl/Cd";
+        case 13:           return "sqrt(Cl³/Cd²)";
+        case 14:           return "1/Rt(Cl)";
+        case 15:           return "Re";
+        case 16:           return "XCp";
     }
 }
 
@@ -896,63 +865,27 @@ QString Polar::variableName(int iVar)
 QVector<double> *Polar::getGraphVariable(int iVar)
 {
     QVector<double> * pVar(nullptr);
-    switch (iVar){
-        case 0:
-            pVar = &m_Alpha;
-            break;
-        case 1:
-            pVar = &m_Cl;
-            break;
-        case 2:
-            pVar = &m_Cd;
-            break;
-        case 3:
-            pVar = &m_Cd;
-            break;
-        case 4:
-            pVar = &m_Cdp;
-            break;
-        case 5:
-            pVar = &m_Cm;
-            break;
-        case 6:
-            pVar = &m_XTr1;
-            break;
-        case 7:
-            pVar = &m_XTr2;
-            break;
-        case 8:
-            pVar = &m_HMom;
-            break;
-        case 9:
-            pVar = &m_HFx;
-            break;
-        case 10:
-            pVar = &m_HFy;
-            break;
-        case 11:
-            pVar = &m_Cpmn;
-            break;
-        case 12:
-            pVar = &m_ClCd;
-            break;
-        case 13:
-            pVar = &m_Cl32Cd;
-            break;
-        case 14:
-            pVar = &m_Cl;
-            break;
-        case 15:
-            pVar = &m_Re;
-            break;
-        case 16:
-            pVar = &m_XCp;
-            break;
+    switch (iVar)
+    {
         default:
-            pVar = &m_Alpha;
-            break;
+        case 0:            return &m_Alpha;
+        case 1:            return &m_Cl;
+        case 2:            return &m_Cd;
+        case 3:            return &m_Cd;
+        case 4:            return &m_Cdp;
+        case 5:            return &m_Cm;
+        case 6:            return &m_XTr1;
+        case 7:            return &m_XTr2;
+        case 8:            return &m_HMom;
+        case 9:            return &m_HFx;
+        case 10:           return &m_HFy;
+        case 11:           return &m_Cpmn;
+        case 12:           return &m_ClCd;
+        case 13:           return &m_Cl32Cd;
+        case 14:           return &m_Cl;
+        case 15:           return &m_Re;
+        case 16:           return &m_XCp;
     }
-    return pVar;
 }
 
 
