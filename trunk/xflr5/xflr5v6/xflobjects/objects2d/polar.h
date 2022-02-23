@@ -126,7 +126,7 @@ class Polar : public XflObject
         static QString autoPolarName(xfl::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec=0.0, double XTop=1.0, double XBot=1.0);
         static QString variableName(int iVar);
 
-        QVector<double> *getGraphVariable(int iVar);
+        QVector<double> const *getGraphVariable(int iVar);
 
     public:
 
@@ -139,9 +139,9 @@ class Polar : public XflObject
         QVector<double> m_XTr1;              /**< the array of transition points on the top surface */
         QVector<double> m_XTr2;              /**< the array of transition points on the bottom surface */
         QVector<double> m_HMom;              /**< the array of flap hinge moments */
-        QVector<double> m_HFx;             /**< the array of flap force-x*/
-        QVector<double> m_HFy;             /**< the array of flap force-y*/
-        QVector<double> m_Cpmn;              /**< the array of Cpmn ? */
+        QVector<double> m_HFx;               /**< the array of flap x-force*/
+        QVector<double> m_HFy;               /**< the array of flap y-force*/
+        QVector<double> m_Cpmn;              /**< the array of Cpmn */
         QVector<double> m_ClCd;              /**< the array of glide ratios */
         QVector<double> m_Cl32Cd;            /**< the array of power factors*/
         QVector<double> m_RtCl;              /**< the array of aoa values */
