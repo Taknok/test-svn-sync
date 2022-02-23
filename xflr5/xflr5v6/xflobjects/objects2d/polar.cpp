@@ -862,9 +862,8 @@ QString Polar::variableName(int iVar)
 * @param iVar the index of the variable for which a pointer is requested
 * @return a pointer to the array of the requested variable
 */
-QVector<double> *Polar::getGraphVariable(int iVar)
+QVector<double> const *Polar::getGraphVariable(int iVar)
 {
-    QVector<double> * pVar(nullptr);
     switch (iVar)
     {
         default:
