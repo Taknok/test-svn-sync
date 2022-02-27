@@ -126,7 +126,7 @@ class Polar : public XflObject
         static QString autoPolarName(xfl::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec=0.0, double XTop=1.0, double XBot=1.0);
         static QString variableName(int iVar);
 
-        QVector<double> const *getGraphVariable(int iVar);
+        const QVector<double> &getGraphVariable(int iVar) const;
 
     public:
 

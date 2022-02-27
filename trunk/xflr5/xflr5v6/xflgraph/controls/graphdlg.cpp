@@ -136,7 +136,7 @@ void GraphDlg::fillVariableList()
         case GRAPH::POLARGRAPH:
         {
             //foil polar graph variables
-            for(int iVar=0; iVar<15; iVar++)
+            for(int iVar=0; iVar<17; iVar++)
             {
                 m_plwXSel->addItem(Polar::variableName(iVar));
                 m_plwYSel->addItem(Polar::variableName(iVar));
