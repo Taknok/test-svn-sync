@@ -730,8 +730,8 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 */
 void XDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar) const
 {
-    QVector<double> const *pX = pPolar->getGraphVariable(XVar);
-    QVector<double> const *pY = pPolar->getGraphVariable(YVar);
+    QVector<double> const &pX = pPolar->getGraphVariable(XVar);
+    QVector<double> const &pY = pPolar->getGraphVariable(YVar);
     double fx = 1.0;
     double fy = 1.0;
 
@@ -744,44 +744,52 @@ void XDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar) c
     {
         if (XVar==14)
         {
-            if((*pX)[i]>0.0)
+            if(pX[i]>0.0)
             {
                 if (YVar==12)
                 {
-                    if((*pY)[i]>0.0)
+                    if(pY[i]>0.0)
                     {
-                        pCurve->appendPoint(1.0/sqrt((*pX)[i]), 1.0/sqrt((*pY)[i]));
+                        pCurve->appendPoint(1.0/sqrt(pX[i]), 1.0/sqrt(pY[i]));
                     }
                 }
                 else
                 {
-                    pCurve->appendPoint(1.0/sqrt((*pX)[i]), (*pY)[i]*fy);
+                    pCurve->appendPoint(1.0/sqrt(pX[i]), pY[i]*fy);
                 }
             }
         }
         else{
             if (YVar==14)
             {
-                if((*pY)[i]>0.0)
+                if(pY[i]>0.0)
                 {
-                    pCurve->appendPoint((*pX)[i]*fx, 1.0/sqrt((*pY)[i]));
+                    pCurve->appendPoint(pX[i]*fx, 1.0/sqrt(pY[i]));
                 }
             }
             else
             {
-                pCurve->appendPoint((*pX)[i]*fx, (*pY)[i]*fy);
+                pCurve->appendPoint(pX[i]*fx, pY[i]*fy);
             }
         }
 
-        if(Objects2d::curOpp() && Graph::isHighLighting()
-                && Objects2d::curOpp()->polarName()==Objects2d::curPolar()->polarName() && Objects2d::curOpp()->foilName()==Objects2d::curFoil()->name())
+        if(Objects2d::curOpp() && Graph::isHighLighting())
         {
-            if(qAbs(pPolar->m_Alpha[i]-Objects2d::curOpp()->m_Alpha)<0.0001)
+            if(pPolar->hasOpp(curOpp()))
             {
-                if(pPolar->polarName()==Objects2d::curOpp()->polarName()  && Objects2d::curFoil()->name()==pPolar->foilName())
+                if(pPolar->isFixedaoaPolar())
                 {
-
-                    pCurve->setSelected(i);
+                    if(qAbs(pPolar->m_Re[i]-Objects2d::curOpp()->m_Reynolds)<1.0)
+                    {
+                        pCurve->setSelected(i);
+                    }
+                }
+                else
+                {
+                    if(qAbs(pPolar->m_Alpha[i]-Objects2d::curOpp()->m_Alpha)<0.0001)
+                    {
+                        pCurve->setSelected(i);
+                    }
                 }
             }
         }

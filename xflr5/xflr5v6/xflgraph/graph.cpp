@@ -152,14 +152,14 @@ void Graph::drawGraph(QPainter &painter)
 void Graph::drawCurve(int nIndex, QPainter &painter)
 {
     painter.save();
-    double scaley;
+
     QPoint To, Min, Max;
     QRect rViewRect;
 
     int ptside = 5;
     Curve* pCurve = curve(nIndex);
 
-    scaley = m_scaley;
+    double scaley = m_scaley;
 
     QBrush FillBrush(m_BkColor);
     painter.setBrush(FillBrush);
@@ -200,12 +200,12 @@ void Graph::drawCurve(int nIndex, QPainter &painter)
         {
             //highlight
             QColor HighColor(200, 100, 77);
-            CurvePen.setWidth(pCurve->width()+1);
+            CurvePen.setWidth(pCurve->width()+2);
             CurvePen.setColor(HighColor);
             painter.setPen(CurvePen);
             To.setX(int(pCurve->x(point)/m_scalex+m_ptoffset.x()));
             To.setY(int(pCurve->y(point)/scaley  +m_ptoffset.y()));
-            painter.drawRect(To.x()-ptside,To.y()-ptside, 2*ptside,2*ptside);
+            painter.drawRect(To.x()-ptside-2,To.y()-ptside-2, 2*ptside+4,2*ptside+4);
         }
     }
     painter.restore();

@@ -862,28 +862,28 @@ QString Polar::variableName(int iVar)
 * @param iVar the index of the variable for which a pointer is requested
 * @return a pointer to the array of the requested variable
 */
-QVector<double> const *Polar::getGraphVariable(int iVar)
+QVector<double> const &Polar::getGraphVariable(int iVar) const
 {
     switch (iVar)
     {
         default:
-        case 0:            return &m_Alpha;
-        case 1:            return &m_Cl;
-        case 2:            return &m_Cd;
-        case 3:            return &m_Cd;
-        case 4:            return &m_Cdp;
-        case 5:            return &m_Cm;
-        case 6:            return &m_XTr1;
-        case 7:            return &m_XTr2;
-        case 8:            return &m_HMom;
-        case 9:            return &m_HFx;
-        case 10:           return &m_HFy;
-        case 11:           return &m_Cpmn;
-        case 12:           return &m_ClCd;
-        case 13:           return &m_Cl32Cd;
-        case 14:           return &m_Cl;
-        case 15:           return &m_Re;
-        case 16:           return &m_XCp;
+        case 0:            return m_Alpha;
+        case 1:            return m_Cl;
+        case 2:            return m_Cd;
+        case 3:            return m_Cd;
+        case 4:            return m_Cdp;
+        case 5:            return m_Cm;
+        case 6:            return m_XTr1;
+        case 7:            return m_XTr2;
+        case 8:            return m_HMom;
+        case 9:            return m_HFx;
+        case 10:           return m_HFy;
+        case 11:           return m_Cpmn;
+        case 12:           return m_ClCd;
+        case 13:           return m_Cl32Cd;
+        case 14:           return m_Cl;
+        case 15:           return m_Re;
+        case 16:           return m_XCp;
     }
 }
 
