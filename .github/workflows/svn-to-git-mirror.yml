@@ -1,0 +1,20 @@
+name: GitHub Actions Sourceforge SVN mirroring
+on:
+  schedule:
+    # At 00:21 on Sunday.
+    - cron:  '31 0 * * 0'
+  workflow_dispatch:
+    # No input
+jobs:
+  Mirror:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out this repository code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Sync SVN
+        uses: Taknok/Action-mirror-SVN-to-GIT@memory2
+        with:
+          svn-url: https://svn.code.sf.net/p/xflr5/code
+          verbose: true
