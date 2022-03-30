@@ -401,6 +401,7 @@ void Settings::loadSettings(QSettings &settings)
         DisplayOptions::s_bAlignChildrenStyle = settings.value("AligneChildrenStyle", true).toBool();
 
         DisplayOptions::s_bShowMousePos = settings.value("ShowMousePos", true).toBool();
+        DisplayOptions::s_bShowMousePos = true;
 
         s_bStyleSheet   = settings.value("ShowStyleSheets", false).toBool();
         s_StyleSheetName = settings.value("StyleSheetName", "xflr5_style").toString();

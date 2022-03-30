@@ -109,7 +109,8 @@ void gl3dMiarexView::glRenderView()
         if(pPOpp && pPOpp->polarType()==xfl::STABILITYPOLAR)
         {
             QString strong = QString(tr("Time =")+"%1s").arg(s_pMiarex->m_ModeTime,6,'f',3);
-            glRenderText(10, 15, strong, DisplayOptions::textColor());
+            glRenderText(DisplayOptions::textFontStruct().averageCharWidth(), DisplayOptions::textFontStruct().height()*devicePixelRatio(),
+                         strong, DisplayOptions::textColor());
         }
 
         modeMatrix.translate(float(s_pMiarex->m_ModeState[0]), float(s_pMiarex->m_ModeState[1]), float(s_pMiarex->m_ModeState[2]));
