@@ -95,18 +95,16 @@ gl3dMiarexView::~gl3dMiarexView()
 
 void gl3dMiarexView::glRenderView()
 {
-    if(!isVisible()) return;
-    if(s_pMainFrame->m_iApp!=xfl::MIAREX) return;
-    if(s_pMiarex->m_iView!=xfl::W3DVIEW) return;
+    if(!s_pMiarex->is3dView()) return;
 
-    WPolar const*pWPolar = s_pMiarex->curWPolar();
+    WPolar const *pWPolar = s_pMiarex->curWPolar();
     PlaneOpp const *pPOpp = s_pMiarex->curPOpp();
 
     QMatrix4x4 modeMatrix;
 
     if(pWPolar && pWPolar->isStabilityPolar())
     {
-        if(pPOpp && pPOpp->polarType()==xfl::STABILITYPOLAR)
+        if(pPOpp && pPOpp->isStabilityPOpp())
         {
             QString strong = QString(tr("Time =")+"%1s").arg(s_pMiarex->m_ModeTime,6,'f',3);
             glRenderText(DisplayOptions::textFontStruct().averageCharWidth(), DisplayOptions::textFontStruct().height()*devicePixelRatio(),
@@ -317,7 +315,7 @@ void gl3dMiarexView::contextMenuEvent(QContextMenuEvent * pEvent)
 
     if (s_pMiarex->m_iView==xfl::W3DVIEW)
     {
-        if(s_pMiarex->m_pCurWPolar && s_pMiarex->m_pCurWPolar->polarType()==xfl::STABILITYPOLAR)
+        if(s_pMiarex->m_pCurWPolar && s_pMiarex->m_pCurWPolar->isStabilityPolar())
             s_pMainFrame->m_pW3DStabCtxMenu->exec(ScreenPt);
         else s_pMainFrame->m_pW3DCtxMenu->exec(ScreenPt);
     }
@@ -356,19 +354,6 @@ void gl3dMiarexView::paintOverlay()
     QOpenGLPaintDevice device(size() * devicePixelRatio());
 
     QPainter painter(&device);
-/*
-bool bExport(false);
-if(bExport)
-{
-    qDebug()<<device.size();
-    s_pMiarex->m_PixText.save(QDir::homePath()+"/miarex.png", "PNG");
-    m_PixTextOverlay.save(QDir::homePath()+"/overlay.png", "PNG");
-}*/
-/*    if(!m_PixTextOverlay.isNull())
-    {
-        painter.drawPixmap(0,0, m_PixTextOverlay);
-        m_PixTextOverlay.fill(Qt::transparent);
-    }*/
     if(!s_pMiarex->m_PixText.isNull())
         painter.drawPixmap(0,0, s_pMiarex->m_PixText);
 }
@@ -441,10 +426,7 @@ void gl3dMiarexView::glMakeCpLegendClr()
 bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d const *pNode,
                                        WPolar const *pWPolar, PlaneOpp const *pPOpp)
 {
-
-    if(!isVisible()) return false;
-    if(s_pMainFrame->m_iApp!=xfl::MIAREX) return false;
-    if(s_pMiarex->m_iView!=xfl::W3DVIEW) return false;
+    if(!s_pMiarex->is3dView()) return false;
     if(!pPOpp || !pWPolar || pWPolar->isLLTMethod()) return false;
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -661,15 +643,13 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
 
 void gl3dMiarexView::glMakeSurfVelocities(Panel const*pPanel, WPolar const *pWPolar, PlaneOpp const *pPOpp, int nPanels)
 {
-    if(!isVisible()) return;
-    if(s_pMainFrame->m_iApp!=xfl::MIAREX) return;
-    if(s_pMiarex->m_iView!=xfl::W3DVIEW) return;
+    if(!s_pMiarex->is3dView()) return;
     if(!pWPolar || !pPOpp || pPOpp->isLLTMethod() || !pPanel)
         return;
 
-    float length=0.0, sinT=0.0, cosT=0.0;
+    float length(0), sinT(0), cosT(0);
 
-    float x1=0.0, x2=0.0, y1=0.0, y2=0.0, z1=0.0, z2=0.0, xe=0.0, ye=0.0, ze=0.0, dlx=0.0, dlz=0.0;
+    float x1(0), x2(0), y1(0), y2(0), z1(0), z2(0), xe(0), ye(0), ze(0), dlx(0), dlz(0);
     Vector3d C, V, VT;
     Vector3d RefPoint(0.0,0.0,0.0);
 
@@ -996,10 +976,10 @@ void gl3dMiarexView::glMakeMoments(Wing const *pWing, const WPolar *pWPolar, con
 
     int i=0;
 
-    float ampL=0.0f, ampM=0.0f, ampN=0.0f;
-    float sign=0.0f;
-    float angle=0.0f;//radian
-    float endx, endy=0.0f, endz=0.0f, dx=0.0f, dy=0.0f, dz=0.0f, xae=0.0f, yae=0.0f, zae=0.0f;
+    float ampL=(0), ampM=(0), ampN=(0);
+    float sign=(0);
+    float angle=(0);//radian
+    float endx, endy=(0), endz=(0), dx=(0), dy=(0), dz=(0), xae=(0), yae=(0), zae=(0);
     float factor = 10.0f;
     float radius= float(pWing->planformSpan())/4.0f;
 
@@ -1169,7 +1149,7 @@ void gl3dMiarexView::glMakeMoments(Wing const *pWing, const WPolar *pWPolar, con
 void gl3dMiarexView::glMakeLiftStrip(int iWing, const Wing *pWing, const WPolar *pWPolar, const WingOpp *pWOpp)
 {
     if(!pWing || !pWPolar || !pWOpp) return;
-    int i=0,j=0,k=0;
+
     Vector3d C, CL, Pt, PtNormal;
 
     float amp=0, dih=0;
@@ -1186,7 +1166,7 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, const Wing *pWing, const WPolar 
     if(pWPolar->isLLTMethod())
     {
         iv=0;
-        for (i=1; i<pWOpp->m_NStation; i++)
+        for (int i=1; i<pWOpp->m_NStation; i++)
         {
             double yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
             pWing->surfacePoint(pWOpp->m_XCPSpanRel[i], pWOpp->m_SpanPos[i], xfl::MIDSURFACE, Pt, PtNormal);
@@ -1203,7 +1183,7 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, const Wing *pWing, const WPolar 
             pLiftVertexArray[iv++] = Pt.zf() + amp * cos(dih)*cosa;
         }
 
-        for (i=1; i<pWOpp->m_NStation; i++)
+        for (int i=1; i<pWOpp->m_NStation; i++)
         {
             double yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
             pWing->surfacePoint(pWOpp->m_XCPSpanRel[i], pWOpp->m_SpanPos[i], xfl::MIDSURFACE, Pt, PtNormal);
@@ -1219,12 +1199,12 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, const Wing *pWing, const WPolar 
     }
     else
     {
-        i = 0;
+        int i = 0;
         iv=0;
         //lift lines
-        for (j=0; j<pWing->m_Surface.size(); j++)
+        for (int j=0; j<pWing->m_Surface.size(); j++)
         {
-            for (k=0; k< pWing->surface(j)->nYPanels(); k++)
+            for (int k=0; k< pWing->surface(j)->nYPanels(); k++)
             {
                 pWing->surface(j)->getLeadingPt(k, C);
                 amp = float(pWing->surface(j)->chord(k) / pWOpp->m_StripArea[i] / pWing->MAC());
@@ -1243,7 +1223,7 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, const Wing *pWing, const WPolar 
         }
         //Lift strip on each surface
         i = 0;
-        for (j=0; j<pWing->m_Surface.size(); j++)
+        for (int j=0; j<pWing->m_Surface.size(); j++)
         {
             /*            if(j>0 && pWing->m_Surface[j-1]->m_bJoinRight)
             {
@@ -1262,7 +1242,7 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, const Wing *pWing, const WPolar 
                 pLiftVertexArray[iv++] = C.zf() + pWOpp->m_F[i].zf()*amp;
             }*/
 
-            for (k=0; k< pWing->surface(j)->nYPanels(); k++)
+            for (int k=0; k< pWing->surface(j)->nYPanels(); k++)
             {
                 pWing->surface(j)->getLeadingPt(k, C);
                 amp = float(pWing->surface(j)->chord(k) / pWOpp->m_StripArea[i] / pWing->MAC());
@@ -1372,11 +1352,11 @@ void gl3dMiarexView::glMakeDownwash(int iWing, const Wing *pWing, const WPolar *
 {
     if(!pWing || !pWPolar || !pWOpp) return;
 
-    int i=0,j=0,k=0,p=0;
-    float dih=0, yob=0;
-    float y1=0, y2=0, z1=0, z2=0, xs=0, ys=0, zs=0;
+    int i(0),j(0),k(0),p(0);
+    float dih(0), yob(0);
+    float y1(0), y2(0), z1(0), z2(0), xs(0), ys(0), zs(0);
     Vector3d C, Pt, PtNormal;
-    float amp=0.0f;
+    float amp(0);
 
     float sina = -sinf(float(pWOpp->m_Alpha)*PIf/180.0f);
     float cosa =  cosf(float(pWOpp->m_Alpha)*PIf/180.0f);
@@ -1487,10 +1467,10 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar 
 {
     if(!pWing || !pWPolar || !pWOpp) return;
     Vector3d C, Pt, PtNormal;
-    int i=0,j=0,k=0;
+    int i(0),j(0),k(0);
 
     float coef = 5.0;
-    float amp=0, amp1=0, amp2=0, yob=0, dih=0;
+    float amp(0), amp1(0), amp2(0), yob(0), dih(0);
     float cosa =  float(cos(pWOpp->m_Alpha * PI/180.0));
     float sina = -float(sin(pWOpp->m_Alpha * PI/180.0));
     float cosb =  float(cos(-beta*PI/180.0));
@@ -1995,10 +1975,10 @@ void gl3dMiarexView::glMakePanelForces(int nPanels, Panel const *pPanel, WPolar 
 {
     if( !pPOpp || !pWPolar || !pPanel || !nPanels) return;
 
-    int p=0;
-    double *Cp=nullptr;
-    float force=0, cosa=0, sina2=0, cosa2=0, color=0;
-    float rmin=0, rmax=0, range=0;
+    int p(0);
+    double *Cp(nullptr);
+    float force(0), cosa(0), sina2(0), cosa2(0), color(0);
+    float rmin(0), rmax(0), range(0);
 
     Quaternion Qt; // Quaternion operator to align the reference arrow to the panel's normal
     Vector3d Omega; // rotation vector to align the reference arrow to the panel's normal
@@ -2637,3 +2617,5 @@ void gl3dMiarexView::glMake3dObjects()
 
     s_bResetglOpp = false;
 }
+
+
