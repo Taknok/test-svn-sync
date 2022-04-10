@@ -274,10 +274,6 @@ class XDirect : public QWidget
         int m_iPlrGraph;           /**< defines whch polar graph is selected if m_iPlrView=1 */
         xfl::enumGraphView m_iPlrView;  /**< defines the number of graphs to be displayed in the polar view */
 
-        QVector<Foil*> *m_poaFoil;    /**< pointer to the foil object array */
-        QVector<Polar*> *m_poaPolar;  /**< pointer to the polar object array */
-        QVector<OpPoint*> *m_poaOpp;  /**< pointer to the OpPoint object array */
-
         Graph m_CpGraph;           /**< the Cp graph for the OpPoint view */
         QVector<Graph*> m_PlrGraph;  /**< the array of pointer to the 5 Polar graphs */
 

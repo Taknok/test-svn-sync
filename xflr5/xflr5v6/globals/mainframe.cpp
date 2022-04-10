@@ -939,9 +939,6 @@ void MainFrame::createDockWindows()
 
     m_pMiarex->m_pgl3dMiarexView = m_pgl3dMiarexView;
 
-    m_pXDirect->m_poaFoil  = Objects2d::pOAFoil();
-    m_pXDirect->m_poaPolar = Objects2d::pOAPolar();
-    m_pXDirect->m_poaOpp   = Objects2d::pOAOpp();
     m_pXDirect->m_pOpPointWidget = m_pXDirectTileWidget->opPointWidget();
     OpPointWt::setMainFrame(this);
     OpPointWt::setXDirect(m_pXDirect);
