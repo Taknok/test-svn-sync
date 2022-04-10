@@ -81,7 +81,7 @@ class OpPoint : public XflObject
 
         double aoa()      const {return m_Alpha;}
         double Reynolds() const {return m_Reynolds;}
-        double Mach()     const {return m_Mach; }
+        double Mach()     const {return m_Mach;}
 
         QString properties(Foil *pFoil, bool bData=false) const;
         void getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bData=false) const;

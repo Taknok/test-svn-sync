@@ -377,9 +377,9 @@ void Objects2d::deletePolarAt(int index)
  */
 void Objects2d::renameThisFoil(Foil *pFoil, QString const &newFoilName)
 {
-    Foil *pOldFoil=nullptr;
-    Polar* pOldPolar=nullptr;
-    OpPoint *pOpPoint=nullptr;
+    Foil *pOldFoil(nullptr);
+    Polar* pOldPolar(nullptr);
+    OpPoint *pOpPoint(nullptr);
     QString oldFoilName = pFoil->name();
 
     //check that this Foil exists in the array
@@ -487,7 +487,7 @@ OpPoint *Objects2d::getOpp(Foil *pFoil, Polar *pPolar, double Alpha)
                 }
                 else
                 {
-                    if(qAbs(pOpPoint->Reynolds() - Alpha) <0.1)
+                    if(qAbs(pOpPoint->Reynolds() - Alpha) <1.0)
                     {
                         return pOpPoint;
                     }

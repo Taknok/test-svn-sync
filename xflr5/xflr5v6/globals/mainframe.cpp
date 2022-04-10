@@ -1443,7 +1443,6 @@ void MainFrame::createMiarexMenus()
         m_pMiarexViewMenu->addAction(m_pSaveViewToImageFileAct);
     }
 
-
     m_pPlaneMenu = menuBar()->addMenu(tr("Plane"));
     {
         m_pPlaneMenu->addAction(m_pDefinePlaneAct);

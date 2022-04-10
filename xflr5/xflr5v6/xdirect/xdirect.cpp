@@ -1148,12 +1148,14 @@ void XDirect::onAnalyze()
             Alpha      = m_pdeAlphaMin->value();
             AlphaMax   = m_pdeAlphaMax->value();
             AlphaDelta = m_pdeAlphaDelta->value();
+            m_pXFADlg->setAlpha(Alpha, AlphaMax, AlphaDelta);
         }
         else
         {
             Cl      = m_pdeAlphaMin->value();
             ClMax   = m_pdeAlphaMax->value();
             ClDelta = m_pdeAlphaDelta->value();
+            m_pXFADlg->setCl(Cl, ClMax, ClDelta);
         }
     }
     else
@@ -1161,18 +1163,14 @@ void XDirect::onAnalyze()
         Reynolds      = m_pdeAlphaMin->value();
         ReynoldsMax   = m_pdeAlphaMax->value();
         ReynoldsDelta = m_pdeAlphaDelta->value();
+        m_pXFADlg->setRe(Reynolds, ReynoldsMax, ReynoldsDelta);
     }
-
-    m_pXFADlg->setAlpha(Alpha, AlphaMax, AlphaDelta);
-    m_pXFADlg->setCl(Cl, ClMax, ClDelta);
-    m_pXFADlg->setRe(Reynolds, ReynoldsMax, ReynoldsDelta);
 
     s_bInitBL   = m_pchInitBL->isChecked();
     s_bViscous  = m_pchViscous->isChecked();
     OpPoint::setStoreOpp(m_pchStoreOpp->isChecked());
 
     m_ppbAnalyze->setEnabled(false);
-
 
     m_pXFADlg->m_pRmsGraph->copySettings(&Settings::s_RefGraph);
 
@@ -1425,7 +1423,7 @@ void XDirect::onDeleteCurOpp()
     QString strong,str;
     strong = tr("Are you sure you want to delete the Operating Point\n");
     if(Objects2d::curPolar()->polarType()!=xfl::FIXEDAOAPOLAR) str = QString("Alpha = %1").arg(pOpPoint->aoa(),0,'f',2);
-    else                                                     str = QString("Reynolds = %1").arg(pOpPoint->Reynolds(),0,'f',0);
+    else                                                       str = QString("Reynolds = %1").arg(pOpPoint->Reynolds(),0,'f',0);
     strong += str;
     strong += "  ?";
 
@@ -1462,10 +1460,9 @@ void XDirect::onDeleteCurPolar()
         {
             pOpPoint = Objects2d::oppAt(l);
             if (pOpPoint->polarName()  == Objects2d::curPolar()->polarName() &&
-                    pOpPoint->foilName() == Objects2d::curFoil()->name())
+                  pOpPoint->foilName() == Objects2d::curFoil()->name())
             {
                 Objects2d::deleteOppAt(l);
-                delete pOpPoint;
             }
         }
         // then remove the CPolar and update views
@@ -3672,9 +3669,6 @@ void XDirect::setAnalysisParams()
     {
         if(!Objects2d::curPolar()->isFixedaoaPolar())
         {
-            m_pdeAlphaMin->setDigits(3);
-            m_pdeAlphaMax->setDigits(3);
-            m_pdeAlphaDelta->setDigits(3);
             if(s_bAlpha) m_prbSpec1->setChecked(true);
             else         m_prbSpec2->setChecked(true);
             m_prbSpec3->setEnabled(false);
@@ -3686,9 +3680,6 @@ void XDirect::setAnalysisParams()
         {
             m_prbSpec3->setChecked(true);
             m_prbSpec3->setEnabled(true);
-            m_pdeAlphaMin->setDigits(0);
-            m_pdeAlphaMax->setDigits(0);
-            m_pdeAlphaDelta->setDigits(0);
 
             m_plabUnit1->clear();
             m_plabUnit2->clear();
@@ -3701,18 +3692,8 @@ void XDirect::setAnalysisParams()
         else         m_prbSpec2->setChecked(true);
         m_prbSpec3->setEnabled(false);
     }
+
     setOpPointSequence();
-    if(Objects2d::curPolar())
-    {
-        if(Objects2d::curPolar()->polarType()!=xfl::FIXEDAOAPOLAR)
-        {
-
-        }
-        else
-        {
-
-        }
-    }
 }
 
 
@@ -4067,12 +4048,9 @@ void XDirect::setupLayout()
                 m_plabUnit2 = new QLabel("<p>&deg;</p>");
                 m_plabUnit3 = new QLabel("<p>&deg;</p>");
 
-                m_pdeAlphaMin   = new DoubleEdit(0,3);
-                m_pdeAlphaMax   = new DoubleEdit(0,3);
-                m_pdeAlphaDelta = new DoubleEdit(0,3);
-                m_pdeAlphaMin->setMinimumHeight(20);
-                m_pdeAlphaMax->setMinimumHeight(20);
-                m_pdeAlphaDelta->setMinimumHeight(20);
+                m_pdeAlphaMin   = new DoubleEdit();
+                m_pdeAlphaMax   = new DoubleEdit();
+                m_pdeAlphaDelta = new DoubleEdit();
                 m_pdeAlphaMin->setAlignment(Qt::AlignRight);
                 m_pdeAlphaMax->setAlignment(Qt::AlignRight);
                 m_pdeAlphaDelta->setAlignment(Qt::AlignRight);

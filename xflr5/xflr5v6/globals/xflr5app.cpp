@@ -242,7 +242,7 @@ bool XFLR5App::event(QEvent *pEvent)
         case QEvent::FileOpen:
         {
             iApp = MainFrame::self()->loadXFLR5File(static_cast<QFileOpenEvent *>(pEvent)->file());
-            if (iApp == xfl::MIAREX)             MainFrame::self()->onMiarex();
+            if      (iApp == xfl::MIAREX)        MainFrame::self()->onMiarex();
             else if (iApp == xfl::XFOILANALYSIS) MainFrame::self()->onXDirect();
 
             return true;
