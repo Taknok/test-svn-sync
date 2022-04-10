@@ -33,7 +33,7 @@
 #define MININTERVAL  0.000000001
 
 
-bool Graph::s_bHighlightPoint = false;
+bool Graph::s_bHighlightPoint = true;
 
 
 QColor Graph::s_CurveColors[] = {QColor(255,   0,   0), QColor(  0,   0, 255), QColor(  0, 255,   0), QColor(255, 255,   0),
@@ -199,13 +199,12 @@ void Graph::drawCurve(int nIndex, QPainter &painter)
         if(point>=0)
         {
             //highlight
-            QColor HighColor(200, 100, 77);
             CurvePen.setWidth(pCurve->width()+2);
-            CurvePen.setColor(HighColor);
+            CurvePen.setColor(Qt::red);
             painter.setPen(CurvePen);
             To.setX(int(pCurve->x(point)/m_scalex+m_ptoffset.x()));
             To.setY(int(pCurve->y(point)/scaley  +m_ptoffset.y()));
-            painter.drawRect(To.x()-ptside-2,To.y()-ptside-2, 2*ptside+4,2*ptside+4);
+            painter.drawRect(To.x()-ptside,To.y()-ptside, 2*ptside,2*ptside);
         }
     }
     painter.restore();

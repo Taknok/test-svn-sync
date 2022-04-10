@@ -3267,8 +3267,8 @@ bool MainFrame::loadSettings()
         m_ImageDirName = settings.value("ImageDirName").toString();
         m_ExportLastDirName = settings.value("ExportLastDirName").toString();
 
-
         Graph::setOppHighlighting(settings.value("HighlightOpp").toBool());
+        Graph::setOppHighlighting(true);
 
         switch(settings.value("ImageFormat").toInt())
         {
