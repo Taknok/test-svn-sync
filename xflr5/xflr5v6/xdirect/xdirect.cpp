@@ -931,17 +931,17 @@ void XDirect::loadSettings(QSettings &settings)
         s_bInitBL         = settings.value("InitBL").toBool();
         m_bPolarView      = settings.value("PolarView").toBool();
 
-        m_bType1          = settings.value("Type1").toBool();
-        m_bType2          = settings.value("Type2").toBool();
-        m_bType3          = settings.value("Type3").toBool();
-        m_bType4          = settings.value("Type4").toBool();
-        m_bNeutralLine    = settings.value("NeutralLine").toBool();
-        m_bCurOppOnly     = settings.value("CurOppOnly").toBool();
+        m_bType1          = settings.value("Type1", m_bType1).toBool();
+        m_bType2          = settings.value("Type2", m_bType2).toBool();
+        m_bType3          = settings.value("Type3", m_bType3).toBool();
+        m_bType4          = settings.value("Type4", m_bType4).toBool();
+        m_bNeutralLine    = settings.value("NeutralLine", true).toBool();
+        m_bCurOppOnly     = settings.value("CurOppOnly", true).toBool();
         m_bShowInviscid   = settings.value("ShowInviscid", false).toBool();
         m_bCpGraph        = settings.value("ShowCpGraph", true).toBool();
 
         oppVar = settings.value("OppVar",0).toInt();
-        s_TimeUpdateInterval = settings.value("TimeUpdateInterval",100).toInt();
+        s_TimeUpdateInterval = settings.value("TimeUpdateInterval", s_TimeUpdateInterval).toInt();
 
         m_iPlrGraph      = settings.value("PlrGraph").toInt();
 

@@ -6676,9 +6676,9 @@ void Miarex::setupLayout()
                 plabAlphaDelta->setAlignment(Qt::AlignRight);
                 plabAlphaMin->setAlignment(Qt::AlignRight);
                 plabAlphaMax->setAlignment(Qt::AlignRight);
-                m_pdeAlphaMin     = new DoubleEdit(0.0, 3);
-                m_pdeAlphaMax     = new DoubleEdit(1., 3);
-                m_pdeAlphaDelta   = new DoubleEdit(0.5, 3);
+                m_pdeAlphaMin     = new DoubleEdit(0.0);
+                m_pdeAlphaMax     = new DoubleEdit(1.);
+                m_pdeAlphaDelta   = new DoubleEdit(0.5);
 
                 m_plabUnit1 = new QLabel(QChar(0260));
                 m_plabUnit2 = new QLabel(QChar(0260));
