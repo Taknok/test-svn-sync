@@ -418,7 +418,6 @@ class Miarex : public QWidget
         int m_LLTMaxIterations;     /**< the number of iterations for LLT */
         int m_posAnimateWOpp;       /**< the current animation aoa ind ex for WOpp animation */
         int m_posAnimateMode;       /**< the current animation aoa index for Mode animation */
-        int m_WakeInterNodes;        /**< number of intermediate nodes between wake panels */
 
         xfl::enumMiarexViews m_iView;    /**< defines the currently active view */
 

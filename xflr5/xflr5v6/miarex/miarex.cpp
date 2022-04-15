@@ -197,7 +197,6 @@ Miarex::Miarex(QWidget *parent) : QWidget(parent)
     m_LineStyle.m_Color = QColor(127, 255, 70);
     m_bCurveVisible = true;
 
-    m_WakeInterNodes  = 6;
     m_bSequence       = false;
 
     m_bDirichlet = true;
@@ -1747,13 +1746,13 @@ bool Miarex::loadSettings(QSettings &settings)
 
     settings.beginGroup("Miarex");
     {
-        m_bXCmRef       = settings.value("bXCmRef", true).toBool();
-        m_bXTop         = settings.value("bXTop", false).toBool();
-        m_bXBot         = settings.value("bXBot", false).toBool();
-        m_bXCP          = settings.value("bXCP", false).toBool();
+        m_bXCmRef       = settings.value("bXCmRef",     true).toBool();
+        m_bXTop         = settings.value("bXTop",       false).toBool();
+        m_bXBot         = settings.value("bXBot",       false).toBool();
+        m_bXCP          = settings.value("bXCP",        false).toBool();
         m_bPanelForce   = settings.value("bPanelForce", false).toBool();
-        m_bICd          = settings.value("bICd", true).toBool();
-        m_bVCd          = settings.value("bVCd", true).toBool();
+        m_bICd          = settings.value("bICd",        true).toBool();
+        m_bVCd          = settings.value("bVCd",        true).toBool();
         m_pgl3dMiarexView->m_bSurfaces     = settings.value("bSurfaces").toBool();
         m_pgl3dMiarexView->m_bOutline      = settings.value("bOutline").toBool();
         m_pgl3dMiarexView->m_bVLMPanels    = settings.value("bVLMPanels").toBool();
@@ -1833,19 +1832,17 @@ bool Miarex::loadSettings(QSettings &settings)
         gl3dMiarexView::s_DragScale     = settings.value("DragScale").toDouble();
         gl3dMiarexView::s_VelocityScale = settings.value("VelocityScale").toDouble();
 
-        m_WakeInterNodes    = settings.value("WakeInterNodes").toInt();
-
         m_RampTime      = settings.value("RampTime", 0.1).toDouble();
         m_RampAmplitude = settings.value("RampAmplitude", 1.0).toDouble();
 
         m_TotalTime         = settings.value("TotalTime",10.0).toDouble();
         m_Deltat            = settings.value("Delta_t",0.01).toDouble();
 
-        m_TimeInput[0]      = settings.value("TimeIn0",0.0).toDouble();
-        m_TimeInput[1]      = settings.value("TimeIn1",0.0).toDouble();
-        m_TimeInput[2]      = settings.value("TimeIn2",0.0).toDouble();
-        m_TimeInput[3]      = settings.value("TimeIn3",0.0).toDouble();
-        m_bLongitudinal     = settings.value("DynamicsMode").toBool();
+        m_TimeInput[0]      = settings.value("TimeIn0", 0.0).toDouble();
+        m_TimeInput[1]      = settings.value("TimeIn1", 0.0).toDouble();
+        m_TimeInput[2]      = settings.value("TimeIn2", 0.0).toDouble();
+        m_TimeInput[3]      = settings.value("TimeIn3", 0.0).toDouble();
+        m_bLongitudinal     = settings.value("DynamicsMode", true).toBool();
         m_StabilityResponseType = settings.value("StabCurveType",0).toInt();
 
         for(int i=0; i<20; i++)
@@ -1860,21 +1857,21 @@ bool Miarex::loadSettings(QSettings &settings)
         }
         pStabView->updateControlModelData();
 
-        PlaneOpp::s_bKeepOutOpps  = settings.value("KeepOutOpps").toBool();
+        PlaneOpp::s_bKeepOutOpps  = settings.value("KeepOutOpps",PlaneOpp::s_bKeepOutOpps).toBool();
 
         W3dPrefs::s_MassColor = settings.value("MassColor", W3dPrefs::s_MassColor).value<QColor>();
 
-        LLTAnalysis::s_CvPrec       = settings.value("CvPrec").toDouble();
-        LLTAnalysis::s_RelaxMax     = settings.value("RelaxMax").toDouble();
-        LLTAnalysis::s_NLLTStations = settings.value("NLLTStations").toInt();
+        LLTAnalysis::s_CvPrec       = settings.value("CvPrec",       LLTAnalysis::s_CvPrec).toDouble();
+        LLTAnalysis::s_RelaxMax     = settings.value("RelaxMax",     LLTAnalysis::s_RelaxMax).toDouble();
+        LLTAnalysis::s_NLLTStations = settings.value("NLLTStations", LLTAnalysis::s_NLLTStations).toInt();
 
         PanelAnalysis::s_bTrefftz   = settings.value("Trefftz", true).toBool();
         PanelAnalysis::s_bTrefftz   = true;
 
-        Panel::s_CtrlPos       = settings.value("CtrlPos").toDouble();
-        Panel::s_VortexPos     = settings.value("VortexPos").toDouble();
-        Panel::s_CoreSize      = settings.value("CoreSize", Panel::s_CoreSize).toDouble();
-        Wing::s_MinPanelSize   = settings.value("MinPanelSize").toDouble();
+        Panel::s_CtrlPos       = settings.value("CtrlPos",      Panel::s_CtrlPos).toDouble();
+        Panel::s_VortexPos     = settings.value("VortexPos",    Panel::s_VortexPos).toDouble();
+        Panel::s_CoreSize      = settings.value("CoreSize",     Panel::s_CoreSize).toDouble();
+        Wing::s_MinPanelSize   = settings.value("MinPanelSize", Wing::s_MinPanelSize).toDouble();
 
         AeroDataDlg::s_Temperature = settings.value("Temperature", AeroDataDlg::s_Temperature).toDouble();
         AeroDataDlg::s_Altitude    = settings.value("Altitude",    AeroDataDlg::s_Altitude).toDouble();
@@ -2486,7 +2483,6 @@ void Miarex::onAdvancedSettings()
     waDlg.m_bDirichlet      = m_bDirichlet;
     waDlg.m_bKeepOutOpps    = PlaneOpp::s_bKeepOutOpps;
     waDlg.m_bLogFile        = s_bLogFile;
-    waDlg.m_WakeInterNodes  = m_WakeInterNodes;
 
     waDlg.initDialog();
     if(waDlg.exec() == QDialog::Accepted)
@@ -2506,7 +2502,6 @@ void Miarex::onAdvancedSettings()
 
         m_LLTMaxIterations     = waDlg.m_Iter;
         m_bDirichlet           = waDlg.m_bDirichlet;
-        m_WakeInterNodes       = waDlg.m_WakeInterNodes;
         m_InducedDragPoint     = waDlg.m_InducedDragPoint;
 
         s_bLogFile = waDlg.m_bLogFile;
@@ -6421,7 +6416,6 @@ bool Miarex::saveSettings(QSettings &settings)
         settings.setValue("DragScale", gl3dMiarexView::s_DragScale);
         settings.setValue("VelocityScale", gl3dMiarexView::s_VelocityScale);
 
-        settings.setValue("WakeInterNodes", m_WakeInterNodes);
         settings.setValue("CtrlPos",   Panel::s_CtrlPos);
         settings.setValue("VortexPos", Panel::s_VortexPos);
         settings.setValue("CoreSize", Panel::s_CoreSize);
