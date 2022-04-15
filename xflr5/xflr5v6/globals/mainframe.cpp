@@ -3286,9 +3286,9 @@ bool MainFrame::loadSettings()
         m_bSaveOpps   = settings.value("SaveOpps").toBool();
         m_bSavePOpps  = settings.value("SaveWOpps").toBool();
 
-        m_bAutoSave = settings.value("AutoSaveProject", false).toBool();
+        m_bAutoSave = settings.value("AutoSaveProject", m_bAutoSave).toBool();
 
-        m_SaveInterval = settings.value("AutoSaveInterval", 10).toInt();
+        m_SaveInterval = settings.value("AutoSaveInterval", m_SaveInterval).toInt();
 
         //        a = settings.value("RecentFileSize").toInt();
         QString RecentF,strange;
@@ -3794,6 +3794,7 @@ void MainFrame::onResetSettings()
 #endif
 
         settings.clear();
+
         xfl::setLastDirName(QDir::homePath());
         xfl::setXmlDirName(QDir::homePath());
         xfl::setPlrDirName(QDir::homePath());
