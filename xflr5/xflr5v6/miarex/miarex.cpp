@@ -1753,13 +1753,13 @@ bool Miarex::loadSettings(QSettings &settings)
         m_bPanelForce   = settings.value("bPanelForce", false).toBool();
         m_bICd          = settings.value("bICd",        true).toBool();
         m_bVCd          = settings.value("bVCd",        true).toBool();
-        m_pgl3dMiarexView->m_bSurfaces     = settings.value("bSurfaces").toBool();
-        m_pgl3dMiarexView->m_bOutline      = settings.value("bOutline").toBool();
-        m_pgl3dMiarexView->m_bVLMPanels    = settings.value("bVLMPanels").toBool();
-        m_pgl3dMiarexView->m_bAxes         = settings.value("bAxes").toBool();
-        m_b3DCp         = settings.value("b3DCp").toBool();
-        m_bDownwash     = settings.value("bDownwash").toBool();
-        m_bMoments      = settings.value("bMoments").toBool();
+        m_pgl3dMiarexView->m_bSurfaces     = settings.value("bSurfaces",  m_pgl3dMiarexView->m_bSurfaces).toBool();
+        m_pgl3dMiarexView->m_bOutline      = settings.value("bOutline",   m_pgl3dMiarexView->m_bOutline).toBool();
+        m_pgl3dMiarexView->m_bVLMPanels    = settings.value("bVLMPanels", m_pgl3dMiarexView->m_bVLMPanels).toBool();
+        m_pgl3dMiarexView->m_bAxes         = settings.value("bAxes",      m_pgl3dMiarexView->m_bAxes).toBool();
+        m_b3DCp         = settings.value("b3DCp",     m_b3DCp).toBool();
+        m_bDownwash     = settings.value("bDownwash", m_bDownwash).toBool();
+        m_bMoments      = settings.value("bMoments",  m_bMoments).toBool();
         gl3dMiarexView::s_bAutoCpScale  = settings.value("bAutoCpScale").toBool();
         m_bCurPOppOnly       = settings.value("CurWOppOnly",      m_bCurPOppOnly).toBool();
         m_bShowEllipticCurve = settings.value("bShowElliptic",    m_bShowEllipticCurve).toBool();
@@ -1950,7 +1950,6 @@ void Miarex::on3DView()
 }
 
 
-
 /**
  * Updates the display after the user has toggled the switch for the display of Cp coefficients
  */
@@ -1999,8 +1998,6 @@ void Miarex::on3DPrefs()
     setControls();
     updateView();
 }
-
-
 
 
 /**

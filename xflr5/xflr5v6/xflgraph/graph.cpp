@@ -258,12 +258,12 @@ void Graph::drawTitles(QPainter &painter)
     int YPosYTitle =  5;
 
     if(m_xo>=m_xmin && m_xo<=m_xmax) xp = m_xo;
-    else if(m_xo>m_xmax)         xp = m_xmax;
-    else                     xp = m_xmin;
+    else if(m_xo>m_xmax)             xp = m_xmax;
+    else                             xp = m_xmin;
 
     if(m_yo>=m_ymin && m_yo<=m_ymax) yp = m_yo;
-    else if(m_yo>m_ymax)         yp = m_ymax;
-    else                     yp = m_ymin;
+    else if(m_yo>m_ymax)             yp = m_ymax;
+    else                             yp = m_ymin;
 
     painter.setFont(m_TitleFont);
 
@@ -305,9 +305,9 @@ void Graph::drawXTicks(QPainter &painter)
     LabelPen.setStyle(xfl::getStyle(m_Grid.xAxisStipple()));
     LabelPen.setWidth(m_Grid.xAxisWidth());
     painter.setPen(LabelPen);
-    double xt = m_xo-(m_xo-m_xmin);//one tick at the origin
+
     int nx = int((m_xo-m_xmin)/m_xunit);
-    xt = m_xo - nx*m_xunit;
+    double xt = m_xo - nx*m_xunit;
 
     double yp = 0;
     if(m_yo>=m_ymin && m_yo<=m_ymax) yp = m_yo;
@@ -1256,8 +1256,6 @@ void Graph::setGraphDefaults(bool bDark)
 
     m_bYInverted = false;
 }
-
-
 
 
 void Graph::setLabelColor(QColor const &crColor)

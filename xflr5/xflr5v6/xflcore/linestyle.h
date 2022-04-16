@@ -253,12 +253,12 @@ struct LineStyle
             switch (istyle)
             {
                 default:
-                case 0: m_Stipple = Line::SOLID; break;
-                case 1: m_Stipple = Line::DASH; break;
-                case 2: m_Stipple = Line::DOT; break;
-                case 3: m_Stipple = Line::DASHDOT; break;
+                case 0: m_Stipple = Line::SOLID;      break;
+                case 1: m_Stipple = Line::DASH;       break;
+                case 2: m_Stipple = Line::DOT;        break;
+                case 3: m_Stipple = Line::DASHDOT;    break;
                 case 4: m_Stipple = Line::DASHDOTDOT; break;
-                case 5: m_Stipple = Line::NOLINE; break;
+                case 5: m_Stipple = Line::NOLINE;     break;
             }
         }
         if(settings.contains(name+"_pts"))
