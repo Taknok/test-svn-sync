@@ -107,10 +107,6 @@ MainFrame *Miarex::s_pMainFrame = nullptr;
 bool Miarex::s_bResetCurves = true;
 bool Miarex::s_bLogFile = true;
 
-/*QVector<Plane*>    *Miarex::m_poaPlane = nullptr;
-QVector<WPolar*>   *Miarex::m_poaWPolar = nullptr;
-QVector<PlaneOpp*> *Miarex::m_poaPOpp = nullptr;
-*/
 
 /**
  * The public constructor.
@@ -182,7 +178,6 @@ Miarex::Miarex(QWidget *parent) : QWidget(parent)
     m_bResetTextLegend   = true;
     m_bShowFlapMoments   = true;
 
-
     m_LLTMaxIterations          = 100;
     LLTAnalysis::s_CvPrec       =   0.01;
     LLTAnalysis::s_RelaxMax     =  20.0;
@@ -191,11 +186,6 @@ Miarex::Miarex(QWidget *parent) : QWidget(parent)
     Panel::s_VortexPos = 0.25;
     Panel::s_CtrlPos   = 0.75;
 
-    m_LineStyle.m_Stipple = Line::SOLID;
-    m_LineStyle.m_Width = 1;
-    m_LineStyle.m_Symbol  = Line::NOSYMBOL;
-    m_LineStyle.m_Color = QColor(127, 255, 70);
-    m_bCurveVisible = true;
 
     m_bSequence       = false;
 
@@ -4946,9 +4936,6 @@ void Miarex::onKeepCpSection()
     pNewCurve->copyData(pCurrentCurve);
     pNewCurve->duplicate(pCurrentCurve);
 
-    //    pNewCurve->setCurveName(pCurrentCurve->curveName());
-    //    pNewCurve->setColor(pCurrentCurve->color());
-
     m_CpLineStyle.m_Color = xfl::randomColor(!DisplayOptions::isLightTheme());
     pCurrentCurve->setColor(m_CpLineStyle.m_Color);
 
@@ -4966,7 +4953,7 @@ void Miarex::onKeepCpSection()
  */
 void Miarex::onManagePlanes()
 {
-    QString PlaneName = "";
+    QString PlaneName;
     if(m_pCurPlane)     PlaneName = m_pCurPlane->name();
 
     ManagePlanesDlg uDlg(s_pMainFrame);
@@ -6995,8 +6982,6 @@ void Miarex::setWPolar(WPolar*pWPolar)
 
     if(m_pCurPlane && m_pCurWPolar)
     {
-        m_bCurveVisible = m_pCurWPolar->isVisible();
-        m_LineStyle.m_Symbol  = m_pCurWPolar->pointStyle();
 
         //make sure the polar is up to date with the latest plane data
         if(m_pCurWPolar->bAutoInertia())
@@ -7554,11 +7539,6 @@ bool Miarex::setPlaneOpp(PlaneOpp *pPOpp)
     s_bResetCurves = true;
 
     if(!m_pCurPOpp) return false;
-    else if(m_iView==xfl::WOPPVIEW)
-    {
-        m_bCurveVisible = m_pCurPOpp->isVisible();
-        m_LineStyle.m_Symbol  = m_pCurPOpp->pointStyle();
-    }
 
     return true;
 }

@@ -82,6 +82,7 @@
 #include <xfl3d/testgl/gl3dlorenz2.h>
 #include <xfl3d/testgl/gl3dattractors.h>
 #include <xfl3d/testgl/gl3dboids.h>
+#include <xfl3d/testgl/gl3dboids2.h>
 #include <xfl3d/testgl/gl3dhydrogen.h>
 #include <xfl3d/testgl/gl3doptim2d.h>
 #include <xfl3d/testgl/gl3dsagittarius.h>
@@ -2955,7 +2956,7 @@ void MainFrame::keyPressEvent(QKeyEvent *pEvent)
             {
                 gl3dTestGLView *pTestView(nullptr);
 #ifdef Q_OS_MAC
-//            Compute shaders require OpenGL 4.3< whereas macOS only supports OpenGL 4.1
+//            Compute shaders require OpenGL 4.3+ whereas macOS only supports OpenGL 4.1
                 pTestView = new gl3dLorenz;
 #else
                 if(bCtrl)
@@ -3016,7 +3017,16 @@ void MainFrame::keyPressEvent(QKeyEvent *pEvent)
             }
             case Qt::Key_F12:
             {
-                gl3dBoids *pTestView = new gl3dBoids;
+                gl3dTestGLView *pTestView(nullptr);
+#ifdef Q_OS_MAC
+//            Compute shaders require OpenGL 4.3+ whereas macOS only supports OpenGL 4.1
+                pTestView = new gl3dLorenz;
+#else
+                if(bCtrl)
+                    pTestView = new gl3dBoids;
+                else
+                    pTestView = new gl3dBoids2;
+#endif
                 pTestView->setAttribute(Qt::WA_DeleteOnClose);
                 pTestView->show();
                 pTestView->activateWindow();
@@ -3326,6 +3336,7 @@ bool MainFrame::loadSettings()
     gl2dFractal::loadSettings(settings);
     gl2dNewton::loadSettings(settings);
     gl3dBoids::loadSettings(settings);
+    gl3dBoids2::loadSettings(settings);
     gl3dHydrogen::loadSettings(settings);
     gl3dSpace::loadSettings(settings);
     gl3dOptim2d::loadSettings(settings);
@@ -4591,6 +4602,7 @@ void MainFrame::saveSettings()
     gl2dFractal::saveSettings(settings);
     gl2dNewton::saveSettings(settings);
     gl3dBoids::saveSettings(settings);
+    gl3dBoids2::saveSettings(settings);
     gl3dHydrogen::saveSettings(settings);
     gl3dOptim2d::saveSettings(settings);
     gl3dLorenz::saveSettings(settings);

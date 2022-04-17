@@ -390,10 +390,6 @@ class Miarex : public QWidget
 
         PlaneOpp * m_pCurPOpp;                    /**< a pointer to the active Plane Operating Point, or NULL if none is active*/
 
-
-        bool m_bCurveVisible;                     /**< true if the active curve is to be displayed */
-
-        LineStyle m_LineStyle;                    /**< the style of the lines displayed in the comboboxes*/
         LineStyle m_CpLineStyle;                    /**< the style of the lines displayed in the comboboxes*/
 
 
