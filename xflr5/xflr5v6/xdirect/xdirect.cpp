@@ -3167,7 +3167,6 @@ void XDirect::onRenameCurPolar()
                 pPolar = Objects2d::polarAt(k);
                 if (pPolar->polarName() == renDlg.newName())
                 {
-                    bExists = true;
                     break;
                 }
             }
@@ -3184,7 +3183,6 @@ void XDirect::onRenameCurPolar()
             }
             Objects2d::deletePolarAt(k);
             if(pPolar==Objects2d::curPolar()) setCurPolar(nullptr);
-
 
             //and rename everything
             if(Objects2d::curPolar())
@@ -3594,22 +3592,22 @@ void XDirect::saveSettings(QSettings &settings)
 {
     settings.beginGroup("XDirect");
     {
-        settings.setValue("AlphaSpec", s_bAlpha);
-        settings.setValue("StoreOpp", OpPoint::bStoreOpp());
-        settings.setValue("ViscousAnalysis", s_bViscous);
-        settings.setValue("InitBL", s_bInitBL);
-        settings.setValue("PolarView", m_bPolarView);
-        settings.setValue("Type1", m_bType1);
-        settings.setValue("Type2", m_bType2);
-        settings.setValue("Type3", m_bType3);
-        settings.setValue("Type4", m_bType4);
-        settings.setValue("CurOppOnly", m_bCurOppOnly);
-        settings.setValue("ShowInviscid", m_bShowInviscid);
-        settings.setValue("ShowCpGraph", m_bCpGraph);
-        settings.setValue("OppVar", m_CpGraph.yVariable());
+        settings.setValue("AlphaSpec",          s_bAlpha);
+        settings.setValue("StoreOpp",           OpPoint::bStoreOpp());
+        settings.setValue("ViscousAnalysis",    s_bViscous);
+        settings.setValue("InitBL",             s_bInitBL);
+        settings.setValue("PolarView",          m_bPolarView);
+        settings.setValue("Type1",              m_bType1);
+        settings.setValue("Type2",              m_bType2);
+        settings.setValue("Type3",              m_bType3);
+        settings.setValue("Type4",              m_bType4);
+        settings.setValue("CurOppOnly",         m_bCurOppOnly);
+        settings.setValue("ShowInviscid",       m_bShowInviscid);
+        settings.setValue("ShowCpGraph",        m_bCpGraph);
+        settings.setValue("OppVar",             m_CpGraph.yVariable());
         settings.setValue("TimeUpdateInterval", s_TimeUpdateInterval);
-        settings.setValue("PlrGraph", m_iPlrGraph);
-        settings.setValue("NeutralLine", m_bNeutralLine);
+        settings.setValue("PlrGraph",           m_iPlrGraph);
+        settings.setValue("NeutralLine",        m_bNeutralLine);
 
         switch(m_iPlrView)
         {
@@ -3629,14 +3627,14 @@ void XDirect::saveSettings(QSettings &settings)
 
 
         settings.setValue("AutoInitBL", XFoilTask::s_bAutoInitBL);
-        settings.setValue("IterLim", XFoilTask::s_IterLim);
+        settings.setValue("IterLim",    XFoilTask::s_IterLim);
         settings.setValue("FullReport", XFoil::fullReport());
 
         settings.setValue("BatchUpdatePolarView", BatchThreadDlg::s_bUpdatePolarView);
-        settings.setValue("MaxThreads", BatchThreadDlg::s_nThreads);
+        settings.setValue("MaxThreads",           BatchThreadDlg::s_nThreads);
 
 
-        settings.setValue("VAccel", m_XFoil.VAccel());
+        settings.setValue("VAccel",         m_XFoil.VAccel());
         settings.setValue("KeepOpenErrors", s_bKeepOpenErrors);
 
         settings.setValue("FoilTreeSplitterSizes", m_pFoilTreeView->splitterSize());

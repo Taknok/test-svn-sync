@@ -490,7 +490,6 @@ void OpenGlDlg::onCreateContext()
     gl3dTestGLView *pgl3dTestView = dynamic_cast<gl3dTestGLView*>(m_pglTestView);
     if(pgl3dTestView)
         connect(pgl3dTestView, SIGNAL(ready()), SLOT(onRenderWindowReady()));
- //    connect(m_pglTestView, SIGNAL(ready()), SLOT(onRenderWindowReady()));
 
     m_pStackWt->addWidget(m_pglTestView);
     m_pStackWt->setCurrentWidget(m_pglTestView);
