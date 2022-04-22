@@ -814,7 +814,7 @@ void Miarex::createWOppCurves()
                 y = sqrt(1.0 - x*x);
                 lift += y*m_pCurPOpp->m_pWOpp[0]->m_StripArea[i] ;
             }
-            maxlift = m_pCurPOpp->m_CL / lift * m_pCurPlane->planformArea();
+            maxlift = m_pCurPOpp->m_CL / lift * m_pCurWPolar->referenceArea();
         }
 
         for(int ig=0; ig<MAXWINGGRAPHS; ig++)
@@ -853,7 +853,7 @@ void Miarex::createWOppCurves()
                 y = pow(1.0-x*x/b2/b2, m_BellCurveExp);
                 lift += y*m_pCurPOpp->m_pWOpp[0]->m_StripArea[i];
             }
-            maxlift = m_pCurPOpp->m_CL / lift * m_pCurPlane->planformArea();
+            maxlift = m_pCurPOpp->m_CL / lift * m_pCurWPolar->referenceArea();
         }
 
         for(int ig=0; ig<MAXWINGGRAPHS; ig++)
@@ -2661,14 +2661,14 @@ void Miarex::onDefineWPolar()
         if(pNewWPolar->referenceDim()==xfl::PLANFORMREFDIM)
         {
             pNewWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
-            double area = m_pCurPlane->planformArea();
+            double area = m_pCurPlane->planformArea(pNewWPolar->bIncludeWing2Area());
             if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->planformArea();
             pNewWPolar->setReferenceArea(area);
         }
         else if(pNewWPolar->referenceDim()==xfl::PROJECTEDREFDIM)
         {
             pNewWPolar->setReferenceSpanLength(m_pCurPlane->projectedSpan());
-            double area = m_pCurPlane->projectedArea();
+            double area = m_pCurPlane->projectedArea(pNewWPolar->bIncludeWing2Area());
             if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->projectedArea();
             pNewWPolar->setReferenceArea(area);
         }
@@ -2717,7 +2717,7 @@ void Miarex::onDefineWPolarObject()
     WPolar* pNewWPolar  = new WPolar;
     pNewWPolar->duplicateSpec(&WPolarDlg::s_WPolar);
     pNewWPolar->setPlaneName(m_pCurPlane->name());
-    pNewWPolar->setReferenceArea(m_pCurPlane->planformArea());
+    pNewWPolar->setReferenceArea(m_pCurPlane->planformArea(pNewWPolar->bIncludeWing2Area()));
     pNewWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
     pNewWPolar->setReferenceMAC(m_pCurPlane->mac());
 
@@ -2732,14 +2732,14 @@ void Miarex::onDefineWPolarObject()
         if(pNewWPolar->referenceDim()==xfl::PLANFORMREFDIM)
         {
             pNewWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
-            double area = m_pCurPlane->planformArea();
+            double area = m_pCurPlane->planformArea(pNewWPolar->bIncludeWing2Area());
             if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->planformArea();
             pNewWPolar->setReferenceArea(area);
         }
         else if(pNewWPolar->referenceDim()==xfl::PROJECTEDREFDIM)
         {
             pNewWPolar->setReferenceSpanLength(m_pCurPlane->projectedSpan());
-            double area = m_pCurPlane->projectedArea();
+            double area = m_pCurPlane->projectedArea(pNewWPolar->bIncludeWing2Area());
             if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->projectedArea();
             pNewWPolar->setReferenceArea(area);
         }
@@ -3755,7 +3755,7 @@ void Miarex::onScaleWing()
                      pModPlane->rootChord(),
                      pModPlane->wing()->averageSweep(),
                      pModPlane->wing()->tipTwist(),
-                     pModPlane->planformArea(),
+                     pModPlane->planformArea(false),
                      pModPlane->aspectRatio(),
                      pModPlane->taperRatio());
 
@@ -4265,7 +4265,7 @@ void Miarex::onExporttoAVL()
     else                                   out << ("0     0     0.0                     | iYsym  iZsym  Zsym\n");
 
     strong = QString("%1   %2   %3   | Sref   Cref   Bref\n")
-            .arg(m_pCurPlane->planformArea()*Units::mtoUnit()*Units::mtoUnit(),9,'f',5)
+            .arg(m_pCurPlane->planformArea(false)*Units::mtoUnit()*Units::mtoUnit(),9,'f',5)
             .arg(m_pCurPlane->m_Wing[0].MAC()*Units::mtoUnit(),9,'f',5)
             .arg(m_pCurPlane->planformSpan()*Units::mtoUnit(), 9,'f',5);
     out << strong;
@@ -4845,7 +4845,7 @@ void Miarex::onImportWPolars()
                 pWPolar = new WPolar();
 
                 pWPolar->setPlaneName(PlaneName);
-                pWPolar->setReferenceArea(pPlane->projectedArea());
+                pWPolar->setReferenceArea(pPlane->projectedArea(pPlane->hasSecondWing()));
                 pWPolar->setReferenceMAC(pPlane->mac());
                 pWPolar->setReferenceSpanLength(pPlane->projectedSpan());
 
@@ -5983,12 +5983,19 @@ void Miarex::paintPlaneLegend(QPainter &painter, Plane const*pPlane, WPolar cons
     painter.drawText(LeftPos,ZPos+D, str1);
     D+=dheight;
 
-    str1 = QString(tr("Wing Area      =")+"%1 ").arg(pPlane->planformArea() * Units::m2toUnit(),10,'f',3);
+    double area(0.0);
+    if(pWPolar) area = pPlane->planformArea(pWPolar->bIncludeWing2Area());
+    else        area = pPlane->planformArea(pPlane->hasSecondWing());
+
+    str1 = QString(tr("Wing Area      =")+"%1 ").arg(area * Units::m2toUnit(),10,'f',3);
     str1 += surface;
     painter.drawText(LeftPos,ZPos+D, str1);
     D+=dheight;
 
-    str1 = QString(tr("xyProj. Area   =")+"%1 ").arg(pPlane->projectedArea() * Units::m2toUnit(),10,'f',3);
+    double projectedArea(0.0);
+    if(pWPolar) projectedArea = pPlane->projectedArea(pWPolar->bIncludeWing2Area());
+    else        projectedArea = pPlane->projectedArea(pPlane->hasSecondWing());
+    str1 = QString(tr("xyProj. Area   =")+"%1 ").arg(projectedArea * Units::m2toUnit(),10,'f',3);
     str1 += surface;
     painter.drawText(LeftPos,ZPos+D, str1);
     D+=dheight;
@@ -6000,7 +6007,7 @@ void Miarex::paintPlaneLegend(QPainter &painter, Plane const*pPlane, WPolar cons
     D+=dheight;
 
     Units::getAreaUnitLabel(strong);
-    Result = QString(tr("Wing Load      =")+"%1 ").arg(m_pCurPlane->totalMass()*Units::kgtoUnit()/pPlane->projectedArea()/Units::m2toUnit(),10,'f',3);
+    Result = QString(tr("Wing Load      =")+"%1 ").arg(m_pCurPlane->totalMass()*Units::kgtoUnit()/projectedArea/Units::m2toUnit(),10,'f',3);
     Result += str + "/" + strong;
     painter.drawText(LeftPos, ZPos+D, Result);
     D+=dheight;
@@ -7004,12 +7011,12 @@ void Miarex::setWPolar(WPolar*pWPolar)
             // just a safety precaution
             if(m_pCurWPolar->referenceDim()==xfl::PLANFORMREFDIM)
             {
-                m_pCurWPolar->setReferenceArea(m_pCurPlane->planformArea());
+                m_pCurWPolar->setReferenceArea(m_pCurPlane->planformArea(pWPolar->bIncludeWing2Area()));
                 m_pCurWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
             }
             else if(m_pCurWPolar->referenceDim()==xfl::PROJECTEDREFDIM)
             {
-                m_pCurWPolar->setReferenceArea(m_pCurPlane->projectedArea());
+                m_pCurWPolar->setReferenceArea(m_pCurPlane->projectedArea(pWPolar->bIncludeWing2Area()));
                 m_pCurWPolar->setReferenceSpanLength(m_pCurPlane->projectedSpan());
             }
         }

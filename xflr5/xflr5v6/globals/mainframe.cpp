@@ -4846,14 +4846,14 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
                     if(pWPolar->referenceDim()==xfl::PLANFORMREFDIM)
                     {
                         pWPolar->setReferenceSpanLength(pPlane->planformSpan());
-                        double area  = pPlane->planformArea();
+                        double area  = pPlane->planformArea(pWPolar->bIncludeWing2Area());
                         if(pPlane->biPlane()) area += pPlane->wing2()->planformArea();
                         pWPolar->setReferenceArea(area);
                     }
                     else if(pWPolar->referenceDim()==xfl::PROJECTEDREFDIM)
                     {
                         pWPolar->setReferenceSpanLength(pPlane->projectedSpan());
-                        double area = pPlane->projectedArea();
+                        double area = pPlane->projectedArea(pWPolar->bIncludeWing2Area());
                         if(pPlane->biPlane()) area += pPlane->wing2()->projectedArea();
                         pWPolar->setReferenceArea(area);
                     }
