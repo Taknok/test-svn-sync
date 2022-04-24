@@ -205,7 +205,8 @@ void main()
         {
             CoG *= 1.0/float(cnt);
             accel = (CoG - oldpos)/width;
-            if(length(accel)>3.0*MAXFORCE) accel = normalize(accel)*3.0*MAXFORCE;
+            if(length(accel)>3.0*MAXFORCE)
+                accel = normalize(accel)*3.0*MAXFORCE;
         }
 
         newvel = oldvel*0.9999 + accel;
