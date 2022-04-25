@@ -92,7 +92,6 @@ class Miarex : public QWidget
     friend class Plane;
     friend class PlaneDlg;
     friend class PlaneTreeView;
-    friend class Settings;
     friend class StabPolarDlg;
     friend class StabViewDlg;
     friend class TwoDWidget;
@@ -117,7 +116,7 @@ class Miarex : public QWidget
         bool isStabTimeView()  const {return m_iView==xfl::STABTIMEVIEW;}
         bool isStabilityView() const {return isStabPolarView() || isStabTimeView();}
 
-        static void resetCurves() {s_bResetCurves = true;}
+        void resetCurves() {m_bResetCurves = true;}
 
 
     signals:
@@ -385,10 +384,8 @@ class Miarex : public QWidget
 
 
 
-        static bool s_bResetCurves;               /**< true if the curves of the active view should be regenerated before the next view update >*/
+        bool m_bResetCurves;               /**< true if the curves of the active view should be regenerated before the next view update >*/
 
-
-        PlaneOpp * m_pCurPOpp;                    /**< a pointer to the active Plane Operating Point, or NULL if none is active*/
 
         LineStyle m_CpLineStyle;                    /**< the style of the lines displayed in the comboboxes*/
 
@@ -402,6 +399,7 @@ class Miarex : public QWidget
 
         Plane * m_pCurPlane;          /**< the currently active Plane */
         WPolar * m_pCurWPolar;        /**< the currently active WPolar */
+        PlaneOpp * m_pCurPOpp;                    /**< a pointer to the active Plane Operating Point, or NULL if none is active*/
 
         int m_StabilityResponseType;   /**< 0 = initial conditions, 1=forced response, 2=modal response */
 

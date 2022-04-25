@@ -104,7 +104,6 @@
 
 MainFrame *Miarex::s_pMainFrame = nullptr;
 
-bool Miarex::s_bResetCurves = true;
 bool Miarex::s_bLogFile = true;
 
 
@@ -148,6 +147,7 @@ Miarex::Miarex(QWidget *parent) : QWidget(parent)
         m_pWOpp[iw]     = nullptr;
     }
 
+    m_bResetCurves = true;
     m_bXPressed = m_bYPressed = false;
     m_bXCmRef            = true;
     m_bXCP               = false;
@@ -759,7 +759,7 @@ void Miarex::createCpCurves()
             }
         }
     }
-    s_bResetCurves = false;
+    m_bResetCurves = false;
 }
 
 
@@ -874,7 +874,7 @@ void Miarex::createWOppCurves()
             }
         }
     }
-    s_bResetCurves = false;
+    m_bResetCurves = false;
 }
 
 
@@ -905,7 +905,7 @@ void Miarex::createWPolarCurves()
             }
         }
     }
-    s_bResetCurves = false;
+    m_bResetCurves = false;
 }
 
 
@@ -1031,7 +1031,7 @@ void Miarex::createStabTimeCurves()
             pCurve3->appendPoint(t, y[3].real()*180.0/PI);
         }
     }
-    s_bResetCurves = false;
+    m_bResetCurves = false;
 }
 
 
@@ -1206,7 +1206,7 @@ void Miarex::createStabRungeKuttaCurves()
     pCurve2->setVisible(true);
     pCurve3->setVisible(true);
 
-    s_bResetCurves = false;
+    m_bResetCurves = false;
 }
 
 
@@ -1249,7 +1249,7 @@ void Miarex::createStabRLCurves()
             }
         }
     }
-    s_bResetCurves = false;
+    m_bResetCurves = false;
 }
 
 
@@ -1650,7 +1650,7 @@ void Miarex::keyPressEvent(QKeyEvent *pEvent)
             {
                 s_pMainFrame->m_pCloseProjectAct->trigger();
             }
-            if(MainFrame::hasOpenGL()) on3DView();
+            on3DView();
             break;
         }
         case Qt::Key_F5:
@@ -1910,13 +1910,6 @@ bool Miarex::loadSettings(QSettings &settings)
  */
 void Miarex::on3DView()
 {
-    if(!MainFrame::hasOpenGL())
-    {
-        m_iView = xfl::WPOLARVIEW;
-        updateView();
-        return;
-    }
-
     m_bResetTextLegend = true;
 
     if(m_iView==xfl::W3DVIEW)
@@ -2170,7 +2163,7 @@ void Miarex::onTaskFinished()
     m_pPlaneTreeView->setEnabled(true);
 
     //refresh the view
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
     setControls();
     s_pMainFrame->setFocus();
@@ -2368,7 +2361,7 @@ void Miarex::onAnimateWOppSingle()
             if (m_iView==xfl::WOPPVIEW)
             {
                 m_bResetTextLegend = true;
-                s_bResetCurves = true;
+                m_bResetCurves = true;
                 updateView();
             }
             else if (m_iView==xfl::W3DVIEW)
@@ -2555,7 +2548,7 @@ void Miarex::onCpView()
 void Miarex::onCurWOppOnly()
 {
     m_bCurPOppOnly = !m_bCurPOppOnly;
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
     setControls();
 }
@@ -2907,7 +2900,7 @@ void Miarex::onEditCurWPolarPts()
     Line::enumPointStyle ps = m_pCurWPolar->pointStyle();
     m_pCurWPolar->setPointStyle(Line::LITTLECIRCLE);
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 
     if(epDlg.exec() == QDialog::Accepted)
@@ -2921,7 +2914,7 @@ void Miarex::onEditCurWPolarPts()
     m_pCurWPolar->setPointStyle(ps);
 
     m_bResetTextLegend = true;
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
     setControls();
     delete pMemWPolar;
@@ -2960,7 +2953,7 @@ void Miarex::onDeleteAllWPlrOpps()
 
     setPlaneOpp(nullptr);
     setControls();
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -2987,7 +2980,7 @@ void Miarex::onDeleteAllWOpps()
 
     setControls();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -3016,7 +3009,7 @@ void Miarex::onDeleteCurPlane()
     setPlane(nextPlaneName);
 
     setControls();
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     emit projectModified();
     updateView();
 }
@@ -3071,7 +3064,7 @@ void Miarex::onDeleteCurWOpp()
     else           m_pPlaneTreeView->selectWPolar(m_pCurWPolar, true);
     emit projectModified();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 
     emit projectModified();
@@ -3111,7 +3104,7 @@ void Miarex::onDeletePlanePOpps()
     m_bResetTextLegend = true;
 
     setControls();
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -3259,7 +3252,7 @@ void Miarex::onEditCurBody()
     m_bResetTextLegend = true;
     gl3dMiarexView::s_bResetglGeom = true;
     gl3dMiarexView::s_bResetglMesh = true;
-    s_bResetCurves = true;
+    m_bResetCurves = true;
 
     ModDlg mdDlg(s_pMainFrame);
 
@@ -3367,7 +3360,7 @@ void Miarex::onEditCurBodyObject()
     m_bResetTextLegend = true;
     gl3dMiarexView::s_bResetglGeom = true;
     gl3dMiarexView::s_bResetglMesh = true;
-    s_bResetCurves = true;
+    m_bResetCurves = true;
 
     ModDlg mdDlg(s_pMainFrame);
 
@@ -3462,7 +3455,7 @@ void Miarex::onEditCurObject()
         m_bResetTextLegend = true;
         gl3dMiarexView::s_bResetglGeom = true;
         gl3dMiarexView::s_bResetglMesh = true;
-        s_bResetCurves = true;
+        m_bResetCurves = true;
 
         if(voDlg.m_bChanged)
         {
@@ -3555,7 +3548,7 @@ void Miarex::onEditCurPlane()
         m_bResetTextLegend = true;
         gl3dMiarexView::s_bResetglGeom = true;
         gl3dMiarexView::s_bResetglMesh = true;
-        s_bResetCurves = true;
+        m_bResetCurves = true;
         if(plDlg.m_bDescriptionChanged)
         {
             emit projectModified();
@@ -3665,7 +3658,7 @@ void Miarex::onEditCurWing()
         m_bResetTextLegend = true;
         gl3dMiarexView::s_bResetglGeom = true;
         gl3dMiarexView::s_bResetglMesh = true;
-        s_bResetCurves = true;
+        m_bResetCurves = true;
 
         if(wgDlg.m_bDescriptionChanged)
         {
@@ -3812,7 +3805,7 @@ void Miarex::onScaleWing()
 
             gl3dMiarexView::s_bResetglGeom = true;
             gl3dMiarexView::s_bResetglMesh = true;
-            s_bResetCurves = true;
+            m_bResetCurves = true;
             emit projectModified();
         }
 
@@ -4641,7 +4634,7 @@ void Miarex::onFinCurve()
 {
     m_bShowWingCurve[3] = !m_bShowWingCurve[3];
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -4652,7 +4645,7 @@ void Miarex::onFinCurve()
 void Miarex::onStabCurve()
 {
     m_bShowWingCurve[2] = !m_bShowWingCurve[2];
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -4684,7 +4677,7 @@ void Miarex::onHideAllWPolars()
 
     m_pPlaneTreeView->setCurveParams();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
     emit projectModified();
 }
@@ -4711,7 +4704,7 @@ void Miarex::onHideAllWPlrOpps()
 
     m_pPlaneTreeView->setCurveParams();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
     emit projectModified();
 }
@@ -4731,7 +4724,7 @@ void Miarex::onHideAllWOpps()
     }
     m_pPlaneTreeView->setCurveParams();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 
     emit projectModified();
@@ -4754,7 +4747,7 @@ void Miarex::onHidePlaneOpps()
     }
     m_pPlaneTreeView->setCurveParams();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
     emit projectModified();
 }
@@ -4782,7 +4775,7 @@ void Miarex::onHidePlaneWPolars()
     }
     m_pPlaneTreeView->setCurveParams();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
     emit projectModified();
 }
@@ -5152,7 +5145,7 @@ void Miarex::onPolarFilter()
         m_bType2 = pfDlg.m_bType2;
         m_bType4 = pfDlg.m_bType4;
         m_bType7 = pfDlg.m_bType7;
-        s_bResetCurves = true;
+        m_bResetCurves = true;
         updateView();
     }
 }
@@ -5248,7 +5241,7 @@ void Miarex::onRenameCurWPolar()
 
     emit projectModified();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -5321,7 +5314,7 @@ void Miarex::onResetCurWPolar()
     m_pPlaneTreeView->setObjectProperties();
 
     emit projectModified();
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -5355,7 +5348,7 @@ void Miarex::onShowAllWOpps()
 
     emit projectModified();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -5373,7 +5366,7 @@ void Miarex::onShowAllWPolars()
     m_pPlaneTreeView->setCurveParams();
 
     emit projectModified();
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -5393,7 +5386,7 @@ void Miarex::onShowPlaneWPolarsOnly()
     }
     m_pPlaneTreeView->setCurveParams();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
     emit projectModified();
 }
@@ -5413,7 +5406,7 @@ void Miarex::onShowWPolarOppsOnly()
         else pPOpp->setVisible(false);
     }
     m_pPlaneTreeView->setCurveParams();
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
     emit projectModified();
 }
@@ -5437,7 +5430,7 @@ void Miarex::onShowPlaneWPolars()
     }
     m_pPlaneTreeView->setCurveParams();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
     emit projectModified();
 }
@@ -5461,7 +5454,7 @@ void Miarex::onShowPlaneOpps()
     m_pPlaneTreeView->setCurveParams();
 
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
     emit projectModified();
 }
@@ -5488,7 +5481,7 @@ void Miarex::onShowAllWPlrOpps()
     }
     m_pPlaneTreeView->setCurveParams();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
     emit projectModified();
 }
@@ -5520,7 +5513,7 @@ void Miarex::onShowTargetCurve()
     m_bShowEllipticCurve = dlg.m_bShowEllipticCurve;
     m_bShowBellCurve     = dlg.m_bShowBellCurve;
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -5639,7 +5632,7 @@ void Miarex::onStabilityDirection()
     setControls();
     setGraphTiles(); //needed to switch between longitudinal and lateral graphs
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -5661,7 +5654,7 @@ void Miarex::onStabTimeView()
 
     setControls();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -5679,7 +5672,7 @@ void Miarex::onRootLocusView()
     s_pMainFrame->setMainFrameCentralWidget();
 
     setControls();
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 
 }
@@ -5766,7 +5759,7 @@ void Miarex::onStoreWOpp()
 void Miarex::onWing2Curve()
 {
     m_bShowWingCurve[1] = !m_bShowWingCurve[1];
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -5862,7 +5855,7 @@ void Miarex::onPlaneInertia()
 
         setWPolar(m_pCurWPolar);
         emit projectModified();
-        s_bResetCurves = true;
+        m_bResetCurves = true;
         updateView();
     }
     else
@@ -5896,7 +5889,7 @@ void Miarex::onWOppView()
 
     setControls();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -5924,7 +5917,7 @@ void Miarex::onWPolarView()
 
     setControls();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     updateView();
 }
 
@@ -6614,10 +6607,10 @@ void Miarex::setPlane(Plane *pPlane)
         //clear the GUI
         m_pCurWPolar = nullptr;
         m_pCurPOpp  = nullptr;
-        s_bResetCurves = true;
+        m_bResetCurves = true;
 
         setAnalysisParams();
-        s_bResetCurves = true;
+        m_bResetCurves = true;
         setScale();
         updateView();
 
@@ -6636,7 +6629,7 @@ void Miarex::setPlane(Plane *pPlane)
     setScale();
     setWGraphScale();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
 }
 
 
@@ -6944,7 +6937,7 @@ void Miarex::setWPolar(WPolar*pWPolar)
     m_bResetTextLegend = true;
     gl3dMiarexView::s_bResetglLegend = true;
     gl3dMiarexView::s_bResetglMesh = true;
-    s_bResetCurves = true;
+    m_bResetCurves = true;
 
     if(!m_pCurPlane)
     {
@@ -7215,7 +7208,7 @@ void Miarex::updateUnits()
     }
     setAnalysisParams();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
     m_bResetTextLegend = true;
     updateView();
 }
@@ -7232,7 +7225,7 @@ void Miarex::updateView()
     }
     else
     {
-        if(s_bResetCurves)
+        if(m_bResetCurves)
         {
             if (m_iView==xfl::WPOLARVIEW)
             {
@@ -7480,7 +7473,7 @@ bool Miarex::setPlaneOpp(PlaneOpp *pPOpp)
     if(!m_pCurPlane || !m_pCurWPolar)
     {
         m_pCurPOpp = nullptr;
-        s_bResetCurves = true;
+        m_bResetCurves = true;
 
         setAnalysisParams();
         return false;
@@ -7543,7 +7536,7 @@ bool Miarex::setPlaneOpp(PlaneOpp *pPOpp)
 
     setControls();
 
-    s_bResetCurves = true;
+    m_bResetCurves = true;
 
     if(!m_pCurPOpp) return false;
 

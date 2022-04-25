@@ -144,10 +144,10 @@ class MainFrame : public QMainWindow
         void onSetNoApp();
 
     private:
-        void keyPressEvent(QKeyEvent *pEvent);
-        void keyReleaseEvent(QKeyEvent *pEvent);
-        void closeEvent (QCloseEvent * pEvent);
-        void showEvent(QShowEvent *pEvent);
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void keyReleaseEvent(QKeyEvent *pEvent) override;
+        void closeEvent (QCloseEvent *pEvent) override;
+        void showEvent(QShowEvent *pEvent) override;
 
     public:
         QString shortenFileName(QString &PathName);
@@ -159,8 +159,6 @@ class MainFrame : public QMainWindow
         bool serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStoring);
         bool serializeProjectWPA(QDataStream &ar, bool bIsStoring);
         bool serializeProjectXFL(QDataStream &ar, bool bIsStoring);
-        static QString const &projectName() {return s_ProjectName;}
-        static bool hasOpenGL(){return s_bOpenGL;}
         void addRecentFile(const QString &PathName);
         void checkGraphActions();
         void createAFoilActions();
@@ -379,7 +377,6 @@ class MainFrame : public QMainWindow
 
         int m_SaveInterval;         /**< the time interval in muinutes between two project auto-saves */
 
-        static QDir s_StylesheetDir;
         static QDir s_TranslationDir;
         static QString s_LanguageFilePath;
 
@@ -394,7 +391,6 @@ class MainFrame : public QMainWindow
 
 
     public:
-        static bool s_bOpenGL;
         static QString s_ProjectName;      /**< The Project's name. */
 
 

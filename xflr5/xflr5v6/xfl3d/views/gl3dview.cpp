@@ -1601,7 +1601,7 @@ void gl3dView::onRotationIncrement()
     }
     Quaternion qtrot;
     double t = double(m_iTimerInc)/double(ANIMATIONFRAMES);
-    Quaternion::slerp(m_QuatStart, m_QuatEnd, t, qtrot);
+    qtrot.slerp(m_QuatStart, m_QuatEnd, t);
     m_ArcBall.setQuat(qtrot);
 
     reset3dRotationCenter();

@@ -136,12 +136,10 @@ QPointer<MainFrame> MainFrame::_self = nullptr;
 
 QString MainFrame::s_ProjectName = "";
 QString MainFrame::s_LanguageFilePath = "";
-QDir MainFrame::s_StylesheetDir;
 QDir MainFrame::s_TranslationDir;
 
 
 bool MainFrame::s_bSaved = true;
-bool MainFrame::s_bOpenGL = true;
 
 
 MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(parent, flags)
@@ -1143,7 +1141,6 @@ void MainFrame::createMiarexActions()
         m_pW3DAct->setStatusTip(tr("Switch to the 3D view"));
         m_pW3DAct->setActionGroup(m_pMiarexViewActGroup);
         connect(m_pW3DAct, SIGNAL(triggered()), m_pMiarex, SLOT(on3DView()));
-        if(!hasOpenGL()) m_pW3DAct->setEnabled(false);
         //end action group
 
         m_pCpViewAct = new QAction(QIcon(":/images/OnCpView.png"), tr("Cp View")+"\tF9", this);
@@ -3610,7 +3607,7 @@ void MainFrame::onInsertProject()
     {
         m_pMiarex->m_pPlaneTreeView->fillModelView();
         m_pMiarex->setPlane();
-        Miarex::s_bResetCurves = true;
+        m_pMiarex->resetCurves();
     }
     else if(m_iApp == xfl::XFOILANALYSIS)
     {
@@ -3634,7 +3631,7 @@ void MainFrame::onHighlightOperatingPoint()
 
     if(m_iApp == xfl::MIAREX)
     {
-        Miarex::s_bResetCurves = true;
+        m_pMiarex->resetCurves();
         m_pMiarex->updateView();
     }
     else if(m_iApp == xfl::XFOILANALYSIS)
@@ -5547,15 +5544,12 @@ void MainFrame::setupDataDir()
 {
 #ifdef Q_OS_MAC
     s_TranslationDir.setPath(qApp->applicationDirPath()+"/translations/");
-    s_StylesheetDir.setPath(qApp->applicationDirPath()+"/qss/");
 #endif
 #ifdef Q_OS_WIN
     s_TranslationDir.setPath(qApp->applicationDirPath()+"/translations/xfl");
-    s_StylesheetDir.setPath(qApp->applicationDirPath()+"/qss");
 #endif
 #ifdef Q_OS_LINUX
     s_TranslationDir.setPath("/usr/local/share/xflr5/translations");
-    s_StylesheetDir.setPath("/usr/local/share/xflr5/qss");
 #endif
 }
 

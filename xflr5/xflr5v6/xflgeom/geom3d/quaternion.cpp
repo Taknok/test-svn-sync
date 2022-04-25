@@ -86,7 +86,7 @@ void Quaternion::toEulerAngles(double &roll, double &pitch, double &yaw) const
  * It refers to constant-speed motion along a unit-radius great circle arc,
  * given the ends and an interpolation parameter between 0 and 1.
  */
-void Quaternion::slerp(Quaternion const &qt0, Quaternion const &qt1, double t, Quaternion &qslerp)
+void Quaternion::slerp(Quaternion const &qt0, Quaternion const &qt1, double t)
 {
     Quaternion q0, q1;
     q0.set(qt0.normalized());
@@ -119,6 +119,6 @@ void Quaternion::slerp(Quaternion const &qt0, Quaternion const &qt1, double t, Q
 
     q0 *= s0;
     q1 *= s1;
-    qslerp = q0 + q1;
-    qslerp.normalize();
+    set(q0 + q1);
+    normalize();
 }
