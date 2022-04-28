@@ -7004,12 +7004,12 @@ void Miarex::setWPolar(WPolar*pWPolar)
             // just a safety precaution
             if(m_pCurWPolar->referenceDim()==xfl::PLANFORMREFDIM)
             {
-                m_pCurWPolar->setReferenceArea(m_pCurPlane->planformArea(pWPolar->bIncludeWing2Area()));
+                m_pCurWPolar->setReferenceArea(m_pCurPlane->planformArea(m_pCurWPolar->bIncludeWing2Area()));
                 m_pCurWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
             }
             else if(m_pCurWPolar->referenceDim()==xfl::PROJECTEDREFDIM)
             {
-                m_pCurWPolar->setReferenceArea(m_pCurPlane->projectedArea(pWPolar->bIncludeWing2Area()));
+                m_pCurWPolar->setReferenceArea(m_pCurPlane->projectedArea(m_pCurWPolar->bIncludeWing2Area()));
                 m_pCurWPolar->setReferenceSpanLength(m_pCurPlane->projectedSpan());
             }
         }

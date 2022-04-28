@@ -3642,7 +3642,6 @@ void MainFrame::onHighlightOperatingPoint()
 }
 
 
-
 void MainFrame::onLoadFile()
 {
     QStringList PathNames;
