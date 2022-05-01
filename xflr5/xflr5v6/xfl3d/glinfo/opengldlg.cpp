@@ -481,6 +481,7 @@ void OpenGlDlg::onCreateContext()
 
     m_pptglOutput->clear();
     m_pStackWt->removeWidget(m_pglTestView);
+    m_pglTestView->close();
     delete m_pglTestView;
     m_pglTestView = getView(s_iView);
 

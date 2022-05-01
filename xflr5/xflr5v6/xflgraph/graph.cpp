@@ -94,6 +94,7 @@ Graph::Graph()
     setGraphDefaults();
 }
 
+
 Graph::~Graph()
 {
     deleteCurves();
@@ -797,25 +798,30 @@ void Graph::loadSettings(QSettings &settings)
         //read variables
         m_BorderStyle.loadSettings(settings,"BorderStyle");
 
-
         clr = settings.value("TitleColor", m_TitleColor).value<QColor>();
         setTitleColor(clr);
         clr = settings.value("LabelColor", m_LabelColor).value<QColor>();
         setLabelColor(clr);
 
-        lgft = QFont(settings.value("TitleFontName", QString()).toString());
-        int size = settings.value("TitleFontSize",8).toInt();
-        if(size>0) lgft.setPointSize(size);
-        lgft.setItalic(settings.value("TitleFontItalic", false).toBool());
-        lgft.setBold(settings.value("TitleFontBold", false).toBool());
-        setTitleFont(lgft);
+        if(settings.contains("TitleFontName"))
+        {
+            lgft = QFont(settings.value("TitleFontName", QString()).toString());
+            int size = settings.value("TitleFontSize",8).toInt();
+            if(size>0) lgft.setPointSize(size);
+            lgft.setItalic(settings.value("TitleFontItalic", false).toBool());
+            lgft.setBold(settings.value("TitleFontBold", false).toBool());
+            setTitleFont(lgft);
+        }
 
-        lgft = QFont(settings.value("LabelFontName", QString()).toString());
-        size = settings.value("LabelFontSize",8).toInt();
-        if(size>0) lgft.setPointSize(size);
-        lgft.setItalic(settings.value("LabelFontItalic", false).toBool());
-        lgft.setBold(settings.value("LabelFontBold", false).toBool());
-        setLabelFont(lgft);
+        if(settings.contains("LabelFontName"))
+        {
+            lgft = QFont(settings.value("LabelFontName", QString()).toString());
+            int size = settings.value("LabelFontSize",8).toInt();
+            if(size>0) lgft.setPointSize(size);
+            lgft.setItalic(settings.value("LabelFontItalic", false).toBool());
+            lgft.setBold(settings.value("LabelFontBold", false).toBool());
+            setLabelFont(lgft);
+        }
 
         m_xo       = settings.value("XOrigin", m_xo).toDouble();
         m_xmin     = settings.value("XMin",    m_xmin).toDouble();
@@ -868,6 +874,7 @@ Curve* Graph::addCurve()
     }
     return pCurve;
 }
+
 
 /**< In the case where a curve has been constructed independently and needs to be added to the Graph */
 Curve* Graph::addCurve(Curve *pCurve)
