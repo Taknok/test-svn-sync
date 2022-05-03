@@ -50,13 +50,6 @@ GL3DScales::GL3DScales(QWidget *pParent) : QWidget(pParent)
     setAttribute(Qt::WA_DeleteOnClose, false);
     setWindowTitle(tr("3D Scales Settings"));
 
-    s_pos       = 1;
-    s_NX        =   30;
-    s_XFactor   = 1.10;
-    s_DeltaL    =  0.01;
-    s_XOffset   =  0.0;
-    s_ZOffset   =  0.0;
-
     setupLayout();
 
     connect(m_ppbApply, SIGNAL(clicked()),this, SLOT(onApply()));
@@ -419,7 +412,7 @@ void GL3DScales::readStreamParams()
     s_DeltaL  = m_pdeDeltaL->value()  / Units::mtoUnit();
     s_XFactor = m_pdeXFactor->value();
 
-    if(m_prbLE->isChecked())            s_pos=0;
+    if     (m_prbLE->isChecked())     s_pos=0;
     else if(m_pebTE->isChecked())     s_pos=1;
     else if(m_prbLine->isChecked())   s_pos=2;
 }
@@ -433,12 +426,14 @@ bool GL3DScales::loadSettings(QSettings &settings)
         gl3dMiarexView::s_bAutoCpScale = settings.value("AutoCpScale").toBool();
         gl3dMiarexView::s_LegendMin    = settings.value("LegendMin").toDouble();
         gl3dMiarexView::s_LegendMax    = settings.value("LegendMax").toDouble();
-        s_pos     = settings.value("Position").toInt();
-        s_NX      = settings.value("NX").toInt();
-        s_DeltaL  = settings.value("DeltaL").toDouble();
-        s_XFactor = settings.value("XFactor").toDouble();
-        s_XOffset = settings.value("XOffset").toDouble();
-        s_ZOffset = settings.value("ZOffset").toDouble();
+        s_pos     = settings.value("Position", s_pos).toInt();
+        s_NX      = settings.value("NX",       s_NX).toInt();
+        s_NX = std::max(s_NX, 1);
+        s_DeltaL  = settings.value("DeltaL",   s_DeltaL).toDouble();
+        s_XFactor = settings.value("XFactor",  s_XFactor).toDouble();
+        s_XOffset = settings.value("XOffset",  s_XOffset).toDouble();
+        s_ZOffset = settings.value("ZOffset",  s_ZOffset).toDouble();
+
     }
     settings.endGroup();
     return true;

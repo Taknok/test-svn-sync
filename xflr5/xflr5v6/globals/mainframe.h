@@ -100,10 +100,12 @@ class MainFrame : public QMainWindow
         xfl::enumApp loadXFLR5File(QString PathName);
         static MainFrame* self();
 
+        static QString const &projectName() {return s_ProjectName;}
+
         /*___________________________________________Methods_______________________________*/
 
         void executeScript(QString const &XmlScriptName, bool bShowProgressStdIO, bool bShowLog=false);
-        bool bAutoLoadLast() const {return m_bAutoLoadLast;}
+        bool bAutoLoadLast() const;
 
     public slots:
         void onAFoil();
@@ -369,13 +371,8 @@ class MainFrame : public QMainWindow
         xfl::enumApp m_iApp;                 /**< The identification number of the active app. */
 
         static bool s_bSaved;       /**< true if the project has not been modified since the last save operation. */
-        bool m_bAutoLoadLast;       /**< true if the last project should be loaded on startup */
-        bool m_bSaveOpps;           /**< true if the foil operating points should be serialized in the project file */
-        bool m_bSavePOpps;          /**< true if the wing operating points should be serialized in the project file */
-        bool m_bAutoSave;           /**< true if the project should be auto-saved on regular intervals */
         bool m_bSaveSettings;       /**< true if user-defined settings should be saved on exit. */
 
-        int m_SaveInterval;         /**< the time interval in muinutes between two project auto-saves */
 
         static QDir s_TranslationDir;
         static QString s_LanguageFilePath;

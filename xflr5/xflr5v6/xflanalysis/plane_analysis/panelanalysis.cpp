@@ -3973,7 +3973,7 @@ void PanelAnalysis::computeControlDerivatives()
 
     double DeltaAngle = 0.001;
 
-    int pos = 0;
+//    int pos = 0;
 
     int NCtrls = 0;
 
@@ -3997,7 +3997,7 @@ void PanelAnalysis::computeControlDerivatives()
             }
         }
 
-        pos = m_pWingList[0]->m_nPanels;
+//        pos = m_pWingList[0]->m_nPanels;
         NCtrls = 1;
     }
 
@@ -4020,7 +4020,7 @@ void PanelAnalysis::computeControlDerivatives()
                 panel.rotateBC(m_pPlane->wingLE(2), Quat);
             }
         }
-        pos += m_pWingList[2]->m_nPanels;
+//        pos += m_pWingList[2]->m_nPanels;
         NCtrls = 2;
     }
 

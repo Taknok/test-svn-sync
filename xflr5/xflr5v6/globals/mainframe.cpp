@@ -179,13 +179,8 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     m_ImageFormat = xfl::PNG;
     Settings::s_ExportFileType = xfl::TXT;
 
-    m_bAutoLoadLast = false;
-    m_bAutoSave     = false;
-    m_bSaveOpps     = false;
-    m_bSavePOpps    = true;
     m_bSaveSettings = true;
 
-    m_SaveInterval = 10;
     m_GraphExportFilter = "Comma Separated Values (*.csv)";
 
     m_pSaveTimer = nullptr;
@@ -225,10 +220,10 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
         delete m_pSaveTimer;
     }
 
-    if(m_bAutoSave)
+    if(SaveOptions::bAutoSave())
     {
         m_pSaveTimer = new QTimer(this);
-        m_pSaveTimer->setInterval(m_SaveInterval*60*1000);
+        m_pSaveTimer->setInterval(SaveOptions::saveInterval()*60*1000);
         m_pSaveTimer->start();
         connect(m_pSaveTimer, SIGNAL(timeout()), this, SLOT(onSaveTimer()));
     }
@@ -3289,14 +3284,6 @@ bool MainFrame::loadSettings()
                 break;
         }
 
-        m_bAutoLoadLast = settings.value("AutoLoadLastProject").toBool();
-        m_bSaveOpps   = settings.value("SaveOpps").toBool();
-        m_bSavePOpps  = settings.value("SaveWOpps").toBool();
-
-        m_bAutoSave = settings.value("AutoSaveProject", m_bAutoSave).toBool();
-
-        m_SaveInterval = settings.value("AutoSaveInterval", m_SaveInterval).toInt();
-
         //        a = settings.value("RecentFileSize").toInt();
         QString RecentF,strange;
         m_RecentFiles.clear();
@@ -3324,6 +3311,7 @@ bool MainFrame::loadSettings()
     m_pMiarex->loadSettings(settings);
     m_pXInverse->loadSettings(settings);
 
+    SaveOptions::loadSettings(settings);
     GraphDlg::loadSettings(settings);
     LogWt::loadSettings(settings);
     GL3DScales::loadSettings(settings);
@@ -4557,11 +4545,7 @@ void MainFrame::saveSettings()
 
         settings.setValue("LanguageFilePath", s_LanguageFilePath);
         settings.setValue("ImageFormat", m_ImageFormat);
-        settings.setValue("AutoSaveProject", m_bAutoSave);
-        settings.setValue("AutoSaveInterval", m_SaveInterval);
-        settings.setValue("AutoLoadLastProject",m_bAutoLoadLast);
-        settings.setValue("SaveOpps", m_bSaveOpps);
-        settings.setValue("SaveWOpps", m_bSavePOpps);
+
         settings.setValue("RecentFileSize", m_RecentFiles.size());
 
 
@@ -4588,6 +4572,7 @@ void MainFrame::saveSettings()
     m_pXInverse->saveSettings(settings);
 
     Settings::saveSettings(settings);
+    SaveOptions::saveSettings(settings);
     GraphDlg::saveSettings(settings);
     LogWt::saveSettings(settings);
     gl3dView::saveSettings(settings);
@@ -4698,7 +4683,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
             pWPolar->serializeWPlrXFL(ar, bIsStoring);
         }
 
-        if(m_bSavePOpps)
+        if(SaveOptions::bPOpps())
         {
             // not forgetting their POpps
             ar << Objects3d::planeOppCount();
@@ -4727,7 +4712,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         }
 
         //the oppoints
-        if(m_bSaveOpps)
+        if(SaveOptions::bOpps)
         {
             ar << Objects2d::oppCount();
             for (int i=0; i<Objects2d::oppCount();i++)
@@ -6225,23 +6210,23 @@ void MainFrame::exportGraph(Graph *pGraph)
 }
 
 
+bool MainFrame::bAutoLoadLast() const
+{
+    return SaveOptions::bAutoLoadLast();
+}
+
+
 void MainFrame::onPreferences()
 {
     PreferencesDlg dlg(this);
-    dlg.m_pSaveOptionsWt->initWidget(m_bAutoLoadLast, m_bSaveOpps, m_bSavePOpps, m_bAutoSave, m_SaveInterval);
+    dlg.m_pSaveOptionsWt->initWidget();
     dlg.m_pUnitsWt->initWidget();
     dlg.m_pDisplayOptionsWt->initWidget();
     dlg.m_pLanguageWt->initWidget();
 
     if(dlg.exec()==QDialog::Accepted)
     {
-        m_bAutoLoadLast = dlg.m_pSaveOptionsWt->m_bAutoLoadLast;
-        m_bAutoSave     = dlg.m_pSaveOptionsWt->m_bAutoSave;
-        m_SaveInterval  = dlg.m_pSaveOptionsWt->m_SaveInterval;
-        m_bSaveOpps     = dlg.m_pSaveOptionsWt->m_bOpps;
-        m_bSavePOpps    = dlg.m_pSaveOptionsWt->m_bWOpps;
-
-        if(m_bAutoSave)
+        if(SaveOptions::bAutoSave())
         {
             if(m_pSaveTimer)
             {
@@ -6249,7 +6234,7 @@ void MainFrame::onPreferences()
                 delete m_pSaveTimer;
             }
             m_pSaveTimer = new QTimer(this);
-            m_pSaveTimer->setInterval(m_SaveInterval*60*1000);
+            m_pSaveTimer->setInterval(SaveOptions::saveInterval()*60*1000);
             m_pSaveTimer->start();
             connect(m_pSaveTimer, SIGNAL(timeout()), SLOT(onSaveTimer()));
         }

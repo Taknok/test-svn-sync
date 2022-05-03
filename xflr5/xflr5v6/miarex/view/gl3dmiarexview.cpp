@@ -459,7 +459,6 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
     int streamArraySize = m_NStreamLines * int(GL3DScales::s_NX) * 3;
     QVector<float> StreamVertexArray(streamArraySize, 0.0f);
 
-    int p0=0;
     int iv = 0;
     for (int iWing=0; iWing<MAXWINGS; iWing++)
     {
@@ -467,7 +466,6 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
         {
             Wing const *pWing = PlaneWing[iWing];
 
-            int nVertex = 0;
             for (int p=0; p<pWing->nPanels(); p++)
             {
                 bFound = false;
@@ -565,7 +563,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
                         StreamVertexArray[iv++] = C.yf()+TC.yf();
                         StreamVertexArray[iv++] = C.zf()+TC.zf();
                         ds *= GL3DScales::s_XFactor;
-                        nVertex +=2;
+//                        nVertex +=2;
 
                         for (i=2; i<GL3DScales::s_NX ;i++)
                         {
@@ -577,7 +575,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
                             StreamVertexArray[iv++] = C.xf()+TC.xf();
                             StreamVertexArray[iv++] = C.yf()+TC.yf();
                             StreamVertexArray[iv++] = C.zf()+TC.zf();
-                            nVertex +=1;
+//                            nVertex +=1;
                             ds *= GL3DScales::s_XFactor;
                         }
                     }
@@ -599,7 +597,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
                     StreamVertexArray[iv++] = D.yf()+TD.yf();
                     StreamVertexArray[iv++] = D.zf()+TD.zf();
                     ds *= GL3DScales::s_XFactor;
-                    nVertex +=2;
+//                    nVertex +=2;
 
                     for (int i=2; i<GL3DScales::s_NX; i++)
                     {
@@ -612,14 +610,14 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
                         StreamVertexArray[iv++] = D.yf()+TD.yf();
                         StreamVertexArray[iv++] = D.zf()+TD.zf();
                         ds *= GL3DScales::s_XFactor;
-                        nVertex +=1;
+//                        nVertex +=1;
                     }
                 }
 
                 m++;
             }
 
-            p0+=pWing->m_nPanels;
+//            p0+=pWing->m_nPanels;
         }
     }
 
