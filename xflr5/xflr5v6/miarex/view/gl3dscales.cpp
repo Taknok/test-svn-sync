@@ -428,7 +428,7 @@ bool GL3DScales::loadSettings(QSettings &settings)
         gl3dMiarexView::s_LegendMax    = settings.value("LegendMax").toDouble();
         s_pos     = settings.value("Position", s_pos).toInt();
         s_NX      = settings.value("NX",       s_NX).toInt();
-        s_NX = std::max(s_NX, 1);
+        s_NX = std::max(s_NX, 2);
         s_DeltaL  = settings.value("DeltaL",   s_DeltaL).toDouble();
         s_XFactor = settings.value("XFactor",  s_XFactor).toDouble();
         s_XOffset = settings.value("XOffset",  s_XOffset).toDouble();

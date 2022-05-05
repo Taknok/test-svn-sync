@@ -448,7 +448,6 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
     VInf.set(pPOpp->m_QInf,0.0,0.0);
 
     int i=0;
-    int m = 0;
 
     m_NStreamLines = 0;
     for(int iw=0; iw<MAXWINGS; iw++)
@@ -613,8 +612,6 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
 //                        nVertex +=1;
                     }
                 }
-
-                m++;
             }
 
 //            p0+=pWing->m_nPanels;
