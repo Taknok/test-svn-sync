@@ -2227,14 +2227,14 @@ void gl3dMiarexView::glMakePanelForces(int nPanels, Panel const *pPanel, WPolar 
 }
 
 
-void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const Vector3d *pNode, const Panel *pPanel, const PlaneOpp *pPOpp)
+void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, QVector<Vector3d> const &nodes, QVector<Panel> const &panels, const PlaneOpp *pPOpp)
 {
-    if(!pPanel || !pNode || !nPanels) return;
-
     float color(0);
     float range(0);
 
     Vector3d TA,LA, TB, LB;
+
+    int nPanels = panels.size();
 
     float lmin =  10000.0;
     float lmax = -10000.0;
@@ -2273,15 +2273,13 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
     int nodeVertexSize = nPanels * 2 * 3 * 6;
     QVector<float>nodeVertexArray(nodeVertexSize);
 
-    Q_ASSERT(nPanels==nPanels);
-
     int iv=0;
     for (int p=0; p<nPanels; p++)
     {
-        TA.copy(pNode[pPanel[p].m_iTA]);
-        TB.copy(pNode[pPanel[p].m_iTB]);
-        LA.copy(pNode[pPanel[p].m_iLA]);
-        LB.copy(pNode[pPanel[p].m_iLB]);
+        TA.copy(nodes[panels[p].m_iTA]);
+        TB.copy(nodes[panels[p].m_iTB]);
+        LA.copy(nodes[panels[p].m_iLA]);
+        LB.copy(nodes[panels[p].m_iLB]);
         // each quad is two triangles
         // write the first one
         nodeVertexArray[iv++] = TA.xf();
@@ -2296,9 +2294,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         }
         else
         {
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().redF());
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().greenF());
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().blueF());
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().redF();
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().greenF();
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().blueF();
         }
 
         nodeVertexArray[iv++] = LA.xf();
@@ -2313,9 +2311,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         }
         else
         {
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().redF());
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().greenF());
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().blueF());
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().redF();
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().greenF();
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().blueF();
         }
 
         nodeVertexArray[iv++] = LB.xf();
@@ -2330,9 +2328,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         }
         else
         {
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().redF());
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().greenF());
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().blueF());
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().redF();
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().greenF();
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().blueF();
         }
 
         // write the second one
@@ -2349,9 +2347,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         }
         else
         {
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().redF());
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().greenF());
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().blueF());
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().redF();
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().greenF();
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().blueF();
         }
 
         nodeVertexArray[iv++] = TB.xf();
@@ -2366,9 +2364,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         }
         else
         {
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().redF());
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().greenF());
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().blueF());
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().redF();
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().greenF();
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().blueF();
          }
 
         nodeVertexArray[iv++] = TA.xf();
@@ -2383,9 +2381,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const V
         }
         else
         {
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().redF());
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().greenF());
-            nodeVertexArray[iv++] = float(DisplayOptions::backgroundColor().blueF());
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().redF();
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().greenF();
+            nodeVertexArray[iv++] = DisplayOptions::backgroundColor().blueF();
          }
     }
 
@@ -2481,18 +2479,18 @@ void gl3dMiarexView::glMake3dObjects()
                 QVector<Panel> panels;
                 QVector<Vector3d> nodes;
                 pCurPlane->body()->makePanels(0, pCurPlane->bodyPos(), panels, nodes);
-                glMakePanels(m_vboEditBodyMesh, panels.size(), nodes.size(), nodes.constData(), panels.constData(), nullptr);
+                glMakePanels(m_vboEditBodyMesh, nodes, panels, nullptr);
             }
         }
         else
-            glMakePanels(m_vboMesh, theTask.matSize(), theTask.nNodes(), theTask.m_Node.constData(), theTask.m_Panel.constData(), nullptr);
+            glMakePanels(m_vboMesh, theTask.m_Node, theTask.m_Panel, nullptr);
         s_bResetglMesh = false;
     }
 
     if(s_bResetglPanelCp || s_bResetglOpp)
     {
         if(pCurWPolar && pCurWPolar->analysisMethod()!=xfl::LLTMETHOD)
-            glMakePanels(m_vboPanelCp, theTask.matSize(), theTask.nNodes(), theTask.m_Node.constData(), theTask.m_Panel.constData(), pCurPOpp);
+            glMakePanels(m_vboPanelCp, theTask.m_Node, theTask.m_Panel, pCurPOpp);
         s_bResetglPanelCp = false;
     }
 

@@ -43,7 +43,7 @@ class gl3dMiarexView : public gl3dXflView
         void glMakeDownwash(int iWing, Wing const *pWing, WPolar const*pWPolar, WingOpp const*pWOpp);
         void glMakeDragStrip(int iWing, Wing const *pWing, WPolar const *pWPolar, WingOpp const *pWOpp, double beta);
         void glMakePanelForces(int nPanels, Panel const*pPanel, WPolar const*pWPolar, PlaneOpp const*pPOpp);
-        void glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, Vector3d const *pNode, Panel const *pPanel, PlaneOpp const *pPOpp);
+        void glMakePanels(QOpenGLBuffer &vbo, const QVector<Vector3d> &nodes, const QVector<Panel> &pPanel, PlaneOpp const *pPOpp);
 
         void paintLift(int iWing);
         void paintMoments();
