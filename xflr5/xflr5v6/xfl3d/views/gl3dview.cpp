@@ -2170,7 +2170,7 @@ void gl3dView::paintSegments(QOpenGLBuffer &vbo, QColor const &clr, int thicknes
             m_shadLine.enableAttributeArray(m_locLine.m_attrVertex);
             m_shadLine.setAttributeBuffer(m_locLine.m_attrVertex, GL_FLOAT, 0, 4, stride*sizeof(GLfloat));
 
-            int nSegs = vbo.size()/2/stride/int(sizeof(float)); // 2 vertices and (3 position components)
+            int nSegs = vbo.size()/2/stride/int(sizeof(float)); // 2 vertices and (stride float components)
 
             if(bHigh)
             {
