@@ -127,15 +127,11 @@
 #include <xinverse/xinverse.h>
 
 
-#ifdef Q_OS_MAC
-#include <CoreFoundation/CoreFoundation.h>
-#endif
 
+QPointer<MainFrame> MainFrame::_self(nullptr);
 
-QPointer<MainFrame> MainFrame::_self = nullptr;
-
-QString MainFrame::s_ProjectName = "";
-QString MainFrame::s_LanguageFilePath = "";
+QString MainFrame::s_ProjectName;
+QString MainFrame::s_LanguageFilePath;
 QDir MainFrame::s_TranslationDir;
 
 
@@ -4712,7 +4708,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         }
 
         //the oppoints
-        if(SaveOptions::bOpps)
+        if(SaveOptions::bOpps())
         {
             ar << Objects2d::oppCount();
             for (int i=0; i<Objects2d::oppCount();i++)

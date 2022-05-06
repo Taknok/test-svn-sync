@@ -423,9 +423,9 @@ bool GL3DScales::loadSettings(QSettings &settings)
 {
     settings.beginGroup("GL3DScales");
     {
-        gl3dMiarexView::s_bAutoCpScale = settings.value("AutoCpScale").toBool();
-        gl3dMiarexView::s_LegendMin    = settings.value("LegendMin").toDouble();
-        gl3dMiarexView::s_LegendMax    = settings.value("LegendMax").toDouble();
+        gl3dMiarexView::s_bAutoCpScale = settings.value("AutoCpScale", true).toBool();
+        gl3dMiarexView::s_LegendMin    = settings.value("LegendMin", 0).toDouble();
+        gl3dMiarexView::s_LegendMax    = settings.value("LegendMax", 1).toDouble();
         s_pos     = settings.value("Position", s_pos).toInt();
         s_NX      = settings.value("NX",       s_NX).toInt();
         s_NX = std::max(s_NX, 2);
@@ -445,14 +445,14 @@ bool GL3DScales::saveSettings(QSettings &settings)
     settings.beginGroup("GL3DScales");
     {
         settings.setValue("AutoCpScale", gl3dMiarexView::s_bAutoCpScale);
-        settings.setValue("LegendMin", gl3dMiarexView::s_LegendMin);
-        settings.setValue("LegendMax", gl3dMiarexView::s_LegendMax);
-        settings.setValue("Position", s_pos);
-        settings.setValue("NX", s_NX);
-        settings.setValue("DeltaL", s_DeltaL);
-        settings.setValue("XFactor", s_XFactor);
-        settings.setValue("XOffset", s_XOffset);
-        settings.setValue("ZOffset", s_ZOffset);
+        settings.setValue("LegendMin",   gl3dMiarexView::s_LegendMin);
+        settings.setValue("LegendMax",   gl3dMiarexView::s_LegendMax);
+        settings.setValue("Position",    s_pos);
+        settings.setValue("NX",          s_NX);
+        settings.setValue("DeltaL",      s_DeltaL);
+        settings.setValue("XFactor",     s_XFactor);
+        settings.setValue("XOffset",     s_XOffset);
+        settings.setValue("ZOffset",     s_ZOffset);
     }
     settings.endGroup();
     return true;
