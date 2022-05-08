@@ -14,7 +14,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Sync SVN
-        uses: Taknok/Action-mirror-SVN-to-GIT@memory2
+        uses: Taknok/Action-mirror-SVN-to-GIT@metadata
         with:
           svn-url: https://svn.code.sf.net/p/xflr5/code
           verbose: true
