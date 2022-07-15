@@ -41,11 +41,11 @@ See http://raphael.mit.edu/xfoil for more information.
 
 #include "xfoil-lib_global.h"
 
-#include <QTextStream>
+// #include <QTextStream>
 
 #include <complex>
 
-#include <xfoil_params.h>
+#include "xfoil_params.h"
 
 
 //------ derived dimensioning limit parameters
@@ -72,7 +72,8 @@ struct blData
 
 
 
-class XFOILLIBSHARED_EXPORT XFoil
+// class XFOILLIBSHARED_EXPORT XFoil
+class XFoil
 {
 public:
     XFoil();
@@ -87,15 +88,15 @@ public:
     void pangen();
     void pert_process(int kqsp);
     void pert_init(int kqsp);
-    void HanningFilter(double cfilt, QTextStream &ts);
+    // void HanningFilter(double cfilt, TextStream &ts);
     void smooq(int kq1,int kq2,int kqsp);
     void ExecMDES();
     bool ExecQDES();
     bool initialize();
     bool initXFoilGeometry(int fn, const double *fx, const double *fy, double *fnx, double *fny,
                            bool bFLap=false, double xhinge=0.0, double yhinge=0.0);
-    bool initXFoilAnalysis(double Re, double alpha, double Mach, double NCrit, double XtrTop, double XtrBot,
-                           int reType, int maType, bool bViscous, QTextStream &outStream);
+    /*bool initXFoilAnalysis(double Re, double alpha, double Mach, double NCrit, double XtrTop, double XtrBot,
+                           int reType, int maType, bool bViscous, TextStream &outStream);*/
 
     void splqsp(int kqsp);
     void qspcir();
@@ -108,7 +109,7 @@ public:
     void createXBL();
     void fillHk();
     void fillRTheta();
-    void writeString(QString str, bool bFullReport = false);
+    void writeString(std::string str, bool bFullReport = false);
     double DeRotate();
     bool specal();
     bool speccl();
@@ -293,7 +294,8 @@ public:
     static bool s_bCancel;
     static bool s_bFullReport;
 
-    QTextStream *m_pOutStream;
+    // QTextStream *m_pOutStream;
+    std::ostream *m_pOutStream;
 
     double agte,ag0,qim0,qimold;
     double ssple, dwc,algam,clgam,cmgam;

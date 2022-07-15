@@ -21,9 +21,14 @@
 *****************************************************************************/
 
 
-#include <QDebug>
+// #include <QDebug>
 
 #include "xfoil.h"
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <list>
+#include <vector>
 
 #define PI 3.141592654
 #define EPSILON 1.e-6
@@ -31,6 +36,7 @@
 bool XFoil::s_bCancel = false;
 bool XFoil::s_bFullReport = false;
 double XFoil::vaccel = 0.01;
+
 
 XFoil::XFoil()
 {
@@ -665,9 +671,9 @@ bool XFoil::abcopy()
     }
     else if(nb>IQX-2)
     {
-        QString str1, str2;
-        str1 = QString("Maximum number of panel nodes  : %1\n").arg(IQX-2);
-        str2 = QString("Number of buffer airfoil points: %1\n").arg(nb);
+        std::string str1, str2;
+        str1 = "Maximum number of panel nodes  : " + std::to_string(IQX-2) + "\n";
+        str2 = "Number of buffer airfoil points: " + std::to_string(nb) + "\n";
         str2+="Current airfoil cannot be set\n";
         str2+="Try executing PANE at top level instead";
         str1+=str2;
@@ -2518,7 +2524,7 @@ bool XFoil::cpcalc(int n, double q[], double qinf, double minf, double cp[])
 
     if(denneg)
     {
-        QString str("CpCalc: local speed too larger\n Compressibility corrections invalid\n");
+        std::string str("CpCalc: local speed too larger\n Compressibility corrections invalid\n");
         writeString(str, true);
         return false;
     }
@@ -2530,7 +2536,7 @@ bool XFoil::cpcalc(int n, double q[], double qinf, double minf, double cp[])
 
 
 
-void XFoil::writeString(QString str, bool bFullReport)
+void XFoil::writeString(std::string str, bool bFullReport)
 {
     if(!bFullReport && !s_bFullReport) return;
     if(!m_pOutStream) return;
@@ -3538,7 +3544,7 @@ bool XFoil::ggcalc()
     //-    (fraction of smaller panel length adjacent to TE)
     bwt = 0.1;
 
-    QString str("   Calculating unit vorticity distributions ...\n");
+    std::string str("   Calculating unit vorticity distributions ...\n");
     writeString(str);
 
 
@@ -3733,9 +3739,9 @@ void XFoil::hipnt(double chpnt, double thpnt)
     arot = atan2(yle-yte,xte-xle) / dtor;
     if(fabs(arot)>1.0)
     {
-        QString str, strong;
+        std::string str, strong;
         str  = "Warning: High does not work well on rotated foils\n";
-        strong = QString("Current chordline angle: %1\nproceeding anyway...").arg(arot,5,'f',2);
+        strong = "Current chordline angle: " + std::to_string(arot) + "\nproceeding anyway...";
 
         writeString(str+strong, true);
     }
@@ -4016,10 +4022,10 @@ bool XFoil::iblpan()
     iblmax = std::max(iblte[1],iblte[2]) + nw;
     if(iblmax>IVX)
     {
-        QString str("iblpan :  ***  bl array overflow");
+        std::string str("iblpan :  ***  bl array overflow");
         writeString(str, true);
 
-        str = QString("Increase IVX to at least %1\n").arg(iblmax);
+        str = "Increase IVX to at least " + std::to_string(iblmax) + "\n";
         writeString(str, true);
         return false;
     }
@@ -4050,7 +4056,7 @@ bool XFoil::iblsys()
     nsys = iv;
     if(nsys>2*IVX)
     {
-        QString str("*** iblsys: bl system array overflow. ***");
+        std::string str("*** iblsys: bl system array overflow. ***");
         writeString(str, true);
         return false;
     }
@@ -4096,14 +4102,14 @@ bool XFoil::initXFoilGeometry(int fn, double const *fx, double const *fy, double
     }
     else
     {
-        QString str = "Unrecognized foil format";
+        std::string str = "Unrecognized foil format";
         writeString(str);
         return false;
     }
 }
 
 
-bool XFoil::initXFoilAnalysis(double Re, double alpha, double Mach, double NCrit, double XtrTop, double XtrBot,
+/*bool XFoil::initXFoilAnalysis(double Re, double alpha, double Mach, double NCrit, double XtrTop, double XtrBot,
                               int reType, int maType, bool bViscous, QTextStream &outStream)
 {
     //Sets Analysis parameters in XFoil
@@ -4138,7 +4144,7 @@ bool XFoil::initXFoilAnalysis(double Re, double alpha, double Mach, double NCrit
     }
 
     return true;
-}
+}*/
 
 
 /**     logical function inside(x,y,n, xf,yf)
@@ -4186,13 +4192,12 @@ bool XFoil::lefind(double &sle, double x[], double xp[], double y[], double yp[]
     double dseps, dxte, dyte, dx, dy, dotp, dxds, dyds, dxdd, dydd;
     double res, ress, dsle;
     double xchord, ychord;
+
     //---- convergence tolerance
     dseps = (s[n]-s[1]) * 0.00001;
-
     //---- set trailing edge point coordinates
     xte = 0.5*(x[1] + x[n]);
     yte = 0.5*(y[1] + y[n]);
-
     //---- get first guess for sle
     for (i=3; i<=n-2; i++)
     {
@@ -4264,7 +4269,7 @@ bool XFoil::ludcmp(int n, double a[IQX][IQX], int indx[IQX])
     double dum=0, sum=0, aamax=0;
     if(n>nvx)
     {
-        QString str("Stop ludcmp: array overflow. Increase nvx");
+        std::string str("Stop ludcmp: array overflow. Increase nvx");
         writeString(str, true);
         return false;
     }
@@ -4470,7 +4475,7 @@ bool XFoil::mhinge()
  * ----------------------------------------------------- */
 bool XFoil::mrchdu()
 {
-    QString str;
+    std::string str;
 
     double vtmp[5][6], vztmp[5];
     memset(vtmp, 0, 30*sizeof(double));
@@ -4675,7 +4680,7 @@ bool XFoil::mrchdu()
             }
 
 
-            str = QString("     mrchdu: convergence failed at %1 ,  side %2, res =%3\n").arg(ibl).arg(is).arg(dmax, 4, 'f', 3);
+            str = "     mrchdu: convergence failed at " + std::to_string(ibl) + " ,  side "+ std::to_string(is) + ", res ="+ std::to_string(dmax) + "\n";
             writeString(str, true);
 
             if (dmax<= 0.1) goto stop109;
@@ -4799,7 +4804,7 @@ bool XFoil::mrchue()
     for (is=1;is<= 2;is++)
     {//2000
 
-        QString str = QString("    Side %1 ...\n").arg(is);
+        std::string str = "    Side "+ std::to_string(is) + " ...\n";
         writeString(str);
 
         //---- set forced transition arc length position
@@ -4952,8 +4957,8 @@ bool XFoil::mrchue()
                         if(wake) htarg = std::max(htarg , 1.01);
                         else htarg = std::max(htarg , hmax);
 
-                        QString str;
-                        str = QString("     mrchue: inverse mode at %1    hk =%2\n").arg(ibl).arg(htarg,0,'f',3);
+                        std::string str;
+                        str = "     mrchue: inverse mode at " + std::to_string(ibl) + "    hk =" + std::to_string(htarg) + "\n";
                         writeString(str);
 
 
@@ -5001,7 +5006,7 @@ stop100:
             }//end itbl loop
 
 
-            str = QString("     mrchue: convergence failed at %1,  side %2, res = %3\n").arg( ibl).arg( is).arg( dmax,0,'f',3);
+            str = "     mrchue: convergence failed at " + std::to_string(ibl) + ",  side " + std::to_string(is) + ", res = " + std::to_string(dmax) + "\n";
             writeString(str, true);
 
             //------ the current unconverged solution might still be reasonable...
@@ -5105,13 +5110,13 @@ bool XFoil::mrcl(double cls, double &m_cls, double &r_cls)
     cla = std::max(cls, 0.000001);
     if(retyp<1 || retyp>3)
     {
-        QString str("    mrcl:  illegal Re(cls) dependence trigger, Setting fixed Re ");
+        std::string str("    mrcl:  illegal Re(cls) dependence trigger, Setting fixed Re ");
         writeString(str, true);
         retyp = 1;
     }
     if(matyp<1 || matyp>3)
     {
-        QString str("    mrcl:  illegal Mach(cls) dependence trigger\n Setting fixed Mach");
+        std::string str("    mrcl:  illegal Mach(cls) dependence trigger\n Setting fixed Mach");
         writeString(str, true);
         matyp = 1;
     }
@@ -5163,7 +5168,7 @@ bool XFoil::mrcl(double cls, double &m_cls, double &r_cls)
     if(minf >= 0.99)
     {
         //TRACE("      artificially limiting mach to  0.99\n");
-        QString str("mrcl: Cl too low for chosen Mach(Cl) dependence\n");
+        std::string str("mrcl: Cl too low for chosen Mach(Cl) dependence\n");
         writeString(str, true);
         str = "      artificially limiting mach to  0.99";
         writeString(str, true);
@@ -5177,9 +5182,9 @@ bool XFoil::mrcl(double cls, double &m_cls, double &r_cls)
     if(rrat > 100.0)
     {
         //TRACE("     artificially limiting re to %f\n",reinf1*100.0);
-        QString str("mrcl: cl too low for chosen Re(Cl) dependence\n");
+        std::string str("mrcl: cl too low for chosen Re(Cl) dependence\n");
         writeString(str, true);
-        str = QString("      artificially limiting Re to %1\n").arg(reinf1*100.0,0,'f',0);
+        str = "      artificially limiting Re to " + std::to_string(reinf1*100.0) + "\n";
         writeString(str, true);
         reinf = reinf1*100.0;
         r_cls = 0.0;
@@ -5234,7 +5239,7 @@ bool XFoil::ncalc(double x[], double y[], double s[], int n, double xn[], double
  * --------------------------------------------------- */
 void XFoil::pangen()
 {
-    QString str;
+    std::string str;
     int ipfac, ible, nk, nn, nfrac1, nn2, ind, ncorn,j;
     double sbref, cvle, xble, xbte, yble, ybte, chbsq, cvsum, cvte;
     double frac, sbk, cvk, cvavg, cc, smool, smoosq, dsm, dsp, dso;
@@ -5678,7 +5683,7 @@ stop11:
                 if(n > IQX-1)
                 {
                     //TRACE("panel: too many panels. increase iqx in xfoil.inc");
-                    QString str = "Panel: Too many panels. Increase IQX";
+                    std::string str = "Panel: Too many panels. Increase IQX";
                     writeString(str, true);
                     return;
                 }
@@ -6474,7 +6479,7 @@ bool XFoil::qdcalc()
     memset(bbb, 0, IQX*sizeof(double));
 
     //TRACE("calculating source influence matrix ...\n");
-    QString str = "   Calculating source influence matrix ...\n";
+    std::string str = "   Calculating source influence matrix ...\n";
     writeString(str);
 
     if(!ladij)
@@ -7155,7 +7160,7 @@ bool XFoil::setbl()
     {
         //----- initialize bl by marching with ue (fudge at separation)
         //TRACE(" initializing bl ...\n");
-        QString str = "   Initializing bl ...\n";
+        std::string str = "   Initializing bl ...\n";
         writeString(str);
 
         mrchue();
@@ -7209,7 +7214,7 @@ bool XFoil::setbl()
     ule1_a = uinv_a[2][1];
     ule2_a = uinv_a[2][2];
 
-    QString str1 = " \n";
+    std::string str1 = " \n";
     writeString(str1);
 
     //*** go over each boundary layer/wake
@@ -7306,7 +7311,7 @@ bool XFoil::setbl()
             if(ibl==itran[is] && !tran)
             {
                 //TRACE("setbl: xtr???  n1=%d n2=%d: \n", ampl1, ampl2);
-                QString str = QString("setbl: xtr???  n1=%1 n2=%2: \n").arg( ampl1).arg( ampl2);
+                std::string str = "setbl: xtr???  n1=" + std::to_string(ampl1) + " n2=" + std::to_string(ampl2) + ": \n";
                 writeString(str);
             }
 
@@ -7531,18 +7536,17 @@ bool XFoil::setbl()
             //---- next streamwise station
         }
 
-        QString strOut;
+        std::string strOut;
         if(tforce[is])
         {
-            strOut = QString("     Side %1, forced transition at x/c = %2 %3\n")
-                    .arg(is).arg(xoctr[is],0,'f',4).arg(itran[is]);
+            strOut = "     Side " + std::to_string(is) + ", forced transition at x/c = " + std::to_string(xoctr[is]) + " " + std::to_string(itran[is]) + "\n";
             //TRACE(strOut);
             writeString(strOut);
 
         }
         else
         {
-            strOut = QString("     Side %1,  free  transition at x/c = %2 %3\n").arg(is).arg(xoctr[is],0,'f',4).arg(itran[is]);
+            strOut = "     Side " + std::to_string(is) + ",  free  transition at x/c = " + std::to_string(xoctr[is]) + " " + std::to_string(itran[is]) + "\n";
             //TRACE(strOut);
             writeString(strOut);
         }
@@ -7583,7 +7587,7 @@ void XFoil::scheck(double x[], double y[], int *n, double stol, bool *lchange){
     //--- check stol for sanity
     if(stol>0.3)
     {
-        QString str("scheck:  bad value for small panels (stol > 0.3)\n");
+        std::string str("scheck:  bad value for small panels (stol > 0.3)\n");
         writeString(str, true);
         return;
     }
@@ -7643,7 +7647,7 @@ void XFoil::scheck(double x[], double y[], int *n, double stol, bool *lchange){
  * ........................................................*/
 bool XFoil::setexp(double s[], double ds1, double smax, int nn)
 {
-    QString str;
+    std::string str;
     int nex=0, iter=0, n=0;
     double sigma=0, rnex=0, rni=0, aaa=0, bbb=0, ccc=0;
     double disc=0, ratio=0, sigman=0, res=0;
@@ -7664,7 +7668,7 @@ bool XFoil::setexp(double s[], double ds1, double smax, int nn)
 
     if(nex<=1)
     {
-        QString str("setexp: cannot fill array.  n too small\n");
+        std::string str("setexp: cannot fill array.  n too small\n");
         writeString(str, true);
         return false;
     }
@@ -7782,7 +7786,7 @@ bool XFoil::sinvrt(double &si, double xi, double x[], double xs[], double s[], i
         if(fabs(ds/(s[n]-s[1]))< 1.0e-5) return true;
     }
 
-    QString str = "Sinvrt: spline inversion failed, input value returned\n";
+    std::string str = "Sinvrt: spline inversion failed, input value returned\n";
     writeString(str, true);
     si = sisav;
 
@@ -7862,7 +7866,7 @@ bool XFoil::specal()
     }
     if(!bConv)
     {
-        QString str("Specal:  MInf convergence failed\n");
+        std::string str("Specal:  MInf convergence failed\n");
         writeString(str, true);
         return false;
     }
@@ -7956,7 +7960,7 @@ bool XFoil::speccl()
     }
     if(!bConv)
     {
-        QString str = "Speccl:  cl convergence failed";
+        std::string str = "Speccl:  cl convergence failed";
         writeString(str, true);
         return false;
     }
@@ -8068,7 +8072,7 @@ bool XFoil::splind(double x[], double xs[], double s[], int n, double xs1, doubl
 
     if(n>nmax)
     {
-        QString str = "splind: array overflow, increase nmax";
+        std::string str = "splind: array overflow, increase nmax";
         writeString(str, true);
         return false;
     }
@@ -8411,7 +8415,7 @@ bool XFoil::stfind()
 
     if(!bFound)
     {
-        QString str = "stfind: Stagnation point not found. Continuing ...\n";
+        std::string str = "stfind: Stagnation point not found. Continuing ...\n";
         writeString(str, true);
         i = n/2;
     }
@@ -8670,7 +8674,7 @@ bool XFoil::trchek()
     //  if n2>ncrit:  nt=ncrit , xt=(ncrit-n1)/(n2-n1)  (transition)
     //
     //----------------------------------------------------------------
-    QString str;
+    std::string str;
 
     int itam=0;
     double ax_hk1=0.0, ax_t1=0.0, ax_a1=0.0, ax_hk2=0.0, ax_t2=0.0, ax_rt2=0.0, ax_a2=0.0;
@@ -9373,7 +9377,7 @@ bool XFoil::update()
     double dui=0.0, dui_ac=0.0, ue_m=0.0, uinv_ac=0.0,sa=0.0,ca=0.0, beta=0.0, beta_msq=0.0, bfac=0.0, bfac_msq=0.0;
     double clnew=0.0, cl_a=0.0, cl_ms=0.0, cl_ac=0.0, cginc=0.0;
     double cpg1=0.0,cpg1_ms=0.0, cpi_q=0.0, cpc_cpi=0.0, cpg1_ac=0.0,cpg2=0.0, cpg2_ms=0.0, cpg2_ac=0.0;
-    QString vmxbl;
+    std::string vmxbl;
 
     //---- max allowable alpha changes per iteration
     dalmax =  0.5*dtor;
@@ -9773,7 +9777,7 @@ bool XFoil::ViscousIter()
 {
     //    Performs one iteration
     double eps1 =0.0001;
-    QString str;
+    std::string str;
 
 
     setbl();//    ------ fill newton system for bl variables
@@ -9803,25 +9807,22 @@ bool XFoil::ViscousIter()
     //    ------ display changes and test for convergence
     if(rlx<1.0)
     {
-        str =QString("     rms:%1   max:%2 at %3 %4   rlx:%5\n")
-                .arg(rmsbl,0,'e',2).arg(rmxbl,0,'e',2).arg(imxbl).arg(ismxbl).arg(rlx,0,'f',3);
+        str = "     rms:" + std::to_string(rmsbl) + "   max:" + std::to_string(rmxbl) + " at " + std::to_string(imxbl) + " " + std::to_string(ismxbl) + "   rlx:" + std::to_string(rlx) + "\n";
     }
     else if(fabs(rlx-1.0)<0.001)
     {
-        str =QString("     rms:%1   max:%2 at %3 %4\n")
-                .arg(rmsbl,0,'e',2).arg(rmxbl,0,'e',2).arg(imxbl).arg(ismxbl);
+        str = "     rms:" + std::to_string(rmsbl) + "   max:" + std::to_string(rmxbl) + " at " + std::to_string(imxbl) + " " + std::to_string(ismxbl) + "\n";
     }
 
     writeString(str);
 
     cdp = cd - cdf;
 
-    str = QString("     a=%1    cl=%2\n     cm=%3  cd=%4 => cdf=%5 cdp=%6\n\n")
-            .arg(alfa/dtor,0,'f',3).arg(cl,0,'f',4).arg(cm,0,'f',4).arg(cd,0,'f',5).arg(cdf,0,'f',5).arg(cdp,0,'f',5);
+    str = "     a=" + std::to_string(alfa/dtor) + "    cl=" + std::to_string(cl) + "\n     cm=" + std::to_string(cm) + "  cd=" + std::to_string(cd) + " => cdf=" + std::to_string(cdf) + " cdp=" + std::to_string(cdp) + "\n\n";
     writeString(str);
 
 
-    int pos = str.indexOf("QN");
+    int pos = str.find("QN");
     if(pos>0)
     {
         lvconv = false;
@@ -9969,7 +9970,7 @@ bool XFoil::xifset(int is)
 
     if(xiforc < 0.0) {
         //TRACE(" ***  stagnation point is past trip on side %d\n", is);
-        QString str = QString(" ***  stagnation point is past trip on side %1\n").arg(is);
+        std::string str = " ***  stagnation point is past trip on side " + std::to_string(is) + "\n";
         writeString(str);
 
         xiforc = xssi[iblte[is]][is];
@@ -9989,14 +9990,14 @@ bool XFoil::xyWake()
     double ds=0, ds1=0, sx=0, sy=0, smod=0;
     double psi=0, psi_x=0, psi_y=0;
     //
-    QString str("   Calculating wake trajectory ...\n");
+    std::string str("   Calculating wake trajectory ...\n");
     writeString(str, true);
     //
     //--- number of wake points
     nw = n/8 + 2;
     if(nw>IWX)
     {
-        QString str(" XYWake: array size (IWX) too small.\n  Last wake point index reduced.");
+        std::string str(" XYWake: array size (IWX) too small.\n  Last wake point index reduced.");
         writeString(str, true);
         nw = IWX;
     }
@@ -10158,7 +10159,7 @@ int XFoil::arefine(double x[],double y[], double s[], double xs[], double ys[],
     return k;
 
 stop90: 
-    QString str = "sdouble:  Arrays will overflow.  No action taken.\n";
+    std::string str = "sdouble:  Arrays will overflow.  No action taken.\n";
     writeString(str, true);
 
     //    nnew = 0;
@@ -11239,7 +11240,7 @@ void XFoil::qccalc(int ispec,double *alfa, double *cl, double *cm,
         }
 
     }
-    QString str = QString("qccalc: cl convergence failed.  dalpha =%1").arg(dalfa,0,'f',4);
+    std::string str = "qccalc: cl convergence failed.  dalpha =" + std::to_string(dalfa);
     writeString(str);
 }
 
@@ -11254,7 +11255,7 @@ void XFoil::mapgen(int n, double x[],double y[])
     //      include 'circle.inc'
     //      dimension x(nc), y(nc)
     //
-    Q_UNUSED(n);
+    //linearQ_UNUSED(n);
     std::complex<double> qq[IMX4+1][IMX4+1];
     std::complex<double> dcn[IMX4+1];
     double dx=0, dy=0, qimoff=0, dcnmax=0;
@@ -11774,7 +11775,7 @@ void XFoil::smooq(int kq1,int kq2,int kqsp)
 }
 
 
-void XFoil::HanningFilter(double cfilt, QTextStream &ts)
+/*void XFoil::HanningFilter(double cfilt, QTextStream &ts)
 {
     //----- apply modified hanning filter to cn coefficients
     double clq=0;
@@ -11784,7 +11785,7 @@ void XFoil::HanningFilter(double cfilt, QTextStream &ts)
     qspcir();
 
     //      write(*,1200) algam/dtor,clgam,cmgam
-    QString str0 = QString("  current:\n     alpha=%1\n     Cl=%2\n     Cm=%3").arg(algam/dtor, 9, 'f',4).arg(clgam, 11, 'f', 6).arg(cmgam, 11, 'f', 6);
+    std::string str0 = "  current:\n     alpha=" + std::to_string(algam/dtor) + "\n     Cl=" + std::to_string(clgam) + "\n     Cm=" + std::to_string(cmgam);
     ts << str0<<"\n";
     for(int kqsp=1; kqsp<= nqsp; kqsp++)
     {
@@ -11795,12 +11796,12 @@ void XFoil::HanningFilter(double cfilt, QTextStream &ts)
         if(iacqsp == 1) clqsp[kqsp] = clq;
 
         //         write(*,1210) kqsp,alqsp(kqsp)/dtor,clqsp(kqsp),cmqsp(kqsp)
-        QString str1 = QString("  QSpec:\n     alpha=%2\n     Cl=%3\n     Cm=%4").arg(alqsp[kqsp]/dtor, 9, 'f',4).arg(clqsp[kqsp], 11, 'f', 6).arg(cmqsp[kqsp], 11, 'f', 6);
+        std::string str1 = "  QSpec:\n     alpha=" + std::to_string(alqsp[kqsp]/dtor) + "\n     Cl=" + std::to_string(clqsp[kqsp]) + "\n     Cm=" + std::to_string(cmqsp[kqsp]);
         ts << str1<<"\n";
     }
     lqspec = true;
 
-}
+}*/
 
 
 void XFoil::cnfilt(double ffilt)
@@ -11867,7 +11868,7 @@ void XFoil::pert_init(int kqsp)
 
 void XFoil::pert_process(int kqsp)
 {
-    Q_UNUSED(kqsp);
+    //Q_UNUSED(kqsp);
     int m=0, ncn=0;
     //    double dx,dy,qimoff;
     std::complex<double> qq[IMX/4+1][IMX/4+1],dcn[IMX/4+1];
@@ -12667,6 +12668,8 @@ void XFoil::inter(double x0[], double xp0[], double y0[], double yp0[], double s
         //------ set interpolated x,y coordinates
         x[i] = f0*seval(st0,x0,xp0,s0,n0) + f1*seval(st1,x1,xp1,s1,n1);
         y[i] = f0*seval(st0,y0,yp0,s0,n0) + f1*seval(st1,y1,yp1,s1,n1);
+        
+        std::cout << std::setprecision(17) << st0 << "\r\n";
 
     }
 }
@@ -12688,6 +12691,7 @@ void XFoil::interpolate(double xf1[], double yf1[], int n1,
         x1[i+1] = xf1[i];
         y1[i+1] = yf1[i];
     }
+    
     for (i=0; i<n2; i++)
     {
         x2[i+1] = xf2[i];
@@ -13058,7 +13062,7 @@ bool XFoil::naca5(int ides, int nside)
         c = 3.230;
     }
     else{
-        QString str("Illegal 5-digit designation\n");
+        std::string str("Illegal 5-digit designation\n");
         str += "first three digits must be 210, 220, ... 250";
         ides = 0;
         writeString(str);
@@ -13182,3 +13186,112 @@ void XFoil::createXBL()
         xbl[iblte[1]+iblw][1] = xbl[iblte[2]+iblw][2];
 }
 
+
+template<typename T>
+T* vtoa(std::vector<T> list)
+{
+    int i;
+    int array_size = list.size();
+
+    T *array = (T *) malloc( array_size * sizeof(T)); 
+    for (i = 0; i < array_size; i++)
+    {
+        array[i] = list[i];
+    }
+
+    return array;
+}
+
+
+
+int main(int argc, char** argv)
+{
+    if (argc != 2) {
+        std::cout << "Arg missing" << std::endl;
+        return -1;
+    }
+    XFoil p_xfoil;
+    p_xfoil.initialize();
+    
+    double x, y;
+    std::string name1, name2;
+    std::vector<double> x1, y1, x2, y2, xb, yb;
+    int i, n1, n2;
+    int frac = atoi(argv[1]);
+    
+    // Read files
+    std::ifstream myfile1("foil1.dat");
+    if (myfile1.is_open())
+    {
+        getline(myfile1, name1);
+        i = 0;
+        while ( myfile1 >> x >> y )
+        {
+            x1.push_back(x);
+            y1.push_back(y);
+            i++;
+        }
+        n1 = i;
+        myfile1.close();
+    }
+
+    else std::cout << "Unable to open file1"; 
+
+    std::ifstream myfile2("foil2.dat");
+    if (myfile2.is_open())
+    {
+        getline(myfile2, name2);
+        i = 0;
+        while ( myfile2 >> x >> y )
+        {
+            x2.push_back(x);
+            y2.push_back(y);
+            i++;
+        }
+        n2 = i;
+        myfile2.close();
+    }
+
+    else std::cout << "Unable to open file";
+    
+    double *ax1, *ay1, *ax2, *ay2;
+    ax1 = vtoa(x1);
+    ay1 = vtoa(y1);
+    ax2 = vtoa(x2);
+    ay2 = vtoa(y2);
+    
+    p_xfoil.nb = n1;
+
+    p_xfoil.interpolate(ax1, ay1, n1, ax2, ay2, n2, frac/100.0);
+
+
+    for (int j=0; j < n1; j++)
+    {
+        xb.push_back(p_xfoil.xb[j+1]);
+        yb.push_back(p_xfoil.yb[j+1]);
+    }
+    std::string nameb = name1 + "-" + std::to_string(100-frac) + "_" + name2 + "-" + std::to_string(frac);
+    
+    std::ofstream outfile;
+    outfile.open(nameb + ".dat");
+    outfile << nameb << std::endl;
+
+    std::setprecision(3);
+    for (i=0; i < n1; i++) 
+    {
+        outfile << " ";
+        outfile << std::setprecision(5) << std::fixed << xb[i];
+        outfile << "    ";
+        outfile << std::setprecision(5) << std::fixed << yb[i];
+        outfile << std::endl;
+    }
+    outfile.close();
+
+
+    free(ax1);
+    free(ay1);
+    free(ax2);
+    free(ay2);
+
+    return 0;
+}
